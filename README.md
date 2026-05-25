@@ -49,3 +49,5 @@ Je suis un militant écologiste basé au Québec. À seulement 14 ans, je consac
 
 ---
 *« La défense de l'environnement est la défense de notre survie. »*
+<meta name="google-site-verification" content="hsL0TWDKf3AxjpBT0wZWhc-B3lAo_OqvhEf6STg2OlI" />
+
