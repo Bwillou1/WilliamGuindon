@@ -1,3 +1,4 @@
+<meta name="google-site-verification" content="hsL0TWDKf3AxjpBT0wZWhc-B3lAo_OqvhEf6STg2OlI" />
 # 🌿 William Guindon
 **Militant environnemental | Étudiant | Défenseur des générations futures**
 
