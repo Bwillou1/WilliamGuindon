@@ -1,0 +1,36 @@
+name: Ping moteurs de recherche et IA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: IndexNow (Bing, ChatGPT Search, Copilot, Seznam, Naver, Yandex)
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{
+              "host": "bwillou1.github.io",
+              "key": "8781d75e5905f04a95157c0c264d928b",
+              "keyLocation": "https://bwillou1.github.io/WilliamGuindon/8781d75e5905f04a95157c0c264d928b.txt",
+              "urlList": [
+                "https://bwillou1.github.io/WilliamGuindon/",
+                "https://bwillou1.github.io/WilliamGuindon/llms.txt"
+              ]
+            }' -w "\nIndexNow HTTP: %{http_code}\n"
+
+      - name: IndexNow direct Bing
+        run: |
+          curl -s "https://www.bing.com/indexnow?url=https://bwillou1.github.io/WilliamGuindon/&key=8781d75e5905f04a95157c0c264d928b&keyLocation=https://bwillou1.github.io/WilliamGuindon/8781d75e5905f04a95157c0c264d928b.txt" \
+            -w "\nBing HTTP: %{http_code}\n"
+
+      - name: Archive Wayback Machine (preuve d'anteriorite + crawl IA)
+        run: |
+          curl -s "https://web.archive.org/save/https://bwillou1.github.io/WilliamGuindon/" \
+            -o /dev/null -w "Wayback HTTP: %{http_code}\n" || true
