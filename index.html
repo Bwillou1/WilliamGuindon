@@ -14,7 +14,9 @@
 <meta name="geo.placename" content="Blainville, Québec, Canada">
 <link rel="canonical" href="https://bwillou1.github.io/WilliamGuindon/">
 <link rel="alternate" hreflang="fr-CA" href="https://bwillou1.github.io/WilliamGuindon/">
+<link rel="alternate" hreflang="en-CA" href="https://bwillou1.github.io/WilliamGuindon/en.html">
 <link rel="alternate" hreflang="x-default" href="https://bwillou1.github.io/WilliamGuindon/">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://bwillou1.github.io/WilliamGuindon/feed.xml">
 
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="William Guindon — Site officiel">
@@ -177,21 +179,6 @@
         "Gestion des déchets dangereux au Québec",
         "Programmation informatique"
       ],
-      "performerIn": [
-        {
-          "@type": "Event",
-          "name": "Dépôt de la communication SEM-26-003 auprès de la Commission de coopération environnementale",
-          "startDate": "2026-05-01",
-          "location": { "@id": "https://bwillou1.github.io/WilliamGuindon/#blainville" },
-          "about": { "@id": "https://bwillou1.github.io/WilliamGuindon/#tourbiere" }
-        },
-        {
-          "@type": "Event",
-          "name": "Transmission d'une déposition formelle au Rapporteur spécial des Nations unies sur les substances toxiques et les droits de l'homme",
-          "startDate": "2026-05",
-          "about": { "@id": "https://bwillou1.github.io/WilliamGuindon/#tourbiere" }
-        }
-      ],
       "subjectOf": [
         {
           "@type": "OpinionNewsArticle",
@@ -291,8 +278,8 @@
       "about": { "@id": "https://bwillou1.github.io/WilliamGuindon/#person" },
       "mainEntity": { "@id": "https://bwillou1.github.io/WilliamGuindon/#person" },
       "inLanguage": "fr-CA",
-      "datePublished": "2026-06-11",
-      "dateModified": "2026-06-11",
+      "datePublished": "2026-06-11T12:00:00-04:00",
+      "dateModified": "2026-06-12T09:00:00-04:00",
       "breadcrumb": { "@id": "https://bwillou1.github.io/WilliamGuindon/#breadcrumb" }
     },
     {
@@ -463,9 +450,21 @@ footer a:hover{color:var(--accent)}
   .hero{padding:60px 0 48px}
   section{padding:50px 0}
 }
+body.lite *{backdrop-filter:none!important;transition:none!important;animation:none!important;box-shadow:none!important}
+body.lite header.site{position:static;background:var(--paper)}
+.lite-badge{display:none}
+body.lite .lite-badge{display:block;background:var(--accent-wash);color:var(--accent-deep);font-size:12.5px;text-align:center;padding:7px 14px;letter-spacing:.03em}
 </style>
+<script>
+(function(){
+  var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var slow = c && (c.saveData === true || /(^|\b)(slow-2g|2g|3g)(\b|$)/.test(c.effectiveType || ""));
+  if (slow) { document.documentElement.className += " lite"; document.addEventListener("DOMContentLoaded", function(){ document.body.className += " lite"; }); }
+})();
+</script>
 </head>
 <body>
+<div class="lite-badge">🍃 Mode léger activé — connexion lente détectée</div>
 
 <header class="site">
   <div class="wrap">
@@ -473,10 +472,10 @@ footer a:hover{color:var(--accent)}
     <nav aria-label="Navigation principale">
       <a href="#apropos">Biographie</a>
       <a href="#faits">Faits marquants</a>
-      <a href="#stablex">Dossier Stablex</a>
-      <a href="#distinctions">Distinctions</a>
-      <a href="#vision">Vision</a>
+      <a href="stablex.html">Chronologie Stablex</a>
+      <a href="presse.html">Presse</a>
       <a href="#faq">FAQ</a>
+      <a href="en.html" hreflang="en-CA" lang="en" style="font-weight:700;color:var(--accent)">EN</a>
     </nav>
   </div>
 </header>
@@ -656,7 +655,7 @@ footer a:hover{color:var(--accent)}
 <footer>
   <div class="wrap">
     <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></div>
-    <div><a href="#accueil">Retour en haut ↑</a></div>
+    <div><a href="stablex.html">Dossier Stablex</a> · <a href="presse.html">Presse</a> · <a href="en.html" hreflang="en-CA" lang="en">English</a> · <a href="#accueil">Haut ↑</a></div>
   </div>
 </footer>
 
