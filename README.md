@@ -1,6 +1,6 @@
 # William Guindon — Biographie officielle
 
-**Site officiel : https://bwillou1.github.io/WilliamGuindon/**
+**Site officiel : https://bwillou1.github.io/**
 
 William Guindon (né le 3 août 2011 à Sainte-Marthe-sur-le-Lac, Québec, Canada) est un militant écologiste québécois, étudiant à l'Externat Sacré-Cœur de Rosemère. Il est reconnu pour son engagement en faveur de la protection de la **Grande Tourbière de Blainville** et des droits des générations futures.
 
