@@ -370,15 +370,16 @@ ul.vision li::before {
 }
 
 /* FAQ Details */
+/* FAQ Accordion Hardware-Accelerated (Style Apple & Fable) */
 details.faq {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 16px;
   background-color: var(--bg-card);
   margin-bottom: 16px;
   max-width: 100%;
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 details.faq:hover {
   border-color: var(--accent);
@@ -387,33 +388,47 @@ details.faq:hover {
 details.faq summary {
   cursor: pointer;
   padding: 20px 24px;
+  font-family: 'Outfit', sans-serif;
   font-weight: 700;
+  font-size: 17px;
   color: var(--text);
   list-style: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
+  outline: none;
 }
 details.faq summary::-webkit-details-marker {
   display: none;
 }
 details.faq summary::after {
-  content: "+";
-  color: var(--accent);
-  font-size: 20px;
-  font-weight: 700;
-  transition: transform 0.2s ease;
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2322c55e' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.8;
 }
 details.faq[open] summary::after {
-  content: "−";
   transform: rotate(180deg);
 }
-details.faq div {
-  padding: 0 24px 24px;
+details.faq .faq-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+details.faq[open] .faq-content {
+  grid-template-rows: 1fr;
+}
+details.faq .faq-inner {
+  overflow: hidden;
+  padding: 0 24px 20px;
   color: var(--text-muted);
   font-size: 15.5px;
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
+  line-height: 1.6;
 }
 
 /* Chronologie (stablex.html) */
@@ -1374,4 +1389,105 @@ dialog.doc-dialog[open]::backdrop {
     width: auto;
     margin: 10px auto 0;
   }
+}
+
+/* ==========================================
+   AMBIANCE VISUELLE & EFFETS SUR SCROLL (STYLE FABLE)
+   ========================================== */
+
+/* Blobs d'arrière-plan */
+.bg-blob-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.08;
+  animation: float-blob 22s infinite alternate ease-in-out;
+  transition: opacity 0.5s ease;
+}
+
+[data-theme="dark"] .bg-blob {
+  opacity: 0.05;
+}
+
+.blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background-color: var(--accent);
+  animation-duration: 28s;
+}
+
+.blob-2 {
+  bottom: -15%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background-color: var(--earth);
+  animation-duration: 34s;
+  animation-delay: -6s;
+}
+
+.blob-3 {
+  top: 35%;
+  left: 55%;
+  width: 42vw;
+  height: 42vw;
+  background-color: var(--accent-deep);
+  animation-duration: 25s;
+  animation-delay: -12s;
+}
+
+@keyframes float-blob {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(4vw, 8vh) scale(1.08) rotate(120deg); }
+  66% { transform: translate(-4vw, 4vh) scale(0.96) rotate(240deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(360deg); }
+}
+
+/* Barre de progression de défilement */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3.5px;
+  background: linear-gradient(to right, var(--earth), var(--accent));
+  z-index: 10000;
+  transition: width 0.1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Highlight Timeline Active */
+.timeline-awards li,
+ul.timeline li,
+.tl-item {
+  transition: opacity 0.5s ease;
+}
+
+.timeline-awards li.active-node::before,
+ul.timeline li.active-node::before,
+.tl-item.active-node::before {
+  background-color: var(--accent) !important;
+  box-shadow: 0 0 0 6px var(--bg), 0 0 16px var(--accent) !important;
+  transform: scale(1.25) !important;
+  border-color: var(--accent) !important;
+}
+
+.timeline-awards li.active-node strong,
+ul.timeline li.active-node strong,
+.tl-item.active-node h3 {
+  color: var(--accent-deep) !important;
+  transition: color 0.3s ease;
 }

@@ -222,5 +222,37 @@
       el.classList.add('reveal');
       observer.observe(el);
     });
+
+    // 7. Barre de progression de défilement
+    window.addEventListener('scroll', () => {
+      const progressBar = document.querySelector('.scroll-progress-bar');
+      if (!progressBar) return;
+      
+      const limit = document.documentElement.scrollHeight - window.innerHeight;
+      if (limit <= 0) return;
+      
+      const pct = (window.scrollY / limit) * 100;
+      progressBar.style.width = pct + '%';
+    });
+
+    // 8. Éléments de Timeline s'activant au défilement (Highlights)
+    const timelineOptions = {
+      root: null,
+      rootMargin: '-30% 0px -30% 0px', // se déclenche dans la zone centrale de lecture
+      threshold: 0
+    };
+    
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active-node');
+        } else {
+          entry.target.classList.remove('active-node');
+        }
+      });
+    }, timelineOptions);
+    
+    const timelineNodes = document.querySelectorAll('.timeline-awards li, ul.timeline li, .tl-item');
+    timelineNodes.forEach(node => timelineObserver.observe(node));
   });
 })();
