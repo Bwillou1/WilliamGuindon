@@ -47,24 +47,22 @@
       const menuToggle = document.createElement('button');
       menuToggle.className = 'menu-toggle';
       menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
-      menuToggle.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+      menuToggle.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line class="line-1" x1="4" y1="6" x2="20" y2="6"></line><line class="line-2" x1="4" y1="12" x2="20" y2="12"></line><line class="line-3" x1="4" y1="18" x2="20" y2="18"></line></svg>`;
       
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
+        menuToggle.classList.toggle('active');
         nav.classList.toggle('active');
         const isActive = nav.classList.contains('active');
         menuToggle.setAttribute('aria-label', isActive ? 'Fermer le menu' : 'Ouvrir le menu');
-        menuToggle.innerHTML = isActive 
-          ? `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
-          : `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
       });
 
       // Fermer le menu si on clique en dehors
       document.addEventListener('click', (e) => {
         if (nav.classList.contains('active') && !nav.contains(e.target) && e.target !== menuToggle) {
           nav.classList.remove('active');
+          menuToggle.classList.remove('active');
           menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
-          menuToggle.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
         }
       });
       
@@ -75,7 +73,11 @@
     const counters = document.querySelectorAll('.counter-num');
     
     function animateCounter(el) {
-      const target = parseInt(el.getAttribute('data-target'), 10);
+      const targetVal = el.getAttribute('data-target');
+      if (!targetVal) return;
+      const target = parseInt(targetVal, 10);
+      if (isNaN(target)) return;
+      
       const suffix = el.getAttribute('data-suffix') || '';
       const duration = 1800; // 1.8 secondes
       let startTime = null;

@@ -1182,27 +1182,54 @@ footer a:hover {
   color: #ffffff;
 }
 
-/* Modaux <dialog> */
+/* Modaux <dialog> (Style Apple avec transition) */
 dialog.doc-dialog {
   border: none;
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--bg-card);
   color: var(--text);
   max-width: 680px;
   width: 90%;
   padding: 32px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -35%) scale(0.95);
+  opacity: 0;
   z-index: 1000;
   outline: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), overlay 0.4s allow-discrete, display 0.4s allow-discrete;
+}
+
+dialog.doc-dialog[open] {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+@starting-style {
+  dialog.doc-dialog[open] {
+    opacity: 0;
+    transform: translate(-50%, -35%) scale(0.95);
+  }
 }
 
 dialog.doc-dialog::backdrop {
+  background: rgba(11, 15, 12, 0);
+  backdrop-filter: blur(0px);
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), overlay 0.4s allow-discrete, display 0.4s allow-discrete;
+}
+
+dialog.doc-dialog[open]::backdrop {
   background: rgba(11, 15, 12, 0.6);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(12px);
+}
+
+@starting-style {
+  dialog.doc-dialog[open]::backdrop {
+    background: rgba(11, 15, 12, 0);
+    backdrop-filter: blur(0px);
+  }
 }
 
 .dialog-header {
@@ -1262,7 +1289,7 @@ dialog.doc-dialog::backdrop {
   gap: 12px;
 }
 
-/* Menu Mobile Responsif */
+/* Menu Mobile Responsif (Style Apple avec transitions SVG) */
 .menu-toggle {
   display: none;
   background: none;
@@ -1271,13 +1298,27 @@ dialog.doc-dialog::backdrop {
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
-  transition: background-color 0.2s;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .menu-toggle:hover {
   background-color: var(--accent-wash);
 }
 .menu-toggle svg {
   display: block;
+}
+.menu-toggle svg line {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
+}
+.menu-toggle.active .line-1 {
+  transform: translateY(6px) rotate(45deg);
+}
+.menu-toggle.active .line-2 {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.menu-toggle.active .line-3 {
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 @media (max-width: 768px) {
