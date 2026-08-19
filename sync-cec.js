@@ -1,6 +1,8 @@
 /**
  * sync-cec.js — Script d'automatisation de synchronisation du statut CCE
  * Dossier : SEM-26-003 (« Enfouissement de matières dangereuses à Blainville »)
+ * 
+ * Basé sur l'analyse technique Web Scraping & WordPress REST API de la CCE (SEM-26-003).
  */
 
 const fs = require('fs');
@@ -14,17 +16,8 @@ const STATUS_FILE_PATH = path.join(__dirname, 'status.json');
 async function syncDossierStatus() {
   console.log(`[${new Date().toISOString()}] Lancement de la synchronisation CCE SEM-26-003...`);
 
-  // Charger le statut local existant
-  let localData = {};
-  if (fs.existsSync(STATUS_FILE_PATH)) {
-    try {
-      localData = JSON.parse(fs.readFileSync(STATUS_FILE_PATH, 'utf8'));
-    } catch (e) {
-      console.warn("Impossible de lire le fichier status.json existant, création d'une nouvelle structure.");
-    }
-  }
-
-  const updatedData = {
+  // 1. Structure de données initiale
+  let data = {
     id_dossier: "SEM-26-003",
     titre_fr: "Enfouissement de matières dangereuses à Blainville",
     titre_en: "Hazardous Waste Disposal in Blainville",
@@ -61,25 +54,25 @@ async function syncDossierStatus() {
     timestamp_sync: new Date().toISOString()
   };
 
+  // 2. Détection de changements via l'API WordPress REST CCE
   try {
-    // Interrogation de l'API WordPress CCE pour détecter d'éventuels changements
     const apiRes = await fetch(WP_API_ENDPOINT, {
-      headers: { 'User-Agent': 'DossierSyncBot/1.0 (WilliamGuindonBot)' }
+      headers: { 'User-Agent': 'DossierSyncBot/1.0 (williamguindon.me)' }
     });
 
     if (apiRes.ok) {
-      const wpPostData = await apiRes.json();
-      if (wpPostData.modified) {
-        console.log(`Dernière modification WordPress CCE détectée : ${wpPostData.modified}`);
-        updatedData.wp_modified = wpPostData.modified;
+      const wpData = await apiRes.json();
+      if (wpData.modified) {
+        console.log(`Dernière modification WordPress CCE détectée : ${wpData.modified}`);
+        data.wp_modified = wpData.modified;
       }
     }
   } catch (err) {
-    console.warn("Remarque : Impossibilité d'interroger l'API WordPress CCE en direct, conservation du statut local.", err.message);
+    console.warn("Notice : API REST CCE non joignable immédiatement, utilisation du statut vérifié local.", err.message);
   }
 
-  // Écriture du fichier status.json
-  fs.writeFileSync(STATUS_FILE_PATH, JSON.stringify(updatedData, null, 2), 'utf8');
+  // 3. Sauvegarde locale du statut synchronisé
+  fs.writeFileSync(STATUS_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
   console.log(`[${new Date().toISOString()}] Synchronisation status.json réussie.`);
 }
 
