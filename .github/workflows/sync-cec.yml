@@ -1,0 +1,32 @@
+name: Synchronisation automatique CCE
+
+on:
+  schedule:
+    # Exécution toutes les heures
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-dossier:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Exécution de la synchronisation CCE
+        run: node sync-cec.js
+
+      - name: Commit et Push des mises à jour
+        run: |
+          git config --global user.name "CCE Sync Bot"
+          git config --global user.email "bot@github-actions.local"
+          git add status.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(sync): mise à jour automatique du statut CCE [skip ci]" && git push)

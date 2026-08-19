@@ -1491,3 +1491,549 @@ ul.timeline li.active-node strong,
   color: var(--accent-deep) !important;
   transition: color 0.3s ease;
 }
+
+/* Bannière d'alerte statut CCE */
+.cce-alert-banner {
+  background: linear-gradient(135deg, rgba(46, 107, 79, 0.08) 0%, rgba(194, 91, 44, 0.08) 100%);
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .cce-alert-banner {
+  background: linear-gradient(135deg, rgba(46, 107, 79, 0.25) 0%, rgba(194, 91, 44, 0.2) 100%);
+  border-color: var(--accent);
+}
+
+.cce-banner-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.badge-positive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-historic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--earth);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 99px;
+}
+
+.cce-alert-banner h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.cce-alert-banner p {
+  font-size: 14.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.cce-alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.cce-alert-actions .btn {
+  font-size: 13px;
+  padding: 8px 18px;
+}
+
+.social-links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* WCAG 2.1 AA — Skip Link d'accessibilité clavier */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--accent);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 99999;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid var(--earth);
+}
+
+/* Section Carte Interactive Felt */
+.felt-map-section {
+  padding: 80px 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.felt-map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 580px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid var(--line);
+  box-shadow: var(--shadow);
+  margin-top: 24px;
+  background: var(--bg-card);
+}
+
+.felt-map-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Widget Lecteur Audio (Synthèse vocale / Accessibility Reader) */
+.audio-player-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--accent-wash);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 6px 18px;
+  margin-top: 16px;
+}
+
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 99px;
+  padding: 8px 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.audio-btn:hover {
+  background: var(--accent-deep);
+  transform: scale(1.02);
+}
+
+.audio-btn.playing {
+  background: var(--earth);
+}
+
+.audio-status-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Section Action Citoyenne (Action Hub) */
+.action-hub-section {
+  padding: 80px 0;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--line);
+}
+
+.action-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.action-card {
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+.action-card h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.action-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Section Calculateur de Carbone */
+.carbon-calculator-section {
+  padding: 80px 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.carbon-box {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--accent-wash) 100%);
+  border: 1.5px solid var(--accent);
+  border-radius: 20px;
+  padding: 36px 32px;
+  margin-top: 28px;
+  box-shadow: var(--shadow);
+}
+
+.carbon-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.carbon-stat-item {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.carbon-stat-item .val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.carbon-stat-item .lbl {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Section Media Vault */
+.media-vault-section {
+  padding: 80px 0;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Fil d'Alerte Médias (Media Ticker) */
+.media-ticker-banner {
+  background: #111827;
+  color: #f3f4f6;
+  padding: 10px 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.media-ticker-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.media-ticker-tag {
+  background: #ef4444;
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.media-ticker-text {
+  color: #e5e7eb;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.media-ticker-text:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+/* Horloge Précise (Days, Hours, Mins, Secs) */
+.precision-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.precision-time-unit {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.precision-time-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.precision-time-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Section Espace Nations Autochtones */
+.indigenous-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, rgba(46,107,79,0.06) 0%, rgba(194,124,53,0.06) 100%);
+  border-bottom: 1px solid var(--line);
+}
+
+.indigenous-box {
+  background: var(--bg-card);
+  border: 1.5px solid var(--earth);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: var(--shadow);
+  margin-top: 24px;
+}
+
+/* Widget Embed pour Partenaires */
+.embed-widget-box {
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.code-embed-textarea {
+  width: 100%;
+  height: 85px;
+  background: #1e293b;
+  color: #38bdf8;
+  font-family: monospace;
+  font-size: 12.5px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  resize: none;
+  margin-top: 10px;
+}
+
+/* === DESIGN SYSTEM 1 MILLION DOLLARS === */
+
+/* Glassmorphism Header Flottant */
+header.site {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(247, 249, 247, 0.85);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] header.site {
+  background: rgba(11, 15, 12, 0.85);
+  border-bottom: 1px solid rgba(28, 38, 32, 0.8);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Pulsing Status Beacon Badge 3D */
+.status-beacon-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.beacon-dot-container {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beacon-dot-core {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  border-radius: 50%;
+}
+
+.beacon-dot-ring {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.75;
+  animation: pulse-beacon 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulse-beacon {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Gradient Typography 1M$ */
+.gradient-text-emerald {
+  background: linear-gradient(135deg, #166534 0%, #22c55e 50%, #15803d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .gradient-text-emerald {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #86efac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #a85507 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* High-Impact Spotlight Glow Card Effect */
+.card-glow-hover {
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-glow-hover:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px -15px rgba(34, 197, 94, 0.2);
+  border-color: var(--accent);
+}
+
+/* === WEBSITE CARBON RATING A+ (0.040g CO2/view) === */
+.badge-eco-aplus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #052e16;
+  color: #4ade80;
+  border: 1.5px solid #22c55e;
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 10px rgba(34, 197, 94, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.badge-eco-aplus:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  color: #ffffff;
+}
+
+.green-hosting-notice {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin-top: 8px;
+}
+
+
+
+
+
+

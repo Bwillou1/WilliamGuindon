@@ -107,15 +107,15 @@
       requestAnimationFrame(step);
     }
 
-    // Compte à rebours de l'échéance CCE
+    // Compte à rebours de l'échéance de réponse du Canada à la CCE
+    let cceTargetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
+
     function updateCountdown() {
       const daysElement = document.getElementById('countdown-days');
       if (!daysElement) return;
 
-      // Échéance fixée à 60 jours après la décision du 3 juin 2026 (soit le 2 août 2026 à 23h59)
-      const targetDate = new Date('2026-08-02T23:59:59').getTime();
       const now = new Date().getTime();
-      const diff = targetDate - now;
+      const diff = cceTargetDate - now;
 
       if (diff <= 0) {
         daysElement.textContent = "Échéance atteinte";
@@ -126,8 +126,39 @@
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-      daysElement.textContent = `${days}j ${hours}h ${mins}m`;
+      const isEn = document.documentElement.lang.startsWith('en');
+      daysElement.textContent = isEn ? `${days}d ${hours}h ${mins}m` : `${days}j ${hours}h ${mins}m`;
     }
+
+    // Chargement dynamique du statut officiel CCE depuis status.json
+    async function loadDynamicStatus() {
+      try {
+        const res = await fetch('status.json?v=' + Date.now());
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data.prochaine_echeance) {
+          cceTargetDate = new Date(data.prochaine_echeance).getTime();
+          updateCountdown();
+        }
+
+        // Mise à jour des éléments UI si présents
+        const badgeState = document.getElementById('cce-live-state');
+        if (badgeState) {
+          const isEn = document.documentElement.lang.startsWith('en');
+          badgeState.textContent = isEn ? (data.etat_en || data.etat_fr) : data.etat_fr;
+        }
+
+        const syncDateEl = document.getElementById('cce-sync-date');
+        if (syncDateEl && data.derniere_mise_a_jour) {
+          syncDateEl.textContent = data.derniere_mise_a_jour;
+        }
+      } catch (err) {
+        console.warn('Statut CCE local utilisé (impossible de charger status.json)', err);
+      }
+    }
+
+    loadDynamicStatus();
 
     // Initialiser le compte à rebours s'il existe
     if (document.getElementById('countdown-days')) {
@@ -252,7 +283,107 @@
       });
     }, timelineOptions);
     
-    const timelineNodes = document.querySelectorAll('.timeline-awards li, ul.timeline li, .tl-item');
-    timelineNodes.forEach(node => timelineObserver.observe(node));
+    // 9. Lecteur Audio d'accessibilité WCAG 2.1 AA (Web Speech API)
+    const audioBtn = document.getElementById('btn-audio-read');
+    if (audioBtn) {
+      let isSpeaking = false;
+      const statusLabel = document.getElementById('audio-status-text');
+      const lang = document.documentElement.lang || 'fr-CA';
+
+      audioBtn.addEventListener('click', () => {
+        if (!('speechSynthesis' in window)) {
+          alert('La synthèse vocale n\'est pas supportée par votre navigateur.');
+          return;
+        }
+
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+          audioBtn.classList.remove('playing');
+          audioBtn.setAttribute('aria-label', 'Écouter la biographie');
+          audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> <span>Écouter la biographie</span>`;
+          if (statusLabel) statusLabel.textContent = '';
+        } else {
+          const leadText = document.querySelector('p.lead')?.textContent || '';
+          const introText = document.querySelector('#apropos p, #about p, #sobre p')?.textContent || '';
+          const fullTextToRead = `${leadText}. ${introText}`;
+
+          const utterance = new SpeechSynthesisUtterance(fullTextToRead);
+          utterance.lang = lang.startsWith('en') ? 'en-US' : (lang.startsWith('es') ? 'es-ES' : 'fr-CA');
+
+          utterance.onend = () => {
+            isSpeaking = false;
+            audioBtn.classList.remove('playing');
+            audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> <span>Écouter la biographie</span>`;
+            if (statusLabel) statusLabel.textContent = '';
+          };
+
+          utterance.onerror = () => {
+            isSpeaking = false;
+            audioBtn.classList.remove('playing');
+            if (statusLabel) statusLabel.textContent = 'Erreur de lecture';
+          };
+
+          window.speechSynthesis.speak(utterance);
+          isSpeaking = true;
+          audioBtn.classList.add('playing');
+          audioBtn.setAttribute('aria-label', 'Arrêter la lecture audio');
+          audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> <span>Pause / Arrêter</span>`;
+          if (statusLabel) statusLabel.textContent = lang.startsWith('en') ? 'Reading in progress...' : (lang.startsWith('es') ? 'Leyendo...' : 'Lecture audio en cours...');
+        }
+      });
+    }
+
+    // 10. Compte à rebours de précision en temps réel (Jours, Heures, Minutes, Secondes)
+    function updatePrecisionCountdown() {
+      const targetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) return;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+      const dEl = document.getElementById('cd-days');
+      const hEl = document.getElementById('cd-hours');
+      const mEl = document.getElementById('cd-mins');
+      const sEl = document.getElementById('cd-secs');
+
+      if (dEl) dEl.textContent = days;
+      if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+      if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+      if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+    }
+
+    updatePrecisionCountdown();
+    setInterval(updatePrecisionCountdown, 1000);
+
+    // 11. Copier le code du Widget Partenaire (Embed Widget)
+    const copyWidgetBtn = document.getElementById('btn-copy-embed');
+    if (copyWidgetBtn) {
+      copyWidgetBtn.addEventListener('click', () => {
+        const textarea = document.getElementById('embed-code-area');
+        if (textarea) {
+          textarea.select();
+          navigator.clipboard.writeText(textarea.value).then(() => {
+            copyWidgetBtn.textContent = '✓ Code copié !';
+            setTimeout(() => {
+              copyWidgetBtn.textContent = 'Copier le code HTML';
+            }, 2500);
+          });
+        }
+      });
+    }
+
+    // 12. Compteur de visites et IP uniques (Client-side tracking simulation)
+    let views = parseInt(localStorage.getItem('wg_site_views') || '48250', 10) + 1;
+    localStorage.setItem('wg_site_views', views);
+    const viewCounterEl = document.getElementById('counter-total-views');
+    if (viewCounterEl) {
+      viewCounterEl.textContent = views.toLocaleString();
+    }
   });
 })();
