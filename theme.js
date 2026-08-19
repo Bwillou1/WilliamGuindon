@@ -440,13 +440,5 @@
         }
       });
     }
-
-    // 12. Compteur de visites et IP uniques (Client-side tracking simulation)
-    let views = parseInt(localStorage.getItem('wg_site_views') || '48250', 10) + 1;
-    localStorage.setItem('wg_site_views', views);
-    const viewCounterEl = document.getElementById('counter-total-views');
-    if (viewCounterEl) {
-      viewCounterEl.textContent = views.toLocaleString();
-    }
   });
 })();
