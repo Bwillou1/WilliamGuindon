@@ -133,7 +133,7 @@
     // Chargement dynamique du statut officiel CCE depuis status.json
     async function loadDynamicStatus() {
       try {
-        const res = await fetch('status.json?v=' + Date.now());
+        const res = await fetch('status.json');
         if (!res.ok) return;
         const data = await res.json();
         
