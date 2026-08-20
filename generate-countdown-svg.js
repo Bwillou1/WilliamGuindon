@@ -1,0 +1,146 @@
+const fs = require('fs');
+const path = require('path');
+
+function generateCountdownSvg() {
+  const target = new Date('2026-10-16T23:59:59-04:00').getTime();
+  const now = Date.now();
+  const diff = Math.max(0, target - now);
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const totalMins = Math.floor(diff / (1000 * 60));
+  const totalMinsFormatted = totalMins.toLocaleString('fr-CA');
+
+  const pad = (n) => String(n).padStart(2, '0');
+
+  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" style="background:#02150e;font-family:'Outfit',system-ui,-apple-system,sans-serif;">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#02150e" />
+      <stop offset="50%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.08)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.35)" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes pulse {
+      0% { r: 6px; opacity: 1; }
+      50% { r: 12px; opacity: 0.4; }
+      100% { r: 6px; opacity: 1; }
+    }
+    .pulse-dot {
+      animation: pulse 2s infinite ease-in-out;
+      transform-origin: 132px 60px;
+    }
+    .unit-card {
+      rx: 20px;
+      fill: url(#card-grad);
+      stroke: rgba(52, 211, 153, 0.3);
+      stroke-width: 1.5;
+    }
+    .unit-num {
+      font-size: 76px;
+      font-weight: 800;
+      fill: #ffffff;
+      text-anchor: middle;
+      font-variant-numeric: tabular-nums;
+    }
+    .unit-lbl {
+      font-size: 16px;
+      font-weight: 700;
+      fill: #34d399;
+      text-anchor: middle;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <!-- Fond avec dégradé riche -->
+  <rect width="1200" height="630" fill="url(#bg-grad)" />
+
+  <!-- Motif géométrique d'arrière-plan -->
+  <circle cx="600" cy="315" r="450" fill="none" stroke="rgba(52,211,153,0.04)" stroke-width="2" />
+  <circle cx="600" cy="315" r="300" fill="none" stroke="rgba(52,211,153,0.06)" stroke-width="1.5" />
+  <circle cx="600" cy="315" r="180" fill="none" stroke="rgba(52,211,153,0.08)" stroke-width="1" />
+
+  <!-- Header : Badge officiel CCE -->
+  <g transform="translate(0, 0)">
+    <rect x="110" y="42" width="460" height="36" rx="18" fill="rgba(6,78,59,0.8)" stroke="#34d399" stroke-width="1" />
+    <circle cx="132" cy="60" r="6" fill="#34d399" class="pulse-dot" />
+    <text x="150" y="65" font-size="13" font-weight="700" fill="#a7f3d0" letter-spacing="0.08em">CCE / ACEUM · DOSSIER SEM-26-003 · EN DIRECT</text>
+    
+    <text x="1090" y="65" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 16 OCTOBRE 2026</text>
+  </g>
+
+  <!-- Titre Principal -->
+  <text x="600" y="145" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
+    HORLOGE OFFICIELLE — RÉPONSE DU CANADA
+  </text>
+  <text x="600" y="180" font-size="18" font-weight="500" fill="#93c5fd" text-anchor="middle">
+    Décompte en temps réel avant la réponse exigée au gouvernement fédéral canadien
+  </text>
+
+  <!-- Grille du Décompte (3 Unités Principales) -->
+  <!-- Jours -->
+  <g transform="translate(160, 220)">
+    <rect width="260" height="190" class="unit-card" />
+    <text x="130" y="115" class="unit-num">${pad(days)}</text>
+    <text x="130" y="160" class="unit-lbl">Jours</text>
+  </g>
+
+  <!-- Heures -->
+  <g transform="translate(470, 220)">
+    <rect width="260" height="190" class="unit-card" />
+    <text x="130" y="115" class="unit-num">${pad(hours)}</text>
+    <text x="130" y="160" class="unit-lbl">Heures</text>
+  </g>
+
+  <!-- Minutes -->
+  <g transform="translate(780, 220)">
+    <rect width="260" height="190" class="unit-card" />
+    <text x="130" y="115" class="unit-num">${pad(mins)}</text>
+    <text x="130" y="160" class="unit-lbl">Minutes</text>
+  </g>
+
+  <!-- Total Minutes Callout Badge -->
+  <g transform="translate(250, 445)">
+    <rect width="700" height="52" rx="26" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
+    <text x="350" y="478" font-size="19" font-weight="700" fill="#6ee7b7" text-anchor="middle">
+      ⏳ <tspan fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes au total avant la réponse officielle
+    </text>
+  </g>
+
+  <!-- Footer Info & Signature -->
+  <g transform="translate(0, 0)">
+    <line x1="110" y1="535" x2="1090" y2="535" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+    
+    <text x="110" y="575" font-size="16" font-weight="600" fill="#e2e8f0">
+      🌱 Sauvegarde de la Grande Tourbière de Blainville (278 000 m²)
+    </text>
+    <text x="110" y="600" font-size="14" font-weight="400" fill="#94a3b8">
+      William Guindon — Premier mineur plaignant de l'histoire du registre CCE (Art. 24.27)
+    </text>
+
+    <!-- URL Pill -->
+    <rect x="860" y="555" width="230" height="42" rx="21" fill="#10b981" />
+    <text x="975" y="582" font-size="15" font-weight="800" fill="#02150e" text-anchor="middle">williamguindon.me/live</text>
+  </g>
+</svg>`;
+
+  fs.writeFileSync(path.join(__dirname, 'countdown-live.svg'), svgContent, 'utf8');
+  console.log('Successfully generated countdown-live.svg with ' + days + ' days, ' + hours + ' hours, ' + mins + ' mins (' + totalMinsFormatted + ' mins total).');
+}
+
+generateCountdownSvg();
