@@ -215,10 +215,14 @@
         const leafletCss = document.createElement('link');
         leafletCss.rel = 'stylesheet';
         leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        leafletCss.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        leafletCss.crossOrigin = '';
         document.head.appendChild(leafletCss);
 
         const leafletJs = document.createElement('script');
         leafletJs.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        leafletJs.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        leafletJs.crossOrigin = '';
         leafletJs.onload = () => {
           if (typeof L === 'undefined') return;
           const map = L.map('gis-leaflet-map').setView([45.68725, -73.85447], 13);
