@@ -17,6 +17,8 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064e3b">
 
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="William Guindon — Official Site">
@@ -106,6 +108,11 @@
 <script src="theme.js?v=20260819-clean" defer></script>
 </head>
 <body>
+<div id="pwa-install-banner" class="pwa-install-banner">
+  <span>📲 Install the official William Guindon App (PWA)</span>
+  <button id="btn-pwa-install" class="pwa-install-btn">Install App</button>
+</div>
+
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <div class="scroll-progress-bar"></div>
@@ -123,8 +130,8 @@
       <a href="#map">GIS Map</a>
       <a href="#indigenous">Indigenous Nations</a>
       <a href="stablex.html">Stablex Timeline</a>
-      <a href="#widgets">Partner Widgets</a>
       <a href="presse.html">Press Kit</a>
+      <a href="#contact">Contact</a>
       <a class="lang" href="./" hreflang="fr-CA" lang="fr">FR</a>
       <a class="lang" href="es.html" hreflang="es-MX" lang="es">ES</a>
     </nav>
@@ -195,9 +202,10 @@
         </div>
         <h4>The decision of the Commission for Environmental Cooperation is positive: Canada must respond by October 16, 2026</h4>
         <p>The Secretariat determined that submission SEM-26-003 satisfies Article 24.27(2) criteria and requested a response from Canada under Article 24.27(3). William Guindon is the first minor in SEM registry history to file and successfully obtain a positive determination. <em>Last updated - <span id="cce-sync-date">August 17, 2026</span></em></p>
-        <div class="cce-alert-actions">
+        <div class="cce-alert-actions" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
           <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View Official Determination (PDF)</a>
           <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">View Live CEC Registry</a>
+          <button id="btn-enable-notifications" class="notif-toggle-btn" aria-label="Enable CEC Follow-up Alerts">🔔 Enable CCE Alerts</button>
         </div>
       </div>
 

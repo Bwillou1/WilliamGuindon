@@ -423,5 +423,129 @@
 
     updatePrecisionCountdown();
     setInterval(updatePrecisionCountdown, 1000);
+
+    // 11. Service Worker & PWA Support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => {
+            checkBackgroundFeedUpdates(reg);
+          })
+          .catch((err) => console.log('SW registration skipped:', err));
+      });
+    }
+
+    // 12. PWA Install Prompt handling
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.add('visible');
+    });
+
+    const installAppBtn = document.getElementById('btn-pwa-install');
+    if (installAppBtn) {
+      installAppBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          const banner = document.getElementById('pwa-install-banner');
+          if (banner) banner.classList.remove('visible');
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    // 13. Gestion des Notifications de Nouvelles Étapes (RSS & CCE)
+    const notifBtn = document.getElementById('btn-enable-notifications');
+    const notifStorageKey = 'wg_cce_notif_enabled';
+
+    function updateNotifBtnState() {
+      if (!notifBtn) return;
+      const isEnabled = localStorage.getItem(notifStorageKey) === 'true' && Notification.permission === 'granted';
+      const lang = document.documentElement.lang || 'fr';
+      
+      if (isEnabled) {
+        notifBtn.classList.add('active');
+        notifBtn.innerHTML = lang.startsWith('en') ? '🔔 Alerts Active' : (lang.startsWith('es') ? '🔔 Alertas Activas' : '🔔 Alertes CCE Activées');
+      } else {
+        notifBtn.classList.remove('active');
+        notifBtn.innerHTML = lang.startsWith('en') ? '🔔 Enable CCE Alerts' : (lang.startsWith('es') ? '🔔 Activar Alertas CCA' : '🔔 Activer les Alertes CCE');
+      }
+    }
+
+    if (notifBtn) {
+      updateNotifBtnState();
+      notifBtn.addEventListener('click', async () => {
+        if (!('Notification' in window)) {
+          alert("Ce navigateur ne supporte pas les notifications.");
+          return;
+        }
+
+        if (Notification.permission === 'granted') {
+          const currentlyEnabled = localStorage.getItem(notifStorageKey) === 'true';
+          localStorage.setItem(notifStorageKey, currentlyEnabled ? 'false' : 'true');
+          updateNotifBtnState();
+          return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          localStorage.setItem(notifStorageKey, 'true');
+          updateNotifBtnState();
+
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((reg) => {
+              const lang = document.documentElement.lang || 'fr';
+              const title = lang.startsWith('en') ? 'William Guindon — CCE Alerts Enabled' : (lang.startsWith('es') ? 'William Guindon — Alertas CCA Activadas' : 'William Guindon — Alertes CCE Activées');
+              const body = lang.startsWith('en') 
+                ? 'You will receive real-time notifications for the next steps (Canada response on Oct 16, 2026).'
+                : (lang.startsWith('es') 
+                  ? 'Recibirá notificaciones en tiempo real sobre los próximos pasos (respuesta de Canadá el 16 de oct. 2026).' 
+                  : 'Vous recevrez des notifications en direct pour les prochaines étapes (réponse du Canada le 16 oct. 2026).');
+
+              reg.showNotification(title, {
+                body: body,
+                icon: '/icon-192.png',
+                badge: '/apple-touch-icon.png',
+                data: { url: '/#tracker' }
+              });
+            });
+          }
+        }
+      });
+    }
+
+    // 14. Vérification en arrière-plan du flux RSS pour envoyer une notification lors de nouvelles étapes
+    function checkBackgroundFeedUpdates(reg) {
+      if (localStorage.getItem(notifStorageKey) !== 'true' || Notification.permission !== 'granted') return;
+
+      fetch('/feed.xml')
+        .then((res) => res.text())
+        .then((xmlText) => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+          const firstItem = xmlDoc.querySelector('item');
+          if (!firstItem) return;
+
+          const title = firstItem.querySelector('title')?.textContent || '';
+          const link = firstItem.querySelector('link')?.textContent || '/#tracker';
+          const pubDate = firstItem.querySelector('pubDate')?.textContent || '';
+          const lastSeenDate = localStorage.getItem('wg_last_feed_notif');
+
+          if (lastSeenDate && lastSeenDate !== pubDate) {
+            reg.showNotification(`📢 CCE / SEM-26-003 : Nouvelle Étape`, {
+              body: title,
+              icon: '/icon-192.png',
+              badge: '/apple-touch-icon.png',
+              data: { url: link }
+            });
+          }
+          localStorage.setItem('wg_last_feed_notif', pubDate);
+        })
+        .catch(() => {});
+    }
   });
 })();
