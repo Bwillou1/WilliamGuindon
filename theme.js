@@ -569,5 +569,22 @@
         window.location.href = 'mai' + 'lto:' + u + '@' + d + '?subject=' + subj;
       });
     });
+
+    // 16. Copie du communiqué de presse dans le presse-papiers
+    const copyPrBtns = document.querySelectorAll('.js-copy-pr');
+    copyPrBtns.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const prContainer = document.querySelector('.press-release-container');
+        if (!prContainer) return;
+        try {
+          await navigator.clipboard.writeText(prContainer.innerText);
+          const oldHtml = btn.innerHTML;
+          btn.innerHTML = '✓ Communiqué copié dans le presse-papiers !';
+          setTimeout(() => { btn.innerHTML = oldHtml; }, 3000);
+        } catch (err) {
+          window.print();
+        }
+      });
+    });
   });
 })();
