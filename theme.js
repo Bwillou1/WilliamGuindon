@@ -547,5 +547,23 @@
         })
         .catch(() => {});
     }
+
+    // 15. Désobfuscation sécurisée de l'adresse courriel (Anti-Scraping / Anti-Bots / Anti-Spam)
+    // Aucun texte brut dans le HTML. L'adresse est assemblée dynamiquement au runtime uniquement lors d'un clic humain.
+    const secureMailBtns = document.querySelectorAll('.js-secure-mail');
+    secureMailBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const u = [103, 117, 105, 110, 100, 111, 110, 119, 105, 108, 108, 105, 97, 109, 50].map(c => String.fromCharCode(c)).join('');
+        const d = [103, 109, 97, 105, 108, 46, 99, 111, 109].map(c => String.fromCharCode(c)).join('');
+        const lang = document.documentElement.lang || 'fr';
+        const subj = lang.startsWith('en') 
+          ? encodeURIComponent("Media / Citizen Inquiry — William Guindon") 
+          : (lang.startsWith('es') 
+            ? encodeURIComponent("Contacto Medios / Ciudadanos — William Guindon") 
+            : encodeURIComponent("Contact Médias / Citoyens — William Guindon"));
+        window.location.href = 'mai' + 'lto:' + u + '@' + d + '?subject=' + subj;
+      });
+    });
   });
 })();
