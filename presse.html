@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#064e3b">
 
 <!-- Security & Content Security Policy (CSP) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com; frame-src 'self' https://www.cec.org https://doi.org https://zenodo.org https://felt.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com; img-src 'self' data: https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com; font-src 'self' data: https://app.cal.com https://cal.com; connect-src 'self' https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com; frame-src 'self' https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
@@ -71,10 +71,12 @@
     <nav aria-label="Navigation">
       <a href="./">Accueil</a>
       <a href="#communiques">Communiqués</a>
+      <a href="#calendrier">Calendrier Médias</a>
       <a href="#faits">Faits vérifiés</a>
       <a href="#sources">Sources</a>
       <a href="#contact">Contact</a>
       <a href="stablex.html">Dossier Stablex</a>
+      <a href="live.html">Horloge Live</a>
       <a href="en.html">EN</a>
       <a href="es.html" hreflang="es-MX">ES</a>
     </nav>
@@ -301,6 +303,36 @@
         <li><span class="tag">Contexte</span><a href="https://cqde.org/nos-actions/projet-de-loi-93-stablex/">Projet de loi 93 – Stablex — CQDE</a><span class="meta">Analyse juridique du Centre québécois du droit de l'environnement</span></li>
         <li><span class="tag">Contexte</span><a href="https://ici.radio-canada.ca/tele/enquete/site/episodes/1116051/episode-du-jeudi-09-octobre-2025">Enquête : « Stablex, la population exprime des craintes » — Radio-Canada</a><span class="meta">Épisode du 9 octobre 2025</span></li>
       </ul>
+    </div>
+  </section>
+
+  <section id="calendrier">
+    <div class="wrap">
+      <h2>Prise de rendez-vous médias & entrevues</h2>
+      <h3>Réservez un créneau officiel pour entrevues, tournages et déclarations</h3>
+      <p style="margin-bottom: 24px; color: var(--text-muted);">
+        Vous êtes journaliste, recherchiste, pupitreur ou représentant d'une agence de presse ? Utilisez le calendrier officiel interactif ci-dessous pour planifier une entrevue (en personne, par vidéoconférence ou par téléphone).
+      </p>
+
+      <div class="cal-embed-wrapper" style="width: 100%; min-height: 650px; background: rgba(4, 36, 27, 0.6); border: 1px solid var(--border-color, rgba(52, 211, 153, 0.25)); border-radius: 16px; padding: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); margin-bottom: 20px;">
+        <!-- Cal inline embed code begins -->
+        <div style="width:100%;height:100%;min-height:600px;overflow:scroll" id="my-cal-inline-media"></div>
+        <script type="text/javascript">
+          (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", "media", {origin:"https://app.cal.com"});
+        Cal.config = Cal.config || {};
+        Cal.config.forwardQueryParams = true;
+
+          Cal.ns.media("inline", {
+            elementOrSelector:"#my-cal-inline-media",
+            config: {"layout":"month_view","useSlotsViewOnSmallScreen":"true"},
+            calLink: "william-guindon/media",
+          });
+
+          Cal.ns.media("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+        </script>
+        <!-- Cal inline embed code ends -->
+      </div>
     </div>
   </section>
 
