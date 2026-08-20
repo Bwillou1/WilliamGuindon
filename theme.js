@@ -423,22 +423,5 @@
 
     updatePrecisionCountdown();
     setInterval(updatePrecisionCountdown, 1000);
-
-    // 11. Copier le code du Widget Partenaire (Embed Widget)
-    const copyWidgetBtn = document.getElementById('btn-copy-embed');
-    if (copyWidgetBtn) {
-      copyWidgetBtn.addEventListener('click', () => {
-        const textarea = document.getElementById('embed-code-area');
-        if (textarea) {
-          textarea.select();
-          navigator.clipboard.writeText(textarea.value).then(() => {
-            copyWidgetBtn.textContent = '✓ Code copié !';
-            setTimeout(() => {
-              copyWidgetBtn.textContent = 'Copier le code HTML';
-            }, 2500);
-          });
-        }
-      });
-    }
   });
 })();
