@@ -210,7 +210,7 @@
         const wrapper = btn.closest('.felt-map-wrapper');
         if (!wrapper) return;
 
-        wrapper.innerHTML = `<div id="gis-leaflet-map" style="width:100%;height:100%;border-radius:20px;"></div>`;
+        wrapper.innerHTML = `<div id="gis-leaflet-map"></div>`;
         
         const leafletCss = document.createElement('link');
         leafletCss.rel = 'stylesheet';
