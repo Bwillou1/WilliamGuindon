@@ -11,6 +11,8 @@ const ASSETS_TO_CACHE = [
   '/viewer.html',
   '/lecteur.html',
   '/registre-cce-sem26003.html',
+  '/ai.html',
+  '/ai.txt',
   '/llms.txt',
   '/llms-full.txt',
   '/style.css',
