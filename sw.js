@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v10';
+const CACHE_NAME = 'wg-pwa-v11';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -10,8 +10,9 @@ const ASSETS_TO_CACHE = [
   '/live.html',
   '/viewer.html',
   '/lecteur.html',
-  '/ai.html',
-  '/ai.txt',
+  '/registre-cce-sem26003.html',
+  '/llms.txt',
+  '/llms-full.txt',
   '/style.css',
   '/theme.js',
   '/assets/css/pdf-viewer.css',
