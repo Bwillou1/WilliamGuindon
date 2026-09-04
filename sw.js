@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v1';
+const CACHE_NAME = 'wg-pwa-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -6,8 +6,19 @@ const ASSETS_TO_CACHE = [
   '/es.html',
   '/presse.html',
   '/stablex.html',
+  '/communiques.html',
+  '/live.html',
+  '/viewer.html',
+  '/lecteur.html',
   '/style.css',
   '/theme.js',
+  '/assets/css/pdf-viewer.css',
+  '/assets/js/pdf-viewer.js',
+  '/assets/vendor/pdfjs/pdf.min.js',
+  '/assets/vendor/pdfjs/pdf.worker.min.js',
+  '/assets/vendor/pdfjs/pdf_viewer.css',
+  '/assets/docs/decision-secretariat-17-aout-2026.pdf',
+  '/assets/docs/soumission-revisee-16-juillet-2026.pdf',
   '/manifest.json',
   '/favicon.svg',
   '/apple-touch-icon.png',
