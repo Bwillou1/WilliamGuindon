@@ -53,11 +53,30 @@
         "@type": "Place",
         "name": "Sainte-Marthe-sur-le-Lac, Quebec, Canadá"
       },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Blainville",
+        "addressRegion": "QC",
+        "addressCountry": "CA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "45.68725",
+        "longitude": "-73.85447"
+      },
       "url": "https://williamguindon.me/es.html",
+      "knowsAbout": [
+        "Gran Turbera de Blainville",
+        "Comisión para la Cooperación Ambiental (CCA / T-MEC)",
+        "Peticiones ambientales T-MEC (SEM-26-003)",
+        "Conservación de humedales en Quebec",
+        "Gestión de residuos peligrosos e industriales"
+      ],
       "sameAs": [
         "https://www.linkedin.com/in/william-guindon/",
         "https://www.facebook.com/profile.php?id=61591437730054",
-        "https://www.youtube.com/@william-guindon"
+        "https://www.youtube.com/@william-guindon",
+        "https://github.com/Bwillou1"
       ]
     },
     {
@@ -116,12 +135,6 @@
 <link rel="stylesheet" href="style.css?v=20260819-clean">
 <script src="theme.js?v=20260819-clean" defer></script>
 </head>
-<body>
-<div id="pwa-install-banner" class="pwa-install-banner">
-  <span>📲 Instalar la aplicación oficial William Guindon (PWA)</span>
-  <button id="btn-pwa-install" class="pwa-install-btn">Instalar aplicación</button>
-</div>
-
 <a href="#main-content" class="skip-link">Ir al contenido principal</a>
 
 <div class="scroll-progress-bar"></div>
@@ -131,6 +144,33 @@
   <div class="bg-blob blob-3"></div>
 </div>
 
+<!-- Fil d'Alerte TV en Continu (Style Chaîne Info) -->
+<div class="tv-ticker-bar" role="region" aria-label="Alerta de información en vivo">
+  <div class="tv-ticker-badge">
+    <span class="tv-ticker-pulse"></span>
+    <span>🔴 Alerta de Prensa</span>
+  </div>
+  <div class="tv-ticker-track">
+    <div class="tv-ticker-content">
+      <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" target="_blank" rel="noopener noreferrer" class="tv-ticker-link">
+        <strong>17 de agosto de 2026:</strong> Determinación positiva histórica de la CCA — Canadá es formalmente emplazado a responder antes del 16 de octubre de 2026 (SEM-26-003) ↗
+      </a>
+      <span class="tv-ticker-sep">///</span>
+      <a href="live.html" class="tv-ticker-link">
+        <strong>Cuenta regresiva oficial:</strong> Siga el plazo legal de Ottawa en tiempo real ↗
+      </a>
+      <span class="tv-ticker-sep">///</span>
+      <a href="communiques.html" class="tv-ticker-link">
+        <strong>Comunicados oficiales:</strong> Declaraciones y documentos legales de alta legibilidad ↗
+      </a>
+      <span class="tv-ticker-sep">///</span>
+      <a href="https://doi.org/10.5281/zenodo.21416989" target="_blank" rel="noopener noreferrer" class="tv-ticker-link">
+        <strong>Expediente científico:</strong> Análisis hidrogeológico y niveles de cadmio (DOI: 10.5281/zenodo.21416989) ↗
+      </a>
+    </div>
+  </div>
+</div>
+
 <header class="site">
   <div class="wrap">
     <a class="brand" href="es.html">William <span>Guindon</span></a>
@@ -138,27 +178,52 @@
       <a href="#sobre">Biografía</a>
       <a href="#tracker">Panel CCA</a>
       <a href="stablex.html">Expediente Stablex</a>
+      <a href="communiques.html">Comunicados</a>
       <a href="presse.html">Prensa</a>
       <a href="live.html">Reloj en Vivo</a>
-      <a href="#mapa">Mapa SIG</a>
-      <a href="#accion">Petición</a>
       <a href="#contact">Contacto</a>
+      
+      <!-- Menú Desplegable Completo -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Explorar todo ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Expediente CCA & Análisis</span>
+            <div class="nav-dropdown-grid">
+              <a href="#tracker" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">⚖️</span>Panel CCA</a>
+              <a href="stablex.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">📜</span>Expediente Stablex</a>
+              <a href="live.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">⏱️</span>Reloj en Vivo</a>
+              <a href="#mapa" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">🗺️</span>Mapa SIG</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Medios & Documentos</span>
+            <div class="nav-dropdown-grid">
+              <a href="communiques.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">📰</span>Comunicados</a>
+              <a href="presse.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">🎙️</span>Kit de Prensa</a>
+              <a href="#accion" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">📢</span>Petición</a>
+              <a href="#contact" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">✉️</span>Contacto Medios</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Perfil & Idiomas</span>
+            <div class="nav-dropdown-grid">
+              <a href="#sobre" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">👤</span>Biografía</a>
+              <a href="./" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">🌐</span>Français</a>
+              <a href="en.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">🌐</span>English</a>
+              <a href="privacy.html" class="nav-dropdown-item"><span class="nav-dropdown-item-icon">🔒</span>Privacidad</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <a href="./" hreflang="fr-CA" lang="fr">FR</a>
       <a href="en.html" hreflang="en-CA" lang="en">EN</a>
     </nav>
   </div>
 </header>
-
-<div class="media-ticker-banner" role="region" aria-label="Alerta de prensa">
-  <div class="wrap">
-    <div class="media-ticker-inner">
-      <span class="media-ticker-tag">Alerta de Prensa</span>
-      <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" target="_blank" rel="noopener noreferrer" class="media-ticker-text">
-        <strong>17 de agosto de 2026:</strong> Determinación positiva de la CCA — Se solicita respuesta oficial a Canadá antes del 16 de octubre de 2026. Primer menor en la historia SEM.
-      </a>
-    </div>
-  </div>
-</div>
 
 <main id="main-content">
   <section class="hero-immersive" id="inicio">
@@ -552,7 +617,7 @@
     </div>
     <div class="dialog-body">
       <p>Determinación oficial emitida por el Secretariado de la CCA solicitando respuesta oficial a Canadá antes del 16 de octubre de 2026.</p>
-      <iframe data-src="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" title="Determinación Positiva CCA"></iframe>
+      <div class="dialog-doc-viewer" data-src="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" data-title="Determinación Positiva CCA"></div>
     </div>
     <div class="dialog-footer">
       <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-modal-action">Abrir en pantalla completa (PDF)</a>
@@ -565,7 +630,7 @@
       <button class="dialog-close" aria-label="Cerrar" command="close">✕</button>
     </div>
     <div class="dialog-body">
-      <iframe data-src="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-formal-deposition-and-urgent-appeal.pdf" title="Deposición ONU"></iframe>
+      <div class="dialog-doc-viewer" data-src="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-formal-deposition-and-urgent-appeal.pdf" data-title="Deposición ONU"></div>
     </div>
     <div class="dialog-footer">
       <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-formal-deposition-and-urgent-appeal.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-modal-action">Abrir PDF</a>
@@ -626,6 +691,7 @@
         <a href="https://www.linkedin.com/in/william-guindon/" rel="external">LinkedIn — William Guindon</a>
         <a href="https://www.facebook.com/profile.php?id=61591437730054" rel="external">Facebook Oficial</a>
         <a href="https://www.youtube.com/@william-guindon" rel="external">YouTube — @william-guindon</a>
+        <a href="https://github.com/Bwillou1" rel="external">GitHub — Bwillou1</a>
         <a href="https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-d-une-tourbiere-a-blainville/le-combat-d-un-adolescent-a-l-onu.php" rel="external">La Presse (2026)</a>
         <a href="https://therover.ca/blainville-teenager-takes-stablex-fight-international/" rel="external">The Rover</a>
       </div>
@@ -662,5 +728,13 @@
   </div>
 </footer>
 
+<!-- Privacy-Friendly Performance & Analytics Beacon (No cookies / GDPR & Loi 25 compliant) -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.performance && window.performance.mark) {
+      window.performance.mark('app_init');
+    }
+  });
+</script>
 </body>
 </html>

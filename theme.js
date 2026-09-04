@@ -193,9 +193,15 @@
         const dialogId = btn.getAttribute('data-dialog');
         const dialog = document.getElementById(dialogId);
         if (dialog) {
-          const iframe = dialog.querySelector('iframe[data-src]');
-          if (iframe && !iframe.getAttribute('src')) {
-            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+          const viewer = dialog.querySelector('.dialog-doc-viewer[data-src]');
+          if (viewer && !viewer.querySelector('iframe')) {
+            const src = viewer.getAttribute('data-src');
+            const title = viewer.getAttribute('data-title') || 'Document officiel';
+            const iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.title = title;
+            iframe.setAttribute('loading', 'lazy');
+            viewer.appendChild(iframe);
           }
           dialog.showModal();
           document.body.style.overflow = 'hidden';
@@ -439,28 +445,36 @@
       });
     }
 
-    // 12. PWA Install Prompt handling
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const banner = document.getElementById('pwa-install-banner');
-      if (banner) banner.classList.add('visible');
+    // 12. Dropdown Navigation Handler (Accessible click, hover, keyboard)
+    const dropdowns = document.querySelectorAll('.nav-dropdown');
+    dropdowns.forEach((dropdown) => {
+      const btn = dropdown.querySelector('.nav-dropdown-btn');
+      if (!btn) return;
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle('active');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      dropdown.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          dropdown.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      });
     });
 
-    const installAppBtn = document.getElementById('btn-pwa-install');
-    if (installAppBtn) {
-      installAppBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          const banner = document.getElementById('pwa-install-banner');
-          if (banner) banner.classList.remove('visible');
+    document.addEventListener('click', (e) => {
+      dropdowns.forEach((dropdown) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('active');
+          const btn = dropdown.querySelector('.nav-dropdown-btn');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
         }
-        deferredPrompt = null;
       });
-    }
+    });
 
     // 13. Gestion des Notifications de Nouvelles Étapes (RSS & CCE)
     const notifBtn = document.getElementById('btn-enable-notifications');
@@ -574,7 +588,7 @@
     const copyPrBtns = document.querySelectorAll('.js-copy-pr');
     copyPrBtns.forEach(btn => {
       btn.addEventListener('click', async () => {
-        const prContainer = document.querySelector('.press-release-container');
+        const prContainer = document.querySelector('.press-release-container') || document.querySelector('.communique-paper');
         if (!prContainer) return;
         try {
           await navigator.clipboard.writeText(prContainer.innerText);
@@ -582,9 +596,74 @@
           btn.innerHTML = '✓ Communiqué copié dans le presse-papiers !';
           setTimeout(() => { btn.innerHTML = oldHtml; }, 3000);
         } catch (err) {
-          window.print();
+          console.error('Erreur copie:', err);
         }
       });
     });
+
+    // 17. Carrousel Revue de Presse & Embeds Médias
+    const carouselContainer = document.querySelector('.press-carousel-container');
+    const prevBtn = document.querySelector('.js-carousel-prev');
+    const nextBtn = document.querySelector('.js-carousel-next');
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    if (carouselContainer) {
+      const scrollStep = () => {
+        const firstCard = carouselContainer.querySelector('.press-card');
+        return firstCard ? firstCard.offsetWidth + 24 : 320;
+      };
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          carouselContainer.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          carouselContainer.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+        });
+      }
+
+      dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+          carouselContainer.scrollTo({ left: idx * scrollStep(), behavior: 'smooth' });
+        });
+      });
+
+      carouselContainer.addEventListener('scroll', () => {
+        const idx = Math.round(carouselContainer.scrollLeft / scrollStep());
+        dots.forEach((d, i) => {
+          d.classList.toggle('active', i === idx);
+        });
+      });
+
+      // Audio Player Quotes Toggle
+      const audioBtns = document.querySelectorAll('.js-press-audio-btn');
+      audioBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isPlaying = btn.getAttribute('data-playing') === 'true';
+          // Stop all other buttons
+          audioBtns.forEach(b => {
+            b.setAttribute('data-playing', 'false');
+            b.innerHTML = '▶';
+          });
+          if (!isPlaying) {
+            btn.setAttribute('data-playing', 'true');
+            btn.innerHTML = '❚❚';
+            // Resume/Play link trigger if requested
+            const targetUrl = btn.getAttribute('data-target-url');
+            if (targetUrl) {
+              setTimeout(() => {
+                window.open(targetUrl, '_blank', 'noopener,noreferrer');
+                btn.setAttribute('data-playing', 'false');
+                btn.innerHTML = '▶';
+              }, 1200);
+            }
+          }
+        });
+      });
+    }
   });
 })();

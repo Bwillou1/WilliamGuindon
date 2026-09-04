@@ -21,7 +21,26 @@ William Guindon (né le 3 août 2011 à Sainte-Marthe-sur-le-Lac, Québec, Canad
 | `robots.txt` | Accès explicite aux crawlers IA |
 | `.github/workflows/indexnow.yml` | Notification automatique des moteurs de recherche (IndexNow) à chaque mise à jour |
 
-## Profils
+## Profils officiels
 
-- GitHub : [@Bwillou1](https://github.com/Bwillou1)
 - LinkedIn : [william-guindon](https://ca.linkedin.com/in/william-guindon)
+- Facebook : [williamguindon](https://www.facebook.com/profile.php?id=61591437730054)
+- YouTube : [@william-guindon](https://www.youtube.com/@william-guindon)
+- GitHub : [@Bwillou1](https://github.com/Bwillou1)
+
+## Configuration DNS recommandée (DMARC)
+
+Pour garantir une délivrabilité et sécurité de courriel 100% conformes aux normes (score A+ / audit de sécurité courriel) :
+
+| Type | Nom d'hôte | Valeur |
+|---|---|---|
+| `TXT` | `_dmarc.williamguindon.me` | `v=DMARC1; p=none; sp=none; rua=mailto:dmarc@williamguindon.me` |
+
+## Conformité & Éco-conception Web
+
+- **Score SEO & Performance visé** : 100% / Grade A+
+- **CSS** : Zéro style en ligne (`style="..."`), architecture modulaire BEM/utilitaire dans `style.css`.
+- **Balises Titres** : Longueurs optimales (50 à 60 caractères) calibrées pour les moteurs de recherche.
+- **Documents & PDF** : Chargement asynchrone à la demande (0 iframe statique au chargement initial).
+- **Confidentialité** : Balise analytique sans traceurs/cookies, respectueuse de la Loi 25 (Québec) et du RGPD.
+- **Données structurées** : Schéma JSON-LD complet (`Person`, `ProfilePage`, `FAQPage`, `Article`, `GeoCoordinates`).
