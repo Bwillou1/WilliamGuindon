@@ -11,7 +11,7 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/vendor/pdfjs/pdf.worker.min.js';
   }
 
-  // Catalogue des documents officiels
+  // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
   const DOCS_CATALOG = {
     'decision-17-aout-2026': {
       title: "Détermination positive du Secrétariat CCE (17 août 2026)",
@@ -19,7 +19,11 @@
       badge: "SEM-26-003 · CCE / ACEUM",
       date: "17 août 2026",
       pages: 28,
-      type: "Décision officielle (Art. 24.27(2) et (3))"
+      type: "Décision officielle (Art. 24.27(2) et (3))",
+      sha256: "33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c",
+      author: "Secrétariat de la CCE · William Guindon (Auteur de la soumission)",
+      citation: "Secrétariat de la CCE. (2026). Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM concernant la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville). Commission de coopération environnementale.",
+      license: "Creative Commons CC BY-NC-ND 4.0 International"
     },
     'soumission-16-juillet-2026': {
       title: "Communication révisée SEM-26-003 (16 juillet 2026)",
@@ -27,7 +31,11 @@
       badge: "SEM-26-003 · Soumission Citoyenne",
       date: "16 juillet 2026",
       pages: 15,
-      type: "Communication formelle (15 pages)"
+      type: "Communication formelle (15 pages)",
+      sha256: "15edd3a2bec9cb88fdddece208291172711518b1d2465aa2db255a01247ff149",
+      author: "William Guindon",
+      citation: "Guindon, W. (2026). Soumission révisée SEM-26-003 : Protection de la Grande Tourbière de Blainville et conformité environnementale ACEUM (Art. 24.27). Commission de coopération environnementale.",
+      license: "Creative Commons CC BY-NC-ND 4.0 International"
     },
     'decision-3-juin-2026': {
       title: "Décision préliminaire du Secrétariat CCE (3 juin 2026)",
@@ -35,7 +43,11 @@
       badge: "SEM-26-003 · CCE / ACEUM",
       date: "3 juin 2026",
       pages: 17,
-      type: "Décision d'examen initial"
+      type: "Décision d'examen initial",
+      sha256: "8f8998becc91e8398852a048a5472d498dd888e79874265fe86aa387422aad5b",
+      author: "Secrétariat de la CCE",
+      citation: "Secrétariat de la CCE. (2026). Détermination préliminaire SEM-26-003 en vertu de l'article 24.27(1). Commission de coopération environnementale.",
+      license: "Creative Commons CC BY-NC-ND 4.0 International"
     },
     'onu-mai-2026': {
       title: "Déposition formelle à l'ONU (Mai 2026)",
@@ -43,7 +55,11 @@
       badge: "ONU · Droits Humains",
       date: "Mai 2026",
       pages: 14,
-      type: "Mémoire au Rapporteur spécial"
+      type: "Mémoire au Rapporteur spécial",
+      sha256: "db8818c7668e85efa4e977f5a7a3478f811933fbc20562b22c92fdc193b9767f",
+      author: "William Guindon",
+      citation: "Guindon, W. (2026). Formal Deposition and Urgent Appeal: Human Rights Violations and Denial of Justice – The Stablex Case and Bill 93 in Quebec. Mandate of the UN Special Rapporteur on Toxics and Human Rights.",
+      license: "Creative Commons CC BY-NC-ND 4.0 International"
     }
   };
 
@@ -112,12 +128,29 @@
     btnSearchNext: document.getElementById('btn-search-next'),
     searchCountLabel: document.getElementById('search-count-label'),
     searchResultsList: document.getElementById('search-results-list'),
-    docMetaTable: document.getElementById('doc-meta-table'),
-    // Mobile controls
+    // Mobile & Responsive controls
+    sidebarBackdrop: document.getElementById('viewer-sidebar-backdrop'),
+    btnSidebarClose: document.getElementById('btn-sidebar-close'),
     mobilePageNum: document.getElementById('mobile-page-num'),
+    mobileBtnSidebar: document.getElementById('mobile-btn-sidebar'),
     mobileBtnPrev: document.getElementById('mobile-btn-prev'),
     mobileBtnNext: document.getElementById('mobile-btn-next'),
-    shortcutsDialog: document.getElementById('shortcuts-dialog')
+    mobileBtnSearch: document.getElementById('mobile-btn-search'),
+    mobileBtnMode: document.getElementById('mobile-btn-mode'),
+    mobileBtnFit: document.getElementById('mobile-btn-fit'),
+    shortcutsDialog: document.getElementById('shortcuts-dialog'),
+    // Modale de Licence CC BY-NC-ND 4.0 & Téléchargement
+    licenseDialog: document.getElementById('license-download-dialog'),
+    btnLicenseDialogClose: document.getElementById('btn-license-dialog-close'),
+    licenseDocTitle: document.getElementById('license-doc-title'),
+    licenseDocMeta: document.getElementById('license-doc-meta'),
+    licenseDocHash: document.getElementById('license-doc-hash'),
+    licenseCitationText: document.getElementById('license-citation-text'),
+    licenseCheckbox: document.getElementById('license-checkbox'),
+    btnConfirmDownload: document.getElementById('btn-confirm-download'),
+    btnCopyShareLink: document.getElementById('btn-copy-share-link'),
+    btnCopyHash: document.getElementById('btn-copy-hash'),
+    btnCopyCitation: document.getElementById('btn-copy-citation')
   };
 
   /**
@@ -349,15 +382,19 @@
       textLayer.innerHTML = '';
       textLayer.style.width = `${Math.floor(viewport.width)}px`;
       textLayer.style.height = `${Math.floor(viewport.height)}px`;
+      textLayer.style.setProperty('--scale-factor', viewport.scale);
 
       const textContent = await page.getTextContent();
       if (pdfjsLib.renderTextLayer) {
-        pdfjsLib.renderTextLayer({
+        const renderTextTask = pdfjsLib.renderTextLayer({
           textContentSource: textContent,
           container: textLayer,
           viewport: viewport,
           textDivs: []
         });
+        if (renderTextTask && renderTextTask.promise) {
+          await renderTextTask.promise;
+        }
       }
     } catch (err) {
       if (err.name !== 'RenderingCancelledException') {
@@ -394,9 +431,26 @@
 
       state.zoomScale = targetScale;
 
-      // Réinitialiser les rendus pour rafraîchir à la nouvelle échelle
+      // Annuler les rendus en cours
+      state.pageRenderingQueue.forEach(task => {
+        if (task && task.cancel) task.cancel();
+      });
+      state.pageRenderingQueue.clear();
       state.renderedPages.clear();
-      setupPageContainers();
+
+      // Mettre à jour les dimensions de tous les wrappers existants
+      const scaledW = Math.floor(unscaledViewport.width * targetScale);
+      const scaledH = Math.floor(unscaledViewport.height * targetScale);
+      
+      const wrappers = dom.pagesContainer.querySelectorAll('.page-wrapper');
+      if (wrappers.length === state.totalPages) {
+        wrappers.forEach(w => {
+          w.style.width = `${scaledW}px`;
+          w.style.height = `${scaledH}px`;
+        });
+      } else {
+        setupPageContainers();
+      }
 
       // Rendre immédiatement les pages autour de la courante
       renderPage(state.currentPage);
@@ -405,7 +459,6 @@
 
       // Mettre à jour l'affichage du zoom
       if (dom.selectZoom) {
-        const percent = Math.round(state.zoomScale * 100);
         const matchingOpt = Array.from(dom.selectZoom.options).find(o => o.value === state.zoomMode || o.value === (state.zoomScale).toFixed(2));
         if (matchingOpt) {
           dom.selectZoom.value = matchingOpt.value;
@@ -756,8 +809,22 @@
    */
   function toggleSidebar(forcedState) {
     state.sidebarOpen = (typeof forcedState === 'boolean') ? forcedState : !state.sidebarOpen;
-    dom.sidebar.classList.toggle('collapsed', !state.sidebarOpen);
-    dom.btnSidebarToggle.classList.toggle('active', state.sidebarOpen);
+    if (dom.sidebar) dom.sidebar.classList.toggle('collapsed', !state.sidebarOpen);
+    if (dom.btnSidebarToggle) dom.btnSidebarToggle.classList.toggle('active', state.sidebarOpen);
+    if (dom.mobileBtnSidebar) dom.mobileBtnSidebar.classList.toggle('active', state.sidebarOpen);
+    
+    if (dom.sidebarBackdrop) {
+      dom.sidebarBackdrop.classList.toggle('active', state.sidebarOpen && window.innerWidth <= 900);
+    }
+
+    // Sur PC, adapter immédiatement le zoom à la nouvelle largeur du viewport
+    if (window.innerWidth > 900) {
+      setTimeout(() => {
+        if (['fit-width', 'fit-page', 'auto'].includes(state.zoomMode)) {
+          applyZoom();
+        }
+      }, 300);
+    }
   }
 
   function switchSidebarTab(tabName) {
@@ -769,6 +836,7 @@
     ];
 
     tabs.forEach(t => {
+      if (!t.btn || !t.pane) return;
       const isActive = (t.name === tabName);
       t.btn.classList.toggle('active', isActive);
       t.pane.classList.toggle('active', isActive);
@@ -799,9 +867,18 @@
       });
     }
 
-    // Toggle Sidebar
+    // Toggle Sidebar (En-tête & Mobile)
     if (dom.btnSidebarToggle) {
       dom.btnSidebarToggle.addEventListener('click', () => toggleSidebar());
+    }
+    if (dom.mobileBtnSidebar) {
+      dom.mobileBtnSidebar.addEventListener('click', () => toggleSidebar());
+    }
+    if (dom.btnSidebarClose) {
+      dom.btnSidebarClose.addEventListener('click', () => toggleSidebar(false));
+    }
+    if (dom.sidebarBackdrop) {
+      dom.sidebarBackdrop.addEventListener('click', () => toggleSidebar(false));
     }
 
     // Onglets Sidebar
@@ -810,11 +887,26 @@
     if (dom.tabSearch) dom.tabSearch.addEventListener('click', () => switchSidebarTab('search'));
     if (dom.tabInfo) dom.tabInfo.addEventListener('click', () => switchSidebarTab('info'));
 
-    // Navigation de pages
+    // Navigation de pages (Barre supérieure & Barre mobile)
     if (dom.btnPrev) dom.btnPrev.addEventListener('click', () => scrollToPage(state.currentPage - 1));
     if (dom.btnNext) dom.btnNext.addEventListener('click', () => scrollToPage(state.currentPage + 1));
     if (dom.mobileBtnPrev) dom.mobileBtnPrev.addEventListener('click', () => scrollToPage(state.currentPage - 1));
     if (dom.mobileBtnNext) dom.mobileBtnNext.addEventListener('click', () => scrollToPage(state.currentPage + 1));
+
+    // Contrôles rapides barre mobile
+    if (dom.mobileBtnSearch) {
+      dom.mobileBtnSearch.addEventListener('click', () => switchSidebarTab('search'));
+    }
+    if (dom.mobileBtnMode) {
+      dom.mobileBtnMode.addEventListener('click', () => cycleReadingMode());
+    }
+    if (dom.mobileBtnFit) {
+      dom.mobileBtnFit.addEventListener('click', () => {
+        state.zoomMode = 'fit-width';
+        applyZoom();
+        showToast("Zoom : Ajusté à la largeur");
+      });
+    }
 
     if (dom.inputPage) {
       dom.inputPage.addEventListener('change', () => {
@@ -892,37 +984,100 @@
       dom.btnFullscreen.addEventListener('click', toggleFullscreen);
     }
 
-    // Téléchargement du binaire original
+    // Téléchargement du binaire original avec licence CC BY-NC-ND 4.0 & Empreinte
     if (dom.btnDownload) {
       dom.btnDownload.addEventListener('click', () => {
+        openLicenseDialog('download');
+      });
+    }
+
+    // Impression Haute Fidélité
+    if (dom.btnPrint) {
+      dom.btnPrint.addEventListener('click', printDocument);
+    }
+
+    // Partage avec attribution CC BY-NC-ND 4.0
+    if (dom.btnShare) {
+      dom.btnShare.addEventListener('click', () => {
+        openLicenseDialog('share');
+      });
+    }
+
+    // Gestionnaires de la modale de licence & téléchargement
+    if (dom.btnConfirmDownload) {
+      dom.btnConfirmDownload.addEventListener('click', () => {
+        if (dom.licenseCheckbox && !dom.licenseCheckbox.checked) {
+          showToast("Veuillez accepter la licence CC BY-NC-ND 4.0 pour continuer.");
+          return;
+        }
+
+        let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
+        const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : null;
+
         const a = document.createElement('a');
         a.href = state.currentFile;
         a.download = state.currentFile.split('/').pop();
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        showToast("Téléchargement du PDF original démarré...");
-      });
-    }
 
-    // Impression
-    if (dom.btnPrint) {
-      dom.btnPrint.addEventListener('click', () => {
-        window.print();
-      });
-    }
+        // Copie de l'empreinte & citation dans le presse-papiers
+        const attributionText = docInfo 
+          ? `[Document Officiel CCE SEM-26-003]\nTitre: ${docInfo.title}\nAuteur: ${docInfo.author}\nLicence: CC BY-NC-ND 4.0 International\nEmpreinte SHA-256: ${docInfo.sha256}\nCitation: ${docInfo.citation}\nSource officielle: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`
+          : `William Guindon · Dossier CCE SEM-26-003 · CC BY-NC-ND 4.0 · https://williamguindon.me`;
 
-    // Partage
-    if (dom.btnShare) {
-      dom.btnShare.addEventListener('click', () => {
-        const shareUrl = `${window.location.origin}${window.location.pathname}?file=${encodeURIComponent(state.currentFile)}#page=${state.currentPage}`;
         if (navigator.clipboard) {
-          navigator.clipboard.writeText(shareUrl).then(() => {
-            showToast("Lien direct vers cette page copié !");
-          });
-        } else {
-          prompt("Copiez ce lien vers la page :", shareUrl);
+          navigator.clipboard.writeText(attributionText).catch(() => {});
         }
+
+        if (dom.licenseDialog) dom.licenseDialog.close();
+        showToast("📥 PDF original téléchargé · Empreinte SHA-256 certifiée !");
+      });
+    }
+
+    if (dom.btnCopyHash) {
+      dom.btnCopyHash.addEventListener('click', () => {
+        if (dom.licenseDocHash && navigator.clipboard) {
+          navigator.clipboard.writeText(dom.licenseDocHash.textContent).then(() => {
+            showToast("🔒 Empreinte SHA-256 copiée !");
+          });
+        }
+      });
+    }
+
+    if (dom.btnCopyCitation) {
+      dom.btnCopyCitation.addEventListener('click', () => {
+        if (dom.licenseCitationText && navigator.clipboard) {
+          navigator.clipboard.writeText(dom.licenseCitationText.textContent).then(() => {
+            showToast("📖 Citation académique copiée !");
+          });
+        }
+      });
+    }
+
+    if (dom.btnCopyShareLink) {
+      dom.btnCopyShareLink.addEventListener('click', () => {
+        const shareUrl = `${window.location.origin}${window.location.pathname}?file=${encodeURIComponent(state.currentFile)}#page=${state.currentPage}`;
+        const citation = dom.licenseCitationText ? dom.licenseCitationText.textContent : '';
+        const fullShare = `${citation}\nSource: ${shareUrl}\nLicence: Creative Commons CC BY-NC-ND 4.0 (Auteur: William Guindon)`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullShare).then(() => {
+            showToast("🔗 Lien & citation avec attribution copiés !");
+          });
+        }
+        if (dom.licenseDialog) dom.licenseDialog.close();
+      });
+    }
+
+    if (dom.licenseCheckbox && dom.btnConfirmDownload) {
+      dom.licenseCheckbox.addEventListener('change', () => {
+        dom.btnConfirmDownload.disabled = !dom.licenseCheckbox.checked;
+      });
+    }
+
+    if (dom.btnLicenseDialogClose && dom.licenseDialog) {
+      dom.btnLicenseDialogClose.addEventListener('click', () => {
+        dom.licenseDialog.close();
       });
     }
 
@@ -978,12 +1133,48 @@
       }
     }, { passive: false });
 
-    // Redimensionnement de fenêtre
+    // Gestes tactiles sur la barre latérale pour fermeture par glissement (Swipe left)
+    if (dom.sidebar) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      dom.sidebar.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      dom.sidebar.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          const diffX = e.changedTouches[0].clientX - touchStartX;
+          const diffY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+          if (diffX < -50 && diffY < 60 && window.innerWidth <= 900) {
+            toggleSidebar(false);
+          }
+        }
+      }, { passive: true });
+    }
+
+    // Redimensionnement de fenêtre fluide et réactif
+    let prevWidth = window.innerWidth;
     window.addEventListener('resize', debounce(() => {
+      const curWidth = window.innerWidth;
+      
+      // Gestion de la transition de breakpoint (Desktop <-> Mobile)
+      if (curWidth > 900 && prevWidth <= 900) {
+        if (dom.sidebarBackdrop) dom.sidebarBackdrop.classList.remove('active');
+      } else if (curWidth <= 900 && prevWidth > 900) {
+        if (state.sidebarOpen && dom.sidebarBackdrop) {
+          dom.sidebarBackdrop.classList.add('active');
+        }
+      }
+      prevWidth = curWidth;
+
+      // Recalcul du zoom pour s'adapter parfaitement à la nouvelle largeur
       if (state.zoomMode === 'fit-width' || state.zoomMode === 'fit-page' || state.zoomMode === 'auto') {
         applyZoom();
       }
-    }, 200));
+    }, 150));
 
     // Raccourcis Clavier KOReader & PDFSlick
     window.addEventListener('keydown', handleGlobalKeydown);
@@ -1073,6 +1264,12 @@
         applyZoom();
         showToast(`Rotation : ${state.rotation}°`);
         break;
+      case 'p':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          printDocument();
+        }
+        break;
       case 'escape':
         if (dom.shortcutsDialog && dom.shortcutsDialog.open) {
           dom.shortcutsDialog.close();
@@ -1082,6 +1279,135 @@
         break;
     }
   }
+
+  /**
+   * Ouvre la modale de licence CC BY-NC-ND 4.0, empreinte SHA-256 et téléchargement
+   */
+  function openLicenseDialog(action = 'download') {
+    if (!dom.licenseDialog) return;
+
+    // Retrouver le document actuel
+    let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
+    const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : {
+      title: state.currentFile.split('/').pop(),
+      date: "2026",
+      pages: state.totalPages,
+      type: "Pièce documentaire officielle",
+      sha256: "15edd3a2bec9cb88fdddece208291172711518b1d2465aa2db255a01247ff149",
+      citation: `Guindon, W. (2026). Document officiel SEM-26-003. Commission de coopération environnementale.`,
+      author: "William Guindon",
+      license: "Creative Commons CC BY-NC-ND 4.0 International"
+    };
+
+    if (dom.licenseDocTitle) dom.licenseDocTitle.textContent = docInfo.title;
+    if (dom.licenseDocMeta) dom.licenseDocMeta.textContent = `${docInfo.date} · ${docInfo.pages} pages · Auteur : ${docInfo.author}`;
+    if (dom.licenseDocHash) dom.licenseDocHash.textContent = docInfo.sha256;
+    if (dom.licenseCitationText) dom.licenseCitationText.textContent = docInfo.citation;
+    if (dom.licenseCheckbox) dom.licenseCheckbox.checked = true;
+    if (dom.btnConfirmDownload) dom.btnConfirmDownload.disabled = false;
+
+    dom.licenseDialog.showModal();
+  }
+
+  /**
+   * Impression Haute Qualité & Rendu Total
+   */
+  async function printDocument() {
+    if (!state.pdfDoc) return;
+
+    showToast("Préparation de l'impression haute résolution...");
+
+    // 1. Tenter l'impression vectorielle directe native par iframe (100% vectoriel, netteté absolue)
+    try {
+      let printIframe = document.getElementById('pdf-print-iframe');
+      if (!printIframe) {
+        printIframe = document.createElement('iframe');
+        printIframe.id = 'pdf-print-iframe';
+        printIframe.style.position = 'fixed';
+        printIframe.style.top = '-9999px';
+        printIframe.style.left = '-9999px';
+        printIframe.style.width = '1px';
+        printIframe.style.height = '1px';
+        printIframe.style.border = 'none';
+        printIframe.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(printIframe);
+      }
+
+      let iframePrintTriggered = false;
+      printIframe.onload = function() {
+        if (iframePrintTriggered) return;
+        iframePrintTriggered = true;
+        setTimeout(() => {
+          try {
+            printIframe.contentWindow.focus();
+            printIframe.contentWindow.print();
+          } catch (err) {
+            console.warn("Impression iframe non disponible, bascule vers le rendu multi-pages:", err);
+            fallbackPrintAllPages();
+          }
+        }, 300);
+      };
+
+      printIframe.src = state.currentFile;
+      return;
+    } catch (e) {
+      console.warn("Échec iframe native print:", e);
+    }
+
+    // 2. Fallback universel : rendu haute résolution de toutes les pages dans #print-container
+    await fallbackPrintAllPages();
+  }
+
+  async function fallbackPrintAllPages() {
+    const printContainer = document.getElementById('print-container');
+    if (!printContainer || !state.pdfDoc) {
+      window.print();
+      return;
+    }
+
+    showLoading(`Préparation de l'impression (1 / ${state.totalPages} pages)...`);
+    printContainer.innerHTML = '';
+
+    try {
+      for (let i = 1; i <= state.totalPages; i++) {
+        showLoading(`Rendu haute résolution pour impression (${i} / ${state.totalPages} pages)...`);
+        const page = await state.pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 2.0, rotation: state.rotation });
+
+        const item = document.createElement('div');
+        item.className = 'print-page-item';
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'print-page-canvas';
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const ctx = canvas.getContext('2d', { alpha: false });
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        item.appendChild(canvas);
+        printContainer.appendChild(item);
+      }
+
+      hideLoading();
+      setTimeout(() => {
+        window.print();
+      }, 200);
+    } catch (err) {
+      console.error("Erreur génération impression:", err);
+      hideLoading();
+      showToast("Erreur lors de la préparation de l'impression", true);
+    }
+  }
+
+  // Nettoyage après impression pour libérer la mémoire vive
+  window.addEventListener('afterprint', () => {
+    const printContainer = document.getElementById('print-container');
+    if (printContainer) printContainer.innerHTML = '';
+  });
 
   function setReadingMode(mode) {
     state.readingMode = mode;

@@ -243,69 +243,6 @@
       });
     });
 
-    // Chargement interactif de la carte SIG OpenStreetMap / Leaflet (Zero Iframes, Eco-Design A+)
-    const loadMapBtns = document.querySelectorAll('.btn-load-map');
-    loadMapBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const wrapper = btn.closest('.felt-map-wrapper');
-        if (!wrapper) return;
-
-        wrapper.innerHTML = `<div id="gis-leaflet-map"></div>`;
-        
-        const leafletCss = document.createElement('link');
-        leafletCss.rel = 'stylesheet';
-        leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        leafletCss.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-        leafletCss.crossOrigin = '';
-        document.head.appendChild(leafletCss);
-
-        const leafletJs = document.createElement('script');
-        leafletJs.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        leafletJs.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-        leafletJs.crossOrigin = '';
-        leafletJs.onload = () => {
-          if (typeof L === 'undefined') return;
-          const map = L.map('gis-leaflet-map').setView([45.68725, -73.85447], 13);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© OpenStreetMap · SEM-26-003'
-          }).addTo(map);
-
-          // Polygone Grande Tourbière de Blainville (278 000 m²)
-          const tourbiere = L.polygon([
-            [45.696, -73.868],
-            [45.698, -73.845],
-            [45.682, -73.840],
-            [45.679, -73.862]
-          ], { color: '#22c55e', fillColor: '#22c55e', fillOpacity: 0.35 }).addTo(map);
-          tourbiere.bindPopup("<b>🌿 Grande Tourbière de Blainville</b><br>Zone humide menacée (278 000 m²)<br>Puits de carbone majeur");
-
-          // Polygone Site Stablex
-          const stablex = L.polygon([
-            [45.689, -73.860],
-            [45.692, -73.852],
-            [45.685, -73.850],
-            [45.683, -73.858]
-          ], { color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.45 }).addTo(map);
-          stablex.bindPopup("<b>⚠️ Site d'enfouissement Stablex</b><br>Cellules 1 à 5 & Cellule 6 projetée<br>Déchets industriels dangereux");
-
-          // Lacs Fauvel
-          const fauvel = L.circle([45.681, -73.846], {
-            color: '#3b82f6',
-            fillColor: '#3b82f6',
-            fillOpacity: 0.5,
-            radius: 350
-          }).addTo(map);
-          fauvel.bindPopup("<b>💧 Lacs Fauvel & Bassin Versant</b><br>Zone de biodiversité récréotouristique");
-
-          // Point Cadmium
-          const cadmium = L.marker([45.6865, -73.854]).addTo(map);
-          cadmium.bindPopup("<b>🧪 Point de prélèvement d'eau</b><br>Concentration en Cadmium : 320x la norme");
-        };
-        document.body.appendChild(leafletJs);
-      });
-    });
-
     const closeDocBtns = document.querySelectorAll('.dialog-close, dialog [command="close"]');
     
     closeDocBtns.forEach(btn => {

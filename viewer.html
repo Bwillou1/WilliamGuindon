@@ -15,9 +15,17 @@
   <meta property="og:url" content="https://williamguindon.me/viewer.html">
   <meta property="og:image" content="https://williamguindon.me/og-image.jpg">
 
-  <!-- Favicons -->
+  <!-- Favicons & Manifest -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#064e3b">
+
+  <!-- Security & Content Security Policy (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; frame-src 'none'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="style.css">
@@ -68,17 +76,17 @@
           </button>
         </div>
 
-        <div class="tool-separator hide-on-mobile"></div>
+        <div class="tool-separator"></div>
 
         <!-- Zoom -->
-        <div class="zoom-box hide-on-mobile" style="display:flex; align-items:center; gap:3px;">
+        <div class="zoom-box" style="display:flex; align-items:center; gap:3px;">
           <button id="btn-zoom-out" class="tool-btn" title="Zoom arrière (-)" aria-label="Zoom arrière">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
           </button>
           <select id="select-zoom" class="zoom-select" aria-label="Niveau de zoom">
-            <option value="fit-width">Pleine largeur</option>
-            <option value="fit-page">Pleine page</option>
-            <option value="auto">Automatique</option>
+            <option value="fit-width">Largeur</option>
+            <option value="fit-page">Page</option>
+            <option value="auto">Auto</option>
             <option value="0.50">50 %</option>
             <option value="0.75">75 %</option>
             <option value="1.00">100 %</option>
@@ -97,21 +105,21 @@
       <div class="viewer-header-right">
         
         <!-- Mode de lecture KOReader -->
-        <select id="select-reading-mode" class="reading-mode-select hide-on-mobile" aria-label="Mode d'affichage et confort de lecture">
-          <option value="normal">☀️ Rendu standard</option>
-          <option value="dark">🌙 Mode Nuit (Inversé)</option>
-          <option value="sepia">📜 Confort Sépia</option>
-          <option value="contrast">⚡ Haut contraste</option>
+        <select id="select-reading-mode" class="reading-mode-select" aria-label="Mode d'affichage et confort de lecture">
+          <option value="normal">☀️ Standard</option>
+          <option value="dark">🌙 Nuit</option>
+          <option value="sepia">📜 Sépia</option>
+          <option value="contrast">⚡ Contraste</option>
         </select>
 
         <!-- Mode disposition -->
-        <select id="select-layout" class="zoom-select hide-on-mobile" aria-label="Disposition des pages">
-          <option value="continuous">📄 Défilement continu</option>
-          <option value="single">📖 Page unique</option>
-          <option value="spread">📑 Double page</option>
+        <select id="select-layout" class="zoom-select" aria-label="Disposition des pages">
+          <option value="continuous">📄 Continu</option>
+          <option value="single">📖 Page</option>
+          <option value="spread">📑 Double</option>
         </select>
 
-        <button id="btn-rotate" class="tool-btn hide-on-mobile" title="Pivoter de 90° (R)" aria-label="Pivoter">
+        <button id="btn-rotate" class="tool-btn" title="Pivoter de 90° (R)" aria-label="Pivoter">
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         </button>
 
@@ -119,11 +127,11 @@
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </button>
 
-        <button id="btn-print" class="tool-btn hide-on-mobile" title="Imprimer le document" aria-label="Imprimer">
+        <button id="btn-print" class="tool-btn" title="Imprimer le document" aria-label="Imprimer">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         </button>
 
-        <button id="btn-share" class="tool-btn hide-on-mobile" title="Copier le lien direct vers cette page" aria-label="Partager la page">
+        <button id="btn-share" class="tool-btn" title="Copier le lien direct vers cette page" aria-label="Partager la page">
           <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
         </button>
 
@@ -131,7 +139,7 @@
           <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
         </button>
 
-        <button id="btn-shortcuts" class="tool-btn hide-on-mobile" title="Raccourcis clavier (?)" aria-label="Raccourcis clavier">
+        <button id="btn-shortcuts" class="tool-btn" title="Raccourcis clavier (?)" aria-label="Raccourcis clavier">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         </button>
 
@@ -145,40 +153,48 @@
     <!-- Corps Principal (Panneau latéral + Zone de rendu) -->
     <div class="viewer-main">
       
+      <!-- Backdrop flouté pour le volet latéral sur mobile/tablette -->
+      <div id="viewer-sidebar-backdrop" class="viewer-sidebar-backdrop" aria-hidden="true"></div>
+
       <!-- Panneau latéral / Sidebar Drawer -->
-      <aside id="viewer-sidebar" class="viewer-sidebar">
-        <div class="sidebar-tabs">
-          <button id="tab-thumbnails" class="sidebar-tab-btn active">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            Vignettes
-          </button>
-          <button id="tab-outline" class="sidebar-tab-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-            Sommaire
-          </button>
-          <button id="tab-search" class="sidebar-tab-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Recherche
-          </button>
-          <button id="tab-info" class="sidebar-tab-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            Infos
+      <aside id="viewer-sidebar" class="viewer-sidebar" aria-label="Panneau de navigation du document">
+        <div class="sidebar-header-row">
+          <div class="sidebar-tabs" role="tablist">
+            <button id="tab-thumbnails" class="sidebar-tab-btn active" role="tab" aria-selected="true" aria-controls="pane-thumbnails" title="Vignettes des pages">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Vignettes</span>
+            </button>
+            <button id="tab-outline" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-outline" title="Sommaire et signets">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Sommaire</span>
+            </button>
+            <button id="tab-search" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-search" title="Recherche dans le texte">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Recherche</span>
+            </button>
+            <button id="tab-info" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-info" title="Informations et métadonnées">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span>Infos</span>
+            </button>
+          </div>
+          <button id="btn-sidebar-close" class="sidebar-close-btn" title="Fermer le volet (Esc)" aria-label="Fermer le panneau latéral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
         <div class="sidebar-content">
           <!-- 1. Vignettes -->
-          <div id="pane-thumbnails" class="sidebar-pane active">
+          <div id="pane-thumbnails" class="sidebar-pane active" role="tabpanel">
             <div id="thumbnails-grid" class="thumbnails-grid"></div>
           </div>
 
           <!-- 2. Sommaire / Signets -->
-          <div id="pane-outline" class="sidebar-pane">
+          <div id="pane-outline" class="sidebar-pane" role="tabpanel">
             <div id="outline-tree"></div>
           </div>
 
           <!-- 3. Recherche dans le texte -->
-          <div id="pane-search" class="sidebar-pane">
+          <div id="pane-search" class="sidebar-pane" role="tabpanel">
             <div class="search-box">
               <div class="search-input-wrap">
                 <input type="text" id="input-search" class="search-input" placeholder="Rechercher dans le texte..." aria-label="Recherche textuelle">
@@ -187,24 +203,24 @@
               </div>
               <div class="search-meta-bar">
                 <span id="search-count-label">0 résultat</span>
-                <span>(Appuyez sur Entrée)</span>
+                <span>(Entrée pour chercher)</span>
               </div>
             </div>
             <div id="search-results-list" class="search-results-list"></div>
           </div>
 
           <!-- 4. Infos Document -->
-          <div id="pane-info" class="sidebar-pane">
+          <div id="pane-info" class="sidebar-pane" role="tabpanel">
             <table id="doc-meta-table" class="doc-meta-table"></table>
           </div>
         </div>
       </aside>
 
       <!-- Zone de Visualisation PDF / Viewport -->
-      <main id="viewer-viewport" class="viewer-viewport">
+      <main id="viewer-viewport" class="viewer-viewport" tabindex="0" aria-label="Affichage des pages du document">
         
         <!-- Spinner de chargement -->
-        <div id="viewer-loading" class="viewer-loading">
+        <div id="viewer-loading" class="viewer-loading" aria-live="polite">
           <div class="spinner"></div>
           <span id="loading-text" style="font-size:13px; font-weight:600; color:var(--text);">Chargement du document haute fidélité...</span>
         </div>
@@ -213,17 +229,34 @@
         <div id="pages-container" class="pages-container"></div>
       </main>
 
-    </div>
+    <!-- Conteneur d'impression dédié haute résolution (affiché uniquement à l'impression) -->
+    <div id="print-container" class="print-container" aria-hidden="true"></div>
 
     <!-- Toast Notification -->
-    <div id="viewer-toast" class="viewer-toast">Message</div>
+    <div id="viewer-toast" class="viewer-toast" role="status" aria-live="polite">Message</div>
 
-    <!-- Floating Mobile Quick Bar -->
-    <div class="mobile-quick-bar">
-      <button id="mobile-btn-prev" class="tool-btn" aria-label="Précédente">◀</button>
-      <span id="mobile-page-num" style="font-size:13px; font-weight:700; color:var(--text);">1 / 1</span>
-      <button id="mobile-btn-next" class="tool-btn" aria-label="Suivante">▶</button>
-    </div>
+    <!-- Floating Mobile Quick Bar (Barre d'accès rapide pouce sur mobile/tablette) -->
+    <nav class="mobile-quick-bar" aria-label="Contrôles rapides mobile">
+      <button id="mobile-btn-sidebar" class="tool-btn mobile-quick-btn" title="Ouvrir le sommaire / vignettes" aria-label="Ouvrir le sommaire">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+      </button>
+      <button id="mobile-btn-prev" class="tool-btn mobile-quick-btn" title="Page précédente" aria-label="Page précédente">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <span id="mobile-page-num" class="mobile-page-num">1 / 1</span>
+      <button id="mobile-btn-next" class="tool-btn mobile-quick-btn" title="Page suivante" aria-label="Page suivante">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+      <button id="mobile-btn-search" class="tool-btn mobile-quick-btn" title="Rechercher" aria-label="Rechercher">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button id="mobile-btn-mode" class="tool-btn mobile-quick-btn" title="Changer le mode de lecture (Sombre/Sépia/Clair)" aria-label="Mode de lecture">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+      </button>
+      <button id="mobile-btn-fit" class="tool-btn mobile-quick-btn" title="Ajuster la largeur" aria-label="Ajuster à la largeur">
+        <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+      </button>
+    </nav>
 
     <!-- Modale des Raccourcis Clavier -->
     <dialog id="shortcuts-dialog" class="shortcuts-dialog">
@@ -244,6 +277,72 @@
         <div class="shortcut-row"><span>Plein écran</span> <kbd>F</kbd></div>
         <div class="shortcut-row"><span>Panneau latéral</span> <kbd>T</kbd></div>
         <div class="shortcut-row"><span>Mode Double page</span> <kbd>D</kbd></div>
+      </div>
+    </dialog>
+
+    <!-- Modale de Téléchargement, Licence CC BY-NC-ND 4.0 & Empreinte IA -->
+    <dialog id="license-download-dialog" class="license-dialog">
+      <div class="license-dialog-header">
+        <div class="license-header-title">
+          <span class="license-badge-pill">CC BY-NC-ND 4.0</span>
+          <h3>Téléchargement & Licence Internationale</h3>
+        </div>
+        <button id="btn-license-dialog-close" class="tool-btn" aria-label="Fermer la fenêtre">✕</button>
+      </div>
+
+      <div class="license-dialog-body">
+        <div class="license-doc-summary">
+          <h4 id="license-doc-title">Document officiel SEM-26-003</h4>
+          <p id="license-doc-meta" class="license-doc-meta">Commission de coopération environnementale · Auteur : William Guindon</p>
+        </div>
+
+        <div class="license-terms-card">
+          <div class="license-terms-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <strong>Conditions de Licence Creative Commons (CC BY-NC-ND 4.0)</strong>
+          </div>
+          <p class="license-terms-text">
+            Vous êtes libre de partager, copier et redistribuer ce document dans tout format. Vous devez obligatoirement <strong>créditer l'auteur (William Guindon)</strong>, intégrer un lien vers la source officielle et indiquer si des modifications ont été effectuées (pas d'utilisation commerciale ni d'œuvres dérivées sans accord préalable).
+          </p>
+          <div class="license-ai-clause">
+            <span>🤖 <strong>Autorisation IA & Robots (TDM) :</strong> L'indexation, la lecture automatisée, l'exploration de textes et de données (TDM) et le traitement par les intelligences artificielles (LLM, agents IA) sont expressément <strong>autorisés</strong> avec l'obligation de citer l'auteur : <em>William Guindon (SEM-26-003 / williamguindon.me)</em>.</span>
+          </div>
+        </div>
+
+        <!-- Empreinte Cryptographique Internationale (SHA-256) -->
+        <div class="license-fingerprint-box">
+          <div class="fingerprint-label-row">
+            <span>🔒 Empreinte Cryptographique d'Authenticité (SHA-256) :</span>
+            <button id="btn-copy-hash" class="btn-copy-mini" type="button" title="Copier l'empreinte SHA-256">Copier SHA-256</button>
+          </div>
+          <code id="license-doc-hash" class="fingerprint-code">Calcul en cours...</code>
+        </div>
+
+        <!-- Citation Formatée -->
+        <div class="license-citation-box">
+          <div class="citation-label-row">
+            <span>📖 Citation Recommandée (ISO 690 / APA / Juridique) :</span>
+            <button id="btn-copy-citation" class="btn-copy-mini" type="button" title="Copier la citation">Copier Citation</button>
+          </div>
+          <div id="license-citation-text" class="citation-content">Guindon, W. (2026). SEM-26-003. Commission de coopération environnementale.</div>
+        </div>
+
+        <!-- Consentement / Case à cocher -->
+        <label class="license-checkbox-label">
+          <input type="checkbox" id="license-checkbox" checked>
+          <span>J'accepte les conditions de la licence <strong>CC BY-NC-ND 4.0</strong> et m'engage à citer l'auteur (William Guindon).</span>
+        </label>
+      </div>
+
+      <div class="license-dialog-footer">
+        <button id="btn-confirm-download" class="btn btn-primary btn-license-download" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Télécharger le PDF original</span>
+        </button>
+        <button id="btn-copy-share-link" class="btn btn-ghost btn-license-share" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <span>Copier le lien avec attribution</span>
+        </button>
       </div>
     </dialog>
 

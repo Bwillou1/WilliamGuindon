@@ -8,7 +8,9 @@ William Guindon (né le 3 août 2011 à Sainte-Marthe-sur-le-Lac, Québec, Canad
 
 - **8 avril 2025** — Lettre ouverte « [François Legault, vous détruisez notre avenir](https://www.ledevoir.com/opinion/lettres/865027/francois-legault-vous-detruisez-notre-avenir) », *Le Devoir*
 - **1ᵉʳ mai 2026** — Dépôt de la communication officielle **[SEM-26-003](https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/)** auprès de la Commission de coopération environnementale (CCE / ACEUM), examinée en vertu des articles 24.27(2) et (3)
-- **Mai 2026** — [Déposition formelle](https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-formal-deposition-and-urgent-appeal.pdf) transmise au Rapporteur spécial des Nations unies sur les substances toxiques et les droits de l'homme (Dr Marcos A. Orellana)
+- **Mai 2026** — [Déposition formelle (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf) transmise au Rapporteur spécial des Nations unies sur les substances toxiques et les droits de l'homme (Dr Marcos A. Orellana)
+- **17 juillet 2026** — [Communication révisée SEM-26-003 (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/soumission-revisee-16-juillet-2026.pdf) déposée auprès du Secrétariat de la CCE
+- **17 août 2026** — [Détermination positive de la CCE (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf) ordonnant une réponse officielle du Canada
 - Couverture médiatique : [The Rover](https://therover.ca/blainville-teenager-takes-stablex-fight-international/) · [Journal de Montréal (2021)](https://www.journaldemontreal.com/2021/11/28/francois-legault-felicite-le-premier-enfant-vaccine-1)
 
 ## Structure du dépôt
