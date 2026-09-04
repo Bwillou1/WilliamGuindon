@@ -1873,12 +1873,12 @@ ul.timeline li.active-node strong,
   height: 8px;
   background: #ffffff;
   border-radius: 50%;
-  animation: tvPulse 0.9s infinite alternate;
+  animation: tvPulse 2s ease-in-out infinite alternate;
 }
 
 @keyframes tvPulse {
-  from { opacity: 0.4; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1.2); }
+  from { opacity: 0.6; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.1); }
 }
 
 .tv-ticker-track {
@@ -1895,12 +1895,21 @@ ul.timeline li.active-node strong,
   align-items: center;
   gap: 48px;
   white-space: nowrap;
-  animation: tvTickerScroll 28s linear infinite;
+  animation: tvTickerScroll 75s linear infinite;
   padding-left: 100%;
 }
 
-.tv-ticker-track:hover .tv-ticker-content {
+.tv-ticker-bar:hover .tv-ticker-content,
+.tv-ticker-bar:focus-within .tv-ticker-content {
   animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-ticker-content {
+    animation: none;
+    padding-left: 0;
+    overflow-x: auto;
+  }
 }
 
 @keyframes tvTickerScroll {
