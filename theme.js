@@ -860,6 +860,131 @@
         });
       });
     }
+
+    // 13. Bouton Flottant & Hub IA (Résumé & Questions)
+    initFloatingAiHub();
+  }
+
+  // 14. Détection et redirection automatique des robots d'IA vers ai.html
+  function routeAiCrawlers() {
+    const aiBots = /GPTBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Bytespider|cohere-ai|Diffbot|CCBot|Applebot-Extended|Meta-ExternalAgent/i;
+    const isAiAgent = aiBots.test(navigator.userAgent) || window.location.search.includes('format=ai') || window.location.search.includes('ref=ai');
+    const currentPath = window.location.pathname;
+    if (isAiAgent && !currentPath.includes('ai.html') && !currentPath.includes('ai.txt') && !currentPath.includes('llms')) {
+      window.location.replace("https://williamguindon.me/ai.html");
+    }
+  }
+  routeAiCrawlers();
+
+  // 15. Initialisation du widget flottant IA & Modal
+  function initFloatingAiHub() {
+    if (window.location.pathname.includes('ai.html') || window.location.pathname.includes('ai.txt')) return;
+
+    const floatingBtn = document.createElement('button');
+    floatingBtn.className = 'floating-ai-btn';
+    floatingBtn.setAttribute('aria-label', 'Résumer ou analyser avec une IA');
+    floatingBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+      <span>Analyser avec l'IA</span>
+    `;
+
+    const aiModal = document.createElement('div');
+    aiModal.className = 'ai-modal-overlay';
+    aiModal.innerHTML = `
+      <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+        <div class="ai-modal-header">
+          <div class="ai-modal-title" id="ai-modal-title">
+            <span>✨</span> Résumer & Analyser avec l'IA
+          </div>
+          <button class="ai-modal-close" aria-label="Fermer le menu IA">✕</button>
+        </div>
+        <p class="ai-modal-desc">
+          Analysez instantanément le dossier SEM-26-003, la chronologie Stablex et les faits vérifiés sur William Guindon dans votre assistant IA :
+        </p>
+        <div class="ai-modal-buttons">
+          <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+            <div class="ai-btn-option-left">
+              <span>🟢</span>
+              <span>Ouvrir dans ChatGPT</span>
+            </div>
+            <span>↗</span>
+          </a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+            <div class="ai-btn-option-left">
+              <span>🔵</span>
+              <span>Ouvrir dans Google Gemini</span>
+            </div>
+            <span>↗</span>
+          </a>
+          <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+            <div class="ai-btn-option-left">
+              <span>🟣</span>
+              <span>Ouvrir dans Claude</span>
+            </div>
+            <span>↗</span>
+          </a>
+          <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+            <div class="ai-btn-option-left">
+              <span>🟠</span>
+              <span>Ouvrir dans Perplexity</span>
+            </div>
+            <span>↗</span>
+          </a>
+          <button type="button" class="ai-btn-option js-copy-ai-link">
+            <div class="ai-btn-option-left">
+              <span>📋</span>
+              <span>Copier le lien & prompt IA</span>
+            </div>
+            <span class="js-copy-icon">Copier</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    const copyAlert = document.createElement('div');
+    copyAlert.className = 'ai-copy-alert';
+    copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
+
+    document.body.appendChild(floatingBtn);
+    document.body.appendChild(aiModal);
+    document.body.appendChild(copyAlert);
+
+    // Open/Close
+    floatingBtn.addEventListener('click', () => {
+      aiModal.classList.add('active');
+    });
+
+    aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
+      aiModal.classList.remove('active');
+    });
+
+    aiModal.addEventListener('click', (e) => {
+      if (e.target === aiModal) {
+        aiModal.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && aiModal.classList.contains('active')) {
+        aiModal.classList.remove('active');
+      }
+    });
+
+    // Copy Prompt / Link
+    const copyBtn = aiModal.querySelector('.js-copy-ai-link');
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = "Résume et analyse les faits sur William Guindon et la soumission CCE SEM-26-003 à partir de https://williamguindon.me/ai.html";
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyAlert.classList.add('show');
+        copyBtn.querySelector('.js-copy-icon').textContent = 'Copié !';
+        setTimeout(() => {
+          copyAlert.classList.remove('show');
+          copyBtn.querySelector('.js-copy-icon').textContent = 'Copier';
+        }, 3000);
+      });
+    });
   }
 
   // Initialisation sécurisée
