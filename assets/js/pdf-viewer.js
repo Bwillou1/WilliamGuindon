@@ -27,7 +27,7 @@
     },
     'soumission-16-juillet-2026': {
       title: "Communication révisée SEM-26-003 (16 juillet 2026)",
-      file: "assets/docs/soumission-revisee-16-juillet-2026.pdf",
+      file: "assets/docs/26-3-rsub_fr_redacted.pdf",
       badge: "SEM-26-003 · Soumission Citoyenne",
       date: "16 juillet 2026",
       pages: 15,
