@@ -48,26 +48,43 @@
     <style>
         :root {
             --bg: #000000;
-            --card: #0a0f0a;
-            --border: #166534;
-            --text: #d1fae5;
+            --card: #050805;
+            --border: #14532d;
+            --text: #4ade80;
             --text-heading: #86efac;
             --accent: #22c55e;
             --link: #38bdf8;
         }
-        * { box-sizing: border-box; }
-        body {
+        * { 
+            box-sizing: border-box; 
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+        }
+        ::selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+        ::-moz-selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+        html, body {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            background: #000000;
-            color: #d1fae5;
+            background: #000000 !important;
+            color: #4ade80 !important;
             padding: 20px;
             line-height: 1.6;
             margin: 0;
             font-size: 13.5px;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .header-banner {
-            background: #0a0f0a;
-            border: 1px solid #166534;
+            background: #050805;
+            border: 1px solid #14532d;
             border-radius: 8px;
             padding: 14px 18px;
             margin-bottom: 20px;
@@ -91,19 +108,21 @@
             background: #4ade80;
         }
         pre {
-            background: #0a0f0a;
-            border: 1px solid #166534;
+            background: #050805;
+            border: 1px solid #14532d;
             padding: 18px;
             border-radius: 8px;
             white-space: pre-wrap;
             word-break: break-word;
             font-size: 13px;
-            color: #d1fae5;
+            color: #4ade80;
+            -webkit-user-select: none;
+            user-select: none;
         }
         a { color: var(--link); text-decoration: underline; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;" ondragstart="return false;" onselectstart="return false;">
 
 <header class="header-banner">
     <div>
@@ -112,6 +131,79 @@
     </div>
     <a href="https://williamguindon.me/" class="btn-home">← Retour au site principal</a>
 </header>
+
+<script>
+// Anti-Inspection & Anti-Copy Protection for Human Browsers
+(function() {
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    
+    document.addEventListener('keydown', function(e) {
+        // Block F12
+        if (e.keyCode === 123 || e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+Shift+I / Cmd+Option+I (Inspect)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+Shift+J / Cmd+Option+J (Console)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+Shift+C / Cmd+Option+C (Inspect Element)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+U / Cmd+Option+U (View Source)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+S / Cmd+S (Save)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+A / Cmd+A (Select All)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A' || e.keyCode === 65)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+C / Cmd+C (Copy)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) {
+            e.preventDefault();
+            return false;
+        }
+        // Block Ctrl+P / Cmd+P (Print)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Anti-DevTools Debugger Trap
+    setInterval(function() {
+        (function() {
+            try {
+                var before = new Date().getTime();
+                debugger;
+                var after = new Date().getTime();
+                if (after - before > 100) {
+                    window.location.replace("https://williamguindon.me/");
+                }
+            } catch (err) {}
+        })();
+    }, 500);
+})();
+</script>
 
 <main>
 <pre>
