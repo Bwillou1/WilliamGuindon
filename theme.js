@@ -726,11 +726,36 @@
       let currentIndex = 0;
       let autoPlayTimer = null;
 
+      // Forcer immédiatement la structure flex et l'overflow caché pour éviter tout empilement
+      if (carouselWrapper) {
+        carouselWrapper.style.overflow = 'hidden';
+        carouselWrapper.style.position = 'relative';
+        carouselWrapper.style.width = '100%';
+      }
+      carouselContainer.style.display = 'flex';
+      carouselContainer.style.flexDirection = 'row';
+      carouselContainer.style.flexWrap = 'nowrap';
+      carouselContainer.style.alignItems = 'stretch';
+      carouselContainer.style.gap = '24px';
+      carouselContainer.style.width = 'max-content';
+      carouselContainer.style.minWidth = '100%';
+      carouselContainer.style.willChange = 'transform';
+      carouselContainer.style.transform = 'translateX(0px)';
+
+      cards.forEach(c => {
+        c.style.flex = '0 0 350px';
+        c.style.width = '350px';
+        c.style.minWidth = '290px';
+        c.style.maxWidth = '380px';
+        c.style.boxSizing = 'border-box';
+        c.style.position = 'relative';
+      });
+
       const getGap = () => 24;
 
       const getCardWidth = () => {
         const first = cards[0];
-        return first ? first.getBoundingClientRect().width : 340;
+        return first ? first.getBoundingClientRect().width : 350;
       };
 
       const getVisibleCards = () => {
