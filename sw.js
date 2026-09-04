@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v13';
+const CACHE_NAME = 'wg-pwa-v15';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
