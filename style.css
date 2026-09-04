@@ -3004,6 +3004,8 @@ header.site {
     margin: 3pt 0 !important;
     padding-left: 12pt !important;
   }
+}
+
 /* ==========================================
    CARROUSEL REVUE DE PRESSE & EMBEDS MÉDIAS
    ========================================== */
@@ -3020,9 +3022,10 @@ header.site {
   overflow: hidden;
   position: relative;
   border-radius: 16px;
-  background: rgba(4, 36, 27, 0.6);
-  border: 1px solid rgba(52, 211, 153, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
   padding: 16px 0;
+  box-shadow: var(--shadow);
 }
 
 .media-logos-ticker-wrapper::before,
@@ -3038,12 +3041,12 @@ header.site {
 
 .media-logos-ticker-wrapper::before {
   left: 0;
-  background: linear-gradient(90deg, rgba(4, 36, 27, 0.95), transparent);
+  background: linear-gradient(90deg, var(--bg-card), transparent);
 }
 
 .media-logos-ticker-wrapper::after {
   right: 0;
-  background: linear-gradient(270deg, rgba(4, 36, 27, 0.95), transparent);
+  background: linear-gradient(270deg, var(--bg-card), transparent);
 }
 
 .media-logos-ticker-track {
@@ -3077,7 +3080,8 @@ header.site {
   padding: 8px 18px;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   flex-shrink: 0;
   text-decoration: none;
@@ -3090,10 +3094,12 @@ header.site {
 
 .media-logo-item.item-lapresse {
   background: #E30613;
+  border-color: #E30613;
 }
 
 .media-logo-item.item-therover {
   background: #111827;
+  border-color: #111827;
 }
 
 .media-logo-item img {
@@ -3122,7 +3128,12 @@ header.site {
 }
 
 .press-carousel-container::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.press-carousel-container::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 99px;
 }
 
 .press-card {
@@ -3130,22 +3141,46 @@ header.site {
   min-width: 300px;
   max-width: 420px;
   scroll-snap-align: start;
-  background: rgba(4, 36, 27, 0.75);
-  border: 1px solid rgba(52, 211, 153, 0.25);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
   border-radius: 18px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .press-card:hover {
   transform: translateY(-4px);
   border-color: rgba(52, 211, 153, 0.6);
-  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.2);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Thème sombre spécifique pour les cartes de presse */
+[data-theme="dark"] .press-card,
+body.dark-theme .press-card {
+  background: rgba(4, 36, 27, 0.75);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+[data-theme="dark"] .media-logos-ticker-wrapper,
+body.dark-theme .media-logos-ticker-wrapper {
+  background: rgba(4, 36, 27, 0.6);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+[data-theme="dark"] .media-logos-ticker-wrapper::before,
+body.dark-theme .media-logos-ticker-wrapper::before {
+  background: linear-gradient(90deg, rgba(4, 36, 27, 0.95), transparent);
+}
+
+[data-theme="dark"] .media-logos-ticker-wrapper::after,
+body.dark-theme .media-logos-ticker-wrapper::after {
+  background: linear-gradient(270deg, rgba(4, 36, 27, 0.95), transparent);
 }
 
 .press-card-header {
@@ -3155,7 +3190,7 @@ header.site {
   gap: 16px;
   margin-bottom: 18px;
   padding-bottom: 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--line);
 }
 
 .press-logo-link {
@@ -3167,12 +3202,14 @@ header.site {
   border-radius: 10px;
   height: 48px;
   max-width: 150px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .press-logo-link:hover {
   transform: scale(1.04);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .press-logo-img {
@@ -3185,6 +3222,7 @@ header.site {
 
 .press-logo-link.logo-lapresse {
   background: #E30613;
+  border-color: #E30613;
   padding: 6px 12px;
 }
 
@@ -3230,19 +3268,12 @@ header.site {
 
 .press-logo-link.logo-therover {
   background: #191919;
+  border-color: #191919;
   padding: 6px 10px;
 }
 
 .press-logo-link.logo-therover .press-logo-img {
   max-height: 36px;
-}
-
-.rover-logo-text {
-  color: #111827;
-  font-family: Georgia, Cambria, serif;
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
 }
 
 .press-date-tag {
@@ -3261,8 +3292,13 @@ header.site {
   font-size: 17px;
   line-height: 1.35;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text);
   margin-bottom: 12px;
+}
+
+[data-theme="dark"] .press-headline,
+body.dark-theme .press-headline {
+  color: #ffffff;
 }
 
 .press-headline a {
@@ -3279,16 +3315,27 @@ header.site {
 .press-excerpt {
   font-size: 13.5px;
   line-height: 1.55;
-  color: #d1d5db;
+  color: var(--text-muted);
   margin-bottom: 16px;
 }
 
+[data-theme="dark"] .press-excerpt,
+body.dark-theme .press-excerpt {
+  color: #d1d5db;
+}
+
 .press-media-embed {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 16px;
+}
+
+[data-theme="dark"] .press-media-embed,
+body.dark-theme .press-media-embed {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .press-audio-player {
@@ -3326,8 +3373,13 @@ header.site {
 .press-audio-title {
   font-size: 12px;
   font-weight: 700;
-  color: #f3f4f6;
+  color: var(--text);
   display: block;
+}
+
+[data-theme="dark"] .press-audio-title,
+body.dark-theme .press-audio-title {
+  color: #f3f4f6;
 }
 
 .press-audio-sub {
@@ -3338,7 +3390,7 @@ header.site {
 .press-card-footer {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3356,9 +3408,14 @@ header.site {
 }
 
 .press-read-link:hover {
-  color: #6ee7b7;
+  color: #15803d;
   transform: translateX(3px);
   text-decoration: underline;
+}
+
+[data-theme="dark"] .press-read-link:hover,
+body.dark-theme .press-read-link:hover {
+  color: #6ee7b7;
 }
 
 .press-carousel-controls {
@@ -3373,9 +3430,9 @@ header.site {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #ffffff;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3383,6 +3440,13 @@ header.site {
   font-size: 18px;
   font-weight: 800;
   transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .carousel-nav-btn,
+body.dark-theme .carousel-nav-btn {
+  color: #ffffff;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
 .carousel-nav-btn:hover {
@@ -3400,11 +3464,16 @@ header.site {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.2);
   border: none;
   padding: 0;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .carousel-dot,
+body.dark-theme .carousel-dot {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .carousel-dot.active {
@@ -3422,7 +3491,7 @@ header.site {
 
 @media (max-width: 600px) {
   .press-card {
-    flex: 0 0 calc(100% - 8px);
+    flex: 0 0 calc(85% - 8px);
     min-width: 260px;
   }
 }
