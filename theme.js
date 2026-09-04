@@ -17,7 +17,7 @@
   const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41z"/></svg>`;
   const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.3 22c5.3 0 9.7-4.3 9.7-9.7 0-2.7-1.1-5.1-2.9-6.9-.5-.5-1.3-.1-1.2.6.7 3.5-.3 7.3-3 10-2.7 2.7-6.5 3.7-10 3-.7-.1-1.1.7-.6 1.2 1.8 1.8 4.2 2.8 6.8 2.8zm-2.8-5c2.7-.2 5.1-1.5 6.8-3.5C13 13.3 10 9.9 10 6c0-.8.1-1.6.3-2.4C7.4 4.5 5 7.4 5 10.9 5 14.3 7 16.7 9.5 17z"/></svg>`;
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function initApp() {
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 
@@ -42,29 +42,63 @@
       nav.appendChild(toggleBtn);
     }
 
-    // 3. Injecter le bouton de menu mobile (Hamburger)
+    // 3. Injecter le bouton de menu mobile (Hamburger) & Gestionnaire de fermeture robuste
     if (headerWrap && nav) {
       const menuToggle = document.createElement('button');
       menuToggle.className = 'menu-toggle';
       menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
       menuToggle.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line class="line-1" x1="4" y1="6" x2="20" y2="6"></line><line class="line-2" x1="4" y1="12" x2="20" y2="12"></line><line class="line-3" x1="4" y1="18" x2="20" y2="18"></line></svg>`;
       
+      function closeMobileNav() {
+        if (nav.classList.contains('active')) {
+          nav.classList.remove('active');
+          menuToggle.classList.remove('active');
+          menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
+        }
+      }
+
       menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
-        menuToggle.classList.toggle('active');
-        nav.classList.toggle('active');
-        const isActive = nav.classList.contains('active');
+        const isActive = nav.classList.toggle('active');
+        menuToggle.classList.toggle('active', isActive);
         menuToggle.setAttribute('aria-label', isActive ? 'Fermer le menu' : 'Ouvrir le menu');
+      });
+
+      // Fermer le menu mobile lors d'un clic sur un lien du menu
+      nav.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link) {
+          closeMobileNav();
+          // Fermer aussi les dropdowns
+          const dropdownsToClose = document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown');
+          dropdownsToClose.forEach(d => {
+            d.classList.remove('active');
+            const btn = d.querySelector('.nav-dropdown-btn, .nav-notif-btn');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+          });
+        }
       });
 
       // Fermer le menu si on clique en dehors
       document.addEventListener('click', (e) => {
         if (nav.classList.contains('active') && !nav.contains(e.target) && e.target !== menuToggle) {
-          nav.classList.remove('active');
-          menuToggle.classList.remove('active');
-          menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
+          closeMobileNav();
         }
       });
+
+      // Fermer le menu sur touche Échap
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeMobileNav();
+        }
+      });
+
+      // Réinitialiser si la fenêtre est redimensionnée en mode desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) {
+          closeMobileNav();
+        }
+      }, { passive: true });
       
       headerWrap.insertBefore(menuToggle, nav);
     }
@@ -447,27 +481,48 @@
 
     // 12. Dropdown Navigation Handler (Accessible click, hover, keyboard)
     const dropdowns = document.querySelectorAll('.nav-dropdown');
+    const notifDropdowns = document.querySelectorAll('.nav-notif-dropdown');
+
     dropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-dropdown-btn');
       if (!btn) return;
 
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        // Fermer les panneaux de notification
+        notifDropdowns.forEach(nd => {
+          nd.classList.remove('active');
+          const nb = nd.querySelector('.nav-notif-btn');
+          if (nb) nb.setAttribute('aria-expanded', 'false');
+        });
+
         const isOpen = dropdown.classList.toggle('active');
         btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (!isOpen) {
+          btn.blur();
+        }
+      });
+
+      // Fermer le dropdown lors d'un clic sur un élément interne
+      dropdown.querySelectorAll('.nav-dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          dropdown.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.blur();
+        });
       });
 
       dropdown.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           dropdown.classList.remove('active');
           btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
+          btn.blur();
         }
       });
     });
 
     // 12b. Gestion de la Cloche de Notification & Panneau d'Alerte Médias
-    const notifDropdowns = document.querySelectorAll('.nav-notif-dropdown');
     notifDropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-notif-btn');
       const closeBtn = dropdown.querySelector('.nav-notif-close');
@@ -479,11 +534,17 @@
         dropdowns.forEach(d => {
           d.classList.remove('active');
           const b = d.querySelector('.nav-dropdown-btn');
-          if (b) b.setAttribute('aria-expanded', 'false');
+          if (b) {
+            b.setAttribute('aria-expanded', 'false');
+            b.blur();
+          }
         });
 
         const isOpen = dropdown.classList.toggle('active');
         btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (!isOpen) {
+          btn.blur();
+        }
       });
 
       if (closeBtn) {
@@ -491,7 +552,7 @@
           e.stopPropagation();
           dropdown.classList.remove('active');
           btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
+          btn.blur();
         });
       }
 
@@ -499,7 +560,7 @@
         if (e.key === 'Escape') {
           dropdown.classList.remove('active');
           btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
+          btn.blur();
         }
       });
     });
@@ -509,7 +570,10 @@
         if (!dropdown.contains(e.target)) {
           dropdown.classList.remove('active');
           const btn = dropdown.querySelector('.nav-dropdown-btn');
-          if (btn) btn.setAttribute('aria-expanded', 'false');
+          if (btn) {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.blur();
+          }
         }
       });
 
@@ -517,7 +581,10 @@
         if (!dropdown.contains(e.target)) {
           dropdown.classList.remove('active');
           const btn = dropdown.querySelector('.nav-notif-btn');
-          if (btn) btn.setAttribute('aria-expanded', 'false');
+          if (btn) {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.blur();
+          }
         }
       });
     });
@@ -647,69 +714,139 @@
       });
     });
 
-    // 17. Carrousel Revue de Presse & Embeds Médias
+    // 17. Carrousel Revue de Presse & Embeds Médias (Moteur Slider basé sur Transform)
+    const carouselWrapper = document.querySelector('.press-carousel-wrapper');
     const carouselContainer = document.querySelector('.press-carousel-container');
     const prevBtn = document.querySelector('.js-carousel-prev');
     const nextBtn = document.querySelector('.js-carousel-next');
     const dots = document.querySelectorAll('.carousel-dot');
+    const cards = carouselContainer ? carouselContainer.querySelectorAll('.press-card') : [];
 
-    if (carouselContainer) {
-      const getScrollAmount = () => {
-        const firstCard = carouselContainer.querySelector('.press-card');
-        return firstCard ? (firstCard.getBoundingClientRect().width + 24) : 340;
+    if (carouselContainer && cards.length > 0) {
+      let currentIndex = 0;
+      let autoPlayTimer = null;
+
+      const getGap = () => 24;
+
+      const getCardWidth = () => {
+        const first = cards[0];
+        return first ? first.getBoundingClientRect().width : 340;
+      };
+
+      const getVisibleCards = () => {
+        const wrapWidth = carouselWrapper ? carouselWrapper.getBoundingClientRect().width : window.innerWidth;
+        const cardW = getCardWidth();
+        return Math.max(1, Math.floor(wrapWidth / (cardW + getGap())));
+      };
+
+      const getMaxIndex = () => {
+        const visible = getVisibleCards();
+        return Math.max(0, cards.length - visible);
+      };
+
+      const updateSlider = (index, smooth = true) => {
+        const maxIdx = getMaxIndex();
+        currentIndex = Math.max(0, Math.min(index, maxIdx));
+
+        const cardW = getCardWidth();
+        const gap = getGap();
+        const offset = currentIndex * (cardW + gap);
+
+        carouselContainer.style.transition = smooth ? 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)' : 'none';
+        carouselContainer.style.transform = `translateX(-${offset}px)`;
+
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+
+        if (prevBtn) {
+          prevBtn.style.opacity = currentIndex === 0 ? '0.45' : '1';
+          prevBtn.style.cursor = currentIndex === 0 ? 'default' : 'pointer';
+        }
+        if (nextBtn) {
+          nextBtn.style.opacity = currentIndex >= maxIdx ? '0.45' : '1';
+        }
       };
 
       if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          const amount = getScrollAmount();
-          carouselContainer.scrollBy({ left: -amount, behavior: 'smooth' });
+          if (currentIndex > 0) {
+            updateSlider(currentIndex - 1);
+          }
         });
       }
 
       if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          const amount = getScrollAmount();
-          carouselContainer.scrollBy({ left: amount, behavior: 'smooth' });
+          const maxIdx = getMaxIndex();
+          if (currentIndex < maxIdx) {
+            updateSlider(currentIndex + 1);
+          } else {
+            updateSlider(0); // Boucle au début
+          }
         });
       }
 
       dots.forEach((dot, idx) => {
         dot.addEventListener('click', (e) => {
           e.preventDefault();
-          const amount = getScrollAmount();
-          carouselContainer.scrollTo({ left: idx * amount, behavior: 'smooth' });
+          updateSlider(idx);
         });
       });
 
-      let scrollTimeout;
-      carouselContainer.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          const amount = getScrollAmount();
-          if (amount > 0) {
-            const idx = Math.min(dots.length - 1, Math.max(0, Math.round(carouselContainer.scrollLeft / amount)));
-            dots.forEach((d, i) => {
-              d.classList.toggle('active', i === idx);
-            });
-          }
-        }, 50);
+      // Navigation Tactile (Touch / Swipe)
+      let touchStartX = 0;
+      let touchCurrentX = 0;
+      let isTouching = false;
+
+      carouselContainer.addEventListener('touchstart', (e) => {
+        stopAutoPlay();
+        isTouching = true;
+        touchStartX = e.touches[0].clientX;
+        touchCurrentX = touchStartX;
+        carouselContainer.style.transition = 'none';
       }, { passive: true });
 
-      // Défilement automatique lent (Autoplay calme)
-      let autoPlayTimer = null;
+      carouselContainer.addEventListener('touchmove', (e) => {
+        if (!isTouching) return;
+        touchCurrentX = e.touches[0].clientX;
+        const diff = touchCurrentX - touchStartX;
+        const cardW = getCardWidth();
+        const gap = getGap();
+        const baseOffset = currentIndex * (cardW + gap);
+        carouselContainer.style.transform = `translateX(${-baseOffset + diff}px)`;
+      }, { passive: true });
+
+      carouselContainer.addEventListener('touchend', () => {
+        if (!isTouching) return;
+        isTouching = false;
+        const diff = touchCurrentX - touchStartX;
+        const threshold = 45;
+        const maxIdx = getMaxIndex();
+
+        if (diff < -threshold && currentIndex < maxIdx) {
+          updateSlider(currentIndex + 1);
+        } else if (diff > threshold && currentIndex > 0) {
+          updateSlider(currentIndex - 1);
+        } else {
+          updateSlider(currentIndex);
+        }
+        setTimeout(startAutoPlay, 3500);
+      }, { passive: true });
+
+      // Défilement automatique
       const startAutoPlay = () => {
         stopAutoPlay();
         autoPlayTimer = setInterval(() => {
-          const amount = getScrollAmount();
-          const maxScroll = carouselContainer.scrollWidth - carouselContainer.clientWidth - 10;
-          if (carouselContainer.scrollLeft >= maxScroll) {
-            carouselContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          const maxIdx = getMaxIndex();
+          if (currentIndex >= maxIdx) {
+            updateSlider(0);
           } else {
-            carouselContainer.scrollBy({ left: amount, behavior: 'smooth' });
+            updateSlider(currentIndex + 1);
           }
-        }, 4500);
+        }, 5000);
       };
 
       const stopAutoPlay = () => {
@@ -719,18 +856,20 @@
         }
       };
 
-      startAutoPlay();
+      if (carouselWrapper) {
+        carouselWrapper.addEventListener('mouseenter', stopAutoPlay);
+        carouselWrapper.addEventListener('mouseleave', startAutoPlay);
+        carouselWrapper.addEventListener('focusin', stopAutoPlay);
+        carouselWrapper.addEventListener('focusout', startAutoPlay);
+      }
 
-      // Pause automatique au survol ou à l'interaction tactile
-      const carouselWrapper = carouselContainer.closest('.press-carousel-wrapper') || carouselContainer;
-      carouselWrapper.addEventListener('mouseenter', stopAutoPlay);
-      carouselWrapper.addEventListener('mouseleave', startAutoPlay);
-      carouselWrapper.addEventListener('focusin', stopAutoPlay);
-      carouselWrapper.addEventListener('focusout', startAutoPlay);
-      carouselContainer.addEventListener('touchstart', stopAutoPlay, { passive: true });
-      carouselContainer.addEventListener('touchend', () => {
-        setTimeout(startAutoPlay, 3000);
+      window.addEventListener('resize', () => {
+        updateSlider(currentIndex, false);
       }, { passive: true });
+
+      // Initialisation immédiate
+      updateSlider(0, false);
+      startAutoPlay();
 
       // Audio Player Quotes Toggle
       const audioBtns = document.querySelectorAll('.js-press-audio-btn');
@@ -759,5 +898,12 @@
         });
       });
     }
-  });
+  }
+
+  // Initialisation sécurisée
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 })();

@@ -1354,42 +1354,95 @@ dialog.doc-dialog[open]::backdrop {
     left: 0;
     right: 0;
     background: var(--bg-card);
-    border-bottom: 1.5px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
     flex-direction: column;
-    padding: 24px;
-    gap: 16px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 20px 16px;
+    gap: 12px;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
     z-index: 999;
     border-radius: 0 0 16px 16px;
+    max-height: calc(100vh - 75px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   nav.active {
     display: flex;
-    animation: slideDown 0.3s ease-out forwards;
+    animation: slideDown 0.25s ease-out forwards;
   }
   
   @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
+    from { opacity: 0; transform: translateY(-8px); }
     to { opacity: 1; transform: translateY(0); }
   }
   
   nav a {
     margin-left: 0;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     width: 100%;
-    padding: 10px 0;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--line);
-    text-align: center;
+    text-align: left;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  nav a:hover,
+  nav a:active {
+    background: rgba(16, 185, 129, 0.08);
   }
   
   nav a:last-child {
     border-bottom: none;
   }
-  
-  nav .theme-btn {
+
+  .nav-dropdown {
+    width: 100%;
+    display: block;
+  }
+
+  .nav-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 14px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  .nav-dropdown-menu {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
+    box-shadow: none;
+    background: rgba(6, 40, 30, 0.75);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    box-sizing: border-box;
+  }
+
+  .nav-dropdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-notif-dropdown {
+    align-self: center;
+    margin: 4px 0;
+  }
+
+  .nav-notif-panel {
+    position: fixed;
+    top: 72px;
+    left: 16px;
+    right: 16px;
     width: auto;
-    margin: 10px auto 0;
+    max-width: calc(100vw - 32px);
+  }
+  
+  nav .theme-btn,
+  nav .theme-toggle-btn {
+    width: auto;
+    margin: 8px auto 0;
   }
 }
 
@@ -2522,10 +2575,14 @@ header.site {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.nav-dropdown:hover .nav-dropdown-menu,
-.nav-dropdown:focus-within .nav-dropdown-menu,
 .nav-dropdown.active .nav-dropdown-menu {
   display: block;
+}
+
+@media (hover: hover) and (min-width: 993px) {
+  .nav-dropdown:hover .nav-dropdown-menu {
+    display: block;
+  }
 }
 
 .nav-dropdown-group {
@@ -3228,43 +3285,44 @@ header.site {
 }
 
 .press-carousel-wrapper {
-  position: relative;
+  position: relative !important;
+  width: 100% !important;
+  overflow: hidden !important;
   margin-top: 24px;
+  border-radius: 20px;
+  padding: 8px 0 16px 0;
 }
 
 .press-carousel-container {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  padding: 12px 4px 28px 4px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(52, 211, 153, 0.3) transparent;
-}
-
-.press-carousel-container::-webkit-scrollbar {
-  height: 6px;
-}
-
-.press-carousel-container::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 99px;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 24px !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  margin: 0 !important;
+  padding: 8px 4px !important;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
 }
 
 .press-card {
-  flex: 0 0 calc(33.333% - 16px);
-  min-width: 300px;
-  max-width: 420px;
-  scroll-snap-align: start;
+  flex: 0 0 350px !important;
+  width: 350px !important;
+  min-width: 290px !important;
+  max-width: 400px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
   box-shadow: var(--shadow);
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
