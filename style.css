@@ -3012,9 +3012,101 @@ header.site {
   position: relative;
 }
 
+/* ==========================================
+   DÉROULEMENT CONTINU DES LOGOS DE PRESSE (TICKER)
+   ========================================== */
+.media-logos-ticker-wrapper {
+  margin: 28px 0 36px 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 16px;
+  background: rgba(4, 36, 27, 0.6);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  padding: 16px 0;
+}
+
+.media-logos-ticker-wrapper::before,
+.media-logos-ticker-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.media-logos-ticker-wrapper::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(4, 36, 27, 0.95), transparent);
+}
+
+.media-logos-ticker-wrapper::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(4, 36, 27, 0.95), transparent);
+}
+
+.media-logos-ticker-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  animation: mediaLogosScroll 35s linear infinite;
+}
+
+.media-logos-ticker-track:hover,
+.media-logos-ticker-track:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes mediaLogosScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-logos-ticker-track {
+    animation: none;
+  }
+}
+
+.media-logo-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 8px 18px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.media-logo-item:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(52, 211, 153, 0.3);
+}
+
+.media-logo-item.item-lapresse {
+  background: #E30613;
+}
+
+.media-logo-item.item-therover {
+  background: #111827;
+}
+
+.media-logo-item img {
+  max-height: 34px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  display: block;
+}
+
 .press-carousel-wrapper {
   position: relative;
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .press-carousel-container {
@@ -3025,7 +3117,8 @@ header.site {
   scroll-behavior: smooth;
   padding: 12px 4px 28px 4px;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(52, 211, 153, 0.3) transparent;
 }
 
 .press-carousel-container::-webkit-scrollbar {

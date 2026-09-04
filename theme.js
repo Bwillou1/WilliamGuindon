@@ -608,35 +608,48 @@
     const dots = document.querySelectorAll('.carousel-dot');
 
     if (carouselContainer) {
-      const scrollStep = () => {
+      const getScrollAmount = () => {
         const firstCard = carouselContainer.querySelector('.press-card');
-        return firstCard ? firstCard.offsetWidth + 24 : 320;
+        return firstCard ? (firstCard.getBoundingClientRect().width + 24) : 340;
       };
 
       if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          carouselContainer.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const amount = getScrollAmount();
+          carouselContainer.scrollBy({ left: -amount, behavior: 'smooth' });
         });
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          carouselContainer.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const amount = getScrollAmount();
+          carouselContainer.scrollBy({ left: amount, behavior: 'smooth' });
         });
       }
 
       dots.forEach((dot, idx) => {
-        dot.addEventListener('click', () => {
-          carouselContainer.scrollTo({ left: idx * scrollStep(), behavior: 'smooth' });
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          const amount = getScrollAmount();
+          carouselContainer.scrollTo({ left: idx * amount, behavior: 'smooth' });
         });
       });
 
+      let scrollTimeout;
       carouselContainer.addEventListener('scroll', () => {
-        const idx = Math.round(carouselContainer.scrollLeft / scrollStep());
-        dots.forEach((d, i) => {
-          d.classList.toggle('active', i === idx);
-        });
-      });
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const amount = getScrollAmount();
+          if (amount > 0) {
+            const idx = Math.min(dots.length - 1, Math.max(0, Math.round(carouselContainer.scrollLeft / amount)));
+            dots.forEach((d, i) => {
+              d.classList.toggle('active', i === idx);
+            });
+          }
+        }, 50);
+      }, { passive: true });
 
       // Audio Player Quotes Toggle
       const audioBtns = document.querySelectorAll('.js-press-audio-btn');
