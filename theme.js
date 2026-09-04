@@ -651,6 +651,41 @@
         }, 50);
       }, { passive: true });
 
+      // Défilement automatique lent (Autoplay calme)
+      let autoPlayTimer = null;
+      const startAutoPlay = () => {
+        stopAutoPlay();
+        autoPlayTimer = setInterval(() => {
+          const amount = getScrollAmount();
+          const maxScroll = carouselContainer.scrollWidth - carouselContainer.clientWidth - 10;
+          if (carouselContainer.scrollLeft >= maxScroll) {
+            carouselContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            carouselContainer.scrollBy({ left: amount, behavior: 'smooth' });
+          }
+        }, 4500);
+      };
+
+      const stopAutoPlay = () => {
+        if (autoPlayTimer) {
+          clearInterval(autoPlayTimer);
+          autoPlayTimer = null;
+        }
+      };
+
+      startAutoPlay();
+
+      // Pause automatique au survol ou à l'interaction tactile
+      const carouselWrapper = carouselContainer.closest('.press-carousel-wrapper') || carouselContainer;
+      carouselWrapper.addEventListener('mouseenter', stopAutoPlay);
+      carouselWrapper.addEventListener('mouseleave', startAutoPlay);
+      carouselWrapper.addEventListener('focusin', stopAutoPlay);
+      carouselWrapper.addEventListener('focusout', startAutoPlay);
+      carouselContainer.addEventListener('touchstart', stopAutoPlay, { passive: true });
+      carouselContainer.addEventListener('touchend', () => {
+        setTimeout(startAutoPlay, 3000);
+      }, { passive: true });
+
       // Audio Player Quotes Toggle
       const audioBtns = document.querySelectorAll('.js-press-audio-btn');
       audioBtns.forEach(btn => {
