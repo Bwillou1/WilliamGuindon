@@ -1836,104 +1836,221 @@ ul.timeline li.active-node strong,
   border-bottom: 1px solid var(--line);
 }
 
-/* Fil d'Alerte TV en Continu (Breaking News Ticker) */
-.tv-ticker-bar {
-  background: #090e17;
-  border-bottom: 2px solid #ef4444;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  height: 42px;
-  font-size: 13.5px;
-  font-weight: 600;
+/* ==========================================
+   CLOCHE DE NOTIFICATION & PANNEAU D'ALERTE MÉDIA
+   ========================================== */
+.nav-notif-dropdown {
   position: relative;
-  z-index: 90;
-}
-
-.tv-ticker-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: #dc2626;
-  color: #ffffff;
-  padding: 0 16px;
-  height: 100%;
-  font-size: 11.5px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  z-index: 2;
-  box-shadow: 4px 0 12px rgba(0,0,0,0.5);
-  flex-shrink: 0;
 }
 
-.tv-ticker-pulse {
+.nav-notif-btn {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  color: var(--text);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+}
+
+.nav-notif-btn:hover,
+.nav-notif-btn[aria-expanded="true"] {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--accent);
+  transform: scale(1.06);
+}
+
+.nav-notif-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border: 2px solid var(--bg-card);
+  border-radius: 50%;
+  animation: notifBadgePulse 2s ease-in-out infinite;
+}
+
+@keyframes notifBadgePulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.nav-notif-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 340px;
+  max-width: calc(100vw - 28px);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .nav-notif-panel,
+body.dark-theme .nav-notif-panel {
+  background: rgba(6, 40, 30, 0.95);
+  border-color: rgba(52, 211, 153, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(16px);
+}
+
+.nav-notif-dropdown.active .nav-notif-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(16, 185, 129, 0.08);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-notif-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-notif-pulse {
   width: 8px;
   height: 8px;
-  background: #ffffff;
+  background: #ef4444;
   border-radius: 50%;
-  animation: tvPulse 2s ease-in-out infinite alternate;
+  animation: notifBadgePulse 2s ease-in-out infinite;
 }
 
-@keyframes tvPulse {
-  from { opacity: 0.6; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1.1); }
+.nav-notif-header h4 {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
 }
 
-.tv-ticker-track {
-  flex-grow: 1;
-  overflow: hidden;
-  white-space: nowrap;
+[data-theme="dark"] .nav-notif-header h4,
+body.dark-theme .nav-notif-header h4 {
+  color: #ffffff;
+}
+
+.nav-notif-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.nav-notif-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text);
+}
+
+.nav-notif-body {
+  padding: 16px;
+}
+
+.notif-item {
   display: flex;
-  align-items: center;
-  position: relative;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.tv-ticker-content {
-  display: inline-flex;
-  align-items: center;
-  gap: 48px;
-  white-space: nowrap;
-  animation: tvTickerScroll 75s linear infinite;
-  padding-left: 100%;
+.notif-item-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.tv-ticker-bar:hover .tv-ticker-content,
-.tv-ticker-bar:focus-within .tv-ticker-content {
-  animation-play-state: paused;
+.notif-item-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--text);
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tv-ticker-content {
-    animation: none;
-    padding-left: 0;
-    overflow-x: auto;
-  }
+[data-theme="dark"] .notif-item-title,
+body.dark-theme .notif-item-title {
+  color: #ffffff;
 }
 
-@keyframes tvTickerScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+.notif-item-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 0;
 }
 
-.tv-ticker-link {
-  color: #f3f4f6;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
+.notif-item-links {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  transition: color 0.15s ease;
+  margin-top: 10px;
 }
 
-.tv-ticker-link:hover {
-  color: #34d399;
-  text-decoration: underline;
+.notif-link-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
 }
 
-.tv-ticker-sep {
-  color: #ef4444;
-  font-weight: 900;
+.notif-link-primary {
+  background: var(--accent);
+  color: #042f2e;
+}
+
+.notif-link-primary:hover {
+  background: #34d399;
+}
+
+.notif-link-ghost {
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+[data-theme="dark"] .notif-link-ghost,
+body.dark-theme .notif-link-ghost {
+  color: #f3f4f6;
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+.notif-link-ghost:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--accent);
 }
 
 /* Horloge Précise (Days, Hours, Mins, Secs) */
