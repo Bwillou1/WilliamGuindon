@@ -288,6 +288,15 @@
     }
 
     const css = [];
+
+    // Thème forcé
+    if (state.forceDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (state.forceLightMode) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+
+    // 1-8. Commutateurs de base
     if (state.disableAnimations) {
       css.push('* { animation: none !important; transition: none !important; }');
     }
@@ -311,6 +320,77 @@
     }
     if (state.disablePDF) {
       css.push('a[href$=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"] { display: none !important; }');
+    }
+
+    // 9-28. Les 20 Nouveaux Commutateurs
+    if (state.highContrastMode) {
+      css.push('html { filter: contrast(175%) !important; }');
+      css.push('body { background: #000000 !important; color: #ffffff !important; }');
+    }
+    if (state.disableSounds) {
+      css.push('audio, video { pointer-events: none !important; }');
+      document.querySelectorAll('audio, video').forEach(media => {
+        try { media.pause(); media.muted = true; } catch(_) {}
+      });
+    }
+    if (state.disableExternalTracking) {
+      css.push('iframe[src*="google"], iframe[src*="youtube"], iframe[src*="cal.com"], iframe[src*="felt"], iframe[src*="vimeo"] { display: none !important; }');
+    }
+    if (state.disableModals) {
+      css.push('dialog, .modal, .popup, [role="dialog"], .backdrop, .modal-backdrop { display: none !important; pointer-events: none !important; }');
+    }
+    if (state.hideContactForms) {
+      css.push('form, .contact-box, .media-contact-box, a[href^="mailto:"], a[href*="cal.com"], .booking-widget { display: none !important; }');
+    }
+    if (state.disableSmoothScroll) {
+      css.push('html, body, * { scroll-behavior: auto !important; }');
+    }
+    if (state.disableHeaderSticky) {
+      css.push('header.site, header, .nav-sticky, .sticky { position: static !important; }');
+    }
+    if (state.hideSocialButtons) {
+      css.push('.social-links, .nav-social, a[href*="twitter.com"], a[href*="x.com"], a[href*="facebook.com"], a[href*="linkedin.com"], a[href*="instagram.com"], a[href*="youtube.com"], .share-btn, .social-icon { display: none !important; }');
+    }
+    if (state.hidePressSection) {
+      css.push('#presse, .presse-section, a[href*="presse.html"], a[href*="communiques.html"], .press-card, .communique-item { display: none !important; }');
+    }
+    if (state.hideTimeline) {
+      css.push('.timeline, .chronology, #timeline, .timeline-item, .steps-container, .cce-timeline { display: none !important; }');
+    }
+    if (state.disableTooltips) {
+      css.push('.tooltip, [data-tooltip]:after, [data-tooltip]:before, .badge-floating, .floating-badge { display: none !important; }');
+    }
+    if (state.monochromeMode) {
+      css.push('html, body { filter: grayscale(100%) !important; }');
+    }
+    if (state.disableSearchFilters) {
+      css.push('input[type="search"], .search-box, .filter-btn, .filter-bar, .search-container, .table-filters { display: none !important; }');
+    }
+    if (state.disableMaps) {
+      css.push('#map, .leaflet-container, .felt-container, #felt-map, iframe[src*="felt"], iframe[src*="openstreetmap"], .map-wrapper { display: none !important; }');
+    }
+    if (state.dyslexiaFont) {
+      css.push('body, body * { font-family: "OpenDyslexic", "Comic Sans MS", Arial, sans-serif !important; letter-spacing: 0.08em !important; word-spacing: 0.15em !important; line-height: 1.85 !important; }');
+    }
+    if (state.hideBioSection) {
+      css.push('#bio, .bio-section, .author-profile, .about-section, .biography, .bio-card { display: none !important; }');
+    }
+    if (state.disableBackToTop) {
+      css.push('#backToTop, .scroll-to-top, .back-to-top-btn, a[href="#top"], .leaf-scroll-top { display: none !important; }');
+    }
+
+    // Bannière d'alerte défilante urgente
+    if (state.emergencyBannerOnly) {
+      if (!document.getElementById('wg-emergency-marquee')) {
+        const marq = document.createElement('div');
+        marq.id = 'wg-emergency-marquee';
+        marq.style.cssText = 'position:fixed;bottom:0;left:0;width:100vw;background:#ef4444;color:#ffffff;font-weight:800;font-size:13px;padding:8px 16px;text-align:center;z-index:9999998;box-shadow:0 -4px 15px rgba(0,0,0,0.5);letter-spacing:0.5px;';
+        marq.innerHTML = '🚨 <strong>ALERTE OFFICIELLE :</strong> Mode d\'information prioritaire activé par l\'administration.';
+        document.body.appendChild(marq);
+      }
+    } else {
+      const marq = document.getElementById('wg-emergency-marquee');
+      if (marq) marq.remove();
     }
 
     styleEl.textContent = css.join('\n');

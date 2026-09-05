@@ -299,11 +299,15 @@
       </div>
     </div>
 
-    <!-- MATRICE DE COMMUTATEURS ON/OFF -->
+    <!-- MATRICE DE COMMUTATEURS ON/OFF (28 COMMUTATEURS FONCTIONNELS) -->
     <div class="terminal-card">
-      <div class="terminal-card-title">🎛️ Commutateurs Individuels de Fonctionnalités (Kill-Switches)</div>
-      <div class="terminal-card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site pour tous les visiteurs.</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+        <div class="terminal-card-title" style="margin:0;">🎛️ Matrice des 28 Commutateurs Individuels (Kill-Switches)</div>
+        <span style="font-size:12px; background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid #22c55e; padding:3px 10px; border-radius:12px; font-weight:700;">Temps Réel 0ms</span>
+      </div>
+      <div class="terminal-card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site. Les changements s'appliquent instantanément sur tous les navigateurs sans recharger la page.</div>
       
+      <div style="font-size:12.5px; font-weight:700; color:#38bdf8; margin:16px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🔒 Sécurité, Données & Navigation</div>
       <div class="switch-grid">
         <div class="switch-item">
           <span class="switch-label">🤖 Désactiver toutes les IA</span>
@@ -322,20 +326,108 @@
           <input type="checkbox" class="toggle-checkbox" id="sw-disableNavLinks" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🌐 Désactiver Module Traduction</span>
-          <input type="checkbox" class="toggle-checkbox" id="sw-disableTranslation" onchange="updateSwitches()">
+          <span class="switch-label">🛡️ Bloquer Trackers & Widgets Externes</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableExternalTracking" onchange="updateSwitches()">
         </div>
+        <div class="switch-item">
+          <span class="switch-label">🛑 Désactiver Boîtes Modales & Popups</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableModals" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">✉️ Masquer Formulaires de Contact</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-hideContactForms" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">🔍 Désactiver Barres de Recherche</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableSearchFilters" onchange="updateSwitches()">
+        </div>
+      </div>
+
+      <div style="font-size:12.5px; font-weight:700; color:#facc15; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🎬 Médias, Contenus & Documents</div>
+      <div class="switch-grid">
         <div class="switch-item">
           <span class="switch-label">🎬 Désactiver Médias (Images/Audio)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableMedia" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">🔇 Couper Tous les Sons (Mute Total)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableSounds" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">📄 Désactiver Téléchargement PDF</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disablePDF" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">🗺️ Désactiver Cartes Interactives (GIS)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableMaps" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">📰 Masquer Section Presse & Médias</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-hidePressSection" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">⏳ Masquer Chronologie / Timeline CCE</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-hideTimeline" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">👤 Masquer Biographie & Profil</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-hideBioSection" onchange="updateSwitches()">
+        </div>
+      </div>
+
+      <div style="font-size:12.5px; font-weight:700; color:#a78bfa; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🎨 Affichage, Accessibilité & Ergonomie</div>
+      <div class="switch-grid">
+        <div class="switch-item">
+          <span class="switch-label">🌙 Forcer Mode Sombre (Dark)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-forceDarkMode" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">☀️ Forcer Mode Clair (Light)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-forceLightMode" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">🔲 Forcer Contraste Élevé</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-highContrastMode" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">⬛ Mode Noir & Blanc (Monochrome)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-monochromeMode" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">📖 Police Adaptée Dyslexie</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-dyslexiaFont" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
           <span class="switch-label">✨ Désactiver Animations CSS</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableAnimations" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📄 Désactiver Téléchargement PDF</span>
-          <input type="checkbox" class="toggle-checkbox" id="sw-disablePDF" onchange="updateSwitches()">
+          <span class="switch-label">📜 Désactiver Défilement Fluide</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableSmoothScroll" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">📌 Désactiver Navigation Flottante (Sticky)</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableHeaderSticky" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">🌐 Désactiver Module Traduction</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableTranslation" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">👥 Masquer Liens Réseaux Sociaux</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-hideSocialButtons" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">💬 Masquer Infobulles & Badges</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableTooltips" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item">
+          <span class="switch-label">⬆️ Masquer Bouton « Retour en Haut »</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-disableBackToTop" onchange="updateSwitches()">
+        </div>
+        <div class="switch-item" style="grid-column: 1 / -1; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.05);">
+          <span class="switch-label" style="color:#f87171; font-weight:700;">🚨 Activer le Bandeau Rouge Défilant d'Urgence</span>
+          <input type="checkbox" class="toggle-checkbox" id="sw-emergencyBannerOnly" onchange="updateSwitches()">
         </div>
       </div>
     </div>
@@ -819,27 +911,24 @@
     preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
   }
 
+  const ALL_SWITCH_KEYS = [
+    "disableAI", "disableCopyPaste", "disableIframes", "disableNavLinks",
+    "disableTranslation", "disableMedia", "disableAnimations", "disablePDF",
+    "forceDarkMode", "forceLightMode", "highContrastMode", "disableSounds",
+    "disableExternalTracking", "disableModals", "hideContactForms", "disableSmoothScroll",
+    "emergencyBannerOnly", "disableHeaderSticky", "hideSocialButtons", "hidePressSection",
+    "hideTimeline", "disableTooltips", "monochromeMode", "disableSearchFilters",
+    "disableMaps", "dyslexiaFont", "hideBioSection", "disableBackToTop"
+  ];
+
   function loadCurrentState() {
     const state = getSiteState();
     const now = Date.now();
 
-    const swAI = document.getElementById("sw-disableAI");
-    const swCP = document.getElementById("sw-disableCopyPaste");
-    const swIF = document.getElementById("sw-disableIframes");
-    const swNL = document.getElementById("sw-disableNavLinks");
-    const swTR = document.getElementById("sw-disableTranslation");
-    const swMD = document.getElementById("sw-disableMedia");
-    const swAN = document.getElementById("sw-disableAnimations");
-    const swPDF = document.getElementById("sw-disablePDF");
-
-    if (swAI) swAI.checked = !!state.disableAI;
-    if (swCP) swCP.checked = !!state.disableCopyPaste;
-    if (swIF) swIF.checked = !!state.disableIframes;
-    if (swNL) swNL.checked = !!state.disableNavLinks;
-    if (swTR) swTR.checked = !!state.disableTranslation;
-    if (swMD) swMD.checked = !!state.disableMedia;
-    if (swAN) swAN.checked = !!state.disableAnimations;
-    if (swPDF) swPDF.checked = !!state.disablePDF;
+    ALL_SWITCH_KEYS.forEach(key => {
+      const el = document.getElementById("sw-" + key);
+      if (el) el.checked = !!state[key];
+    });
 
     const maintPill = document.getElementById("maint-status-pill");
     if (maintPill) {
@@ -937,14 +1026,10 @@
 
   function updateSwitches() {
     const state = getSiteState();
-    state.disableAI = document.getElementById("sw-disableAI").checked;
-    state.disableCopyPaste = document.getElementById("sw-disableCopyPaste").checked;
-    state.disableIframes = document.getElementById("sw-disableIframes").checked;
-    state.disableNavLinks = document.getElementById("sw-disableNavLinks").checked;
-    state.disableTranslation = document.getElementById("sw-disableTranslation").checked;
-    state.disableMedia = document.getElementById("sw-disableMedia").checked;
-    state.disableAnimations = document.getElementById("sw-disableAnimations").checked;
-    state.disablePDF = document.getElementById("sw-disablePDF").checked;
+    ALL_SWITCH_KEYS.forEach(key => {
+      const el = document.getElementById("sw-" + key);
+      if (el) state[key] = el.checked;
+    });
     saveAndSyncSiteState(state);
   }
 
