@@ -1,6 +1,6 @@
 /**
  * SENTINELLE DE SÉCURITÉ RADICALE — williamguindon.me
- * Protège le site contre le clonage, applique le blackout, le mode panique et les kill-switches.
+ * Protège le site contre le clonage/fork, applique le blackout global, le mode panique et les kill-switches.
  */
 (function () {
   'use strict';
@@ -29,103 +29,128 @@
     throw new Error("Arrêt sentinelle : domaine non autorisé.");
   }
 
-  // 2. CHARGEMENT DE L'ÉTAT DU SITE
-  let state = {};
-  try {
-    state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch (e) {
-    state = {};
-  }
-
-  const now = Date.now();
-
   // Ne pas bloquer la console admin elle-même
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
 
-  // 3. VÉRIFICATION DU MODE BLACKOUT / MAINTENANCE TOTALE
-  if (state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil) {
-    window.addEventListener('DOMContentLoaded', () => {
+  // 2. GESTION DE L'ÉTAT (LOCAL & SYNCHRONISÉ DEPUIS GITHUB)
+  function applyState(state) {
+    if (!state) return;
+    const now = Date.now();
+
+    // A. Mode Blackout / Maintenance Totale
+    if (state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil) {
       renderMaintenanceScreen(state.maintenanceUntil);
-    });
-    return;
+      return;
+    }
+
+    // B. Mode Cyber-Attaque / Panique
+    if (state.panicActive && state.panicUntil && now < state.panicUntil) {
+      applyPanicMode(state.panicTextOnly);
+    }
+
+    // C. Commutateurs individuels (Kill-Switches)
+    applyKillSwitches(state);
   }
 
-  // 4. VÉRIFICATION DU MODE CYBER-ATTAQUE / PANIQUE
-  if (state.panicActive && state.panicUntil && now < state.panicUntil) {
-    // Verrouillage DevTools
-    document.addEventListener('contextmenu', e => e.preventDefault());
+  // Application immédiate depuis le stockage local (anti-flicker)
+  try {
+    const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    applyState(cached);
+  } catch (e) {}
+
+  // Synchronisation distante continue depuis data/site-state.json
+  fetch('data/site-state.json?_t=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .then(remoteState => {
+      if (remoteState) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
+        applyState(remoteState);
+      }
+    })
+    .catch(() => {});
+
+  // ==========================================
+  // LOGIQUES D'APPLICATION SPÉCIFIQUES
+  // ==========================================
+
+  function applyPanicMode(forceTextOnly) {
+    // Verrouillage DevTools & Clavier
+    document.addEventListener('contextmenu', e => e.preventDefault(), true);
     document.addEventListener('keydown', e => {
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
+        e.stopPropagation();
       }
-    });
+    }, true);
 
-    window.addEventListener('DOMContentLoaded', () => {
+    const onReady = () => {
       renderPanicModeBanner();
-      if (state.panicTextOnly) {
+      if (forceTextOnly) {
         renderTextOnlyMode();
       }
-    });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', onReady);
+    } else {
+      onReady();
+    }
   }
 
-  // 5. APPLICATION DES COMMUTATEURS SÉLECTIFS (KILL-SWITCHES)
-  window.addEventListener('DOMContentLoaded', () => {
-    // Désactiver Copier/Coller
-    if (state.disableCopyPaste) {
-      document.addEventListener('copy', e => e.preventDefault());
-      document.addEventListener('cut', e => e.preventDefault());
-      document.body.style.userSelect = 'none';
-      document.body.style.webkitUserSelect = 'none';
+  function applyKillSwitches(state) {
+    const onReady = () => {
+      if (state.disableCopyPaste) {
+        document.addEventListener('copy', e => e.preventDefault(), true);
+        document.addEventListener('cut', e => e.preventDefault(), true);
+        document.body.style.userSelect = 'none';
+        document.body.style.webkitUserSelect = 'none';
+      }
+
+      if (state.disableIframes) {
+        document.querySelectorAll('iframe').forEach(f => f.remove());
+      }
+
+      if (state.disableNavLinks) {
+        document.querySelectorAll('a').forEach(a => {
+          if (!a.href.includes('#') && !a.classList.contains('allow-emergency')) {
+            a.addEventListener('click', e => {
+              e.preventDefault();
+              alert("Navigation temporairement restreinte par l'administrateur.");
+            });
+            a.style.cursor = 'not-allowed';
+            a.style.opacity = '0.6';
+          }
+        });
+      }
+
+      if (state.disableMedia) {
+        document.querySelectorAll('img, video, audio, picture, source').forEach(m => {
+          m.style.display = 'none';
+        });
+      }
+
+      if (state.disableTranslation) {
+        const gEl = document.getElementById('google_translate_element');
+        if (gEl) gEl.remove();
+        const drop = document.querySelector('.nav-translate-dropdown');
+        if (drop) drop.style.display = 'none';
+      }
+
+      if (state.disableAnimations) {
+        const noAnimStyle = document.createElement('style');
+        noAnimStyle.innerHTML = '* { animation: none !important; transition: none !important; }';
+        document.head.appendChild(noAnimStyle);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', onReady);
+    } else {
+      onReady();
     }
+  }
 
-    // Désactiver les Iframes
-    if (state.disableIframes) {
-      document.querySelectorAll('iframe').forEach(f => f.remove());
-    }
-
-    // Désactiver les Liens de navigation
-    if (state.disableNavLinks) {
-      document.querySelectorAll('a').forEach(a => {
-        if (!a.href.includes('#') && !a.classList.contains('allow-emergency')) {
-          a.addEventListener('click', e => {
-            e.preventDefault();
-            alert("Navigation temporairement restreinte par l'administrateur.");
-          });
-          a.style.cursor = 'not-allowed';
-          a.style.opacity = '0.6';
-        }
-      });
-    }
-
-    // Désactiver Médias
-    if (state.disableMedia) {
-      document.querySelectorAll('img, video, audio, picture, source').forEach(m => {
-        m.style.display = 'none';
-      });
-    }
-
-    // Désactiver le Module de Traduction
-    if (state.disableTranslation) {
-      const gEl = document.getElementById('google_translate_element');
-      if (gEl) gEl.remove();
-      const drop = document.querySelector('.nav-translate-dropdown');
-      if (drop) drop.style.display = 'none';
-    }
-
-    // Désactiver les animations
-    if (state.disableAnimations) {
-      const noAnimStyle = document.createElement('style');
-      noAnimStyle.innerHTML = '* { animation: none !important; transition: none !important; }';
-      document.head.appendChild(noAnimStyle);
-    }
-  });
-
-  // ==========================================
-  // FONCTIONS DE RENDU SPÉCIFIQUES
-  // ==========================================
-
-  // Rendu de la page de maintenance inviolable (Blackout)
   function renderMaintenanceScreen(untilTimestamp) {
     // Génération / Récupération de l'identifiant de session
     const sessionId = (sessionStorage.getItem('wg_sid') || (function() {
@@ -142,7 +167,7 @@
     const safeEmail = getObfuscatedEmail(sessionId);
     const timeLeftMin = Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000));
 
-    document.body.innerHTML = `
+    const html = `
       <div id="maint-wrapper" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#060a08;color:#f0fdf4;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;z-index:9999999;padding:20px;box-sizing:border-box;">
         <div style="background:#0f1713;border:1.5px solid #1f2922;border-radius:16px;padding:36px;max-width:580px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.9);text-align:center;">
           <div style="font-size:42px;margin-bottom:12px;">🚧</div>
@@ -169,18 +194,24 @@
         </div>
       </div>
     `;
+
+    if (document.body) {
+      document.body.innerHTML = html;
+    } else {
+      document.addEventListener('DOMContentLoaded', () => { document.body.innerHTML = html; });
+    }
   }
 
-  // Rendu de la bannière d'alerte jaune (Mode Panique)
   function renderPanicModeBanner() {
+    if (document.getElementById('panic-alert-banner')) return;
     const banner = document.createElement('div');
+    banner.id = 'panic-alert-banner';
     banner.style.cssText = 'position:fixed;top:0;left:0;width:100vw;background:#eab308;color:#000000;font-weight:800;font-size:13px;padding:10px 16px;text-align:center;z-index:999999;box-shadow:0 4px 20px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;gap:8px;';
     banner.innerHTML = `⚠️ <span>Un bug informatique ou une anomalie a été détecté. Plusieurs fonctions ont été désactivées temporairement pour votre sécurité.</span>`;
     document.body.prepend(banner);
     document.body.style.paddingTop = '40px';
   }
 
-  // Rendu en mode texte pur ultra-minimaliste
   function renderTextOnlyMode() {
     const textContent = document.body.innerText;
     document.body.innerHTML = `

@@ -108,6 +108,23 @@
   .switch-label { font-size: 12.5px; font-weight: 600; }
   .toggle-checkbox { width: 42px; height: 22px; cursor: pointer; accent-color: var(--accent); }
 
+  /* Notification toast */
+  .toast-box {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #042f2e;
+    border: 1.5px solid var(--accent);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    display: none;
+    z-index: 100000;
+  }
+
   /* Sas d'authentification */
   #auth-overlay {
     position: fixed;
@@ -187,7 +204,7 @@
           <option value="2880">48 Heures</option>
         </select>
       </div>
-      <button class="btn btn-accent" onclick="toggleMaintenance(true)">Activer le Blackout</button>
+      <button class="btn btn-accent" id="btn-toggle-maint-on" onclick="toggleMaintenance(true)">Activer le Blackout</button>
       <button class="btn" style="background:var(--border); color:#fff;" onclick="toggleMaintenance(false)">Désactiver</button>
     </div>
   </div>
@@ -218,7 +235,7 @@
         <input type="checkbox" id="panic-text-only" style="width:auto;">
         <label for="panic-text-only" style="margin:0;">Forcer le mode texte pur (.txt)</label>
       </div>
-      <button class="btn btn-warning" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
+      <button class="btn btn-warning" id="btn-toggle-panic-on" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
       <button class="btn" style="background:var(--border); color:#fff;" onclick="triggerPanicMode(false)">Rétablir</button>
     </div>
   </div>
@@ -226,7 +243,7 @@
   <!-- MATRICE DE COMMUTATEURS ON/OFF -->
   <div class="card">
     <div class="card-title">🎛️ Commutateurs Individuels de Fonctionnalités (Kill-Switches)</div>
-    <div class="card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site.</div>
+    <div class="card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site pour tous les visiteurs.</div>
     
     <div class="switch-grid">
       <div class="switch-item">
@@ -265,11 +282,20 @@
   </div>
 </div>
 
+<div class="toast-box" id="toast-box"></div>
+
 <script>
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
   const STORAGE_KEY = "wg_radical_site_state";
   const VALID_HASH = "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595"; // Master Admin SHA-256 Hash
+
+  function showToast(msg) {
+    const t = document.getElementById("toast-box");
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(() => { t.style.display = "none"; }, 4000);
+  }
 
   async function sha256Hex(text) {
     const data = new TextEncoder().encode(text);
@@ -334,10 +360,51 @@
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   }
 
-  function saveSiteState(state) {
+  async function saveAndSyncSiteState(state) {
+    state.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    alert("✅ Configuration enregistrée et appliquée instantanément !");
     loadCurrentState();
+    showToast("💾 Sauvegardé en local. Synchronisation GitHub en cours...");
+
+    const token = localStorage.getItem("wg_github_pat");
+    if (!token) return;
+
+    try {
+      const filePath = "data/site-state.json";
+      // Récupérer le SHA actuel du fichier sur GitHub
+      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}`, {
+        headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.v3+json" }
+      });
+      let sha = null;
+      if (fileRes.ok) {
+        const fileData = await fileRes.json();
+        sha = fileData.sha;
+      }
+
+      const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2))));
+      const putRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.v3+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "chore(security): mise à jour globale de l'état du site via la console de commande",
+          content: contentB64,
+          ...(sha ? { sha: sha } : {})
+        })
+      });
+
+      if (putRes.ok) {
+        showToast("✅ État global synchronisé et publié sur GitHub pour tous les visiteurs !");
+      } else {
+        showToast("⚠️ Enregistré en local (échec synchronisation GitHub).");
+      }
+    } catch (err) {
+      console.warn("Erreur sync GitHub:", err);
+      showToast("⚠️ Enregistré en local.");
+    }
   }
 
   function loadCurrentState() {
@@ -379,12 +446,12 @@
       state.maintenanceActive = false;
       state.maintenanceUntil = 0;
     }
-    saveSiteState(state);
+    saveAndSyncSiteState(state);
   }
 
   function triggerPanicMode(activate) {
     if (activate) {
-      const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique et durcir drastiquement le site ?");
+      const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique et durcir drastiquement le site pour tous les visiteurs ?");
       if (!confirmAction) return;
       const mins = parseInt(document.getElementById("panic-duration").value, 10);
       const textOnly = document.getElementById("panic-text-only").checked;
@@ -392,13 +459,13 @@
       state.panicActive = true;
       state.panicUntil = Date.now() + (mins * 60000);
       state.panicTextOnly = textOnly;
-      saveSiteState(state);
+      saveAndSyncSiteState(state);
     } else {
       const state = getSiteState();
       state.panicActive = false;
       state.panicUntil = 0;
       state.panicTextOnly = false;
-      saveSiteState(state);
+      saveAndSyncSiteState(state);
     }
   }
 
@@ -412,7 +479,7 @@
     state.disableMedia = document.getElementById("sw-disableMedia").checked;
     state.disableAnimations = document.getElementById("sw-disableAnimations").checked;
     state.disablePDF = document.getElementById("sw-disablePDF").checked;
-    saveSiteState(state);
+    saveAndSyncSiteState(state);
   }
 
   window.addEventListener("DOMContentLoaded", () => {
