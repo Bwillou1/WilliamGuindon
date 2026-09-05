@@ -248,12 +248,18 @@
 
     <!-- MODE RADICAL 1 : BLACKOUT -->
     <div class="terminal-card" style="border-left: 4px solid var(--accent);">
-      <div class="terminal-card-title">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
+        <div id="maint-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid #166534;">
+          Inactif
+        </div>
+      </div>
       <div class="terminal-card-desc">Redirige instantanément 100 % des visiteurs vers la page de secours sécurisée avec obfuscation dynamique de l'email et archives officielles CCE.</div>
       <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-        <div style="flex:1; min-width:220px;">
-          <label class="form-label" for="maint-duration">Durée du Blackout (en minutes) :</label>
-          <input type="number" id="maint-duration" class="form-control" value="1440" min="1" step="1" placeholder="Ex: 1, 60, 180, 1440, 945543...">
+        <div style="flex:1; min-width:240px;">
+          <label class="form-label" for="maint-duration">Durée du Blackout (en minutes ou texte libre) :</label>
+          <input type="text" id="maint-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 180, 1440, 945543..." oninput="updateMaintTimePreview()">
+          <div id="maint-duration-preview" style="font-size:11.5px; color:#4ade80; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
         </div>
         <button class="btn btn-primary" onclick="toggleMaintenance(true)">Activer le Blackout</button>
         <button class="btn btn-ghost" onclick="toggleMaintenance(false)">🔒 Désactiver (Mot de passe requis)</button>
@@ -271,12 +277,18 @@
 
     <!-- MODE RADICAL 3 : CYBER-ATTAQUE / PANIQUE -->
     <div class="terminal-card" style="border-left: 4px solid #eab308;">
-      <div class="terminal-card-title">🚨 MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">🚨 MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
+        <div id="panic-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(234,179,8,0.1); color:#eab308; border:1px solid rgba(234,179,8,0.3);">
+          Inactif
+        </div>
+      </div>
       <div class="terminal-card-desc">Bannière jaune d'alerte, blocage F12 / clic droit / raccourcis console, désactivation des URLs externes, option mode texte pur minimaliste.</div>
       <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-        <div style="flex:1; min-width:220px;">
-          <label class="form-label" for="panic-duration">Durée du Mode Panique (en minutes) :</label>
-          <input type="number" id="panic-duration" class="form-control" value="120" min="1" step="1" placeholder="Ex: 1, 30, 120, 720, 945543...">
+        <div style="flex:1; min-width:240px;">
+          <label class="form-label" for="panic-duration">Durée du Mode Panique (en minutes ou texte libre) :</label>
+          <input type="text" id="panic-duration" class="form-control" value="120" placeholder="Ex: 1 min, 30, 120, 720, 945543..." oninput="updatePanicTimePreview()">
+          <div id="panic-duration-preview" style="font-size:11.5px; color:#eab308; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 2 heures (120 min)</div>
         </div>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
           <input type="checkbox" id="panic-text-only" style="width:auto;">
@@ -785,8 +797,45 @@
     }
   }
 
+  function parseMinutes(inputStr, defaultVal = 60) {
+    if (!inputStr) return defaultVal;
+    const str = String(inputStr).trim();
+    const match = str.match(/\d+(\.\d+)?/);
+    if (match) {
+      const val = Math.round(parseFloat(match[0]));
+      return Math.max(1, isNaN(val) ? defaultVal : val);
+    }
+    return defaultVal;
+  }
+
+  function formatDurationReadable(mins) {
+    if (mins < 60) return `${mins} minute${mins > 1 ? 's' : ''}`;
+    const hours = (mins / 60).toFixed(1).replace('.0', '');
+    return `${hours} heure${parseFloat(hours) > 1 ? 's' : ''} (${mins} min)`;
+  }
+
+  function updateMaintTimePreview() {
+    const el = document.getElementById("maint-duration");
+    const preview = document.getElementById("maint-duration-preview");
+    if (!el || !preview) return;
+    const mins = parseMinutes(el.value, 1440);
+    const endDate = new Date(Date.now() + mins * 60000);
+    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
+  function updatePanicTimePreview() {
+    const el = document.getElementById("panic-duration");
+    const preview = document.getElementById("panic-duration-preview");
+    if (!el || !preview) return;
+    const mins = parseMinutes(el.value, 120);
+    const endDate = new Date(Date.now() + mins * 60000);
+    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
   function loadCurrentState() {
     const state = getSiteState();
+    const now = Date.now();
+
     const swAI = document.getElementById("sw-disableAI");
     const swCP = document.getElementById("sw-disableCopyPaste");
     const swIF = document.getElementById("sw-disableIframes");
@@ -804,6 +853,41 @@
     if (swMD) swMD.checked = !!state.disableMedia;
     if (swAN) swAN.checked = !!state.disableAnimations;
     if (swPDF) swPDF.checked = !!state.disablePDF;
+
+    const maintPill = document.getElementById("maint-status-pill");
+    if (maintPill) {
+      if (state.maintenanceActive && state.maintenanceUntil > now) {
+        const remainingMins = Math.max(1, Math.round((state.maintenanceUntil - now) / 60000));
+        maintPill.textContent = `● ACTIF (Reste ${remainingMins} min)`;
+        maintPill.style.background = "rgba(239,68,68,0.2)";
+        maintPill.style.color = "#f87171";
+        maintPill.style.borderColor = "#ef4444";
+      } else {
+        maintPill.textContent = "Inactif";
+        maintPill.style.background = "rgba(34,197,94,0.1)";
+        maintPill.style.color = "#4ade80";
+        maintPill.style.borderColor = "#166534";
+      }
+    }
+
+    const panicPill = document.getElementById("panic-status-pill");
+    if (panicPill) {
+      if (state.panicActive && state.panicUntil > now) {
+        const remainingMins = Math.max(1, Math.round((state.panicUntil - now) / 60000));
+        panicPill.textContent = `● PANIQUE ACTIF (Reste ${remainingMins} min)`;
+        panicPill.style.background = "rgba(234,179,8,0.2)";
+        panicPill.style.color = "#eab308";
+        panicPill.style.borderColor = "#eab308";
+      } else {
+        panicPill.textContent = "Inactif";
+        panicPill.style.background = "rgba(234,179,8,0.1)";
+        panicPill.style.color = "#eab308";
+        panicPill.style.borderColor = "rgba(234,179,8,0.3)";
+      }
+    }
+
+    updateMaintTimePreview();
+    updatePanicTimePreview();
   }
 
   async function verifyAdminPasswordPrompt(actionName = "la désactivation") {
@@ -828,7 +912,7 @@
     const state = getSiteState();
     if (activate) {
       const rawVal = document.getElementById("maint-duration").value;
-      const mins = Math.max(1, parseInt(rawVal, 10) || 60);
+      const mins = parseMinutes(rawVal, 1440);
       state.maintenanceActive = true;
       state.maintenanceUntil = Date.now() + (mins * 60000);
       saveAndSyncSiteState(state);
@@ -846,7 +930,7 @@
       const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique pour tous les visiteurs ?");
       if (!confirmAction) return;
       const rawVal = document.getElementById("panic-duration").value;
-      const mins = Math.max(1, parseInt(rawVal, 10) || 60);
+      const mins = parseMinutes(rawVal, 120);
       const textOnly = document.getElementById("panic-text-only").checked;
       const state = getSiteState();
       state.panicActive = true;
