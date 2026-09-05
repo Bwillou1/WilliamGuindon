@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#064e3b">
 
 <link rel="stylesheet" href="style.css?v=20260905-clean">
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
 <script src="theme.js?v=20260905-clean" defer></script>
 
 <style>
@@ -285,30 +286,53 @@
     </div>
   </div>
 
-  <!-- Carte Authentification par Clé GitHub (Vérification stricte @Bwillou1) -->
+  <!-- Carte Authentification Double Protection (Token GitHub + Mot de Passe + FingerprintJS) -->
   <div id="token-card" class="token-box">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-      <span style="font-size:22px;">🔒</span>
-      <h3 style="margin:0; font-size:1.3rem;">Accès Réservé au Titulaire (@Bwillou1)</h3>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+      <span style="font-size:24px;">🛡️</span>
+      <div>
+        <h3 style="margin:0; font-size:1.3rem;">Authentification Sécurisée (Double Facteur)</h3>
+        <span style="font-size:12.5px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
+      </div>
     </div>
     <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px; line-height:1.5;">
-      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la publication, entrez votre Personal Access Token. Le système vérifie en temps réel que vous êtes bien le propriétaire <strong>@Bwillou1</strong> avec droits d'écriture sur le dépôt. Tout autre texte ou clé non autorisée est <strong>strictement bloqué</strong>.
+      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la gestion et la publication, veuillez entrer votre <strong>Personal Access Token GitHub</strong> ainsi que votre <strong>mot de passe maître</strong>. Toute tentative non autorisée fait l'objet d'un verrouillage adaptatif par empreinte matérielle (FingerprintJS).
     </p>
-    <div class="form-group">
-      <label class="form-label" for="github-pat-input">Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
-      <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+
+    <!-- Zone de compte à rebours de blocage (Force Brute & Pénalité Levenshtein) -->
+    <div id="lockout-banner" style="display:none; margin-bottom:18px; padding:14px 18px; border-radius:10px; background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#ef4444;">
+      <div style="font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+        <span>⏳</span> Accès temporairement verrouillé
+      </div>
+      <p id="lockout-timer-text" style="margin:6px 0 0; font-size:13.5px; line-height:1.5; font-weight:600;"></p>
     </div>
-    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-      <button id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:10px 22px;">
-        🔐 Vérifier et déverrouiller
-      </button>
-      <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
-        ⏳ Vérification auprès de GitHub en cours...
-      </span>
-    </div>
-    <div id="token-error-banner" style="display:none; margin-top:14px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
-    <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6;">
-      🛡️ <strong>Sécurité absolue :</strong> Votre clé ne sera <em>jamais</em> écrite dans les fichiers de code sur GitHub. Elle est conservée uniquement dans la mémoire sécurisée de votre navigateur sur cet appareil.
+
+    <form id="admin-auth-form" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label" for="github-pat-input">1. Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
+        <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="admin-password-input">2. Mot de passe maître administrateur :</label>
+        <input type="password" id="admin-password-input" class="form-control" placeholder="••••••••••••••••" autocomplete="current-password">
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+        <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14.5px;">
+          🔐 Vérifier & Déverrouiller
+        </button>
+        <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
+          ⏳ Vérification cryptographique et connexion GitHub...
+        </span>
+      </div>
+    </form>
+
+    <div id="token-error-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
+
+    <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <span>🛡️ <strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
+      <span id="fp-device-tag" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Empreinte : Détection...</span>
     </div>
   </div>
 
@@ -490,15 +514,230 @@
   document.getElementById("photo-date").value = today;
 
   // ==========================================
-  // SÉCURITÉ & AUTHENTIFICATION STRICTE
+  // CONFIGURATION DES SECRETS & REQUÊTES
   // ==========================================
+  const VALID_PASSWORD_HASHES = [
+    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595", // Master Admin SHA-256 Hash
+    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"  // Hash additionnel de sécurité
+  ];
+  // TARGET_REFERENCE_PASSWORD removed
 
+  // Calcul du hash SHA-256 (WebCrypto API native)
+  async function sha256Hex(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // ==========================================
+  // LOGIQUE DE DISTANCE DE LEVENSHTEIN
+  // ==========================================
+  function levenshteinDistance(s1, s2) {
+    const a = String(s1 || "");
+    const b = String(s2 || "");
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,      // insertion
+          dp[i][j - 1] + 1,      // suppression
+          dp[i - 1][j - 1] + cost // substitution
+        );
+      }
+    }
+    return dp[m][n];
+  }
+
+  // Calcul de la pénalité de temps (en minutes)
+  function calculatePenaltyMinutes(inputPassword, isTampered) {
+    const distance = levenshteinDistance(inputPassword, TARGET_REFERENCE_PASSWORD);
+    let penaltyMinutes = 0;
+
+    // Critère 2 :
+    // a) distance == 1 ou 2 (faute de frappe probable) : Temps = (distance * 1) minute
+    // b) distance > 2 (attaque force brute probable) : Temps = (distance ** 2) minutes
+    if (distance === 1 || distance === 2) {
+      penaltyMinutes = distance * 1;
+    } else {
+      penaltyMinutes = Math.pow(distance, 2);
+    }
+
+    // Critère 4 : Multiplicateur de triche (vidage de stockage / cookies) x5
+    if (isTampered) {
+      penaltyMinutes *= 5;
+    }
+
+    // Critère 5 : Plafond de sécurité maximum absolu (12 heures = 720 minutes)
+    return Math.min(penaltyMinutes, 720);
+  }
+
+  // ==========================================
+  // PERSISTANCE, FINGERPRINTJS & ANTI-CONTOURNEURS
+  // ==========================================
+  let cachedVisitorId = null;
+
+  async function getVisitorId() {
+    if (cachedVisitorId) return cachedVisitorId;
+    try {
+      if (window.FingerprintJS) {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        cachedVisitorId = result.visitorId;
+        return cachedVisitorId;
+      }
+    } catch (err) {
+      console.warn("FingerprintJS CDN warning:", err);
+    }
+    // Fallback matériel d'empreinte si le CDN est indisponible
+    const rawData = [
+      navigator.userAgent,
+      navigator.language,
+      screen.colorDepth,
+      screen.width + "x" + screen.height,
+      new Date().getTimezoneOffset()
+    ].join("||");
+    cachedVisitorId = (await sha256Hex(rawData)).substring(0, 16);
+    return cachedVisitorId;
+  }
+
+  function getCookie(name) {
+    const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? decodeURIComponent(v[2]) : null;
+  }
+
+  function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
+    document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toUTCString() + ";SameSite=Strict";
+  }
+
+  function getSecurityState(visitorId) {
+    const localKey = "wg_sec_state_" + visitorId;
+    const shadowKey = "wg_sec_shadow_" + visitorId;
+    const localRaw = localStorage.getItem(localKey);
+    const shadowRaw = getCookie(shadowKey) || sessionStorage.getItem(shadowKey);
+
+    let state = null;
+    let isTampered = false;
+
+    if (localRaw) {
+      try { state = JSON.parse(localRaw); } catch (e) {}
+    }
+
+    // Critère 4 : Si le LocalStorage a été vidé mais que la mémoire fantôme retient des échecs
+    if (!state && shadowRaw) {
+      try {
+        const shadowState = JSON.parse(shadowRaw);
+        if (shadowState && (shadowState.compteurEchecs > 0 || shadowState.bloqueJusqua > Date.now())) {
+          state = shadowState;
+          isTampered = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!state) {
+      state = { compteurEchecs: 0, dernierEchecTimestamp: 0, bloqueJusqua: 0 };
+    }
+
+    // Critère 3 : Expiration du compteur si dernier échec > 24 heures
+    const now = Date.now();
+    if (state.dernierEchecTimestamp && (now - state.dernierEchecTimestamp > 24 * 60 * 60 * 1000)) {
+      state.compteurEchecs = 0;
+      state.bloqueJusqua = 0;
+    }
+
+    return { state, isTampered };
+  }
+
+  function saveSecurityState(visitorId, state) {
+    const localKey = "wg_sec_state_" + visitorId;
+    const shadowKey = "wg_sec_shadow_" + visitorId;
+    const jsonStr = JSON.stringify(state);
+    try { localStorage.setItem(localKey, jsonStr); } catch (e) {}
+    try { sessionStorage.setItem(shadowKey, jsonStr); } catch (e) {}
+    try { setCookie(shadowKey, jsonStr, 7); } catch (e) {}
+  }
+
+  // ==========================================
+  // COMPTE À REBOURS EN TEMPS RÉEL (CRITÈRE 6)
+  // ==========================================
+  let countdownTimerId = null;
+
+  function updateLockoutUI(bloqueJusqua) {
+    const banner = document.getElementById("lockout-banner");
+    const timerText = document.getElementById("lockout-timer-text");
+    const patInput = document.getElementById("github-pat-input");
+    const passInput = document.getElementById("admin-password-input");
+    const submitBtn = document.getElementById("btn-save-token");
+
+    if (countdownTimerId) {
+      clearInterval(countdownTimerId);
+      countdownTimerId = null;
+    }
+
+    const now = Date.now();
+    if (bloqueJusqua && bloqueJusqua > now) {
+      if (patInput) patInput.disabled = true;
+      if (passInput) passInput.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
+      if (banner) banner.style.display = "block";
+
+      function renderCountdown() {
+        const diffMs = bloqueJusqua - Date.now();
+        if (diffMs <= 0) {
+          clearInterval(countdownTimerId);
+          countdownTimerId = null;
+          if (patInput) patInput.disabled = false;
+          if (passInput) passInput.disabled = false;
+          if (submitBtn) submitBtn.disabled = false;
+          if (banner) banner.style.display = "none";
+          if (timerText) timerText.textContent = "";
+          return;
+        }
+        const totalSeconds = Math.ceil(diffMs / 1000);
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        if (timerText) {
+          timerText.innerHTML = `Veuillez patienter <strong>${mins} minute(s) et ${secs < 10 ? '0' : ''}${secs} seconde(s)</strong> avant de réessayer.`;
+        }
+      }
+
+      renderCountdown();
+      countdownTimerId = setInterval(renderCountdown, 1000);
+      return true;
+    } else {
+      if (patInput) patInput.disabled = false;
+      if (passInput) passInput.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
+      if (banner) banner.style.display = "none";
+      return false;
+    }
+  }
+
+  function showTokenError(msg) {
+    const errorBanner = document.getElementById("token-error-banner");
+    if (errorBanner) {
+      errorBanner.innerHTML = msg;
+      errorBanner.style.display = "block";
+    }
+  }
+
+  // ==========================================
+  // GESTION DU JETON & SESSIONS SÉCURISÉES
+  // ==========================================
   function getToken() {
-    return localStorage.getItem("wg_github_pat") || "";
+    return localStorage.getItem("wg_github_pat") || sessionStorage.getItem("wg_github_pat") || "";
   }
 
   function clearToken() {
     localStorage.removeItem("wg_github_pat");
+    sessionStorage.removeItem("wg_github_pat");
     localStorage.removeItem("wg_passkey_enabled");
     localStorage.removeItem("wg_passkey_id");
     updateAuthUI(false);
@@ -523,7 +762,7 @@
     return bytes.buffer;
   }
 
-  // 1. Validation cryptographique en direct auprès de GitHub
+  // Validation cryptographique en direct auprès de GitHub
   async function validateGitHubToken(token) {
     const cleanToken = (token || "").trim();
     if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
@@ -573,7 +812,7 @@
     return userData;
   }
 
-  // 2. Gestion Passkey (Touch ID / Face ID Apple)
+  // Gestion Passkey (Touch ID / Face ID Apple)
   const isPasskeySupported = !!(window.PublicKeyCredential && window.crypto);
 
   async function enrollPasskey() {
@@ -644,7 +883,6 @@
       });
 
       if (assertion) {
-        // Authentification biométrique réussie
         updateAuthUI(true);
         showStatus("Déverrouillé avec succès via Touch ID / Face ID !", "success");
       }
@@ -667,18 +905,19 @@
     const authBar = document.getElementById("auth-status-bar");
     const setupBanner = document.getElementById("passkey-setup-banner");
 
-    checkingCard.style.display = "none";
+    if (checkingCard) checkingCard.style.display = "none";
 
     if (isAuthorized) {
-      passkeyCard.style.display = "none";
-      tokenCard.style.display = "none";
-      workspace.style.display = "block";
-      authBar.innerHTML = `
-        <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
-        <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
-      `;
+      if (passkeyCard) passkeyCard.style.display = "none";
+      if (tokenCard) tokenCard.style.display = "none";
+      if (workspace) workspace.style.display = "block";
+      if (authBar) {
+        authBar.innerHTML = `
+          <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
+          <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
+        `;
+      }
 
-      // Afficher la proposition Passkey si supporté et pas encore activé
       if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") !== "true") {
         if (setupBanner) setupBanner.style.display = "flex";
       } else {
@@ -687,22 +926,112 @@
 
       loadManageList();
     } else {
-      workspace.style.display = "none";
-      authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
+      if (workspace) workspace.style.display = "none";
+      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
 
-      // Si Passkey est actif sur cette machine, afficher l'écran biométrique en premier
       if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") === "true") {
-        passkeyCard.style.display = "block";
-        tokenCard.style.display = "none";
+        if (passkeyCard) passkeyCard.style.display = "block";
+        if (tokenCard) tokenCard.style.display = "none";
       } else {
-        passkeyCard.style.display = "none";
-        tokenCard.style.display = "block";
+        if (passkeyCard) passkeyCard.style.display = "none";
+        if (tokenCard) tokenCard.style.display = "block";
       }
     }
   }
 
-  // Initialisation et vérification au chargement
+  // ==========================================
+  // SOUMISSION AUTHENTIFICATION DOUBLE FACTEUR
+  // ==========================================
+  async function handleAuthSubmission() {
+    const vId = await getVisitorId();
+    const { state, isTampered } = getSecurityState(vId);
+
+    if (updateLockoutUI(state.bloqueJusqua)) {
+      showTokenError("Accès temporairement bloqué suite à des échecs d'authentification.");
+      return;
+    }
+
+    const patInput = document.getElementById("github-pat-input");
+    const passInput = document.getElementById("admin-password-input");
+    const tokenVal = (patInput.value || "").trim();
+    const passVal = (passInput.value || "");
+    const errorBanner = document.getElementById("token-error-banner");
+    const spinner = document.getElementById("token-spinner");
+    const submitBtn = document.getElementById("btn-save-token");
+
+    if (errorBanner) errorBanner.style.display = "none";
+
+    if (!tokenVal) {
+      showTokenError("Veuillez saisir votre jeton personnel GitHub (PAT).");
+      return;
+    }
+    if (!passVal) {
+      showTokenError("Veuillez saisir le mot de passe maître de sécurité.");
+      return;
+    }
+
+    // 1. Validation cryptographique du mot de passe (SHA-256 via WebCrypto)
+    const passHash = await sha256Hex(passVal);
+    const isPasswordCorrect = VALID_PASSWORD_HASHES.includes(passHash);
+
+    if (!isPasswordCorrect) {
+      state.compteurEchecs = (state.compteurEchecs || 0) + 1;
+      state.dernierEchecTimestamp = Date.now();
+
+      const penaltyMinutes = calculatePenaltyMinutes(passVal, isTampered);
+      state.bloqueJusqua = Date.now() + (penaltyMinutes * 60 * 1000);
+      saveSecurityState(vId, state);
+
+      updateLockoutUI(state.bloqueJusqua);
+
+      const tamperMsg = isTampered ? " (Détection de contournement de stockage : facteur x5 appliqué)" : "";
+      showTokenError(`❌ Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).${tamperMsg}`);
+      return;
+    }
+
+    // 2. Mot de passe valide -> Validation du jeton auprès de GitHub
+    if (submitBtn) submitBtn.disabled = true;
+    if (spinner) spinner.style.display = "inline";
+
+    try {
+      const userData = await validateGitHubToken(tokenVal);
+
+      // Réussite totale de l'authentification 2FA
+      state.compteurEchecs = 0;
+      state.bloqueJusqua = 0;
+      state.dernierEchecTimestamp = 0;
+      saveSecurityState(vId, state);
+
+      localStorage.setItem("wg_github_pat", tokenVal);
+      patInput.value = "";
+      passInput.value = "";
+
+      updateAuthUI(true);
+      showStatus(`Authentification 2FA réussie. Bienvenue @${userData.login} !`, "success");
+
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") !== "true") {
+        const setupBanner = document.getElementById("passkey-setup-banner");
+        if (setupBanner) setupBanner.style.display = "flex";
+      }
+    } catch (err) {
+      showTokenError("❌ " + err.message);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+      if (spinner) spinner.style.display = "none";
+    }
+  }
+
+  // Initialisation au chargement de la page
   async function initAuth() {
+    const vId = await getVisitorId();
+    const fpDeviceTag = document.getElementById("fp-device-tag");
+    if (fpDeviceTag) {
+      fpDeviceTag.textContent = `Empreinte : ${vId.substring(0, 10)}...`;
+    }
+
+    const { state } = getSecurityState(vId);
+    updateLockoutUI(state.bloqueJusqua);
+
     const token = getToken();
     const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
 
@@ -712,8 +1041,10 @@
     }
 
     if (token) {
-      document.getElementById("auth-checking-card").style.display = "block";
-      document.getElementById("token-card").style.display = "none";
+      const checkingCard = document.getElementById("auth-checking-card");
+      const tokenCard = document.getElementById("token-card");
+      if (checkingCard) checkingCard.style.display = "block";
+      if (tokenCard) tokenCard.style.display = "none";
       try {
         await validateGitHubToken(token);
         updateAuthUI(true);
@@ -726,45 +1057,32 @@
     }
   }
 
-  // Bouton de validation de la clé
-  document.getElementById("btn-save-token").onclick = async () => {
-    const input = document.getElementById("github-pat-input");
-    const val = input.value.trim();
-    const btn = document.getElementById("btn-save-token");
-    const spinner = document.getElementById("token-spinner");
-    const errorBanner = document.getElementById("token-error-banner");
+  // Événements d'authentification
+  const authForm = document.getElementById("admin-auth-form");
+  if (authForm) {
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleAuthSubmission();
+    });
+  }
 
-    errorBanner.style.display = "none";
-    if (!val) {
-      errorBanner.textContent = "Veuillez coller votre jeton personnel GitHub.";
-      errorBanner.style.display = "block";
-      return;
-    }
-
-    btn.disabled = true;
-    spinner.style.display = "inline";
-
-    try {
-      await validateGitHubToken(val);
-      localStorage.setItem("wg_github_pat", val);
-      input.value = "";
-      updateAuthUI(true);
-      showStatus("Accès vérifié avec succès ! Bienvenue @Bwillou1.", "success");
-    } catch (err) {
-      errorBanner.textContent = "❌ " + err.message;
-      errorBanner.style.display = "block";
-    } finally {
-      btn.disabled = false;
-      spinner.style.display = "none";
-    }
-  };
+  const saveTokenBtn = document.getElementById("btn-save-token");
+  if (saveTokenBtn) {
+    saveTokenBtn.onclick = handleAuthSubmission;
+  }
 
   // Événements Passkey
-  document.getElementById("btn-passkey-unlock").onclick = unlockWithPasskey;
-  document.getElementById("btn-use-token-fallback").onclick = (e) => {
-    e.preventDefault();
-    showTokenForm();
-  };
+  const passkeyUnlockBtn = document.getElementById("btn-passkey-unlock");
+  if (passkeyUnlockBtn) passkeyUnlockBtn.onclick = unlockWithPasskey;
+
+  const fallbackTokenBtn = document.getElementById("btn-use-token-fallback");
+  if (fallbackTokenBtn) {
+    fallbackTokenBtn.onclick = (e) => {
+      e.preventDefault();
+      showTokenForm();
+    };
+  }
+
   const enrollBtn = document.getElementById("btn-enroll-passkey");
   if (enrollBtn) {
     enrollBtn.onclick = enrollPasskey;
