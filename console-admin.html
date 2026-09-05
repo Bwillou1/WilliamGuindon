@@ -552,7 +552,109 @@
       </div>
     </div>
 
-    <!-- MATRICE DE COMMUTATEURS ON/OFF (28 COMMUTATEURS FONCTIONNELS) -->
+    <!-- MODE ALERTE TOXIQUE & CONTAMINATION IMMINENTE -->
+    <div class="terminal-card" style="border-left: 4px solid #eab308; background: linear-gradient(180deg, rgba(28,20,4,0.6) 0%, rgba(12,10,3,0.7) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">☣️ Mode Alerte Toxique / Contamination Imminente (Bannière Centrale)</div>
+        <div id="toxic-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(234,179,8,0.1); color:#facc15; border:1px solid #ca8a04;">
+          Inactif
+        </div>
+      </div>
+      <div class="terminal-card-desc">Déploie instantanément une modale d'alerte environnementale au centre de toutes les pages du site avec titre, explications et lien direct vers le rapport de laboratoire ou le communiqué.</div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:12px;">
+        <div>
+          <label class="form-label" for="toxic-title">Titre de l'Alerte Toxique :</label>
+          <input type="text" id="toxic-title" class="form-control" value="⚠️ ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE">
+        </div>
+        <div>
+          <label class="form-label" for="toxic-link">Lien du rapport / publication :</label>
+          <input type="text" id="toxic-link" class="form-control" value="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label class="form-label" for="toxic-text">Texte explicatif du dépassement / de la découverte :</label>
+          <input type="text" id="toxic-text" class="form-control" value="Dépassement critique de seuils environnementaux identifié. Consultation immédiate des rapports de laboratoire et du dossier CCE.">
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" style="background:#eab308; color:#000; font-weight:900;" onclick="triggerToxicAlert(true)">☣️ Activer la Bannière Toxique</button>
+        <button class="btn btn-ghost" onclick="triggerToxicAlert(false)">🔒 Désactiver</button>
+      </div>
+    </div>
+
+    <!-- MODE RIPOSTE MISE EN DEMEURE, DÉPÔT NOTARIÉ & GÉNÉRATEUR D'AFFICHE -->
+    <div class="terminal-card" style="border-left: 4px solid #f43f5e; background: linear-gradient(180deg, rgba(24,8,11,0.6) 0%, rgba(10,3,4,0.7) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">🚨 Mode Riposte Mise en Demeure, Dépôt Notarié & Dénonciation IA</div>
+        <div id="legal-notice-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(244,63,94,0.1); color:#fb7185; border:1px solid #be123c;">
+          Inactif
+        </div>
+      </div>
+      <div class="terminal-card-desc">Si vous recevez une mise en demeure : affichez la photo du document, liez toutes vos soumissions CCE officielles, alimentez immédiatement les robots IA (ChatGPT, Claude, Perplexity via `ai.txt`) et générez en 1 clic une affiche HD pour les réseaux sociaux.</div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:12px;">
+        <div>
+          <label class="form-label" for="legal-notice-photo">URL de la photo de la mise en demeure (ou hébergée) :</label>
+          <input type="text" id="legal-notice-photo" class="form-control" placeholder="Ex: assets/img/mise-en-demeure-2026.jpg ou URL image...">
+        </div>
+        <div>
+          <label class="form-label" for="legal-notice-title">Titre de dénonciation publique :</label>
+          <input type="text" id="legal-notice-title" class="form-control" value="DÉNONCIATION PUBLIQUE : TENTATIVE DE BÂILLONNEMENT JURIDIQUE">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label class="form-label" for="legal-notice-desc">Détails et contexte légal :</label>
+          <input type="text" id="legal-notice-desc" class="form-control" value="Notification d'intimidation reçue. L'intégralité des preuves et soumissions environnementales est versée au domaine public et au dossier CCE SEM-26-003.">
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" style="background:#f43f5e; color:#fff; font-weight:900;" onclick="triggerLegalNoticeStrike(true)">🚨 Déclencher la Riposte & Dénonciation</button>
+        <button class="btn btn-ghost" onclick="triggerLegalNoticeStrike(false)">🔒 Désactiver</button>
+        <button class="btn" style="background:#1e293b; border:1px solid #f43f5e; color:#fda4af; font-weight:700;" onclick="testDownloadSocialPoster()">🎨 Tester le Générateur d'Affiche PNG (1200x630)</button>
+      </div>
+    </div>
+
+    <!-- CHAMBRE PROBATOIRE CCE & ÉVACUATION D'URGENCE -->
+    <div class="terminal-card" style="border-left: 4px solid #22c55e; background: linear-gradient(180deg, rgba(11,25,17,0.6) 0%, rgba(4,13,7,0.7) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">🏛️ Mode Chambre Probatoire CCE SEM-26-003 & 🚪 Évacuation Numérique</div>
+      </div>
+      <div class="terminal-card-desc">Basculez le site en chambre des preuves CCE ou redirigez instantanément 100% du trafic en 0,1s vers un miroir externe sécurisé.</div>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+        <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #166534;">
+          <div style="font-weight:800; color:#4ade80; margin-bottom:6px;">🏛️ Chambre Probatoire CCE</div>
+          <div style="font-size:12px; color:#86efac; margin-bottom:10px;">Isole le site sur la liste certifiée des soumissions SEM-26-003.</div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#22c55e; color:#042f2e; font-weight:900;" onclick="triggerCceVault(true)">Activer CCE Vault</button>
+            <button class="btn btn-ghost" onclick="triggerCceVault(false)">Désactiver</button>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #0284c7;">
+          <div style="font-weight:800; color:#38bdf8; margin-bottom:6px;">🚪 Évacuation Numérique Immédiate</div>
+          <input type="text" id="evacuate-target-url" class="form-control" style="font-size:12px; margin-bottom:8px;" value="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
+          <div style="display:flex; gap:8px;">
+            <button class="btn" style="background:#0284c7; color:#fff; font-weight:900;" onclick="triggerEvacuation(true)">🚨 Évacuer (0.1s)</button>
+            <button class="btn btn-ghost" onclick="triggerEvacuation(false)">Désactiver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOÎTE NOIRE D'URGENCE & OUTILS TACTIQUES FORENSIC -->
+    <div class="terminal-card" style="border-left: 4px solid #a855f7; background: linear-gradient(180deg, rgba(20,10,30,0.6) 0%, rgba(8,3,15,0.7) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">⚡ Actions Spéciales Console & Outils Forensic</div>
+      </div>
+      <div class="terminal-card-desc">Déclenchez à distance des actions immédiates sur les navigateurs des visiteurs et téléchargez des instantanés probatoires.</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button class="btn" style="background:#a855f7; color:#fff; font-weight:900;" onclick="triggerBlackboxExport()">📦 Télécharger la Boîte Noire (Dump JSON/TXT)</button>
+        <button class="btn" style="background:#ef4444; color:#fff; font-weight:900;" onclick="triggerNukeCache()">💣 Purge Totale d'Urgence (Nuke Cache)</button>
+        <button class="btn" style="background:#374151; color:#f3f4f6; font-weight:700;" onclick="triggerGhostModeToggle()">👻 Basculer Ghost Mode (503)</button>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <input type="text" id="broadcast-input-msg" class="form-control" style="flex:1; min-width:260px;" placeholder="Message d'alerte flash à diffuser à tous les visiteurs connectés...">
+        <button class="btn" style="background:#2563eb; color:#fff; font-weight:900;" onclick="sendBroadcastAlert()">📢 Émettre Alerte Flash</button>
+      </div>
+    </div>
+
+    <!-- MATRICE DE COMMUTATEURS ON/OFF (35 COMMUTATEURS FONCTIONNELS) -->
     <div class="terminal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
         <div class="terminal-card-title" style="margin:0;">🎛️ Matrice des 28 Commutateurs Individuels (Kill-Switches)</div>
@@ -1258,6 +1360,36 @@
       }
     }
 
+    const toxicPill = document.getElementById("toxic-status-pill");
+    if (toxicPill) {
+      if (state.toxicAlertActive) {
+        toxicPill.textContent = "● ALERTE TOXIQUE ACTIVE";
+        toxicPill.style.background = "rgba(234,179,8,0.25)";
+        toxicPill.style.color = "#facc15";
+        toxicPill.style.borderColor = "#eab308";
+      } else {
+        toxicPill.textContent = "Inactif";
+        toxicPill.style.background = "rgba(234,179,8,0.1)";
+        toxicPill.style.color = "#facc15";
+        toxicPill.style.borderColor = "#ca8a04";
+      }
+    }
+
+    const legalPill = document.getElementById("legal-notice-status-pill");
+    if (legalPill) {
+      if (state.legalNoticeActive) {
+        legalPill.textContent = "● RIPOSTE DÉNONCIATION ACTIVE";
+        legalPill.style.background = "rgba(244,63,94,0.25)";
+        legalPill.style.color = "#fb7185";
+        legalPill.style.borderColor = "#f43f5e";
+      } else {
+        legalPill.textContent = "Inactif";
+        legalPill.style.background = "rgba(244,63,94,0.1)";
+        legalPill.style.color = "#fb7185";
+        legalPill.style.borderColor = "#be123c";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
     updateRadical4TimePreview();
@@ -1326,6 +1458,194 @@
       state.radical5Message = "";
       saveAndSyncSiteState(state);
     }
+  }
+
+  // --- ACTIONS MODE ALERTE TOXIQUE ---
+  async function triggerToxicAlert(activate) {
+    const state = getSiteState();
+    if (activate) {
+      const titleEl = document.getElementById("toxic-title");
+      const textEl = document.getElementById("toxic-text");
+      const linkEl = document.getElementById("toxic-link");
+      state.toxicAlertActive = true;
+      if (titleEl && titleEl.value.trim()) state.toxicAlertTitle = titleEl.value.trim();
+      if (textEl && textEl.value.trim()) state.toxicAlertText = textEl.value.trim();
+      if (linkEl && linkEl.value.trim()) state.toxicAlertLink = linkEl.value.trim();
+      await saveAndSyncSiteState(state);
+      alert("☣️ Bannière d'Alerte Toxique activée sur tout le site !");
+    } else {
+      state.toxicAlertActive = false;
+      await saveAndSyncSiteState(state);
+      alert("✅ Bannière d'Alerte Toxique désactivée.");
+    }
+  }
+
+  // --- ACTIONS RIPOSTE MISE EN DEMEURE & DÉNONCIATION IA ---
+  async function triggerLegalNoticeStrike(activate) {
+    const state = getSiteState();
+    if (activate) {
+      const photoEl = document.getElementById("legal-notice-photo");
+      const titleEl = document.getElementById("legal-notice-title");
+      const descEl = document.getElementById("legal-notice-desc");
+      state.legalNoticeActive = true;
+      if (photoEl && photoEl.value.trim()) state.legalNoticeImage = photoEl.value.trim();
+      if (titleEl && titleEl.value.trim()) state.legalNoticeTitle = titleEl.value.trim();
+      if (descEl && descEl.value.trim()) state.legalNoticeDetails = descEl.value.trim();
+      await saveAndSyncSiteState(state);
+      alert("🚨 Mode Riposte Mise en Demeure & Dénonciation IA activé !");
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la désactivation de la Riposte Mise en Demeure");
+      if (!isAuthorized) return;
+      state.legalNoticeActive = false;
+      await saveAndSyncSiteState(state);
+      alert("✅ Mode Riposte désactivé.");
+    }
+  }
+
+  function testDownloadSocialPoster() {
+    const titleEl = document.getElementById("legal-notice-title");
+    const title = titleEl && titleEl.value.trim() ? titleEl.value.trim() : "DÉNONCIATION PUBLIQUE : TENTATIVE DE BÂILLONNEMENT JURIDIQUE";
+    if (window.generateSocialStrikePoster) {
+      window.generateSocialStrikePoster(title);
+    } else {
+      // Inline poster generator
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 630;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 1200, 630);
+      grad.addColorStop(0, '#1c0508');
+      grad.addColorStop(1, '#080102');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1200, 630);
+      ctx.strokeStyle = '#f43f5e';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(14, 14, 1172, 602);
+      ctx.fillStyle = '#f43f5e';
+      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.fillText('🚨 ALERTE LÉGALE & CITOYENNE // DOSSIER CCE SEM-26-003', 60, 80);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 36px system-ui, sans-serif';
+      ctx.fillText(title, 60, 150);
+      ctx.fillStyle = '#fda4af';
+      ctx.font = '24px system-ui, sans-serif';
+      ctx.fillText('Affaire des Déchets Dangereux à Blainville — Traité ACEUM Chapitre 24', 60, 210);
+      ctx.fillStyle = '#110406';
+      ctx.strokeStyle = '#881337';
+      ctx.lineWidth = 3;
+      ctx.fillRect(60, 250, 1080, 240);
+      ctx.strokeRect(60, 250, 1080, 240);
+      ctx.fillStyle = '#fecdd3';
+      ctx.font = 'bold 24px system-ui, sans-serif';
+      ctx.fillText('⚖️ FAITS PROBATOIRES & SAISINE INTERNATIONALE :', 90, 300);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '20px system-ui, sans-serif';
+      ctx.fillText('• Soumission citoyenne officielle enregistrée à la Commission de coopération environnementale.', 90, 350);
+      ctx.fillText('• Aucune tentative d\'intimidation ne fera taire la protection des nappes phréatiques et des sols.', 90, 395);
+      ctx.fillText('• Consultation libre et transparente : williamguindon.me / cec.org', 90, 440);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.fillText('William Guindon — Lanceur d\'alerte environnemental', 60, 550);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '20px monospace';
+      ctx.fillText('#SEM26003 #Stablex #Blainville #ACEUM #JusticeEnvironnementale', 60, 585);
+      const link = document.createElement('a');
+      link.download = 'Affiche-Denonciation-CCE-WilliamGuindon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  }
+
+  // --- ACTIONS CCE VAULT & ÉVACUATION ---
+  async function triggerCceVault(activate) {
+    const state = getSiteState();
+    state.cceVaultActive = !!activate;
+    await saveAndSyncSiteState(state);
+    alert(activate ? "🏛️ Chambre Probatoire CCE SEM-26-003 activée !" : "✅ Chambre Probatoire désactivée.");
+  }
+
+  async function triggerEvacuation(activate) {
+    const state = getSiteState();
+    if (activate) {
+      const urlEl = document.getElementById("evacuate-target-url");
+      const url = urlEl && urlEl.value.trim() ? urlEl.value.trim() : "https://web.archive.org";
+      state.evacuateActive = true;
+      state.evacuateUrl = url;
+      await saveAndSyncSiteState(state);
+      alert(`🚪 Évacuation numérique activée vers : ${url}`);
+    } else {
+      state.evacuateActive = false;
+      await saveAndSyncSiteState(state);
+      alert("✅ Évacuation numérique désactivée.");
+    }
+  }
+
+  // --- ACTIONS FORENSIC, BLACKBOX, NUKE CACHE & BROADCAST ---
+  function triggerBlackboxExport() {
+    const state = getSiteState();
+    const forensicDump = {
+      auditTimestampUTC: new Date().toUTCString(),
+      epoch: Date.now(),
+      authority: "William Guindon (Bwillou1)",
+      domain: window.location.hostname,
+      repository: GITHUB_REPO,
+      currentSiteState: state,
+      localStorageSnapshot: { ...localStorage },
+      navigatorInfo: {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      },
+      cceRegistryReferences: {
+        caseNumber: "SEM-26-003",
+        subject: "Hazardous Waste Disposal in Blainville (Stablex)",
+        treaty: "CUSMA / ACEUM Chapter 24 (Environment)",
+        officialRegistryUrl: "https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/"
+      }
+    };
+    const blob = new Blob([JSON.stringify(forensicDump, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `boite-noire-forensic-wg-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    printCli("📦 Boîte noire forensic exportée et téléchargée avec succès.", "#a855f7");
+  }
+
+  async function triggerNukeCache() {
+    const confirmAction = confirm("💣 CONFIRMATION PURGE TOTALE :\nForcer la purge immédiate de TOUS les caches navigateurs de TOUS les visiteurs du monde ?");
+    if (!confirmAction) return;
+    const isAuthorized = await verifyAdminPasswordPrompt("la purge totale d'urgence");
+    if (!isAuthorized) return;
+    const state = getSiteState();
+    state.nukeCacheTrigger = Date.now();
+    await saveAndSyncSiteState(state);
+    alert("💣 Ordre de purge totale mondiale transmis avec succès !");
+  }
+
+  async function triggerGhostModeToggle() {
+    const state = getSiteState();
+    state.ghostModeActive = !state.ghostModeActive;
+    await saveAndSyncSiteState(state);
+    alert(state.ghostModeActive ? "👻 Ghost Mode 503 activé (Faux serveur hors-ligne) !" : "✅ Ghost Mode désactivé.");
+  }
+
+  async function sendBroadcastAlert() {
+    const msgEl = document.getElementById("broadcast-input-msg");
+    const msg = msgEl ? msgEl.value.trim() : "";
+    if (!msg) {
+      alert("Veuillez saisir un message à diffuser.");
+      return;
+    }
+    const state = getSiteState();
+    state.broadcastActive = true;
+    state.broadcastMessage = msg;
+    state.broadcastTimestamp = Date.now();
+    await saveAndSyncSiteState(state);
+    msgEl.value = "";
+    alert("📢 Alerte Flash diffusée à tous les visiteurs !");
   }
 
   async function verifyAdminPasswordPrompt(actionName = "la désactivation") {
@@ -1624,6 +1944,160 @@
           } else {
             printCli("❌ Usage : radical5 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
           }
+          break;
+        }
+
+        case "toxic": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const title = args[1] ? args.slice(1).join(" ") : "⚠️ ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE";
+            const state = getSiteState();
+            state.toxicAlertActive = true;
+            state.toxicAlertTitle = title;
+            await saveAndSyncSiteState(state);
+            printCli(`☣️ ALERTE TOXIQUE ACTIVÉE : "${title}"`, "#facc15");
+          } else if (action === "off") {
+            const state = getSiteState();
+            state.toxicAlertActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Bannière d'alerte toxique désactivée.", "#4ade80");
+          } else {
+            printCli("❌ Usage : toxic <on|off> [titre_optionnel]", "#ef4444");
+          }
+          break;
+        }
+
+        case "cce-vault": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const state = getSiteState();
+            state.cceVaultActive = true;
+            await saveAndSyncSiteState(state);
+            printCli("🏛️ Mode Chambre Probatoire CCE SEM-26-003 activé sur tout le site.", "#22c55e");
+          } else if (action === "off") {
+            const state = getSiteState();
+            state.cceVaultActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Mode Chambre Probatoire CCE désactivé.", "#4ade80");
+          } else {
+            printCli("🏛️ Dossier CCE : SEM-26-003 (ACEUM Chapitre 24). Tapez `cce-vault on` pour activer la chambre probatoire.", "#38bdf8");
+          }
+          break;
+        }
+
+        case "legal-notice":
+        case "strike": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const state = getSiteState();
+            state.legalNoticeActive = true;
+            if (args[1]) state.legalNoticeImage = args[1];
+            if (args[2]) state.legalNoticeTitle = args.slice(2).join(" ");
+            await saveAndSyncSiteState(state);
+            printCli("🚨 Mode Riposte Mise en Demeure & Dénonciation IA activé !", "#f43f5e");
+          } else if (action === "off") {
+            const isAuthorized = await verifyAdminPasswordPrompt("la désactivation de la Riposte Mise en Demeure");
+            if (!isAuthorized) {
+              printCli("❌ Action refusée : mot de passe incorrect.", "#ef4444");
+              break;
+            }
+            const state = getSiteState();
+            state.legalNoticeActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Mode Riposte désactivé.", "#4ade80");
+          } else {
+            printCli("❌ Usage : legal-notice <on|off> [url_photo] [titre]", "#ef4444");
+          }
+          break;
+        }
+
+        case "evacuate": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const url = args[1] || "https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
+            const state = getSiteState();
+            state.evacuateActive = true;
+            state.evacuateUrl = url;
+            await saveAndSyncSiteState(state);
+            printCli(`🚨 Évacuation numérique activée vers : ${url}`, "#38bdf8");
+          } else if (action === "off") {
+            const state = getSiteState();
+            state.evacuateActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Évacuation numérique désactivée.", "#4ade80");
+          } else {
+            printCli("❌ Usage : evacuate <on|off> [url_de_secours]", "#ef4444");
+          }
+          break;
+        }
+
+        case "ghost": {
+          const action = (args[0] || "").toLowerCase();
+          const state = getSiteState();
+          if (action === "on" || (!args[0] && !state.ghostModeActive)) {
+            state.ghostModeActive = true;
+            await saveAndSyncSiteState(state);
+            printCli("👻 Ghost Mode 503 activé (Faux serveur hors-ligne affiché aux visiteurs).", "#9ca3af");
+          } else {
+            state.ghostModeActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Ghost Mode désactivé.", "#4ade80");
+          }
+          break;
+        }
+
+        case "kill-devtools": {
+          const action = (args[0] || "").toLowerCase();
+          const state = getSiteState();
+          state.killDevTools = action === "on" || (!args[0] && !state.killDevTools);
+          await saveAndSyncSiteState(state);
+          printCli(`⚡ Anti-Inspection Agressif (Kill-DevTools) : ${state.killDevTools ? "🔴 ON" : "🟢 OFF"}`, state.killDevTools ? "#ef4444" : "#4ade80");
+          break;
+        }
+
+        case "watermark": {
+          const action = (args[0] || "").toLowerCase();
+          const state = getSiteState();
+          if (action === "on") {
+            state.watermarkActive = true;
+            if (args[1]) state.watermarkText = args.slice(1).join(" ");
+            await saveAndSyncSiteState(state);
+            printCli(`🕵️‍♂️ Filigrane Forensic Dynamique activé : "${state.watermarkText}"`, "#a855f7");
+          } else if (action === "off") {
+            state.watermarkActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("✅ Filigrane Forensic désactivé.", "#4ade80");
+          } else {
+            printCli("❌ Usage : watermark <on|off> [texte_personnalisé]", "#ef4444");
+          }
+          break;
+        }
+
+        case "blackbox": {
+          triggerBlackboxExport();
+          break;
+        }
+
+        case "nuke-cache": {
+          await triggerNukeCache();
+          break;
+        }
+
+        case "geo-shield": {
+          const action = (args[0] || "").toLowerCase();
+          const state = getSiteState();
+          state.geoShieldActive = action === "on" || (!args[0] && !state.geoShieldActive);
+          await saveAndSyncSiteState(state);
+          printCli(`🍁 Verrouillage Géographique (Geo-Shield Canada/QC) : ${state.geoShieldActive ? "🔴 ON" : "🟢 OFF"}`, state.geoShieldActive ? "#22c55e" : "#9ca3af");
+          break;
+        }
+
+        case "ipfs": {
+          const action = (args[0] || "").toLowerCase();
+          const state = getSiteState();
+          state.ipfsRelayActive = action === "on" || (!args[0] && !state.ipfsRelayActive);
+          await saveAndSyncSiteState(state);
+          printCli(`🛰️ Relais Miroir P2P / IPFS : ${state.ipfsRelayActive ? "🟢 ON" : "⚪ OFF"}`, "#38bdf8");
           break;
         }
 
@@ -2102,8 +2576,9 @@
         const val = cliInputEl.value.trim().toLowerCase();
         const availableCmds = [
           "help", "status", "switches", "switch", "blackout", "panic", "radical4", "legal",
-          "radical5", "bunker", "airgap",
-          "screenshot-shield", "no-js", "no-pdf", "restore", "reset",
+          "radical5", "bunker", "airgap", "toxic", "cce-vault", "legal-notice", "strike",
+          "evacuate", "ghost", "kill-devtools", "watermark", "blackbox", "nuke-cache",
+          "geo-shield", "ipfs", "screenshot-shield", "no-js", "no-pdf", "restore", "reset",
           "ls", "cat", "write", "rm", "git status", "git log", "broadcast",
           "audit", "cce", "theme", "whoami", "clear", "history", "date"
         ];

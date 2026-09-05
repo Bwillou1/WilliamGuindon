@@ -121,6 +121,56 @@
     const isMaintenanceActive = Boolean(state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil);
     const isPanicActive = Boolean(state.panicActive && state.panicUntil && now < state.panicUntil);
 
+    // 0. Nuke Cache Check (Purge Totale Forcée)
+    if (state.nukeCacheTrigger) {
+      const lastNuke = parseInt(localStorage.getItem('wg_last_nuke_ts') || '0', 10);
+      if (state.nukeCacheTrigger > lastNuke) {
+        localStorage.setItem('wg_last_nuke_ts', String(state.nukeCacheTrigger));
+        try { sessionStorage.clear(); } catch (_) {}
+        if ('caches' in window) {
+          caches.keys().then(names => { names.forEach(name => caches.delete(name)); });
+        }
+        if (navigator.serviceWorker) {
+          navigator.serviceWorker.getRegistrations().then(regs => { regs.forEach(r => r.unregister()); });
+        }
+        setTimeout(() => { window.location.reload(true); }, 150);
+        return;
+      }
+    }
+
+    // 0.1 Évacuation Numérique Immédiate (Redirection 0.1s vers miroir de secours)
+    if (state.evacuateActive && state.evacuateUrl) {
+      if (!window.location.href.startsWith(state.evacuateUrl)) {
+        window.location.replace(state.evacuateUrl);
+        return;
+      }
+    }
+
+    // 0.2 Mode Écran Faux / Système Inactif (Ghost Mode 503)
+    if (state.ghostModeActive) {
+      renderGhostModeScreen();
+      return;
+    } else {
+      removeGhostModeScreen();
+    }
+
+    // 0.3 Anti-Inspection Agressif (Kill DevTools)
+    handleKillDevTools(state.killDevTools);
+
+    // 0.4 Mode Riposte Mise en Demeure, Dépôt Notarié & Dénonciation IA
+    if (state.legalNoticeActive) {
+      renderLegalNoticeStrikeScreen(state);
+    } else {
+      removeLegalNoticeStrikeScreen();
+    }
+
+    // 0.5 Mode Chambre Probatoire CCE SEM-26-003
+    if (state.cceVaultActive) {
+      renderCceVaultScreen(state);
+    } else {
+      removeCceVaultScreen();
+    }
+
     // 1. Mode Blackout / Maintenance Totale (Calque réversible)
     if (isMaintenanceActive) {
       renderMaintenanceScreen(state.maintenanceUntil);
@@ -151,7 +201,35 @@
       removeRadical5Screen();
     }
 
-    // 5. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
+    // 5. Mode Alerte Toxique / Contamination Imminente (Bannière / Modale centrale)
+    if (state.toxicAlertActive) {
+      renderToxicAlertBanner(state);
+    } else {
+      removeToxicAlertBanner();
+    }
+
+    // 6. Filigrane Forensic Dynamique & Invisible
+    if (state.watermarkActive) {
+      renderWatermark(state.watermarkText);
+    } else {
+      removeWatermark();
+    }
+
+    // 7. Émission d'Alerte Flash en Direct (Broadcast Toast)
+    if (state.broadcastActive && state.broadcastMessage) {
+      renderBroadcastToast(state.broadcastMessage, state.broadcastTimestamp);
+    } else {
+      removeBroadcastToast();
+    }
+
+    // 8. Verrouillage Géographique (Geo-Shield)
+    if (state.geoShieldActive) {
+      renderGeoShield();
+    } else {
+      removeGeoShield();
+    }
+
+    // 9. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
   }
 
@@ -693,6 +771,313 @@
   function removeRadical5Screen() {
     const overlay = document.getElementById('radical5-wrapper');
     if (overlay) overlay.remove();
+  }
+
+  // --- MODE ÉCRAN FAUX / GHOST MODE (503 SERVICE UNAVAILABLE) ---
+  function renderGhostModeScreen() {
+    let el = document.getElementById('ghost-mode-wrapper');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ghost-mode-wrapper';
+      el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#ffffff;color:#000000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;z-index:99999999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+      el.innerHTML = `
+        <div style="max-width:600px;text-align:center;">
+          <h1 style="font-size:42px;font-weight:700;margin:0 0 10px;color:#1f2937;">503 Service Unavailable</h1>
+          <p style="font-size:16px;color:#4b5563;line-height:1.5;margin:0 0 20px;">The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.</p>
+          <hr style="border:0;border-top:1px solid #e5e7eb;margin:20px 0;">
+          <div style="font-size:13px;color:#9ca3af;">nginx/1.24.0 (Ubuntu) — Node Gateway Inactive</div>
+        </div>
+      `;
+      (document.body || document.documentElement).appendChild(el);
+    }
+  }
+
+  function removeGhostModeScreen() {
+    const el = document.getElementById('ghost-mode-wrapper');
+    if (el) el.remove();
+  }
+
+  // --- ANTI-INSPECTION AGRESSIF (KILL DEVTOOLS) ---
+  let killDevToolsInterval = null;
+  function handleKillDevTools(active) {
+    if (active) {
+      if (!killDevToolsInterval) {
+        killDevToolsInterval = setInterval(() => {
+          const start = Date.now();
+          (function() { Function("debugger")(); })();
+          if (Date.now() - start > 100) {
+            document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:24px;font-weight:bold;text-align:center;padding:20px;">⚠️ DÉTECTION D\'INSPECTION ILLÉGALE<br><span style="font-size:14px;color:#fff;margin-top:10px;display:block;">Session interrompue par le protocole de défense active.</span></div>';
+          }
+        }, 150);
+      }
+    } else {
+      if (killDevToolsInterval) {
+        clearInterval(killDevToolsInterval);
+        killDevToolsInterval = null;
+      }
+    }
+  }
+
+  // --- MODE ALERTE TOXIQUE / CONTAMINATION IMMINENTE (BANNIÈRE / MODALE CENTRALE) ---
+  function renderToxicAlertBanner(state) {
+    let el = document.getElementById('wg-toxic-alert-banner');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'wg-toxic-alert-banner';
+      el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(8,12,10,0.88);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);z-index:99999998;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+      (document.body || document.documentElement).appendChild(el);
+    }
+
+    const title = state.toxicAlertTitle || '⚠️ ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE';
+    const text = state.toxicAlertText || 'Dépassement critique de seuils environnementaux identifié. Consultation immédiate des rapports de laboratoire et du dossier CCE.';
+    const link = state.toxicAlertLink || 'https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/';
+    const linkText = state.toxicAlertLinkText || '📄 Consulter le rapport de laboratoire & le dossier CCE ↗';
+
+    el.innerHTML = `
+      <div style="background:linear-gradient(180deg, #1c1404 0%, #0c0a03 100%);border:2.5px solid #eab308;border-radius:20px;padding:34px;max-width:660px;width:100%;box-shadow:0 0 50px rgba(234,179,8,0.4),0 25px 70px rgba(0,0,0,0.9);text-align:center;font-family:system-ui,-apple-system,sans-serif;">
+        <div style="font-size:52px;margin-bottom:12px;filter:drop-shadow(0 0 15px #eab308);">☣️⚠️</div>
+        <div style="display:inline-block;background:rgba(234,179,8,0.18);color:#facc15;border:1.5px solid #eab308;padding:6px 16px;border-radius:24px;font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">
+          COMMUNIQUÉ ENVIRONNEMENTAL D'URGENCE
+        </div>
+        <h2 style="color:#ffffff;font-size:22px;margin:0 0 14px;font-weight:900;line-height:1.3;">${title}</h2>
+        <p style="color:#fef08a;font-size:15px;line-height:1.6;margin:0 0 24px;">${text}</p>
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <a href="${link}" target="_blank" rel="noopener" style="background:#eab308;color:#000;font-weight:900;padding:12px 24px;border-radius:10px;text-decoration:none;font-size:14px;box-shadow:0 0 20px rgba(234,179,8,0.5);">${linkText}</a>
+          <button onclick="document.getElementById('wg-toxic-alert-banner').remove()" style="background:#27272a;border:1px solid #71717a;color:#e4e4e7;font-weight:700;padding:12px 20px;border-radius:10px;cursor:pointer;font-size:13px;">Continuer la navigation</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeToxicAlertBanner() {
+    const el = document.getElementById('wg-toxic-alert-banner');
+    if (el) el.remove();
+  }
+
+  // --- MODE CHAMBRE PROBATOIRE CCE SEM-26-003 ---
+  function renderCceVaultScreen(state) {
+    let el = document.getElementById('cce-vault-wrapper');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'cce-vault-wrapper';
+      el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#050c08;color:#ecfdf5;font-family:system-ui,-apple-system,sans-serif;z-index:99999999;padding:24px;box-sizing:border-box;overflow:auto;display:flex;align-items:center;justify-content:center;';
+      (document.body || document.documentElement).appendChild(el);
+    }
+
+    el.innerHTML = `
+      <div style="background:#0b1911;border:2px solid #22c55e;border-radius:20px;padding:36px;max-width:820px;width:100%;box-shadow:0 0 60px rgba(34,197,94,0.3),0 30px 90px rgba(0,0,0,0.95);">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="font-size:48px;margin-bottom:10px;">🏛️📜</div>
+          <div style="display:inline-block;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid #22c55e;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">
+            CHAMBRE PROBATOIRE OFFICIELLE // DOSSIER CCE SEM-26-003
+          </div>
+          <h1 style="color:#ffffff;font-size:24px;margin:12px 0 6px;font-weight:900;">Registre Public & Traité International ACEUM</h1>
+          <p style="color:#a7f3d0;font-size:14px;margin:0;">Soumission citoyenne relative à l'application des lois environnementales (Déchets dangereux / Stablex à Blainville).</p>
+        </div>
+
+        <div style="background:#040d07;border:1px solid #14532d;border-radius:12px;padding:18px;margin-bottom:20px;font-size:13.5px;line-height:1.7;">
+          <div style="color:#4ade80;font-weight:800;margin-bottom:8px;">📌 PIÈCES OFFICIELLES ET LIENS DIRECTS :</div>
+          <div>• <strong>Registre International CCE :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Dossier SEM-26-003 sur cec.org ↗</a></div>
+          <div>• <strong>Archive Mondiale Inaltérable :</strong> <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Wayback Machine ↗</a></div>
+          <div>• <strong>Traité d'Origine :</strong> Accord Canada-États-Unis-Mexique (ACEUM, Chapitre 24, Articles 24.27 & 24.28)</div>
+          <div>• <strong>Requérant :</strong> William Guindon</div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="background:#22c55e;color:#042f2e;font-weight:900;padding:12px 24px;border-radius:10px;text-decoration:none;">Accéder au Registre CCE Officiel ↗</a>
+          <button onclick="window.location.reload()" style="background:#1e293b;border:1px solid #334155;color:#f1f5f9;font-weight:700;padding:12px 20px;border-radius:10px;cursor:pointer;">🔄 Actualiser</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeCceVaultScreen() {
+    const el = document.getElementById('cce-vault-wrapper');
+    if (el) el.remove();
+  }
+
+  // --- MODE RIPOSTE MISE EN DEMEURE, DÉPÔT NOTARIÉ & GÉNÉRATEUR D'AFFICHE RÉSEAUX SOCIAUX ---
+  function renderLegalNoticeStrikeScreen(state) {
+    let el = document.getElementById('legal-notice-strike-wrapper');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'legal-notice-strike-wrapper';
+      el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#090506;color:#ffe4e6;font-family:system-ui,-apple-system,sans-serif;z-index:99999999;padding:20px;box-sizing:border-box;overflow:auto;display:flex;align-items:center;justify-content:center;';
+      (document.body || document.documentElement).appendChild(el);
+    }
+
+    const title = state.legalNoticeTitle || 'DÉNONCIATION PUBLIQUE : TENTATIVE DE BÂILLONNEMENT JURIDIQUE';
+    const details = state.legalNoticeDetails || 'Notification d\'intimidation reçue. L\'intégralité des preuves et soumissions environnementales est versée au domaine public et au dossier CCE SEM-26-003.';
+    const photoUrl = state.legalNoticeImage || '';
+
+    el.innerHTML = `
+      <div style="background:#18080b;border:2.5px solid #f43f5e;border-radius:20px;padding:32px;max-width:840px;width:100%;box-shadow:0 0 60px rgba(244,63,94,0.35),0 30px 90px rgba(0,0,0,0.95);">
+        <div style="text-align:center;margin-bottom:18px;">
+          <div style="font-size:46px;margin-bottom:8px;">🚨⚖️</div>
+          <div style="display:inline-block;background:rgba(244,63,94,0.18);color:#fb7185;border:1.5px solid #f43f5e;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;">
+            DÉNONCIATION PUBLIQUE // RIPOSTE LÉGALE & CITOYENNE
+          </div>
+          <h1 style="color:#ffffff;font-size:22px;margin:12px 0 6px;font-weight:900;">${title}</h1>
+          <p style="color:#fecdd3;font-size:14px;line-height:1.5;margin:0;">${details}</p>
+        </div>
+
+        ${photoUrl ? `
+          <div style="background:#0a0304;border:1px solid #881337;border-radius:12px;padding:12px;margin-bottom:20px;text-align:center;">
+            <div style="font-size:12px;color:#fb7185;font-weight:700;margin-bottom:8px;">📸 PIÈCE REÇUE (MISE EN DEMEURE / DOCUMENT OFFICIEL) :</div>
+            <img src="${photoUrl}" alt="Mise en demeure" style="max-height:300px;max-width:100%;border-radius:8px;border:1px solid #f43f5e;box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+          </div>
+        ` : ''}
+
+        <div style="background:#0a0304;border:1px solid #881337;border-radius:12px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.6;color:#fda4af;">
+          <div>🏛️ <strong>Dossier CCE SEM-26-003 :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Consulter sur le registre CCE ↗</a></div>
+          <div>🤖 <strong>Indexation IA Prioritaire :</strong> Versé publiquement dans <a href="ai.txt" target="_blank" style="color:#4ade80;font-weight:700;">ai.txt</a> pour ingestion immédiate par les moteurs d'intelligence artificielle.</div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <button id="btn-generate-strike-poster" onclick="generateSocialStrikePoster('${title.replace(/'/g, "\\'")}')" style="background:#f43f5e;color:#fff;font-weight:900;padding:12px 24px;border:none;border-radius:10px;cursor:pointer;font-size:14px;box-shadow:0 0 25px rgba(244,63,94,0.5);">🎨 Télécharger l'Affiche Réseaux Sociaux (PNG HD)</button>
+          <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="background:#1e293b;border:1px solid #475569;color:#f8fafc;font-weight:700;padding:12px 20px;border-radius:10px;text-decoration:none;font-size:13px;">Dossier CCE ↗</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeLegalNoticeStrikeScreen() {
+    const el = document.getElementById('legal-notice-strike-wrapper');
+    if (el) el.remove();
+  }
+
+  // --- GÉNÉRATEUR CANVAS HTML5 D'AFFICHE RÉSEAUX SOCIAUX HD (1200x630) ---
+  window.generateSocialStrikePoster = function(customTitle) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 630;
+    const ctx = canvas.getContext('2d');
+
+    // Fond dégradé sombre rouge
+    const grad = ctx.createLinearGradient(0, 0, 1200, 630);
+    grad.addColorStop(0, '#1c0508');
+    grad.addColorStop(1, '#080102');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1200, 630);
+
+    // Bordure néon
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 14;
+    ctx.strokeRect(14, 14, 1172, 602);
+
+    // Badge haut
+    ctx.fillStyle = '#f43f5e';
+    ctx.font = 'bold 22px system-ui, sans-serif';
+    ctx.fillText('🚨 ALERTE LÉGALE & CITOYENNE // DOSSIER CCE SEM-26-003', 60, 80);
+
+    // Titre
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 38px system-ui, sans-serif';
+    ctx.fillText(customTitle || 'TENTATIVE DE BÂILLONNEMENT DÉNONCÉE', 60, 150);
+
+    // Sous-titre et contexte
+    ctx.fillStyle = '#fda4af';
+    ctx.font = '24px system-ui, sans-serif';
+    ctx.fillText('Affaire des Déchets Dangereux à Blainville — Traité ACEUM Chapitre 24', 60, 210);
+
+    // Boîte centrale
+    ctx.fillStyle = '#110406';
+    ctx.strokeStyle = '#881337';
+    ctx.lineWidth = 3;
+    ctx.fillRect(60, 250, 1080, 240);
+    ctx.strokeRect(60, 250, 1080, 240);
+
+    ctx.fillStyle = '#fecdd3';
+    ctx.font = 'bold 24px system-ui, sans-serif';
+    ctx.fillText('⚖️ FAITS PROBATOIRES & SAISINE INTERNATIONALE :', 90, 300);
+
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '20px system-ui, sans-serif';
+    ctx.fillText('• Soumission citoyenne officielle enregistrée à la Commission de coopération environnementale.', 90, 350);
+    ctx.fillText('• Aucune tentative d\'intimidation ne fera taire la protection des nappes phréatiques et des sols.', 90, 395);
+    ctx.fillText('• Consultation libre et transparente : williamguindon.me / cec.org', 90, 440);
+
+    // Bas de page
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 22px system-ui, sans-serif';
+    ctx.fillText('William Guindon — Lanceur d\'alerte environnemental', 60, 550);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '20px monospace';
+    ctx.fillText('#SEM26003 #Stablex #Blainville #ACEUM #JusticeEnvironnementale', 60, 585);
+
+    // Téléchargement automatique
+    const link = document.createElement('a');
+    link.download = 'Affiche-Denonciation-CCE-WilliamGuindon.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  // --- FILIGRANE FORENSIC DYNAMIQUE ---
+  function renderWatermark(text) {
+    let el = document.getElementById('wg-forensic-watermark');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'wg-forensic-watermark';
+      el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:99999997;opacity:0.06;overflow:hidden;display:flex;flex-wrap:wrap;align-content:space-around;justify-content:space-around;';
+      (document.body || document.documentElement).appendChild(el);
+    }
+    const label = text || 'WILLIAM GUINDON — CERTIFICAT PROBATOIRE OFFICIEL';
+    const pattern = `<div style="transform:rotate(-25deg);font-size:16px;font-weight:900;font-family:monospace;color:#ffffff;padding:20px;user-select:none;">${label} • ${new Date().toISOString()}</div>`;
+    el.innerHTML = pattern.repeat(24);
+  }
+
+  function removeWatermark() {
+    const el = document.getElementById('wg-forensic-watermark');
+    if (el) el.remove();
+  }
+
+  // --- ÉMISSION D'ALERTE FLASH EN DIRECT (BROADCAST TOAST) ---
+  function renderBroadcastToast(msg, ts) {
+    let el = document.getElementById('wg-broadcast-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'wg-broadcast-toast';
+      el.style.cssText = 'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999999999;background:linear-gradient(90deg,#0284c7,#2563eb);color:#ffffff;padding:14px 24px;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,0.6),0 0 25px rgba(37,99,235,0.6);font-family:system-ui,sans-serif;font-weight:800;font-size:14px;display:flex;align-items:center;gap:12px;border:1.5px solid #60a5fa;max-width:90vw;';
+      (document.body || document.documentElement).appendChild(el);
+    }
+    el.innerHTML = `
+      <span style="font-size:20px;">📢</span>
+      <span>${msg}</span>
+      <button onclick="document.getElementById('wg-broadcast-toast').remove()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-weight:900;margin-left:8px;">✕</button>
+    `;
+  }
+
+  function removeBroadcastToast() {
+    const el = document.getElementById('wg-broadcast-toast');
+    if (el) el.remove();
+  }
+
+  // --- VERROUILLAGE GÉOGRAPHIQUE (GEO-SHIELD) ---
+  function renderGeoShield() {
+    const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+    const isCanada = tz.includes('montreal') || tz.includes('toronto') || tz.includes('halifax') || tz.includes('vancouver') || tz.includes('winnipeg') || tz.includes('edmonton') || tz.includes('canada');
+    if (!isCanada) {
+      let el = document.getElementById('wg-geo-shield-overlay');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'wg-geo-shield-overlay';
+        el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#090d0b;color:#f0fdf4;z-index:99999999;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;font-family:system-ui,sans-serif;';
+        el.innerHTML = `
+          <div style="background:#111a14;border:2px solid #22c55e;border-radius:18px;padding:36px;max-width:540px;text-align:center;">
+            <div style="font-size:46px;margin-bottom:12px;">🍁🔒</div>
+            <h2 style="color:#22c55e;font-size:22px;margin:0 0 10px;">Accès Restreint par Géolocalisation</h2>
+            <p style="color:#9bb0a2;font-size:14px;line-height:1.6;margin:0 0 18px;">Le site est temporairement réservé aux consultations locales et territoriales autorisées.</p>
+          </div>
+        `;
+        (document.body || document.documentElement).appendChild(el);
+      }
+    }
+  }
+
+  function removeGeoShield() {
+    const el = document.getElementById('wg-geo-shield-overlay');
+    if (el) el.remove();
   }
 
   // --- MATRICE DES 28 COMMUTATEURS (KILL-SWITCHES RÉVERSIBLES 0MS) ---
