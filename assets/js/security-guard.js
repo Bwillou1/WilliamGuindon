@@ -1,6 +1,7 @@
 /**
  * SENTINELLE DE SÉCURITÉ RADICALE — williamguindon.me
  * Protège le site contre le clonage/fork, applique le blackout global, le mode panique et les kill-switches.
+ * Architecture 100% non-destructive par calques dynamiques réversibles à 0ms de latence.
  */
 (function () {
   'use strict';
@@ -33,10 +34,10 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
 
-  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION ULTRA-RAPIDE MULTI-ONGLETS 0MS & DISTANTE GITHUB)
+  // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)
   let lastAppliedStateJson = null;
 
-  // A. Canal BroadcastChannel (0ms entre onglets)
+  // A. Canal BroadcastChannel (0ms inter-onglets)
   const syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('wg_site_state_sync') : null;
   if (syncChannel) {
     syncChannel.onmessage = (e) => {
@@ -46,7 +47,7 @@
     };
   }
 
-  // B. Écoute des événements de stockage inter-onglets natifs (0ms)
+  // B. Écoute native des événements de stockage inter-onglets (0ms)
   window.addEventListener('storage', (e) => {
     if (e.key === STORAGE_KEY && e.newValue) {
       try {
@@ -61,45 +62,39 @@
     const now = Date.now();
     const currentStateJson = JSON.stringify(state);
 
-    const isMaintenanceActive = Boolean(state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil);
-    const isPanicActive = Boolean(state.panicActive && state.panicUntil && now < state.panicUntil);
-
-    // Si la maintenance était affichée et vient de se terminer ou d'être désactivée
-    if (!isMaintenanceActive && document.getElementById('maint-wrapper')) {
-      window.location.reload();
-      return;
-    }
-
-    // Éviter ré-exécution inutile si l'état n'a pas changé
     if (lastAppliedStateJson === currentStateJson && document.readyState !== 'loading') {
       return;
     }
     lastAppliedStateJson = currentStateJson;
 
-    // 1. Mode Blackout / Maintenance Totale
+    const isMaintenanceActive = Boolean(state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil);
+    const isPanicActive = Boolean(state.panicActive && state.panicUntil && now < state.panicUntil);
+
+    // 1. Mode Blackout / Maintenance Totale (Calque réversible)
     if (isMaintenanceActive) {
       renderMaintenanceScreen(state.maintenanceUntil);
-      return;
+    } else {
+      removeMaintenanceScreen();
     }
 
-    // 2. Mode Cyber-Attaque / Panique
+    // 2. Mode Cyber-Attaque / Panique (Calque réversible)
     if (isPanicActive) {
       applyPanicMode(state.panicTextOnly);
     } else {
       removePanicMode();
     }
 
-    // 3. Commutateurs individuels (Kill-Switches)
+    // 3. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
   }
 
-  // Application immédiate depuis le stockage local / session (0ms de latence au chargement)
+  // Application immédiate au chargement initial depuis le stockage local / session
   try {
     const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY) || '{}');
     applyState(cached);
   } catch (e) {}
 
-  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans cache)
+  // Synchronisation distante continue multi-sources sans blocage
   let isFetching = false;
   async function fetchRemoteState() {
     if (isFetching) return;
@@ -132,7 +127,7 @@
             if (syncChannel) {
               try { syncChannel.postMessage(remoteState); } catch (_) {}
             }
-            break; // Succès immédiat obtenu, arrêt
+            break;
           }
         }
       } catch (_) {}
@@ -140,7 +135,6 @@
     isFetching = false;
   }
 
-  // Lancement propre de la synchronisation après le chargement
   function startSync() {
     fetchRemoteState();
     setInterval(() => {
@@ -162,7 +156,7 @@
   });
 
   // ==========================================
-  // LOGIQUES D'APPLICATION SPÉCIFIQUES & SÉCURITÉ
+  // LOGIQUES D'APPLICATION RÉVERSIBLES À 0MS
   // ==========================================
 
   let isDevToolsLocked = false;
@@ -170,67 +164,93 @@
     if (isDevToolsLocked) return;
     isDevToolsLocked = true;
 
-    // 1. Bloquer le clic droit et le menu contextuel
     document.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
+      if (lastAppliedStateJson && (lastAppliedStateJson.includes('"maintenanceActive":true') || lastAppliedStateJson.includes('"panicActive":true'))) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
     }, true);
 
-    // 2. Bloquer les raccourcis clavier F12, Inspecteur, Code source, Enregistrer
     document.addEventListener('keydown', e => {
+      if (!lastAppliedStateJson || (!lastAppliedStateJson.includes('"maintenanceActive":true') && !lastAppliedStateJson.includes('"panicActive":true'))) {
+        return;
+      }
       const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
       const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : e.ctrlKey;
       const key = (e.key || '').toLowerCase();
       const code = e.keyCode || e.which;
 
-      // F12
       if (key === 'f12' || code === 123) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
-
-      // Ctrl/Cmd + Shift + I / J / C / K
       if (cmdOrCtrl && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || key === 'k' || code === 73 || code === 74 || code === 67 || code === 75)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
-
-      // Cmd + Option + I / J / C / U (Mac)
       if (cmdOrCtrl && e.altKey && (key === 'i' || key === 'j' || key === 'c' || key === 'u' || code === 73 || code === 74 || code === 67 || code === 85)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
-
-      // Ctrl/Cmd + U (Code source)
-      if (cmdOrCtrl && (key === 'u' || code === 85)) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-
-      // Ctrl/Cmd + S (Sauvegarde)
-      if (cmdOrCtrl && (key === 's' || code === 83)) {
+      if (cmdOrCtrl && (key === 'u' || code === 85 || key === 's' || code === 83)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
     }, true);
-
-    // 3. Bloquer la sélection de texte et le copier-coller
-    document.addEventListener('selectstart', e => { e.preventDefault(); return false; }, true);
-    document.addEventListener('copy', e => { e.preventDefault(); return false; }, true);
-    document.addEventListener('cut', e => { e.preventDefault(); return false; }, true);
-
-    if (document.body) {
-      document.body.style.userSelect = 'none';
-      document.body.style.webkitUserSelect = 'none';
-    }
   }
 
+  // --- MODE BLACKOUT / MAINTENANCE (CALQUE RÉVERSIBLE) ---
+  function renderMaintenanceScreen(untilTimestamp) {
+    lockInspectorAndDevTools();
+
+    function getObfuscatedEmail() {
+      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
+    }
+    const safeEmail = getObfuscatedEmail();
+    const timeLeftMin = Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000));
+
+    let overlay = document.getElementById('maint-wrapper');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'maint-wrapper';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#060a08;color:#f0fdf4;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;z-index:99999999;padding:20px;box-sizing:border-box;overflow:auto;';
+      (document.body || document.documentElement).appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+      <div style="background:#0f1713;border:1.5px solid #1f2922;border-radius:16px;padding:36px;max-width:580px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.9);text-align:center;">
+        <div style="font-size:42px;margin-bottom:12px;">🚧</div>
+        <h1 style="color:#22c55e;font-size:22px;margin-bottom:8px;font-weight:800;">Site en Maintenance Totale</h1>
+        <p style="color:#9bb0a2;font-size:14px;line-height:1.6;margin-bottom:20px;">
+          Le site officiel fait actuellement l'objet d'une mise à jour de structure et de sécurité.<br>
+          Fin estimée de l'intervention dans environ <strong>${timeLeftMin} minutes</strong>.
+        </p>
+
+        <div style="background:#090d0b;border:1px solid #1f2922;border-radius:10px;padding:16px;text-align:left;margin-bottom:24px;font-size:13.5px;color:#d1d5db;">
+          <div style="font-weight:700;color:#ffffff;margin-bottom:8px;">📋 Références Légales & Archives Officielles :</div>
+          <p style="margin:4px 0;">• Soumission CCE : <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Registre SEM-26-003 (ACEUM) ↗</a></p>
+          <p style="margin:4px 0;">• Archive officielle : <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Web Archive CCE ↗</a></p>
+          <p style="margin:8px 0 0 0;">• Contact sécurisé : <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:600;">${safeEmail}</a></p>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;font-size:12.5px;">
+          <button onclick="window.location.reload()" style="background:#22c55e;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;color:#042f2e;">🔄 Vérifier l'état</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeMaintenanceScreen() {
+    const overlay = document.getElementById('maint-wrapper');
+    if (overlay) overlay.remove();
+  }
+
+  // --- MODE CYBER-ATTAQUE / PANIQUE (CALQUE RÉVERSIBLE) ---
   function applyPanicMode(forceTextOnly) {
     lockInspectorAndDevTools();
 
@@ -250,35 +270,65 @@
       (document.head || document.documentElement).appendChild(panicStyle);
     }
 
-    const onReady = () => {
-      renderPanicModeBanner();
-      if (forceTextOnly) {
-        renderTextOnlyMode();
-      }
-    };
+    renderPanicModeBanner();
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', onReady, { once: true });
+    if (forceTextOnly) {
+      renderTextOnlyMode();
     } else {
-      onReady();
+      removeTextOnlyMode();
     }
+  }
+
+  function renderPanicModeBanner() {
+    let banner = document.getElementById('panic-alert-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'panic-alert-banner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;width:100vw;background:#eab308;color:#000000;font-weight:800;font-size:13.5px;padding:12px 16px;text-align:center;z-index:99999999;box-shadow:0 4px 20px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;';
+      banner.innerHTML = `⚠️ <span><strong>MODE PANIQUE / CYBER-ATTAQUE ACTIF :</strong> Un durcissement de sécurité extrême est en vigueur. Inspecteur, raccourcis et liens externes verrouillés.</span>`;
+      (document.body || document.documentElement).appendChild(banner);
+    }
+    if (document.body) document.body.style.paddingTop = '45px';
+  }
+
+  function renderTextOnlyMode() {
+    let txtOverlay = document.getElementById('panic-text-only-wrapper');
+    if (!txtOverlay) {
+      txtOverlay = document.createElement('div');
+      txtOverlay.id = 'panic-text-only-wrapper';
+      txtOverlay.style.cssText = 'position:fixed;top:45px;left:0;width:100vw;height:calc(100vh - 45px);background:#0d1117;color:#e6edf3;z-index:9999999;overflow:auto;padding:30px 20px;box-sizing:border-box;font-family:system-ui,monospace;line-height:1.7;';
+      
+      const clone = document.body ? document.body.cloneNode(true) : null;
+      if (clone) {
+        clone.querySelectorAll('script, style, #panic-alert-banner, #maint-wrapper, #panic-text-only-wrapper').forEach(el => el.remove());
+        const rawText = clone.innerText || clone.textContent || '';
+        txtOverlay.innerHTML = `
+          <div style="max-width:850px;margin:0 auto;background:#161b22;padding:24px;border:1px solid #30363d;border-radius:10px;white-space:pre-wrap;">
+            ${rawText.trim()}
+          </div>
+        `;
+      }
+      (document.body || document.documentElement).appendChild(txtOverlay);
+    }
+  }
+
+  function removeTextOnlyMode() {
+    const txtOverlay = document.getElementById('panic-text-only-wrapper');
+    if (txtOverlay) txtOverlay.remove();
   }
 
   function removePanicMode() {
     const banner = document.getElementById('panic-alert-banner');
-    if (banner) {
-      banner.remove();
-      if (document.body) document.body.style.paddingTop = '';
-    }
+    if (banner) banner.remove();
+    if (document.body) document.body.style.paddingTop = '';
 
     const panicStyle = document.getElementById('wg-panic-styles');
     if (panicStyle) panicStyle.remove();
 
-    if (document.getElementById('panic-text-only-container')) {
-      window.location.reload();
-    }
+    removeTextOnlyMode();
   }
 
+  // --- MATRICE DES 28 COMMUTATEURS (KILL-SWITCHES RÉVERSIBLES 0MS) ---
   function applyKillSwitches(state) {
     let styleEl = document.getElementById('wg-killswitch-styles');
     if (!styleEl) {
@@ -289,7 +339,7 @@
 
     const css = [];
 
-    // Thème forcé
+    // Thèmes forcés
     if (state.forceDarkMode) {
       document.documentElement.setAttribute('data-theme', 'dark');
     } else if (state.forceLightMode) {
@@ -386,7 +436,7 @@
         marq.id = 'wg-emergency-marquee';
         marq.style.cssText = 'position:fixed;bottom:0;left:0;width:100vw;background:#ef4444;color:#ffffff;font-weight:800;font-size:13px;padding:8px 16px;text-align:center;z-index:9999998;box-shadow:0 -4px 15px rgba(0,0,0,0.5);letter-spacing:0.5px;';
         marq.innerHTML = '🚨 <strong>ALERTE OFFICIELLE :</strong> Mode d\'information prioritaire activé par l\'administration.';
-        document.body.appendChild(marq);
+        (document.body || document.documentElement).appendChild(marq);
       }
     } else {
       const marq = document.getElementById('wg-emergency-marquee');
@@ -394,91 +444,5 @@
     }
 
     styleEl.textContent = css.join('\n');
-  }
-
-  function renderMaintenanceScreen(untilTimestamp) {
-    lockInspectorAndDevTools();
-
-    function getObfuscatedEmail() {
-      const parts = ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"];
-      return parts.join('');
-    }
-    const safeEmail = getObfuscatedEmail();
-    const timeLeftMin = Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000));
-
-    const html = `
-      <div id="maint-wrapper" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#060a08;color:#f0fdf4;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;z-index:9999999;padding:20px;box-sizing:border-box;">
-        <div style="background:#0f1713;border:1.5px solid #1f2922;border-radius:16px;padding:36px;max-width:580px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.9);text-align:center;">
-          <div style="font-size:42px;margin-bottom:12px;">🚧</div>
-          <h1 style="color:#22c55e;font-size:22px;margin-bottom:8px;font-weight:800;">Site en Maintenance Totale</h1>
-          <p style="color:#9bb0a2;font-size:14px;line-height:1.6;margin-bottom:20px;">
-            Le site officiel fait actuellement l'objet d'une mise à jour de structure et de sécurité.<br>
-            Fin estimée de l'intervention dans environ <strong>${timeLeftMin} minutes</strong>.
-          </p>
-
-          <div style="background:#090d0b;border:1px solid #1f2922;border-radius:10px;padding:16px;text-align:left;margin-bottom:24px;font-size:13.5px;color:#d1d5db;">
-            <div style="font-weight:700;color:#ffffff;margin-bottom:8px;">📋 Références Légales & Archives Officielles :</div>
-            <p style="margin:4px 0;">• Soumission CCE : <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Registre SEM-26-003 (ACEUM) ↗</a></p>
-            <p style="margin:4px 0;">• Archive officielle : <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Web Archive CCE ↗</a></p>
-            <p style="margin:8px 0 0 0;">• Contact sécurisé : <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:600;">${safeEmail}</a></p>
-          </div>
-
-          <div style="display:flex;justify-content:center;gap:12px;font-size:12.5px;">
-            <button onclick="window.location.reload()" style="background:#22c55e;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;color:#042f2e;">🔄 Vérifier l'état</button>
-            <button onclick="document.getElementById('maint-translate').style.display='block'" style="background:transparent;border:1px solid #1f2922;color:#9bb0a2;padding:10px 14px;border-radius:8px;cursor:pointer;">🌐 Traduire</button>
-          </div>
-          <div id="maint-translate" style="display:none;margin-top:16px;">
-            <div id="google_translate_element"></div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    if (document.body) {
-      document.body.innerHTML = html;
-      document.body.style.userSelect = 'none';
-      document.body.style.webkitUserSelect = 'none';
-    } else {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.body.innerHTML = html;
-        document.body.style.userSelect = 'none';
-        document.body.style.webkitUserSelect = 'none';
-      }, { once: true });
-    }
-  }
-
-  function renderPanicModeBanner() {
-    if (document.getElementById('panic-alert-banner')) return;
-    const banner = document.createElement('div');
-    banner.id = 'panic-alert-banner';
-    banner.style.cssText = 'position:fixed;top:0;left:0;width:100vw;background:#eab308;color:#000000;font-weight:800;font-size:13.5px;padding:12px 16px;text-align:center;z-index:9999999;box-shadow:0 4px 20px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;';
-    banner.innerHTML = `⚠️ <span><strong>MODE PANIQUE / CYBER-ATTAQUE ACTIF :</strong> Un durcissement de sécurité extrême est en vigueur. Inspecteur, raccourcis et liens externes verrouillés.</span>`;
-    
-    if (document.body) {
-      document.body.prepend(banner);
-      document.body.style.paddingTop = '45px';
-    } else {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.body.prepend(banner);
-        document.body.style.paddingTop = '45px';
-      }, { once: true });
-    }
-  }
-
-  function renderTextOnlyMode() {
-    if (document.getElementById('panic-text-only-container')) return;
-    const rawText = document.body ? (document.body.innerText || document.body.textContent || '') : '';
-    const banner = document.getElementById('panic-alert-banner');
-
-    const container = document.createElement('div');
-    container.id = 'panic-text-only-container';
-    container.style.cssText = 'max-width:850px;margin:20px auto;padding:24px;font-family:system-ui,-apple-system,monospace;white-space:pre-wrap;background:#0d1117;color:#e6edf3;line-height:1.6;border:1px solid #30363d;border-radius:8px;';
-    container.textContent = rawText.replace(/⚠️.*verrouillés\./g, '').trim();
-
-    document.body.replaceChildren(container);
-    if (banner) {
-      document.body.prepend(banner);
-      document.body.style.paddingTop = '45px';
-    }
   }
 })();
