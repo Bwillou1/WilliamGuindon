@@ -457,13 +457,34 @@
     buildSidebarSections(doc);
   };
 
+  // Validation stricte du jeton GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé invalide (doit commencer par ghp_ ou github_pat_)");
+    }
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide, expirée ou révoquée.");
+    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
+    const userData = await userRes.json();
+    if ((userData.login || "").toLowerCase() !== "bwillou1") {
+      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
+    }
+    return userData;
+  }
+
   // Sauvegarder et publier directement sur GitHub
   async function saveSiteToGitHub() {
     let token = localStorage.getItem("wg_github_pat");
     if (!token) {
-      token = prompt("🔑 Entrez votre jeton d'accès GitHub (PAT) pour publier vos modifications en direct :");
+      token = prompt("🔑 Entrez votre jeton d'accès GitHub personnel (PAT de @Bwillou1) :");
       if (token && token.trim()) {
-        localStorage.setItem("wg_github_pat", token.trim());
+        token = token.trim();
       } else {
         showToast("⚠️ Publication annulée : jeton GitHub requis.", false);
         return;
@@ -472,9 +493,14 @@
 
     const saveBtn = document.getElementById("btn-save-site");
     saveBtn.disabled = true;
-    saveBtn.textContent = "⏳ Publication sur GitHub...";
+    saveBtn.textContent = "⏳ Vérification de l'autorisation @Bwillou1...";
 
     try {
+      // 1. Validation d'identité stricte
+      await validateGitHubToken(token);
+      localStorage.setItem("wg_github_pat", token);
+
+      saveBtn.textContent = "⏳ Publication sur GitHub...";
       const doc = iframe.contentDocument || iframe.contentWindow.document;
 
       // Nettoyer les attributs d'édition avant de sauvegarder

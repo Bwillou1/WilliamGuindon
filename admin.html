@@ -268,29 +268,72 @@
 
   <div id="status-message" class="status-toast"></div>
 
-  <!-- Authentification GitHub Token -->
+  <!-- Carte Vérification au chargement -->
+  <div id="auth-checking-card" class="token-box" style="text-align:center; padding:32px 20px; display:none;">
+    <div style="font-size:26px; margin-bottom:10px;">⏳</div>
+    <div style="font-weight:700; font-size:16px; color:var(--text);">Vérification de sécurité auprès de GitHub...</div>
+    <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Contrôle d'autorisation pour le compte @Bwillou1</div>
+  </div>
+
+  <!-- Carte Déverrouillage Passkey (Touch ID / Face ID) si actif -->
+  <div id="passkey-card" class="token-box" style="display:none; text-align:center; padding:36px 24px;">
+    <div style="font-size:40px; margin-bottom:12px;">🛡️</div>
+    <h3 style="font-size:1.4rem; margin-bottom:8px;">Espace Verrouillé</h3>
+    <p style="color:var(--text-muted); font-size:14px; max-width:440px; margin:0 auto 20px; line-height:1.5;">
+      Protection biométrique Apple active. Authentifiez-vous avec Touch ID (Mac) ou Face ID (iPhone) pour accéder à votre espace de publication.
+    </p>
+    <button id="btn-passkey-unlock" class="btn btn-primary" style="padding:12px 28px; font-size:15px; font-weight:700;">
+      👆 Déverrouiller avec Touch ID / Face ID
+    </button>
+    <div style="margin-top:18px;">
+      <button id="btn-use-token-fallback" class="btn btn-ghost" style="font-size:12.5px; color:var(--text-muted); border:none; background:transparent; cursor:pointer; text-decoration:underline;">
+        Entrer ou changer ma clé GitHub manuellement
+      </button>
+    </div>
+  </div>
+
+  <!-- Carte Authentification par Clé GitHub (Vérification stricte @Bwillou1) -->
   <div id="token-card" class="token-box">
-    <h3>🔑 Connexion Sécurisée à votre GitHub</h3>
-    <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px;">
-      Pour pouvoir publier directement sur votre site sans coder, entrez votre jeton d'accès GitHub (Personal Access Token). Il sera enregistré uniquement dans votre navigateur sur cet appareil.
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+      <span style="font-size:22px;">🔒</span>
+      <h3 style="margin:0; font-size:1.3rem;">Accès Réservé au Titulaire (@Bwillou1)</h3>
+    </div>
+    <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px; line-height:1.5;">
+      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la publication, entrez votre Personal Access Token. Le système vérifie en temps réel que vous êtes bien le propriétaire <strong>@Bwillou1</strong> avec droits d'écriture sur le dépôt. Tout autre texte ou clé non autorisée est <strong>strictement bloqué</strong>.
     </p>
     <div class="form-group">
-      <label class="form-label" for="github-pat-input">Jeton d'accès GitHub (PAT avec permission "Contents: Read & Write") :</label>
-      <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">
+      <label class="form-label" for="github-pat-input">Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
+      <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
     </div>
-    <button id="btn-save-token" class="btn btn-primary">Enregistrer la clé et déverrouiller</button>
-    <details style="margin-top:14px; font-size:13px; color:var(--text-muted);">
-      <summary style="cursor:pointer; font-weight:600;">Comment générer votre clé en 2 minutes ?</summary>
-      <ol style="padding-left:18px; margin-top:8px; line-height:1.6;">
-        <li>Ouvrez <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">GitHub Tokens (Classic) ↗</a>.</li>
-        <li>Donnez un nom (ex: "Site William") et cochez la case <strong>repo</strong>.</li>
-        <li>Cliquez sur "Generate token" en bas et copiez le code ici.</li>
-      </ol>
-    </details>
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <button id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:10px 22px;">
+        🔐 Vérifier et déverrouiller
+      </button>
+      <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
+        ⏳ Vérification auprès de GitHub en cours...
+      </span>
+    </div>
+    <div id="token-error-banner" style="display:none; margin-top:14px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
+    <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6;">
+      🛡️ <strong>Sécurité absolue :</strong> Votre clé ne sera <em>jamais</em> écrite dans les fichiers de code sur GitHub. Elle est conservée uniquement dans la mémoire sécurisée de votre navigateur sur cet appareil.
+    </div>
   </div>
 
   <!-- Contenu déverrouillé -->
   <div id="admin-workspace" style="display:none;">
+    <!-- Enrôlement Passkey Touch ID / Face ID Apple -->
+    <div id="passkey-setup-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="max-width:550px;">
+        <strong style="color:var(--text); font-size:14px;">👆 Activer Touch ID / Face ID (Passkey Apple)</strong>
+        <p style="margin:3px 0 0; font-size:13px; color:var(--text-muted); line-height:1.4;">
+          Associez votre Mac ou votre iPhone pour déverrouiller cet espace en 1 seconde avec votre empreinte ou votre visage, sans jamais retaper de clé.
+        </p>
+      </div>
+      <button id="btn-enroll-passkey" class="btn btn-primary" style="font-size:13px; font-weight:700; padding:8px 16px;">
+        🛡️ Activer sur ce Mac / iPhone
+      </button>
+    </div>
+
     <div class="admin-tabs" style="align-items:center; flex-wrap:wrap;">
       <button class="admin-tab active" data-tab="tab-blog">📝 Rédiger un Article (Blog)</button>
       <button class="admin-tab" data-tab="tab-photo">📷 Publier une Photo</button>
@@ -431,51 +474,288 @@
   document.getElementById("blog-date").value = today;
   document.getElementById("photo-date").value = today;
 
-  // Gestion du Token
+  // ==========================================
+  // SÉCURITÉ & AUTHENTIFICATION STRICTE
+  // ==========================================
+
   function getToken() {
     return localStorage.getItem("wg_github_pat") || "";
   }
 
-  function setToken(token) {
-    localStorage.setItem("wg_github_pat", token.trim());
-    updateAuthUI();
-  }
-
   function clearToken() {
     localStorage.removeItem("wg_github_pat");
-    updateAuthUI();
+    localStorage.removeItem("wg_passkey_enabled");
+    localStorage.removeItem("wg_passkey_id");
+    updateAuthUI(false);
   }
 
-  function updateAuthUI() {
-    const token = getToken();
+  // Encodage / Décodage pour WebAuthn
+  function bufToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function base64ToBuf(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  // 1. Validation cryptographique en direct auprès de GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé invalide. Un jeton GitHub valide commence par 'ghp_' ou 'github_pat_'.");
+    }
+
+    // A. Appel API utilisateur
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (userRes.status === 401) {
+      throw new Error("Clé d'accès refusée par GitHub (401 Unauthorized) : clé inexistante, expirée ou révoquée.");
+    }
+    if (!userRes.ok) {
+      throw new Error(`Erreur de communication avec GitHub (HTTP ${userRes.status}).`);
+    }
+
+    const userData = await userRes.json();
+    const login = (userData.login || "").toLowerCase();
+
+    // B. Vérification stricte de l'identité : seul @Bwillou1 est autorisé
+    if (login !== "bwillou1") {
+      throw new Error(`Accès strictement bloqué : cette clé appartient à l'utilisateur @${userData.login}. Seul le compte titulaire @Bwillou1 est autorisé.`);
+    }
+
+    // C. Vérification des permissions d'écriture
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (!repoRes.ok) {
+      throw new Error(`Impossible de valider les droits sur le dépôt ${GITHUB_REPO}.`);
+    }
+
+    const repoData = await repoRes.json();
+    if (!repoData.permissions || !repoData.permissions.push) {
+      throw new Error("Ce jeton n'a pas les droits d'écriture ('push' / write) sur le dépôt.");
+    }
+
+    return userData;
+  }
+
+  // 2. Gestion Passkey (Touch ID / Face ID Apple)
+  const isPasskeySupported = !!(window.PublicKeyCredential && window.crypto);
+
+  async function enrollPasskey() {
+    try {
+      const token = getToken();
+      if (!token) return;
+
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const userId = new Uint8Array(16);
+      window.crypto.getRandomValues(userId);
+
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge: challenge,
+          rp: { name: "William Guindon Admin", ...(rpId ? { id: rpId } : {}) },
+          user: { id: userId, name: "Bwillou1", displayName: "William Guindon" },
+          pubKeyCredParams: [
+            { type: "public-key", alg: -7 },   // ES256
+            { type: "public-key", alg: -257 }  // RS256
+          ],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            userVerification: "required"
+          },
+          timeout: 60000
+        }
+      });
+
+      if (credential) {
+        localStorage.setItem("wg_passkey_enabled", "true");
+        localStorage.setItem("wg_passkey_id", bufToBase64(credential.rawId));
+        const setupBanner = document.getElementById("passkey-setup-banner");
+        if (setupBanner) setupBanner.style.display = "none";
+        showStatus("Protection Touch ID / Face ID activée avec succès sur cet appareil !", "success");
+      }
+    } catch (err) {
+      console.warn("Échec Passkey:", err);
+      showStatus("Configuration biométrique annulée ou non supportée.", "error");
+    }
+  }
+
+  async function unlockWithPasskey() {
+    const credId = localStorage.getItem("wg_passkey_id");
+    if (!credId) {
+      showTokenForm();
+      return;
+    }
+
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge: challenge,
+          ...(rpId ? { rpId: rpId } : {}),
+          allowCredentials: [{
+            type: "public-key",
+            id: base64ToBuf(credId)
+          }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        // Authentification biométrique réussie
+        updateAuthUI(true);
+        showStatus("Déverrouillé avec succès via Touch ID / Face ID !", "success");
+      }
+    } catch (err) {
+      console.warn("Échec Touch ID:", err);
+      showStatus("Authentification biométrique annulée ou refusée.", "error");
+    }
+  }
+
+  function showTokenForm() {
+    document.getElementById("passkey-card").style.display = "none";
+    document.getElementById("token-card").style.display = "block";
+  }
+
+  function updateAuthUI(isAuthorized = false) {
+    const checkingCard = document.getElementById("auth-checking-card");
+    const passkeyCard = document.getElementById("passkey-card");
     const tokenCard = document.getElementById("token-card");
     const workspace = document.getElementById("admin-workspace");
     const authBar = document.getElementById("auth-status-bar");
+    const setupBanner = document.getElementById("passkey-setup-banner");
 
-    if (token) {
+    checkingCard.style.display = "none";
+
+    if (isAuthorized) {
+      passkeyCard.style.display = "none";
       tokenCard.style.display = "none";
       workspace.style.display = "block";
       authBar.innerHTML = `
-        <span style="font-size:13px; color:var(--accent); font-weight:600;">🟢 Connecté à GitHub</span>
-        <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px;" onclick="clearToken()">Déconnexion</button>
+        <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
+        <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
       `;
+
+      // Afficher la proposition Passkey si supporté et pas encore activé
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") !== "true") {
+        if (setupBanner) setupBanner.style.display = "flex";
+      } else {
+        if (setupBanner) setupBanner.style.display = "none";
+      }
+
       loadManageList();
     } else {
-      tokenCard.style.display = "block";
       workspace.style.display = "none";
-      authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Non connecté</span>";
+      authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
+
+      // Si Passkey est actif sur cette machine, afficher l'écran biométrique en premier
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") === "true") {
+        passkeyCard.style.display = "block";
+        tokenCard.style.display = "none";
+      } else {
+        passkeyCard.style.display = "none";
+        tokenCard.style.display = "block";
+      }
     }
   }
 
-  document.getElementById("btn-save-token").onclick = () => {
-    const val = document.getElementById("github-pat-input").value;
-    if (val.trim()) {
-      setToken(val);
-      showStatus("Clé enregistrée avec succès !", "success");
+  // Initialisation et vérification au chargement
+  async function initAuth() {
+    const token = getToken();
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+
+    if (isPasskey) {
+      updateAuthUI(false);
+      return;
+    }
+
+    if (token) {
+      document.getElementById("auth-checking-card").style.display = "block";
+      document.getElementById("token-card").style.display = "none";
+      try {
+        await validateGitHubToken(token);
+        updateAuthUI(true);
+      } catch (e) {
+        console.warn("Clé stockée révoquée ou invalide :", e.message);
+        clearToken();
+      }
     } else {
-      showStatus("Veuillez coller un jeton valide.", "error");
+      updateAuthUI(false);
+    }
+  }
+
+  // Bouton de validation de la clé
+  document.getElementById("btn-save-token").onclick = async () => {
+    const input = document.getElementById("github-pat-input");
+    const val = input.value.trim();
+    const btn = document.getElementById("btn-save-token");
+    const spinner = document.getElementById("token-spinner");
+    const errorBanner = document.getElementById("token-error-banner");
+
+    errorBanner.style.display = "none";
+    if (!val) {
+      errorBanner.textContent = "Veuillez coller votre jeton personnel GitHub.";
+      errorBanner.style.display = "block";
+      return;
+    }
+
+    btn.disabled = true;
+    spinner.style.display = "inline";
+
+    try {
+      await validateGitHubToken(val);
+      localStorage.setItem("wg_github_pat", val);
+      input.value = "";
+      updateAuthUI(true);
+      showStatus("Accès vérifié avec succès ! Bienvenue @Bwillou1.", "success");
+    } catch (err) {
+      errorBanner.textContent = "❌ " + err.message;
+      errorBanner.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      spinner.style.display = "none";
     }
   };
+
+  // Événements Passkey
+  document.getElementById("btn-passkey-unlock").onclick = unlockWithPasskey;
+  document.getElementById("btn-use-token-fallback").onclick = (e) => {
+    e.preventDefault();
+    showTokenForm();
+  };
+  const enrollBtn = document.getElementById("btn-enroll-passkey");
+  if (enrollBtn) {
+    enrollBtn.onclick = enrollPasskey;
+  }
+
+  initAuth();
 
   function showStatus(msg, type = "success") {
     const el = document.getElementById("status-message");
