@@ -270,6 +270,42 @@
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+
+  /* Modale Authentification Studio */
+  .auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+  }
+  .auth-modal-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 28px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    text-align: center;
+    position: relative;
+  }
+  .auth-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -457,6 +493,25 @@
     buildSidebarSections(doc);
   };
 
+  // Encodage / Décodage WebAuthn
+  function bufToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function base64ToBuf(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
   // Validation stricte du jeton GitHub
   async function validateGitHubToken(token) {
     const cleanToken = (token || "").trim();
@@ -475,32 +530,149 @@
     if ((userData.login || "").toLowerCase() !== "bwillou1") {
       throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
     }
+
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (repoRes.ok) {
+      const repoData = await repoRes.json();
+      if (!repoData.permissions || !repoData.permissions.push) {
+        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
+      }
+    }
+
     return userData;
   }
 
-  // Sauvegarder et publier directement sur GitHub
-  async function saveSiteToGitHub() {
-    let token = localStorage.getItem("wg_github_pat");
-    if (!token) {
-      token = prompt("🔑 Entrez votre jeton d'accès GitHub personnel (PAT de @Bwillou1) :");
-      if (token && token.trim()) {
-        token = token.trim();
-      } else {
-        showToast("⚠️ Publication annulée : jeton GitHub requis.", false);
-        return;
+  // Modale d'authentification Studio
+  function openAuthModal() {
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+    const modal = document.getElementById("editor-auth-modal");
+    const passkeyBox = document.getElementById("ed-passkey-box");
+    const tokenBox = document.getElementById("ed-token-box");
+    const errBox = document.getElementById("ed-token-error");
+
+    if (errBox) errBox.style.display = "none";
+
+    if (isPasskey) {
+      passkeyBox.style.display = "block";
+      tokenBox.style.display = "none";
+    } else {
+      passkeyBox.style.display = "none";
+      tokenBox.style.display = "block";
+    }
+
+    modal.style.display = "flex";
+  }
+
+  function closeAuthModal() {
+    const modal = document.getElementById("editor-auth-modal");
+    modal.style.display = "none";
+  }
+
+  function showEdTokenForm() {
+    document.getElementById("ed-passkey-box").style.display = "none";
+    document.getElementById("ed-token-box").style.display = "block";
+  }
+
+  async function unlockEditorPasskey() {
+    const credId = localStorage.getItem("wg_passkey_id");
+    if (!credId) {
+      showEdTokenForm();
+      return;
+    }
+
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge: challenge,
+          ...(rpId ? { rpId: rpId } : {}),
+          allowCredentials: [{
+            type: "public-key",
+            id: base64ToBuf(credId)
+          }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        closeAuthModal();
+        showToast("Touch ID / Face ID validé ! Publication en cours...");
+        executePublishCommit();
       }
+    } catch (err) {
+      console.warn("Échec Passkey Éditeur:", err);
+      showToast("Authentification biométrique annulée ou refusée.", false);
+    }
+  }
+
+  async function validateAndSaveEditorToken() {
+    const input = document.getElementById("ed-pat-input");
+    const val = (input.value || "").trim();
+    const btn = document.getElementById("btn-ed-validate-token");
+    const errBox = document.getElementById("ed-token-error");
+
+    errBox.style.display = "none";
+    if (!val) {
+      errBox.textContent = "Veuillez entrer votre jeton GitHub.";
+      errBox.style.display = "block";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Vérification @Bwillou1...";
+
+    try {
+      await validateGitHubToken(val);
+      localStorage.setItem("wg_github_pat", val);
+      closeAuthModal();
+      showToast("Accès validé pour @Bwillou1 !");
+      executePublishCommit();
+    } catch (err) {
+      errBox.textContent = "❌ " + err.message;
+      errBox.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🔐 Valider et Publier sur GitHub";
+    }
+  }
+
+  // Lancer la sauvegarde et publication directe sur GitHub
+  async function saveSiteToGitHub() {
+    const token = localStorage.getItem("wg_github_pat");
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+
+    // Si on a déjà un jeton enregistré et valide, on publie directement
+    if (token) {
+      executePublishCommit();
+      return;
+    }
+
+    // Sinon, ouvrir la modale sécurisée (Passkey Touch ID ou saisie de clé)
+    openAuthModal();
+  }
+
+  // Exécution effective du commit sur GitHub
+  async function executePublishCommit() {
+    const token = localStorage.getItem("wg_github_pat");
+    if (!token) {
+      openAuthModal();
+      return;
     }
 
     const saveBtn = document.getElementById("btn-save-site");
     saveBtn.disabled = true;
-    saveBtn.textContent = "⏳ Vérification de l'autorisation @Bwillou1...";
+    saveBtn.textContent = "⏳ Publication sur GitHub...";
 
     try {
-      // 1. Validation d'identité stricte
-      await validateGitHubToken(token);
-      localStorage.setItem("wg_github_pat", token);
-
-      saveBtn.textContent = "⏳ Publication sur GitHub...";
       const doc = iframe.contentDocument || iframe.contentWindow.document;
 
       // Nettoyer les attributs d'édition avant de sauvegarder
@@ -551,6 +723,10 @@
       showToast("🎉 Félicitations ! Votre site est mis à jour et en ligne !");
     } catch (err) {
       console.error(err);
+      if (err.message && err.message.includes("401")) {
+        localStorage.removeItem("wg_github_pat");
+        openAuthModal();
+      }
       showToast("Erreur : " + err.message, false);
     } finally {
       saveBtn.disabled = false;
@@ -558,5 +734,43 @@
     }
   }
 </script>
+
+<!-- Modale d'Authentification / Passkey Apple pour l'Éditeur -->
+<div class="auth-modal-overlay" id="editor-auth-modal">
+  <div class="auth-modal-card">
+    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Fermer">✕</button>
+    
+    <!-- Écran Passkey biométrique si activé -->
+    <div id="ed-passkey-box" style="display:none;">
+      <div style="font-size:42px; margin-bottom:12px;">🛡️</div>
+      <h3 style="font-size:1.35rem; margin-bottom:8px; color:var(--text);">Publication Sécurisée</h3>
+      <p style="color:var(--text-muted); font-size:13.5px; line-height:1.5; margin-bottom:20px;">
+        Touch ID ou Face ID est activé pour <strong>@Bwillou1</strong>. Touchez le capteur ou regardez l'écran pour publier vos modifications en direct.
+      </p>
+      <button id="btn-ed-passkey" class="btn btn-save" style="width:100%; justify-content:center; padding:12px; font-size:15px;" onclick="unlockEditorPasskey()">
+        👆 Déverrouiller avec Touch ID / Face ID
+      </button>
+      <div style="margin-top:16px;">
+        <button onclick="showEdTokenForm()" class="btn" style="background:transparent; border:none; color:var(--text-muted); font-size:12.5px; text-decoration:underline; cursor:pointer;">
+          Utiliser ma clé GitHub manuellement
+        </button>
+      </div>
+    </div>
+
+    <!-- Écran Saisie de clé GitHub -->
+    <div id="ed-token-box">
+      <div style="font-size:36px; margin-bottom:12px;">🔑</div>
+      <h3 style="font-size:1.35rem; margin-bottom:8px; color:var(--text);">Autorisation @Bwillou1 Requise</h3>
+      <p style="color:var(--text-muted); font-size:13.5px; line-height:1.5; margin-bottom:18px;">
+        Entrez votre Personal Access Token GitHub (PAT). Seul le compte titulaire <strong>@Bwillou1</strong> avec droits d'écriture peut publier.
+      </p>
+      <input type="password" id="ed-pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-dark); color:var(--text); font-size:14px; margin-bottom:14px;">
+      <button id="btn-ed-validate-token" class="btn btn-save" style="width:100%; justify-content:center; padding:11px; font-size:14.5px;" onclick="validateAndSaveEditorToken()">
+        🔐 Valider et Publier sur GitHub
+      </button>
+      <div id="ed-token-error" style="display:none; margin-top:12px; padding:10px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13px; text-align:left;"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
