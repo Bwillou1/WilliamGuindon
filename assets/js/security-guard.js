@@ -429,18 +429,57 @@
       css.push('#backToTop, .scroll-to-top, .back-to-top-btn, a[href="#top"], .leaf-scroll-top { display: none !important; }');
     }
 
-    // Bannière d'alerte défilante urgente
-    if (state.emergencyBannerOnly) {
-      if (!document.getElementById('wg-emergency-marquee')) {
-        const marq = document.createElement('div');
-        marq.id = 'wg-emergency-marquee';
-        marq.style.cssText = 'position:fixed;bottom:0;left:0;width:100vw;background:#ef4444;color:#ffffff;font-weight:800;font-size:13px;padding:8px 16px;text-align:center;z-index:9999998;box-shadow:0 -4px 15px rgba(0,0,0,0.5);letter-spacing:0.5px;';
-        marq.innerHTML = '🚨 <strong>ALERTE OFFICIELLE :</strong> Mode d\'information prioritaire activé par l\'administration.';
-        (document.body || document.documentElement).appendChild(marq);
+    // Mode Bloquer Capture d'Écran (Flou total + Nom William Guindon)
+    if (state.blockScreenshots) {
+      css.push('body { filter: blur(35px) !important; user-select: none !important; -webkit-user-select: none !important; pointer-events: none !important; }');
+      css.push('@media print { body { display: none !important; } html::after { content: "William Guindon"; font-size: 40px; font-weight: bold; color: black; display: block; text-align: center; margin-top: 150px; } }');
+      
+      let shield = document.getElementById('wg-screenshot-shield');
+      if (!shield) {
+        shield = document.createElement('div');
+        shield.id = 'wg-screenshot-shield';
+        shield.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999999;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);background:rgba(6,10,8,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;';
+        shield.innerHTML = `
+          <div style="font-size:46px;font-weight:900;color:#22c55e;letter-spacing:3px;text-shadow:0 0 40px rgba(34,197,94,0.8);font-family:system-ui,-apple-system,sans-serif;text-align:center;">William Guindon</div>
+          <div style="font-size:13px;color:#9bb0a2;margin-top:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">🔒 Protection Anti-Capture d'Écran Active</div>
+        `;
+        (document.body || document.documentElement).appendChild(shield);
       }
     } else {
-      const marq = document.getElementById('wg-emergency-marquee');
-      if (marq) marq.remove();
+      const shield = document.getElementById('wg-screenshot-shield');
+      if (shield) shield.remove();
+    }
+
+    // Mode Désactiver le JavaScript (Mode Statique No-Script)
+    if (state.disableSiteJS) {
+      css.push('button, input, select, textarea, form, .interactive, .menu-toggle, .nav-dropdown-btn { pointer-events: none !important; opacity: 0.5 !important; }');
+      css.push('* { -webkit-animation: none !important; animation: none !important; -webkit-transition: none !important; transition: none !important; }');
+    }
+
+    // Mode Désactiver le Visionnement & Téléchargement des PDF
+    if (state.disablePDF) {
+      css.push('a[href$=".pdf"], a[href*=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"], iframe[src*="pdf"], iframe[src*="viewer"], .pdf-container, #pdf-viewer, #pdfModal { display: none !important; pointer-events: none !important; }');
+      
+      if (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html')) {
+        let pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
+        if (!pdfNotice) {
+          pdfNotice = document.createElement('div');
+          pdfNotice.id = 'wg-pdf-blocked-overlay';
+          pdfNotice.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0d1117;color:#f87171;display:flex;align-items:center;justify-content:center;z-index:99999999;padding:24px;text-align:center;box-sizing:border-box;font-family:system-ui,sans-serif;';
+          pdfNotice.innerHTML = `
+            <div style="background:#161b22;border:1.5px solid #ef4444;border-radius:14px;padding:32px;max-width:520px;box-shadow:0 15px 40px rgba(0,0,0,0.8);">
+              <div style="font-size:40px;margin-bottom:12px;">📄🚫</div>
+              <h2 style="color:#ef4444;margin:0 0 10px 0;font-size:20px;">Visionnement des PDF Désactivé</h2>
+              <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin:0 0 18px 0;">La consultation et le téléchargement des documents PDF officiels ont été suspendus par l'administrateur.</p>
+              <a href="index.html" style="display:inline-block;background:#22c55e;color:#042f2e;font-weight:700;padding:10px 20px;border-radius:8px;text-decoration:none;">⬅ Retour à l'accueil</a>
+            </div>
+          `;
+          (document.body || document.documentElement).appendChild(pdfNotice);
+        }
+      }
+    } else {
+      const pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
+      if (pdfNotice) pdfNotice.remove();
     }
 
     styleEl.textContent = css.join('\n');
