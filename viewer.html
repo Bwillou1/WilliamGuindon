@@ -139,6 +139,10 @@
           <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
         </button>
 
+        <button id="btn-viewer-ai-toggle" class="tool-btn" title="Assistant IA & Clavardage (Gemini Nano)" aria-label="Assistant IA">
+          <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+        </button>
+
         <button id="btn-shortcuts" class="tool-btn" title="Raccourcis clavier (?)" aria-label="Raccourcis clavier">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         </button>
@@ -171,6 +175,10 @@
             <button id="tab-search" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-search" title="Recherche dans le texte">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               <span>Recherche</span>
+            </button>
+            <button id="tab-ai" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-ai" title="Assistant IA & Clavardage (Gemini Nano)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+              <span>IA</span>
             </button>
             <button id="tab-info" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-info" title="Informations et métadonnées">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
@@ -209,7 +217,52 @@
             <div id="search-results-list" class="search-results-list"></div>
           </div>
 
-          <!-- 4. Infos Document -->
+          <!-- 4. Assistant IA & Clavardage -->
+          <div id="pane-ai" class="sidebar-pane" role="tabpanel">
+            <div class="viewer-ai-container">
+              <div class="ai-nano-badge" style="margin-bottom:10px;">
+                <span class="ai-nano-dot"></span>
+                <span id="viewer-ai-status">Prêt · Chrome Built-in AI / Synthèse locale</span>
+              </div>
+              
+              <div class="viewer-ai-actions" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+                <button id="btn-viewer-summarize" class="btn btn-primary" type="button" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;">
+                  ⚡ Résumer le document complet
+                </button>
+                <button id="btn-viewer-summarize-page" class="btn btn-ghost" type="button" style="width:100%; justify-content:center; padding:6px 10px; font-size:12px;">
+                  📄 Résumer la page active (<span id="viewer-ai-current-page-label">Page 1</span>)
+                </button>
+              </div>
+
+              <!-- Zone d'affichage du résumé / synthèse -->
+              <div id="viewer-ai-output" class="viewer-ai-output" style="display:none; background:var(--bg-card); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:12px; line-height:1.5; margin-bottom:12px; max-height:220px; overflow-y:auto;">
+              </div>
+
+              <!-- Mini-clavardage interactif avec le document -->
+              <div class="viewer-ai-chat-section" style="border-top:1px solid var(--line); padding-top:10px;">
+                <div style="font-weight:600; font-size:12px; margin-bottom:6px; color:var(--text);">💬 Clavarder avec ce document</div>
+                
+                <div id="viewer-chat-messages" class="viewer-chat-messages" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; margin-bottom:8px; padding:4px 0;">
+                  <div class="ai-chat-bubble bot" style="font-size:11.5px; padding:8px 10px;">
+                    Bonjour ! Je peux analyser ce document juridique en temps réel. Posez-moi une question sur le contenu, les arguments ou les articles de loi.
+                  </div>
+                </div>
+
+                <div class="viewer-ai-pills" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels sont les points clés de ce document ?" style="font-size:10.5px; padding:3px 7px;">Points clés</button>
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels articles de loi ou conventions sont cités ?" style="font-size:10.5px; padding:3px 7px;">Articles de loi</button>
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quelles sont les conclusions et prochaines étapes ?" style="font-size:10.5px; padding:3px 7px;">Conclusions</button>
+                </div>
+
+                <form id="viewer-chat-form" style="display:flex; gap:4px;">
+                  <input type="text" id="viewer-chat-input" class="search-input" placeholder="Poser une question..." style="font-size:12px; height:32px;" required>
+                  <button type="submit" class="btn btn-primary" style="padding:0 10px; height:32px; font-size:12px;">Envoyer</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Infos Document -->
           <div id="pane-info" class="sidebar-pane" role="tabpanel">
             <table id="doc-meta-table" class="doc-meta-table"></table>
           </div>
@@ -249,6 +302,9 @@
       </button>
       <button id="mobile-btn-search" class="tool-btn mobile-quick-btn" title="Rechercher" aria-label="Rechercher">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button id="mobile-btn-ai" class="tool-btn mobile-quick-btn" title="Assistant IA / Clavardage" aria-label="Assistant IA">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
       </button>
       <button id="mobile-btn-mode" class="tool-btn mobile-quick-btn" title="Changer le mode de lecture (Sombre/Sépia/Clair)" aria-label="Mode de lecture">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>

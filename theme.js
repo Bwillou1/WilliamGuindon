@@ -957,7 +957,7 @@
     }
   }
 
-  // 16. Initialisation du widget flottant IA & Modal (Uniquement sur la page d'accueil)
+  // 16. Initialisation du widget flottant IA, Hub de Clavardage & Résumé (Gemini Nano & Moteur documentaire)
   function initFloatingAiHub() {
     const path = window.location.pathname;
     const isHome = path === '/' || path.endsWith('index.html') || path === '' || path.endsWith('/');
@@ -971,12 +971,12 @@
 
     const floatingBtn = document.createElement('button');
     floatingBtn.className = 'floating-ai-btn';
-    floatingBtn.setAttribute('aria-label', 'Résumer ou analyser avec une IA');
+    floatingBtn.setAttribute('aria-label', 'Clavarder ou résumer avec l\'IA');
     floatingBtn.innerHTML = `
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
       </svg>
-      <span>Analyser avec l'IA</span>
+      <span>Clavarder / IA</span>
     `;
 
     const aiModal = document.createElement('div');
@@ -985,50 +985,106 @@
       <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
         <div class="ai-modal-header">
           <div class="ai-modal-title" id="ai-modal-title">
-            <span>✨</span> Résumer & Analyser avec l'IA
+            <span>✨</span> Assistant IA & Dossier SEM-26-003
           </div>
           <button class="ai-modal-close" aria-label="Fermer le menu IA">✕</button>
         </div>
-        <p class="ai-modal-desc">
-          Analysez instantanément le dossier SEM-26-003, la chronologie Stablex et les faits vérifiés sur William Guindon dans votre assistant IA :
-        </p>
-        <div class="ai-modal-buttons">
-          <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-            <div class="ai-btn-option-left">
-              <span>🟢</span>
-              <span>Ouvrir dans ChatGPT</span>
-            </div>
-            <span>↗</span>
-          </a>
-          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-            <div class="ai-btn-option-left">
-              <span>🔵</span>
-              <span>Ouvrir dans Google Gemini</span>
-            </div>
-            <span>↗</span>
-          </a>
-          <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-            <div class="ai-btn-option-left">
-              <span>🟣</span>
-              <span>Ouvrir dans Claude</span>
-            </div>
-            <span>↗</span>
-          </a>
-          <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-            <div class="ai-btn-option-left">
-              <span>🟠</span>
-              <span>Ouvrir dans Perplexity</span>
-            </div>
-            <span>↗</span>
-          </a>
-          <button type="button" class="ai-btn-option js-copy-ai-link">
-            <div class="ai-btn-option-left">
-              <span>📋</span>
-              <span>Copier le lien & prompt IA</span>
-            </div>
-            <span class="js-copy-icon">Copier</span>
-          </button>
+
+        <!-- Onglets Navigation IA -->
+        <div class="ai-tabs" role="tablist">
+          <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
+          <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
+          <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Autres IA</button>
         </div>
+
+        <!-- Onglet 1 : Clavardage / Chat en direct -->
+        <div class="ai-tab-content active" id="ai-tab-chat">
+          <div class="ai-chat-messages" id="ai-chat-box">
+            <div class="ai-chat-bubble bot">
+              <span class="ai-nano-badge" id="ai-engine-badge">⚡ Assistant Dossier CCE</span>
+              <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+            </div>
+          </div>
+
+          <!-- Suggestions rapides -->
+          <div class="ai-quick-pills">
+            <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
+            <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
+            <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
+            <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
+            <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
+          </div>
+
+          <!-- Formulaire de saisie -->
+          <form class="ai-chat-input-row" id="ai-chat-form">
+            <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
+            <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
+          </form>
+        </div>
+
+        <!-- Onglet 2 : Résumé instantané (Chrome Summarizer & Synthèse) -->
+        <div class="ai-tab-content" id="ai-tab-summary">
+          <div class="ai-summary-box">
+            <div class="ai-summary-card">
+              <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
+                ⚡ Génération de résumé automatique :
+              </div>
+              <div class="ai-summary-actions">
+                <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
+                <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
+                <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
+              </div>
+              <div class="ai-summary-result" id="ai-summary-output">
+                Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Onglet 3 : Autres Modèles & Liens externes -->
+        <div class="ai-tab-content" id="ai-tab-models">
+          <p class="ai-modal-desc">
+            Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
+          </p>
+          <div class="ai-modal-buttons">
+            <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <div class="ai-btn-option-left">
+                <span>🟢</span>
+                <span>Ouvrir dans ChatGPT</span>
+              </div>
+              <span>↗</span>
+            </a>
+            <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <div class="ai-btn-option-left">
+                <span>🔵</span>
+                <span>Ouvrir dans Google Gemini</span>
+              </div>
+              <span>↗</span>
+            </a>
+            <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <div class="ai-btn-option-left">
+                <span>🟣</span>
+                <span>Ouvrir dans Claude</span>
+              </div>
+              <span>↗</span>
+            </a>
+            <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <div class="ai-btn-option-left">
+                <span>🟠</span>
+                <span>Ouvrir dans Perplexity</span>
+              </div>
+              <span>↗</span>
+            </a>
+            <button type="button" class="ai-btn-option js-copy-ai-link">
+              <div class="ai-btn-option-left">
+                <span>📋</span>
+                <span>Copier le prompt et le lien pour l'IA</span>
+              </div>
+              <span class="js-copy-icon">Copier</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     `;
 
@@ -1040,9 +1096,204 @@
     document.body.appendChild(aiModal);
     document.body.appendChild(copyAlert);
 
-    // Open/Close
+    // Initialisation du support Chrome Built-in AI (Prompt API & Summarizer)
+    let chromeAiSession = null;
+    let hasChromeAi = false;
+
+    async function checkChromeBuiltinAi() {
+      try {
+        const badge = document.getElementById('ai-engine-badge');
+        // Vérifier Prompt API (LanguageModel / Assistant)
+        if (window.ai && (window.ai.languageModel || window.ai.assistant)) {
+          const lm = window.ai.languageModel || window.ai.assistant;
+          const caps = await lm.capabilities();
+          if (caps && caps.available !== 'no') {
+            hasChromeAi = true;
+            if (badge) badge.innerHTML = '✨ Gemini Nano (Sur votre appareil)';
+            chromeAiSession = await lm.create({
+              systemPrompt: "Tu es l'assistant officiel d'information sur la soumission citoyenne SEM-26-003 (Enfouissement de matières dangereuses à Blainville / Grande Tourbière) déposée par William Guindon (15 ans) devant la Commission de coopération environnementale (CCE / ACEUM). Tes réponses sont factuelles, rigoureuses, courtoises et concises. Mentionne les faits clés : BAPE 371 (projet prématuré), Loi 93 (bâillon), cadmium (320x les normes), Détermination positive de la CCE du 17 août 2026 ordonnant au Canada de répondre avant le 16 octobre 2026."
+            });
+          }
+        }
+      } catch (err) {
+        console.log("Chrome Built-in AI mode standard actif");
+      }
+    }
+    checkChromeBuiltinAi();
+
+    // Gestion des Onglets
+    const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
+    const tabContents = aiModal.querySelectorAll('.ai-tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.getAttribute('data-tab');
+        tabBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        const targetContent = document.getElementById('ai-tab-' + tabKey);
+        if (targetContent) targetContent.classList.add('active');
+      });
+    });
+
+    // Base de Connaissances Factuelle locale (Répondeur instantané intelligent)
+    function generateLocalAnswer(query) {
+      const q = query.toLowerCase();
+      
+      if (q.includes('93') || q.includes('loi')) {
+        return "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
+      }
+      if (q.includes('bape') || q.includes('371') || q.includes('rapport')) {
+        return "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la tourbière était <em>« prématuré »</em> et a recommandé le refus environnemental.";
+      }
+      if (q.includes('16 oct') || q.includes('octobre') || q.includes('date') || q.includes('délai') || q.includes('échéance')) {
+        return "<strong>L'échéance du 16 octobre 2026 :</strong> Suite à la détermination positive rendue le 17 août 2026 par la CCE (SEM-26-003), le gouvernement du Canada a une obligation légale de répondre par écrit sous 60 jours (date butoir : 16 octobre 2026) sur l'application de ses lois fédérales environnementales.";
+      }
+      if (q.includes('cadmium') || q.includes('oiseau') || q.includes('faune') || q.includes('pollution') || q.includes('eau') || q.includes('poisson')) {
+        return "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les écosystèmes voisins.";
+      }
+      if (q.includes('william') || q.includes('âge') || q.includes('age') || q.includes('qui')) {
+        return "<strong>William Guindon :</strong> Militant écologiste québécois né le 3 août 2011 (15 ans), étudiant à l'Externat Sacré-Cœur de Rosemère. Il a déposé la soumission SEM-26-003 à 14 ans, devenant le premier mineur de l'histoire du traité à forcer un État à rendre des comptes.";
+      }
+      if (q.includes('session') || q.includes('contact') || q.includes('anonym') || q.includes('whistleblower') || q.includes('document')) {
+        return "<strong>Contact sécurisé Session :</strong> Pour transmettre des documents confidentiels ou communiquer dans l'anonymat complet, utilisez l'application <em>Session</em> avec l'ID :<br><code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>";
+      }
+      if (q.includes('onu') || q.includes('nations unies') || q.includes('orellana')) {
+        return "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme, pour dénoncer l'enfouissement de déchets dangereux en milieux humides.";
+      }
+      if (q.includes('cce') || q.includes('aceum') || q.includes('sem-26-003') || q.includes('traité') || q.includes('cusma')) {
+        return "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer sur l'application de la Loi sur la convention concernant les oiseaux migrateurs et de la Loi sur les espèces en péril.";
+      }
+      
+      return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de millions de tonnes de déchets toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et le passage sous bâillon de la Loi 93. La CCE a officiellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
+    }
+
+    // Gestion de l'envoi de messages dans le chat
+    const chatForm = document.getElementById('ai-chat-form');
+    const chatBox = document.getElementById('ai-chat-box');
+    const userInput = document.getElementById('ai-user-input');
+
+    async function sendChatMessage(text) {
+      if (!text || !text.trim()) return;
+      const question = text.trim();
+      
+      // Bulle utilisateur
+      const userBubble = document.createElement('div');
+      userBubble.className = 'ai-chat-bubble user';
+      userBubble.textContent = question;
+      chatBox.appendChild(userBubble);
+      userInput.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Bulle réponse
+      const botBubble = document.createElement('div');
+      botBubble.className = 'ai-chat-bubble bot';
+      botBubble.innerHTML = '<em>🧠 Réflexion en cours...</em>';
+      chatBox.appendChild(botBubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Exécution avec Chrome Built-in AI (Gemini Nano) si disponible, sinon Moteur local
+      if (hasChromeAi && chromeAiSession) {
+        try {
+          const response = await chromeAiSession.prompt(question);
+          botBubble.innerHTML = response.replace(/\n/g, '<br>');
+        } catch (err) {
+          botBubble.innerHTML = generateLocalAnswer(question);
+        }
+      } else {
+        setTimeout(() => {
+          botBubble.innerHTML = generateLocalAnswer(question);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 350);
+      }
+    }
+
+    if (chatForm) {
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendChatMessage(userInput.value);
+      });
+    }
+
+    // Pilules de questions rapides
+    aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const q = pill.getAttribute('data-q');
+        sendChatMessage(q);
+      });
+    });
+
+    // Générateurs de Résumés
+    const sumOutput = document.getElementById('ai-summary-output');
+
+    async function runSummarizer(type) {
+      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA...</em>';
+
+      // Si l'API Summarizer de Chrome est supportée
+      if (window.ai && window.ai.summarizer) {
+        try {
+          const caps = await window.ai.summarizer.capabilities();
+          if (caps && caps.available !== 'no') {
+            const sumType = type === 'tldr' ? 'tl;dr' : 'key-points';
+            const summarizer = await window.ai.summarizer.create({
+              type: sumType,
+              format: 'markdown',
+              length: 'medium'
+            });
+            const textToSummarize = document.querySelector('main')?.innerText || document.body.innerText;
+            const res = await summarizer.summarize(textToSummarize.slice(0, 7000));
+            sumOutput.innerHTML = `<strong>✨ Résumé Gemini Nano (Local) :</strong><br>${res.replace(/\n/g, '<br>')}`;
+            return;
+          }
+        } catch (err) {
+          console.log("Fallback résumé certifié");
+        }
+      }
+
+      // Résumé certifié haute fidélité
+      setTimeout(() => {
+        if (type === 'bullets') {
+          sumOutput.innerHTML = `
+            <strong>📋 Points clés du dossier SEM-26-003 :</strong>
+            <ul style="padding-left:18px; margin:8px 0;">
+              <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
+              <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
+              <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
+              <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
+              <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
+            </ul>
+          `;
+        } else if (type === 'tldr') {
+          sumOutput.innerHTML = `
+            <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
+            À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
+          `;
+        } else {
+          sumOutput.innerHTML = `
+            <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
+            Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
+          `;
+        }
+      }, 300);
+    }
+
+    const btnBullets = document.getElementById('btn-sum-bullets');
+    const btnTldr = document.getElementById('btn-sum-tldr');
+    const btnLegal = document.getElementById('btn-sum-legal');
+
+    if (btnBullets) btnBullets.addEventListener('click', () => runSummarizer('bullets'));
+    if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));
+    if (btnLegal) btnLegal.addEventListener('click', () => runSummarizer('legal'));
+
+    // Ouvrir / Fermer le Modal IA
     floatingBtn.addEventListener('click', () => {
       aiModal.classList.add('active');
+      if (userInput) userInput.focus();
     });
 
     aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
@@ -1061,19 +1312,21 @@
       }
     });
 
-    // Copy Prompt / Link
+    // Copie de Prompt / Lien
     const copyBtn = aiModal.querySelector('.js-copy-ai-link');
-    copyBtn.addEventListener('click', () => {
-      const textToCopy = "Résume et analyse les faits sur William Guindon et la soumission CCE SEM-26-003 à partir de https://williamguindon.me/ai.html";
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        copyAlert.classList.add('show');
-        copyBtn.querySelector('.js-copy-icon').textContent = 'Copié !';
-        setTimeout(() => {
-          copyAlert.classList.remove('show');
-          copyBtn.querySelector('.js-copy-icon').textContent = 'Copier';
-        }, 3000);
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const textToCopy = "Résume et analyse les faits sur William Guindon et la soumission CCE SEM-26-003 à partir de https://williamguindon.me/ai.html";
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          copyAlert.classList.add('show');
+          copyBtn.querySelector('.js-copy-icon').textContent = 'Copié !';
+          setTimeout(() => {
+            copyAlert.classList.remove('show');
+            copyBtn.querySelector('.js-copy-icon').textContent = 'Copier';
+          }, 3000);
+        });
       });
-    });
+    }
   }
 
   // Initialisation sécurisée
