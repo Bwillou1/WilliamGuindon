@@ -809,6 +809,18 @@
         });
       }
 
+      window.__wg_slidePress = (action) => {
+        if (typeof action === 'number') {
+          updateSlider(action);
+        } else if (action === 'prev') {
+          if (currentIndex > 0) updateSlider(currentIndex - 1);
+        } else if (action === 'next') {
+          const maxIdx = getMaxIndex();
+          if (currentIndex < maxIdx) updateSlider(currentIndex + 1);
+          else updateSlider(0);
+        }
+      };
+
       dots.forEach((dot, idx) => {
         dot.addEventListener('click', (e) => {
           e.preventDefault();
