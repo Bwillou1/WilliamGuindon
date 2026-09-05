@@ -109,18 +109,73 @@
   setInterval(fetchRemoteState, 15000);
 
   // ==========================================
-  // LOGIQUES D'APPLICATION SPÉCIFIQUES
+  // LOGIQUES D'APPLICATION SPÉCIFIQUES & SÉCURITÉ
   // ==========================================
 
-  function applyPanicMode(forceTextOnly) {
-    // Verrouillage DevTools & Clavier
-    document.addEventListener('contextmenu', e => e.preventDefault(), true);
+  function lockInspectorAndDevTools() {
+    // 1. Bloquer le clic droit et le menu contextuel
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, true);
+
+    // 2. Bloquer les raccourcis clavier F12, Inspecteur, Code source, Enregistrer (Windows / Linux / Mac)
     document.addEventListener('keydown', e => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
+      const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
+      const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : e.ctrlKey;
+      const key = (e.key || '').toLowerCase();
+      const code = e.keyCode || e.which;
+
+      // F12
+      if (key === 'f12' || code === 123) {
         e.preventDefault();
         e.stopPropagation();
+        return false;
+      }
+
+      // Ctrl/Cmd + Shift + I / J / C / K (DevTools / Console / Inspecteur d'éléments)
+      if (cmdOrCtrl && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || key === 'k' || code === 73 || code === 74 || code === 67 || code === 75)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Cmd + Option + I / J / C / U (Mac Safari / Chrome DevTools et Afficher le code source)
+      if (cmdOrCtrl && e.altKey && (key === 'i' || key === 'j' || key === 'c' || key === 'u' || code === 73 || code === 74 || code === 67 || code === 85)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Ctrl/Cmd + U (Afficher le code source de la page)
+      if (cmdOrCtrl && (key === 'u' || code === 85)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Ctrl/Cmd + S (Sauvegarder la page / code source localement)
+      if (cmdOrCtrl && (key === 's' || code === 83)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
       }
     }, true);
+
+    // 3. Bloquer la sélection de texte et le copier-coller
+    document.addEventListener('selectstart', e => { e.preventDefault(); return false; }, true);
+    document.addEventListener('copy', e => { e.preventDefault(); return false; }, true);
+    document.addEventListener('cut', e => { e.preventDefault(); return false; }, true);
+
+    if (document.body) {
+      document.body.style.userSelect = 'none';
+      document.body.style.webkitUserSelect = 'none';
+    }
+  }
+
+  function applyPanicMode(forceTextOnly) {
+    lockInspectorAndDevTools();
 
     const onReady = () => {
       renderPanicModeBanner();
@@ -190,6 +245,9 @@
   }
 
   function renderMaintenanceScreen(untilTimestamp) {
+    // Verrouillage immédiat des DevTools, de l'inspecteur et du code source
+    lockInspectorAndDevTools();
+
     // Génération / Récupération cryptographiquement sécurisée de l'identifiant de session
     const sessionId = (sessionStorage.getItem('wg_sid') || (function() {
       const arr = new Uint8Array(16);
@@ -239,8 +297,14 @@
 
     if (document.body) {
       document.body.innerHTML = html;
+      document.body.style.userSelect = 'none';
+      document.body.style.webkitUserSelect = 'none';
     } else {
-      document.addEventListener('DOMContentLoaded', () => { document.body.innerHTML = html; });
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.innerHTML = html;
+        document.body.style.userSelect = 'none';
+        document.body.style.webkitUserSelect = 'none';
+      });
     }
   }
 
