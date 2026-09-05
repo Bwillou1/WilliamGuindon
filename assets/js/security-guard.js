@@ -33,20 +33,40 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
 
-  // 2. GESTION DE L'ÉTAT (LOCAL & SYNCHRONISÉ DEPUIS GITHUB)
+  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION GLOBALE MONDIALE DEPUIS GITHUB)
+  let lastAppliedStateJson = null;
+
   function applyState(state) {
     if (!state) return;
     const now = Date.now();
+    const currentStateJson = JSON.stringify(state);
+
+    // Éviter ré-exécution inutile si l'état n'a pas changé
+    if (lastAppliedStateJson === currentStateJson && document.readyState !== 'loading') {
+      // Vérifier uniquement l'expiration temporelle
+      if (state.maintenanceActive && state.maintenanceUntil && now >= state.maintenanceUntil) {
+        window.location.reload();
+      }
+      return;
+    }
+    lastAppliedStateJson = currentStateJson;
 
     // A. Mode Blackout / Maintenance Totale
     if (state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil) {
       renderMaintenanceScreen(state.maintenanceUntil);
+      return;
+    } else if (document.getElementById('maint-wrapper')) {
+      // Si la maintenance vient d'être désactivée par l'admin, on recharge la page
+      window.location.reload();
       return;
     }
 
     // B. Mode Cyber-Attaque / Panique
     if (state.panicActive && state.panicUntil && now < state.panicUntil) {
       applyPanicMode(state.panicTextOnly);
+    } else {
+      const banner = document.getElementById('panic-alert-banner');
+      if (banner) banner.remove();
     }
 
     // C. Commutateurs individuels (Kill-Switches)
@@ -59,16 +79,34 @@
     applyState(cached);
   } catch (e) {}
 
-  // Synchronisation distante continue depuis data/site-state.json
-  fetch('data/site-state.json?_t=' + Date.now())
-    .then(r => r.ok ? r.json() : null)
-    .then(remoteState => {
-      if (remoteState) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
-        applyState(remoteState);
+  // Synchronisation distante continue depuis data/site-state.json (Bypass total du cache CDN/navigateur)
+  async function fetchRemoteState() {
+    try {
+      const stateUrl = new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href;
+      const res = await fetch(stateUrl, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+      if (res.ok) {
+        const remoteState = await res.json();
+        if (remoteState && typeof remoteState === 'object') {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
+          applyState(remoteState);
+        }
       }
-    })
-    .catch(() => {});
+    } catch (err) {
+      console.debug("Sentinelle : synchronisation en attente...", err);
+    }
+  }
+
+  // Vérification au chargement initial
+  fetchRemoteState();
+
+  // Polling automatique toutes les 15 secondes pour tous les visiteurs connectés
+  setInterval(fetchRemoteState, 15000);
 
   // ==========================================
   // LOGIQUES D'APPLICATION SPÉCIFIQUES
