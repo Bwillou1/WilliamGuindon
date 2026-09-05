@@ -1121,22 +1121,34 @@
     });
   }
 
-  // Prévisualisation des fichiers
+  // Prévisualisation sécurisée des fichiers images
   document.getElementById("blog-file").addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.type && file.type.startsWith("image/")) {
       const prev = document.getElementById("blog-file-preview");
-      prev.src = URL.createObjectURL(file);
-      prev.style.display = "inline-block";
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
+          prev.src = evt.target.result;
+          prev.style.display = "inline-block";
+        }
+      };
+      reader.readAsDataURL(file);
     }
   });
 
   document.getElementById("photo-file").addEventListener("change", (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.type && file.type.startsWith("image/")) {
       const prev = document.getElementById("photo-file-preview");
-      prev.src = URL.createObjectURL(file);
-      prev.style.display = "inline-block";
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
+          prev.src = evt.target.result;
+          prev.style.display = "inline-block";
+        }
+      };
+      reader.readAsDataURL(file);
     }
   });
 
