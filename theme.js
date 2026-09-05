@@ -130,6 +130,29 @@
           });
         });
 
+        // Charger Google Traduction uniquement pour la fonction de changement de langue.
+        let gTranslateDiv = document.getElementById('google_translate_element');
+        if (!gTranslateDiv) {
+          gTranslateDiv = document.createElement('div');
+          gTranslateDiv.id = 'google_translate_element';
+          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
+          document.body.appendChild(gTranslateDiv);
+        }
+
+        if (!window.googleTranslateElementInit) {
+          window.googleTranslateElementInit = function() {
+            try {
+              new google.translate.TranslateElement({
+                pageLanguage: 'fr',
+                includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
+                autoDisplay: false
+              }, 'google_translate_element');
+            } catch (error) {
+              console.warn('Google Translate init:', error);
+            }
+          };
+        }
+
       }
 
       // Bouton Mode Sombre / Clair (Sans doublon, Stockage Session uniquement)
