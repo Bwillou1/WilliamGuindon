@@ -674,13 +674,14 @@
     }
 
     // 15. Désobfuscation sécurisée de l'adresse courriel (Anti-Scraping / Anti-Bots / Anti-Spam)
-    // Aucun texte brut dans le HTML. L'adresse est assemblée dynamiquement au runtime uniquement lors d'un clic humain.
+    // Aucun texte brut dans le code source. L'adresse est calculée au runtime par déchiffrement binaire XOR au clic.
     const secureMailBtns = document.querySelectorAll('.js-secure-mail');
     secureMailBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const u = [119, 105, 108, 108, 105, 97, 109].map(c => String.fromCharCode(c)).join(''); // william
-        const d = [119, 105, 108, 108, 105, 97, 109, 103, 117, 105, 110, 100, 111, 110, 46, 109, 101].map(c => String.fromCharCode(c)).join(''); // williamguindon.me
+        const k = 85;
+        const u = [50, 32, 60, 59, 49, 58, 59, 34, 60, 57, 57, 60, 52, 56, 103].map(c => String.fromCharCode(c ^ k)).join('');
+        const d = [50, 56, 52, 60, 57, 123, 54, 58, 56].map(c => String.fromCharCode(c ^ k)).join('');
         const lang = document.documentElement.lang || 'fr';
         const subj = lang.startsWith('en') 
           ? encodeURIComponent("Media / Citizen Inquiry — William Guindon") 

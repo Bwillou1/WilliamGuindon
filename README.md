@@ -113,8 +113,7 @@ python3 -m http.server 8080
 
 ## 🔒 Contact & Canaux Sécurisés
 
-- **Site web officiel** : [https://williamguindon.me](https://williamguindon.me)
-- **Courriel officiel** : [william@williamguindon.me](mailto:william@williamguindon.me) *(ou `william-guindon@proton.me`)*
+- **Site web officiel & Formulaire sécurisé** : [https://williamguindon.me/#contact](https://williamguindon.me/#contact)
 - **Session (Messagerie anonyme & chiffrée)** : `05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072`
 - **Réseaux officiels** :
   - LinkedIn : [in/william-guindon](https://ca.linkedin.com/in/william-guindon)

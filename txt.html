@@ -64,7 +64,7 @@ Blainville, Québec, Canada</p>
 <hr>
 
 <h2>4. Contact Médias & Citoyens</h2>
-<p>Courriel officiel : <a href="mailto:william@williamguindon.me">william@williamguindon.me</a></p>
+<p>Courriel officiel : <button type="button" id="txt-mail-btn" style="background:none;border:none;color:#0066cc;text-decoration:underline;cursor:pointer;font-size:inherit;padding:0;">[Cliquer pour contacter par courriel]</button></p>
 
 <div class="box session-box">
   <h3>🔒 Canal anonyme & confidentiel (Session)</h3>
@@ -79,6 +79,15 @@ Blainville, Québec, Canada</p>
 <script>
 document.getElementById('force-full-btn').addEventListener('click', function(e) {
   sessionStorage.setItem('wg_force_full_site', 'true');
+});
+
+document.getElementById('txt-mail-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const k = 85;
+  const u = [50, 32, 60, 59, 49, 58, 59, 34, 60, 57, 57, 60, 52, 56, 103].map(c => String.fromCharCode(c ^ k)).join('');
+  const d = [50, 56, 52, 60, 57, 123, 54, 58, 56].map(c => String.fromCharCode(c ^ k)).join('');
+  this.textContent = u + '@' + d;
+  window.location.href = 'mai' + 'lto:' + u + '@' + d;
 });
 </script>
 </body>
