@@ -215,10 +215,68 @@
     }, 1500);
   }
 
+  // 3. SYSTÈME ANTI-CONTOURNEMENT & AUTO-GUÉRISON DOM (MUTATIONOBSERVER + INTEGRITY LOOP)
+  let isIntegrityArmed = false;
+  function armAntiTamperIntegrity() {
+    if (isIntegrityArmed) return;
+    isIntegrityArmed = true;
+
+    const observer = new MutationObserver(() => {
+      if (lastAppliedStateJson) {
+        try {
+          const state = JSON.parse(lastAppliedStateJson);
+          const now = Date.now();
+          if (state.maintenanceActive && state.maintenanceUntil > now && !document.getElementById('maint-wrapper')) {
+            renderMaintenanceScreen(state.maintenanceUntil);
+          }
+          if (state.radical4Active && state.radical4Until > now && !document.getElementById('radical4-wrapper')) {
+            renderRadical4Screen(state.radical4Until, state.radical4Message);
+          }
+          if (state.blockScreenshots && !document.getElementById('wg-screenshot-shield')) {
+            applyKillSwitches(state);
+          }
+          if (!document.getElementById('wg-killswitch-styles')) {
+            applyKillSwitches(state);
+          }
+        } catch (_) {}
+      }
+    });
+
+    const target = document.documentElement || document.body;
+    if (target) {
+      observer.observe(target, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+    }
+
+    // Boucle d'intégrité active toutes les 400ms (empêche toute suppression via DevTools)
+    setInterval(() => {
+      if (!lastAppliedStateJson) return;
+      try {
+        const state = JSON.parse(lastAppliedStateJson);
+        const now = Date.now();
+        if (state.maintenanceActive && state.maintenanceUntil > now) {
+          if (!document.getElementById('maint-wrapper')) renderMaintenanceScreen(state.maintenanceUntil);
+        }
+        if (state.radical4Active && state.radical4Until > now) {
+          if (!document.getElementById('radical4-wrapper')) renderRadical4Screen(state.radical4Until, state.radical4Message);
+        }
+        if (state.blockScreenshots) {
+          if (!document.getElementById('wg-screenshot-shield')) applyKillSwitches(state);
+        }
+        if (!document.getElementById('wg-killswitch-styles')) {
+          applyKillSwitches(state);
+        }
+      } catch (_) {}
+    }, 400);
+  }
+
   if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', startSync, { once: true });
+    window.addEventListener('DOMContentLoaded', () => {
+      startSync();
+      armAntiTamperIntegrity();
+    }, { once: true });
   } else {
     startSync();
+    armAntiTamperIntegrity();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -241,7 +299,12 @@
     isDevToolsLocked = true;
 
     document.addEventListener('contextmenu', e => {
-      if (lastAppliedStateJson && (lastAppliedStateJson.includes('"maintenanceActive":true') || lastAppliedStateJson.includes('"panicActive":true'))) {
+      if (lastAppliedStateJson && (
+        lastAppliedStateJson.includes('"maintenanceActive":true') ||
+        lastAppliedStateJson.includes('"panicActive":true') ||
+        lastAppliedStateJson.includes('"radical4Active":true') ||
+        lastAppliedStateJson.includes('"blockScreenshots":true')
+      )) {
         e.preventDefault();
         e.stopPropagation();
         return false;
@@ -249,7 +312,12 @@
     }, true);
 
     document.addEventListener('keydown', e => {
-      if (!lastAppliedStateJson || (!lastAppliedStateJson.includes('"maintenanceActive":true') && !lastAppliedStateJson.includes('"panicActive":true'))) {
+      if (!lastAppliedStateJson || (
+        !lastAppliedStateJson.includes('"maintenanceActive":true') &&
+        !lastAppliedStateJson.includes('"panicActive":true') &&
+        !lastAppliedStateJson.includes('"radical4Active":true') &&
+        !lastAppliedStateJson.includes('"blockScreenshots":true')
+      )) {
         return;
       }
       const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
