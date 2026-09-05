@@ -190,19 +190,23 @@
   }
 
   function renderMaintenanceScreen(untilTimestamp) {
-    // Génération / Récupération de l'identifiant de session
+    // Génération / Récupération cryptographiquement sécurisée de l'identifiant de session
     const sessionId = (sessionStorage.getItem('wg_sid') || (function() {
-      const s = 'sid_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now().toString(36);
+      const arr = new Uint8Array(16);
+      if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(arr);
+      }
+      const s = 'sid_' + Array.from(arr, b => b.toString(16).padStart(2, '0')).join('') + '_' + Date.now().toString(36);
       sessionStorage.setItem('wg_sid', s);
       return s;
     })());
 
     // Obfuscation / Reconstruction dynamique de l'email client-side
-    function getObfuscatedEmail(sid) {
+    function getObfuscatedEmail() {
       const parts = ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"];
       return parts.join('');
     }
-    const safeEmail = getObfuscatedEmail(sessionId);
+    const safeEmail = getObfuscatedEmail();
     const timeLeftMin = Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000));
 
     const html = `
@@ -251,11 +255,10 @@
   }
 
   function renderTextOnlyMode() {
-    const textContent = document.body.innerText;
-    document.body.innerHTML = `
-      <div style="max-width:800px;margin:20px auto;padding:20px;font-family:monospace;white-space:pre-wrap;background:#ffffff;color:#000000;line-height:1.5;">
-        ${textContent}
-      </div>
-    `;
+    const rawText = document.body ? (document.body.innerText || document.body.textContent || '') : '';
+    const container = document.createElement('div');
+    container.style.cssText = 'max-width:800px;margin:20px auto;padding:20px;font-family:monospace;white-space:pre-wrap;background:#ffffff;color:#000000;line-height:1.5;';
+    container.textContent = rawText;
+    document.body.replaceChildren(container);
   }
 })();

@@ -754,7 +754,7 @@
   // Construction de la liste des sections dans la colonne de gauche
   function buildSidebarSections(doc) {
     const container = document.getElementById("sidebar-sections-list");
-    container.innerHTML = "";
+    container.replaceChildren();
 
     const sections = doc.querySelectorAll("main section, header.site");
     sections.forEach((sec, index) => {
@@ -765,14 +765,35 @@
 
       const item = document.createElement("div");
       item.className = "section-item";
-      item.innerHTML = `
-        <div class="section-title" title="${id}">${title}</div>
-        <div class="section-controls">
-          <button class="control-btn" title="Monter" onclick="moveSection('${sec.id}', -1)">▲</button>
-          <button class="control-btn" title="Descendre" onclick="moveSection('${sec.id}', 1)">▼</button>
-          <button class="control-btn" title="Afficher/Masquer" onclick="toggleSectionVisibility('${sec.id}')">👁️</button>
-        </div>
-      `;
+
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "section-title";
+      titleDiv.title = id;
+      titleDiv.textContent = title;
+
+      const controlsDiv = document.createElement("div");
+      controlsDiv.className = "section-controls";
+
+      const btnUp = document.createElement("button");
+      btnUp.className = "control-btn";
+      btnUp.title = "Monter";
+      btnUp.textContent = "▲";
+      btnUp.addEventListener("click", () => moveSection(sec.id, -1));
+
+      const btnDown = document.createElement("button");
+      btnDown.className = "control-btn";
+      btnDown.title = "Descendre";
+      btnDown.textContent = "▼";
+      btnDown.addEventListener("click", () => moveSection(sec.id, 1));
+
+      const btnVis = document.createElement("button");
+      btnVis.className = "control-btn";
+      btnVis.title = "Afficher/Masquer";
+      btnVis.textContent = "👁️";
+      btnVis.addEventListener("click", () => toggleSectionVisibility(sec.id));
+
+      controlsDiv.append(btnUp, btnDown, btnVis);
+      item.append(titleDiv, controlsDiv);
       container.appendChild(item);
     });
   }

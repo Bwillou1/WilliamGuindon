@@ -33,7 +33,7 @@
 
         langDropdown.innerHTML = `
           <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
-            <span>🌐 <span id="current-lang-text">${langCodeDisplay}</span> ▾</span>
+            <span>🌐 <span id="current-lang-text">FR</span> ▾</span>
           </button>
           <div class="nav-dropdown-menu" style="min-width: 185px;">
             <div class="nav-dropdown-group">
@@ -70,6 +70,8 @@
             </div>
           </div>
         `;
+        const langTxtEl = langDropdown.querySelector('#current-lang-text');
+        if (langTxtEl) langTxtEl.textContent = langCodeDisplay;
         nav.appendChild(langDropdown);
 
         const navLangBtn = langDropdown.querySelector('#nav-lang-btn');
