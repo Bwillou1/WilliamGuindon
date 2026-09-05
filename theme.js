@@ -1533,6 +1533,63 @@
         })
         .catch(err => console.warn('Photos preview load:', err));
     }
+    // Module de génération et téléchargement de fichier de calendrier natif (.ics)
+    function generateAndDownloadCceIcs() {
+      const icsLines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//William Guindon//Dossier CCE SEM-26-003//FR',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:cce-sem-26-003-echeance-20261016@williamguindon.me',
+        'DTSTAMP:20260905T180000Z',
+        'DTSTART;VALUE=DATE:20261016',
+        'DTEND;VALUE=DATE:20261017',
+        'SUMMARY:⚖️ Échéance CCE SEM-26-003 — Réponse officielle requise du Canada',
+        'DESCRIPTION:Date limite officielle fixée par la Commission de coopération environnementale (CCE / ACEUM Art. 24.27(3)) au gouvernement fédéral canadien pour répondre formellement à la soumission SEM-26-003 visant la protection de la Grande Tourbière de Blainville face aux déchets dangereux Stablex.\\n\\nSuivi en direct : https://williamguindon.me/live.html\\nRegistre documentaire : https://williamguindon.me/registre-cce-sem26003.html',
+        'LOCATION:Commission de coopération environnementale (CCE), Montréal, QC, Canada',
+        'URL:https://williamguindon.me/live.html',
+        'STATUS:CONFIRMED',
+        'TRANSP:TRANSPARENT',
+        'BEGIN:VALARM',
+        'TRIGGER:-P1D',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:Rappel J-1 : Échéance officielle CCE pour la réponse du Canada (SEM-26-003)',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+
+      const icsData = icsLines.join('\r\n');
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.setAttribute('download', 'echeance-cce-sem-26-003-16-octobre-2026.ics');
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      setTimeout(() => window.URL.revokeObjectURL(url), 2000);
+    }
+
+    // Attachement des écouteurs sur tous les boutons d'ajout au calendrier
+    document.querySelectorAll('.btn-add-cce-calendar, [data-action="add-cce-calendar"]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        generateAndDownloadCceIcs();
+        
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span aria-hidden="true">✓</span> Ajouté (.ics téléchargé) !';
+        btn.style.pointerEvents = 'none';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.pointerEvents = '';
+        }, 3000);
+      });
+    });
+
+    window.downloadCceIcs = generateAndDownloadCceIcs;
   }
 
   if (document.readyState === 'loading') {
@@ -1541,3 +1598,4 @@
     initApp();
   }
 })();
+
