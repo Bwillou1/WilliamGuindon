@@ -130,49 +130,6 @@
           });
         });
 
-        // Conteneur discret pour le script Google Translate in-place
-        let gTranslateDiv = document.getElementById('google_translate_element');
-        if (!gTranslateDiv) {
-          gTranslateDiv = document.createElement('div');
-          gTranslateDiv.id = 'google_translate_element';
-          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
-          document.body.appendChild(gTranslateDiv);
-        }
-
-        // Initialisation du script Google Translate in-place
-        if (!window.googleTranslateElementInit) {
-          window.googleTranslateElementInit = function() {
-            try {
-              new google.translate.TranslateElement({
-                pageLanguage: 'fr',
-                includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
-                autoDisplay: false
-              }, 'google_translate_element');
-
-              const saved = sessionStorage.getItem('wg_user_lang');
-              if (saved && saved !== 'fr') {
-                setTimeout(() => {
-                  const cb = document.querySelector('.goog-te-combo');
-                  if (cb && cb.value !== saved) {
-                    cb.value = saved;
-                    cb.dispatchEvent(new Event('change'));
-                  }
-                }, 400);
-              }
-            } catch(e) {
-              console.warn('Google Translate init:', e);
-            }
-          };
-
-          if (!document.getElementById('google-translate-script')) {
-            const gtScript = document.createElement('script');
-            gtScript.id = 'google-translate-script';
-            gtScript.type = 'text/javascript';
-            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            gtScript.async = true;
-            document.head.appendChild(gtScript);
-          }
-        }
       }
 
       // Bouton Mode Sombre / Clair (Sans doublon, Stockage Session uniquement)
