@@ -33,10 +33,10 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
 
-  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION ULTRA-RAPIDE & MULTI-SOURCES DEPUIS GITHUB)
+  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION ULTRA-RAPIDE MULTI-ONGLETS 0MS & DISTANTE GITHUB)
   let lastAppliedStateJson = null;
 
-  // Canal de synchronisation inter-onglets instantané (0ms)
+  // A. Canal BroadcastChannel (0ms entre onglets)
   const syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('wg_site_state_sync') : null;
   if (syncChannel) {
     syncChannel.onmessage = (e) => {
@@ -45,6 +45,16 @@
       }
     };
   }
+
+  // B. Écoute des événements de stockage inter-onglets natifs (0ms)
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY && e.newValue) {
+      try {
+        const parsed = JSON.parse(e.newValue);
+        applyState(parsed);
+      } catch (_) {}
+    }
+  });
 
   function applyState(state) {
     if (!state || typeof state !== 'object') return;
@@ -66,38 +76,30 @@
     }
     lastAppliedStateJson = currentStateJson;
 
-    // A. Mode Blackout / Maintenance Totale
+    // 1. Mode Blackout / Maintenance Totale
     if (isMaintenanceActive) {
       renderMaintenanceScreen(state.maintenanceUntil);
       return;
     }
 
-    // B. Mode Cyber-Attaque / Panique
+    // 2. Mode Cyber-Attaque / Panique
     if (isPanicActive) {
       applyPanicMode(state.panicTextOnly);
     } else {
-      const banner = document.getElementById('panic-alert-banner');
-      if (banner) {
-        banner.remove();
-        if (document.body) document.body.style.paddingTop = '';
-      }
-      if (document.getElementById('panic-text-only-container')) {
-        window.location.reload();
-        return;
-      }
+      removePanicMode();
     }
 
-    // C. Commutateurs individuels (Kill-Switches)
+    // 3. Commutateurs individuels (Kill-Switches)
     applyKillSwitches(state);
   }
 
-  // Application immédiate depuis le stockage de session / local (0ms de latence)
+  // Application immédiate depuis le stockage local / session (0ms de latence au chargement)
   try {
-    const cached = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY) || '{}');
+    const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY) || '{}');
     applyState(cached);
   } catch (e) {}
 
-  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans blocage)
+  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans cache)
   let isFetching = false;
   async function fetchRemoteState() {
     if (isFetching) return;
@@ -124,6 +126,7 @@
         if (res.ok) {
           const remoteState = await res.json();
           if (remoteState && typeof remoteState === 'object') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
             applyState(remoteState);
             if (syncChannel) {
@@ -137,7 +140,7 @@
     isFetching = false;
   }
 
-  // Lancement propre de la synchronisation après le chargement initial pour éviter tout blocage d'onglet
+  // Lancement propre de la synchronisation après le chargement
   function startSync() {
     fetchRemoteState();
     setInterval(() => {
@@ -151,7 +154,6 @@
     startSync();
   }
 
-  // Déclenchement instantané lorsque l'utilisateur revient sur l'onglet
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) fetchRemoteState();
   });
@@ -163,7 +165,11 @@
   // LOGIQUES D'APPLICATION SPÉCIFIQUES & SÉCURITÉ
   // ==========================================
 
+  let isDevToolsLocked = false;
   function lockInspectorAndDevTools() {
+    if (isDevToolsLocked) return;
+    isDevToolsLocked = true;
+
     // 1. Bloquer le clic droit et le menu contextuel
     document.addEventListener('contextmenu', e => {
       e.preventDefault();
@@ -171,7 +177,7 @@
       return false;
     }, true);
 
-    // 2. Bloquer les raccourcis clavier F12, Inspecteur, Code source, Enregistrer (Windows / Linux / Mac)
+    // 2. Bloquer les raccourcis clavier F12, Inspecteur, Code source, Enregistrer
     document.addEventListener('keydown', e => {
       const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
       const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : e.ctrlKey;
@@ -185,28 +191,28 @@
         return false;
       }
 
-      // Ctrl/Cmd + Shift + I / J / C / K (DevTools / Console / Inspecteur d'éléments)
+      // Ctrl/Cmd + Shift + I / J / C / K
       if (cmdOrCtrl && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || key === 'k' || code === 73 || code === 74 || code === 67 || code === 75)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
 
-      // Cmd + Option + I / J / C / U (Mac Safari / Chrome DevTools et Afficher le code source)
+      // Cmd + Option + I / J / C / U (Mac)
       if (cmdOrCtrl && e.altKey && (key === 'i' || key === 'j' || key === 'c' || key === 'u' || code === 73 || code === 74 || code === 67 || code === 85)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
 
-      // Ctrl/Cmd + U (Afficher le code source de la page)
+      // Ctrl/Cmd + U (Code source)
       if (cmdOrCtrl && (key === 'u' || code === 85)) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       }
 
-      // Ctrl/Cmd + S (Sauvegarder la page / code source localement)
+      // Ctrl/Cmd + S (Sauvegarde)
       if (cmdOrCtrl && (key === 's' || code === 83)) {
         e.preventDefault();
         e.stopPropagation();
@@ -225,37 +231,27 @@
     }
   }
 
-  function disableExternalUrls() {
-    const isExternal = (url) => {
-      try {
-        const u = new URL(url, window.location.href);
-        return !ALLOWED_HOSTS.some(h => u.hostname === h || u.hostname.endsWith('.' + h));
-      } catch (_) {
-        return false;
-      }
-    };
-
-    document.querySelectorAll('a').forEach(a => {
-      if (a.href && isExternal(a.href)) {
-        a.style.cursor = 'not-allowed';
-        a.style.opacity = '0.5';
-        a.title = 'Lien externe désactivé en Mode Panique';
-        a.addEventListener('click', e => {
-          e.preventDefault();
-          e.stopPropagation();
-          alert("⚠️ Alerte de sécurité : Les liens externes sont temporairement désactivés en Mode Cyber-Attaque / Panique.");
-          return false;
-        }, true);
-      }
-    });
-  }
-
   function applyPanicMode(forceTextOnly) {
     lockInspectorAndDevTools();
 
+    // Style de neutralisation des liens externes
+    let panicStyle = document.getElementById('wg-panic-styles');
+    if (!panicStyle) {
+      panicStyle = document.createElement('style');
+      panicStyle.id = 'wg-panic-styles';
+      panicStyle.textContent = `
+        a[target="_blank"], a[href^="http://"]:not([href*="williamguindon.me"]):not([href*="bwillou1.github.io"]):not([href*="localhost"]),
+        a[href^="https://"]:not([href*="williamguindon.me"]):not([href*="bwillou1.github.io"]):not([href*="localhost"]) {
+          pointer-events: none !important;
+          opacity: 0.45 !important;
+          cursor: not-allowed !important;
+        }
+      `;
+      (document.head || document.documentElement).appendChild(panicStyle);
+    }
+
     const onReady = () => {
       renderPanicModeBanner();
-      disableExternalUrls();
       if (forceTextOnly) {
         renderTextOnlyMode();
       }
@@ -268,75 +264,61 @@
     }
   }
 
-  function applyKillSwitches(state) {
-    const onReady = () => {
-      if (state.disableCopyPaste) {
-        document.addEventListener('copy', e => e.preventDefault(), true);
-        document.addEventListener('cut', e => e.preventDefault(), true);
-        document.body.style.userSelect = 'none';
-        document.body.style.webkitUserSelect = 'none';
-      }
+  function removePanicMode() {
+    const banner = document.getElementById('panic-alert-banner');
+    if (banner) {
+      banner.remove();
+      if (document.body) document.body.style.paddingTop = '';
+    }
 
-      if (state.disableIframes) {
-        document.querySelectorAll('iframe').forEach(f => f.remove());
-      }
+    const panicStyle = document.getElementById('wg-panic-styles');
+    if (panicStyle) panicStyle.remove();
 
-      if (state.disableNavLinks) {
-        document.querySelectorAll('a').forEach(a => {
-          if (!a.href.includes('#') && !a.classList.contains('allow-emergency')) {
-            a.addEventListener('click', e => {
-              e.preventDefault();
-              alert("Navigation temporairement restreinte par l'administrateur.");
-            });
-            a.style.cursor = 'not-allowed';
-            a.style.opacity = '0.6';
-          }
-        });
-      }
-
-      if (state.disableMedia) {
-        document.querySelectorAll('img, video, audio, picture, source').forEach(m => {
-          m.style.display = 'none';
-        });
-      }
-
-      if (state.disableTranslation) {
-        const gEl = document.getElementById('google_translate_element');
-        if (gEl) gEl.remove();
-        const drop = document.querySelector('.nav-translate-dropdown');
-        if (drop) drop.style.display = 'none';
-      }
-
-      if (state.disableAnimations) {
-        const noAnimStyle = document.createElement('style');
-        noAnimStyle.innerHTML = '* { animation: none !important; transition: none !important; }';
-        document.head.appendChild(noAnimStyle);
-      }
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', onReady, { once: true });
-    } else {
-      onReady();
+    if (document.getElementById('panic-text-only-container')) {
+      window.location.reload();
     }
   }
 
+  function applyKillSwitches(state) {
+    let styleEl = document.getElementById('wg-killswitch-styles');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'wg-killswitch-styles';
+      (document.head || document.documentElement).appendChild(styleEl);
+    }
+
+    const css = [];
+    if (state.disableAnimations) {
+      css.push('* { animation: none !important; transition: none !important; }');
+    }
+    if (state.disableMedia) {
+      css.push('img, video, audio, picture, source, svg:not(.nav-icon):not(.theme-icon) { display: none !important; }');
+    }
+    if (state.disableIframes) {
+      css.push('iframe { display: none !important; }');
+    }
+    if (state.disableCopyPaste) {
+      css.push('body, * { user-select: none !important; -webkit-user-select: none !important; }');
+    }
+    if (state.disableNavLinks) {
+      css.push('a:not(.allow-emergency) { pointer-events: none !important; opacity: 0.45 !important; cursor: not-allowed !important; }');
+    }
+    if (state.disableTranslation) {
+      css.push('#google_translate_element, .nav-translate-dropdown, .goog-te-banner-frame, .goog-te-combo { display: none !important; }');
+    }
+    if (state.disableAI) {
+      css.push('#leafMenuContainer, .leaf-menu, .ai-mega-dropdown, #ai-nav-item, a[href*="ai.html"], a[href*="llms.txt"] { display: none !important; }');
+    }
+    if (state.disablePDF) {
+      css.push('a[href$=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"] { display: none !important; }');
+    }
+
+    styleEl.textContent = css.join('\n');
+  }
+
   function renderMaintenanceScreen(untilTimestamp) {
-    // Verrouillage immédiat des DevTools, de l'inspecteur et du code source
     lockInspectorAndDevTools();
 
-    // Génération / Récupération cryptographiquement sécurisée de l'identifiant de session
-    const sessionId = (sessionStorage.getItem('wg_sid') || (function() {
-      const arr = new Uint8Array(16);
-      if (window.crypto && window.crypto.getRandomValues) {
-        window.crypto.getRandomValues(arr);
-      }
-      const s = 'sid_' + Array.from(arr, b => b.toString(16).padStart(2, '0')).join('') + '_' + Date.now().toString(36);
-      sessionStorage.setItem('wg_sid', s);
-      return s;
-    })());
-
-    // Obfuscation / Reconstruction dynamique de l'email client-side
     function getObfuscatedEmail() {
       const parts = ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"];
       return parts.join('');
@@ -381,7 +363,7 @@
         document.body.innerHTML = html;
         document.body.style.userSelect = 'none';
         document.body.style.webkitUserSelect = 'none';
-      });
+      }, { once: true });
     }
   }
 
