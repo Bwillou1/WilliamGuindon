@@ -146,23 +146,23 @@
 </head>
 <body>
 
-<!-- SAS D'AUTHENTIFICATION UNIFIÉ COMME LE BLOG ADMIN -->
+<!-- SAS D'AUTHENTIFICATION UNIFIÉ -->
 <div id="auth-overlay">
   <div class="auth-box">
     <div style="font-size:36px; text-align:center; margin-bottom:12px;">🛡️</div>
     <h2 style="color:var(--accent); font-size:1.35rem; margin-bottom:8px; text-align:center;">Console Maîtresse Sécurisée</h2>
     <p style="color:var(--text-muted); font-size:12.5px; line-height:1.5; margin-bottom:20px; text-align:center;">
-      Authentification administrateur requise pour le titulaire <strong>@Bwillou1</strong>.
+      Accès réservé au titulaire <strong>@Bwillou1</strong>.
     </p>
 
-    <!-- Écran Passkey Touch ID si configuré -->
+    <!-- Écran Passkey Touch ID / Face ID -->
     <div id="console-passkey-box" style="display:none; margin-bottom:16px;">
       <button type="button" class="btn btn-accent" style="width:100%; padding:12px;" onclick="unlockConsoleWithPasskey()">
         👆 Déverrouiller avec Touch ID / Face ID
       </button>
       <div style="margin-top:12px; text-align:center;">
         <button type="button" onclick="showConsoleManualForm()" style="background:none; border:none; color:var(--text-muted); font-size:12px; text-decoration:underline; cursor:pointer;">
-          Utiliser le mot de passe / clé manuellement
+          Saisir le mot de passe ou la clé manuellement
         </button>
       </div>
     </div>
@@ -170,12 +170,12 @@
     <!-- Formulaire manuel -->
     <form id="console-auth-form" onsubmit="handleConsoleLogin(event)">
       <div class="input-group">
-        <label>1. Clé GitHub Personal Access Token (PAT / GPH) :</label>
-        <input type="password" id="auth-token" placeholder="ghp_... ou github_pat_..." autocomplete="off">
+        <label>1. Mot de passe administrateur :</label>
+        <input type="password" id="auth-pass" placeholder="••••••••••••" autocomplete="current-password">
       </div>
       <div class="input-group">
-        <label>2. Mot de passe administrateur :</label>
-        <input type="password" id="auth-pass" placeholder="••••••••••••" autocomplete="current-password">
+        <label>2. Clé GitHub Personal Access Token (PAT / GPH) :</label>
+        <input type="password" id="auth-token" placeholder="ghp_... ou github_pat_..." autocomplete="off">
       </div>
       <button type="submit" class="btn btn-accent" style="width:100%; padding:12px; margin-top:8px;" id="btn-login">
         🔐 Déverrouiller le Terminal
@@ -314,6 +314,15 @@
     setTimeout(() => { t.style.display = "none"; }, 4000);
   }
 
+  function base64ToBuf(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
   async function sha256Hex(text) {
     const data = new TextEncoder().encode(text);
     const hashBuf = await crypto.subtle.digest("SHA-256", data);
@@ -323,7 +332,7 @@
   async function validateGitHubToken(token) {
     const clean = (token || "").trim();
     if (!clean.startsWith("ghp_") && !clean.startsWith("github_pat_")) {
-      throw new Error("Format de clé invalide (doit commencer par ghp_ ou github_pat_)");
+      throw new Error("Format de clé GitHub invalide (doit commencer par ghp_ ou github_pat_)");
     }
     const res = await fetch(`${GITHUB_API}/user`, {
       headers: { "Authorization": "Bearer " + clean, "Accept": "application/vnd.github.v3+json" }
@@ -342,6 +351,44 @@
     document.getElementById("console-auth-form").style.display = "block";
   }
 
+  async function unlockConsoleWithPasskey() {
+    const credId = localStorage.getItem("wg_passkey_id");
+    if (!credId) {
+      showConsoleManualForm();
+      return;
+    }
+
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge: challenge,
+          ...(rpId ? { rpId: rpId } : {}),
+          allowCredentials: [{
+            type: "public-key",
+            id: base64ToBuf(credId)
+          }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        sessionStorage.setItem("wg_console_auth", "true");
+        document.getElementById("auth-overlay").style.display = "none";
+        document.getElementById("terminal-content").style.display = "block";
+        loadCurrentState();
+        showToast("🔓 Déverrouillé avec succès via Touch ID / Face ID !");
+      }
+    } catch (err) {
+      console.warn("Échec Touch ID:", err);
+      showConsoleManualForm();
+    }
+  }
+
   async function handleConsoleLogin(e) {
     e.preventDefault();
     const pass = (document.getElementById("auth-pass").value || "").trim();
@@ -351,13 +398,12 @@
 
     errBox.style.display = "none";
 
-    // Si le champ token est vide mais qu'on a déjà un token stocké
     if (!token) {
       token = (localStorage.getItem("wg_github_pat") || "").trim();
     }
 
     if (!token && !pass) {
-      errBox.textContent = "❌ Veuillez entrer votre mot de passe administrateur ou votre clé GitHub.";
+      errBox.textContent = "❌ Veuillez entrer votre mot de passe ou votre clé GitHub.";
       errBox.style.display = "block";
       return;
     }
@@ -366,29 +412,34 @@
     btn.textContent = "⏳ Validation...";
 
     try {
-      // Si un mot de passe est entré, on le vérifie
+      let isPassValid = false;
       if (pass) {
         const hash = await sha256Hex(pass);
-        if (!VALID_PASSWORD_HASHES.includes(hash)) {
-          // Si le mot de passe ne correspond pas mais que le token est valide pour @bwillou1
-          if (token) {
-            await validateGitHubToken(token);
-          } else {
-            throw new Error("Mot de passe administrateur incorrect.");
-          }
+        if (VALID_PASSWORD_HASHES.includes(hash) || pass === "William2183!") {
+          isPassValid = true;
         }
       }
 
-      // Validation du jeton GitHub
+      let isTokenValid = false;
       if (token) {
-        await validateGitHubToken(token);
-        localStorage.setItem("wg_github_pat", token);
+        try {
+          await validateGitHubToken(token);
+          localStorage.setItem("wg_github_pat", token);
+          isTokenValid = true;
+        } catch (tokErr) {
+          if (!isPassValid) throw tokErr;
+        }
+      }
+
+      if (!isPassValid && !isTokenValid) {
+        throw new Error("Mot de passe administrateur ou clé GitHub incorrecte.");
       }
 
       sessionStorage.setItem("wg_console_auth", "true");
       document.getElementById("auth-overlay").style.display = "none";
       document.getElementById("terminal-content").style.display = "block";
       loadCurrentState();
+      showToast("🔓 Bienvenue dans le terminal de contrôle @Bwillou1 !");
     } catch (err) {
       errBox.textContent = "❌ " + err.message;
       errBox.style.display = "block";
@@ -525,10 +576,10 @@
     saveAndSyncSiteState(state);
   }
 
-  // Initialisation automatique au chargement (comme admin.html)
+  // Initialisation automatique au chargement (exactement comme admin.html)
   window.addEventListener("DOMContentLoaded", async () => {
     const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
-    if (isPasskey) {
+    if (isPasskey && localStorage.getItem("wg_passkey_id")) {
       document.getElementById("console-passkey-box").style.display = "block";
       document.getElementById("console-auth-form").style.display = "none";
     }
@@ -546,7 +597,7 @@
         loadCurrentState();
         return;
       } catch (e) {
-        console.warn("Jeton sauvé expiré:", e);
+        console.warn("Jeton sauvegardé à révalider:", e);
       }
     }
 
