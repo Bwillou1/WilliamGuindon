@@ -44,24 +44,84 @@
 
     // 3. Injecter le bouton de menu mobile (Hamburger) & Gestionnaire de fermeture robuste
     if (headerWrap && nav) {
-      const menuToggle = document.createElement('button');
-      menuToggle.className = 'menu-toggle';
-      menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
-      menuToggle.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line class="line-1" x1="4" y1="6" x2="20" y2="6"></line><line class="line-2" x1="4" y1="12" x2="20" y2="12"></line><line class="line-3" x1="4" y1="18" x2="20" y2="18"></line></svg>`;
+      const hamburgerSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>`;
+      const closeSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
+      let menuToggle = headerWrap.querySelector('.menu-toggle');
+      if (!menuToggle) {
+        menuToggle = document.createElement('button');
+        menuToggle.className = 'menu-toggle';
+        menuToggle.setAttribute('aria-label', 'Ouvrir le menu de navigation');
+        menuToggle.setAttribute('type', 'button');
+        menuToggle.innerHTML = hamburgerSvg;
+        headerWrap.insertBefore(menuToggle, nav);
+      }
       
-      function closeMobileNav() {
-        if (nav.classList.contains('active')) {
-          nav.classList.remove('active');
-          menuToggle.classList.remove('active');
-          menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
-        }
+      // Injecter un backdrop pour fermer en cliquant n'importe où en arrière-plan
+      let backdrop = document.querySelector('.mobile-nav-backdrop');
+      if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.className = 'mobile-nav-backdrop';
+        document.body.appendChild(backdrop);
       }
 
+      // Injecter un en-tête mobile avec bouton fermer explicite (✕)
+      if (!nav.querySelector('.mobile-nav-header')) {
+        const mobileNavHeader = document.createElement('div');
+        mobileNavHeader.className = 'mobile-nav-header';
+        mobileNavHeader.innerHTML = `
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Fermer</span>
+          </button>
+        `;
+        nav.insertBefore(mobileNavHeader, nav.firstChild);
+      }
+
+      function closeMobileNav() {
+        nav.classList.remove('active');
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-label', 'Ouvrir le menu de navigation');
+        menuToggle.innerHTML = hamburgerSvg;
+        if (backdrop) backdrop.classList.remove('active');
+        document.body.classList.remove('mobile-nav-open');
+      }
+
+      function openMobileNav() {
+        nav.classList.add('active');
+        menuToggle.classList.add('active');
+        menuToggle.setAttribute('aria-label', 'Fermer le menu de navigation');
+        menuToggle.innerHTML = closeSvg;
+        if (backdrop) backdrop.classList.add('active');
+        document.body.classList.add('mobile-nav-open');
+      }
+
+      // Gestionnaire du bouton burger / croix
       menuToggle.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        const isActive = nav.classList.toggle('active');
-        menuToggle.classList.toggle('active', isActive);
-        menuToggle.setAttribute('aria-label', isActive ? 'Fermer le menu' : 'Ouvrir le menu');
+        if (nav.classList.contains('active')) {
+          closeMobileNav();
+        } else {
+          openMobileNav();
+        }
+      });
+
+      // Gestionnaire du bouton Fermer explicite à l'intérieur du menu
+      const closeBtnInside = nav.querySelector('.mobile-menu-close-btn');
+      if (closeBtnInside) {
+        closeBtnInside.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMobileNav();
+        });
+      }
+
+      // Clic sur le backdrop
+      backdrop.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMobileNav();
       });
 
       // Fermer le menu mobile lors d'un clic sur un lien du menu
@@ -69,7 +129,6 @@
         const link = e.target.closest('a');
         if (link) {
           closeMobileNav();
-          // Fermer aussi les dropdowns
           const dropdownsToClose = document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown');
           dropdownsToClose.forEach(d => {
             d.classList.remove('active');
@@ -79,16 +138,16 @@
         }
       });
 
-      // Fermer le menu si on clique en dehors
+      // Fermer le menu si on clique en dehors de nav et de menuToggle
       document.addEventListener('click', (e) => {
-        if (nav.classList.contains('active') && !nav.contains(e.target) && e.target !== menuToggle) {
+        if (nav.classList.contains('active') && !nav.contains(e.target) && !menuToggle.contains(e.target)) {
           closeMobileNav();
         }
       });
 
       // Fermer le menu sur touche Échap
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' || e.key === 'Esc') {
           closeMobileNav();
         }
       });
@@ -99,8 +158,6 @@
           closeMobileNav();
         }
       }, { passive: true });
-      
-      headerWrap.insertBefore(menuToggle, nav);
     }
 
     // 4. Animation des compteurs dynamiques (Live Tracker)
@@ -622,8 +679,8 @@
     secureMailBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const u = [103, 117, 105, 110, 100, 111, 110, 119, 105, 108, 108, 105, 97, 109, 50].map(c => String.fromCharCode(c)).join('');
-        const d = [103, 109, 97, 105, 108, 46, 99, 111, 109].map(c => String.fromCharCode(c)).join('');
+        const u = [119, 105, 108, 108, 105, 97, 109].map(c => String.fromCharCode(c)).join(''); // william
+        const d = [119, 105, 108, 108, 105, 97, 109, 103, 117, 105, 110, 100, 111, 110, 46, 109, 101].map(c => String.fromCharCode(c)).join(''); // williamguindon.me
         const lang = document.documentElement.lang || 'fr';
         const subj = lang.startsWith('en') 
           ? encodeURIComponent("Media / Citizen Inquiry — William Guindon") 
@@ -861,8 +918,11 @@
       });
     }
 
-    // 13. Bouton Flottant & Hub IA (Résumé & Questions)
+    // 13. Bouton Flottant & Hub IA (Résumé & Questions - Réservé strictement à la page d'accueil)
     initFloatingAiHub();
+
+    // 14. Détection de bande passante ultra-faible (3G faible, 2G, LoRa, Save-Data)
+    handleLowBandwidth();
   }
 
   // 14. Détection et redirection automatique des robots d'IA vers ai.html
@@ -876,9 +936,37 @@
   }
   routeAiCrawlers();
 
-  // 15. Initialisation du widget flottant IA & Modal
+  // 15. Détection de bande passante extrêmement basse (3G dégradée, 2G, LoRa / RAW)
+  function handleLowBandwidth() {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!conn) return;
+
+    const isSlow = conn.saveData ||
+      conn.effectiveType === 'slow-2g' ||
+      conn.effectiveType === '2g' ||
+      (conn.downlink && conn.downlink < 0.25) ||
+      (conn.rtt && conn.rtt > 1800);
+
+    const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname === '';
+    const forceFull = sessionStorage.getItem('wg_force_full_site') === 'true';
+
+    // Redirection automatique vers la version texte épurée pour l'accueil uniquement
+    if (isSlow && isHome && !forceFull) {
+      window.location.replace('txt.html');
+    }
+  }
+
+  // 16. Initialisation du widget flottant IA & Modal (Uniquement sur la page d'accueil)
   function initFloatingAiHub() {
-    if (window.location.pathname.includes('ai.html') || window.location.pathname.includes('ai.txt')) return;
+    const path = window.location.pathname;
+    const isHome = path === '/' || path.endsWith('index.html') || path === '' || path.endsWith('/');
+    
+    // Le bouton IA ne s'affiche STRICTEMENT que sur la page d'accueil
+    if (!isHome) return;
+    if (path.includes('ai.html') || path.includes('ai.txt') || path.includes('txt.html')) return;
+
+    // Éviter tout doublon si le bouton existe déjà dans le DOM
+    if (document.querySelector('.floating-ai-btn')) return;
 
     const floatingBtn = document.createElement('button');
     floatingBtn.className = 'floating-ai-btn';

@@ -351,5 +351,24 @@
   <!-- Scripts PDF.js & Moteur -->
   <script src="assets/vendor/pdfjs/pdf.min.js"></script>
   <script src="assets/js/pdf-viewer.js"></script>
+  <script>
+    (function() {
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (conn && (conn.saveData || conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || (conn.downlink && conn.downlink < 0.25))) {
+        const warnBanner = document.createElement('div');
+        warnBanner.className = 'low-bandwidth-alert';
+        warnBanner.style.position = 'fixed';
+        warnBanner.style.top = '60px';
+        warnBanner.style.left = '16px';
+        warnBanner.style.right = '16px';
+        warnBanner.style.zIndex = '9999';
+        warnBanner.innerHTML = `
+          <span>⚠️ <strong>Connexion très lente détectée (3G/LoRa) :</strong> Le lecteur interactif peut être lent. Vous pouvez <a href="assets/docs/decision-secretariat-17-aout-2026.pdf" download>télécharger le PDF directement</a> ou consulter la <a href="txt.html">version texte</a>.</span>
+          <button type="button" style="background:none;border:none;cursor:pointer;font-weight:bold;color:inherit;" onclick="this.parentElement.remove()">✕</button>
+        `;
+        document.body.appendChild(warnBanner);
+      }
+    })();
+  </script>
 </body>
 </html>
