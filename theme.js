@@ -456,6 +456,22 @@
     const dropdowns = document.querySelectorAll('.nav-dropdown');
     const notifDropdowns = document.querySelectorAll('.nav-notif-dropdown');
 
+    try {
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+      dropdowns.forEach((dropdown) => {
+        const links = dropdown.querySelectorAll('.nav-dropdown-item');
+        const isChildActive = Array.from(links).some(a => {
+          const href = a.getAttribute('href');
+          if (!href) return false;
+          const page = href.split('#')[0].split('/').pop();
+          return page && (page === currentPath || (currentPath === '' && page === 'index.html'));
+        });
+        if (isChildActive && currentPath !== 'index.html' && currentPath !== '') {
+          dropdown.querySelector('.nav-dropdown-btn')?.classList.add('nav-rubrique-active');
+        }
+      });
+    } catch (_) {}
+
     dropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-dropdown-btn');
       if (!btn) return;
