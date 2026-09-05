@@ -80,10 +80,10 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20260905-clean">
-<script src="theme.js?v=20260905-clean" defer></script>
+<link rel="stylesheet" href="style.css?v=20260904-slider">
+<script src="theme.js?v=20260904-slider" defer></script>
 </head>
-<body>
+<body class="dark-theme">
 
 <a href="#main-content" class="skip-link">Passer au contenu principal</a>
 
@@ -92,13 +92,79 @@
     <a class="brand" href="./">William <span>Guindon</span></a>
     <nav aria-label="Navigation principale">
       <a href="./">Accueil</a>
+      <a href="viewer.html">Consulter les documents</a>
+      <a href="communiques.html">Communiqués</a>
       <a href="stablex.html">Dossier Stablex</a>
-      <a href="viewer.html">Documents CCE</a>
-      <a href="presse.html">Revue de presse</a>
-      <a href="live.html" class="active">Horloge CCE</a>
-      <a href="./#contact">Contact</a>
-      <a href="en.html" hreflang="en-CA" lang="en">EN</a>
-      <a href="es.html" hreflang="es-MX" lang="es" class="lang-badge-es">ES</a>
+      <a href="presse.html">Kit Média</a>
+      <a href="live.html" class="legal-nav-active">Horloge Live</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Toutes les rubriques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Dossier CCE & Analyse</span>
+            <div class="nav-dropdown-grid">
+              <a href="registre.html" class="nav-dropdown-item">Registre CCE (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive) ↗</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau CCE</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents</a>
+              <a href="stablex.html" class="nav-dropdown-item">Dossier Stablex</a>
+              <a href="live.html" class="nav-dropdown-item active">Horloge Live</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte SIG</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Espace Presse & Documents</span>
+            <div class="nav-dropdown-grid">
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués</a>
+              <a href="presse.html" class="nav-dropdown-item">Kit Média</a>
+              <a href="./#contact" class="nav-dropdown-item">Contact Médias</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Profil & Langues</span>
+            <div class="nav-dropdown-grid">
+              <a href="./#apropos" class="nav-dropdown-item">Biographie</a>
+              <a href="en.html" class="nav-dropdown-item">English</a>
+              <a href="es.html" class="nav-dropdown-item">Español</a>
+              <a href="privacy.html" class="nav-dropdown-item">Confidentialité</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="1 nouvelle alerte active"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alerte Média & CCE</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <a href="en.html">EN</a>
+      <a href="es.html" hreflang="es-MX">ES</a>
     </nav>
   </div>
 </header>
@@ -106,7 +172,10 @@
 <main id="main-content">
   <section class="hero-immersive live-hero-section">
     <div class="wrap">
-      <div class="kicker">HORLOGE OFFICIELLE EN DIRECT · CCE / ACEUM SEM-26-003</div>
+
+        </div>
+        <span>HORLOGE OFFICIELLE EN DIRECT · CCE / ACEUM SEM-26-003</span>
+      </div>
 
       <h1 class="live-title">
         Réponse du Canada : <span class="hero-title-main">Échéance 16 Octobre 2026</span>
@@ -149,7 +218,7 @@
         <div class="live-share-buttons">
           <a href="https://www.facebook.com/sharer/sharer.php?u=https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary live-btn-action">Partager sur Facebook</a>
           <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" class="btn btn-ghost live-btn-action">Partager sur LinkedIn</a>
-          <a href="https://api.whatsapp.com/send?text=Horloge%20CCE%20en%20direct%20:%20D%C3%A9compte%20avant%20l'%C3%A9ch%C3%A9ance%20du%2016%20octobre%202026%20impos%C3%A9e%20au%20Canada%20!%20https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" class="btn btn-ghost live-btn-action">WhatsApp</a>
+          <a href="https://api.whatsapp.com/send?text=%E2%8F%B1%EF%B8%8F%20Horloge%20CCE%20en%20direct%20:%20D%C3%A9compte%20avant%20l'%C3%A9ch%C3%A9ance%20du%2016%20octobre%202026%20impos%C3%A9e%20au%20Canada%20!%20https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" class="btn btn-ghost live-btn-action">WhatsApp</a>
           <button class="btn btn-ghost live-btn-action" id="btn-copy-live-link">Copier le lien</button>
         </div>
       </div>
@@ -185,10 +254,11 @@
       <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="noopener noreferrer" class="footer-social-link">YouTube ↗</a>
       <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
     </div>
-    <div><a href="./">Accueil</a> · <a href="viewer.html">Documents CCE</a> · <a href="stablex.html">Dossier Stablex</a> · <a href="presse.html">Presse</a> · <a href="terms.html">Conditions d'utilisation</a> · <a href="privacy.html">Politique de confidentialité</a> · <a href="en.html">English</a> · <a href="es.html">Español</a></div>
+    <div><a href="./">Accueil</a> · <a href="viewer.html">Consulter les documents</a> · <a href="stablex.html">Dossier Stablex</a> · <a href="presse.html">Presse</a> · <a href="terms.html">Conditions d'utilisation</a> · <a href="privacy.html">Politique de confidentialité</a> · <a href="en.html">English</a> · <a href="es.html">Español</a></div>
   </div>
 </footer>
 
+<script src="theme.js?v=20260904-slider"></script>
 <script>
   // Gestion personnalisée de l'horloge sur la page live
   (function() {
@@ -219,7 +289,7 @@
       if (sEl) sEl.textContent = pad(s);
 
       if (totalMinutesEl) {
-        totalMinutesEl.innerHTML = `<strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant la réponse officielle du Canada`;
+        totalMinutesEl.innerHTML = `⏳ <strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant la réponse officielle du Canada`;
       }
 
       // Mise à jour du titre de l'onglet de navigation

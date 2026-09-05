@@ -136,21 +136,96 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20260905-clean">
-<script src="theme.js?v=20260905-clean" defer></script>
+<link rel="stylesheet" href="style.css?v=20260904-slider">
+<script src="theme.js?v=20260904-slider" defer></script>
 </head>
 <a href="#main-content" class="skip-link">Ir al contenido principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
 
 <header class="site">
   <div class="wrap">
     <a class="brand" href="es.html">William <span>Guindon</span></a>
     <nav aria-label="Navegación principal">
       <a href="#sobre">Biografía</a>
+      <a href="viewer.html">Consultar Documentos</a>
+      <a href="#tracker">Panel CCA</a>
       <a href="stablex.html">Expediente Stablex</a>
-      <a href="viewer.html">Documentos CCA</a>
       <a href="communiques.html">Comunicados</a>
+      <a href="presse.html">Prensa</a>
       <a href="live.html">Reloj en Vivo</a>
       <a href="#contact">Contacto</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Explorar todo ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Expediente CCA & Análisis</span>
+            <div class="nav-dropdown-grid">
+              <a href="registre.html" class="nav-dropdown-item">Registro CCA (Directo)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registro CCA (Archivo) ↗</a>
+              <a href="#tracker" class="nav-dropdown-item">Panel CCA</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consultar Documentos</a>
+              <a href="stablex.html" class="nav-dropdown-item">Expediente Stablex</a>
+              <a href="live.html" class="nav-dropdown-item">Reloj en Vivo</a>
+              <a href="#mapa" class="nav-dropdown-item">Mapa SIG</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Medios & Documentos</span>
+            <div class="nav-dropdown-grid">
+              <a href="communiques.html" class="nav-dropdown-item">Comunicados</a>
+              <a href="presse.html" class="nav-dropdown-item">Kit de Prensa</a>
+              <a href="#contact" class="nav-dropdown-item">Contacto Medios</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Perfil & Idiomas</span>
+            <div class="nav-dropdown-grid">
+              <a href="#sobre" class="nav-dropdown-item">Biografía</a>
+              <a href="./" class="nav-dropdown-item">Français</a>
+              <a href="en.html" class="nav-dropdown-item">English</a>
+              <a href="privacy.html" class="nav-dropdown-item">Privacidad</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notificaciones y alertas de medios CCA" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="1 nueva alerta activa"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panel de alertas de medios">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alerta de Medios & CCA</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Cerrar notificaciones">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">17 de agosto de 2026 · CCA / T-MEC</div>
+              <h5 class="notif-item-title">Determinación positiva histórica de la CCA</h5>
+              <p class="notif-item-desc">El gobierno de Canadá ha sido formalmente emplazado a presentar su respuesta oficial antes del <strong>16 de octubre de 2026</strong> en el caso Stablex (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Leer decisión CCA (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Comunicado oficial</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Reloj en vivo</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
       <a href="./" hreflang="fr-CA" lang="fr">FR</a>
       <a href="en.html" hreflang="en-CA" lang="en">EN</a>
     </nav>
@@ -160,6 +235,11 @@
 <main id="main-content">
   <section class="hero-immersive" id="inicio">
     <div class="wrap">
+
+        </div>
+        <span>Registro Oficial Verificado CCA · SEM-26-003</span>
+      </div>
+
       <span class="kicker">Activista ambiental · Estudiante · Quebec, Canadá</span>
       <h1><span class="hero-title-main">William Guindon</span></h1>
       <p class="lead">Activista ambiental de Quebec reconocido por su compromiso con la protección de los ecosistemas y los derechos de las generaciones futuras. A los 15 años, llevó el caso de la Gran Turbera de Blainville ante la Comisión para la Cooperación Ambiental (T-MEC) y las Naciones Unidas.</p>
@@ -171,7 +251,17 @@
         </button>
         <span id="audio-status-text" class="audio-status-label" aria-live="polite"></span>
       </div>
+
+      <div class="citation-hero citation-hero-spaced">
+        <p>« Es demasiado tarde. La turbera de Blainville ya está muriendo bajo sus excavadoras. »</p>
+        <cite>— William Guindon, Le Devoir, 8 de abril de 2025</cite>
+      </div>
     </div>
+    <a href="#tracker" class="scroll-indicator" aria-label="Desplazarse hacia abajo">
+      <span>Descubrir</span>
+      
+      </div>
+    </a>
   </section>
 
   <section class="tracker-section" id="tracker">
@@ -182,7 +272,7 @@
       </aside>
 
       <h2>Panel de Control — Expediente CCA SEM-26-003</h2>
-      <p style="margin-bottom: 20px; color: var(--text-muted);">Estado de la movilización e indicadores ambientales.</p>
+      <h3>Estado de la movilización e indicadores ambientales</h3>
 
       <aside class="cce-alert-banner" role="region" aria-label="Alerta CCA">
         <div class="cce-banner-header">
@@ -193,8 +283,9 @@
         <p>El Secretariado determinó que la petición cumple con los criterios del Artículo 24.27(2) y solicitó una respuesta a la Parte (Canadá) en virtud del Artículo 24.27(3). William Guindon es el primer menor en presentar y obtener una determinación positiva en la historia del registro SEM. <em>Última actualización - <time id="cce-sync-date" datetime="2026-08-17">17 de agosto de 2026</time></em></p>
         <div class="cce-alert-actions cce-actions-flex">
           <a href="viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Consultar determinación oficial (PDF) ↗</a>
-          <a href="live.html" class="btn btn-primary">Reloj en Vivo</a>
-          <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Ver expediente CCA ↗</a>
+          <a href="live.html" class="btn btn-primary">Reloj Redes en Vivo</a>
+          <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Ver expediente CCA</a>
+          <button id="btn-enable-notifications" class="notif-toggle-btn" aria-label="Activar alertas de seguimiento CCA">Activar Alertas CCA</button>
         </div>
       </aside>
 
@@ -203,7 +294,7 @@
           <div class="tracker-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           </div>
-          <div class="counter-num">278 000 m²</div>
+          <div class="counter-num" data-target="278000" data-format="k">0 m²</div>
           <div class="counter-lbl">Humedales amenazados</div>
           <p class="counter-desc">Superficie de la Gran Turbera de Blainville afectada por el proyecto de ampliación de Stablex.</p>
         </article>
@@ -211,7 +302,7 @@
           <div class="tracker-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="2" x2="22" y2="6"></line><path d="M7.5 10.5L19 22"></path><circle cx="11.5" cy="6.5" r="5.5"></circle></svg>
           </div>
-          <div class="counter-num">320×</div>
+          <div class="counter-num" data-target="320" data-suffix="x">0x</div>
           <div class="counter-lbl">Exceso de cadmio</div>
           <p class="counter-desc">Concentración máxima de cadmio medida en las aguas de drenaje de Stablex en comparación con las normas.</p>
         </article>

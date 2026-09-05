@@ -1121,7 +1121,7 @@
         }
 
         if (dom.licenseDialog) dom.licenseDialog.close();
-        showToast("PDF original téléchargé · Empreinte SHA-256 certifiée !");
+        showToast("📥 PDF original téléchargé · Empreinte SHA-256 certifiée !");
       });
     }
 
@@ -1129,7 +1129,7 @@
       dom.btnCopyHash.addEventListener('click', () => {
         if (dom.licenseDocHash && navigator.clipboard) {
           navigator.clipboard.writeText(dom.licenseDocHash.textContent).then(() => {
-            showToast("Empreinte SHA-256 copiée !");
+            showToast("🔒 Empreinte SHA-256 copiée !");
           });
         }
       });
@@ -1139,7 +1139,7 @@
       dom.btnCopyCitation.addEventListener('click', () => {
         if (dom.licenseCitationText && navigator.clipboard) {
           navigator.clipboard.writeText(dom.licenseCitationText.textContent).then(() => {
-            showToast("Citation académique copiée !");
+            showToast("📖 Citation académique copiée !");
           });
         }
       });
@@ -1152,7 +1152,7 @@
         const fullShare = `${citation}\nSource: ${shareUrl}\nLicence: Creative Commons CC BY-NC-ND 4.0 (Auteur: William Guindon)`;
         if (navigator.clipboard) {
           navigator.clipboard.writeText(fullShare).then(() => {
-            showToast("Lien et citation avec attribution copiés !");
+            showToast("🔗 Lien & citation avec attribution copiés !");
           });
         }
         if (dom.licenseDialog) dom.licenseDialog.close();
@@ -1562,12 +1562,12 @@
         const caps = await lm.capabilities();
         if (caps && caps.available !== 'no') {
           viewerHasNano = true;
-          dom.viewerAiStatus.innerHTML = 'Gemini Nano actif (On-device Chrome)';
+          dom.viewerAiStatus.innerHTML = '✨ Gemini Nano actif (On-device Chrome)';
           return;
         }
       }
     } catch (e) {}
-    dom.viewerAiStatus.innerHTML = 'Moteur local certifié SEM-26-003';
+    dom.viewerAiStatus.innerHTML = '⚡ Moteur local certifié SEM-26-003';
   }
 
   async function extractPdfText(scope = 'all') {
@@ -1596,7 +1596,7 @@
   async function handleViewerSummarize(scope = 'all') {
     if (!dom.viewerAiOutput) return;
     dom.viewerAiOutput.style.display = 'block';
-    dom.viewerAiOutput.innerHTML = `<em>Extraction et synthèse en cours (${scope === 'page' ? 'Page ' + state.currentPage : 'Document complet'})...</em>`;
+    dom.viewerAiOutput.innerHTML = `<em>⚡ Extraction et synthèse IA en cours (${scope === 'page' ? 'Page ' + state.currentPage : 'Document complet'})...</em>`;
 
     const docKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
     const docInfo = docKey ? DOCS_CATALOG[docKey] : null;
@@ -1621,7 +1621,7 @@
             const summary = await summarizer.summarize(textToSummarize);
             const summarySafe = escapeHTML(summary).replace(/\n/g, '<br>');
             dom.viewerAiOutput.innerHTML = `
-              <strong>Synthèse Gemini Nano (${scope === 'page' ? 'Page ' + state.currentPage : 'Document complet'}) :</strong>
+              <strong>✨ Synthèse Gemini Nano (${scope === 'page' ? 'Page ' + state.currentPage : 'Document complet'}) :</strong>
               <div style="margin-top:6px;">${summarySafe}</div>
             `;
             return;
@@ -1637,13 +1637,13 @@
         const safeDocTitle = escapeHTML(docTitle);
         if (scope === 'page') {
           content = `
-            <strong>Synthèse de la Page ${state.currentPage} — ${safeDocTitle} :</strong>
+            <strong>📄 Synthèse de la Page ${state.currentPage} — ${safeDocTitle} :</strong>
             <p style="margin:6px 0;">Analyse des éléments juridiques et preuves environnementales de la page courante du dossier SEM-26-003.</p>
             ${extractedText ? `<blockquote style="border-left:2px solid var(--accent); padding-left:8px; color:var(--text-muted); font-size:11px; margin:6px 0;">Extrait : ${escapeHTML(extractedText.slice(0, 220))}...</blockquote>` : ''}
           `;
         } else {
           content = `
-            <strong>Synthèse officielle — ${safeDocTitle} :</strong>
+            <strong>📋 Synthèse officielle — ${safeDocTitle} :</strong>
             <ul style="padding-left:16px; margin:6px 0;">
               <li><strong>Objet :</strong> Conformité environnementale du projet Stablex dans la Grande Tourbière de Blainville.</li>
               <li><strong>Contexte juridique :</strong> Articles 24.27 et 24.28 de l'ACEUM, Loi sur la convention concernant les oiseaux migrateurs, Loi sur les espèces en péril.</li>
@@ -1656,7 +1656,7 @@
       }, 400);
 
     } catch (err) {
-      dom.viewerAiOutput.innerHTML = `<strong>Erreur d'analyse :</strong> Impossible d'extraire le texte pour la synthèse.`;
+      dom.viewerAiOutput.innerHTML = `<strong>⚠️ Erreur d'analyse :</strong> Impossible d'extraire le texte pour la synthèse.`;
     }
   }
 

@@ -189,21 +189,98 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20260905-clean">
-<script src="theme.js?v=20260905-clean" defer></script>
+<link rel="stylesheet" href="style.css?v=20260904-ai">
+<script src="theme.js?v=20260904-ai" defer></script>
 </head>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
 
 <header class="site">
   <div class="wrap">
     <a class="brand" href="./">William <span>Guindon</span></a>
     <nav aria-label="Navigation principale">
       <a href="#apropos">Biographie</a>
+      <a href="viewer.html">Consulter les documents</a>
+      <a href="#tracker">Tableau CCE</a>
       <a href="stablex.html">Dossier Stablex</a>
-      <a href="viewer.html">Documents CCE</a>
-      <a href="#revue-presse">Revue de presse</a>
-      <a href="live.html">Horloge CCE</a>
+      <a href="communiques.html">Communiqués</a>
+      <a href="presse.html">Espace Presse</a>
+      <a href="live.html">Horloge Live</a>
       <a href="#contact">Contact</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Toutes les rubriques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Dossier CCE & Analyse</span>
+            <div class="nav-dropdown-grid">
+              <a href="registre.html" class="nav-dropdown-item">Registre CCE (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive) ↗</a>
+              <a href="#tracker" class="nav-dropdown-item">Tableau CCE</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents</a>
+              <a href="stablex.html" class="nav-dropdown-item">Dossier Stablex</a>
+              <a href="live.html" class="nav-dropdown-item">Horloge Live</a>
+              <a href="#carte" class="nav-dropdown-item">Carte SIG</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Espace Presse & Médias</span>
+            <div class="nav-dropdown-grid">
+              <a href="#revue-presse" class="nav-dropdown-item">Revue de presse</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués</a>
+              <a href="presse.html" class="nav-dropdown-item">Kit Média</a>
+              <a href="#contact" class="nav-dropdown-item">Contact Médias</a>
+            </div>
+          </div>
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Profil & Langues</span>
+            <div class="nav-dropdown-grid">
+              <a href="#apropos" class="nav-dropdown-item">Biographie</a>
+              <a href="en.html" class="nav-dropdown-item">English</a>
+              <a href="es.html" class="nav-dropdown-item">Español</a>
+              <a href="privacy.html" class="nav-dropdown-item">Confidentialité</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA & LLM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="1 nouvelle alerte active"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alerte Média & CCE</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
       <a href="en.html" hreflang="en-CA" lang="en">EN</a>
       <a href="es.html" hreflang="es-MX" lang="es" class="lang-badge-es">ES</a>
     </nav>
@@ -226,7 +303,17 @@
         </button>
         <span id="audio-status-text" class="audio-status-label" aria-live="polite"></span>
       </div>
+
+      <div class="citation-hero citation-hero-spaced">
+        <p>« Il est trop tard. La tourbière de Blainville est déjà morte sous vos bulldozers. »</p>
+        <cite>— William Guindon, Le Devoir, 8 avril 2025</cite>
+      </div>
     </div>
+    <a href="#tracker" class="scroll-indicator" aria-label="Défiler vers le bas">
+      <span>Découvrir</span>
+      
+      </div>
+    </a>
   </section>
 
   <section class="tracker-section" id="tracker">
@@ -237,7 +324,7 @@
       </aside>
 
       <h2>Tableau de bord — Dossier CCE SEM-26-003</h2>
-      <p style="margin-bottom: 20px; color: var(--text-muted);">État de la procédure officielle et indicateurs environnementaux clés.</p>
+      <h3>État de la mobilisation et indicateurs environnementaux</h3>
 
       <aside class="cce-alert-banner" role="region" aria-label="Alerte CCE">
         <div class="cce-banner-header">
@@ -248,8 +335,9 @@
         <p>Le Secrétariat a jugé que la communication satisfaisait aux critères énoncés à l’article 24.27(2) et a demandé une réponse à la Partie visée (Canada) en vertu de l’article 24.27(3). William Guindon est le premier mineur à déposer et réussir à obtenir une décision positive dans l'histoire des Soumissions SEM. <em>Dernière mise à jour - <time id="cce-sync-date" datetime="2026-08-17">17 août 2026</time></em></p>
         <div class="cce-alert-actions cce-actions-flex">
           <a href="viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Consulter la détermination officielle (PDF) ↗</a>
-          <a href="live.html" class="btn btn-primary">Horloge Live</a>
-          <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Dossier CCE ↗</a>
+          <a href="live.html" class="btn btn-primary">Horloge Live Réseaux</a>
+          <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Voir le dossier CCE</a>
+          <button id="btn-enable-notifications" class="notif-toggle-btn" aria-label="Activer les alertes de suivi CCE">Activer les Alertes CCE</button>
         </div>
       </aside>
 
@@ -258,7 +346,7 @@
           <div class="tracker-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           </div>
-          <div class="counter-num">278 000 m²</div>
+          <div class="counter-num" data-target="278000" data-format="k">0 m²</div>
           <div class="counter-lbl">Milieux Humides Menacés</div>
           <p class="counter-desc">Superficie de tourbière et d'écosystèmes rares directement ciblée par l'expansion du site Stablex.</p>
         </article>
@@ -266,7 +354,7 @@
           <div class="tracker-icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
-          <div class="counter-num">320×</div>
+          <div class="counter-num" data-target="320" data-suffix="x">0x</div>
           <div class="counter-lbl">Excès de Cadmium</div>
           <p class="counter-desc">Concentration maximale en cadmium mesurée dans les eaux de drainage de Stablex par rapport aux normes.</p>
         </article>
@@ -315,8 +403,9 @@
       <h2>Revue de presse officielle</h2>
       <p>Retrouvez les reportages d'enquête, entrevues audiovisuelles et publications dans les grands médias nationaux et régionaux.</p>
 
-      <div class="media-logos-ticker-wrapper" aria-label="Médias partenaires">
+      <div class="media-logos-ticker-wrapper" aria-label="Bandeau défilant des médias partenaires">
         <div class="media-logos-ticker-track">
+          
           <a href="https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-d-une-tourbiere-a-blainville/le-combat-d-un-adolescent-a-l-onu.php" target="_blank" rel="noopener noreferrer" class="media-logo-item item-lapresse" aria-label="La Presse">
             <img src="assets/media/lapresse-logo.png" alt="Logo La Presse" width="130" height="36">
           </a>
@@ -333,6 +422,25 @@
             <img src="assets/media/lesasdelinfo-logo.png" alt="Logo Les As de l'info / Curium" width="130" height="36">
           </a>
           <a href="https://therover.ca/blainville-teenager-takes-stablex-fight-international/" target="_blank" rel="noopener noreferrer" class="media-logo-item item-therover" aria-label="The Rover">
+            <img src="assets/media/the-rover-logo.jpg" alt="Logo The Rover" width="130" height="36">
+          </a>
+
+          <a href="https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-d-une-tourbiere-a-blainville/le-combat-d-un-adolescent-a-l-onu.php" target="_blank" rel="noopener noreferrer" class="media-logo-item item-lapresse" aria-label="La Presse" aria-hidden="true" tabindex="-1">
+            <img src="assets/media/lapresse-logo.png" alt="Logo La Presse" width="130" height="36">
+          </a>
+          <a href="https://www.ledevoir.com/opinion/lettres/865027/francois-legault-vous-detruisez-notre-avenir" target="_blank" rel="noopener noreferrer" class="media-logo-item" aria-label="Le Devoir" aria-hidden="true" tabindex="-1">
+            <img src="assets/media/ledevoir-logo.png" alt="Logo Le Devoir" width="130" height="34">
+          </a>
+          <a href="https://ici.radio-canada.ca/tele/enquete/site/episodes/1116051/episode-du-jeudi-09-octobre-2025" target="_blank" rel="noopener noreferrer" class="media-logo-item" aria-label="CBC Radio-Canada" aria-hidden="true" tabindex="-1">
+            <img src="assets/media/cbc-logo.jpg" alt="Logo CBC Radio-Canada" width="130" height="38">
+          </a>
+          <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&t=30s" target="_blank" rel="noopener noreferrer" class="media-logo-item" aria-label="TVBL Télévision" aria-hidden="true" tabindex="-1">
+            <img src="assets/media/tvbl-logo.png" alt="Logo TVBL Télévision" width="130" height="34">
+          </a>
+          <a href="https://lesasdelinfo.com/articles/6171/super-william-a-la-rescousse-de-la-grande-tourbiere" target="_blank" rel="noopener noreferrer" class="media-logo-item" aria-label="Les As de l'info" aria-hidden="true" tabindex="-1">
+            <img src="assets/media/lesasdelinfo-logo.png" alt="Logo Les As de l'info / Curium" width="130" height="36">
+          </a>
+          <a href="https://therover.ca/blainville-teenager-takes-stablex-fight-international/" target="_blank" rel="noopener noreferrer" class="media-logo-item item-therover" aria-label="The Rover" aria-hidden="true" tabindex="-1">
             <img src="assets/media/the-rover-logo.jpg" alt="Logo The Rover" width="130" height="36">
           </a>
         </div>
