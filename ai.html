@@ -53,110 +53,99 @@
 
     <style>
         :root {
-            --bg: #000000;
-            --card: #080c09;
-            --border: #166534;
-            --text: #4ade80;
-            --link: #38bdf8;
+            --bg: #f7f5ef;
+            --card: #ffffff;
+            --border: #dcd8cc;
+            --text: #1c1b18;
+            --muted: #57534e;
+            --accent: #3a5a40;
+            --link: #2c4a32;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #141613;
+                --card: #1c1e1a;
+                --border: #2d3129;
+                --text: #edece6;
+                --muted: #a3a199;
+                --accent: #588157;
+                --link: #74a873;
+            }
         }
         * { 
             box-sizing: border-box; 
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-        }
-        ::selection {
-            background: transparent !important;
-            color: inherit !important;
-        }
-        ::-moz-selection {
-            background: transparent !important;
-            color: inherit !important;
         }
         html, body {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            background: #000000 !important;
-            color: #4ade80 !important;
-            padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+            padding: 24px;
             line-height: 1.6;
             margin: 0;
             font-size: 13.5px;
         }
         .header-banner {
-            background: #080c09;
-            border: 1px solid #166534;
-            border-radius: 8px;
-            padding: 14px 18px;
-            margin-bottom: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .btn-home {
             display: inline-block;
-            background: #22c55e;
-            color: #000000;
-            font-weight: 700;
+            background: var(--accent);
+            color: #ffffff;
+            font-weight: 600;
             padding: 6px 14px;
-            border-radius: 6px;
+            border-radius: 4px;
             text-decoration: none;
-            transition: background 0.2s ease;
+            transition: opacity 0.2s ease;
         }
         .btn-home:hover {
-            background: #4ade80;
+            opacity: 0.9;
+            color: #ffffff;
+        }
+        .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text);
         }
         pre {
-            background: #080c09;
-            border: 1px solid #166534;
-            padding: 18px;
-            border-radius: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 4px;
             white-space: pre-wrap;
             word-break: break-word;
             font-size: 13px;
-            color: #d1fae5;
+            color: var(--text);
+            line-height: 1.5;
         }
         a { color: var(--link); text-decoration: underline; }
     </style>
 </head>
-<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;" ondragstart="return false;" onselectstart="return false;">
+<body>
 
 <header class="header-banner">
     <div>
         <strong>REGISTRE TECHNIQUE & BASE DOCUMENTAIRE SEM-26-003</strong><br>
-        <span style="color:#9ca3af; font-size:12px;">Commission de coopération environnementale (CCE) · Grande Tourbière de Blainville · William Guindon</span>
+        <span style="color:var(--muted); font-size:12px;">Commission de coopération environnementale (CCE) · Grande Tourbière de Blainville · William Guindon</span>
     </div>
     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <a href="viewer.html" class="btn-home" style="background:#38bdf8;">Consulter les documents</a>
-        <a href="txt.html" class="btn-home" style="background:#f59e0b;">Version texte (3G/LoRa)</a>
-        <a href="https://williamguindon.me/" class="btn-home">← Retour au site principal</a>
+        <a href="viewer.html" class="btn-home btn-secondary">Consulter les documents</a>
+        <a href="txt.html" class="btn-home btn-secondary">Version texte</a>
+        <a href="https://williamguindon.me/" class="btn-home">← Accueil</a>
     </div>
 </header>
-
-<script>
-// Anti-Selection and Anti-Copy Protection for Human Browsers (Safe for Headless AI Crawlers)
-(function() {
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || e.key === 'F12') { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A' || e.keyCode === 65)) { e.preventDefault(); return false; }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) { e.preventDefault(); return false; }
-    });
-})();
-</script>
 
 <main>
 <pre>
