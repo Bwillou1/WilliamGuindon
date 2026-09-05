@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog & Carnet de bord — William Guindon</title>
+<meta name="description" content="Actualités, analyses juridiques et carnet de bord citoyen de William Guindon sur le dossier SEM-26-003 et la Grande Tourbière de Blainville.">
+<meta name="author" content="William Guindon">
+<link rel="canonical" href="https://williamguindon.me/blog.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064e3b">
+
+<link rel="stylesheet" href="style.css?v=20260905-clean">
+<script src="theme.js?v=20260905-clean" defer></script>
+
+<style>
+  .blog-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+  .blog-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+  .blog-hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+  .blog-hero p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 680px;
+    margin: 0 auto 24px;
+  }
+  .blog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14.5px;
+  }
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .category-pill {
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .category-pill:hover, .category-pill.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .blog-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  .blog-card-img-wrap {
+    height: 190px;
+    overflow: hidden;
+    background: var(--line);
+    position: relative;
+  }
+  .blog-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .blog-card:hover .blog-card-img {
+    transform: scale(1.03);
+  }
+  .blog-card-category {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.75);
+    color: #4ade80;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+  .blog-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .blog-card-date {
+    font-size: 12.5px;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+  }
+  .blog-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .blog-card-summary {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .blog-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .blog-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-wash);
+    color: var(--accent-deep);
+  }
+  
+  /* Article Modal */
+  .article-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .article-modal.open {
+    display: flex;
+  }
+  .article-modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    max-width: 780px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 28px;
+    position: relative;
+    box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+  }
+  .modal-close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: var(--line);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .article-full-img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 16px 0 24px;
+  }
+  .article-full-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-line;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <nav aria-label="Navigation principale">
+      <a href="./">Accueil</a>
+      <a href="blog.html" class="active">Blog</a>
+      <a href="photos.html">Photos</a>
+      <a href="stablex.html">Dossier Stablex</a>
+      <a href="viewer.html">Documents CCE</a>
+      <a href="live.html">Horloge CCE</a>
+      <a href="./#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content" class="blog-container">
+  <section class="blog-hero">
+    <span class="kicker">Dossier SEM-26-003 & Grande Tourbière</span>
+    <h1>Actualités & Carnet de bord</h1>
+    <p>Articles officiels, analyses juridiques et réflexions citoyennes de William Guindon publiés directement en ligne.</p>
+  </section>
+
+  <div class="blog-toolbar">
+    <input type="text" id="blog-search" class="search-input" placeholder="Rechercher un article..." aria-label="Rechercher dans le blog">
+    <div class="category-pills" id="category-filters">
+      <button class="category-pill active" data-cat="all">Tous</button>
+      <button class="category-pill" data-cat="Dossier CCE">Dossier CCE</button>
+      <button class="category-pill" data-cat="Juridique">Juridique</button>
+      <button class="category-pill" data-cat="Terrain">Terrain</button>
+      <button class="category-pill" data-cat="Médias">Médias</button>
+    </div>
+  </div>
+
+  <div class="blog-grid" id="blog-posts-grid">
+    <!-- Chargement dynamique depuis data/blog.json -->
+  </div>
+
+  <div class="empty-state" id="blog-empty-state" style="display:none;">
+    <h3>Aucun article trouvé</h3>
+    <p>Essayez un autre mot-clé ou modifiez les filtres de catégorie.</p>
+  </div>
+</main>
+
+<!-- Modal pour lecture complète -->
+<div class="article-modal" id="article-modal" role="dialog" aria-modal="true">
+  <div class="article-modal-content">
+    <button class="modal-close-btn" id="modal-close" aria-label="Fermer">&times;</button>
+    <div id="modal-article-body"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · Dossier SEM-26-003</div>
+    <div><a href="./">Accueil</a> · <a href="blog.html">Blog</a> · <a href="photos.html">Photos</a> · <a href="viewer.html">Documents CCE</a> · <a href="admin.html" style="opacity:0.6;">Administration</a></div>
+  </div>
+</footer>
+
+<script>
+  let allPosts = [];
+
+  async function loadBlogPosts() {
+    const grid = document.getElementById("blog-posts-grid");
+    const empty = document.getElementById("blog-empty-state");
+    try {
+      const res = await fetch("data/blog.json?v=" + Date.now());
+      if (!res.ok) throw new Error("Erreur chargement données blog");
+      allPosts = await res.json();
+      renderPosts(allPosts);
+
+      // Ouvrir un article si l'URL contient #slug
+      const hash = window.location.hash.replace("#", "");
+      if (hash) {
+        const target = allPosts.find(p => p.slug === hash || p.id === hash);
+        if (target) openArticleModal(target);
+      }
+    } catch (e) {
+      console.error(e);
+      grid.innerHTML = "<p style='color:var(--text-muted);'>Impossible de charger les articles pour le moment.</p>";
+    }
+  }
+
+  function renderPosts(posts) {
+    const grid = document.getElementById("blog-posts-grid");
+    const empty = document.getElementById("blog-empty-state");
+    grid.innerHTML = "";
+
+    if (!posts || posts.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    posts.forEach(post => {
+      const card = document.createElement("article");
+      card.className = "blog-card";
+      card.onclick = () => openArticleModal(post);
+
+      const coverSrc = post.coverImage || "tourbiere.jpg";
+      const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join("");
+
+      card.innerHTML = `
+        <div class="blog-card-img-wrap">
+          <img src="${coverSrc}" alt="${post.title}" class="blog-card-img" loading="lazy">
+          <span class="blog-card-category">${post.category || "Actualité"}</span>
+        </div>
+        <div class="blog-card-body">
+          <time class="blog-card-date">${post.date} · Par ${post.author || "William Guindon"}</time>
+          <h2 class="blog-card-title">${post.title}</h2>
+          <p class="blog-card-summary">${post.summary || post.content.substring(0, 140) + "..."}</p>
+          <div class="blog-card-tags">${tagsHtml}</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openArticleModal(post) {
+    const modal = document.getElementById("article-modal");
+    const body = document.getElementById("modal-article-body");
+    const coverHtml = post.coverImage ? `<img src="${post.coverImage}" alt="${post.title}" class="article-full-img">` : "";
+    const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join(" ");
+
+    body.innerHTML = `
+      <span class="blog-card-category" style="position:static; display:inline-block; margin-bottom:10px;">${post.category || "Actualité"}</span>
+      <h1 style="font-size:1.8rem; margin-bottom:8px;">${post.title}</h1>
+      <time style="color:var(--text-faint); font-size:13.5px; display:block; margin-bottom:14px;">Publié le ${post.date} par ${post.author || "William Guindon"}</time>
+      ${coverHtml}
+      <div class="article-full-text">${post.content}</div>
+      <div style="margin-top:24px; border-top:1px solid var(--line); padding-top:16px;">
+        <div style="margin-bottom:12px;">${tagsHtml}</div>
+        <button class="btn btn-primary" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !');">Partager cet article</button>
+      </div>
+    `;
+    modal.classList.add("open");
+    window.location.hash = post.slug || post.id;
+  }
+
+  document.getElementById("modal-close").onclick = () => {
+    document.getElementById("article-modal").classList.remove("open");
+    history.pushState("", document.title, window.location.pathname);
+  };
+
+  document.getElementById("article-modal").onclick = (e) => {
+    if (e.target.id === "article-modal") {
+      document.getElementById("article-modal").classList.remove("open");
+      history.pushState("", document.title, window.location.pathname);
+    }
+  };
+
+  // Filtrage & Recherche
+  document.getElementById("blog-search").addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase();
+    const filtered = allPosts.filter(p => 
+      p.title.toLowerCase().includes(q) || 
+      (p.summary && p.summary.toLowerCase().includes(q)) || 
+      (p.content && p.content.toLowerCase().includes(q))
+    );
+    renderPosts(filtered);
+  });
+
+  document.querySelectorAll(".category-pill").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".category-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const cat = btn.getAttribute("data-cat");
+      if (cat === "all") {
+        renderPosts(allPosts);
+      } else {
+        const filtered = allPosts.filter(p => (p.category || "").toLowerCase() === cat.toLowerCase());
+        renderPosts(filtered);
+      }
+    });
+  });
+
+  loadBlogPosts();
+</script>
+</body>
+</html>

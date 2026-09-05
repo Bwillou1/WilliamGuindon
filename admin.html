@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace Rédaction & Administration — William Guindon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#064e3b">
+
+<link rel="stylesheet" href="style.css?v=20260905-clean">
+<script src="theme.js?v=20260905-clean" defer></script>
+
+<style>
+  .admin-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+  .admin-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+  }
+  .admin-tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-tab.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .admin-panel {
+    display: none;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+  }
+  .admin-panel.active {
+    display: block;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+  }
+  textarea.form-control {
+    min-height: 180px;
+    line-height: 1.6;
+    resize: vertical;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 640px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .file-dropzone {
+    border: 2px dashed var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .file-dropzone:hover {
+    border-color: var(--accent);
+  }
+  .file-preview {
+    max-height: 180px;
+    border-radius: 8px;
+    margin-top: 12px;
+    display: none;
+  }
+  .btn-submit {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .btn-submit:hover {
+    opacity: 0.9;
+  }
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .status-toast {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+    font-size: 14.5px;
+  }
+  .status-success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .status-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+  }
+  .token-box {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .item-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .item-list-row:last-child {
+    border-bottom: none;
+  }
+  .btn-danger {
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <nav aria-label="Navigation principale">
+      <a href="./">Accueil</a>
+      <a href="blog.html">Voir le Blog</a>
+      <a href="photos.html">Voir les Photos</a>
+      <a href="viewer.html">Documents CCE</a>
+    </nav>
+  </div>
+</header>
+
+<main class="admin-wrap">
+  <div class="admin-header">
+    <div>
+      <span class="kicker">Espace d'administration personnel</span>
+      <h1 style="font-size: 1.8rem; margin: 4px 0;">Gestion de Contenu & Publication</h1>
+    </div>
+    <div id="auth-status-bar">
+      <!-- État connexion -->
+    </div>
+  </div>
+
+  <div id="status-message" class="status-toast"></div>
+
+  <!-- Authentification GitHub Token -->
+  <div id="token-card" class="token-box">
+    <h3>🔑 Connexion Sécurisée à votre GitHub</h3>
+    <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px;">
+      Pour pouvoir publier directement sur votre site sans coder, entrez votre jeton d'accès GitHub (Personal Access Token). Il sera enregistré uniquement dans votre navigateur sur cet appareil.
+    </p>
+    <div class="form-group">
+      <label class="form-label" for="github-pat-input">Jeton d'accès GitHub (PAT avec permission "Contents: Read & Write") :</label>
+      <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">
+    </div>
+    <button id="btn-save-token" class="btn btn-primary">Enregistrer la clé et déverrouiller</button>
+    <details style="margin-top:14px; font-size:13px; color:var(--text-muted);">
+      <summary style="cursor:pointer; font-weight:600;">Comment générer votre clé en 2 minutes ?</summary>
+      <ol style="padding-left:18px; margin-top:8px; line-height:1.6;">
+        <li>Ouvrez <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">GitHub Tokens (Classic) ↗</a>.</li>
+        <li>Donnez un nom (ex: "Site William") et cochez la case <strong>repo</strong>.</li>
+        <li>Cliquez sur "Generate token" en bas et copiez le code ici.</li>
+      </ol>
+    </details>
+  </div>
+
+  <!-- Contenu déverrouillé -->
+  <div id="admin-workspace" style="display:none;">
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="tab-blog">📝 Rédiger un Article (Blog)</button>
+      <button class="admin-tab" data-tab="tab-photo">📷 Publier une Photo</button>
+      <button class="admin-tab" data-tab="tab-manage">⚙️ Gérer mes publications</button>
+    </div>
+
+    <!-- Onglet 1 : Article Blog -->
+    <div class="admin-panel active" id="tab-blog">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Nouvel Article de Blog</h2>
+      
+      <form id="form-blog">
+        <div class="form-group">
+          <label class="form-label" for="blog-title">Titre de l'article *</label>
+          <input type="text" id="blog-title" class="form-control" placeholder="Ex: Point d'étape sur l'échéance du 16 octobre..." required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="blog-category">Catégorie</label>
+            <select id="blog-category" class="form-control">
+              <option value="Dossier CCE">Dossier CCE</option>
+              <option value="Juridique">Juridique</option>
+              <option value="Terrain">Terrain</option>
+              <option value="Médias">Médias</option>
+              <option value="Réflexion">Réflexion</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="blog-date">Date de publication</label>
+            <input type="date" id="blog-date" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-summary">Résumé court (1 à 2 phrases d'accroche)</label>
+          <input type="text" id="blog-summary" class="form-control" placeholder="Bref aperçu affiché sur la liste des articles...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image de couverture</label>
+          <div class="file-dropzone" onclick="document.getElementById('blog-file').click()">
+            <input type="file" id="blog-file" accept="image/*" style="display:none;">
+            <span>📸 Cliquez ou glissez une photo ici depuis votre appareil</span>
+            <img id="blog-file-preview" class="file-preview" alt="Prévisualisation">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-content">Contenu complet de l'article *</label>
+          <textarea id="blog-content" class="form-control" placeholder="Rédigez votre texte ici. Les sauts de ligne et paragraphes seront automatiquement respectés..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-tags">Mots-clés (séparés par des virgules)</label>
+          <input type="text" id="blog-tags" class="form-control" placeholder="CCE, Tourbière, BAPE, Blainville">
+        </div>
+
+        <button type="submit" id="btn-publish-blog" class="btn-submit">🚀 Publier l'article sur le Blog</button>
+      </form>
+    </div>
+
+    <!-- Onglet 2 : Photo Galerie -->
+    <div class="admin-panel" id="tab-photo">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Ajouter une Photo à la Galerie</h2>
+      
+      <form id="form-photo">
+        <div class="form-group">
+          <label class="form-label" for="photo-title">Titre de la photo *</label>
+          <input type="text" id="photo-title" class="form-control" placeholder="Ex: Sortie d'observation dans le secteur nord de la tourbière..." required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="photo-category">Catégorie</label>
+            <select id="photo-category" class="form-control">
+              <option value="Tourbière">Tourbière</option>
+              <option value="Biodiversité">Biodiversité</option>
+              <option value="Terrain">Terrain</option>
+              <option value="Événements">Événements</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="photo-date">Date de la photo</label>
+            <input type="date" id="photo-date" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="photo-location">Lieu / Emplacement</label>
+          <input type="text" id="photo-location" class="form-control" placeholder="Ex: Grande Tourbière de Blainville, QC">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sélectionner la photo *</label>
+          <div class="file-dropzone" onclick="document.getElementById('photo-file').click()">
+            <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
+            <span>📷 Cliquez ou choisissez une photo haute définition</span>
+            <img id="photo-file-preview" class="file-preview" alt="Prévisualisation">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="photo-desc">Légende / Description</label>
+          <textarea id="photo-desc" class="form-control" style="min-height:90px;" placeholder="Détails, contexte scientifique ou observation..."></textarea>
+        </div>
+
+        <button type="submit" id="btn-publish-photo" class="btn-submit">✨ Ajouter la photo à la Galerie</button>
+      </form>
+    </div>
+
+    <!-- Onglet 3 : Gestion & Suppression -->
+    <div class="admin-panel" id="tab-manage">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Gestion des Contenus</h2>
+      
+      <h3 style="font-size:1.1rem; margin-top:20px; color:var(--accent);">Articles de Blog Actifs</h3>
+      <div id="manage-blog-list" style="margin-top:10px;">Chargement...</div>
+
+      <h3 style="font-size:1.1rem; margin-top:30px; color:var(--accent);">Photos de la Galerie</h3>
+      <div id="manage-photo-list" style="margin-top:10px;">Chargement...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Panneau d'administration Git direct</div>
+    <div><a href="./">Accueil</a> · <a href="blog.html">Blog</a> · <a href="photos.html">Photos</a></div>
+  </div>
+</footer>
+
+<script>
+  const GITHUB_REPO = "Bwillou1/WilliamGuindon";
+  const GITHUB_API = "https://api.github.com";
+
+  // Initialisation de la date d'aujourd'hui
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("blog-date").value = today;
+  document.getElementById("photo-date").value = today;
+
+  // Gestion du Token
+  function getToken() {
+    return localStorage.getItem("wg_github_pat") || "";
+  }
+
+  function setToken(token) {
+    localStorage.setItem("wg_github_pat", token.trim());
+    updateAuthUI();
+  }
+
+  function clearToken() {
+    localStorage.removeItem("wg_github_pat");
+    updateAuthUI();
+  }
+
+  function updateAuthUI() {
+    const token = getToken();
+    const tokenCard = document.getElementById("token-card");
+    const workspace = document.getElementById("admin-workspace");
+    const authBar = document.getElementById("auth-status-bar");
+
+    if (token) {
+      tokenCard.style.display = "none";
+      workspace.style.display = "block";
+      authBar.innerHTML = `
+        <span style="font-size:13px; color:var(--accent); font-weight:600;">🟢 Connecté à GitHub</span>
+        <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px;" onclick="clearToken()">Déconnexion</button>
+      `;
+      loadManageList();
+    } else {
+      tokenCard.style.display = "block";
+      workspace.style.display = "none";
+      authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Non connecté</span>";
+    }
+  }
+
+  document.getElementById("btn-save-token").onclick = () => {
+    const val = document.getElementById("github-pat-input").value;
+    if (val.trim()) {
+      setToken(val);
+      showStatus("Clé enregistrée avec succès !", "success");
+    } else {
+      showStatus("Veuillez coller un jeton valide.", "error");
+    }
+  };
+
+  function showStatus(msg, type = "success") {
+    const el = document.getElementById("status-message");
+    el.className = "status-toast status-" + type;
+    el.textContent = msg;
+    el.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => { el.style.display = "none"; }, 7000);
+  }
+
+  // Gestion des Onglets
+  document.querySelectorAll(".admin-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
+    });
+  });
+
+  // Helper Conversion Image en Base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Prévisualisation des fichiers
+  document.getElementById("blog-file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const prev = document.getElementById("blog-file-preview");
+      prev.src = URL.createObjectURL(file);
+      prev.style.display = "inline-block";
+    }
+  });
+
+  document.getElementById("photo-file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const prev = document.getElementById("photo-file-preview");
+      prev.src = URL.createObjectURL(file);
+      prev.style.display = "inline-block";
+    }
+  });
+
+  // Helper Appel GitHub API
+  async function githubRequest(path, method = "GET", body = null) {
+    const token = getToken();
+    const headers = {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github.v3+json",
+      "Content-Type": "application/json"
+    };
+    const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(err.message || "Erreur GitHub " + res.status);
+    }
+    return res.json();
+  }
+
+  // 1. Publication Blog
+  document.getElementById("form-blog").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("btn-publish-blog");
+    btn.disabled = true;
+    btn.textContent = "⏳ Publication en cours sur GitHub...";
+
+    try {
+      const title = document.getElementById("blog-title").value.trim();
+      const category = document.getElementById("blog-category").value;
+      const date = document.getElementById("blog-date").value || today;
+      const summary = document.getElementById("blog-summary").value.trim();
+      const content = document.getElementById("blog-content").value.trim();
+      const rawTags = document.getElementById("blog-tags").value;
+      const tags = rawTags.split(",").map(t => t.trim()).filter(Boolean);
+      const file = document.getElementById("blog-file").files[0];
+
+      let coverImage = "tourbiere.jpg";
+
+      // Upload de l'image si présente
+      if (file) {
+        const cleanName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+        const b64 = await fileToBase64(file);
+        await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
+          message: `upload(image): ${cleanName}`,
+          content: b64
+        });
+        coverImage = "assets/uploads/" + cleanName;
+      }
+
+      // Récupération de data/blog.json
+      const fileData = await githubRequest("contents/data/blog.json");
+      const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+      const newPost = {
+        id: "post-" + Date.now(),
+        title,
+        slug,
+        date,
+        author: "William Guindon",
+        category,
+        summary,
+        content,
+        coverImage,
+        tags
+      };
+
+      currentJson.unshift(newPost);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/data/blog.json", "PUT", {
+        message: `feat(blog): ajouter article "${title}"`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("🎉 Article publié avec succès ! Il sera en ligne dans 30 secondes.", "success");
+      document.getElementById("form-blog").reset();
+      document.getElementById("blog-file-preview").style.display = "none";
+      loadManageList();
+    } catch (err) {
+      console.error(err);
+      showStatus("Erreur : " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🚀 Publier l'article sur le Blog";
+    }
+  });
+
+  // 2. Publication Photo
+  document.getElementById("form-photo").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("btn-publish-photo");
+    btn.disabled = true;
+    btn.textContent = "⏳ Téléversement de la photo...";
+
+    try {
+      const title = document.getElementById("photo-title").value.trim();
+      const category = document.getElementById("photo-category").value;
+      const date = document.getElementById("photo-date").value || today;
+      const location = document.getElementById("photo-location").value.trim();
+      const description = document.getElementById("photo-desc").value.trim();
+      const file = document.getElementById("photo-file").files[0];
+
+      if (!file) throw new Error("Veuillez sélectionner un fichier photo.");
+
+      const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const b64 = await fileToBase64(file);
+      await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
+        message: `upload(photo): ${cleanName}`,
+        content: b64
+      });
+
+      const photoUrl = "assets/uploads/" + cleanName;
+
+      // Récupération de data/photos.json
+      const fileData = await githubRequest("contents/data/photos.json");
+      const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      const newPhoto = {
+        id: "photo-" + Date.now(),
+        title,
+        date,
+        location,
+        category,
+        description,
+        imageUrl: photoUrl
+      };
+
+      currentJson.unshift(newPhoto);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/data/photos.json", "PUT", {
+        message: `feat(photos): ajouter photo "${title}"`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("✨ Photo ajoutée avec succès à la Galerie !", "success");
+      document.getElementById("form-photo").reset();
+      document.getElementById("photo-file-preview").style.display = "none";
+      loadManageList();
+    } catch (err) {
+      console.error(err);
+      showStatus("Erreur : " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Ajouter la photo à la Galerie";
+    }
+  });
+
+  // 3. Gestion & Suppression
+  async function loadManageList() {
+    const blogList = document.getElementById("manage-blog-list");
+    const photoList = document.getElementById("manage-photo-list");
+
+    try {
+      const blogRes = await fetch("data/blog.json?v=" + Date.now());
+      const blogData = await blogRes.json();
+      blogList.innerHTML = blogData.map(p => `
+        <div class="item-list-row">
+          <div>
+            <strong>${p.title}</strong>
+            <div style="font-size:12px; color:var(--text-muted);">${p.date} · ${p.category}</div>
+          </div>
+          <button class="btn-danger" onclick="deleteItem('blog', '${p.id}')">Supprimer</button>
+        </div>
+      `).join("") || "<p style='color:var(--text-muted);'>Aucun article.</p>";
+
+      const photoRes = await fetch("data/photos.json?v=" + Date.now());
+      const photoData = await photoRes.json();
+      photoList.innerHTML = photoData.map(ph => `
+        <div class="item-list-row">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${ph.imageUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+            <div>
+              <strong>${ph.title}</strong>
+              <div style="font-size:12px; color:var(--text-muted);">${ph.date} · ${ph.location || ""}</div>
+            </div>
+          </div>
+          <button class="btn-danger" onclick="deleteItem('photo', '${ph.id}')">Supprimer</button>
+        </div>
+      `).join("") || "<p style='color:var(--text-muted);'>Aucune photo.</p>";
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  window.deleteItem = async function(type, id) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) return;
+
+    try {
+      const filename = type === "blog" ? "data/blog.json" : "data/photos.json";
+      const fileData = await githubRequest("contents/" + filename);
+      let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      currentJson = currentJson.filter(item => item.id !== id);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/" + filename, "PUT", {
+        message: `chore(${type}): supprimer élément ${id}`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("Élément supprimé avec succès.", "success");
+      loadManageList();
+    } catch (e) {
+      showStatus("Erreur de suppression: " + e.message, "error");
+    }
+  };
+
+  updateAuthUI();
+</script>
+</body>
+</html>

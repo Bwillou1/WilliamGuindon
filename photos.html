@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galerie Photos & Documentation Visuelle — William Guindon</title>
+<meta name="description" content="Galerie photographique officielle de la Grande Tourbière de Blainville, des visites de terrain et des événements liés au dossier SEM-26-003.">
+<meta name="author" content="William Guindon">
+<link rel="canonical" href="https://williamguindon.me/photos.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064e3b">
+
+<link rel="stylesheet" href="style.css?v=20260905-clean">
+<script src="theme.js?v=20260905-clean" defer></script>
+
+<style>
+  .photos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+  .photos-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+  .photos-hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+  .photos-hero p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 680px;
+    margin: 0 auto 24px;
+  }
+  .photos-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  .category-pill {
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .category-pill:hover, .category-pill.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .photo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .photo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  .photo-img-wrap {
+    height: 240px;
+    overflow: hidden;
+    position: relative;
+    background: #000000;
+  }
+  .photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+  .photo-card:hover .photo-img {
+    transform: scale(1.05);
+  }
+  .photo-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.75);
+    color: #4ade80;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+  }
+  .photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    padding: 16px 14px 10px;
+    color: #ffffff;
+  }
+  .photo-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .photo-meta {
+    font-size: 11.5px;
+    color: #d1fae5;
+  }
+
+  /* Lightbox Modal */
+  .lightbox-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .lightbox-modal.open {
+    display: flex;
+  }
+  .lightbox-content {
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  }
+  .lightbox-caption {
+    margin-top: 14px;
+    color: #ffffff;
+  }
+  .lightbox-caption h3 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+  .lightbox-caption p {
+    font-size: 14px;
+    color: #9ca3af;
+    max-width: 600px;
+    margin: 0 auto 10px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 32px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <nav aria-label="Navigation principale">
+      <a href="./">Accueil</a>
+      <a href="blog.html">Blog</a>
+      <a href="photos.html" class="active">Photos</a>
+      <a href="stablex.html">Dossier Stablex</a>
+      <a href="viewer.html">Documents CCE</a>
+      <a href="live.html">Horloge CCE</a>
+      <a href="./#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content" class="photos-container">
+  <section class="photos-hero">
+    <span class="kicker">Documentation Visuelle & Archives</span>
+    <h1>Galerie Photographique</h1>
+    <p>Clichés authentiques de la Grande Tourbière de Blainville, du terrain et des étapes du dossier citoyen SEM-26-003.</p>
+  </section>
+
+  <div class="photos-toolbar">
+    <button class="category-pill active" data-cat="all">Toutes</button>
+    <button class="category-pill" data-cat="Tourbière">Tourbière</button>
+    <button class="category-pill" data-cat="Biodiversité">Biodiversité</button>
+    <button class="category-pill" data-cat="Terrain">Terrain</button>
+    <button class="category-pill" data-cat="Événements">Événements</button>
+  </div>
+
+  <div class="photos-grid" id="photos-grid">
+    <!-- Chargement dynamique depuis data/photos.json -->
+  </div>
+</main>
+
+<!-- Lightbox Modal -->
+<div class="lightbox-modal" id="lightbox-modal" role="dialog" aria-modal="true">
+  <div class="lightbox-content">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Fermer">&times;</button>
+    <img src="" alt="" id="lightbox-img" class="lightbox-img">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · Dossier SEM-26-003</div>
+    <div><a href="./">Accueil</a> · <a href="blog.html">Blog</a> · <a href="photos.html">Photos</a> · <a href="viewer.html">Documents CCE</a> · <a href="admin.html" style="opacity:0.6;">Administration</a></div>
+  </div>
+</footer>
+
+<script>
+  let allPhotos = [];
+
+  async function loadPhotos() {
+    const grid = document.getElementById("photos-grid");
+    try {
+      const res = await fetch("data/photos.json?v=" + Date.now());
+      if (!res.ok) throw new Error("Erreur chargement photos");
+      allPhotos = await res.json();
+      renderPhotos(allPhotos);
+    } catch (e) {
+      console.error(e);
+      grid.innerHTML = "<p style='color:var(--text-muted);'>Impossible de charger les photos pour le moment.</p>";
+    }
+  }
+
+  function renderPhotos(photos) {
+    const grid = document.getElementById("photos-grid");
+    grid.innerHTML = "";
+
+    if (!photos || photos.length === 0) {
+      grid.innerHTML = "<p style='text-align:center; color:var(--text-muted); grid-column:1/-1;'>Aucune photo dans cette catégorie.</p>";
+      return;
+    }
+
+    photos.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.onclick = () => openLightbox(item);
+
+      card.innerHTML = `
+        <div class="photo-img-wrap">
+          <img src="${item.imageUrl}" alt="${item.title}" class="photo-img" loading="lazy">
+          <span class="photo-badge">${item.category || "Terrain"}</span>
+          <div class="photo-overlay">
+            <div class="photo-title">${item.title}</div>
+            <div class="photo-meta">${item.location ? item.location + " · " : ""}${item.date || ""}</div>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openLightbox(item) {
+    const modal = document.getElementById("lightbox-modal");
+    const img = document.getElementById("lightbox-img");
+    const caption = document.getElementById("lightbox-caption");
+
+    img.src = item.imageUrl;
+    img.alt = item.title;
+    caption.innerHTML = `
+      <h3>${item.title}</h3>
+      <p>${item.description || ""}</p>
+      <div style="font-size:12px; color:#a7f3d0;">${item.location ? "📍 " + item.location + " · " : ""}${item.date || ""}</div>
+    `;
+    modal.classList.add("open");
+  }
+
+  document.getElementById("lightbox-close").onclick = () => {
+    document.getElementById("lightbox-modal").classList.remove("open");
+  };
+
+  document.getElementById("lightbox-modal").onclick = (e) => {
+    if (e.target.id === "lightbox-modal") {
+      document.getElementById("lightbox-modal").classList.remove("open");
+    }
+  };
+
+  document.querySelectorAll(".category-pill").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".category-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const cat = btn.getAttribute("data-cat");
+      if (cat === "all") {
+        renderPhotos(allPhotos);
+      } else {
+        const filtered = allPhotos.filter(p => (p.category || "").toLowerCase() === cat.toLowerCase());
+        renderPhotos(filtered);
+      }
+    });
+  });
+
+  loadPhotos();
+</script>
+</body>
+</html>
