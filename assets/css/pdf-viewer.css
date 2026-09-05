@@ -1,8 +1,4 @@
-/* ==========================================================================
-   assets/css/pdf-viewer.css — Lecteur PDF Haute Fidélité (williamguindon.me)
-   Design System : Vert Émeraude / Dark Mode / Toolbar / KOReader UX
-   Ultra-Responsive : Mobile, Tablette, PC, 4K & Redimensionnement Dynamique
-   ========================================================================== */
+
 
 :root {
   --viewer-header-h: 58px;
@@ -41,15 +37,13 @@ html, body {
   position: relative;
 }
 
-/* ==========================================================================
-   En-tête / Barre d'outils Principale (Toolbar & Responsive)
-   ========================================================================== */
+
 .viewer-header {
   height: 48px;
   min-height: 48px;
   background: rgba(247, 249, 247, 0.95);
-  /* backdrop-filter removed */
-  -webkit-/* backdrop-filter removed */
+  
+  -webkit-
   border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
@@ -100,7 +94,7 @@ html, body {
   justify-content: flex-end;
 }
 
-/* Marque & Bouton retour */
+
 .viewer-back-btn {
   display: flex;
   align-items: center;
@@ -170,7 +164,7 @@ html, body {
   border-color: var(--accent);
 }
 
-/* Boutons d'outils standards */
+
 .tool-btn {
   display: inline-flex;
   align-items: center;
@@ -229,7 +223,7 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Pagination */
+
 .page-nav-box {
   display: flex;
   align-items: center;
@@ -270,7 +264,7 @@ html, body {
   white-space: nowrap;
 }
 
-/* Zoom Dropdown */
+
 .zoom-select {
   height: 30px;
   background: var(--bg-card);
@@ -293,7 +287,7 @@ html, body {
   border-color: var(--accent);
 }
 
-/* Menu déroulant Mode de lecture */
+
 .reading-mode-select {
   height: 34px;
   background: var(--bg-card);
@@ -308,9 +302,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* ==========================================================================
-   Zone Principale (Sidebar + Viewport)
-   ========================================================================== */
+
 .viewer-main {
   display: flex;
   flex: 1;
@@ -320,7 +312,7 @@ html, body {
   position: relative;
 }
 
-/* Backdrop sombre pour le volet mobile */
+
 .viewer-sidebar-backdrop {
   display: none;
   position: fixed;
@@ -329,15 +321,15 @@ html, body {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.52);
-  /* backdrop-filter removed */
-  -webkit-/* backdrop-filter removed */
+  
+  -webkit-
   z-index: 140;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Sidebar Drawer */
+
 .viewer-sidebar {
   width: var(--viewer-sidebar-w);
   min-width: var(--viewer-sidebar-w);
@@ -441,7 +433,7 @@ html, body {
   display: block;
 }
 
-/* Vignettes (Thumbnails) */
+
 .thumbnails-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -499,7 +491,7 @@ html, body {
   color: var(--text-muted);
 }
 
-/* Sommaire / Signets */
+
 .outline-list {
   list-style: none;
   padding: 0;
@@ -538,7 +530,7 @@ html, body {
   color: var(--text-muted);
 }
 
-/* Recherche interne */
+
 .search-box {
   display: flex;
   flex-direction: column;
@@ -617,7 +609,7 @@ html, body {
   padding: 0 2px;
 }
 
-/* Infos document */
+
 .doc-meta-table {
   width: 100%;
   border-collapse: collapse;
@@ -643,9 +635,7 @@ html, body {
   word-break: break-word;
 }
 
-/* ==========================================================================
-   Zone de Rendu / Viewport PDF
-   ========================================================================== */
+
 .viewer-viewport {
   flex: 1;
   height: 100%;
@@ -672,7 +662,7 @@ html, body {
   min-height: 100%;
 }
 
-/* Dispositions */
+
 .pages-container.layout-single .page-wrapper {
   display: none;
 }
@@ -707,7 +697,7 @@ html, body {
   vertical-align: middle;
 }
 
-/* Text Layer pour la sélection de texte & recherche */
+
 .page-wrapper .textLayer {
   position: absolute;
   text-align: initial;
@@ -752,7 +742,7 @@ html, body {
   background: transparent;
 }
 
-/* Modes de Confort de Lecture KOReader */
+
 .pdf-app.mode-dark .page-wrapper {
   filter: invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(1.15);
   background: #111;
@@ -767,7 +757,7 @@ html, body {
   filter: contrast(1.3) brightness(1.05);
 }
 
-/* Indicateur de chargement / Spinner */
+
 .viewer-loading {
   position: absolute;
   top: 50%;
@@ -798,7 +788,7 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
-/* Toast */
+
 .viewer-toast {
   position: fixed;
   bottom: 24px;
@@ -825,7 +815,7 @@ html, body {
   opacity: 1;
 }
 
-/* Floating Mobile Controls Bar */
+
 .mobile-quick-bar {
   display: none;
   position: fixed;
@@ -833,8 +823,8 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   background: rgba(247, 249, 247, 0.94);
-  /* backdrop-filter removed */
-  -webkit-/* backdrop-filter removed */
+  
+  -webkit-
   border: 1px solid var(--line);
   border-radius: 9999px;
   padding: 4px 8px;
@@ -874,7 +864,7 @@ html, body {
   white-space: nowrap;
 }
 
-/* Modale de Raccourcis Clavier */
+
 .shortcuts-dialog {
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -889,7 +879,7 @@ html, body {
 
 .shortcuts-dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
-  /* backdrop-filter removed */
+  
 }
 
 .shortcuts-header {
@@ -928,7 +918,7 @@ kbd {
   box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-/* Modale de Licence CC BY-NC-ND 4.0 & Téléchargement */
+
 .license-dialog {
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -944,8 +934,8 @@ kbd {
 
 .license-dialog::backdrop {
   background: rgba(0, 0, 0, 0.6);
-  /* backdrop-filter removed */
-  -webkit-/* backdrop-filter removed */
+  
+  -webkit-
 }
 
 .license-dialog-header {
@@ -1157,11 +1147,9 @@ kbd {
   font-size: 13px;
 }
 
-/* ==========================================================================
-   Responsive Adaptations Multi-Écrans & Redimensionnement Fluide
-   ========================================================================== */
 
-/* 1. Écrans larges & Moyens (<= 1200px) */
+
+
 @media (max-width: 1200px) {
   .viewer-back-btn span {
     display: none;
@@ -1193,7 +1181,7 @@ kbd {
   }
 }
 
-/* 2. Écrans Moyens / Redimensionnement Mac Chrome & Split Screen (<= 1050px) */
+
 @media (max-width: 1050px) {
   :root {
     --viewer-sidebar-w: 260px;
@@ -1248,7 +1236,7 @@ kbd {
   }
 }
 
-/* 3. Tablettes & Petites Fenêtres (<= 880px) */
+
 @media (max-width: 880px) {
   .viewer-header {
     gap: 2px;
@@ -1297,7 +1285,7 @@ kbd {
     pointer-events: auto;
   }
 
-  /* Volet latéral flottant (Drawer) */
+  
   .viewer-sidebar {
     position: fixed;
     top: 0;
@@ -1321,7 +1309,7 @@ kbd {
   }
 }
 
-/* 4. Téléphones & Écrans Compacts (<= 640px) */
+
 @media (max-width: 640px) {
   .viewer-header {
     height: 42px;
@@ -1361,7 +1349,7 @@ kbd {
   }
 }
 
-/* 5. Très Petits Écrans / Split-Screen étroit (<= 420px) */
+
 @media (max-width: 420px) {
   .viewer-header {
     padding: 0 2px;
@@ -1391,15 +1379,13 @@ kbd {
   }
 }
 
-/* ==========================================================================
-   Impression Haute Fidélité & Sans Parasites (@media print)
-   ========================================================================== */
+
 .print-container {
   display: none;
 }
 
 @media print {
-  /* 1. Réinitialisation complète de la page et masquage des éléments d'interface */
+  
   *, *:before, *:after {
     background: transparent !important;
     color: #000000 !important;
@@ -1427,7 +1413,7 @@ kbd {
     position: static !important;
   }
 
-  /* Masquer tous les composants UI */
+  
   .viewer-header,
   .viewer-sidebar,
   .viewer-sidebar-backdrop,
@@ -1463,7 +1449,7 @@ kbd {
     margin: 8mm;
   }
 
-  /* Conteneur d'impression haute fidélité */
+  
   .print-container {
     display: block !important;
     width: 100% !important;
@@ -1495,7 +1481,7 @@ kbd {
     margin: 0 auto !important;
   }
 
-  /* Si le conteneur standard de pages est imprimé */
+  
   .pages-container {
     display: block !important;
     width: 100% !important;
@@ -1511,7 +1497,7 @@ kbd {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
-    filter: none !important; /* Aucun filtre de nuit à l'impression */
+    filter: none !important; 
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;

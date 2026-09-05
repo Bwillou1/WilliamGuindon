@@ -1,6 +1,4 @@
-/* theme.js */
 (function () {
-  // 1. Gestion du thème Sombre/Clair
   const themeStorageKey = 'william-guindon-theme';
   
   function getInitialTheme() {
@@ -21,7 +19,6 @@
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 
-    // 2. Injecter le bouton de thème dans la navigation
     if (nav) {
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'theme-toggle-btn';
@@ -42,7 +39,6 @@
       nav.appendChild(toggleBtn);
     }
 
-    // 3. Injecter le bouton de menu mobile (Hamburger) & Gestionnaire de fermeture robuste
     if (headerWrap && nav) {
       const hamburgerSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>`;
       const closeSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
@@ -57,7 +53,6 @@
         headerWrap.insertBefore(menuToggle, nav);
       }
       
-      // Injecter un backdrop pour fermer en cliquant n'importe où en arrière-plan
       let backdrop = document.querySelector('.mobile-nav-backdrop');
       if (!backdrop) {
         backdrop = document.createElement('div');
@@ -65,7 +60,6 @@
         document.body.appendChild(backdrop);
       }
 
-      // Injecter un en-tête mobile avec bouton fermer explicite (✕)
       if (!nav.querySelector('.mobile-nav-header')) {
         const mobileNavHeader = document.createElement('div');
         mobileNavHeader.className = 'mobile-nav-header';
@@ -97,7 +91,6 @@
         document.body.classList.add('mobile-nav-open');
       }
 
-      // Gestionnaire du bouton burger / croix
       menuToggle.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -108,7 +101,6 @@
         }
       });
 
-      // Gestionnaire du bouton Fermer explicite à l'intérieur du menu
       const closeBtnInside = nav.querySelector('.mobile-menu-close-btn');
       if (closeBtnInside) {
         closeBtnInside.addEventListener('click', (e) => {
@@ -118,13 +110,11 @@
         });
       }
 
-      // Clic sur le backdrop
       backdrop.addEventListener('click', (e) => {
         e.preventDefault();
         closeMobileNav();
       });
 
-      // Fermer le menu mobile lors d'un clic sur un lien du menu
       nav.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link) {
@@ -138,28 +128,24 @@
         }
       });
 
-      // Fermer le menu si on clique en dehors de nav et de menuToggle
       document.addEventListener('click', (e) => {
         if (nav.classList.contains('active') && !nav.contains(e.target) && !menuToggle.contains(e.target)) {
           closeMobileNav();
         }
       });
 
-      // Fermer le menu sur touche Échap
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.key === 'Esc') {
           closeMobileNav();
         }
       });
 
-      // Fermer le menu mobile au défilement pour éviter qu'il n'embarque sur le contenu
       window.addEventListener('scroll', () => {
         if (window.innerWidth <= 992 && nav.classList.contains('active')) {
           closeMobileNav();
         }
       }, { passive: true });
 
-      // Réinitialiser si la fenêtre est redimensionnée en mode desktop
       window.addEventListener('resize', () => {
         if (window.innerWidth > 992) {
           closeMobileNav();
@@ -167,7 +153,6 @@
       }, { passive: true });
     }
 
-    // 4. Animation des compteurs dynamiques (Live Tracker)
     const counters = document.querySelectorAll('.counter-num');
     
     function animateCounter(el) {
@@ -205,7 +190,6 @@
       requestAnimationFrame(step);
     }
 
-    // Compte à rebours de l'échéance de réponse du Canada à la CCE
     let cceTargetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
 
     function updateCountdown() {
@@ -228,7 +212,6 @@
       daysElement.textContent = isEn ? `${days}d ${hours}h ${mins}m` : `${days}j ${hours}h ${mins}m`;
     }
 
-    // Chargement dynamique du statut officiel CCE depuis status.json
     async function loadDynamicStatus() {
       try {
         const res = await fetch('status.json');
@@ -240,7 +223,6 @@
           updateCountdown();
         }
 
-        // Mise à jour des éléments UI si présents
         const badgeState = document.getElementById('cce-live-state');
         if (badgeState) {
           const isEn = document.documentElement.lang.startsWith('en');
@@ -258,19 +240,16 @@
 
     loadDynamicStatus();
 
-    // Initialiser le compte à rebours s'il existe
     if (document.getElementById('countdown-days')) {
       updateCountdown();
       setInterval(updateCountdown, 60000); // Mise à jour chaque minute
     }
 
-    // Observer pour déclencher l'animation des compteurs uniquement au défilement
     if (counters.length > 0) {
       const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const numEl = entry.target;
-            // Éviter de relancer l'animation
             if (!numEl.classList.contains('animated')) {
               numEl.classList.add('animated');
               animateCounter(numEl);
@@ -283,7 +262,6 @@
       counters.forEach(c => counterObserver.observe(c));
     }
 
-    // 5. Gestion des modaux de documents (<dialog>) avec chargement différé (Clean Design)
     const openDocBtns = document.querySelectorAll('.btn-open-doc');
     
     openDocBtns.forEach(btn => {
@@ -319,7 +297,6 @@
       });
     });
 
-    // Fermer le modal en cliquant sur le backdrop
     const dialogs = document.querySelectorAll('dialog.doc-dialog');
     dialogs.forEach(dialog => {
       dialog.addEventListener('click', (e) => {
@@ -331,13 +308,11 @@
           document.body.style.overflow = '';
         }
       });
-      // Gérer la touche Escape
       dialog.addEventListener('cancel', () => {
         document.body.style.overflow = '';
       });
     });
 
-    // 6. Animation d'apparition au défilement (Scroll Reveal)
     const observerOptions = {
       root: null,
       rootMargin: '0px',
@@ -362,7 +337,6 @@
       observer.observe(el);
     });
 
-    // 7. Barre de progression de défilement
     window.addEventListener('scroll', () => {
       const progressBar = document.querySelector('.scroll-progress-bar');
       if (!progressBar) return;
@@ -374,7 +348,6 @@
       progressBar.style.width = pct + '%';
     });
 
-    // 8. Éléments de Timeline s'activant au défilement (Highlights)
     const timelineOptions = {
       root: null,
       rootMargin: '-30% 0px -30% 0px', // se déclenche dans la zone centrale de lecture
@@ -391,7 +364,6 @@
       });
     }, timelineOptions);
     
-    // 9. Lecteur Audio d'accessibilité WCAG 2.1 AA (Web Speech API)
     const audioBtn = document.getElementById('btn-audio-read');
     if (audioBtn) {
       let isSpeaking = false;
@@ -442,7 +414,6 @@
       });
     }
 
-    // 10. Compte à rebours de précision en temps réel (Jours, Heures, Minutes, Secondes)
     function updatePrecisionCountdown() {
       const targetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
       const now = new Date().getTime();
@@ -469,7 +440,6 @@
     updatePrecisionCountdown();
     setInterval(updatePrecisionCountdown, 1000);
 
-    // 11. Service Worker & PWA Support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -480,7 +450,6 @@
       });
     }
 
-    // 12. Dropdown Navigation Handler (Accessible click, hover, keyboard)
     const dropdowns = document.querySelectorAll('.nav-dropdown');
     const notifDropdowns = document.querySelectorAll('.nav-notif-dropdown');
 
@@ -491,7 +460,6 @@
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         
-        // Fermer les panneaux de notification
         notifDropdowns.forEach(nd => {
           nd.classList.remove('active');
           const nb = nd.querySelector('.nav-notif-btn');
@@ -505,7 +473,6 @@
         }
       });
 
-      // Fermer le dropdown lors d'un clic sur un élément interne
       dropdown.querySelectorAll('.nav-dropdown-item').forEach(item => {
         item.addEventListener('click', () => {
           dropdown.classList.remove('active');
@@ -523,7 +490,6 @@
       });
     });
 
-    // 12b. Gestion de la Cloche de Notification & Panneau d'Alerte Médias
     notifDropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-notif-btn');
       const closeBtn = dropdown.querySelector('.nav-notif-close');
@@ -531,7 +497,6 @@
 
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        // Fermer les autres menus
         dropdowns.forEach(d => {
           d.classList.remove('active');
           const b = d.querySelector('.nav-dropdown-btn');
@@ -590,7 +555,6 @@
       });
     });
 
-    // 13. Gestion des Notifications de Nouvelles Étapes (RSS & CCE)
     const notifBtn = document.getElementById('btn-enable-notifications');
     const notifStorageKey = 'wg_cce_notif_enabled';
 
@@ -650,7 +614,6 @@
       });
     }
 
-    // 14. Vérification en arrière-plan du flux RSS pour envoyer une notification lors de nouvelles étapes
     function checkBackgroundFeedUpdates(reg) {
       if (localStorage.getItem(notifStorageKey) !== 'true' || Notification.permission !== 'granted') return;
 
@@ -680,8 +643,6 @@
         .catch(() => {});
     }
 
-    // 15. Désobfuscation sécurisée de l'adresse courriel (Anti-Scraping / Anti-Bots / Anti-Spam)
-    // Aucun texte brut dans le code source. L'adresse est calculée au runtime par déchiffrement binaire XOR au clic.
     const secureMailBtns = document.querySelectorAll('.js-secure-mail');
     secureMailBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -699,7 +660,6 @@
       });
     });
 
-    // 16. Copie du communiqué de presse dans le presse-papiers
     const copyPrBtns = document.querySelectorAll('.js-copy-pr');
     copyPrBtns.forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -716,7 +676,6 @@
       });
     });
 
-    // 17. Carrousel Revue de Presse & Embeds Médias (Moteur Slider basé sur Transform)
     const carouselWrapper = document.querySelector('.press-carousel-wrapper');
     const carouselContainer = document.querySelector('.press-carousel-container');
     const prevBtn = document.querySelector('.js-carousel-prev');
@@ -728,7 +687,6 @@
       let currentIndex = 0;
       let autoPlayTimer = null;
 
-      // Forcer immédiatement la structure flex et l'overflow caché pour éviter tout empilement
       if (carouselWrapper) {
         carouselWrapper.style.overflow = 'hidden';
         carouselWrapper.style.position = 'relative';
@@ -835,7 +793,6 @@
         });
       });
 
-      // Navigation Tactile (Touch / Swipe)
       let touchStartX = 0;
       let touchCurrentX = 0;
       let isTouching = false;
@@ -875,7 +832,6 @@
         setTimeout(startAutoPlay, 3500);
       }, { passive: true });
 
-      // Défilement automatique
       const startAutoPlay = () => {
         stopAutoPlay();
         autoPlayTimer = setInterval(() => {
@@ -906,17 +862,14 @@
         updateSlider(currentIndex, false);
       }, { passive: true });
 
-      // Initialisation immédiate
       updateSlider(0, false);
       startAutoPlay();
 
-      // Audio Player Quotes Toggle
       const audioBtns = document.querySelectorAll('.js-press-audio-btn');
       audioBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           const isPlaying = btn.getAttribute('data-playing') === 'true';
-          // Stop all other buttons
           audioBtns.forEach(b => {
             b.setAttribute('data-playing', 'false');
             b.innerHTML = '▶';
@@ -924,7 +877,6 @@
           if (!isPlaying) {
             btn.setAttribute('data-playing', 'true');
             btn.innerHTML = '❚❚';
-            // Resume/Play link trigger if requested
             const targetUrl = btn.getAttribute('data-target-url');
             if (targetUrl) {
               setTimeout(() => {
@@ -938,14 +890,11 @@
       });
     }
 
-    // 13. Bouton Flottant & Hub IA (Résumé & Questions - Réservé strictement à la page d'accueil)
     initFloatingAiHub();
 
-    // 14. Détection de bande passante ultra-faible (3G faible, 2G, LoRa, Save-Data)
     handleLowBandwidth();
   }
 
-  // 14. Détection et redirection automatique des robots d'IA vers ai.html
   function routeAiCrawlers() {
     const aiBots = /GPTBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Bytespider|cohere-ai|Diffbot|CCBot|Applebot-Extended|Meta-ExternalAgent/i;
     const isAiAgent = aiBots.test(navigator.userAgent) || window.location.search.includes('format=ai') || window.location.search.includes('ref=ai');
@@ -956,7 +905,6 @@
   }
   routeAiCrawlers();
 
-  // 15. Détection de bande passante extrêmement basse (3G dégradée, 2G, LoRa / RAW)
   function handleLowBandwidth() {
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (!conn) return;
@@ -970,22 +918,18 @@
     const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname === '';
     const forceFull = sessionStorage.getItem('wg_force_full_site') === 'true';
 
-    // Redirection automatique vers la version texte épurée pour l'accueil uniquement
     if (isSlow && isHome && !forceFull) {
       window.location.replace('txt.html');
     }
   }
 
-  // 16. Initialisation du widget flottant IA, Hub de Clavardage & Résumé (Gemini Nano & Moteur documentaire)
   function initFloatingAiHub() {
     const path = window.location.pathname;
     const isHome = path === '/' || path.endsWith('index.html') || path === '' || path.endsWith('/');
     
-    // Le bouton IA ne s'affiche STRICTEMENT que sur la page d'accueil
     if (!isHome) return;
     if (path.includes('ai.html') || path.includes('ai.txt') || path.includes('txt.html')) return;
 
-    // Éviter tout doublon si le bouton existe déjà dans le DOM
     if (document.querySelector('.floating-ai-btn')) return;
 
     const floatingBtn = document.createElement('button');
@@ -1115,14 +1059,12 @@
     document.body.appendChild(aiModal);
     document.body.appendChild(copyAlert);
 
-    // Initialisation du support Chrome Built-in AI (Prompt API & Summarizer)
     let chromeAiSession = null;
     let hasChromeAi = false;
 
     async function checkChromeBuiltinAi() {
       try {
         const badge = document.getElementById('ai-engine-badge');
-        // Vérifier Prompt API (LanguageModel / Assistant)
         if (window.ai && (window.ai.languageModel || window.ai.assistant)) {
           const lm = window.ai.languageModel || window.ai.assistant;
           const caps = await lm.capabilities();
@@ -1140,7 +1082,6 @@
     }
     checkChromeBuiltinAi();
 
-    // Gestion des Onglets
     const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
     const tabContents = aiModal.querySelectorAll('.ai-tab-content');
 
@@ -1160,7 +1101,6 @@
       });
     });
 
-    // Base de Connaissances Factuelle locale (Répondeur instantané intelligent)
     function generateLocalAnswer(query) {
       const q = query.toLowerCase();
       
@@ -1192,7 +1132,6 @@
       return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de millions de tonnes de déchets toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et le passage sous bâillon de la Loi 93. La CCE a officiellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
     }
 
-    // Gestion de l'envoi de messages dans le chat
     const chatForm = document.getElementById('ai-chat-form');
     const chatBox = document.getElementById('ai-chat-box');
     const userInput = document.getElementById('ai-user-input');
@@ -1201,7 +1140,6 @@
       if (!text || !text.trim()) return;
       const question = text.trim();
       
-      // Bulle utilisateur
       const userBubble = document.createElement('div');
       userBubble.className = 'ai-chat-bubble user';
       userBubble.textContent = question;
@@ -1209,14 +1147,12 @@
       userInput.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Bulle réponse
       const botBubble = document.createElement('div');
       botBubble.className = 'ai-chat-bubble bot';
       botBubble.innerHTML = '<em>🧠 Réflexion en cours...</em>';
       chatBox.appendChild(botBubble);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Exécution avec Chrome Built-in AI (Gemini Nano) si disponible, sinon Moteur local
       if (hasChromeAi && chromeAiSession) {
         try {
           const response = await chromeAiSession.prompt(question);
@@ -1239,7 +1175,6 @@
       });
     }
 
-    // Pilules de questions rapides
     aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
       pill.addEventListener('click', () => {
         const q = pill.getAttribute('data-q');
@@ -1247,13 +1182,11 @@
       });
     });
 
-    // Générateurs de Résumés
     const sumOutput = document.getElementById('ai-summary-output');
 
     async function runSummarizer(type) {
       sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA...</em>';
 
-      // Si l'API Summarizer de Chrome est supportée
       if (window.ai && window.ai.summarizer) {
         try {
           const caps = await window.ai.summarizer.capabilities();
@@ -1274,7 +1207,6 @@
         }
       }
 
-      // Résumé certifié haute fidélité
       setTimeout(() => {
         if (type === 'bullets') {
           sumOutput.innerHTML = `
@@ -1309,7 +1241,6 @@
     if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));
     if (btnLegal) btnLegal.addEventListener('click', () => runSummarizer('legal'));
 
-    // Ouvrir / Fermer le Modal IA
     floatingBtn.addEventListener('click', () => {
       aiModal.classList.add('active');
       if (userInput) userInput.focus();
@@ -1331,7 +1262,6 @@
       }
     });
 
-    // Copie de Prompt / Lien
     const copyBtn = aiModal.querySelector('.js-copy-ai-link');
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
@@ -1348,7 +1278,6 @@
     }
   }
 
-  // Initialisation sécurisée
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {

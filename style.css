@@ -1,12 +1,11 @@
-/* style.css — Base stylesheet */
+
 :root {
   --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* HSL Color System */
+  
   --primary-h: 146;
   --primary-s: 48%;
-  
-  /* Thème Clair par défaut */
+
   --bg: #f7f9f7;
   --bg-card: #ffffff;
   --text: #131715;
@@ -23,7 +22,6 @@
   --max-w: 800px;
 }
 
-/* Thème Sombre */
 [data-theme="dark"] {
   --bg: #0b0f0c;
   --bg-card: #121814;
@@ -40,7 +38,6 @@
   --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
 }
 
-/* Réinitialisation et Base */
 * {
   margin: 0;
   padding: 0;
@@ -62,7 +59,6 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Barre de défilement personnalisée */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -79,26 +75,24 @@ body {
   background: var(--text-faint);
 }
 
-/* Mise en page */
 .wrap {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 0 28px;
 }
 
-/* Site Header */
-header.site {
+header.site { background: var(--bg); 
   border-bottom: 1px solid var(--line);
   padding: 10px 0;
   position: sticky;
   top: 0;
-  background: var(--bg);
+  
   z-index: 10000;
   transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-[data-theme="dark"] header.site {
-  background: var(--bg);
-}
+ }
+[data-theme="dark"] header.site { background: var(--bg); 
+  
+ }
 
 header.site .wrap {
   display: flex;
@@ -145,7 +139,6 @@ nav a:hover {
   color: var(--accent);
 }
 
-/* Commutateur de thème */
 .theme-toggle-btn {
   background: none;
   border: 1px solid var(--line);
@@ -170,14 +163,12 @@ nav a:hover {
   fill: currentColor;
 }
 
-/* Sections */
 section {
   padding: 80px 0;
   border-bottom: 1px solid var(--line);
   transition: border-color 0.3s ease;
 }
 
-/* Typographie */
 h1 {
   font-family: var(--font-heading);
   font-size: clamp(36px, 6vw, 56px);
@@ -224,7 +215,6 @@ p strong {
   color: var(--text);
 }
 
-/* Boutons / Liens */
 a.accent-link {
   color: var(--accent-deep);
   font-weight: 600;
@@ -237,7 +227,6 @@ a.accent-link:hover {
   border-color: var(--accent-light);
 }
 
-/* Hero Section */
 .hero {
   padding: 100px 0 70px;
   border-bottom: 1px solid var(--line);
@@ -263,7 +252,6 @@ a.accent-link:hover {
   max-width: 680px;
 }
 
-/* Fact Grid */
 .factgrid {
   margin-top: 44px;
   display: grid;
@@ -276,7 +264,7 @@ a.accent-link:hover {
   border: 1px solid var(--line);
   border-radius: 6px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  
 }
 .factgrid div:hover {
   transform: none;
@@ -297,7 +285,6 @@ a.accent-link:hover {
   margin-top: 6px;
 }
 
-/* Citations */
 blockquote {
   border-left: 4px solid var(--accent);
   background: var(--accent-wash);
@@ -319,7 +306,6 @@ blockquote cite {
   font-weight: 500;
 }
 
-/* Listes de vision */
 ul.vision {
   list-style: none;
   margin-top: 28px;
@@ -333,7 +319,7 @@ ul.vision li {
   padding: 20px 24px;
   color: var(--text-muted);
   box-shadow: var(--shadow);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  
 }
 ul.vision li:hover {
   transform: none;
@@ -347,7 +333,6 @@ ul.vision li::before {
   margin-right: 8px;
 }
 
-/* Liens en capsules */
 .links {
   display: flex;
   flex-wrap: wrap;
@@ -374,8 +359,6 @@ ul.vision li::before {
   box-shadow: var(--shadow-hover);
 }
 
-/* FAQ Details */
-/* FAQ Accordion Hardware-Accelerated (Style Apple & Fable) */
 details.faq {
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -436,7 +419,6 @@ details.faq .faq-inner {
   line-height: 1.6;
 }
 
-/* Chronologie (stablex.html) */
 .tl {
   position: relative;
   margin-left: 12px;
@@ -501,7 +483,6 @@ details.faq .faq-inner {
   border-color: var(--accent-light);
 }
 
-/* Chiffres clés (stablex.html) */
 .keyfacts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -514,7 +495,7 @@ details.faq .faq-inner {
   border-radius: 6px;
   padding: 24px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  
 }
 .keyfacts div:hover {
   transform: none;
@@ -535,7 +516,6 @@ details.faq .faq-inner {
   line-height: 1.45;
 }
 
-/* Boîte de copie (presse.html) */
 .copybox {
   background-color: var(--bg-card);
   border: 1px solid var(--line);
@@ -560,7 +540,6 @@ details.faq .faq-inner {
   margin-bottom: 12px;
 }
 
-/* Liste des sources (presse.html) */
 ul.srcs {
   list-style: none;
   margin: 20px 0;
@@ -605,7 +584,6 @@ ul.srcs .meta {
   padding-left: 0;
 }
 
-/* Notes */
 .note {
   background-color: var(--accent-wash);
   border-radius: 6px;
@@ -616,7 +594,6 @@ ul.srcs .meta {
   border: 1px solid rgba(34, 197, 94, 0.15);
 }
 
-/* Tables */
 table.dist, table.facts {
   width: 100%;
   border-collapse: collapse;
@@ -661,7 +638,6 @@ table.facts a:hover {
   color: var(--accent);
 }
 
-/* Pied de page */
 footer {
   padding: 60px 0 80px;
   font-size: 14px;
@@ -684,7 +660,6 @@ footer a:hover {
   color: var(--accent);
 }
 
-/* Note de source en bas */
 .srcnote {
   font-size: 13.5px;
   color: var(--text-faint);
@@ -700,7 +675,6 @@ footer a:hover {
   color: var(--accent);
 }
 
-/* Animations de chargement et défilement (Scroll Reveal) */
 .reveal {
   opacity: 0;
   transform: none;
@@ -711,7 +685,6 @@ footer a:hover {
   transform: translateY(0);
 }
 
-/* Version mobile de la navigation */
 @media (max-width: 640px) {
   nav {
     gap: 12px;
@@ -742,7 +715,6 @@ footer a:hover {
   }
 }
 
-/* Styles spécifiques pour la page 404 */
 .card-404 {
   max-width: 560px;
   text-align: center;
@@ -834,11 +806,6 @@ footer a:hover {
   }
 }
 
-/* ==========================================
-   REFONTE ESTHÉTIQUE & INTERACTIVE (NIVEAU ENFER)
-   ========================================== */
-
-/* Hero Immersive */
 .hero-immersive {
   position: relative;
   min-height: 85vh;
@@ -884,7 +851,7 @@ footer a:hover {
   background-color: rgba(34, 197, 94, 0.25);
   color: #4ade80;
   border-color: #4ade80;
-  /* backdrop-filter removed */
+  
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 0;
@@ -903,7 +870,7 @@ footer a:hover {
   border-left: none;
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.2);
-  /* backdrop-filter removed */
+  
   padding: 24px 30px;
   margin: 16px 0 24px;
   border-radius: 6px;
@@ -936,7 +903,6 @@ footer a:hover {
   font-style: normal;
 }
 
-/* Scroll indicator mouse */
 .scroll-indicator {
   position: absolute;
   bottom: 24px;
@@ -986,7 +952,6 @@ footer a:hover {
   100% { opacity: 0; top: 16px; }
 }
 
-/* Dashboard / Live Tracker */
 .tracker-section {
   padding: 80px 0 60px;
   background: var(--bg-card);
@@ -1009,14 +974,10 @@ footer a:hover {
   padding: 30px 24px;
   text-align: center;
   box-shadow: var(--shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  
 }
 
-.tracker-card:hover {
-  transform: none;
-  box-shadow: var(--shadow-hover);
-  border-color: var(--accent);
-}
+
 
 .tracker-icon {
   width: 56px;
@@ -1054,7 +1015,6 @@ footer a:hover {
   line-height: 1.45;
 }
 
-/* Timeline Awards (Distinctions) */
 .timeline-awards {
   list-style: none;
   margin: 32px 0;
@@ -1131,7 +1091,6 @@ footer a:hover {
   margin: 0;
 }
 
-/* Cartes Documents */
 .docs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1148,13 +1107,10 @@ footer a:hover {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  
 }
 
-.doc-card:hover {
-  transform: none;
-  box-shadow: var(--shadow-hover);
-}
+
 
 .doc-icon {
   width: 48px;
@@ -1202,7 +1158,6 @@ footer a:hover {
   color: #ffffff;
 }
 
-/* Modaux <dialog> (Style Apple avec transition) */
 dialog.doc-dialog {
   border: none;
   border-radius: 6px;
@@ -1236,19 +1191,19 @@ dialog.doc-dialog[open] {
 
 dialog.doc-dialog::backdrop {
   background: rgba(11, 15, 12, 0);
-  /* backdrop-filter removed */
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), overlay 0.4s allow-discrete, display 0.4s allow-discrete;
+  
+  transition: background-color 0.3s ease, overlay 0.3s allow-discrete, display 0.3s allow-discrete;
 }
 
 dialog.doc-dialog[open]::backdrop {
   background: rgba(11, 15, 12, 0.6);
-  /* backdrop-filter removed */
+  
 }
 
 @starting-style {
   dialog.doc-dialog[open]::backdrop {
     background: rgba(11, 15, 12, 0);
-    /* backdrop-filter removed */
+    
   }
 }
 
@@ -1309,7 +1264,6 @@ dialog.doc-dialog[open]::backdrop {
   gap: 12px;
 }
 
-/* Menu Mobile Responsif (Style Apple avec transitions SVG) */
 .menu-toggle {
   display: none;
   background: none;
@@ -1357,8 +1311,8 @@ dialog.doc-dialog[open]::backdrop {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.45);
-  /* backdrop-filter removed */
-  -webkit-/* backdrop-filter removed */
+  
+  -webkit-
   z-index: 9990;
   opacity: 0;
   transition: opacity 0.25s ease;
@@ -1539,11 +1493,6 @@ dialog.doc-dialog[open]::backdrop {
   }
 }
 
-/* ==========================================
-   AMBIANCE VISUELLE & EFFETS SUR SCROLL (STYLE FABLE)
-   ========================================== */
-
-/* Blobs d'arrière-plan */
 .bg-blob-container {
   position: fixed;
   top: 0;
@@ -1604,7 +1553,6 @@ dialog.doc-dialog[open]::backdrop {
   100% { transform: translate(0, 0) scale(1) rotate(360deg); }
 }
 
-/* Barre de progression de défilement */
 .scroll-progress-bar {
   position: fixed;
   top: 0;
@@ -1617,7 +1565,6 @@ dialog.doc-dialog[open]::backdrop {
   border-radius: 4px;
 }
 
-/* Highlight Timeline Active */
 .timeline-awards li,
 ul.timeline li,
 .tl-item {
@@ -1640,7 +1587,6 @@ ul.timeline li.active-node strong,
   transition: color 0.3s ease;
 }
 
-/* Bannière d'alerte statut CCE */
 .cce-alert-banner {
   background: linear-gradient(135deg, rgba(46, 107, 79, 0.08) 0%, rgba(194, 91, 44, 0.08) 100%);
   border: 1.5px solid var(--accent);
@@ -1749,7 +1695,6 @@ ul.timeline li.active-node strong,
   transform: none;
 }
 
-/* WCAG 2.1 AA — Skip Link d'accessibilité clavier */
 .skip-link {
   position: absolute;
   top: -100px;
@@ -1770,14 +1715,12 @@ ul.timeline li.active-node strong,
   outline: 3px solid var(--earth);
 }
 
-/* Section Carte Interactive Felt */
 .felt-map-section {
   padding: 40px 0 60px;
   background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 
-/* Carte Verte Felt SIG */
 .felt-green-box {
   display: flex;
   align-items: center;
@@ -1891,7 +1834,6 @@ ul.timeline li.active-node strong,
   }
 }
 
-/* Widget Lecteur Audio (Synthèse vocale / Accessibility Reader) */
 .audio-player-widget {
   display: inline-flex;
   align-items: center;
@@ -1933,7 +1875,6 @@ ul.timeline li.active-node strong,
   color: var(--text-muted);
 }
 
-/* Section Calculateur de Carbone */
 .carbon-calculator-section {
   padding: 80px 0;
   background: var(--bg);
@@ -1979,16 +1920,12 @@ ul.timeline li.active-node strong,
   margin-top: 4px;
 }
 
-/* Section Media Vault */
 .media-vault-section {
   padding: 80px 0;
   background: var(--bg-card);
   border-bottom: 1px solid var(--line);
 }
 
-/* ==========================================
-   CLOCHE DE NOTIFICATION & PANNEAU D'ALERTE MÉDIA
-   ========================================== */
 .nav-notif-dropdown {
   position: relative;
   display: inline-flex;
@@ -2060,7 +1997,7 @@ body.dark-theme .nav-notif-panel {
   background: rgba(6, 40, 30, 0.95);
   border-color: rgba(52, 211, 153, 0.3);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
-  /* backdrop-filter removed */
+  
 }
 
 .nav-notif-dropdown.active .nav-notif-panel {
@@ -2203,7 +2140,6 @@ body.dark-theme .notif-link-ghost {
   border-color: var(--accent);
 }
 
-/* Horloge Précise (Days, Hours, Mins, Secs) */
 .precision-countdown-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2242,7 +2178,6 @@ body.dark-theme .notif-link-ghost {
   text-overflow: ellipsis;
 }
 
-/* Section Espace Nations Autochtones */
 .indigenous-section {
   padding: 80px 0;
   background: linear-gradient(135deg, rgba(46,107,79,0.06) 0%, rgba(194,124,53,0.06) 100%);
@@ -2258,7 +2193,6 @@ body.dark-theme .notif-link-ghost {
   margin-top: 24px;
 }
 
-/* Widget Embed pour Partenaires */
 .embed-widget-box {
   background: var(--bg);
   border: 1.5px solid var(--line);
@@ -2281,9 +2215,6 @@ body.dark-theme .notif-link-ghost {
   margin-top: 10px;
 }
 
-
-
-/* Pulsing Status Beacon Badge 3D */
 .status-beacon-pill {
   display: inline-flex;
   align-items: center;
@@ -2337,14 +2268,12 @@ body.dark-theme .notif-link-ghost {
   }
 }
 
-/* Gradient Typography 1M$ */
 .gradient-text-emerald, .hero-title-main { color: var(--text); font-weight: 800; }
 
 [data-theme="dark"] .gradient-text-emerald, .hero-title-main { color: var(--text); font-weight: 800; }
 
 .gradient-text-gold, .title-accent { color: var(--accent); font-weight: 700; }
 
-/* High-Impact Spotlight Glow Card Effect */
 .card-glow-hover {
   position: relative;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2356,7 +2285,6 @@ body.dark-theme .notif-link-ghost {
   border-color: var(--accent);
 }
 
-/* Notice Box - Indépendance & Remerciements scientifiques */
 .notice-box-important {
   background: var(--surface-card, rgba(255, 255, 255, 0.04));
   border: 1.5px solid rgba(16, 185, 129, 0.4);
@@ -2391,7 +2319,6 @@ body.dark-theme .notif-link-ghost {
   margin: 0;
 }
 
-/* Top Independence Banner (Directly under Header) */
 .top-independence-banner {
   background: linear-gradient(135deg, rgba(6, 78, 59, 0.96) 0%, rgba(6, 95, 70, 0.96) 100%);
   color: #f0fdf4;
@@ -2429,7 +2356,6 @@ body.dark-theme .notif-link-ghost {
   margin: 0;
 }
 
-/* Next Steps Card — Processus CCE / ACEUM */
 .next-steps-card {
   background: var(--surface-card, rgba(255, 255, 255, 0.03));
   border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
@@ -2492,7 +2418,6 @@ body.dark-theme .notif-link-ghost {
   margin: 0;
 }
 
-/* Contact Media & Citizen Box */
 .contact-media-box {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 78, 59, 0.15) 100%);
   border: 1px solid rgba(16, 185, 129, 0.3);
@@ -2554,7 +2479,6 @@ body.dark-theme .notif-link-ghost {
   }
 }
 
-/* PWA & Web Notification Controls */
 .notif-toggle-btn {
   display: inline-flex;
   align-items: center;
@@ -2582,9 +2506,6 @@ body.dark-theme .notif-link-ghost {
   border-color: #10b981;
 }
 
-/* ==========================================
-   MENU DÉROULANT / DROPDOWN NAVIGATION
-   ========================================== */
 @media (min-width: 993px) {
   .site nav {
     display: flex;
@@ -2638,7 +2559,7 @@ body.dark-theme .notif-link-ghost {
   padding: 14px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
   z-index: 1000;
-  /* backdrop-filter removed */
+  
   animation: navFadeIn 0.2s ease;
 }
 
@@ -2712,9 +2633,6 @@ body.dark-theme .notif-link-ghost {
   flex-shrink: 0;
 }
 
-/* ==========================================
-   UTILITY CLASSES FOR CLEAN SEMANTIC CSS
-   ========================================== */
 .lang-badge-es { font-weight: 700; color: var(--accent); }
 .citation-hero-spaced { margin-top: 24px; }
 .notice-box-clean { margin-top: 0; margin-bottom: 32px; }
@@ -2744,9 +2662,6 @@ body.dark-theme .notif-link-ghost {
 .tl-item-highlight { border-left-color: var(--accent) !important; }
 #gis-leaflet-map { width: 100%; height: 100%; border-radius: 6px; }
 
-/* ==========================================
-   PRESS RELEASE / COMMUNIQUÉS DE PRESSE
-   ========================================== */
 .press-release-container {
   background: var(--card-bg, #04241b);
   border: 1px solid var(--border-color, rgba(52, 211, 153, 0.25));
@@ -2900,7 +2815,6 @@ body.dark-theme .notif-link-ghost {
   font-weight: 600;
 }
 
-/* 404 Page Styles */
 .card-404 {
   text-align: center;
   max-width: 680px;
@@ -2947,7 +2861,6 @@ body.dark-theme .notif-link-ghost {
   padding-top: 20px;
 }
 
-/* Live Page Styles */
 .live-hero-section {
   min-height: 85vh;
   display: flex;
@@ -3049,7 +2962,6 @@ body.dark-theme .notif-link-ghost {
   font-size: 13px;
 }
 
-/* Presse Page Styles */
 .pr-action-row {
   display: flex;
   gap: 12px;
@@ -3099,7 +3011,6 @@ body.dark-theme .notif-link-ghost {
   overflow: scroll;
 }
 
-/* Communiqués Page Styles */
 .communique-hero {
   text-align: center;
   padding: 48px 0 24px 0;
@@ -3113,7 +3024,7 @@ body.dark-theme .notif-link-ghost {
   max-width: 860px;
   margin: 0 auto 48px auto;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  /* backdrop-filter removed */
+  
   position: relative;
 }
 
@@ -3133,9 +3044,6 @@ body.dark-theme .notif-link-ghost {
   color: var(--text-muted);
 }
 
-/* ==========================================
-   ULTRA-CLEAN SINGLE-PAGE PRINT STYLESHEET
-   ========================================== */
 @media print {
   @page {
     margin: 1cm 1.2cm;
@@ -3254,17 +3162,11 @@ body.dark-theme .notif-link-ghost {
   }
 }
 
-/* ==========================================
-   CARROUSEL REVUE DE PRESSE & EMBEDS MÉDIAS
-   ========================================== */
 .press-review-section {
   padding: 64px 0;
   position: relative;
 }
 
-/* ==========================================
-   DÉROULEMENT CONTINU DES LOGOS DE PRESSE (TICKER)
-   ========================================== */
 .media-logos-ticker-wrapper {
   margin: 28px 0 36px 0;
   overflow: hidden;
@@ -3398,22 +3300,17 @@ body.dark-theme .notif-link-ghost {
   flex-direction: column !important;
   justify-content: space-between !important;
   box-shadow: var(--shadow);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  
 }
 
-.press-card:hover {
-  transform: none;
-  border-color: rgba(52, 211, 153, 0.6);
-  box-shadow: var(--shadow-hover);
-}
 
-/* Thème sombre spécifique pour les cartes de presse */
+
 [data-theme="dark"] .press-card,
 body.dark-theme .press-card {
   background: rgba(4, 36, 27, 0.75);
   border: 1px solid rgba(52, 211, 153, 0.25);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  /* backdrop-filter removed */
+  
 }
 
 [data-theme="dark"] .media-logos-ticker-wrapper,
@@ -3745,9 +3642,6 @@ body.dark-theme .carousel-dot {
   }
 }
 
-/* ==============================================================================
-   Floating AI Assistant & Summary Hub
-   ============================================================================== */
 .floating-ai-btn {
   position: fixed !important;
   bottom: 24px !important;
@@ -3766,7 +3660,7 @@ body.dark-theme .carousel-dot {
   cursor: pointer;
   box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5), 0 8px 10px -6px rgba(16, 185, 129, 0.3) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  /* backdrop-filter removed */
+  
   text-decoration: none !important;
 }
 .floating-ai-btn:hover {
@@ -3782,7 +3676,6 @@ body.dark-theme .carousel-dot {
   50% { transform: none; }
 }
 
-/* Modal AI Hub & Clavardage Intelligent (Gemini Nano & Knowledge Engine) */
 .ai-modal-overlay {
   position: fixed !important;
   top: 0 !important;
@@ -3790,7 +3683,7 @@ body.dark-theme .carousel-dot {
   width: 100% !important;
   height: 100% !important;
   background: rgba(0, 0, 0, 0.75) !important;
-  /* backdrop-filter removed */
+  
   z-index: 100000 !important;
   display: flex !important;
   align-items: center;
@@ -3862,7 +3755,6 @@ body.dark-theme .carousel-dot {
   border-color: rgba(239, 68, 68, 0.4);
 }
 
-/* Onglets AI Hub */
 .ai-tabs {
   display: flex;
   gap: 6px;
@@ -3894,7 +3786,6 @@ body.dark-theme .carousel-dot {
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-/* Contenu des onglets */
 .ai-tab-content {
   display: none;
   flex: 1;
@@ -3907,7 +3798,6 @@ body.dark-theme .carousel-dot {
   flex-direction: column;
 }
 
-/* Clavardage / Chat */
 .ai-chat-messages {
   flex: 1;
   overflow-y: auto;
@@ -3957,7 +3847,6 @@ body.dark-theme .carousel-dot {
   color: #38bdf8;
 }
 
-/* Suggestions de questions rapides */
 .ai-quick-pills {
   display: flex;
   gap: 6px;
@@ -3983,7 +3872,6 @@ body.dark-theme .carousel-dot {
   background: var(--accent-wash);
 }
 
-/* Champ de saisie chat */
 .ai-chat-input-row {
   display: flex;
   gap: 8px;
@@ -4024,7 +3912,6 @@ body.dark-theme .carousel-dot {
   opacity: 0.9;
 }
 
-/* Onglet Résumé */
 .ai-summary-box {
   display: flex;
   flex-direction: column;
@@ -4073,7 +3960,6 @@ body.dark-theme .carousel-dot {
   overflow-y: auto;
 }
 
-/* Boutons Modèles externes */
 .ai-modal-buttons {
   display: flex;
   flex-direction: column;
@@ -4139,9 +4025,6 @@ body.dark-theme .carousel-dot {
   }
 }
 
-/* ==========================================
-   CANAL SÉCURISÉ ANONYME SESSION & FOOTER NOTICE
-   ========================================== */
 .footer-session-box {
   background: var(--surface-card, rgba(255, 255, 255, 0.04));
   border: 1px solid rgba(16, 185, 129, 0.3);
@@ -4189,9 +4072,6 @@ body.dark-theme .carousel-dot {
   border-color: #cbd5e1;
 }
 
-/* ==========================================
-   BANNIÈRE & MODE BASSE BANDE PASSANTE
-   ========================================== */
 .low-bandwidth-alert {
   background: rgba(245, 158, 11, 0.12);
   border: 1.5px solid rgba(245, 158, 11, 0.4);
@@ -4216,12 +4096,4 @@ body.dark-theme .carousel-dot {
   font-weight: 700;
   text-decoration: underline;
 }
-
-
-
-
-
-
-
-
 
