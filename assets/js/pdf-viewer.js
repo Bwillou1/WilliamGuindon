@@ -1619,9 +1619,10 @@
               ? extractedText.slice(0, 6000) 
               : `${docTitle}. Procédure CCE SEM-26-003, ACEUM, Grande Tourbière de Blainville, BAPE 371, Loi 93.`;
             const summary = await summarizer.summarize(textToSummarize);
+            const summarySafe = escapeHTML(summary).replace(/\n/g, '<br>');
             dom.viewerAiOutput.innerHTML = `
               <strong>✨ Synthèse Gemini Nano (${scope === 'page' ? 'Page ' + state.currentPage : 'Document complet'}) :</strong>
-              <div style="margin-top:6px;">${summary.replace(/\n/g, '<br>')}</div>
+              <div style="margin-top:6px;">${summarySafe}</div>
             `;
             return;
           }
@@ -1633,15 +1634,16 @@
       // Synthèse factuelle certifiée basée sur le document actif
       setTimeout(() => {
         let content = '';
+        const safeDocTitle = escapeHTML(docTitle);
         if (scope === 'page') {
           content = `
-            <strong>📄 Synthèse de la Page ${state.currentPage} — ${docTitle} :</strong>
+            <strong>📄 Synthèse de la Page ${state.currentPage} — ${safeDocTitle} :</strong>
             <p style="margin:6px 0;">Analyse des éléments juridiques et preuves environnementales de la page courante du dossier SEM-26-003.</p>
-            ${extractedText ? `<blockquote style="border-left:2px solid var(--accent); padding-left:8px; color:var(--text-muted); font-size:11px; margin:6px 0;">Extrait : ${extractedText.slice(0, 220)}...</blockquote>` : ''}
+            ${extractedText ? `<blockquote style="border-left:2px solid var(--accent); padding-left:8px; color:var(--text-muted); font-size:11px; margin:6px 0;">Extrait : ${escapeHTML(extractedText.slice(0, 220))}...</blockquote>` : ''}
           `;
         } else {
           content = `
-            <strong>📋 Synthèse officielle — ${docTitle} :</strong>
+            <strong>📋 Synthèse officielle — ${safeDocTitle} :</strong>
             <ul style="padding-left:16px; margin:6px 0;">
               <li><strong>Objet :</strong> Conformité environnementale du projet Stablex dans la Grande Tourbière de Blainville.</li>
               <li><strong>Contexte juridique :</strong> Articles 24.27 et 24.28 de l'ACEUM, Loi sur la convention concernant les oiseaux migrateurs, Loi sur les espèces en péril.</li>
@@ -1661,11 +1663,11 @@
   async function handleViewerChatSubmit(query) {
     if (!query || !dom.viewerChatMessages) return;
 
-    // Bulle utilisateur sécurisée (échappement automatique)
-    appendViewerChatMessage('user', query, false);
+    // Bulle utilisateur sécurisée
+    appendViewerChatMessage('user', query);
 
-    // Bulle IA
-    const botBubble = appendViewerChatMessage('bot', '<em>🧠 Réflexion et consultation du document...</em>', true);
+    // Bulle IA avec état d'attente
+    const botBubble = appendViewerChatMessage('bot', 'Consultation et analyse du document...');
 
     const docKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
     const docInfo = docKey ? DOCS_CATALOG[docKey] : null;
@@ -1680,7 +1682,7 @@
           });
         }
         const answer = await viewerAiSession.prompt(query);
-        botBubble.innerHTML = escapeHTML(answer).replace(/\n/g, '<br>');
+        botBubble.textContent = answer;
         dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
         return;
       }
@@ -1688,37 +1690,46 @@
       console.warn("Fallback QA local:", err);
     }
 
-    // Répondeur intelligent contextuel
+    // Répondeur intelligent contextuel avec construction DOM 100% sécurisée
     setTimeout(() => {
       const q = query.toLowerCase();
-      let answer = '';
+      let title = '';
+      let text = '';
       if (q.includes('point') || q.includes('clé') || q.includes('resume') || q.includes('résumé')) {
-        answer = `<strong>Points clés de ce document (${escapeHTML(docTitle)}) :</strong> Ce document traite de la procédure environnementale SEM-26-003, de la protection des milieux humides de Blainville et de l'obligation de conformité aux traités internationaux (ACEUM).`;
+        title = `Points clés (${docTitle}) :`;
+        text = `Ce document traite de la procédure environnementale SEM-26-003, de la protection des milieux humides de Blainville et de l'obligation de conformité aux traités internationaux (ACEUM).`;
       } else if (q.includes('article') || q.includes('loi') || q.includes('convention') || q.includes('93')) {
-        answer = `<strong>Cadre légal cité :</strong> Articles 24.27 & 24.28 de l'ACEUM, Loi sur la convention concernant les oiseaux migrateurs (LCOM), Loi sur les espèces en péril (LEP) et contestation des effets de la Loi 93 (Québec).`;
+        title = `Cadre légal cité :`;
+        text = `Articles 24.27 & 24.28 de l'ACEUM, Loi sur la convention concernant les oiseaux migrateurs (LCOM), Loi sur les espèces en péril (LEP) et contestation des effets de la Loi 93 (Québec).`;
       } else if (q.includes('conclusion') || q.includes('etape') || q.includes('étape') || q.includes('echeance') || q.includes('échéance') || q.includes('délai') || q.includes('16 oct')) {
-        answer = `<strong>Conclusions & Prochaines étapes :</strong> Suite à la détermination positive de la CCE du 17 août 2026, le Canada est légalement tenu de déposer sa réponse formelle avant le <strong>16 octobre 2026</strong>.`;
+        title = `Conclusions & Prochaines étapes :`;
+        text = `Suite à la détermination positive de la CCE du 17 août 2026, le Canada est légalement tenu de déposer sa réponse formelle avant le 16 octobre 2026.`;
       } else if (q.includes('cadmium') || q.includes('faune') || q.includes('oiseau')) {
-        answer = `<strong>Données environnementales :</strong> 132 espèces d'oiseaux recensées, concentrations de cadmium jusqu'à 320x supérieures aux seuils de protection de la vie aquatique (Eau Secours / WaterShed Monitoring).`;
+        title = `Données environnementales :`;
+        text = `132 espèces d'oiseaux recensées, concentrations de cadmium jusqu'à 320x supérieures aux seuils de protection de la vie aquatique (Eau Secours / WaterShed Monitoring).`;
       } else {
-        answer = `<strong>Analyse de document :</strong> Cette pièce officielle confirme les arguments soulevés par William Guindon concernant l'impact environnemental du projet d'enfouissement de déchets dangereux et la compétence de la CCE pour instruire le dossier.`;
+        title = `Analyse du document :`;
+        text = `Cette pièce officielle confirme les arguments soulevés par William Guindon concernant l'impact environnemental du projet d'enfouissement de déchets dangereux et la compétence de la CCE pour instruire le dossier.`;
       }
 
-      botBubble.innerHTML = answer;
+      botBubble.textContent = '';
+      const strongEl = document.createElement('strong');
+      strongEl.textContent = title + ' ';
+      botBubble.appendChild(strongEl);
+      const spanEl = document.createElement('span');
+      spanEl.textContent = text;
+      botBubble.appendChild(spanEl);
+
       dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
     }, 350);
   }
 
-  function appendViewerChatMessage(role, content, isHTML = false) {
+  function appendViewerChatMessage(role, text) {
     const bubble = document.createElement('div');
     bubble.className = `ai-chat-bubble ${role}`;
     bubble.style.fontSize = '11.5px';
     bubble.style.padding = '8px 10px';
-    if (isHTML) {
-      bubble.innerHTML = content;
-    } else {
-      bubble.textContent = content;
-    }
+    bubble.textContent = text;
     dom.viewerChatMessages.appendChild(bubble);
     dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
     return bubble;
