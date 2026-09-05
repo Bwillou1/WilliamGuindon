@@ -47,32 +47,33 @@
   }
 
   function applyState(state) {
-    if (!state) return;
+    if (!state || typeof state !== 'object') return;
     const now = Date.now();
     const currentStateJson = JSON.stringify(state);
 
+    const isMaintenanceActive = Boolean(state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil);
+    const isPanicActive = Boolean(state.panicActive && state.panicUntil && now < state.panicUntil);
+
+    // Si la maintenance était affichée et vient de se terminer ou d'être désactivée
+    if (!isMaintenanceActive && document.getElementById('maint-wrapper')) {
+      window.location.reload();
+      return;
+    }
+
     // Éviter ré-exécution inutile si l'état n'a pas changé
     if (lastAppliedStateJson === currentStateJson && document.readyState !== 'loading') {
-      // Vérifier uniquement l'expiration temporelle
-      if (state.maintenanceActive && state.maintenanceUntil && now >= state.maintenanceUntil) {
-        window.location.reload();
-      }
       return;
     }
     lastAppliedStateJson = currentStateJson;
 
     // A. Mode Blackout / Maintenance Totale
-    if (state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil) {
+    if (isMaintenanceActive) {
       renderMaintenanceScreen(state.maintenanceUntil);
-      return;
-    } else if (document.getElementById('maint-wrapper')) {
-      // Si la maintenance vient d'être désactivée par l'admin, on recharge la page
-      window.location.reload();
       return;
     }
 
     // B. Mode Cyber-Attaque / Panique
-    if (state.panicActive && state.panicUntil && now < state.panicUntil) {
+    if (isPanicActive) {
       applyPanicMode(state.panicTextOnly);
     } else {
       const banner = document.getElementById('panic-alert-banner');
@@ -89,8 +90,12 @@
     applyState(cached);
   } catch (e) {}
 
-  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans cache CDN)
+  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans blocage)
+  let isFetching = false;
   async function fetchRemoteState() {
+    if (isFetching) return;
+    isFetching = true;
+
     const endpoints = [
       new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href,
       'https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/data/site-state.json?_t=' + Date.now()
@@ -98,13 +103,17 @@
 
     for (const url of endpoints) {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
         const res = await fetch(url, {
           cache: 'no-store',
+          signal: controller.signal,
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Pragma': 'no-cache'
           }
         });
+        clearTimeout(timeoutId);
         if (res.ok) {
           const remoteState = await res.json();
           if (remoteState && typeof remoteState === 'object') {
@@ -113,24 +122,35 @@
             if (syncChannel) {
               try { syncChannel.postMessage(remoteState); } catch (_) {}
             }
-            break; // Succès immédiat obtenu
+            break; // Succès immédiat obtenu, arrêt
           }
         }
       } catch (_) {}
     }
+    isFetching = false;
   }
 
-  // Vérification immédiate au chargement initial
-  fetchRemoteState();
+  // Lancement propre de la synchronisation après le chargement initial pour éviter tout blocage d'onglet
+  function startSync() {
+    fetchRemoteState();
+    setInterval(() => {
+      if (!document.hidden) fetchRemoteState();
+    }, 4000);
+  }
 
-  // Polling automatique ultra-réactif toutes les 3 secondes pour tous les visiteurs
-  setInterval(fetchRemoteState, 3000);
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', startSync, { once: true });
+  } else {
+    startSync();
+  }
 
-  // Déclenchement instantané lorsque l'utilisateur revient sur l'onglet ou clique
+  // Déclenchement instantané lorsque l'utilisateur revient sur l'onglet
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) fetchRemoteState();
   });
-  window.addEventListener('focus', fetchRemoteState);
+  window.addEventListener('focus', () => {
+    if (!document.hidden) fetchRemoteState();
+  });
 
   // ==========================================
   // LOGIQUES D'APPLICATION SPÉCIFIQUES & SÉCURITÉ
