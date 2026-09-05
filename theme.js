@@ -20,35 +20,148 @@
     const headerWrap = document.querySelector('header.site .wrap');
 
     if (nav) {
-      // Intégration widget Google Traduction
-      let gTranslateDiv = document.getElementById('google_translate_element');
-      if (!gTranslateDiv) {
-        gTranslateDiv = document.createElement('div');
-        gTranslateDiv.id = 'google_translate_element';
-        gTranslateDiv.className = 'nav-translate-box';
-        nav.appendChild(gTranslateDiv);
-      }
+      // Intégration du sélecteur de langue Google Traduction fluide & fiable
+      let langDropdown = document.getElementById('nav-lang-dropdown');
+      if (!langDropdown) {
+        langDropdown = document.createElement('div');
+        langDropdown.className = 'nav-dropdown nav-dropdown-right nav-translate-dropdown';
+        langDropdown.id = 'nav-lang-dropdown';
 
-      if (!window.googleTranslateElementInit) {
-        window.googleTranslateElementInit = function() {
-          try {
-            new google.translate.TranslateElement({
-              pageLanguage: 'fr',
-              includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja,ru,uk',
-              autoDisplay: false
-            }, 'google_translate_element');
-          } catch(e) {
-            console.error('Google Translate init error:', e);
+        const match = document.cookie.match(/googtrans=\/fr\/([a-zA-Z\-]+)/);
+        const activeLangCode = (match && match[1]) || localStorage.getItem('wg_user_lang') || 'fr';
+        const langCodeDisplay = activeLangCode.toUpperCase().substring(0, 2);
+
+        langDropdown.innerHTML = `
+          <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
+            <span>🌐 <span id="current-lang-text">${langCodeDisplay}</span> ▾</span>
+          </button>
+          <div class="nav-dropdown-menu" style="min-width: 170px;">
+            <div class="nav-dropdown-group">
+              <span class="nav-dropdown-group-title">Traduire / Translate</span>
+              <div class="nav-dropdown-grid single-col">
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="fr" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇫🇷</span> <span>Français (Original)</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="en" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇬🇧</span> <span>English</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="es" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇪🇸</span> <span>Español</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="de" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇩🇪</span> <span>Deutsch</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="it" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇮🇹</span> <span>Italiano</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="pt" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇵🇹</span> <span>Português</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="zh-CN" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇨🇳</span> <span>中文</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ja" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇯🇵</span> <span>日本語</span>
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ar" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                  <span>🇸🇦</span> <span>العربية</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        nav.appendChild(langDropdown);
+
+        // Conteneur discret pour le script Google Translate
+        let gTranslateDiv = document.getElementById('google_translate_element');
+        if (!gTranslateDiv) {
+          gTranslateDiv = document.createElement('div');
+          gTranslateDiv.id = 'google_translate_element';
+          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
+          document.body.appendChild(gTranslateDiv);
+        }
+
+        // Action de changement de langue
+        function setLanguage(lang) {
+          const host = window.location.hostname;
+          if (lang === 'fr') {
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            const parts = host.split('.');
+            if (parts.length > 2) {
+              const rootDomain = parts.slice(-2).join('.');
+              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${rootDomain};`;
+            }
+            localStorage.removeItem('wg_user_lang');
+            window.location.reload();
+            return;
           }
-        };
 
-        if (!document.getElementById('google-translate-script')) {
-          const gtScript = document.createElement('script');
-          gtScript.id = 'google-translate-script';
-          gtScript.type = 'text/javascript';
-          gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-          gtScript.async = true;
-          document.head.appendChild(gtScript);
+          localStorage.setItem('wg_user_lang', lang);
+          document.cookie = `googtrans=/fr/${lang}; path=/;`;
+          document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host};`;
+          document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${host};`;
+          const parts = host.split('.');
+          if (parts.length > 2) {
+            const rootDomain = parts.slice(-2).join('.');
+            document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${rootDomain};`;
+          }
+
+          const combo = document.querySelector('.goog-te-combo');
+          if (combo) {
+            combo.value = lang;
+            combo.dispatchEvent(new Event('change'));
+          } else {
+            window.location.reload();
+          }
+        }
+
+        langDropdown.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const chosenLang = btn.getAttribute('data-lang');
+            langDropdown.classList.remove('active');
+            const navBtn = langDropdown.querySelector('.nav-dropdown-btn');
+            if (navBtn) navBtn.setAttribute('aria-expanded', 'false');
+            setLanguage(chosenLang);
+          });
+        });
+
+        // Initialisation du script Google Translate
+        if (!window.googleTranslateElementInit) {
+          window.googleTranslateElementInit = function() {
+            try {
+              new google.translate.TranslateElement({
+                pageLanguage: 'fr',
+                includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja,ru,uk',
+                autoDisplay: false
+              }, 'google_translate_element');
+
+              const saved = localStorage.getItem('wg_user_lang');
+              if (saved && saved !== 'fr') {
+                setTimeout(() => {
+                  const cb = document.querySelector('.goog-te-combo');
+                  if (cb && cb.value !== saved) {
+                    cb.value = saved;
+                    cb.dispatchEvent(new Event('change'));
+                  }
+                }, 400);
+              }
+            } catch(e) {
+              console.warn('Google Translate error:', e);
+            }
+          };
+
+          if (!document.getElementById('google-translate-script')) {
+            const gtScript = document.createElement('script');
+            gtScript.id = 'google-translate-script';
+            gtScript.type = 'text/javascript';
+            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            gtScript.async = true;
+            document.head.appendChild(gtScript);
+          }
         }
       }
 
