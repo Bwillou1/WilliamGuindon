@@ -64,7 +64,13 @@
     if (typeof data === 'object') {
       if (typeof data.content === 'string' && data.encoding === 'base64') {
         try {
-          const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          const cleanB64 = data.content.replace(/\s/g, '');
+          const binaryStr = atob(cleanB64);
+          const bytes = new Uint8Array(binaryStr.length);
+          for (let i = 0; i < binaryStr.length; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+          }
+          const decoded = new TextDecoder('utf-8').decode(bytes);
           return JSON.parse(decoded);
         } catch (_) {}
       }
@@ -172,7 +178,12 @@
         });
         clearTimeout(timeoutId);
         if (res.ok) {
-          const rawData = await res.json().catch(() => null) || await res.text().catch(() => null);
+          let rawData = null;
+          try {
+            rawData = await res.json();
+          } catch (_) {
+            try { rawData = await res.text(); } catch (__) {}
+          }
           const remoteState = parseRemotePayload(rawData);
           if (remoteState && typeof remoteState === 'object' && shouldAcceptState(remoteState)) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
