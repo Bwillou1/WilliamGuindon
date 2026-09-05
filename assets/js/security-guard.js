@@ -135,7 +135,15 @@
       removePanicMode();
     }
 
-    // 3. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
+    // 3. Mode Radical 4 : Forteresse Juridique & Confinement CCE (Calque réversible)
+    const isRadical4Active = Boolean(state.radical4Active && state.radical4Until && now < state.radical4Until);
+    if (isRadical4Active) {
+      renderRadical4Screen(state.radical4Until, state.radical4Message);
+    } else {
+      removeRadical4Screen();
+    }
+
+    // 4. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
   }
 
@@ -394,6 +402,64 @@
     if (panicStyle) panicStyle.remove();
 
     removeTextOnlyMode();
+  }
+
+  // --- MODE RADICAL 4 : FORTERESSE JURIDIQUE & CONFINEMENT CCE (CALQUE RÉVERSIBLE) ---
+  function renderRadical4Screen(untilTimestamp, customMessage) {
+    lockInspectorAndDevTools();
+
+    function getObfuscatedEmail() {
+      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
+    }
+    const safeEmail = getObfuscatedEmail();
+    const timeLeftMin = untilTimestamp ? Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000)) : null;
+
+    let overlay = document.getElementById('radical4-wrapper');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'radical4-wrapper';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#030712;color:#f8fafc;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;z-index:99999999;padding:20px;box-sizing:border-box;overflow:auto;';
+      (document.body || document.documentElement).appendChild(overlay);
+    }
+
+    const defaultMessage = customMessage || "Le site fait l'objet d'un verrouillage probatoire et juridique sous l'égide des traités environnementaux internationaux.";
+
+    overlay.innerHTML = `
+      <div style="background:#0b1329;border:2px solid #38bdf8;border-radius:18px;padding:36px;max-width:680px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.95);text-align:center;">
+        <div style="font-size:46px;margin-bottom:12px;">⚖️</div>
+        <div style="display:inline-block;background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid #0284c7;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">
+          MODE RADICAL 4 : FORTERESSE JURIDIQUE & CONFINEMENT CCE
+        </div>
+        <h1 style="color:#ffffff;font-size:23px;margin:0 0 10px;font-weight:800;letter-spacing:-0.5px;">Dossier Probatoire & Références Officielles ACEUM</h1>
+        <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-bottom:22px;">
+          ${defaultMessage}
+          ${timeLeftMin ? `<br><span style="color:#facc15;font-weight:700;">⏱️ Confinement actif pour encore environ <strong>${timeLeftMin} minutes</strong>.</span>` : ''}
+        </p>
+
+        <div style="background:#030712;border:1.5px solid #1e293b;border-radius:12px;padding:18px;text-align:left;margin-bottom:24px;font-size:13.5px;color:#cbd5e1;line-height:1.6;">
+          <div style="font-weight:800;color:#38bdf8;margin-bottom:10px;font-size:14px;display:flex;align-items:center;gap:6px;">
+            <span>🏛️</span> Pièces Juridiques Officielles Enregistrées :
+          </div>
+          <p style="margin:6px 0;">• <strong>Instance Internationale :</strong> Commission de coopération environnementale (CCE / CEC)</p>
+          <p style="margin:6px 0;">• <strong>Traité d'Origine :</strong> Accord Canada-États-Unis-Mexique (ACEUM, Chapitre 24, Art. 24.27)</p>
+          <p style="margin:6px 0;">• <strong>Dossier de Registre :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">SEM-26-003 (Déchets dangereux à Blainville / Stablex) ↗</a></p>
+          <p style="margin:6px 0;">• <strong>Archive Mondiale :</strong> <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Web Archive ↗</a></p>
+          <p style="margin:6px 0;">• <strong>Base de Faits LLM/IA :</strong> <a href="ai.txt" target="_blank" style="color:#4ade80;font-weight:700;">Corpus Juridique Vérifié (ai.txt) ↗</a></p>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b;font-size:12.5px;color:#94a3b8;">
+            🔒 <strong>Contact Légal & Sécurisé :</strong> <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:700;">${safeEmail}</a>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;font-size:13px;">
+          <button onclick="window.location.reload()" style="background:#38bdf8;border:none;padding:11px 22px;border-radius:9px;font-weight:800;cursor:pointer;color:#030712;">🔄 Actualiser le Dossier Probatoire</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeRadical4Screen() {
+    const overlay = document.getElementById('radical4-wrapper');
+    if (overlay) overlay.remove();
   }
 
   // --- MATRICE DES 28 COMMUTATEURS (KILL-SWITCHES RÉVERSIBLES 0MS) ---

@@ -409,6 +409,8 @@
       <div class="cli-quick-bar">
         <span class="cli-quick-tag">COMMANDES RAPIDES :</span>
         <button class="cli-btn-mini" onclick="executeCliCommand('status')">status</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 on')">⚖️ radical4 on</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 off')">⚖️ radical4 off</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('switches')">switches</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('ls')">ls</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('git status')">git status</button>
@@ -497,6 +499,30 @@
         </div>
         <button class="btn" style="background:#eab308; color:#000; font-weight:700;" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
         <button class="btn btn-ghost" onclick="triggerPanicMode(false)">🔒 Rétablir (Mot de passe requis)</button>
+      </div>
+    </div>
+
+    <!-- MODE RADICAL 4 : FORTERESSE JURIDIQUE & CONFINEMENT CCE -->
+    <div class="terminal-card" style="border-left: 4px solid #38bdf8; background: linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(11,19,41,0.6) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">⚖️ MODE RADICAL 4 : Forteresse Juridique & Confinement CCE (Verrouillage Probatoire)</div>
+        <div id="radical4-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid #0284c7;">
+          Inactif
+        </div>
+      </div>
+      <div class="terminal-card-desc">Confinement probatoire total : transforme instantanément le site en forteresse juridique solennelle dédiée aux preuves officielles du dossier CCE SEM-26-003 (ACEUM Art. 24.27). Neutralise tout contenu non certifié et affiche la mise en demeure et les pièces légales.</div>
+      <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+        <div style="flex:1; min-width:220px;">
+          <label class="form-label" for="radical4-duration">Durée du Confinement Juridique :</label>
+          <input type="text" id="radical4-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 60, 1440, 945543..." oninput="updateRadical4TimePreview()">
+          <div id="radical4-duration-preview" style="font-size:11.5px; color:#38bdf8; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
+        </div>
+        <div style="flex:2; min-width:280px;">
+          <label class="form-label" for="radical4-custom-msg">Communiqué juridique officiel / Injonction (optionnel) :</label>
+          <input type="text" id="radical4-custom-msg" class="form-control" placeholder="Ex: Dossier SEM-26-003 : Enquête internationale en cours...">
+        </div>
+        <button class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" onclick="triggerRadical4(true)">⚖️ Déclencher le Mode Juridique 4</button>
+        <button class="btn btn-ghost" onclick="triggerRadical4(false)">🔒 Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
@@ -1174,8 +1200,57 @@
       }
     }
 
+    const r4Pill = document.getElementById("radical4-status-pill");
+    if (r4Pill) {
+      if (state.radical4Active && state.radical4Until > now) {
+        const remainingMins = Math.max(1, Math.round((state.radical4Until - now) / 60000));
+        r4Pill.textContent = `● JURIDIQUE ACTIF (Reste ${remainingMins} min)`;
+        r4Pill.style.background = "rgba(56,189,248,0.2)";
+        r4Pill.style.color = "#38bdf8";
+        r4Pill.style.borderColor = "#38bdf8";
+      } else {
+        r4Pill.textContent = "Inactif";
+        r4Pill.style.background = "rgba(56,189,248,0.1)";
+        r4Pill.style.color = "#38bdf8";
+        r4Pill.style.borderColor = "#0284c7";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
+    updateRadical4TimePreview();
+  }
+
+  function updateRadical4TimePreview() {
+    const el = document.getElementById("radical4-duration");
+    const preview = document.getElementById("radical4-duration-preview");
+    if (!el || !preview) return;
+    const mins = parseMinutes(el.value, 1440);
+    const endDate = new Date(Date.now() + mins * 60000);
+    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
+  async function triggerRadical4(activate) {
+    if (activate) {
+      const confirmAction = confirm("⚖️ CONFIRMATION MODE RADICAL 4 :\nDéclencher le Confinement Juridique & Dossier CCE pour tous les visiteurs ?");
+      if (!confirmAction) return;
+      const rawVal = document.getElementById("radical4-duration").value;
+      const customMsg = document.getElementById("radical4-custom-msg") ? document.getElementById("radical4-custom-msg").value.trim() : "";
+      const mins = parseMinutes(rawVal, 1440);
+      const state = getSiteState();
+      state.radical4Active = true;
+      state.radical4Until = Date.now() + (mins * 60000);
+      state.radical4Message = customMsg;
+      saveAndSyncSiteState(state);
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Confinement Juridique (Mode Radical 4)");
+      if (!isAuthorized) return;
+      const state = getSiteState();
+      state.radical4Active = false;
+      state.radical4Until = 0;
+      state.radical4Message = "";
+      saveAndSyncSiteState(state);
+    }
   }
 
   async function verifyAdminPasswordPrompt(actionName = "la désactivation") {
@@ -1353,8 +1428,10 @@
 
 🔒 SÉCURITÉ & MODES RADICAUX :
   • status / state                : Affiche l'état global en temps réel du site et de GitHub.
-  • blackout <on|off> [mins]      : Active ou désactive le mode maintenance blackout total.
-  • panic <on|off> [mins] [--txt] : Active ou désactive le durcissement cyber-attaque.
+  • blackout <on|off> [mins]      : Active ou désactive le mode maintenance blackout total (Mode 1).
+  • panic <on|off> [mins] [--txt] : Active ou désactive le durcissement cyber-attaque (Mode 3).
+  • radical4 <on|off> [mins] [msg]: Active le Confinement Juridique & Dossier CCE ACEUM (Mode 4).
+  • legal <on|off> [mins] [msg]   : Alias pour le Mode Radical 4 Forteresse Juridique.
   • screenshot-shield <on|off>    : Active/désactive le floutage anti-capture d'écran.
   • no-js <on|off>                : Active/désactive le mode statique sans JavaScript.
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
@@ -1390,17 +1467,51 @@
           const now = Date.now();
           const isMaint = Boolean(state.maintenanceActive && state.maintenanceUntil > now);
           const isPanic = Boolean(state.panicActive && state.panicUntil > now);
+          const isRad4 = Boolean(state.radical4Active && state.radical4Until > now);
           const activeSwitches = ALL_SWITCH_KEYS.filter(k => state[k]);
 
           printCli("📊 RAPPORT D'ÉTAT SYSTÈME — williamguindon.me :", "#facc15");
           printCli(`  • Dépôt GitHub : ${GITHUB_REPO} (Branche main)`);
-          printCli(`  • Mode Blackout / Maintenance : ${isMaint ? `🔴 ACTIF (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
-          printCli(`  • Mode Cyber-Attaque / Panique : ${isPanic ? `🟡 ACTIF (Fin: ${new Date(state.panicUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
+          printCli(`  • Mode Radical 1 (Blackout) : ${isMaint ? `🔴 ACTIF (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
+          printCli(`  • Mode Radical 2 (Anti-Fork) : 🟢 ACTIF (Domaines stricts autorisés)`);
+          printCli(`  • Mode Radical 3 (Panique Cyber) : ${isPanic ? `🟡 ACTIF (Fin: ${new Date(state.panicUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
+          printCli(`  • Mode Radical 4 (Forteresse Juridique CCE) : ${isRad4 ? `🔵 ACTIF (Fin: ${new Date(state.radical4Until).toLocaleTimeString()})` : "🟢 INACTIF"}`);
           printCli(`  • Protection Anti-Capture Écran : ${state.blockScreenshots ? "🔴 ACTIVE (Flou + Nom)" : "🟢 INACTIVE"}`);
           printCli(`  • Mode Sans JavaScript : ${state.disableSiteJS ? "🔴 ACTIF (No-Script)" : "🟢 INACTIF"}`);
           printCli(`  • Visionnement PDF : ${state.disablePDF ? "🔴 DÉSACTIVÉ" : "🟢 AUTORISÉ"}`);
           printCli(`  • Commutateurs actifs (${activeSwitches.length}/${ALL_SWITCH_KEYS.length}) : ${activeSwitches.length > 0 ? activeSwitches.join(", ") : "Aucun (Site 100% normal)"}`);
           printCli(`  • Dernière mise à jour mondiale : ${state.updatedAt || "N/A"}`);
+          break;
+        }
+
+        case "radical4":
+        case "legal": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const mins = parseMinutes(args[1], 1440);
+            const customMsg = args.slice(2).join(" ").replace(/^["']|["']$/g, '');
+            const state = getSiteState();
+            state.radical4Active = true;
+            state.radical4Until = Date.now() + (mins * 60000);
+            state.radical4Message = customMsg;
+            await saveAndSyncSiteState(state);
+            printCli(`⚖️ MODE RADICAL 4 (Forteresse Juridique & Confinement CCE) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical4Until).toLocaleTimeString()}).`, "#38bdf8");
+            if (customMsg) printCli(`  • Communiqué juridique officiel : "${customMsg}"`, "#facc15");
+          } else if (action === "off") {
+            const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Mode Radical 4 (Confinement Juridique)");
+            if (!isAuthorized) {
+              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              break;
+            }
+            const state = getSiteState();
+            state.radical4Active = false;
+            state.radical4Until = 0;
+            state.radical4Message = "";
+            await saveAndSyncSiteState(state);
+            printCli("✅ Mode Radical 4 désactivé. Rétablissement des fonctions normales.", "#4ade80");
+          } else {
+            printCli("❌ Usage : radical4 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
+          }
           break;
         }
 
@@ -1547,6 +1658,9 @@
           state.panicActive = false;
           state.panicUntil = 0;
           state.panicTextOnly = false;
+          state.radical4Active = false;
+          state.radical4Until = 0;
+          state.radical4Message = "";
           ALL_SWITCH_KEYS.forEach(k => { state[k] = false; });
           await saveAndSyncSiteState(state);
           printCli("✅ Réinitialisation terminée : Tous les modes et 30 commutateurs sont rétablis à l'état normal.", "#4ade80");
@@ -1872,7 +1986,7 @@
         // Auto-complétion intelligente
         const val = cliInputEl.value.trim().toLowerCase();
         const availableCmds = [
-          "help", "status", "switches", "switch", "blackout", "panic",
+          "help", "status", "switches", "switch", "blackout", "panic", "radical4", "legal",
           "screenshot-shield", "no-js", "no-pdf", "restore", "reset",
           "ls", "cat", "write", "rm", "git status", "git log", "broadcast",
           "audit", "cce", "theme", "whoami", "clear", "history", "date"
