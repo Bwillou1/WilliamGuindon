@@ -1,0 +1,67 @@
+name: CI & Intégrité du Dépôt
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configuration de Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validation des fichiers JSON
+        run: |
+          python3 -c "
+          import json, glob, sys
+          errors = []
+          for path in glob.glob('**/*.json', recursive=True):
+              try:
+                  with open(path, 'r', encoding='utf-8') as f:
+                      json.load(f)
+                      print(f'✔ JSON valide : {path}')
+              except Exception as e:
+                  errors.append(f'✖ Erreur JSON {path}: {e}')
+          if errors:
+              print('\n'.join(errors), file=sys.stderr)
+              sys.exit(1)
+          "
+
+      - name: Validation des fichiers XML
+        run: |
+          python3 -c "
+          import xml.etree.ElementTree as ET, sys
+          for xml_file in ['sitemap.xml', 'feed.xml']:
+              try:
+                  ET.parse(xml_file)
+                  print(f'✔ XML valide : {xml_file}')
+              except Exception as e:
+                  print(f'✖ Erreur XML {xml_file}: {e}', file=sys.stderr)
+                  sys.exit(1)
+          "
+
+      - name: Vérification des fichiers clés GitHub Pages
+        run: |
+          test -f CNAME || (echo "CNAME manquant" && exit 1)
+          test -f .nojekyll || (echo ".nojekyll manquant" && exit 1)
+          test -f robots.txt || (echo "robots.txt manquant" && exit 1)
+          test -f llms.txt || (echo "llms.txt manquant" && exit 1)
+          echo "✔ Tous les fichiers critiques de déploiement sont présents."

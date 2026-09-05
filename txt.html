@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<script src="assets/js/security-guard.js"></script>
+<script data-cookieconsent="ignore">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // 1. Initialiser le Mode Consentement Google v2 (valeurs par defaut)
+  gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    personalization_storage: "denied",
+    functionality_storage: "denied",
+    security_storage: "granted",
+    wait_for_update: 500
+  });
+  gtag("set", "ads_data_redaction", true);
+  gtag("set", "url_passthrough", true);
+
+  // 2. Transmission immediate des signaux Cookiebot CMP vers Google Tag / GA4
+  function syncCookiebotWithGoogleConsent() {
+    if (window.Cookiebot && window.Cookiebot.consent) {
+      gtag("consent", "update", {
+        ad_storage: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        analytics_storage: window.Cookiebot.consent.statistics ? "granted" : "denied",
+        ad_user_data: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        ad_personalization: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        personalization_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        functionality_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        security_storage: "granted"
+      });
+      dataLayer.push({ event: "cookie_consent_update" });
+    }
+  }
+
+  window.addEventListener("CookiebotOnConsentReady", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnAccept", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnDecline", syncCookiebotWithGoogleConsent);
+</script>
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ea970895-5ee9-461a-9c18-020d103bf8e2" data-consentmode-defaults="disabled" type="text/javascript" async></script>
+<!-- Google tag (gtag.js) - G-HMFX0PHXES -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMFX0PHXES" data-cookieconsent="ignore"></script>
+<script data-cookieconsent="ignore">
+  gtag('js', new Date());
+  gtag('config', 'G-HMFX0PHXES');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+<title>William Guindon — Version Texte Ultra-Légère (Bas Débit)</title>
+<meta name="description" content="Version texte brute et accessible du site officiel de William Guindon et du dossier CCE SEM-26-003.">
+<meta name="robots" content="index, follow">
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+<link rel="canonical" href="https://williamguindon.me/txt.html">
+<link rel="alternate" type="text/html" href="https://williamguindon.me/">
+<link rel="alternate" type="text/plain" href="https://williamguindon.me/ai.txt">
+<link rel="ai-context" href="https://williamguindon.me/ai.html">
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.5; max-width: 800px; margin: 20px auto; padding: 0 16px; color: #111; background: #fff; }
+  a { color: #0066cc; }
+  .top-banner { background: #e6f4ea; border: 1px solid #34a853; padding: 10px 14px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; }
+  .box { border: 1px solid #ccc; padding: 14px; margin: 16px 0; border-radius: 6px; }
+  .session-box { background: #f8f9fa; border-left: 4px solid #00875a; }
+  code { background: #eee; padding: 4px 8px; font-size: 13px; word-break: break-all; display: inline-block; border-radius: 4px; }
+  h1, h2, h3 { color: #0b3d20; }
+  ul { padding-left: 20px; }
+  hr { border: 0; border-top: 1px solid #ddd; margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<div class="top-banner">
+  <strong>Mode texte ultra-léger (Basse bande passante / 3G / LoRa)</strong><br>
+  Cette version consomme moins de 4 Ko de données. <a href="index.html" id="force-full-btn">Basculer vers le site visuel complet →</a>
+</div>
+
+<h1>William Guindon — Site Officiel</h1>
+<p><strong>Militant écologiste québécois (15 ans) · Dossier CCE SEM-26-003</strong><br>
+Blainville, Québec, Canada</p>
+
+<hr>
+
+<h2>1. Résumé du dossier CCE / ACEUM (SEM-26-003)</h2>
+<p>Le 17 août 2026, le Secrétariat de la Commission de coopération environnementale (CCE / Accord Canada–États-Unis–Mexique) a rendu une <strong>détermination positive historique</strong> sommant le gouvernement du Canada de répondre d'ici le <strong>16 octobre 2026</strong> aux allégations de non-application de ses lois environnementales fédérales concernant l'enfouissement de déchets dangereux Stablex dans la Grande Tourbière de Blainville.</p>
+<p>William Guindon (ayant déposé la communication à l'âge de 14 ans) est le premier mineur de l'histoire du processus SEM (depuis 1994) à obtenir une telle décision exigeant la réponse d'un gouvernement.</p>
+
+<hr>
+
+<h2>2. Faits essentiels & Chiffres clés</h2>
+<ul>
+  <li><strong>Site :</strong> Grande Tourbière de Blainville (Laurentides, Québec) — 278 000 m² de milieux humides menacés.</li>
+  <li><strong>BAPE :</strong> Rapport 371 (septembre 2023) concluant que le projet de cellule 6 est « prématuré » avec recommandation de refus.</li>
+  <li><strong>Loi 93 :</strong> Loi spéciale adoptée sous bâillon le 28 mars 2025 par l'Assemblée nationale du Québec pour contourner l'opposition municipale et restreindre les recours judiciaires.</li>
+  <li><strong>Contamination :</strong> Analyses indépendantes révélant des taux de cadmium jusqu'à 320 fois les seuils de protection de la vie aquatique.</li>
+  <li><strong>ONU :</strong> Déposition formelle transmise en mai 2026 au Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (Dr Marcos A. Orellana).</li>
+</ul>
+
+<hr>
+
+<h2>3. Documents officiels (Téléchargement direct)</h2>
+<ul>
+  <li><a href="assets/docs/decision-secretariat-17-aout-2026.pdf">Détermination positive du Secrétariat CCE — 17 août 2026 (PDF)</a></li>
+  <li><a href="assets/docs/soumission-revisee-16-juillet-2026.pdf">Communication révisée SEM-26-003 — 16 juillet 2026 (PDF)</a></li>
+  <li><a href="assets/docs/decision-secretariat-3-juin-2026.pdf">Décision préliminaire CCE — 3 juin 2026 (PDF)</a></li>
+  <li><a href="communiques.html">Communiqués de presse officiels</a></li>
+  <li><a href="ai.txt">Corpus textuel complet pour l'intelligence artificielle (ai.txt)</a></li>
+</ul>
+
+<hr>
+
+<h2>4. Contact Médias & Citoyens</h2>
+<p>Courriel officiel : <button type="button" id="txt-mail-btn" style="background:none;border:none;color:#0066cc;text-decoration:underline;cursor:pointer;font-size:inherit;padding:0;">[Cliquer pour contacter par courriel]</button></p>
+
+<div class="box session-box">
+  <h3>Canal anonyme & confidentiel (Session)</h3>
+  <p>Vous avez des documents confidentiels ou des informations à partager dans l'anonymat ? Téléchargez l'application <a href="https://getsession.org/" target="_blank" rel="noopener">Session</a> (messagerie chiffrée de bout en bout sans métadonnées) et ajoutez mon identifiant :</p>
+  <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
+</div>
+
+<hr>
+
+<p><small>© 2026 William Guindon · Contenu sous licence Creative Commons CC BY-NC-ND 4.0 · <a href="index.html">Version graphique complète</a> · <a href="ai.html">Espace IA</a></small></p>
+
+<script>
+document.getElementById('force-full-btn').addEventListener('click', function(e) {
+  sessionStorage.setItem('wg_force_full_site', 'true');
+});
+
+document.getElementById('txt-mail-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const k = 85;
+  const u = [50, 32, 60, 59, 49, 58, 59, 34, 60, 57, 57, 60, 52, 56, 103].map(c => String.fromCharCode(c ^ k)).join('');
+  const d = [50, 56, 52, 60, 57, 123, 54, 58, 56].map(c => String.fromCharCode(c ^ k)).join('');
+  this.textContent = u + '@' + d;
+  window.location.href = 'mai' + 'lto:' + u + '@' + d;
+});
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

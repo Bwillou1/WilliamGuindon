@@ -1,0 +1,32 @@
+{
+  "name": "william-guindon-official",
+  "version": "1.0.0",
+  "description": "Site officiel, registre documentaire et ressources publiques de William Guindon (Dossier CCE SEM-26-003)",
+  "main": "index.html",
+  "scripts": {
+    "test": "node -e 'console.log(\"Validating repository assets...\")' && npm run validate",
+    "validate": "node -e 'const fs=require(\"fs\"); [\"sitemap.xml\",\"feed.xml\",\"manifest.json\",\"status.json\",\"agent-skills.json\",\"tools.json\"].forEach(f => { if(!fs.existsSync(f)) throw new Error(\"Missing: \"+f); console.log(\"✔ \"+f); }); console.log(\"All core assets verified.\");'",
+    "sync:cec": "node sync-cec.js",
+    "generate:countdown": "node generate-countdown-svg.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bwillou1/WilliamGuindon.git"
+  },
+  "keywords": [
+    "william-guindon",
+    "cce",
+    "sem-26-003",
+    "environnement",
+    "blainville",
+    "stablex",
+    "tourbiere",
+    "droits-humains"
+  ],
+  "author": "William Guindon",
+  "license": "CC-BY-NC-ND-4.0",
+  "bugs": {
+    "url": "https://github.com/Bwillou1/WilliamGuindon/issues"
+  },
+  "homepage": "https://williamguindon.me"
+}

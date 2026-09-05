@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+<script src="assets/js/security-guard.js"></script>
+<script data-cookieconsent="ignore">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // 1. Initialiser le Mode Consentement Google v2 (valeurs par defaut)
+  gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    personalization_storage: "denied",
+    functionality_storage: "denied",
+    security_storage: "granted",
+    wait_for_update: 500
+  });
+  gtag("set", "ads_data_redaction", true);
+  gtag("set", "url_passthrough", true);
+
+  // 2. Transmission immediate des signaux Cookiebot CMP vers Google Tag / GA4
+  function syncCookiebotWithGoogleConsent() {
+    if (window.Cookiebot && window.Cookiebot.consent) {
+      gtag("consent", "update", {
+        ad_storage: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        analytics_storage: window.Cookiebot.consent.statistics ? "granted" : "denied",
+        ad_user_data: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        ad_personalization: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        personalization_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        functionality_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        security_storage: "granted"
+      });
+      dataLayer.push({ event: "cookie_consent_update" });
+    }
+  }
+
+  window.addEventListener("CookiebotOnConsentReady", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnAccept", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnDecline", syncCookiebotWithGoogleConsent);
+</script>
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ea970895-5ee9-461a-9c18-020d103bf8e2" data-consentmode-defaults="disabled" type="text/javascript" async></script>
+<!-- Google tag (gtag.js) - G-HMFX0PHXES -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMFX0PHXES" data-cookieconsent="ignore"></script>
+<script data-cookieconsent="ignore">
+  gtag('js', new Date());
+  gtag('config', 'G-HMFX0PHXES');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+<title>Espace Rédaction & Administration — William Guindon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#064e3b">
+
+<link rel="stylesheet" href="style.css?v=20260905-clean">
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+<script src="theme.js?v=20260905-clean" defer></script>
+
+<style>
+  .admin-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+  .admin-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+  }
+  .admin-tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-tab.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+  .admin-panel {
+    display: none;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+  }
+  .admin-panel.active {
+    display: block;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+  }
+  textarea.form-control {
+    min-height: 180px;
+    line-height: 1.6;
+    resize: vertical;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 640px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .file-dropzone {
+    border: 2px dashed var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .file-dropzone:hover {
+    border-color: var(--accent);
+  }
+  .file-preview {
+    max-height: 180px;
+    border-radius: 8px;
+    margin-top: 12px;
+    display: none;
+  }
+  .btn-submit {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .btn-submit:hover {
+    opacity: 0.9;
+  }
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .status-toast {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+    font-size: 14.5px;
+  }
+  .status-success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .status-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+  }
+  .token-box {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .item-list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .item-list-row:last-child {
+    border-bottom: none;
+  }
+  .btn-danger {
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <nav aria-label="Navigation principale">
+      <!-- Rubrique 1 : Dossier CCE & Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Dossier CCE & Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Enquête SEM-26-003</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
+              <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="live.html" class="nav-dropdown-item">Horloge & Échéance 16 oct.</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités & Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Publications & Presse</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel & Carnet</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Presse & Kit Média</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : À propos & Contact -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos & Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Profil & Démarche</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="./#apropos" class="nav-dropdown-item">Biographie de William Guindon</a>
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées & Contact</a>
+              <a href="admin.html" class="nav-dropdown-item active">Espace Rédaction (Admin)</a>
+              <a href="editeur.html" class="nav-dropdown-item">Studio Éditeur Visuel</a>
+              <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA & LLM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</header>
+
+<main class="admin-wrap">
+  <div class="admin-header">
+    <div>
+      <span class="kicker">Espace d'administration personnel</span>
+      <h1 style="font-size: 1.8rem; margin: 4px 0;">Gestion de Contenu & Publication</h1>
+    </div>
+    <div id="auth-status-bar">
+      <!-- État connexion -->
+    </div>
+  </div>
+
+  <div id="status-message" class="status-toast"></div>
+
+  <!-- Carte Vérification au chargement -->
+  <div id="auth-checking-card" class="token-box" style="text-align:center; padding:32px 20px; display:none;">
+    <div style="font-size:26px; margin-bottom:10px;">⏳</div>
+    <div style="font-weight:700; font-size:16px; color:var(--text);">Vérification de sécurité auprès de GitHub...</div>
+    <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Contrôle d'autorisation pour le compte @Bwillou1</div>
+  </div>
+
+  <!-- Carte Déverrouillage Passkey (Touch ID / Face ID) si actif -->
+  <div id="passkey-card" class="token-box" style="display:none; text-align:center; padding:36px 24px;">
+    <div style="font-size:40px; margin-bottom:12px;">🛡️</div>
+    <h3 style="font-size:1.4rem; margin-bottom:8px;">Espace Verrouillé</h3>
+    <p style="color:var(--text-muted); font-size:14px; max-width:440px; margin:0 auto 20px; line-height:1.5;">
+      Protection biométrique Apple active. Authentifiez-vous avec Touch ID (Mac) ou Face ID (iPhone) pour accéder à votre espace de publication.
+    </p>
+    <button id="btn-passkey-unlock" class="btn btn-primary" style="padding:12px 28px; font-size:15px; font-weight:700;">
+      👆 Déverrouiller avec Touch ID / Face ID
+    </button>
+    <div style="margin-top:18px;">
+      <button id="btn-use-token-fallback" class="btn btn-ghost" style="font-size:12.5px; color:var(--text-muted); border:none; background:transparent; cursor:pointer; text-decoration:underline;">
+        Entrer ou changer ma clé GitHub manuellement
+      </button>
+    </div>
+  </div>
+
+  <!-- Carte Authentification Double Protection (Token GitHub + Mot de Passe + FingerprintJS) -->
+  <div id="token-card" class="token-box">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+      <span style="font-size:24px;">🛡️</span>
+      <div>
+        <h3 style="margin:0; font-size:1.3rem;">Authentification Sécurisée (Double Facteur)</h3>
+        <span style="font-size:12.5px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
+      </div>
+    </div>
+    <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px; line-height:1.5;">
+      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la gestion et la publication, veuillez entrer votre <strong>Personal Access Token GitHub</strong> ainsi que votre <strong>mot de passe maître</strong>. Toute tentative non autorisée fait l'objet d'un verrouillage adaptatif par empreinte matérielle (FingerprintJS).
+    </p>
+
+    <!-- Zone de compte à rebours de blocage (Force Brute & Pénalité Levenshtein) -->
+    <div id="lockout-banner" style="display:none; margin-bottom:18px; padding:14px 18px; border-radius:10px; background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#ef4444;">
+      <div style="font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px;">
+        <span>⏳</span> Accès temporairement verrouillé
+      </div>
+      <p id="lockout-timer-text" style="margin:6px 0 0; font-size:13.5px; line-height:1.5; font-weight:600;"></p>
+    </div>
+
+    <form id="admin-auth-form" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label" for="github-pat-input">1. Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
+        <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="admin-password-input">2. Mot de passe maître administrateur :</label>
+        <input type="password" id="admin-password-input" class="form-control" placeholder="••••••••••••••••" autocomplete="current-password">
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+        <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14.5px;">
+          🔐 Vérifier & Déverrouiller
+        </button>
+        <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
+          ⏳ Vérification cryptographique et connexion GitHub...
+        </span>
+      </div>
+    </form>
+
+    <div id="token-error-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
+
+    <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <span>🛡️ <strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
+      <span id="fp-device-tag" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Empreinte : Détection...</span>
+    </div>
+  </div>
+
+  <!-- Contenu déverrouillé -->
+  <div id="admin-workspace" style="display:none;">
+    <!-- Enrôlement Passkey Touch ID / Face ID Apple -->
+    <div id="passkey-setup-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="max-width:550px;">
+        <strong style="color:var(--text); font-size:14px;">👆 Activer Touch ID / Face ID (Passkey Apple)</strong>
+        <p style="margin:3px 0 0; font-size:13px; color:var(--text-muted); line-height:1.4;">
+          Associez votre Mac ou votre iPhone pour déverrouiller cet espace en 1 seconde avec votre empreinte ou votre visage, sans jamais retaper de clé.
+        </p>
+      </div>
+      <button id="btn-enroll-passkey" class="btn btn-primary" style="font-size:13px; font-weight:700; padding:8px 16px;">
+        🛡️ Activer sur ce Mac / iPhone
+      </button>
+    </div>
+
+    <div class="admin-tabs" style="align-items:center; flex-wrap:wrap; gap:8px;">
+      <button class="admin-tab active" data-tab="tab-blog">📝 Rédiger un Article (Blog)</button>
+      <button class="admin-tab" data-tab="tab-photo">📷 Publier une Photo</button>
+      <button class="admin-tab" data-tab="tab-manage">⚙️ Gérer mes publications</button>
+      <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:12.5px; text-decoration:none; padding:7px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">🎨 Studio Éditeur ↗</a>
+      <a href="console-admin.html" class="btn" style="font-size:12.5px; text-decoration:none; padding:7px 12px; background:#0f1713; border:1px solid #1f2922; color:#ef4444; font-weight:700;">⚡ Console Secrète ↗</a>
+    </div>
+
+    <!-- Onglet 1 : Article Blog -->
+    <div class="admin-panel active" id="tab-blog">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Nouvel Article de Blog</h2>
+      
+      <form id="form-blog">
+        <div class="form-group">
+          <label class="form-label" for="blog-title">Titre de l'article *</label>
+          <input type="text" id="blog-title" class="form-control" placeholder="Ex: Point d'étape sur l'échéance du 16 octobre..." required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="blog-category">Catégorie</label>
+            <select id="blog-category" class="form-control">
+              <option value="Dossier CCE">Dossier CCE</option>
+              <option value="Juridique">Juridique</option>
+              <option value="Terrain">Terrain</option>
+              <option value="Médias">Médias</option>
+              <option value="Réflexion">Réflexion</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="blog-date">Date de publication</label>
+            <input type="date" id="blog-date" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-summary">Résumé court (1 à 2 phrases d'accroche)</label>
+          <input type="text" id="blog-summary" class="form-control" placeholder="Bref aperçu affiché sur la liste des articles...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image de couverture</label>
+          <div class="file-dropzone" onclick="document.getElementById('blog-file').click()">
+            <input type="file" id="blog-file" accept="image/*" style="display:none;">
+            <span>📸 Cliquez ou glissez une photo ici depuis votre appareil</span>
+            <img id="blog-file-preview" class="file-preview" alt="Prévisualisation">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-content">Contenu complet de l'article *</label>
+          <textarea id="blog-content" class="form-control" placeholder="Rédigez votre texte ici. Les sauts de ligne et paragraphes seront automatiquement respectés..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="blog-tags">Mots-clés (séparés par des virgules)</label>
+          <input type="text" id="blog-tags" class="form-control" placeholder="CCE, Tourbière, BAPE, Blainville">
+        </div>
+
+        <button type="submit" id="btn-publish-blog" class="btn-submit">🚀 Publier l'article sur le Blog</button>
+      </form>
+    </div>
+
+    <!-- Onglet 2 : Photo Galerie -->
+    <div class="admin-panel" id="tab-photo">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Ajouter une Photo à la Galerie</h2>
+      
+      <form id="form-photo">
+        <div class="form-group">
+          <label class="form-label" for="photo-title">Titre de la photo *</label>
+          <input type="text" id="photo-title" class="form-control" placeholder="Ex: Sortie d'observation dans le secteur nord de la tourbière..." required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="photo-category">Catégorie</label>
+            <select id="photo-category" class="form-control">
+              <option value="Tourbière">Tourbière</option>
+              <option value="Biodiversité">Biodiversité</option>
+              <option value="Terrain">Terrain</option>
+              <option value="Événements">Événements</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="photo-date">Date de la photo</label>
+            <input type="date" id="photo-date" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="photo-location">Lieu / Emplacement</label>
+          <input type="text" id="photo-location" class="form-control" placeholder="Ex: Grande Tourbière de Blainville, QC">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sélectionner la photo *</label>
+          <div class="file-dropzone" onclick="document.getElementById('photo-file').click()">
+            <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
+            <span>📷 Cliquez ou choisissez une photo haute définition</span>
+            <img id="photo-file-preview" class="file-preview" alt="Prévisualisation">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="photo-desc">Légende / Description</label>
+          <textarea id="photo-desc" class="form-control" style="min-height:90px;" placeholder="Détails, contexte scientifique ou observation..."></textarea>
+        </div>
+
+        <button type="submit" id="btn-publish-photo" class="btn-submit">✨ Ajouter la photo à la Galerie</button>
+      </form>
+    </div>
+
+    <!-- Onglet 3 : Gestion & Suppression -->
+    <div class="admin-panel" id="tab-manage">
+      <h2 style="font-size:1.3rem; margin-bottom:16px;">Gestion des Contenus</h2>
+      
+      <h3 style="font-size:1.1rem; margin-top:20px; color:var(--accent);">Articles de Blog Actifs</h3>
+      <div id="manage-blog-list" style="margin-top:10px;">Chargement...</div>
+
+      <h3 style="font-size:1.1rem; margin-top:30px; color:var(--accent);">Photos de la Galerie</h3>
+      <div id="manage-photo-list" style="margin-top:10px;">Chargement...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></div>
+    <div class="footer-licence-box">
+      Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/profile.php?id=61591437730054" target="_blank" rel="noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="blog.html">Blog</a> · 
+      <a href="photos.html">Photos</a> · 
+      <a href="viewer.html">Consulter les documents</a> · 
+      <a href="stablex.html">Dossier Stablex</a> · 
+      <a href="presse.html">Presse</a> · 
+      <a href="live.html">Horloge Live</a> · 
+      <a href="terms.html">Conditions d'utilisation</a> · 
+      <a href="privacy.html">Politique de confidentialité</a> · 
+      <a href="txt.html">Version texte</a> · 
+      <a href="#accueil">Haut ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const GITHUB_REPO = "Bwillou1/WilliamGuindon";
+  const GITHUB_API = "https://api.github.com";
+
+  // Initialisation de la date d'aujourd'hui
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("blog-date").value = today;
+  document.getElementById("photo-date").value = today;
+
+  // ==========================================
+  // CONFIGURATION DES SECRETS & HASHES SHA-256
+  // ==========================================
+  const VALID_PASSWORD_HASHES = [
+    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595", // Hash SHA-256 maître
+    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"  // Hash additionnel de sécurité
+  ];
+
+  // Calcul du hash SHA-256 (WebCrypto API native)
+  async function sha256Hex(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // ==========================================
+  // LOGIQUE DE PÉNALITÉ ET ANTI-FORCE BRUTE
+  // ==========================================
+  function calculatePenaltyMinutes(compteurEchecs, isTampered) {
+    const attempts = Math.max(1, compteurEchecs || 1);
+    let penaltyMinutes = 0;
+
+    // Pénalité progressive en cas d'échecs répétés
+    if (attempts === 1) {
+      penaltyMinutes = 1;
+    } else if (attempts === 2) {
+      penaltyMinutes = 3;
+    } else {
+      penaltyMinutes = Math.min(720, Math.pow(attempts, 2) * 2);
+    }
+
+    // Multiplicateur de triche (vidage de stockage / cookies) x5
+    if (isTampered) {
+      penaltyMinutes *= 5;
+    }
+
+    // Plafond de sécurité maximum absolu (12 heures = 720 minutes)
+    return Math.min(penaltyMinutes, 720);
+  }
+
+  // ==========================================
+  // PERSISTANCE, FINGERPRINTJS & ANTI-CONTOURNEURS
+  // ==========================================
+  let cachedVisitorId = null;
+
+  async function getVisitorId() {
+    if (cachedVisitorId) return cachedVisitorId;
+    try {
+      if (window.FingerprintJS) {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        cachedVisitorId = result.visitorId;
+        return cachedVisitorId;
+      }
+    } catch (err) {
+      console.warn("FingerprintJS CDN warning:", err);
+    }
+    // Fallback matériel d'empreinte si le CDN est indisponible
+    const rawData = [
+      navigator.userAgent,
+      navigator.language,
+      screen.colorDepth,
+      screen.width + "x" + screen.height,
+      new Date().getTimezoneOffset()
+    ].join("||");
+    cachedVisitorId = (await sha256Hex(rawData)).substring(0, 16);
+    return cachedVisitorId;
+  }
+
+  function getCookie(name) {
+    const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? decodeURIComponent(v[2]) : null;
+  }
+
+  function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
+    document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toUTCString() + ";SameSite=Strict";
+  }
+
+  function getSecurityState(visitorId) {
+    const localKey = "wg_sec_state_" + visitorId;
+    const shadowKey = "wg_sec_shadow_" + visitorId;
+    const localRaw = localStorage.getItem(localKey);
+    const shadowRaw = getCookie(shadowKey) || sessionStorage.getItem(shadowKey);
+
+    let state = null;
+    let isTampered = false;
+
+    if (localRaw) {
+      try { state = JSON.parse(localRaw); } catch (e) {}
+    }
+
+    // Critère 4 : Si le LocalStorage a été vidé mais que la mémoire fantôme retient des échecs
+    if (!state && shadowRaw) {
+      try {
+        const shadowState = JSON.parse(shadowRaw);
+        if (shadowState && (shadowState.compteurEchecs > 0 || shadowState.bloqueJusqua > Date.now())) {
+          state = shadowState;
+          isTampered = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!state) {
+      state = { compteurEchecs: 0, dernierEchecTimestamp: 0, bloqueJusqua: 0 };
+    }
+
+    // Critère 3 : Expiration du compteur si dernier échec > 24 heures
+    const now = Date.now();
+    if (state.dernierEchecTimestamp && (now - state.dernierEchecTimestamp > 24 * 60 * 60 * 1000)) {
+      state.compteurEchecs = 0;
+      state.bloqueJusqua = 0;
+    }
+
+    return { state, isTampered };
+  }
+
+  function saveSecurityState(visitorId, state) {
+    const localKey = "wg_sec_state_" + visitorId;
+    const shadowKey = "wg_sec_shadow_" + visitorId;
+    const jsonStr = JSON.stringify(state);
+    try { localStorage.setItem(localKey, jsonStr); } catch (e) {}
+    try { sessionStorage.setItem(shadowKey, jsonStr); } catch (e) {}
+    try { setCookie(shadowKey, jsonStr, 7); } catch (e) {}
+  }
+
+  // ==========================================
+  // COMPTE À REBOURS EN TEMPS RÉEL (CRITÈRE 6)
+  // ==========================================
+  let countdownTimerId = null;
+
+  function updateLockoutUI(bloqueJusqua) {
+    const banner = document.getElementById("lockout-banner");
+    const timerText = document.getElementById("lockout-timer-text");
+    const patInput = document.getElementById("github-pat-input");
+    const passInput = document.getElementById("admin-password-input");
+    const submitBtn = document.getElementById("btn-save-token");
+
+    if (countdownTimerId) {
+      clearInterval(countdownTimerId);
+      countdownTimerId = null;
+    }
+
+    const now = Date.now();
+    if (bloqueJusqua && bloqueJusqua > now) {
+      if (patInput) patInput.disabled = true;
+      if (passInput) passInput.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
+      if (banner) banner.style.display = "block";
+
+      function renderCountdown() {
+        const diffMs = bloqueJusqua - Date.now();
+        if (diffMs <= 0) {
+          clearInterval(countdownTimerId);
+          countdownTimerId = null;
+          if (patInput) patInput.disabled = false;
+          if (passInput) passInput.disabled = false;
+          if (submitBtn) submitBtn.disabled = false;
+          if (banner) banner.style.display = "none";
+          if (timerText) timerText.textContent = "";
+          return;
+        }
+        const totalSeconds = Math.ceil(diffMs / 1000);
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        if (timerText) {
+          timerText.innerHTML = `Veuillez patienter <strong>${mins} minute(s) et ${secs < 10 ? '0' : ''}${secs} seconde(s)</strong> avant de réessayer.`;
+        }
+      }
+
+      renderCountdown();
+      countdownTimerId = setInterval(renderCountdown, 1000);
+      return true;
+    } else {
+      if (patInput) patInput.disabled = false;
+      if (passInput) passInput.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
+      if (banner) banner.style.display = "none";
+      return false;
+    }
+  }
+
+  function showTokenError(msg) {
+    const errorBanner = document.getElementById("token-error-banner");
+    if (errorBanner) {
+      errorBanner.innerHTML = msg;
+      errorBanner.style.display = "block";
+    }
+  }
+
+  // ==========================================
+  // GESTION DU JETON & SESSIONS SÉCURISÉES
+  // ==========================================
+  function getToken() {
+    return localStorage.getItem("wg_github_pat") || sessionStorage.getItem("wg_github_pat") || "";
+  }
+
+  function clearToken() {
+    localStorage.removeItem("wg_github_pat");
+    sessionStorage.removeItem("wg_github_pat");
+    localStorage.removeItem("wg_passkey_enabled");
+    localStorage.removeItem("wg_passkey_id");
+    updateAuthUI(false);
+  }
+
+  // Encodage / Décodage pour WebAuthn
+  function bufToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function base64ToBuf(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  // Validation cryptographique en direct auprès de GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé invalide. Un jeton GitHub valide commence par 'ghp_' ou 'github_pat_'.");
+    }
+
+    // A. Appel API utilisateur
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (userRes.status === 401) {
+      throw new Error("Clé d'accès refusée par GitHub (401 Unauthorized) : clé inexistante, expirée ou révoquée.");
+    }
+    if (!userRes.ok) {
+      throw new Error(`Erreur de communication avec GitHub (HTTP ${userRes.status}).`);
+    }
+
+    const userData = await userRes.json();
+    const login = (userData.login || "").toLowerCase();
+
+    // B. Vérification stricte de l'identité : seul @Bwillou1 est autorisé
+    if (login !== "bwillou1") {
+      throw new Error(`Accès strictement bloqué : cette clé appartient à l'utilisateur @${userData.login}. Seul le compte titulaire @Bwillou1 est autorisé.`);
+    }
+
+    // C. Vérification des permissions d'écriture
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (!repoRes.ok) {
+      throw new Error(`Impossible de valider les droits sur le dépôt ${GITHUB_REPO}.`);
+    }
+
+    const repoData = await repoRes.json();
+    if (!repoData.permissions || !repoData.permissions.push) {
+      throw new Error("Ce jeton n'a pas les droits d'écriture ('push' / write) sur le dépôt.");
+    }
+
+    return userData;
+  }
+
+  // Gestion Passkey (Touch ID / Face ID Apple)
+  const isPasskeySupported = !!(window.PublicKeyCredential && window.crypto);
+
+  async function enrollPasskey() {
+    try {
+      const token = getToken();
+      if (!token) return;
+
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const userId = new Uint8Array(16);
+      window.crypto.getRandomValues(userId);
+
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge: challenge,
+          rp: { name: "William Guindon Admin", ...(rpId ? { id: rpId } : {}) },
+          user: { id: userId, name: "Bwillou1", displayName: "William Guindon" },
+          pubKeyCredParams: [
+            { type: "public-key", alg: -7 },   // ES256
+            { type: "public-key", alg: -257 }  // RS256
+          ],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            userVerification: "required"
+          },
+          timeout: 60000
+        }
+      });
+
+      if (credential) {
+        localStorage.setItem("wg_passkey_enabled", "true");
+        localStorage.setItem("wg_passkey_id", bufToBase64(credential.rawId));
+        const setupBanner = document.getElementById("passkey-setup-banner");
+        if (setupBanner) setupBanner.style.display = "none";
+        showStatus("Protection Touch ID / Face ID activée avec succès sur cet appareil !", "success");
+      }
+    } catch (err) {
+      console.warn("Échec Passkey:", err);
+      showStatus("Configuration biométrique annulée ou non supportée.", "error");
+    }
+  }
+
+  async function unlockWithPasskey() {
+    const credId = localStorage.getItem("wg_passkey_id");
+    if (!credId) {
+      showTokenForm();
+      return;
+    }
+
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge: challenge,
+          ...(rpId ? { rpId: rpId } : {}),
+          allowCredentials: [{
+            type: "public-key",
+            id: base64ToBuf(credId)
+          }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        updateAuthUI(true);
+        showStatus("Déverrouillé avec succès via Touch ID / Face ID !", "success");
+      }
+    } catch (err) {
+      console.warn("Échec Touch ID:", err);
+      showStatus("Authentification biométrique annulée ou refusée.", "error");
+    }
+  }
+
+  function showTokenForm() {
+    document.getElementById("passkey-card").style.display = "none";
+    document.getElementById("token-card").style.display = "block";
+  }
+
+  function updateAuthUI(isAuthorized = false) {
+    const checkingCard = document.getElementById("auth-checking-card");
+    const passkeyCard = document.getElementById("passkey-card");
+    const tokenCard = document.getElementById("token-card");
+    const workspace = document.getElementById("admin-workspace");
+    const authBar = document.getElementById("auth-status-bar");
+    const setupBanner = document.getElementById("passkey-setup-banner");
+
+    if (checkingCard) checkingCard.style.display = "none";
+
+    if (isAuthorized) {
+      if (passkeyCard) passkeyCard.style.display = "none";
+      if (tokenCard) tokenCard.style.display = "none";
+      if (workspace) workspace.style.display = "block";
+      if (authBar) {
+        authBar.innerHTML = `
+          <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
+          <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
+        `;
+      }
+
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") !== "true") {
+        if (setupBanner) setupBanner.style.display = "flex";
+      } else {
+        if (setupBanner) setupBanner.style.display = "none";
+      }
+
+      loadManageList();
+    } else {
+      if (workspace) workspace.style.display = "none";
+      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
+
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") === "true") {
+        if (passkeyCard) passkeyCard.style.display = "block";
+        if (tokenCard) tokenCard.style.display = "none";
+      } else {
+        if (passkeyCard) passkeyCard.style.display = "none";
+        if (tokenCard) tokenCard.style.display = "block";
+      }
+    }
+  }
+
+  // ==========================================
+  // SOUMISSION AUTHENTIFICATION DOUBLE FACTEUR
+  // ==========================================
+  async function handleAuthSubmission() {
+    const vId = await getVisitorId();
+    const { state, isTampered } = getSecurityState(vId);
+
+    if (updateLockoutUI(state.bloqueJusqua)) {
+      showTokenError("Accès temporairement bloqué suite à des échecs d'authentification.");
+      return;
+    }
+
+    const patInput = document.getElementById("github-pat-input");
+    const passInput = document.getElementById("admin-password-input");
+    const tokenVal = (patInput.value || "").trim();
+    const passVal = (passInput.value || "");
+    const errorBanner = document.getElementById("token-error-banner");
+    const spinner = document.getElementById("token-spinner");
+    const submitBtn = document.getElementById("btn-save-token");
+
+    if (errorBanner) errorBanner.style.display = "none";
+
+    if (!tokenVal) {
+      showTokenError("Veuillez saisir votre jeton personnel GitHub (PAT).");
+      return;
+    }
+    if (!passVal) {
+      showTokenError("Veuillez saisir le mot de passe maître de sécurité.");
+      return;
+    }
+
+    // 1. Validation cryptographique du mot de passe (SHA-256 via WebCrypto)
+    const passHash = await sha256Hex(passVal);
+    const isPasswordCorrect = VALID_PASSWORD_HASHES.includes(passHash);
+
+    if (!isPasswordCorrect) {
+      state.compteurEchecs = (state.compteurEchecs || 0) + 1;
+      state.dernierEchecTimestamp = Date.now();
+
+      const penaltyMinutes = calculatePenaltyMinutes(state.compteurEchecs, isTampered);
+      state.bloqueJusqua = Date.now() + (penaltyMinutes * 60 * 1000);
+      saveSecurityState(vId, state);
+
+      updateLockoutUI(state.bloqueJusqua);
+
+      const tamperMsg = isTampered ? " (Détection de contournement de stockage : facteur x5 appliqué)" : "";
+      showTokenError(`❌ Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).${tamperMsg}`);
+      return;
+    }
+
+    // 2. Mot de passe valide -> Validation du jeton auprès de GitHub
+    if (submitBtn) submitBtn.disabled = true;
+    if (spinner) spinner.style.display = "inline";
+
+    try {
+      const userData = await validateGitHubToken(tokenVal);
+
+      // Réussite totale de l'authentification 2FA
+      state.compteurEchecs = 0;
+      state.bloqueJusqua = 0;
+      state.dernierEchecTimestamp = 0;
+      saveSecurityState(vId, state);
+
+      localStorage.setItem("wg_github_pat", tokenVal);
+      patInput.value = "";
+      passInput.value = "";
+
+      updateAuthUI(true);
+      showStatus(`Authentification 2FA réussie. Bienvenue @${userData.login} !`, "success");
+
+      if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") !== "true") {
+        const setupBanner = document.getElementById("passkey-setup-banner");
+        if (setupBanner) setupBanner.style.display = "flex";
+      }
+    } catch (err) {
+      showTokenError("❌ " + err.message);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+      if (spinner) spinner.style.display = "none";
+    }
+  }
+
+  // Initialisation au chargement de la page
+  async function initAuth() {
+    const vId = await getVisitorId();
+    const fpDeviceTag = document.getElementById("fp-device-tag");
+    if (fpDeviceTag) {
+      fpDeviceTag.textContent = `Empreinte : ${vId.substring(0, 10)}...`;
+    }
+
+    const { state } = getSecurityState(vId);
+    updateLockoutUI(state.bloqueJusqua);
+
+    const token = getToken();
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+
+    if (isPasskey) {
+      updateAuthUI(false);
+      return;
+    }
+
+    if (token) {
+      const checkingCard = document.getElementById("auth-checking-card");
+      const tokenCard = document.getElementById("token-card");
+      if (checkingCard) checkingCard.style.display = "block";
+      if (tokenCard) tokenCard.style.display = "none";
+      try {
+        await validateGitHubToken(token);
+        updateAuthUI(true);
+      } catch (e) {
+        console.warn("Clé stockée révoquée ou invalide :", e.message);
+        clearToken();
+      }
+    } else {
+      updateAuthUI(false);
+    }
+  }
+
+  // Événements d'authentification
+  const authForm = document.getElementById("admin-auth-form");
+  if (authForm) {
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleAuthSubmission();
+    });
+  }
+
+  const saveTokenBtn = document.getElementById("btn-save-token");
+  if (saveTokenBtn) {
+    saveTokenBtn.onclick = handleAuthSubmission;
+  }
+
+  // Événements Passkey
+  const passkeyUnlockBtn = document.getElementById("btn-passkey-unlock");
+  if (passkeyUnlockBtn) passkeyUnlockBtn.onclick = unlockWithPasskey;
+
+  const fallbackTokenBtn = document.getElementById("btn-use-token-fallback");
+  if (fallbackTokenBtn) {
+    fallbackTokenBtn.onclick = (e) => {
+      e.preventDefault();
+      showTokenForm();
+    };
+  }
+
+  const enrollBtn = document.getElementById("btn-enroll-passkey");
+  if (enrollBtn) {
+    enrollBtn.onclick = enrollPasskey;
+  }
+
+  initAuth();
+
+  function showStatus(msg, type = "success") {
+    const el = document.getElementById("status-message");
+    el.className = "status-toast status-" + type;
+    el.textContent = msg;
+    el.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => { el.style.display = "none"; }, 7000);
+  }
+
+  // Gestion des Onglets
+  document.querySelectorAll(".admin-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
+    });
+  });
+
+  // Helper Conversion Image en Base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Prévisualisation sécurisée des fichiers images
+  document.getElementById("blog-file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file && file.type && file.type.startsWith("image/")) {
+      const prev = document.getElementById("blog-file-preview");
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
+          prev.src = evt.target.result;
+          prev.style.display = "inline-block";
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById("photo-file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file && file.type && file.type.startsWith("image/")) {
+      const prev = document.getElementById("photo-file-preview");
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
+          prev.src = evt.target.result;
+          prev.style.display = "inline-block";
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Helper Appel GitHub API
+  async function githubRequest(path, method = "GET", body = null) {
+    const token = getToken();
+    const headers = {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github.v3+json",
+      "Content-Type": "application/json"
+    };
+    const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(err.message || "Erreur GitHub " + res.status);
+    }
+    return res.json();
+  }
+
+  // 1. Publication Blog
+  document.getElementById("form-blog").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("btn-publish-blog");
+    btn.disabled = true;
+    btn.textContent = "⏳ Publication en cours sur GitHub...";
+
+    try {
+      const title = document.getElementById("blog-title").value.trim();
+      const category = document.getElementById("blog-category").value;
+      const date = document.getElementById("blog-date").value || today;
+      const summary = document.getElementById("blog-summary").value.trim();
+      const content = document.getElementById("blog-content").value.trim();
+      const rawTags = document.getElementById("blog-tags").value;
+      const tags = rawTags.split(",").map(t => t.trim()).filter(Boolean);
+      const file = document.getElementById("blog-file").files[0];
+
+      let coverImage = "tourbiere.jpg";
+
+      // Upload de l'image si présente
+      if (file) {
+        const cleanName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+        const b64 = await fileToBase64(file);
+        await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
+          message: `upload(image): ${cleanName}`,
+          content: b64
+        });
+        coverImage = "assets/uploads/" + cleanName;
+      }
+
+      // Récupération de data/blog.json
+      const fileData = await githubRequest("contents/data/blog.json");
+      const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+      const newPost = {
+        id: "post-" + Date.now(),
+        title,
+        slug,
+        date,
+        author: "William Guindon",
+        category,
+        summary,
+        content,
+        coverImage,
+        tags
+      };
+
+      currentJson.unshift(newPost);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/data/blog.json", "PUT", {
+        message: `feat(blog): ajouter article "${title}"`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("🎉 Article publié avec succès ! Il sera en ligne dans 30 secondes.", "success");
+      document.getElementById("form-blog").reset();
+      document.getElementById("blog-file-preview").style.display = "none";
+      loadManageList();
+    } catch (err) {
+      console.error(err);
+      showStatus("Erreur : " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🚀 Publier l'article sur le Blog";
+    }
+  });
+
+  // 2. Publication Photo
+  document.getElementById("form-photo").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("btn-publish-photo");
+    btn.disabled = true;
+    btn.textContent = "⏳ Téléversement de la photo...";
+
+    try {
+      const title = document.getElementById("photo-title").value.trim();
+      const category = document.getElementById("photo-category").value;
+      const date = document.getElementById("photo-date").value || today;
+      const location = document.getElementById("photo-location").value.trim();
+      const description = document.getElementById("photo-desc").value.trim();
+      const file = document.getElementById("photo-file").files[0];
+
+      if (!file) throw new Error("Veuillez sélectionner un fichier photo.");
+
+      const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const b64 = await fileToBase64(file);
+      await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
+        message: `upload(photo): ${cleanName}`,
+        content: b64
+      });
+
+      const photoUrl = "assets/uploads/" + cleanName;
+
+      // Récupération de data/photos.json
+      const fileData = await githubRequest("contents/data/photos.json");
+      const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      const newPhoto = {
+        id: "photo-" + Date.now(),
+        title,
+        date,
+        location,
+        category,
+        description,
+        imageUrl: photoUrl
+      };
+
+      currentJson.unshift(newPhoto);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/data/photos.json", "PUT", {
+        message: `feat(photos): ajouter photo "${title}"`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("✨ Photo ajoutée avec succès à la Galerie !", "success");
+      document.getElementById("form-photo").reset();
+      document.getElementById("photo-file-preview").style.display = "none";
+      loadManageList();
+    } catch (err) {
+      console.error(err);
+      showStatus("Erreur : " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✨ Ajouter la photo à la Galerie";
+    }
+  });
+
+  // 3. Gestion & Suppression
+  async function loadManageList() {
+    const blogList = document.getElementById("manage-blog-list");
+    const photoList = document.getElementById("manage-photo-list");
+
+    try {
+      const blogRes = await fetch("data/blog.json?v=" + Date.now());
+      const blogData = await blogRes.json();
+      blogList.innerHTML = blogData.map(p => `
+        <div class="item-list-row">
+          <div>
+            <strong>${p.title}</strong>
+            <div style="font-size:12px; color:var(--text-muted);">${p.date} · ${p.category}</div>
+          </div>
+          <button class="btn-danger" onclick="deleteItem('blog', '${p.id}')">Supprimer</button>
+        </div>
+      `).join("") || "<p style='color:var(--text-muted);'>Aucun article.</p>";
+
+      const photoRes = await fetch("data/photos.json?v=" + Date.now());
+      const photoData = await photoRes.json();
+      photoList.innerHTML = photoData.map(ph => `
+        <div class="item-list-row">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${ph.imageUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+            <div>
+              <strong>${ph.title}</strong>
+              <div style="font-size:12px; color:var(--text-muted);">${ph.date} · ${ph.location || ""}</div>
+            </div>
+          </div>
+          <button class="btn-danger" onclick="deleteItem('photo', '${ph.id}')">Supprimer</button>
+        </div>
+      `).join("") || "<p style='color:var(--text-muted);'>Aucune photo.</p>";
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  window.deleteItem = async function(type, id) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) return;
+
+    try {
+      const filename = type === "blog" ? "data/blog.json" : "data/photos.json";
+      const fileData = await githubRequest("contents/" + filename);
+      let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+      currentJson = currentJson.filter(item => item.id !== id);
+
+      const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+      await githubRequest("contents/" + filename, "PUT", {
+        message: `chore(${type}): supprimer élément ${id}`,
+        content: updatedB64,
+        sha: fileData.sha
+      });
+
+      showStatus("Élément supprimé avec succès.", "success");
+      loadManageList();
+    } catch (e) {
+      showStatus("Erreur de suppression: " + e.message, "error");
+    }
+  };
+
+  updateAuthUI();
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<script src="assets/js/security-guard.js"></script>
+<script data-cookieconsent="ignore">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // 1. Initialiser le Mode Consentement Google v2 (valeurs par defaut)
+  gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    personalization_storage: "denied",
+    functionality_storage: "denied",
+    security_storage: "granted",
+    wait_for_update: 500
+  });
+  gtag("set", "ads_data_redaction", true);
+  gtag("set", "url_passthrough", true);
+
+  // 2. Transmission immediate des signaux Cookiebot CMP vers Google Tag / GA4
+  function syncCookiebotWithGoogleConsent() {
+    if (window.Cookiebot && window.Cookiebot.consent) {
+      gtag("consent", "update", {
+        ad_storage: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        analytics_storage: window.Cookiebot.consent.statistics ? "granted" : "denied",
+        ad_user_data: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        ad_personalization: window.Cookiebot.consent.marketing ? "granted" : "denied",
+        personalization_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        functionality_storage: window.Cookiebot.consent.preferences ? "granted" : "denied",
+        security_storage: "granted"
+      });
+      dataLayer.push({ event: "cookie_consent_update" });
+    }
+  }
+
+  window.addEventListener("CookiebotOnConsentReady", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnAccept", syncCookiebotWithGoogleConsent);
+  window.addEventListener("CookiebotOnDecline", syncCookiebotWithGoogleConsent);
+</script>
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ea970895-5ee9-461a-9c18-020d103bf8e2" data-consentmode-defaults="disabled" type="text/javascript" async></script>
+<!-- Google tag (gtag.js) - G-HMFX0PHXES -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMFX0PHXES" data-cookieconsent="ignore"></script>
+<script data-cookieconsent="ignore">
+  gtag('js', new Date());
+  gtag('config', 'G-HMFX0PHXES');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+<title>Studio Éditeur Visuel Sécurisé — William Guindon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#064e3b">
+
+<style>
+  :root {
+    --bg-dark: #090d0a;
+    --bg-panel: #111813;
+    --border: #1f2922;
+    --accent: #22c55e;
+    --accent-hover: #16a34a;
+    --text: #f0f4f1;
+    --text-muted: #9bb0a2;
+    --danger: #ef4444;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Barre d'outils supérieure */
+  .editor-topbar {
+    height: 58px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+  }
+  .topbar-left, .topbar-center, .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-badge {
+    font-weight: 800;
+    font-size: 15px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-badge span {
+    color: var(--accent);
+  }
+  .status-badge {
+    font-size: 11.5px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+  .status-badge.locked {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  /* Sélecteur d'affichage (Desktop, Tablet, Mobile) */
+  .device-switcher {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    display: flex;
+    gap: 2px;
+  }
+  .device-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .device-btn.active, .device-btn:hover {
+    background: var(--border);
+    color: #ffffff;
+  }
+
+  /* Boutons d'action */
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg-dark);
+    color: var(--text);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn:hover {
+    background: var(--border);
+  }
+  .btn-save {
+    background: var(--accent);
+    color: #042f2e;
+    border-color: var(--accent);
+  }
+  .btn-save:hover {
+    background: #4ade80;
+    color: #042f2e;
+  }
+  .btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .btn-danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+  }
+
+  /* Zone de travail principale */
+  .editor-workspace {
+    flex: 1;
+    display: flex;
+    height: calc(100vh - 58px);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Panneau latéral des sections */
+  .editor-sidebar {
+    width: 310px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+  }
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .section-item {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s;
+  }
+  .section-item:hover {
+    border-color: var(--accent);
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .section-controls {
+    display: flex;
+    gap: 4px;
+  }
+  .control-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    transition: all 0.15s;
+  }
+  .control-btn:hover {
+    background: var(--border);
+    color: #ffffff;
+  }
+
+  /* Zone de prévisualisation Iframe */
+  .preview-wrapper {
+    flex: 1;
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .preview-frame-container {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    transition: width 0.3s ease, border-radius 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    position: relative;
+  }
+  .preview-frame-container.tablet {
+    width: 768px;
+    border: 8px solid var(--border);
+    border-radius: 16px;
+  }
+  .preview-frame-container.mobile {
+    width: 380px;
+    border: 10px solid var(--border);
+    border-radius: 24px;
+  }
+  #site-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* Notifications */
+  .editor-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #042f2e;
+    border: 1.5px solid var(--accent);
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    display: none;
+    z-index: 1000;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* ==================================================== */
+  /* ÉCRAN DE VERROUILLAGE TOTAL DU STUDIO                */
+  /* ==================================================== */
+  .editor-lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(9, 13, 10, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .editor-lock-screen.unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .lock-card {
+    background: var(--bg-panel);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 32px;
+    max-width: 520px;
+    width: 90%;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+    text-align: center;
+  }
+  .lock-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1.5px solid rgba(34, 197, 94, 0.3);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 16px auto;
+  }
+  .lock-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  .lock-subtitle {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .lock-field-group {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  .lock-label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .lock-input {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-dark);
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .lock-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  }
+  .lock-btn-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 8px;
+    justify-content: center;
+  }
+  .lock-error-box {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    font-size: 13px;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .lock-footer-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+  }
+  .lock-footer-links a, .lock-footer-links button {
+    color: var(--text-muted);
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12.5px;
+  }
+  .lock-footer-links a:hover, .lock-footer-links button:hover {
+    color: #ffffff;
+  }
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN DE VERROUILLAGE TOTAL : Bloque toute visualisation et modification -->
+<div class="editor-lock-screen" id="editor-lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon-wrap" id="lock-icon">🔒</div>
+    <h1 class="lock-title">Studio Éditeur Visuel</h1>
+    <p class="lock-subtitle">
+      La visualisation et l'édition en direct sont <strong>strictement verrouillées</strong>.<br>
+      Veuillez entrer le <strong>code d'accès administrateur</strong> et votre <strong>clé GitHub</strong> (@Bwillou1).
+    </p>
+
+    <!-- Formulaire d'authentification complète -->
+    <form id="lock-auth-form" onsubmit="handleLockAuthSubmit(event)">
+      <div class="lock-field-group">
+        <label class="lock-label" for="lock-pass-input">🔑 1. Code d'accès administrateur :</label>
+        <input type="password" id="lock-pass-input" class="lock-input" placeholder="Mot de passe admin" autocomplete="current-password" required>
+      </div>
+
+      <div class="lock-field-group">
+        <label class="lock-label" for="lock-token-input">🐙 2. Clé d'authentification GitHub (PAT) :</label>
+        <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
+      </div>
+
+      <button type="submit" class="btn btn-save lock-btn-submit" id="btn-lock-submit">
+        🔓 Déverrouiller l'Éditeur Visuel
+      </button>
+
+      <div id="lock-passkey-container" style="display:none; margin-top:12px;">
+        <button type="button" class="btn" style="width:100%; justify-content:center; padding:10px; background:rgba(34,197,94,0.1); border-color:var(--accent); color:var(--accent);" onclick="unlockWithPasskey()">
+          👆 Déverrouiller avec Touch ID / Face ID
+        </button>
+      </div>
+
+      <div class="lock-error-box" id="lock-error-box"></div>
+    </form>
+
+    <div class="lock-footer-links">
+      <a href="index.html">← Retour au site public</a>
+      <a href="admin.html">Espace Admin Rédaction →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Interface de l'éditeur (active seulement après déverrouillage) -->
+<header class="editor-topbar">
+  <div class="topbar-left">
+    <div class="brand-badge">
+      <span>Studio Wix-Style</span> · William Guindon
+    </div>
+    <span class="status-badge" id="live-indicator">● Mode Visuel Actif</span>
+  </div>
+
+  <div class="topbar-center">
+    <div class="device-switcher">
+      <button class="device-btn active" data-mode="desktop" onclick="setDeviceMode('desktop')">🖥️ PC</button>
+      <button class="device-btn" data-mode="tablet" onclick="setDeviceMode('tablet')">📱 Tablette</button>
+      <button class="device-btn" data-mode="mobile" onclick="setDeviceMode('mobile')">📱 Mobile</button>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
+    <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe">✏️ Édition : Activée</button>
+    <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()">💾 Sauvegarder & Publier en direct</button>
+    <button class="btn btn-danger" onclick="lockStudio()" title="Verrouiller le studio et déconnecter">🔒 Verrouiller</button>
+  </div>
+</header>
+
+<div class="editor-workspace">
+  <!-- Panneau latéral des sections -->
+  <aside class="editor-sidebar">
+    <div class="sidebar-header">
+      <span>📦 Sections de la page d'accueil</span>
+      <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
+    </div>
+    <div class="section-list" id="sidebar-sections-list">
+      <!-- Rempli dynamiquement -->
+    </div>
+    <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
+      💡 <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
+    </div>
+  </aside>
+
+  <!-- Prévisualisation interactive -->
+  <main class="preview-wrapper">
+    <div class="preview-frame-container" id="frame-container">
+      <iframe id="site-preview-iframe" title="Aperçu du site" style="pointer-events:none; opacity:0; transition:opacity 0.3s ease;"></iframe>
+    </div>
+  </main>
+</div>
+
+<div class="editor-toast" id="editor-toast"></div>
+
+<script>
+  const GITHUB_REPO = "Bwillou1/WilliamGuindon";
+  const GITHUB_API = "https://api.github.com";
+  const VALID_PASSWORD_HASHES = [
+    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595", // Hash SHA-256 maître
+    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"  // Hash additionnel de sécurité
+  ];
+
+  const iframe = document.getElementById("site-preview-iframe");
+  let isEditModeActive = true;
+  let isAuthenticated = false;
+
+  // Calcul du hash SHA-256 (WebCrypto API native)
+  async function sha256Hex(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // Validation stricte du jeton GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé GitHub invalide (doit commencer par ghp_ ou github_pat_)");
+    }
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide, expirée ou révoquée.");
+    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
+    const userData = await userRes.json();
+    if ((userData.login || "").toLowerCase() !== "bwillou1") {
+      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
+    }
+
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (repoRes.ok) {
+      const repoData = await repoRes.json();
+      if (!repoData.permissions || !repoData.permissions.push) {
+        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
+      }
+    }
+
+    return userData;
+  }
+
+  // Soumission du formulaire de déverrouillage initial
+  async function handleLockAuthSubmit(e) {
+    e.preventDefault();
+    const passInput = document.getElementById("lock-pass-input");
+    const tokenInput = document.getElementById("lock-token-input");
+    const submitBtn = document.getElementById("btn-lock-submit");
+    const errBox = document.getElementById("lock-error-box");
+
+    errBox.style.display = "none";
+    const passVal = (passInput.value || "").trim();
+    const tokenVal = (tokenInput.value || "").trim();
+
+    if (!passVal) {
+      errBox.textContent = "❌ Veuillez entrer le code d'accès administrateur.";
+      errBox.style.display = "block";
+      return;
+    }
+    if (!tokenVal) {
+      errBox.textContent = "❌ Veuillez entrer votre clé GitHub (PAT).";
+      errBox.style.display = "block";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "⏳ Vérification du code & clé GitHub...";
+
+    try {
+      // 1. Validation cryptographique SHA-256 du code admin
+      const passHash = await sha256Hex(passVal);
+      if (!VALID_PASSWORD_HASHES.includes(passHash)) {
+        throw new Error("Code d'accès administrateur incorrect.");
+      }
+
+      // 2. Validation de la clé GitHub auprès de l'API
+      await validateGitHubToken(tokenVal);
+
+      // Authentification validée !
+      localStorage.setItem("wg_github_pat", tokenVal);
+      sessionStorage.setItem("wg_editor_auth", "true");
+      unlockStudio();
+      showToast("🎉 Studio déverrouillé avec succès pour @Bwillou1 !");
+    } catch (err) {
+      errBox.textContent = "❌ " + err.message;
+      errBox.style.display = "block";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "🔓 Déverrouiller l'Éditeur Visuel";
+    }
+  }
+
+  // Déverrouillage effectif de l'éditeur et chargement de la prévisualisation
+  function unlockStudio() {
+    isAuthenticated = true;
+    const lockScreen = document.getElementById("editor-lock-screen");
+    lockScreen.classList.add("unlocked");
+
+    // Rendre l'iframe actif et visible
+    iframe.style.pointerEvents = "auto";
+    iframe.style.opacity = "1";
+
+    if (!iframe.src || iframe.src === "about:blank" || iframe.src.endsWith("editeur.html")) {
+      iframe.src = "index.html";
+    } else {
+      initializeIframeEditing();
+    }
+  }
+
+  // Verrouillage du studio
+  function lockStudio() {
+    isAuthenticated = false;
+    sessionStorage.removeItem("wg_editor_auth");
+    const lockScreen = document.getElementById("editor-lock-screen");
+    lockScreen.classList.remove("unlocked");
+
+    iframe.style.pointerEvents = "none";
+    iframe.style.opacity = "0";
+
+    const errBox = document.getElementById("lock-error-box");
+    if (errBox) errBox.style.display = "none";
+    showToast("🔒 Studio verrouillé.");
+  }
+
+  // Initialisation à l'ouverture de la page
+  window.addEventListener("DOMContentLoaded", async () => {
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+    if (isPasskey) {
+      const pbox = document.getElementById("lock-passkey-container");
+      if (pbox) pbox.style.display = "block";
+    }
+
+    const savedToken = localStorage.getItem("wg_github_pat");
+    const isSessionAuth = sessionStorage.getItem("wg_editor_auth") === "true";
+
+    if (savedToken && isSessionAuth) {
+      try {
+        await validateGitHubToken(savedToken);
+        unlockStudio();
+      } catch (err) {
+        console.warn("Jeton sauvegardé non valide ou expiré:", err);
+        lockStudio();
+      }
+    } else if (savedToken) {
+      // Pré-remplir le champ token si disponible
+      const tokenInput = document.getElementById("lock-token-input");
+      if (tokenInput) tokenInput.value = savedToken;
+    }
+  });
+
+  // Responsive device switch
+  function setDeviceMode(mode) {
+    document.querySelectorAll(".device-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector(`.device-btn[data-mode="${mode}"]`).classList.add("active");
+    const container = document.getElementById("frame-container");
+    container.className = "preview-frame-container " + (mode === "desktop" ? "" : mode);
+  }
+
+  // Toast notification
+  function showToast(msg, isSuccess = true) {
+    const toast = document.getElementById("editor-toast");
+    toast.textContent = msg;
+    toast.style.borderColor = isSuccess ? "var(--accent)" : "var(--danger)";
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 5000);
+  }
+
+  function initializeIframeEditing() {
+    if (!isAuthenticated) return;
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      
+      let style = doc.getElementById("editor-injected-style");
+      if (!style) {
+        style = doc.createElement("style");
+        style.id = "editor-injected-style";
+        style.innerHTML = `
+          [contenteditable="true"]:hover {
+            outline: 2px dashed #22c55e !important;
+            outline-offset: 4px;
+            cursor: text !important;
+          }
+          [contenteditable="true"]:focus {
+            outline: 2px solid #22c55e !important;
+            outline-offset: 4px;
+            background: rgba(34, 197, 94, 0.08) !important;
+          }
+          .section-highlight {
+            outline: 3px solid #22c55e !important;
+          }
+        `;
+        doc.head.appendChild(style);
+      }
+
+      enableContentEditing(doc);
+      buildSidebarSections(doc);
+    } catch (e) {
+      console.warn("Erreur accès iframe:", e);
+    }
+  }
+
+  // Injection du mode visuel dans l'iframe lors du chargement
+  iframe.onload = () => {
+    if (isAuthenticated) {
+      initializeIframeEditing();
+    }
+  };
+
+  // Rendre tous les textes cliquables et éditables
+  function enableContentEditing(doc) {
+    if (!isAuthenticated) return;
+    const editables = doc.querySelectorAll("h1, h2, h3, h4, h5, p, .lead, blockquote, .btn, .kicker, .fact-val, time");
+    editables.forEach(el => {
+      el.setAttribute("contenteditable", isEditModeActive ? "true" : "false");
+      el.setAttribute("spellcheck", "false");
+    });
+  }
+
+  // Activer / Désactiver le mode édition
+  function toggleEditMode() {
+    if (!isAuthenticated) return;
+    isEditModeActive = !isEditModeActive;
+    const btn = document.getElementById("btn-toggle-edit");
+    btn.textContent = isEditModeActive ? "✏️ Édition : Activée" : "👁️ Aperçu seul";
+    btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
+
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    enableContentEditing(doc);
+    showToast(isEditModeActive ? "Mode édition activé : cliquez sur les textes pour éditer" : "Mode aperçu activé");
+  }
+
+  // Construction de la liste des sections dans la colonne de gauche
+  function buildSidebarSections(doc) {
+    const container = document.getElementById("sidebar-sections-list");
+    container.replaceChildren();
+
+    const sections = doc.querySelectorAll("main section, header.site");
+    sections.forEach((sec, index) => {
+      const id = sec.id || (sec.tagName.toLowerCase() === "header" ? "En-tête Navigation" : "Section " + (index + 1));
+      let title = id;
+      const h2 = sec.querySelector("h1, h2, h3");
+      if (h2) title = h2.textContent.trim().substring(0, 22) + "...";
+
+      const item = document.createElement("div");
+      item.className = "section-item";
+
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "section-title";
+      titleDiv.title = id;
+      titleDiv.textContent = title;
+
+      const controlsDiv = document.createElement("div");
+      controlsDiv.className = "section-controls";
+
+      const btnUp = document.createElement("button");
+      btnUp.className = "control-btn";
+      btnUp.title = "Monter";
+      btnUp.textContent = "▲";
+      btnUp.addEventListener("click", () => moveSection(sec.id, -1));
+
+      const btnDown = document.createElement("button");
+      btnDown.className = "control-btn";
+      btnDown.title = "Descendre";
+      btnDown.textContent = "▼";
+      btnDown.addEventListener("click", () => moveSection(sec.id, 1));
+
+      const btnVis = document.createElement("button");
+      btnVis.className = "control-btn";
+      btnVis.title = "Afficher/Masquer";
+      btnVis.textContent = "👁️";
+      btnVis.addEventListener("click", () => toggleSectionVisibility(sec.id));
+
+      controlsDiv.append(btnUp, btnDown, btnVis);
+      item.append(titleDiv, controlsDiv);
+      container.appendChild(item);
+    });
+  }
+
+  // Déplacer une section vers le haut ou le bas
+  window.moveSection = (secId, direction) => {
+    if (!isAuthenticated || !secId) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (direction === -1 && target.previousElementSibling && target.previousElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target, target.previousElementSibling);
+    } else if (direction === 1 && target.nextElementSibling && target.nextElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target.nextElementSibling, target);
+    }
+    buildSidebarSections(doc);
+    showToast("Ordre de la section mis à jour !");
+  };
+
+  // Masquer / Réafficher une section
+  window.toggleSectionVisibility = (secId) => {
+    if (!isAuthenticated || !secId) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (target.style.display === "none") {
+      target.style.display = "";
+      showToast("Section réaffichée !");
+    } else {
+      target.style.display = "none";
+      showToast("Section masquée !");
+    }
+    buildSidebarSections(doc);
+  };
+
+  // Lancer la sauvegarde et publication directe sur GitHub
+  async function saveSiteToGitHub() {
+    const token = localStorage.getItem("wg_github_pat");
+    if (!token || !isAuthenticated) {
+      lockStudio();
+      return;
+    }
+
+    const saveBtn = document.getElementById("btn-save-site");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "⏳ Publication sur GitHub...";
+
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+      // Nettoyer les attributs d'édition avant de sauvegarder
+      const cleanDoc = doc.cloneNode(true);
+      const injectedStyle = cleanDoc.getElementById("editor-injected-style");
+      if (injectedStyle) injectedStyle.remove();
+
+      cleanDoc.querySelectorAll("[contenteditable]").forEach(el => {
+        el.removeAttribute("contenteditable");
+        el.removeAttribute("spellcheck");
+      });
+
+      const htmlContent = "<!DOCTYPE html>\n" + cleanDoc.documentElement.outerHTML;
+
+      // Récupérer le SHA actuel de index.html
+      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+      if (!fileRes.ok) throw new Error("Impossible d'accéder à index.html sur GitHub");
+      const fileData = await fileRes.json();
+
+      // Encode UTF-8 vers Base64
+      const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
+
+      // Pousser le commit sur GitHub
+      const updateRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.v3+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "chore(studio): mise à jour visuelle du site via l'éditeur en direct",
+          content: b64,
+          sha: fileData.sha
+        })
+      });
+
+      if (!updateRes.ok) {
+        const err = await updateRes.json().catch(() => ({}));
+        throw new Error(err.message || "Échec de l'enregistrement");
+      }
+
+      showToast("🎉 Félicitations ! Votre site est mis à jour et en ligne !");
+    } catch (err) {
+      console.error(err);
+      if (err.message && err.message.includes("401")) {
+        localStorage.removeItem("wg_github_pat");
+        lockStudio();
+      }
+      showToast("Erreur : " + err.message, false);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "💾 Sauvegarder & Publier en direct";
+    }
+  }
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

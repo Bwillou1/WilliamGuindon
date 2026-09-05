@@ -1,9 +1,4 @@
-/**
- * sync-cec.js — Script d'automatisation de synchronisation du statut CCE
- * Dossier : SEM-26-003 (« Enfouissement de matières dangereuses à Blainville »)
- * 
- * Basé sur l'analyse technique Web Scraping & WordPress REST API de la CCE (SEM-26-003).
- */
+
 
 const fs = require('fs');
 const path = require('path');
@@ -16,7 +11,6 @@ const STATUS_FILE_PATH = path.join(__dirname, 'status.json');
 async function syncDossierStatus() {
   console.log(`[${new Date().toISOString()}] Lancement de la synchronisation CCE SEM-26-003...`);
 
-  // 1. Structure de données initiale
   let data = {
     id_dossier: "SEM-26-003",
     titre_fr: "Enfouissement de matières dangereuses à Blainville",
@@ -54,7 +48,6 @@ async function syncDossierStatus() {
     timestamp_sync: new Date().toISOString()
   };
 
-  // 2. Détection de changements via l'API WordPress REST CCE
   try {
     const apiRes = await fetch(WP_API_ENDPOINT, {
       headers: { 'User-Agent': 'DossierSyncBot/1.0 (williamguindon.me)' }
@@ -71,7 +64,6 @@ async function syncDossierStatus() {
     console.warn("Notice : API REST CCE non joignable immédiatement, utilisation du statut vérifié local.", err.message);
   }
 
-  // 3. Sauvegarde locale du statut synchronisé
   fs.writeFileSync(STATUS_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
   console.log(`[${new Date().toISOString()}] Synchronisation status.json réussie.`);
 }
