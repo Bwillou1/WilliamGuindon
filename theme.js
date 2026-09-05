@@ -152,6 +152,13 @@
         }
       });
 
+      // Fermer le menu mobile au défilement pour éviter qu'il n'embarque sur le contenu
+      window.addEventListener('scroll', () => {
+        if (window.innerWidth <= 992 && nav.classList.contains('active')) {
+          closeMobileNav();
+        }
+      }, { passive: true });
+
       // Réinitialiser si la fenêtre est redimensionnée en mode desktop
       window.addEventListener('resize', () => {
         if (window.innerWidth > 992) {
