@@ -95,7 +95,7 @@ header.site {
   background: rgba(247, 249, 247, 0.85);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  z-index: 100;
+  z-index: 10000;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 [data-theme="dark"] header.site {
@@ -1353,10 +1353,10 @@ dialog.doc-dialog[open]::backdrop {
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 9998;
+  z-index: 9990;
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
@@ -1375,6 +1375,7 @@ dialog.doc-dialog[open]::backdrop {
     justify-content: center;
     min-width: 44px;
     min-height: 44px;
+    z-index: 10005;
   }
   
   .mobile-nav-header {
@@ -1400,12 +1401,12 @@ dialog.doc-dialog[open]::backdrop {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.45);
     color: #ef4444;
     font-size: 13px;
     font-weight: 700;
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: 99px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1418,8 +1419,8 @@ dialog.doc-dialog[open]::backdrop {
   }
 
   [data-theme="dark"] .mobile-menu-close-btn {
-    background: rgba(248, 113, 113, 0.18);
-    border-color: rgba(248, 113, 113, 0.4);
+    background: rgba(248, 113, 113, 0.22);
+    border-color: rgba(248, 113, 113, 0.55);
     color: #fca5a5;
   }
 
@@ -1437,12 +1438,14 @@ dialog.doc-dialog[open]::backdrop {
     left: 0;
     right: 0;
     background: var(--bg-card);
-    border-bottom: 2px solid var(--accent);
+    border: 1px solid var(--line);
+    border-top: none;
+    border-bottom: 3px solid var(--accent);
     flex-direction: column;
     padding: 16px 16px 24px 16px;
     gap: 10px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-    z-index: 10000;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    z-index: 10002;
     border-radius: 0 0 16px 16px;
     max-height: calc(100vh - 75px);
     overflow-y: auto;
@@ -1463,11 +1466,12 @@ dialog.doc-dialog[open]::backdrop {
   }
   
   nav a {
+    color: var(--text) !important;
     margin-left: 0;
     font-size: 15px;
     font-weight: 600;
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--line);
     text-align: left;
     border-radius: 8px;
