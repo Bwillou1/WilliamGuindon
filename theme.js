@@ -21,7 +21,7 @@
 
     if (nav) {
       // Intégration du sélecteur de langue Google Traduction fluide & fiable
-      let langDropdown = document.getElementById('nav-lang-dropdown');
+      let langDropdown = nav.querySelector('#nav-lang-dropdown');
       if (!langDropdown) {
         langDropdown = document.createElement('div');
         langDropdown.className = 'nav-dropdown nav-dropdown-right nav-translate-dropdown';
@@ -35,7 +35,7 @@
           <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
             <span>🌐 <span id="current-lang-text">${langCodeDisplay}</span> ▾</span>
           </button>
-          <div class="nav-dropdown-menu" style="min-width: 170px;">
+          <div class="nav-dropdown-menu" style="min-width: 175px;">
             <div class="nav-dropdown-group">
               <span class="nav-dropdown-group-title">Traduire / Translate</span>
               <div class="nav-dropdown-grid single-col">
@@ -72,13 +72,21 @@
         `;
         nav.appendChild(langDropdown);
 
-        // Conteneur discret pour le script Google Translate
-        let gTranslateDiv = document.getElementById('google_translate_element');
-        if (!gTranslateDiv) {
-          gTranslateDiv = document.createElement('div');
-          gTranslateDiv.id = 'google_translate_element';
-          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
-          document.body.appendChild(gTranslateDiv);
+        const navLangBtn = langDropdown.querySelector('#nav-lang-btn');
+        if (navLangBtn) {
+          navLangBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown').forEach(d => {
+              if (d !== langDropdown) {
+                d.classList.remove('active');
+                const b = d.querySelector('.nav-dropdown-btn, .nav-notif-btn');
+                if (b) b.setAttribute('aria-expanded', 'false');
+              }
+            });
+            const isOpen = langDropdown.classList.toggle('active');
+            navLangBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          });
         }
 
         // Action de changement de langue
@@ -123,11 +131,19 @@
             e.stopPropagation();
             const chosenLang = btn.getAttribute('data-lang');
             langDropdown.classList.remove('active');
-            const navBtn = langDropdown.querySelector('.nav-dropdown-btn');
-            if (navBtn) navBtn.setAttribute('aria-expanded', 'false');
+            if (navLangBtn) navLangBtn.setAttribute('aria-expanded', 'false');
             setLanguage(chosenLang);
           });
         });
+
+        // Conteneur discret pour le script Google Translate
+        let gTranslateDiv = document.getElementById('google_translate_element');
+        if (!gTranslateDiv) {
+          gTranslateDiv = document.createElement('div');
+          gTranslateDiv.id = 'google_translate_element';
+          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
+          document.body.appendChild(gTranslateDiv);
+        }
 
         // Initialisation du script Google Translate
         if (!window.googleTranslateElementInit) {
@@ -165,23 +181,32 @@
         }
       }
 
-      const toggleBtn = document.createElement('button');
-      toggleBtn.className = 'theme-toggle-btn';
-      toggleBtn.setAttribute('aria-label', 'Changer de thème');
+      // Bouton Mode Sombre / Clair (Sans doublon)
+      let toggleBtn = nav.querySelector('.theme-toggle-btn');
+      if (!toggleBtn) {
+        toggleBtn = document.createElement('button');
+        toggleBtn.className = 'theme-toggle-btn';
+        toggleBtn.setAttribute('aria-label', 'Changer de thème');
+        nav.appendChild(toggleBtn);
+      }
+
+      // Élimination stricte des doublons
+      const allThemeBtns = nav.querySelectorAll('.theme-toggle-btn');
+      for (let i = 1; i < allThemeBtns.length; i++) {
+        allThemeBtns[i].remove();
+      }
       
       const theme = document.documentElement.getAttribute('data-theme');
       toggleBtn.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
       
-      toggleBtn.addEventListener('click', () => {
+      toggleBtn.onclick = () => {
         const activeTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
         
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem(themeStorageKey, newTheme);
         toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
-      });
-      
-      nav.appendChild(toggleBtn);
+      };
     }
 
     if (headerWrap && nav) {
