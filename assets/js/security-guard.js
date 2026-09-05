@@ -33,8 +33,18 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
 
-  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION GLOBALE MONDIALE DEPUIS GITHUB)
+  // 2. GESTION DE L'ÉTAT (SYNCHRONISATION ULTRA-RAPIDE & MULTI-SOURCES DEPUIS GITHUB)
   let lastAppliedStateJson = null;
+
+  // Canal de synchronisation inter-onglets instantané (0ms)
+  const syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('wg_site_state_sync') : null;
+  if (syncChannel) {
+    syncChannel.onmessage = (e) => {
+      if (e && e.data) {
+        applyState(e.data);
+      }
+    };
+  }
 
   function applyState(state) {
     if (!state) return;
@@ -73,40 +83,54 @@
     applyKillSwitches(state);
   }
 
-  // Application immédiate depuis le stockage local (anti-flicker)
+  // Application immédiate depuis le stockage de session (s'efface à la fermeture de l'onglet)
   try {
-    const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const cached = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{}');
     applyState(cached);
   } catch (e) {}
 
-  // Synchronisation distante continue depuis data/site-state.json (Bypass total du cache CDN/navigateur)
+  // Synchronisation distante ultra-rapide multi-sources (Local + GitHub Raw direct sans cache CDN)
   async function fetchRemoteState() {
-    try {
-      const stateUrl = new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href;
-      const res = await fetch(stateUrl, {
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
+    const endpoints = [
+      new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href,
+      'https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/data/site-state.json?_t=' + Date.now()
+    ];
+
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
+        if (res.ok) {
+          const remoteState = await res.json();
+          if (remoteState && typeof remoteState === 'object') {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
+            applyState(remoteState);
+            if (syncChannel) {
+              try { syncChannel.postMessage(remoteState); } catch (_) {}
+            }
+            break; // Succès immédiat obtenu
+          }
         }
-      });
-      if (res.ok) {
-        const remoteState = await res.json();
-        if (remoteState && typeof remoteState === 'object') {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
-          applyState(remoteState);
-        }
-      }
-    } catch (err) {
-      console.debug("Sentinelle : synchronisation en attente...", err);
+      } catch (_) {}
     }
   }
 
-  // Vérification au chargement initial
+  // Vérification immédiate au chargement initial
   fetchRemoteState();
 
-  // Polling automatique toutes les 15 secondes pour tous les visiteurs connectés
-  setInterval(fetchRemoteState, 15000);
+  // Polling automatique ultra-réactif toutes les 3 secondes pour tous les visiteurs
+  setInterval(fetchRemoteState, 3000);
+
+  // Déclenchement instantané lorsque l'utilisateur revient sur l'onglet ou clique
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) fetchRemoteState();
+  });
+  window.addEventListener('focus', fetchRemoteState);
 
   // ==========================================
   // LOGIQUES D'APPLICATION SPÉCIFIQUES & SÉCURITÉ

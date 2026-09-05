@@ -2,7 +2,8 @@
   const themeStorageKey = 'william-guindon-theme';
   
   function getInitialTheme() {
-    const savedTheme = localStorage.getItem(themeStorageKey);
+    // Stockage de session uniquement : disparaît dès la fermeture de l'onglet
+    const savedTheme = sessionStorage.getItem(themeStorageKey);
     if (savedTheme) return savedTheme;
     
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -20,7 +21,7 @@
     const headerWrap = document.querySelector('header.site .wrap');
 
     if (nav) {
-      // Intégration du sélecteur de langue in-place fluide et fiable (100% conservation du design)
+      // Intégration du sélecteur de langue in-place fluide et fiable
       let langDropdown = nav.querySelector('#nav-lang-dropdown');
       if (!langDropdown) {
         langDropdown = document.createElement('div');
@@ -28,7 +29,7 @@
         langDropdown.id = 'nav-lang-dropdown';
 
         const match = document.cookie.match(/googtrans=\/fr\/([a-zA-Z\-]+)/);
-        const activeLangCode = (match && match[1]) || localStorage.getItem('wg_user_lang') || 'fr';
+        const activeLangCode = (match && match[1]) || sessionStorage.getItem('wg_user_lang') || 'fr';
         const langCodeDisplay = activeLangCode.toUpperCase().substring(0, 2);
 
         langDropdown.innerHTML = `
@@ -91,32 +92,21 @@
           });
         }
 
-        // Fonction d'application de la langue in-place sans perte de CSS
+        // Fonction d'application de la langue in-place (Cookie de session pur, sans persistance sur disque)
         function applyInPlaceLanguage(lang) {
           const host = window.location.hostname;
           if (lang === 'fr') {
-            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
-            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
-            const parts = host.split('.');
-            if (parts.length > 2) {
-              const rootDomain = parts.slice(-2).join('.');
-              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${rootDomain};`;
-            }
-            localStorage.removeItem('wg_user_lang');
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax;";
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host}; SameSite=Lax;`;
+            sessionStorage.removeItem('wg_user_lang');
             window.location.reload();
             return;
           }
 
-          localStorage.setItem('wg_user_lang', lang);
-          document.cookie = `googtrans=/fr/${lang}; path=/;`;
-          document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host};`;
-          document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${host};`;
-          const parts = host.split('.');
-          if (parts.length > 2) {
-            const rootDomain = parts.slice(-2).join('.');
-            document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${rootDomain};`;
-          }
+          sessionStorage.setItem('wg_user_lang', lang);
+          // Cookie de session pur (sans expires / max-age) : s'efface automatiquement à la fermeture de l'onglet
+          document.cookie = `googtrans=/fr/${lang}; path=/; SameSite=Lax;`;
+          document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host}; SameSite=Lax;`;
 
           const combo = document.querySelector('.goog-te-combo');
           if (combo) {
@@ -159,7 +149,7 @@
                 autoDisplay: false
               }, 'google_translate_element');
 
-              const saved = localStorage.getItem('wg_user_lang');
+              const saved = sessionStorage.getItem('wg_user_lang');
               if (saved && saved !== 'fr') {
                 setTimeout(() => {
                   const cb = document.querySelector('.goog-te-combo');
@@ -185,7 +175,7 @@
         }
       }
 
-      // Bouton Mode Sombre / Clair (Sans doublon)
+      // Bouton Mode Sombre / Clair (Sans doublon, Stockage Session uniquement)
       let toggleBtn = nav.querySelector('.theme-toggle-btn');
       if (!toggleBtn) {
         toggleBtn = document.createElement('button');
@@ -208,7 +198,7 @@
         const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
         
         document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem(themeStorageKey, newTheme);
+        sessionStorage.setItem(themeStorageKey, newTheme);
         toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
       };
     }

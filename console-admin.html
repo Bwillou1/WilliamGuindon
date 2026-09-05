@@ -763,6 +763,9 @@
         if (badge) badge.innerHTML = `✅ Publié mondialement (Commit: <code>${commitSha}</code>)`;
         if (timeEl) timeEl.textContent = "Dernier déploiement : " + new Date().toLocaleTimeString();
         showToast(`🌍 Déploiement mondial réussi ! (Commit: ${commitSha}) - Tous les visiteurs recevront cette directive.`);
+        if (typeof BroadcastChannel !== 'undefined') {
+          try { new BroadcastChannel('wg_site_state_sync').postMessage(state); } catch (_) {}
+        }
       } else {
         const errData = await putRes.json().catch(() => ({}));
         const msg = errData.message || ("Code HTTP " + putRes.status);
