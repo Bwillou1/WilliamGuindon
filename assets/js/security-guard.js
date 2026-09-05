@@ -232,9 +232,6 @@
           if (state.radical4Active && state.radical4Until > now && !document.getElementById('radical4-wrapper')) {
             renderRadical4Screen(state.radical4Until, state.radical4Message);
           }
-          if (state.blockScreenshots && !document.getElementById('wg-screenshot-shield')) {
-            applyKillSwitches(state);
-          }
           if (!document.getElementById('wg-killswitch-styles')) {
             applyKillSwitches(state);
           }
@@ -258,9 +255,6 @@
         }
         if (state.radical4Active && state.radical4Until > now) {
           if (!document.getElementById('radical4-wrapper')) renderRadical4Screen(state.radical4Until, state.radical4Message);
-        }
-        if (state.blockScreenshots) {
-          if (!document.getElementById('wg-screenshot-shield')) applyKillSwitches(state);
         }
         if (!document.getElementById('wg-killswitch-styles')) {
           applyKillSwitches(state);
@@ -303,7 +297,7 @@
         lastAppliedStateJson.includes('"maintenanceActive":true') ||
         lastAppliedStateJson.includes('"panicActive":true') ||
         lastAppliedStateJson.includes('"radical4Active":true') ||
-        lastAppliedStateJson.includes('"blockScreenshots":true')
+        lastAppliedStateJson.includes('"disableDevTools":true')
       )) {
         e.preventDefault();
         e.stopPropagation();
@@ -316,7 +310,7 @@
         !lastAppliedStateJson.includes('"maintenanceActive":true') &&
         !lastAppliedStateJson.includes('"panicActive":true') &&
         !lastAppliedStateJson.includes('"radical4Active":true') &&
-        !lastAppliedStateJson.includes('"blockScreenshots":true')
+        !lastAppliedStateJson.includes('"disableDevTools":true')
       )) {
         return;
       }
@@ -346,6 +340,102 @@
         return false;
       }
     }, true);
+  }
+
+  // --- MODE ANTI-CAPTURE D'ÉCRAN À LA VOLÉE (DÉCLENCHÉ UNIQUEMENT LORS DE LA CAPTURE) ---
+  let screenshotShieldTimeout = null;
+
+  function triggerScreenshotBlur() {
+    let shield = document.getElementById('wg-screenshot-shield');
+    if (!shield) {
+      shield = document.createElement('div');
+      shield.id = 'wg-screenshot-shield';
+      shield.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999999;backdrop-filter:blur(45px);-webkit-backdrop-filter:blur(45px);background:rgba(6,10,8,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;transition:opacity 0.2s ease;';
+      shield.innerHTML = `
+        <div style="font-size:52px;font-weight:900;color:#22c55e;letter-spacing:4px;text-shadow:0 0 50px rgba(34,197,94,0.95);font-family:system-ui,-apple-system,sans-serif;text-align:center;">William Guindon</div>
+        <div style="font-size:13px;color:#86efac;margin-top:14px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;">🔒 Protection Anti-Capture d'Écran Active</div>
+      `;
+      (document.body || document.documentElement).appendChild(shield);
+    }
+    shield.style.display = 'flex';
+    shield.style.opacity = '1';
+
+    if (document.body) {
+      document.body.style.filter = 'blur(40px)';
+      document.body.style.userSelect = 'none';
+      document.body.style.webkitUserSelect = 'none';
+    }
+
+    if (screenshotShieldTimeout) clearTimeout(screenshotShieldTimeout);
+    screenshotShieldTimeout = setTimeout(() => {
+      const s = document.getElementById('wg-screenshot-shield');
+      if (s) {
+        s.style.opacity = '0';
+        setTimeout(() => {
+          if (s && s.style.opacity === '0') s.remove();
+        }, 250);
+      }
+      if (document.body) {
+        document.body.style.filter = '';
+        document.body.style.userSelect = '';
+        document.body.style.webkitUserSelect = '';
+      }
+    }, 3500);
+  }
+
+  let antiScreenshotTrapAttached = false;
+  function setupAntiScreenshotListeners() {
+    if (antiScreenshotTrapAttached) return;
+    antiScreenshotTrapAttached = true;
+
+    // Détection des raccourcis de capture d'écran en phase de capture (Windows, Mac, Linux)
+    window.addEventListener('keydown', e => {
+      if (!lastAppliedStateJson || !lastAppliedStateJson.includes('"blockScreenshots":true')) return;
+      const key = (e.key || '').toLowerCase();
+      const code = e.keyCode || e.which;
+      const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
+      const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : (e.ctrlKey || e.metaKey);
+
+      // Touche Impr. Écran (PrintScreen standard Windows/Linux, code 44)
+      if (key === 'printscreen' || code === 44) {
+        e.preventDefault();
+        triggerScreenshotBlur();
+        return false;
+      }
+
+      // Raccourcis Capture Mac: Cmd + Shift + 3, Cmd + Shift + 4, Cmd + Shift + 5, Cmd + Shift + 6
+      if (cmdOrCtrl && e.shiftKey && (['3', '4', '5', '6'].includes(key) || (code >= 51 && code <= 54))) {
+        triggerScreenshotBlur();
+      }
+
+      // Raccourcis Outil Capture Windows: Win + Shift + S ou Ctrl + Shift + S
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (key === 's' || code === 83)) {
+        triggerScreenshotBlur();
+      }
+
+      // Impression / Capture PDF: Cmd+P ou Ctrl+P
+      if (cmdOrCtrl && (key === 'p' || code === 80)) {
+        e.preventDefault();
+        triggerScreenshotBlur();
+        return false;
+      }
+    }, true);
+
+    window.addEventListener('keyup', e => {
+      if (!lastAppliedStateJson || !lastAppliedStateJson.includes('"blockScreenshots":true')) return;
+      const key = (e.key || '').toLowerCase();
+      const code = e.keyCode || e.which;
+      if (key === 'printscreen' || code === 44) {
+        triggerScreenshotBlur();
+      }
+    }, true);
+
+    // Interception de l'événement système d'impression
+    window.addEventListener('beforeprint', () => {
+      if (lastAppliedStateJson && lastAppliedStateJson.includes('"blockScreenshots":true')) {
+        triggerScreenshotBlur();
+      }
+    });
   }
 
   // --- MODE BLACKOUT / MAINTENANCE (CALQUE RÉVERSIBLE) ---
@@ -638,25 +728,19 @@
       css.push('#backToTop, .scroll-to-top, .back-to-top-btn, a[href="#top"], .leaf-scroll-top { display: none !important; }');
     }
 
-    // Mode Bloquer Capture d'Écran (Flou total + Nom William Guindon)
+    // Mode Bloquer Capture d'Écran (Déclenchement réactif uniquement lors d'une tentative de capture)
     if (state.blockScreenshots) {
-      css.push('body { filter: blur(35px) !important; user-select: none !important; -webkit-user-select: none !important; pointer-events: none !important; }');
+      setupAntiScreenshotListeners();
       css.push('@media print { body { display: none !important; } html::after { content: "William Guindon"; font-size: 40px; font-weight: bold; color: black; display: block; text-align: center; margin-top: 150px; } }');
-      
-      let shield = document.getElementById('wg-screenshot-shield');
-      if (!shield) {
-        shield = document.createElement('div');
-        shield.id = 'wg-screenshot-shield';
-        shield.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999999999;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);background:rgba(6,10,8,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;';
-        shield.innerHTML = `
-          <div style="font-size:46px;font-weight:900;color:#22c55e;letter-spacing:3px;text-shadow:0 0 40px rgba(34,197,94,0.8);font-family:system-ui,-apple-system,sans-serif;text-align:center;">William Guindon</div>
-          <div style="font-size:13px;color:#9bb0a2;margin-top:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">🔒 Protection Anti-Capture d'Écran Active</div>
-        `;
-        (document.body || document.documentElement).appendChild(shield);
-      }
     } else {
       const shield = document.getElementById('wg-screenshot-shield');
       if (shield) shield.remove();
+      if (screenshotShieldTimeout) clearTimeout(screenshotShieldTimeout);
+      if (document.body) {
+        document.body.style.filter = '';
+        document.body.style.userSelect = '';
+        document.body.style.webkitUserSelect = '';
+      }
     }
 
     // Mode Désactiver le JavaScript (Mode Statique No-Script)
