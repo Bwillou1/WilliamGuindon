@@ -37,12 +37,57 @@
   // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)
   let lastAppliedStateJson = null;
 
+  function getStoredState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function shouldAcceptState(newState) {
+    if (!newState || typeof newState !== 'object') return false;
+    const currentStored = getStoredState();
+    if (!currentStored || !currentStored.updatedAt) return true;
+    if (!newState.updatedAt) return true;
+
+    const currentTime = new Date(currentStored.updatedAt).getTime();
+    const newTime = new Date(newState.updatedAt).getTime();
+    if (isNaN(currentTime) || isNaN(newTime)) return true;
+
+    // Ne jamais écraser un état plus récent par un cache distant obsolète
+    return newTime >= currentTime;
+  }
+
+  function parseRemotePayload(data) {
+    if (!data) return null;
+    if (typeof data === 'object') {
+      if (typeof data.content === 'string' && data.encoding === 'base64') {
+        try {
+          const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          return JSON.parse(decoded);
+        } catch (_) {}
+      }
+      return data;
+    }
+    if (typeof data === 'string') {
+      try {
+        return JSON.parse(data);
+      } catch (_) {}
+    }
+    return null;
+  }
+
   // A. Canal BroadcastChannel (0ms inter-onglets)
   const syncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('wg_site_state_sync') : null;
   if (syncChannel) {
     syncChannel.onmessage = (e) => {
       if (e && e.data) {
-        applyState(e.data);
+        if (shouldAcceptState(e.data)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(e.data));
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(e.data));
+          applyState(e.data, true);
+        }
       }
     };
   }
@@ -52,17 +97,17 @@
     if (e.key === STORAGE_KEY && e.newValue) {
       try {
         const parsed = JSON.parse(e.newValue);
-        applyState(parsed);
+        applyState(parsed, true);
       } catch (_) {}
     }
   });
 
-  function applyState(state) {
+  function applyState(state, force = false) {
     if (!state || typeof state !== 'object') return;
     const now = Date.now();
     const currentStateJson = JSON.stringify(state);
 
-    if (lastAppliedStateJson === currentStateJson && document.readyState !== 'loading') {
+    if (!force && lastAppliedStateJson === currentStateJson && document.readyState !== 'loading') {
       return;
     }
     lastAppliedStateJson = currentStateJson;
@@ -90,37 +135,46 @@
 
   // Application immédiate au chargement initial depuis le stockage local / session
   try {
-    const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY) || '{}');
-    applyState(cached);
+    const cached = getStoredState();
+    applyState(cached, true);
   } catch (e) {}
 
-  // Synchronisation distante continue multi-sources sans blocage
+  // Synchronisation distante continue multi-sources sans blocage ni délai CDN
   let isFetching = false;
   async function fetchRemoteState() {
     if (isFetching) return;
     isFetching = true;
 
+    const ts = Date.now();
     const endpoints = [
-      new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href,
-      'https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/data/site-state.json?_t=' + Date.now()
+      {
+        url: `https://api.github.com/repos/Bwillou1/WilliamGuindon/contents/data/site-state.json?ref=main&_t=${ts}`,
+        headers: { 'Accept': 'application/vnd.github.v3+json, application/vnd.github.v3.raw', 'Cache-Control': 'no-cache' }
+      },
+      {
+        url: `https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/data/site-state.json?_t=${ts}`,
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+      },
+      {
+        url: new URL('data/site-state.json?_t=' + ts, window.location.href).href,
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+      }
     ];
 
-    for (const url of endpoints) {
+    for (const ep of endpoints) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
-        const res = await fetch(url, {
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch(ep.url, {
           cache: 'no-store',
           signal: controller.signal,
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
+          headers: ep.headers
         });
         clearTimeout(timeoutId);
         if (res.ok) {
-          const remoteState = await res.json();
-          if (remoteState && typeof remoteState === 'object') {
+          const rawData = await res.json().catch(() => null) || await res.text().catch(() => null);
+          const remoteState = parseRemotePayload(rawData);
+          if (remoteState && typeof remoteState === 'object' && shouldAcceptState(remoteState)) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
             applyState(remoteState);
@@ -139,7 +193,7 @@
     fetchRemoteState();
     setInterval(() => {
       if (!document.hidden) fetchRemoteState();
-    }, 4000);
+    }, 1500);
   }
 
   if (document.readyState === 'loading') {
@@ -152,6 +206,9 @@
     if (!document.hidden) fetchRemoteState();
   });
   window.addEventListener('focus', () => {
+    if (!document.hidden) fetchRemoteState();
+  });
+  window.addEventListener('pageshow', () => {
     if (!document.hidden) fetchRemoteState();
   });
 
@@ -344,6 +401,13 @@
       document.documentElement.setAttribute('data-theme', 'dark');
     } else if (state.forceLightMode) {
       document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
     }
 
     // 1-8. Commutateurs de base
