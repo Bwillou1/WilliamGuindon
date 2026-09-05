@@ -2038,9 +2038,16 @@ ul.timeline li.active-node strong,
   100% { transform: none; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
+.nav-notif-dropdown {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+  margin-bottom: -6px;
+}
+
 .nav-notif-panel {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 4px);
   right: 0;
   width: 340px;
   max-width: calc(100vw - 28px);
@@ -2054,6 +2061,16 @@ ul.timeline li.active-node strong,
   transform: none;
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
   overflow: hidden;
+}
+
+.nav-notif-panel::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  display: block;
 }
 
 [data-theme="dark"] .nav-notif-panel,
@@ -2579,6 +2596,8 @@ body.dark-theme .notif-link-ghost {
 .nav-dropdown {
   position: relative;
   display: inline-block;
+  padding-bottom: 6px;
+  margin-bottom: -6px;
 }
 
 .nav-dropdown-btn {
@@ -2624,7 +2643,7 @@ body.dark-theme .notif-link-ghost {
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 2px);
   left: 0;
   width: 320px;
   max-width: calc(100vw - 24px);
@@ -2635,6 +2654,17 @@ body.dark-theme .notif-link-ghost {
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
   z-index: 1000;
   animation: navFadeIn 0.18s ease;
+}
+
+/* Pont invisible pour que le curseur ne perde jamais le survol entre le bouton et le menu */
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 0;
+  right: 0;
+  height: 14px;
+  display: block;
 }
 
 [data-theme="dark"] .nav-dropdown-menu {
@@ -2658,7 +2688,8 @@ body.dark-theme .notif-link-ghost {
 }
 
 @media (hover: hover) and (min-width: 993px) {
-  .nav-dropdown:hover .nav-dropdown-menu {
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
     display: block;
   }
 }
