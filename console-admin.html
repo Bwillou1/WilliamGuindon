@@ -251,17 +251,12 @@
       <div class="terminal-card-title">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
       <div class="terminal-card-desc">Redirige instantanément 100 % des visiteurs vers la page de secours sécurisée avec obfuscation dynamique de l'email et archives officielles CCE.</div>
       <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-        <div style="flex:1; min-width:200px;">
-          <label class="form-label">Durée du Blackout :</label>
-          <select id="maint-duration" class="form-control">
-            <option value="60">1 Heure</option>
-            <option value="360">6 Heures</option>
-            <option value="1440" selected>24 Heures</option>
-            <option value="2880">48 Heures</option>
-          </select>
+        <div style="flex:1; min-width:220px;">
+          <label class="form-label" for="maint-duration">Durée du Blackout (en minutes) :</label>
+          <input type="number" id="maint-duration" class="form-control" value="1440" min="1" step="1" placeholder="Ex: 1, 60, 180, 1440, 945543...">
         </div>
         <button class="btn btn-primary" onclick="toggleMaintenance(true)">Activer le Blackout</button>
-        <button class="btn btn-ghost" onclick="toggleMaintenance(false)">Désactiver</button>
+        <button class="btn btn-ghost" onclick="toggleMaintenance(false)">🔒 Désactiver (Mot de passe requis)</button>
       </div>
     </div>
 
@@ -279,20 +274,16 @@
       <div class="terminal-card-title">🚨 MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
       <div class="terminal-card-desc">Bannière jaune d'alerte, blocage F12 / clic droit / raccourcis console, désactivation des URLs externes, option mode texte pur minimaliste.</div>
       <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
-        <div style="flex:1; min-width:180px;">
-          <label class="form-label">Durée du Mode Panique :</label>
-          <select id="panic-duration" class="form-control">
-            <option value="30">30 Minutes</option>
-            <option value="120" selected>2 Heures</option>
-            <option value="720">12 Heures</option>
-          </select>
+        <div style="flex:1; min-width:220px;">
+          <label class="form-label" for="panic-duration">Durée du Mode Panique (en minutes) :</label>
+          <input type="number" id="panic-duration" class="form-control" value="120" min="1" step="1" placeholder="Ex: 1, 30, 120, 720, 945543...">
         </div>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
           <input type="checkbox" id="panic-text-only" style="width:auto;">
           <label for="panic-text-only" style="margin:0; font-size:13px; font-weight:600;">Forcer le mode texte pur (.txt)</label>
         </div>
         <button class="btn" style="background:#eab308; color:#000; font-weight:700;" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
-        <button class="btn btn-ghost" onclick="triggerPanicMode(false)">Rétablir</button>
+        <button class="btn btn-ghost" onclick="triggerPanicMode(false)">🔒 Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
@@ -815,24 +806,47 @@
     if (swPDF) swPDF.checked = !!state.disablePDF;
   }
 
-  function toggleMaintenance(activate) {
-    const state = getSiteState();
-    if (activate) {
-      const mins = parseInt(document.getElementById("maint-duration").value, 10);
-      state.maintenanceActive = true;
-      state.maintenanceUntil = Date.now() + (mins * 60000);
-    } else {
-      state.maintenanceActive = false;
-      state.maintenanceUntil = 0;
+  async function verifyAdminPasswordPrompt(actionName = "la désactivation") {
+    const enteredPass = prompt(`🔐 SÉCURITÉ MAÎTRE :\nVeuillez saisir votre mot de passe administrateur pour autoriser ${actionName} :`);
+    if (enteredPass === null) return false; // Annulé
+    const cleanPass = enteredPass.trim();
+    if (!cleanPass) {
+      alert("❌ Mot de passe administrateur requis.");
+      return false;
     }
-    saveAndSyncSiteState(state);
+    const hash = await sha256Hex(cleanPass);
+    if (VALID_PASSWORD_HASHES.includes(hash) || cleanPass === TARGET_REFERENCE_PASSWORD) {
+      return true;
+    } else {
+      alert("❌ Mot de passe administrateur incorrect. Action non autorisée.");
+      showToast("❌ Échec d'authentification : mot de passe incorrect.");
+      return false;
+    }
   }
 
-  function triggerPanicMode(activate) {
+  async function toggleMaintenance(activate) {
+    const state = getSiteState();
+    if (activate) {
+      const rawVal = document.getElementById("maint-duration").value;
+      const mins = Math.max(1, parseInt(rawVal, 10) || 60);
+      state.maintenanceActive = true;
+      state.maintenanceUntil = Date.now() + (mins * 60000);
+      saveAndSyncSiteState(state);
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Blackout / Mode Maintenance");
+      if (!isAuthorized) return;
+      state.maintenanceActive = false;
+      state.maintenanceUntil = 0;
+      saveAndSyncSiteState(state);
+    }
+  }
+
+  async function triggerPanicMode(activate) {
     if (activate) {
       const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique pour tous les visiteurs ?");
       if (!confirmAction) return;
-      const mins = parseInt(document.getElementById("panic-duration").value, 10);
+      const rawVal = document.getElementById("panic-duration").value;
+      const mins = Math.max(1, parseInt(rawVal, 10) || 60);
       const textOnly = document.getElementById("panic-text-only").checked;
       const state = getSiteState();
       state.panicActive = true;
@@ -840,6 +854,8 @@
       state.panicTextOnly = textOnly;
       saveAndSyncSiteState(state);
     } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("le rétablissement du Mode Panique (retour à la normale)");
+      if (!isAuthorized) return;
       const state = getSiteState();
       state.panicActive = false;
       state.panicUntil = 0;
