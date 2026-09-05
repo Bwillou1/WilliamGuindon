@@ -77,16 +77,23 @@
       applyPanicMode(state.panicTextOnly);
     } else {
       const banner = document.getElementById('panic-alert-banner');
-      if (banner) banner.remove();
+      if (banner) {
+        banner.remove();
+        if (document.body) document.body.style.paddingTop = '';
+      }
+      if (document.getElementById('panic-text-only-container')) {
+        window.location.reload();
+        return;
+      }
     }
 
     // C. Commutateurs individuels (Kill-Switches)
     applyKillSwitches(state);
   }
 
-  // Application immédiate depuis le stockage de session (s'efface à la fermeture de l'onglet)
+  // Application immédiate depuis le stockage de session / local (0ms de latence)
   try {
-    const cached = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{}');
+    const cached = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY) || '{}');
     applyState(cached);
   } catch (e) {}
 
@@ -218,18 +225,44 @@
     }
   }
 
+  function disableExternalUrls() {
+    const isExternal = (url) => {
+      try {
+        const u = new URL(url, window.location.href);
+        return !ALLOWED_HOSTS.some(h => u.hostname === h || u.hostname.endsWith('.' + h));
+      } catch (_) {
+        return false;
+      }
+    };
+
+    document.querySelectorAll('a').forEach(a => {
+      if (a.href && isExternal(a.href)) {
+        a.style.cursor = 'not-allowed';
+        a.style.opacity = '0.5';
+        a.title = 'Lien externe désactivé en Mode Panique';
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          alert("⚠️ Alerte de sécurité : Les liens externes sont temporairement désactivés en Mode Cyber-Attaque / Panique.");
+          return false;
+        }, true);
+      }
+    });
+  }
+
   function applyPanicMode(forceTextOnly) {
     lockInspectorAndDevTools();
 
     const onReady = () => {
       renderPanicModeBanner();
+      disableExternalUrls();
       if (forceTextOnly) {
         renderTextOnlyMode();
       }
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', onReady);
+      document.addEventListener('DOMContentLoaded', onReady, { once: true });
     } else {
       onReady();
     }
@@ -282,7 +315,7 @@
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', onReady);
+      document.addEventListener('DOMContentLoaded', onReady, { once: true });
     } else {
       onReady();
     }
@@ -356,17 +389,34 @@
     if (document.getElementById('panic-alert-banner')) return;
     const banner = document.createElement('div');
     banner.id = 'panic-alert-banner';
-    banner.style.cssText = 'position:fixed;top:0;left:0;width:100vw;background:#eab308;color:#000000;font-weight:800;font-size:13px;padding:10px 16px;text-align:center;z-index:999999;box-shadow:0 4px 20px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;gap:8px;';
-    banner.innerHTML = `⚠️ <span>Un bug informatique ou une anomalie a été détecté. Plusieurs fonctions ont été désactivées temporairement pour votre sécurité.</span>`;
-    document.body.prepend(banner);
-    document.body.style.paddingTop = '40px';
+    banner.style.cssText = 'position:fixed;top:0;left:0;width:100vw;background:#eab308;color:#000000;font-weight:800;font-size:13.5px;padding:12px 16px;text-align:center;z-index:9999999;box-shadow:0 4px 20px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;';
+    banner.innerHTML = `⚠️ <span><strong>MODE PANIQUE / CYBER-ATTAQUE ACTIF :</strong> Un durcissement de sécurité extrême est en vigueur. Inspecteur, raccourcis et liens externes verrouillés.</span>`;
+    
+    if (document.body) {
+      document.body.prepend(banner);
+      document.body.style.paddingTop = '45px';
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.prepend(banner);
+        document.body.style.paddingTop = '45px';
+      }, { once: true });
+    }
   }
 
   function renderTextOnlyMode() {
+    if (document.getElementById('panic-text-only-container')) return;
     const rawText = document.body ? (document.body.innerText || document.body.textContent || '') : '';
+    const banner = document.getElementById('panic-alert-banner');
+
     const container = document.createElement('div');
-    container.style.cssText = 'max-width:800px;margin:20px auto;padding:20px;font-family:monospace;white-space:pre-wrap;background:#ffffff;color:#000000;line-height:1.5;';
-    container.textContent = rawText;
+    container.id = 'panic-text-only-container';
+    container.style.cssText = 'max-width:850px;margin:20px auto;padding:24px;font-family:system-ui,-apple-system,monospace;white-space:pre-wrap;background:#0d1117;color:#e6edf3;line-height:1.6;border:1px solid #30363d;border-radius:8px;';
+    container.textContent = rawText.replace(/⚠️.*verrouillés\./g, '').trim();
+
     document.body.replaceChildren(container);
+    if (banner) {
+      document.body.prepend(banner);
+      document.body.style.paddingTop = '45px';
+    }
   }
 })();

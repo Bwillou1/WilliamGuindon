@@ -716,6 +716,10 @@
   async function saveAndSyncSiteState(state) {
     state.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (typeof BroadcastChannel !== 'undefined') {
+      try { new BroadcastChannel('wg_site_state_sync').postMessage(state); } catch (_) {}
+    }
     loadCurrentState();
 
     const badge = document.getElementById("global-sync-badge");
