@@ -63,6 +63,38 @@
     }
   };
 
+  /**
+   * Échappement sécurisé des caractères HTML
+   */
+  function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  /**
+   * Validation et sanitisation stricte des chemins et URLs de documents
+   */
+  function getSafeDocUrl(rawUrl) {
+    if (!rawUrl || typeof rawUrl !== 'string') {
+      return DOCS_CATALOG['decision-17-aout-2026'].file;
+    }
+    const clean = rawUrl.trim();
+    for (const doc of Object.values(DOCS_CATALOG)) {
+      if (clean === doc.file || clean.endsWith(doc.file)) {
+        return doc.file;
+      }
+    }
+    if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) {
+      return clean;
+    }
+    return DOCS_CATALOG['decision-17-aout-2026'].file;
+  }
+
   // État de l'application
   const state = {
     pdfDoc: null,
@@ -179,21 +211,18 @@
       if (dom.selectReadingMode) dom.selectReadingMode.value = 'dark';
     }
 
-    // 2. Extraire les paramètres de l'URL
+    // 2. Extraire et assainir les paramètres de l'URL
     const urlParams = new URLSearchParams(window.location.search);
-    let targetFile = urlParams.get('file') || urlParams.get('doc');
+    let rawFile = urlParams.get('file') || urlParams.get('doc') || '';
     let targetPage = parseInt(urlParams.get('page') || window.location.hash.replace('#page=', ''), 10) || 1;
     let targetDocKey = urlParams.get('id');
 
-    // Résolution du document
-    if (!targetFile && targetDocKey && DOCS_CATALOG[targetDocKey]) {
-      targetFile = DOCS_CATALOG[targetDocKey].file;
+    // Résolution sécurisée du document
+    if (!rawFile && targetDocKey && DOCS_CATALOG[targetDocKey]) {
+      rawFile = DOCS_CATALOG[targetDocKey].file;
     }
 
-    if (!targetFile) {
-      // Par défaut : Détermination du 17 août 2026
-      targetFile = DOCS_CATALOG['decision-17-aout-2026'].file;
-    }
+    const targetFile = getSafeDocUrl(rawFile);
 
     // Associer le sélecteur
     syncDocSelectWithFile(targetFile);
@@ -210,8 +239,9 @@
    */
   function syncDocSelectWithFile(filePath) {
     if (!dom.docSelect) return;
+    const safePath = getSafeDocUrl(filePath);
     for (const [key, doc] of Object.entries(DOCS_CATALOG)) {
-      if (filePath.includes(doc.file) || doc.file.includes(filePath) || filePath.includes(key)) {
+      if (safePath === doc.file || safePath.includes(key)) {
         dom.docSelect.value = key;
         if (dom.badge) dom.badge.textContent = doc.badge;
         document.title = `${doc.title} — Lecteur Officiel · William Guindon`;
@@ -225,7 +255,8 @@
    */
   async function loadPDF(url, startPage = 1) {
     showLoading("Chargement du document haute fidélité...");
-    state.currentFile = url;
+    const safeUrl = getSafeDocUrl(url);
+    state.currentFile = safeUrl;
 
     try {
       // Annuler les tâches précédentes
@@ -237,7 +268,7 @@
 
       // Charger le document
       const loadingTask = pdfjsLib.getDocument({
-        url: url,
+        url: safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         enableXfa: true
@@ -772,13 +803,14 @@
         totalMatches++;
         const startIndex = Math.max(0, match.index - 40);
         const endIndex = Math.min(pageText.length, match.index + query.length + 40);
-        let snippet = pageText.substring(startIndex, endIndex);
-        snippet = snippet.replace(regex, (m) => `<mark>${m}</mark>`);
+        const rawSnippet = pageText.substring(startIndex, endIndex);
+        const escapedSnippet = escapeHTML(rawSnippet);
+        const markedSnippet = escapedSnippet.replace(regex, (m) => `<mark>${escapeHTML(m)}</mark>`);
 
         state.searchResults.push({
           page: i,
           index: totalMatches - 1,
-          snippet: `...${snippet}...`
+          snippet: `...${markedSnippet}...`
         });
       }
     }
@@ -1071,9 +1103,10 @@
         let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
         const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : null;
 
+        const safeFile = getSafeDocUrl(state.currentFile);
         const a = document.createElement('a');
-        a.href = state.currentFile;
-        a.download = state.currentFile.split('/').pop();
+        a.href = encodeURI(safeFile);
+        a.download = safeFile.split('/').pop();
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1405,7 +1438,7 @@
         }, 300);
       };
 
-      printIframe.src = state.currentFile;
+      printIframe.src = encodeURI(getSafeDocUrl(state.currentFile));
       return;
     } catch (e) {
       console.warn("Échec iframe native print:", e);
@@ -1628,11 +1661,11 @@
   async function handleViewerChatSubmit(query) {
     if (!query || !dom.viewerChatMessages) return;
 
-    // Bulle utilisateur
-    appendViewerChatMessage('user', query);
+    // Bulle utilisateur sécurisée (échappement automatique)
+    appendViewerChatMessage('user', query, false);
 
     // Bulle IA
-    const botBubble = appendViewerChatMessage('bot', '<em>🧠 Réflexion et consultation du document...</em>');
+    const botBubble = appendViewerChatMessage('bot', '<em>🧠 Réflexion et consultation du document...</em>', true);
 
     const docKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
     const docInfo = docKey ? DOCS_CATALOG[docKey] : null;
@@ -1647,7 +1680,7 @@
           });
         }
         const answer = await viewerAiSession.prompt(query);
-        botBubble.innerHTML = answer.replace(/\n/g, '<br>');
+        botBubble.innerHTML = escapeHTML(answer).replace(/\n/g, '<br>');
         dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
         return;
       }
@@ -1660,7 +1693,7 @@
       const q = query.toLowerCase();
       let answer = '';
       if (q.includes('point') || q.includes('clé') || q.includes('resume') || q.includes('résumé')) {
-        answer = `<strong>Points clés de ce document (${docTitle}) :</strong> Ce document traite de la procédure environnementale SEM-26-003, de la protection des milieux humides de Blainville et de l'obligation de conformité aux traités internationaux (ACEUM).`;
+        answer = `<strong>Points clés de ce document (${escapeHTML(docTitle)}) :</strong> Ce document traite de la procédure environnementale SEM-26-003, de la protection des milieux humides de Blainville et de l'obligation de conformité aux traités internationaux (ACEUM).`;
       } else if (q.includes('article') || q.includes('loi') || q.includes('convention') || q.includes('93')) {
         answer = `<strong>Cadre légal cité :</strong> Articles 24.27 & 24.28 de l'ACEUM, Loi sur la convention concernant les oiseaux migrateurs (LCOM), Loi sur les espèces en péril (LEP) et contestation des effets de la Loi 93 (Québec).`;
       } else if (q.includes('conclusion') || q.includes('etape') || q.includes('étape') || q.includes('echeance') || q.includes('échéance') || q.includes('délai') || q.includes('16 oct')) {
@@ -1676,12 +1709,16 @@
     }, 350);
   }
 
-  function appendViewerChatMessage(role, htmlContent) {
+  function appendViewerChatMessage(role, content, isHTML = false) {
     const bubble = document.createElement('div');
     bubble.className = `ai-chat-bubble ${role}`;
     bubble.style.fontSize = '11.5px';
     bubble.style.padding = '8px 10px';
-    bubble.innerHTML = htmlContent;
+    if (isHTML) {
+      bubble.innerHTML = content;
+    } else {
+      bubble.textContent = content;
+    }
     dom.viewerChatMessages.appendChild(bubble);
     dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
     return bubble;

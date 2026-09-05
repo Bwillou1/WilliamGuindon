@@ -271,13 +271,16 @@
         if (dialog) {
           const viewer = dialog.querySelector('.dialog-doc-viewer[data-src]');
           if (viewer && !viewer.querySelector('iframe')) {
-            const src = viewer.getAttribute('data-src');
+            const rawSrc = viewer.getAttribute('data-src') || '';
             const title = viewer.getAttribute('data-title') || 'Document officiel';
-            const iframe = document.createElement('iframe');
-            iframe.src = src;
-            iframe.title = title;
-            iframe.setAttribute('loading', 'lazy');
-            viewer.appendChild(iframe);
+            // Validation stricte de sécurité (anti-XSS / anti-open-redirect)
+            if (/^(viewer\.html\?file=|assets\/docs\/|\.\/|\/)[a-zA-Z0-9_\-\.\?=&%#]+$/.test(rawSrc)) {
+              const iframe = document.createElement('iframe');
+              iframe.src = encodeURI(rawSrc);
+              iframe.title = title;
+              iframe.setAttribute('loading', 'lazy');
+              viewer.appendChild(iframe);
+            }
           }
           dialog.showModal();
           document.body.style.overflow = 'hidden';

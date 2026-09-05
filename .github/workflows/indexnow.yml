@@ -7,9 +7,14 @@ on:
   schedule:
     - cron: "0 6 * * 1"
 
+permissions:
+  contents: read
+
 jobs:
   ping:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: IndexNow (Bing, ChatGPT Search, Copilot, Seznam, Naver, Yandex) - Custom Domain
         run: |
