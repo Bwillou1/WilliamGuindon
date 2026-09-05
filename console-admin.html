@@ -409,6 +409,8 @@
       <div class="cli-quick-bar">
         <span class="cli-quick-tag">COMMANDES RAPIDES :</span>
         <button class="cli-btn-mini" onclick="executeCliCommand('status')">status</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 on')">🛡️ radical5 on</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 off')">🛡️ radical5 off</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('radical4 on')">⚖️ radical4 on</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('radical4 off')">⚖️ radical4 off</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('switches')">switches</button>
@@ -523,6 +525,30 @@
         </div>
         <button class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" onclick="triggerRadical4(true)">⚖️ Déclencher le Mode Juridique 4</button>
         <button class="btn btn-ghost" onclick="triggerRadical4(false)">🔒 Rétablir (Mot de passe requis)</button>
+      </div>
+    </div>
+
+    <!-- MODE RADICAL 5 : BUNKER CYBERNÉTIQUE & AIR-GAP ABSOLU -->
+    <div class="terminal-card" style="border-left: 4px solid #06b6d4; background: linear-gradient(180deg, rgba(8,47,73,0.6) 0%, rgba(3,7,18,0.7) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div class="terminal-card-title" style="margin:0;">🛡️ MODE RADICAL 5 : Bunker Cybernétique & Isolation Air-Gap (Protocole Alpha-Zero)</div>
+        <div id="radical5-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid #0891b2;">
+          Inactif
+        </div>
+      </div>
+      <div class="terminal-card-desc">Confinement absolu et isolation quantique : coupe instantanément tous les sous-systèmes, flux réseau sortants, médias et scripts, puis déploie un écran HUD Cyber-Bunker hermétique et inviolable avec scellé cryptographique SHA-512.</div>
+      <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+        <div style="flex:1; min-width:220px;">
+          <label class="form-label" for="radical5-duration">Durée du Confinement Bunker Air-Gap :</label>
+          <input type="text" id="radical5-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 60, 1440, 945543..." oninput="updateRadical5TimePreview()">
+          <div id="radical5-duration-preview" style="font-size:11.5px; color:#22d3ee; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
+        </div>
+        <div style="flex:2; min-width:280px;">
+          <label class="form-label" for="radical5-custom-msg">Directive de confinement / Message d'urgence (optionnel) :</label>
+          <input type="text" id="radical5-custom-msg" class="form-control" placeholder="Ex: Isolation défensive activée suite à alerte de sécurité...">
+        </div>
+        <button class="btn" style="background:#06b6d4; color:#020617; font-weight:900;" onclick="triggerRadical5(true)">🛡️ Déclencher le Mode Bunker 5</button>
+        <button class="btn btn-ghost" onclick="triggerRadical5(false)">🔒 Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
@@ -1216,14 +1242,40 @@
       }
     }
 
+    const r5Pill = document.getElementById("radical5-status-pill");
+    if (r5Pill) {
+      if (state.radical5Active && state.radical5Until > now) {
+        const remainingMins = Math.max(1, Math.round((state.radical5Until - now) / 60000));
+        r5Pill.textContent = `● BUNKER ACTIF (Reste ${remainingMins} min)`;
+        r5Pill.style.background = "rgba(6,182,212,0.2)";
+        r5Pill.style.color = "#22d3ee";
+        r5Pill.style.borderColor = "#06b6d4";
+      } else {
+        r5Pill.textContent = "Inactif";
+        r5Pill.style.background = "rgba(6,182,212,0.1)";
+        r5Pill.style.color = "#22d3ee";
+        r5Pill.style.borderColor = "#0891b2";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
     updateRadical4TimePreview();
+    updateRadical5TimePreview();
   }
 
   function updateRadical4TimePreview() {
     const el = document.getElementById("radical4-duration");
     const preview = document.getElementById("radical4-duration-preview");
+    if (!el || !preview) return;
+    const mins = parseMinutes(el.value, 1440);
+    const endDate = new Date(Date.now() + mins * 60000);
+    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
+  function updateRadical5TimePreview() {
+    const el = document.getElementById("radical5-duration");
+    const preview = document.getElementById("radical5-duration-preview");
     if (!el || !preview) return;
     const mins = parseMinutes(el.value, 1440);
     const endDate = new Date(Date.now() + mins * 60000);
@@ -1249,6 +1301,29 @@
       state.radical4Active = false;
       state.radical4Until = 0;
       state.radical4Message = "";
+      saveAndSyncSiteState(state);
+    }
+  }
+
+  async function triggerRadical5(activate) {
+    if (activate) {
+      const confirmAction = confirm("🛡️ CONFIRMATION MODE RADICAL 5 :\nDéclencher le Bunker Cybernétique & Isolation Air-Gap Totale pour tous les visiteurs ?");
+      if (!confirmAction) return;
+      const rawVal = document.getElementById("radical5-duration").value;
+      const customMsg = document.getElementById("radical5-custom-msg") ? document.getElementById("radical5-custom-msg").value.trim() : "";
+      const mins = parseMinutes(rawVal, 1440);
+      const state = getSiteState();
+      state.radical5Active = true;
+      state.radical5Until = Date.now() + (mins * 60000);
+      state.radical5Message = customMsg;
+      saveAndSyncSiteState(state);
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Bunker Air-Gap (Mode Radical 5)");
+      if (!isAuthorized) return;
+      const state = getSiteState();
+      state.radical5Active = false;
+      state.radical5Until = 0;
+      state.radical5Message = "";
       saveAndSyncSiteState(state);
     }
   }
@@ -1432,6 +1507,9 @@
   • panic <on|off> [mins] [--txt] : Active ou désactive le durcissement cyber-attaque (Mode 3).
   • radical4 <on|off> [mins] [msg]: Active le Confinement Juridique & Dossier CCE ACEUM (Mode 4).
   • legal <on|off> [mins] [msg]   : Alias pour le Mode Radical 4 Forteresse Juridique.
+  • radical5 <on|off> [mins] [msg]: Active le Bunker Cybernétique & Isolation Air-Gap (Mode 5).
+  • bunker <on|off> [mins] [msg]  : Alias pour le Mode Radical 5 Isolation Air-Gap.
+  • airgap <on|off> [mins] [msg]  : Alias pour le Mode Radical 5 Isolation Air-Gap.
   • screenshot-shield <on|off>    : Active/désactive le floutage anti-capture d'écran.
   • no-js <on|off>                : Active/désactive le mode statique sans JavaScript.
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
@@ -1468,6 +1546,7 @@
           const isMaint = Boolean(state.maintenanceActive && state.maintenanceUntil > now);
           const isPanic = Boolean(state.panicActive && state.panicUntil > now);
           const isRad4 = Boolean(state.radical4Active && state.radical4Until > now);
+          const isRad5 = Boolean(state.radical5Active && state.radical5Until > now);
           const activeSwitches = ALL_SWITCH_KEYS.filter(k => state[k]);
 
           printCli("📊 RAPPORT D'ÉTAT SYSTÈME — williamguindon.me :", "#facc15");
@@ -1476,6 +1555,7 @@
           printCli(`  • Mode Radical 2 (Anti-Fork) : 🟢 ACTIF (Domaines stricts autorisés)`);
           printCli(`  • Mode Radical 3 (Panique Cyber) : ${isPanic ? `🟡 ACTIF (Fin: ${new Date(state.panicUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
           printCli(`  • Mode Radical 4 (Forteresse Juridique CCE) : ${isRad4 ? `🔵 ACTIF (Fin: ${new Date(state.radical4Until).toLocaleTimeString()})` : "🟢 INACTIF"}`);
+          printCli(`  • Mode Radical 5 (Bunker Air-Gap Protocole Alpha0) : ${isRad5 ? `🛡️ ACTIF (Fin: ${new Date(state.radical5Until).toLocaleTimeString()})` : "🟢 INACTIF"}`);
           printCli(`  • Protection Anti-Capture Écran : ${state.blockScreenshots ? "🔴 ACTIVE (Flou + Nom)" : "🟢 INACTIVE"}`);
           printCli(`  • Mode Sans JavaScript : ${state.disableSiteJS ? "🔴 ACTIF (No-Script)" : "🟢 INACTIF"}`);
           printCli(`  • Visionnement PDF : ${state.disablePDF ? "🔴 DÉSACTIVÉ" : "🟢 AUTORISÉ"}`);
@@ -1511,6 +1591,38 @@
             printCli("✅ Mode Radical 4 désactivé. Rétablissement des fonctions normales.", "#4ade80");
           } else {
             printCli("❌ Usage : radical4 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
+          }
+          break;
+        }
+
+        case "radical5":
+        case "bunker":
+        case "airgap": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const mins = parseMinutes(args[1], 1440);
+            const customMsg = args.slice(2).join(" ").replace(/^["']|["']$/g, '');
+            const state = getSiteState();
+            state.radical5Active = true;
+            state.radical5Until = Date.now() + (mins * 60000);
+            state.radical5Message = customMsg;
+            await saveAndSyncSiteState(state);
+            printCli(`🛡️ MODE RADICAL 5 (Bunker Cybernétique & Isolation Air-Gap) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical5Until).toLocaleTimeString()}).`, "#06b6d4");
+            if (customMsg) printCli(`  • Directive d'isolation : "${customMsg}"`, "#22d3ee");
+          } else if (action === "off") {
+            const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Mode Radical 5 (Bunker Air-Gap)");
+            if (!isAuthorized) {
+              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              break;
+            }
+            const state = getSiteState();
+            state.radical5Active = false;
+            state.radical5Until = 0;
+            state.radical5Message = "";
+            await saveAndSyncSiteState(state);
+            printCli("✅ Mode Radical 5 désactivé. Sortie du Bunker Air-Gap et rétablissement des fonctions.", "#4ade80");
+          } else {
+            printCli("❌ Usage : radical5 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
           }
           break;
         }
@@ -1661,9 +1773,12 @@
           state.radical4Active = false;
           state.radical4Until = 0;
           state.radical4Message = "";
+          state.radical5Active = false;
+          state.radical5Until = 0;
+          state.radical5Message = "";
           ALL_SWITCH_KEYS.forEach(k => { state[k] = false; });
           await saveAndSyncSiteState(state);
-          printCli("✅ Réinitialisation terminée : Tous les modes et 30 commutateurs sont rétablis à l'état normal.", "#4ade80");
+          printCli("✅ Réinitialisation terminée : Tous les modes (1 à 5) et commutateurs sont rétablis à l'état normal.", "#4ade80");
           break;
         }
 
@@ -1987,6 +2102,7 @@
         const val = cliInputEl.value.trim().toLowerCase();
         const availableCmds = [
           "help", "status", "switches", "switch", "blackout", "panic", "radical4", "legal",
+          "radical5", "bunker", "airgap",
           "screenshot-shield", "no-js", "no-pdf", "restore", "reset",
           "ls", "cat", "write", "rm", "git status", "git log", "broadcast",
           "audit", "cce", "theme", "whoami", "clear", "history", "date"

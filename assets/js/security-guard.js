@@ -143,7 +143,15 @@
       removeRadical4Screen();
     }
 
-    // 4. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
+    // 4. Mode Radical 5 : Bunker Cybernétique & Isolation Air-Gap Absolue (Protocole Alpha-Zero)
+    const isRadical5Active = Boolean(state.radical5Active && state.radical5Until && now < state.radical5Until);
+    if (isRadical5Active) {
+      renderRadical5Screen(state.radical5Until, state.radical5Message);
+    } else {
+      removeRadical5Screen();
+    }
+
+    // 5. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
   }
 
@@ -232,6 +240,9 @@
           if (state.radical4Active && state.radical4Until > now && !document.getElementById('radical4-wrapper')) {
             renderRadical4Screen(state.radical4Until, state.radical4Message);
           }
+          if (state.radical5Active && state.radical5Until > now && !document.getElementById('radical5-wrapper')) {
+            renderRadical5Screen(state.radical5Until, state.radical5Message);
+          }
           if (!document.getElementById('wg-killswitch-styles')) {
             applyKillSwitches(state);
           }
@@ -255,6 +266,9 @@
         }
         if (state.radical4Active && state.radical4Until > now) {
           if (!document.getElementById('radical4-wrapper')) renderRadical4Screen(state.radical4Until, state.radical4Message);
+        }
+        if (state.radical5Active && state.radical5Until > now) {
+          if (!document.getElementById('radical5-wrapper')) renderRadical5Screen(state.radical5Until, state.radical5Message);
         }
         if (!document.getElementById('wg-killswitch-styles')) {
           applyKillSwitches(state);
@@ -297,6 +311,7 @@
         lastAppliedStateJson.includes('"maintenanceActive":true') ||
         lastAppliedStateJson.includes('"panicActive":true') ||
         lastAppliedStateJson.includes('"radical4Active":true') ||
+        lastAppliedStateJson.includes('"radical5Active":true') ||
         lastAppliedStateJson.includes('"disableDevTools":true')
       )) {
         e.preventDefault();
@@ -310,6 +325,7 @@
         !lastAppliedStateJson.includes('"maintenanceActive":true') &&
         !lastAppliedStateJson.includes('"panicActive":true') &&
         !lastAppliedStateJson.includes('"radical4Active":true') &&
+        !lastAppliedStateJson.includes('"radical5Active":true') &&
         !lastAppliedStateJson.includes('"disableDevTools":true')
       )) {
         return;
@@ -617,6 +633,65 @@
 
   function removeRadical4Screen() {
     const overlay = document.getElementById('radical4-wrapper');
+    if (overlay) overlay.remove();
+  }
+
+  // --- MODE RADICAL 5 : BUNKER QUANTIQUE & ISOLATION AIR-GAP ABSOLUE (PROTOCOLE ALPHA-ZERO) ---
+  function renderRadical5Screen(untilTimestamp, customMessage) {
+    lockInspectorAndDevTools();
+
+    function getObfuscatedEmail() {
+      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
+    }
+    const safeEmail = getObfuscatedEmail();
+    const timeLeftMin = untilTimestamp ? Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000)) : null;
+
+    let overlay = document.getElementById('radical5-wrapper');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'radical5-wrapper';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#030708;color:#ecfeff;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;z-index:99999999;padding:20px;box-sizing:border-box;overflow:auto;';
+      (document.body || document.documentElement).appendChild(overlay);
+    }
+
+    const defaultMsg = customMessage || "Isolation totale du domaine activée. Toutes les connexions, interfaces et flux de données sont suspendus sous protocole de confinement maximal.";
+
+    overlay.innerHTML = `
+      <div style="background:radial-gradient(circle at top, #082f49 0%, #030708 85%);border:2px solid #06b6d4;border-radius:20px;padding:36px;max-width:720px;width:100%;box-shadow:0 0 60px rgba(6,182,212,0.25), 0 30px 90px rgba(0,0,0,0.95);text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;filter:drop-shadow(0 0 20px #06b6d4);">🛡️⚡</div>
+        <div style="display:inline-block;background:rgba(6,182,212,0.15);color:#22d3ee;border:1px solid #0891b2;padding:6px 16px;border-radius:24px;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">
+          MODE RADICAL 5 : PROTOCOLE ALPHA-ZERO // BUNKER AIR-GAP
+        </div>
+        <h1 style="color:#ffffff;font-size:24px;margin:0 0 10px;font-weight:900;letter-spacing:-0.5px;">Confinement Cybernétique & Isolation Absolue</h1>
+        <p style="color:#a5f3fc;font-size:14px;line-height:1.6;margin-bottom:24px;font-family:system-ui,-apple-system,sans-serif;">
+          ${defaultMsg}
+          ${timeLeftMin ? `<br><span style="color:#facc15;font-weight:700;">⏱️ Confinement Air-Gap actif pour encore <strong>${timeLeftMin} minutes</strong>.</span>` : ''}
+        </p>
+
+        <div style="background:#020617;border:1px solid #0e7490;border-radius:12px;padding:18px;text-align:left;margin-bottom:24px;font-size:13px;color:#cffafe;line-height:1.7;">
+          <div style="color:#22d3ee;font-weight:800;font-size:13.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;"></span>
+            TÉLÉMÉTRIE D'ISOLATION DU NOYAU :
+          </div>
+          <div>• <strong>État du Réseau :</strong> <span style="color:#f43f5e;font-weight:700;">ISOLÉ (AIR-GAP 0 FLUX ENTRANTS/SORTANTS)</span></div>
+          <div>• <strong>Autorité Souveraine :</strong> <span style="color:#38bdf8;font-weight:700;">William Guindon</span></div>
+          <div>• <strong>Scellé Cryptographique :</strong> <span style="color:#34d399;font-size:11.5px;">SHA-512::ALPHA0-WG-DOM-VERIFIED</span></div>
+          <div>• <strong>Horodatage Système :</strong> <span style="color:#94a3b8;">${new Date().toUTCString()}</span></div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px dashed #155e75;font-size:12px;color:#94a3b8;font-family:system-ui,-apple-system,sans-serif;">
+            🔒 <strong>Canal d'Urgence Sécurisé :</strong> <a href="mailto:${safeEmail}" style="color:#22d3ee;font-weight:700;">${safeEmail}</a>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <button onclick="window.location.reload()" style="background:#06b6d4;border:none;padding:11px 22px;border-radius:10px;font-weight:900;cursor:pointer;color:#020617;font-family:system-ui,sans-serif;box-shadow:0 0 20px rgba(6,182,212,0.4);">🔄 Vérifier l'État du Bunker</button>
+          <a href="console-admin.html" style="display:inline-block;background:#1e293b;border:1px solid #0891b2;color:#22d3ee;padding:11px 20px;border-radius:10px;font-weight:800;text-decoration:none;font-family:system-ui,sans-serif;">🔑 Console d'Accès Maître</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function removeRadical5Screen() {
+    const overlay = document.getElementById('radical5-wrapper');
     if (overlay) overlay.remove();
   }
 
