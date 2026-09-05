@@ -535,50 +535,187 @@
     
     const audioBtn = document.getElementById('btn-audio-read');
     if (audioBtn) {
-      let isSpeaking = false;
       const statusLabel = document.getElementById('audio-status-text');
-      const lang = document.documentElement.lang || 'fr-CA';
+      let bioAudio = null;
+      let floatingPlayer = null;
+      let activeCueIndex = -1;
+      let isUserInteracting = false;
 
-      audioBtn.addEventListener('click', () => {
-        if (!('speechSynthesis' in window)) {
-          alert('La synthèse vocale n\'est pas supportée par votre navigateur.');
-          return;
+      // Repères temporels de synchronisation de la biographie complète
+      const bioCues = [
+        { id: "hero-lead", selector: "#accueil .lead", start: 0.0, end: 18.16 },
+        { id: "apropos-intro", selector: "#apropos .apropos-intro-block", start: 18.16, end: 52.22 },
+        { id: "apropos-jeunesse", selector: "#apropos .apropos-jeunesse-block", start: 52.22, end: 91.39 },
+        { id: "apropos-benevolat", selector: "#apropos .apropos-benevolat-block", start: 91.39, end: 132.42 },
+        { id: "apropos-fiche", selector: "#apropos .apropos-fiche-block", start: 132.42, end: 158.75 },
+        { id: "faits-cce-2026", selector: "#faits li:nth-child(1)", start: 158.75, end: 193.19 },
+        { id: "faits-vaccin-2021", selector: "#faits li:nth-child(2)", start: 193.19, end: 214.46 },
+        { id: "faits-devoir-2025", selector: "#faits li:nth-child(3)", start: 214.46, end: 238.04 },
+        { id: "faits-cce-2026-depot", selector: "#faits li:nth-child(4)", start: 238.04, end: 274.12 },
+        { id: "faits-onu-2026", selector: "#faits li:nth-child(5)", start: 274.12, end: 305.30 },
+        { id: "stablex-synthese", selector: "#stablex", start: 305.30, end: 370.69 }
+      ];
+
+      function formatTime(secs) {
+        const m = Math.floor(secs / 60);
+        const s = Math.floor(secs % 60);
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+
+      function ensureFloatingPlayer() {
+        if (floatingPlayer) return floatingPlayer;
+
+        floatingPlayer = document.createElement('div');
+        floatingPlayer.id = 'bio-floating-player';
+        floatingPlayer.className = 'bio-floating-player';
+        floatingPlayer.setAttribute('role', 'region');
+        floatingPlayer.setAttribute('aria-label', 'Lecteur audio biographie synchronisé');
+
+        floatingPlayer.innerHTML = `
+          <button type="button" class="bio-player-btn-circle" id="bio-btn-rewind" aria-label="Reculer de 10 secondes" title="Reculer de 10s">
+            ↺ 10s
+          </button>
+          <button type="button" class="bio-player-btn-circle bio-player-btn-main" id="bio-btn-playpause" aria-label="Pause" title="Lecture / Pause">
+            <span id="bio-play-icon">⏸</span>
+          </button>
+          <button type="button" class="bio-player-btn-circle" id="bio-btn-forward" aria-label="Avancer de 10 secondes" title="Avancer de 10s">
+            10s ↻
+          </button>
+          <div class="bio-player-info">
+            <div class="bio-player-title"><span class="bio-player-live-dot"></span> Écoute audio en cours</div>
+            <div class="bio-player-timer" id="bio-player-time">00:00 / 06:10</div>
+          </div>
+          <button type="button" class="bio-player-close" id="bio-btn-close" aria-label="Fermer la lecture" title="Fermer">✕</button>
+        `;
+
+        document.body.appendChild(floatingPlayer);
+
+        const btnRewind = floatingPlayer.querySelector('#bio-btn-rewind');
+        const btnForward = floatingPlayer.querySelector('#bio-btn-forward');
+        const btnPlayPause = floatingPlayer.querySelector('#bio-btn-playpause');
+        const btnClose = floatingPlayer.querySelector('#bio-btn-close');
+
+        btnRewind.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (bioAudio) bioAudio.currentTime = Math.max(0, bioAudio.currentTime - 10);
+        });
+
+        btnForward.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (bioAudio) bioAudio.currentTime = Math.min(bioAudio.duration || 370, bioAudio.currentTime + 10);
+        });
+
+        btnPlayPause.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!bioAudio) return;
+          if (bioAudio.paused) {
+            bioAudio.play();
+          } else {
+            bioAudio.pause();
+          }
+        });
+
+        btnClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          stopBioAudio();
+        });
+
+        return floatingPlayer;
+      }
+
+      function initBioAudio() {
+        if (bioAudio) return bioAudio;
+
+        bioAudio = new Audio('assets/Audio/biographie-complete.mp3');
+        bioAudio.preload = 'auto';
+
+        bioAudio.addEventListener('timeupdate', () => {
+          const ct = bioAudio.currentTime;
+          const dur = bioAudio.duration || 370.7;
+
+          const timeEl = document.getElementById('bio-player-time');
+          if (timeEl) timeEl.textContent = `${formatTime(ct)} / ${formatTime(dur)}`;
+
+          // Détection du repère actif
+          let foundIndex = -1;
+          for (let i = 0; i < bioCues.length; i++) {
+            if (ct >= bioCues[i].start && ct < bioCues[i].end) {
+              foundIndex = i;
+              break;
+            }
+          }
+
+          if (foundIndex !== activeCueIndex) {
+            activeCueIndex = foundIndex;
+            document.querySelectorAll('.bio-read-block').forEach(el => el.classList.remove('active-speech-cue'));
+
+            if (activeCueIndex >= 0) {
+              const cue = bioCues[activeCueIndex];
+              const targetEl = document.querySelector(cue.selector);
+              if (targetEl) {
+                targetEl.classList.add('active-speech-cue');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }
+          }
+        });
+
+        bioAudio.addEventListener('play', () => {
+          document.body.classList.add('bio-reading-active');
+          const fp = ensureFloatingPlayer();
+          fp.classList.add('visible');
+          const icon = document.getElementById('bio-play-icon');
+          if (icon) icon.textContent = '⏸';
+          audioBtn.classList.add('playing');
+          audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> <span>Pause / Arrêter</span>`;
+          if (statusLabel) statusLabel.textContent = 'Lecture audio en cours...';
+        });
+
+        bioAudio.addEventListener('pause', () => {
+          const icon = document.getElementById('bio-play-icon');
+          if (icon) icon.textContent = '▶';
+          if (statusLabel) statusLabel.textContent = 'En pause';
+        });
+
+        bioAudio.addEventListener('ended', () => {
+          stopBioAudio();
+        });
+
+        bioAudio.addEventListener('error', (err) => {
+          console.warn('Audio play error, fallback:', err);
+          if (statusLabel) statusLabel.textContent = 'Audio indisponible';
+        });
+
+        return bioAudio;
+      }
+
+      function stopBioAudio() {
+        if (bioAudio) {
+          bioAudio.pause();
+          bioAudio.currentTime = 0;
+        }
+        document.body.classList.remove('bio-reading-active');
+        document.querySelectorAll('.bio-read-block').forEach(el => el.classList.remove('active-speech-cue'));
+        activeCueIndex = -1;
+
+        if (floatingPlayer) {
+          floatingPlayer.classList.remove('visible');
         }
 
-        if (isSpeaking) {
-          window.speechSynthesis.cancel();
-          isSpeaking = false;
-          audioBtn.classList.remove('playing');
-          audioBtn.setAttribute('aria-label', 'Écouter la biographie');
-          audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> <span>Écouter la biographie</span>`;
-          if (statusLabel) statusLabel.textContent = '';
+        audioBtn.classList.remove('playing');
+        audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> <span>Écouter la biographie</span>`;
+        if (statusLabel) statusLabel.textContent = '';
+      }
+
+      audioBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const player = initBioAudio();
+        if (player.paused) {
+          player.play().catch(err => {
+            console.warn('Play error:', err);
+          });
         } else {
-          const leadText = document.querySelector('p.lead')?.textContent || '';
-          const introText = document.querySelector('#apropos p, #about p, #sobre p')?.textContent || '';
-          const fullTextToRead = `${leadText}. ${introText}`;
-
-          const utterance = new SpeechSynthesisUtterance(fullTextToRead);
-          utterance.lang = lang.startsWith('en') ? 'en-US' : (lang.startsWith('es') ? 'es-ES' : 'fr-CA');
-
-          utterance.onend = () => {
-            isSpeaking = false;
-            audioBtn.classList.remove('playing');
-            audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> <span>Écouter la biographie</span>`;
-            if (statusLabel) statusLabel.textContent = '';
-          };
-
-          utterance.onerror = () => {
-            isSpeaking = false;
-            audioBtn.classList.remove('playing');
-            if (statusLabel) statusLabel.textContent = 'Erreur de lecture';
-          };
-
-          window.speechSynthesis.speak(utterance);
-          isSpeaking = true;
-          audioBtn.classList.add('playing');
-          audioBtn.setAttribute('aria-label', 'Arrêter la lecture audio');
-          audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> <span>Pause / Arrêter</span>`;
-          if (statusLabel) statusLabel.textContent = lang.startsWith('en') ? 'Reading in progress...' : (lang.startsWith('es') ? 'Leyendo...' : 'Lecture audio en cours...');
+          player.pause();
         }
       });
     }
