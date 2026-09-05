@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Éditeur Visuel en Direct — William Guindon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#064e3b">
+
+<style>
+  :root {
+    --bg-dark: #090d0a;
+    --bg-panel: #111813;
+    --border: #1f2922;
+    --accent: #22c55e;
+    --accent-hover: #16a34a;
+    --text: #f0f4f1;
+    --text-muted: #9bb0a2;
+    --danger: #ef4444;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Barre d'outils supérieure */
+  .editor-topbar {
+    height: 58px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+  }
+  .topbar-left, .topbar-center, .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-badge {
+    font-weight: 800;
+    font-size: 15px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-badge span {
+    color: var(--accent);
+  }
+  .status-badge {
+    font-size: 11.5px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  /* Sélecteur d'affichage (Desktop, Tablet, Mobile) */
+  .device-switcher {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    display: flex;
+    gap: 2px;
+  }
+  .device-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .device-btn.active, .device-btn:hover {
+    background: var(--border);
+    color: #ffffff;
+  }
+
+  /* Boutons d'action */
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg-dark);
+    color: var(--text);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn:hover {
+    background: var(--border);
+  }
+  .btn-save {
+    background: var(--accent);
+    color: #042f2e;
+    border-color: var(--accent);
+  }
+  .btn-save:hover {
+    background: #4ade80;
+    color: #042f2e;
+  }
+  .btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Zone de travail principale */
+  .editor-workspace {
+    flex: 1;
+    display: flex;
+    height: calc(100vh - 58px);
+    overflow: hidden;
+  }
+
+  /* Panneau latéral des sections */
+  .editor-sidebar {
+    width: 310px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+  }
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .section-item {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s;
+  }
+  .section-item:hover {
+    border-color: var(--accent);
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .section-controls {
+    display: flex;
+    gap: 4px;
+  }
+  .control-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    transition: all 0.15s;
+  }
+  .control-btn:hover {
+    background: var(--border);
+    color: #ffffff;
+  }
+
+  /* Zone de prévisualisation Iframe */
+  .preview-wrapper {
+    flex: 1;
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    overflow: hidden;
+  }
+  .preview-frame-container {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    transition: width 0.3s ease, border-radius 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    position: relative;
+  }
+  .preview-frame-container.tablet {
+    width: 768px;
+    border: 8px solid var(--border);
+    border-radius: 16px;
+  }
+  .preview-frame-container.mobile {
+    width: 380px;
+    border: 10px solid var(--border);
+    border-radius: 24px;
+  }
+  #site-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* Notifications */
+  .editor-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #042f2e;
+    border: 1.5px solid var(--accent);
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    display: none;
+    z-index: 1000;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="editor-topbar">
+  <div class="topbar-left">
+    <div class="brand-badge">
+      <span>Studio Wix-Style</span> · William Guindon
+    </div>
+    <span class="status-badge" id="live-indicator">● Mode Visuel Actif</span>
+  </div>
+
+  <div class="topbar-center">
+    <div class="device-switcher">
+      <button class="device-btn active" data-mode="desktop" onclick="setDeviceMode('desktop')">🖥️ PC</button>
+      <button class="device-btn" data-mode="tablet" onclick="setDeviceMode('tablet')">📱 Tablette</button>
+      <button class="device-btn" data-mode="mobile" onclick="setDeviceMode('mobile')">📱 Mobile</button>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
+    <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe">✏️ Édition : Activée</button>
+    <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()">💾 Sauvegarder & Publier en direct</button>
+  </div>
+</header>
+
+<div class="editor-workspace">
+  <!-- Panneau latéral des sections -->
+  <aside class="editor-sidebar">
+    <div class="sidebar-header">
+      <span>📦 Sections de la page d'accueil</span>
+      <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
+    </div>
+    <div class="section-list" id="sidebar-sections-list">
+      <!-- Rempli dynamiquement -->
+    </div>
+    <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
+      💡 <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
+    </div>
+  </aside>
+
+  <!-- Prévisualisation interactive -->
+  <main class="preview-wrapper">
+    <div class="preview-frame-container" id="frame-container">
+      <iframe id="site-preview-iframe" src="index.html" title="Aperçu du site"></iframe>
+    </div>
+  </main>
+</div>
+
+<div class="editor-toast" id="editor-toast"></div>
+
+<script>
+  const GITHUB_REPO = "Bwillou1/WilliamGuindon";
+  const GITHUB_API = "https://api.github.com";
+  const iframe = document.getElementById("site-preview-iframe");
+  let isEditModeActive = true;
+
+  // Responsive device switch
+  function setDeviceMode(mode) {
+    document.querySelectorAll(".device-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector(`.device-btn[data-mode="${mode}"]`).classList.add("active");
+    const container = document.getElementById("frame-container");
+    container.className = "preview-frame-container " + (mode === "desktop" ? "" : mode);
+  }
+
+  // Toast notification
+  function showToast(msg, isSuccess = true) {
+    const toast = document.getElementById("editor-toast");
+    toast.textContent = msg;
+    toast.style.borderColor = isSuccess ? "var(--accent)" : "var(--danger)";
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 5000);
+  }
+
+  // Injection du mode visuel dans l'iframe
+  iframe.onload = () => {
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      
+      // Injecter le style d'édition visuelle
+      const style = doc.createElement("style");
+      style.id = "editor-injected-style";
+      style.innerHTML = `
+        [contenteditable="true"]:hover {
+          outline: 2px dashed #22c55e !important;
+          outline-offset: 4px;
+          cursor: text !important;
+        }
+        [contenteditable="true"]:focus {
+          outline: 2px solid #22c55e !important;
+          outline-offset: 4px;
+          background: rgba(34, 197, 94, 0.08) !important;
+        }
+        .section-highlight {
+          outline: 3px solid #22c55e !important;
+        }
+      `;
+      doc.head.appendChild(style);
+
+      enableContentEditing(doc);
+      buildSidebarSections(doc);
+    } catch (e) {
+      console.warn("Erreur d'accès iframe:", e);
+    }
+  };
+
+  // Rendre tous les textes cliquables et éditables
+  function enableContentEditing(doc) {
+    const editables = doc.querySelectorAll("h1, h2, h3, h4, h5, p, .lead, blockquote, .btn, .kicker, .fact-val, time");
+    editables.forEach(el => {
+      el.setAttribute("contenteditable", isEditModeActive ? "true" : "false");
+      el.setAttribute("spellcheck", "false");
+    });
+  }
+
+  // Activer / Désactiver le mode édition
+  function toggleEditMode() {
+    isEditModeActive = !isEditModeActive;
+    const btn = document.getElementById("btn-toggle-edit");
+    btn.textContent = isEditModeActive ? "✏️ Édition : Activée" : "👁️ Aperçu seul";
+    btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
+
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    enableContentEditing(doc);
+    showToast(isEditModeActive ? "Mode édition activé : cliquez sur les textes pour éditer" : "Mode aperçu activé");
+  }
+
+  // Construction de la liste des sections dans la colonne de gauche
+  function buildSidebarSections(doc) {
+    const container = document.getElementById("sidebar-sections-list");
+    container.innerHTML = "";
+
+    const sections = doc.querySelectorAll("main section, header.site");
+    sections.forEach((sec, index) => {
+      const id = sec.id || (sec.tagName.toLowerCase() === "header" ? "En-tête Navigation" : "Section " + (index + 1));
+      let title = id;
+      const h2 = sec.querySelector("h1, h2, h3");
+      if (h2) title = h2.textContent.trim().substring(0, 22) + "...";
+
+      const item = document.createElement("div");
+      item.className = "section-item";
+      item.innerHTML = `
+        <div class="section-title" title="${id}">${title}</div>
+        <div class="section-controls">
+          <button class="control-btn" title="Monter" onclick="moveSection('${sec.id}', -1)">▲</button>
+          <button class="control-btn" title="Descendre" onclick="moveSection('${sec.id}', 1)">▼</button>
+          <button class="control-btn" title="Afficher/Masquer" onclick="toggleSectionVisibility('${sec.id}')">👁️</button>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  // Déplacer une section vers le haut ou le bas
+  window.moveSection = (secId, direction) => {
+    if (!secId) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (direction === -1 && target.previousElementSibling && target.previousElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target, target.previousElementSibling);
+    } else if (direction === 1 && target.nextElementSibling && target.nextElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target.nextElementSibling, target);
+    }
+    buildSidebarSections(doc);
+    showToast("Ordre de la section mis à jour !");
+  };
+
+  // Masquer / Réafficher une section
+  window.toggleSectionVisibility = (secId) => {
+    if (!secId) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (target.style.display === "none") {
+      target.style.display = "";
+      showToast("Section réaffichée !");
+    } else {
+      target.style.display = "none";
+      showToast("Section masquée !");
+    }
+    buildSidebarSections(doc);
+  };
+
+  // Sauvegarder et publier directement sur GitHub
+  async function saveSiteToGitHub() {
+    let token = localStorage.getItem("wg_github_pat");
+    if (!token) {
+      token = prompt("🔑 Entrez votre jeton d'accès GitHub (PAT) pour publier vos modifications en direct :");
+      if (token && token.trim()) {
+        localStorage.setItem("wg_github_pat", token.trim());
+      } else {
+        showToast("⚠️ Publication annulée : jeton GitHub requis.", false);
+        return;
+      }
+    }
+
+    const saveBtn = document.getElementById("btn-save-site");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "⏳ Publication sur GitHub...";
+
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+      // Nettoyer les attributs d'édition avant de sauvegarder
+      const cleanDoc = doc.cloneNode(true);
+      const injectedStyle = cleanDoc.getElementById("editor-injected-style");
+      if (injectedStyle) injectedStyle.remove();
+
+      cleanDoc.querySelectorAll("[contenteditable]").forEach(el => {
+        el.removeAttribute("contenteditable");
+        el.removeAttribute("spellcheck");
+      });
+
+      const htmlContent = "<!DOCTYPE html>\n" + cleanDoc.documentElement.outerHTML;
+
+      // Récupérer le SHA actuel de index.html
+      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+      if (!fileRes.ok) throw new Error("Impossible d'accéder à index.html sur GitHub");
+      const fileData = await fileRes.json();
+
+      // Encode UTF-8 vers Base64
+      const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
+
+      // Pousser le commit sur GitHub
+      const updateRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.v3+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "chore(studio): mise à jour visuelle du site via l'éditeur en direct",
+          content: b64,
+          sha: fileData.sha
+        })
+      });
+
+      if (!updateRes.ok) {
+        const err = await updateRes.json().catch(() => ({}));
+        throw new Error(err.message || "Échec de l'enregistrement");
+      }
+
+      showToast("🎉 Félicitations ! Votre site est mis à jour et en ligne !");
+    } catch (err) {
+      console.error(err);
+      showToast("Erreur : " + err.message, false);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "💾 Sauvegarder & Publier en direct";
+    }
+  }
+</script>
+</body>
+</html>
