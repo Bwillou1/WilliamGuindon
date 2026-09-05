@@ -20,6 +20,30 @@
     const headerWrap = document.querySelector('header.site .wrap');
 
     if (nav) {
+      // Intégration widget Google Traduction
+      let gTranslateDiv = document.getElementById('google_translate_element');
+      if (!gTranslateDiv) {
+        gTranslateDiv = document.createElement('div');
+        gTranslateDiv.id = 'google_translate_element';
+        nav.appendChild(gTranslateDiv);
+
+        if (!window.googleTranslateElementInit) {
+          window.googleTranslateElementInit = function() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'fr',
+              includedLanguages: 'en,es,fr,de,it,pt,ar,zh-CN,ja,ru,uk',
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: false
+            }, 'google_translate_element');
+          };
+          const gtScript = document.createElement('script');
+          gtScript.type = 'text/javascript';
+          gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+          gtScript.defer = true;
+          document.head.appendChild(gtScript);
+        }
+      }
+
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'theme-toggle-btn';
       toggleBtn.setAttribute('aria-label', 'Changer de thème');
@@ -162,7 +186,8 @@
       if (isNaN(target)) return;
       
       const suffix = el.getAttribute('data-suffix') || '';
-      const duration = 1800; // 1.8 secondes
+      const isM2 = el.getAttribute('data-format') === 'k' || el.textContent.includes('m²') || target >= 1000;
+      const duration = 1200;
       let startTime = null;
       
       function step(timestamp) {
@@ -170,20 +195,13 @@
         const progress = Math.min((timestamp - startTime) / duration, 1);
         const current = Math.floor(progress * target);
         
-        if (target >= 1000) {
-          el.textContent = current.toLocaleString('fr-FR') + suffix;
-        } else {
-          el.textContent = current + suffix;
-        }
+        const unit = isM2 ? ' m²' : suffix;
+        el.textContent = current.toLocaleString('fr-CA').replace(/\s/g, ' ') + unit;
         
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
-          if (target >= 1000) {
-            el.textContent = target.toLocaleString('fr-FR') + suffix;
-          } else {
-            el.textContent = target + suffix;
-          }
+          el.textContent = target.toLocaleString('fr-CA').replace(/\s/g, ' ') + unit;
         }
       }
       
@@ -420,9 +438,7 @@
     function updatePrecisionCountdown() {
       const targetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
       const now = new Date().getTime();
-      const diff = targetDate - now;
-
-      if (diff <= 0) return;
+      const diff = Math.max(0, targetDate - now);
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -910,6 +926,7 @@
     }
 
     initFloatingAiHub();
+    initHomeBlogAndPhotos();
 
     handleLowBandwidth();
   }
@@ -1370,18 +1387,6 @@
         })
         .catch(err => console.warn('Photos preview load:', err));
     }
-  }
-
-  function initApp() {
-    initTheme();
-    initCopyButtons();
-    initSmoothScroll();
-    initFaq();
-    initReadingProgress();
-    initShareButtons();
-    initAudioBio();
-    initFloatingAiHub();
-    initHomeBlogAndPhotos();
   }
 
   if (document.readyState === 'loading') {
