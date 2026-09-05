@@ -1,4 +1,4 @@
-/* theme.js — Script pour le mode sombre dynamique, menu mobile, compteurs et modaux */
+/* theme.js */
 (function () {
   // 1. Gestion du thème Sombre/Clair
   const themeStorageKey = 'william-guindon-theme';
@@ -276,7 +276,7 @@
       counters.forEach(c => counterObserver.observe(c));
     }
 
-    // 5. Gestion des modaux de documents (<dialog>) avec chargement différé (Eco-Design A+)
+    // 5. Gestion des modaux de documents (<dialog>) avec chargement différé (Clean Design)
     const openDocBtns = document.querySelectorAll('.btn-open-doc');
     
     openDocBtns.forEach(btn => {

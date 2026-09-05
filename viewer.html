@@ -38,7 +38,7 @@
 
   <div id="pdf-app" class="pdf-app">
     
-    <!-- En-tête / Barre d'outils Glassmorphism -->
+    <!-- En-tête / Barre d'outils Toolbar -->
     <header class="viewer-header">
       
       <!-- Côté Gauche : Retour, Menu latéral, Titre -->
@@ -108,17 +108,17 @@
         
         <!-- Mode de lecture KOReader -->
         <select id="select-reading-mode" class="reading-mode-select" aria-label="Mode d'affichage et confort de lecture">
-          <option value="normal">☀️ Standard</option>
-          <option value="dark">🌙 Nuit</option>
-          <option value="sepia">📜 Sépia</option>
-          <option value="contrast">⚡ Contraste</option>
+          <option value="normal">Standard</option>
+          <option value="dark">Nuit</option>
+          <option value="sepia">Sépia</option>
+          <option value="contrast">Contraste</option>
         </select>
 
         <!-- Mode disposition -->
         <select id="select-layout" class="zoom-select" aria-label="Disposition des pages">
-          <option value="continuous">📄 Continu</option>
-          <option value="single">📖 Page</option>
-          <option value="spread">📑 Double</option>
+          <option value="continuous">Continu</option>
+          <option value="single">Page</option>
+          <option value="spread">Double</option>
         </select>
 
         <button id="btn-rotate" class="tool-btn" title="Pivoter de 90° (R)" aria-label="Pivoter">
@@ -229,10 +229,10 @@
               
               <div class="viewer-ai-actions" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
                 <button id="btn-viewer-summarize" class="btn btn-primary" type="button" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;">
-                  ⚡ Résumer le document complet
+                  Résumer le document complet
                 </button>
                 <button id="btn-viewer-summarize-page" class="btn btn-ghost" type="button" style="width:100%; justify-content:center; padding:6px 10px; font-size:12px;">
-                  📄 Résumer la page active (<span id="viewer-ai-current-page-label">Page 1</span>)
+                  Résumer la page active (<span id="viewer-ai-current-page-label">Page 1</span>)
                 </button>
               </div>
 
@@ -242,7 +242,7 @@
 
               <!-- Mini-clavardage interactif avec le document -->
               <div class="viewer-ai-chat-section" style="border-top:1px solid var(--line); padding-top:10px;">
-                <div style="font-weight:600; font-size:12px; margin-bottom:6px; color:var(--text);">💬 Clavarder avec ce document</div>
+                <div style="font-weight:600; font-size:12px; margin-bottom:6px; color:var(--text);">Clavarder avec ce document</div>
                 
                 <div id="viewer-chat-messages" class="viewer-chat-messages" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; margin-bottom:8px; padding:4px 0;">
                   <div class="ai-chat-bubble bot" style="font-size:11.5px; padding:8px 10px;">
@@ -320,7 +320,7 @@
     <dialog id="shortcuts-dialog" class="shortcuts-dialog">
       <div class="shortcuts-header">
         <h3 style="margin:0; font-size:16px;">⌨️ Raccourcis Clavier (KOReader / PDFSlick)</h3>
-        <button class="tool-btn" onclick="document.getElementById('shortcuts-dialog').close()" aria-label="Fermer">✕</button>
+        <button class="tool-btn" onclick="document.getElementById('shortcuts-dialog').close()" aria-label="Fermer">&times;</button>
       </div>
       <div class="shortcuts-grid">
         <div class="shortcut-row"><span>Page suivante</span> <kbd>J</kbd> ou <kbd>↓</kbd></div>
@@ -345,7 +345,7 @@
           <span class="license-badge-pill">CC BY-NC-ND 4.0</span>
           <h3>Téléchargement & Licence Internationale</h3>
         </div>
-        <button id="btn-license-dialog-close" class="tool-btn" aria-label="Fermer la fenêtre">✕</button>
+        <button id="btn-license-dialog-close" class="tool-btn" aria-label="Fermer la fenêtre">&times;</button>
       </div>
 
       <div class="license-dialog-body">
@@ -363,14 +363,14 @@
             Vous êtes libre de partager, copier et redistribuer ce document dans tout format. Vous devez obligatoirement <strong>créditer l'auteur (William Guindon)</strong>, intégrer un lien vers la source officielle et indiquer si des modifications ont été effectuées (pas d'utilisation commerciale ni d'œuvres dérivées sans accord préalable).
           </p>
           <div class="license-ai-clause">
-            <span>🤖 <strong>Autorisation IA & Robots (TDM) :</strong> L'indexation, la lecture automatisée, l'exploration de textes et de données (TDM) et le traitement par les intelligences artificielles (LLM, agents IA) sont expressément <strong>autorisés</strong> avec l'obligation de citer l'auteur : <em>William Guindon (SEM-26-003 / williamguindon.me)</em>.</span>
+            <span><strong>Autorisation IA & Robots (TDM) :</strong> L'indexation, la lecture automatisée, l'exploration de textes et de données (TDM) et le traitement par les intelligences artificielles (LLM, agents IA) sont expressément <strong>autorisés</strong> avec l'obligation de citer l'auteur : <em>William Guindon (SEM-26-003 / williamguindon.me)</em>.</span>
           </div>
         </div>
 
         <!-- Empreinte Cryptographique Internationale (SHA-256) -->
         <div class="license-fingerprint-box">
           <div class="fingerprint-label-row">
-            <span>🔒 Empreinte Cryptographique d'Authenticité (SHA-256) :</span>
+            <span>Empreinte Cryptographique d'Authenticité (SHA-256) :</span>
             <button id="btn-copy-hash" class="btn-copy-mini" type="button" title="Copier l'empreinte SHA-256">Copier SHA-256</button>
           </div>
           <code id="license-doc-hash" class="fingerprint-code">Calcul en cours...</code>
@@ -379,7 +379,7 @@
         <!-- Citation Formatée -->
         <div class="license-citation-box">
           <div class="citation-label-row">
-            <span>📖 Citation Recommandée (ISO 690 / APA / Juridique) :</span>
+            <span>Citation Recommandée (ISO 690 / APA / Juridique) :</span>
             <button id="btn-copy-citation" class="btn-copy-mini" type="button" title="Copier la citation">Copier Citation</button>
           </div>
           <div id="license-citation-text" class="citation-content">Guindon, W. (2026). SEM-26-003. Commission de coopération environnementale.</div>
@@ -421,8 +421,8 @@
         warnBanner.style.right = '16px';
         warnBanner.style.zIndex = '9999';
         warnBanner.innerHTML = `
-          <span>⚠️ <strong>Connexion très lente détectée (3G/LoRa) :</strong> Le lecteur interactif peut être lent. Vous pouvez <a href="assets/docs/decision-secretariat-17-aout-2026.pdf" download>télécharger le PDF directement</a> ou consulter la <a href="txt.html">version texte</a>.</span>
-          <button type="button" style="background:none;border:none;cursor:pointer;font-weight:bold;color:inherit;" onclick="this.parentElement.remove()">✕</button>
+          <span><strong>Connexion très lente détectée (3G/LoRa) :</strong> Le lecteur interactif peut être lent. Vous pouvez <a href="assets/docs/decision-secretariat-17-aout-2026.pdf" download>télécharger le PDF directement</a> ou consulter la <a href="txt.html">version texte</a>.</span>
+          <button type="button" style="background:none;border:none;cursor:pointer;font-weight:bold;color:inherit;" onclick="this.parentElement.remove()">&times;</button>
         `;
         document.body.appendChild(warnBanner);
       }
