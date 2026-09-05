@@ -543,17 +543,17 @@
 
       // Repères temporels de synchronisation de la biographie complète
       const bioCues = [
-        { id: "hero-lead", selector: "#accueil .lead", start: 0.0, end: 18.16 },
-        { id: "apropos-intro", selector: "#apropos .apropos-intro-block", start: 18.16, end: 52.22 },
-        { id: "apropos-jeunesse", selector: "#apropos .apropos-jeunesse-block", start: 52.22, end: 91.39 },
-        { id: "apropos-benevolat", selector: "#apropos .apropos-benevolat-block", start: 91.39, end: 132.42 },
-        { id: "apropos-fiche", selector: "#apropos .apropos-fiche-block", start: 132.42, end: 158.75 },
-        { id: "faits-cce-2026", selector: "#faits li:nth-child(1)", start: 158.75, end: 193.19 },
-        { id: "faits-vaccin-2021", selector: "#faits li:nth-child(2)", start: 193.19, end: 214.46 },
-        { id: "faits-devoir-2025", selector: "#faits li:nth-child(3)", start: 214.46, end: 238.04 },
-        { id: "faits-cce-2026-depot", selector: "#faits li:nth-child(4)", start: 238.04, end: 274.12 },
-        { id: "faits-onu-2026", selector: "#faits li:nth-child(5)", start: 274.12, end: 305.30 },
-        { id: "stablex-synthese", selector: "#stablex", start: 305.30, end: 370.69 }
+        { id: "hero-lead", selector: "#accueil .lead", start: 0.0, end: 20.02 },
+        { id: "apropos-intro", selector: "#apropos .apropos-intro-block", start: 20.02, end: 57.51 },
+        { id: "apropos-jeunesse", selector: "#apropos .apropos-jeunesse-block", start: 57.51, end: 101.07 },
+        { id: "apropos-benevolat", selector: "#apropos .apropos-benevolat-block", start: 101.07, end: 151.93 },
+        { id: "apropos-fiche", selector: "#apropos .apropos-fiche-block", start: 151.93, end: 186.83 },
+        { id: "faits-cce-2026", selector: "#faits li:nth-child(1)", start: 186.83, end: 226.96 },
+        { id: "faits-vaccin-2021", selector: "#faits li:nth-child(2)", start: 226.96, end: 250.82 },
+        { id: "faits-devoir-2025", selector: "#faits li:nth-child(3)", start: 250.82, end: 275.95 },
+        { id: "faits-cce-2026-depot", selector: "#faits li:nth-child(4)", start: 275.95, end: 317.04 },
+        { id: "faits-onu-2026", selector: "#faits li:nth-child(5)", start: 317.04, end: 351.94 },
+        { id: "stablex-synthese", selector: "#stablex", start: 351.94, end: 464.55 }
       ];
 
       function formatTime(secs) {
@@ -583,7 +583,7 @@
           </button>
           <div class="bio-player-info">
             <div class="bio-player-title"><span class="bio-player-live-dot"></span> Écoute audio en cours</div>
-            <div class="bio-player-timer" id="bio-player-time">00:00 / 06:10</div>
+            <div class="bio-player-timer" id="bio-player-time">00:00 / 07:45</div>
           </div>
           <button type="button" class="bio-player-close" id="bio-btn-close" aria-label="Fermer la lecture" title="Fermer">✕</button>
         `;
@@ -602,7 +602,7 @@
 
         btnForward.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (bioAudio) bioAudio.currentTime = Math.min(bioAudio.duration || 370, bioAudio.currentTime + 10);
+          if (bioAudio) bioAudio.currentTime = Math.min(bioAudio.duration || 464.55, bioAudio.currentTime + 10);
         });
 
         btnPlayPause.addEventListener('click', (e) => {
@@ -631,7 +631,7 @@
 
         bioAudio.addEventListener('timeupdate', () => {
           const ct = bioAudio.currentTime;
-          const dur = bioAudio.duration || 370.7;
+          const dur = bioAudio.duration || 464.55;
 
           const timeEl = document.getElementById('bio-player-time');
           if (timeEl) timeEl.textContent = `${formatTime(ct)} / ${formatTime(dur)}`;
