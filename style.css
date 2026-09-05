@@ -4362,49 +4362,71 @@ body.dark-theme .carousel-dot {
 
 
 /* Google Translate Widget Styling */
-#google_translate_element {
+#google_translate_element,
+.nav-translate-box {
   display: inline-flex;
   align-items: center;
+  position: relative;
+  vertical-align: middle;
+}
+
+#google_translate_element::before {
+  content: '🌐';
+  font-size: 14px;
+  margin-right: 4px;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .goog-te-gadget {
   font-family: inherit !important;
-  font-size: 12.5px !important;
-  color: var(--text-muted) !important;
+  font-size: 0px !important;
+  color: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
 }
 
 .goog-te-gadget .goog-te-combo {
-  background: var(--bg-card);
-  color: var(--text);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s;
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-family: inherit !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  height: 32px !important;
+  line-height: 1.2 !important;
 }
 
 .goog-te-gadget .goog-te-combo:hover,
 .goog-te-gadget .goog-te-combo:focus {
-  border-color: var(--accent);
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-wash) !important;
 }
 
-.goog-logo-link, .goog-te-gadget span {
+.goog-logo-link,
+.goog-te-gadget > span,
+.goog-te-gadget a {
   display: none !important;
 }
 
 .goog-te-banner-frame.skiptranslate,
 .goog-te-banner-frame {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
 }
 
 body {
   top: 0px !important;
+  position: static !important;
 }
 
-.skiptranslate iframe {
-  visibility: hidden !important;
+.skiptranslate iframe:not(.goog-te-menu-frame) {
+  display: none !important;
 }

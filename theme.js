@@ -25,21 +25,29 @@
       if (!gTranslateDiv) {
         gTranslateDiv = document.createElement('div');
         gTranslateDiv.id = 'google_translate_element';
+        gTranslateDiv.className = 'nav-translate-box';
         nav.appendChild(gTranslateDiv);
+      }
 
-        if (!window.googleTranslateElementInit) {
-          window.googleTranslateElementInit = function() {
+      if (!window.googleTranslateElementInit) {
+        window.googleTranslateElementInit = function() {
+          try {
             new google.translate.TranslateElement({
               pageLanguage: 'fr',
-              includedLanguages: 'en,es,fr,de,it,pt,ar,zh-CN,ja,ru,uk',
-              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+              includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja,ru,uk',
               autoDisplay: false
             }, 'google_translate_element');
-          };
+          } catch(e) {
+            console.error('Google Translate init error:', e);
+          }
+        };
+
+        if (!document.getElementById('google-translate-script')) {
           const gtScript = document.createElement('script');
+          gtScript.id = 'google-translate-script';
           gtScript.type = 'text/javascript';
           gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-          gtScript.defer = true;
+          gtScript.async = true;
           document.head.appendChild(gtScript);
         }
       }
