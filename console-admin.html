@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Console d'Administration Secrète — William Guindon</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg-dark: #070a08;
+    --bg-card: #0f1612;
+    --border: #1f2922;
+    --accent: #22c55e;
+    --danger: #ef4444;
+    --warning: #eab308;
+    --text: #f0fdf4;
+    --text-muted: #86a392;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .container { max-width: 920px; width: 100%; }
+
+  /* En-tête Terminal */
+  .terminal-header {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .terminal-title { font-size: 18px; font-weight: 800; color: var(--accent); }
+  .badge-status { font-size: 12px; padding: 4px 10px; border-radius: 4px; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--accent); color: var(--accent); }
+
+  /* Cartes de contrôle */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+  /* Formulaires et Boutons */
+  .input-group { margin-bottom: 14px; }
+  label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  .btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-accent { background: var(--accent); color: #042f2e; }
+  .btn-accent:hover { background: #4ade80; }
+  .btn-danger { background: var(--danger); color: #ffffff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-warning { background: var(--warning); color: #000000; }
+  .btn-warning:hover { background: #facc15; }
+
+  /* Matrice de commutateurs (Toggles) */
+  .switch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .switch-item {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .switch-label { font-size: 12.5px; font-weight: 600; }
+  .toggle-checkbox { width: 42px; height: 22px; cursor: pointer; accent-color: var(--accent); }
+
+  /* Sas d'authentification */
+  #auth-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(7, 10, 8, 0.98);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100000;
+  }
+  .auth-box {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 34px 28px;
+    max-width: 460px;
+    width: 90%;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+  }
+</style>
+</head>
+<body>
+
+<!-- SAS DOUBLE AUTHENTIFICATION SHA-256 + JETON GITHUB -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div style="font-size:36px; text-align:center; margin-bottom:12px;">🛡️</div>
+    <h2 style="color:var(--accent); font-size:1.35rem; margin-bottom:8px; text-align:center;">Console Maîtresse Sécurisée</h2>
+    <p style="color:var(--text-muted); font-size:12.5px; line-height:1.5; margin-bottom:20px; text-align:center;">
+      Double facteur obligatoire : Entrez le mot de passe administrateur et votre clé GitHub autorisée (@Bwillou1).
+    </p>
+
+    <form id="console-auth-form" onsubmit="handleConsoleLogin(event)">
+      <div class="input-group">
+        <label>1. Mot de passe administrateur :</label>
+        <input type="password" id="auth-pass" placeholder="••••••••••••" autocomplete="current-password" required>
+      </div>
+      <div class="input-group">
+        <label>2. Clé GitHub Personal Access Token (PAT / GPH) :</label>
+        <input type="password" id="auth-token" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
+      </div>
+      <button type="submit" class="btn btn-accent" style="width:100%; padding:12px; margin-top:8px;" id="btn-login">
+        🔐 Déverrouiller le Terminal
+      </button>
+      <div id="auth-error" style="display:none; color:var(--danger); font-size:12.5px; margin-top:12px; line-height:1.4;"></div>
+    </form>
+    
+    <div style="margin-top:20px; text-align:center; font-size:12px;">
+      <a href="index.html" style="color:var(--text-muted); text-decoration:none;">← Retour au site public</a>
+    </div>
+  </div>
+</div>
+
+<!-- TERMINAL PRINCIPAL -->
+<div class="container" id="terminal-content" style="display:none;">
+  <header class="terminal-header">
+    <div>
+      <div class="terminal-title">⚡ WILLIAM GUINDON — MISSION CONTROL</div>
+      <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Nœud : Production · Auth : @Bwillou1 (SHA-256 Validé)</div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="badge-status" id="global-status-badge">● SYSTÈMES EN LIGNE</span>
+      <a href="admin.html" class="btn" style="background:var(--bg-dark); border:1px solid var(--border); color:#fff; font-size:11.5px; padding:6px 12px;">Rédaction</a>
+      <button class="btn btn-danger" style="padding:6px 12px; font-size:11.5px;" onclick="lockConsole()">🔒 Verrouiller</button>
+    </div>
+  </header>
+
+  <!-- MODE RADICAL 1 : BLACKOUT / MAINTENANCE -->
+  <div class="card" style="border-left: 4px solid var(--accent);">
+    <div class="card-title">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
+    <div class="card-desc">Redirige instantanément 100 % des visiteurs vers la page de secours sécurisée avec obfuscation de l'email et archives officielles CCE.</div>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div style="flex:1; min-width:200px;">
+        <label>Durée du Blackout :</label>
+        <select id="maint-duration">
+          <option value="60">1 Heure</option>
+          <option value="360">6 Heures</option>
+          <option value="1440" selected>24 Heures</option>
+          <option value="2880">48 Heures</option>
+        </select>
+      </div>
+      <button class="btn btn-accent" onclick="toggleMaintenance(true)">Activer le Blackout</button>
+      <button class="btn" style="background:var(--border); color:#fff;" onclick="toggleMaintenance(false)">Désactiver</button>
+    </div>
+  </div>
+
+  <!-- MODE RADICAL 2 : ANTI-DUPLICATION / ANTI-FORK -->
+  <div class="card" style="border-left: 4px solid #38bdf8;">
+    <div class="card-title">🛡️ MODE RADICAL 2 : Protection Intellectuelle & Anti-Fork</div>
+    <div class="card-desc">Vérifie en continu l'origine du domaine d'exécution. Si un fork GitHub ou un miroir non autorisé est détecté, le code source et l'affichage sont automatiquement bloqués avec redirection vers williamguindon.me.</div>
+    <div style="font-size:12.5px; color:#4ade80; display:flex; align-items:center; gap:8px;">
+      <span>✔ Protection du domaine officielle active sur : <strong>williamguindon.me</strong></span>
+    </div>
+  </div>
+
+  <!-- MODE RADICAL 3 : CYBER-ATTAQUE / PANIQUE -->
+  <div class="card" style="border-left: 4px solid var(--warning);">
+    <div class="card-title">🚨 MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
+    <div class="card-desc">Bannière jaune d'alerte, blocage F12 / clic droit / raccourcis console, désactivation des URLs externes, option mode texte pur minimaliste.</div>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div style="flex:1; min-width:180px;">
+        <label>Durée du Mode Panique :</label>
+        <select id="panic-duration">
+          <option value="30">30 Minutes</option>
+          <option value="120" selected>2 Heures</option>
+          <option value="720">12 Heures</option>
+        </select>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <input type="checkbox" id="panic-text-only" style="width:auto;">
+        <label for="panic-text-only" style="margin:0;">Forcer le mode texte pur (.txt)</label>
+      </div>
+      <button class="btn btn-warning" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
+      <button class="btn" style="background:var(--border); color:#fff;" onclick="triggerPanicMode(false)">Rétablir</button>
+    </div>
+  </div>
+
+  <!-- MATRICE DE COMMUTATEURS ON/OFF -->
+  <div class="card">
+    <div class="card-title">🎛️ Commutateurs Individuels de Fonctionnalités (Kill-Switches)</div>
+    <div class="card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site.</div>
+    
+    <div class="switch-grid">
+      <div class="switch-item">
+        <span class="switch-label">🤖 Désactiver toutes les IA</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableAI" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">📋 Désactiver Copier/Coller</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableCopyPaste" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">🖼️ Désactiver les Iframes</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableIframes" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">🔗 Désactiver Liens Navigation</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableNavLinks" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">🌐 Désactiver Module Traduction</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableTranslation" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">🎬 Désactiver Médias (Images/Audio)</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableMedia" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">✨ Désactiver Animations CSS</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disableAnimations" onchange="updateSwitches()">
+      </div>
+      <div class="switch-item">
+        <span class="switch-label">📄 Désactiver Téléchargement PDF</span>
+        <input type="checkbox" class="toggle-checkbox" id="sw-disablePDF" onchange="updateSwitches()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const GITHUB_REPO = "Bwillou1/WilliamGuindon";
+  const GITHUB_API = "https://api.github.com";
+  const STORAGE_KEY = "wg_radical_site_state";
+  const VALID_HASH = "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595"; // Master Admin SHA-256 Hash
+
+  async function sha256Hex(text) {
+    const data = new TextEncoder().encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function validateGitHubToken(token) {
+    const clean = (token || "").trim();
+    if (!clean.startsWith("ghp_") && !clean.startsWith("github_pat_")) {
+      throw new Error("Format de clé invalide (doit commencer par ghp_ ou github_pat_)");
+    }
+    const res = await fetch(`${GITHUB_API}/user`, {
+      headers: { "Authorization": "Bearer " + clean, "Accept": "application/vnd.github.v3+json" }
+    });
+    if (res.status === 401) throw new Error("Clé refusée par GitHub : invalide ou expirée.");
+    if (!res.ok) throw new Error("Erreur de connexion à GitHub (" + res.status + ")");
+    const user = await res.json();
+    if ((user.login || "").toLowerCase() !== "bwillou1") {
+      throw new Error(`Accès restreint à @Bwillou1. Compte actuel : @${user.login}`);
+    }
+    return user;
+  }
+
+  async function handleConsoleLogin(e) {
+    e.preventDefault();
+    const pass = document.getElementById("auth-pass").value;
+    const token = document.getElementById("auth-token").value;
+    const btn = document.getElementById("btn-login");
+    const errBox = document.getElementById("auth-error");
+
+    errBox.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "⏳ Validation SHA-256 & GitHub...";
+
+    try {
+      const hash = await sha256Hex(pass);
+      if (hash !== VALID_HASH) throw new Error("Mot de passe administrateur incorrect.");
+      await validateGitHubToken(token);
+
+      sessionStorage.setItem("wg_console_auth", "true");
+      localStorage.setItem("wg_github_pat", token);
+
+      document.getElementById("auth-overlay").style.display = "none";
+      document.getElementById("terminal-content").style.display = "block";
+      loadCurrentState();
+    } catch (err) {
+      errBox.textContent = "❌ " + err.message;
+      errBox.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🔐 Déverrouiller le Terminal";
+    }
+  }
+
+  function lockConsole() {
+    sessionStorage.removeItem("wg_console_auth");
+    window.location.reload();
+  }
+
+  function getSiteState() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  }
+
+  function saveSiteState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    alert("✅ Configuration enregistrée et appliquée instantanément !");
+    loadCurrentState();
+  }
+
+  function loadCurrentState() {
+    const state = getSiteState();
+    const now = Date.now();
+
+    document.getElementById("sw-disableAI").checked = !!state.disableAI;
+    document.getElementById("sw-disableCopyPaste").checked = !!state.disableCopyPaste;
+    document.getElementById("sw-disableIframes").checked = !!state.disableIframes;
+    document.getElementById("sw-disableNavLinks").checked = !!state.disableNavLinks;
+    document.getElementById("sw-disableTranslation").checked = !!state.disableTranslation;
+    document.getElementById("sw-disableMedia").checked = !!state.disableMedia;
+    document.getElementById("sw-disableAnimations").checked = !!state.disableAnimations;
+    document.getElementById("sw-disablePDF").checked = !!state.disablePDF;
+
+    const badge = document.getElementById("global-status-badge");
+    if (state.maintenanceActive && state.maintenanceUntil > now) {
+      badge.textContent = "● MODE BLACKOUT ACTIF";
+      badge.style.borderColor = "var(--accent)";
+      badge.style.color = "var(--accent)";
+    } else if (state.panicActive && state.panicUntil > now) {
+      badge.textContent = "● CYBER-ATTAQUE / PANIQUE ACTIF";
+      badge.style.borderColor = "var(--warning)";
+      badge.style.color = "var(--warning)";
+    } else {
+      badge.textContent = "● SYSTÈMES EN LIGNE";
+      badge.style.borderColor = "var(--accent)";
+      badge.style.color = "var(--accent)";
+    }
+  }
+
+  function toggleMaintenance(activate) {
+    const state = getSiteState();
+    if (activate) {
+      const mins = parseInt(document.getElementById("maint-duration").value, 10);
+      state.maintenanceActive = true;
+      state.maintenanceUntil = Date.now() + (mins * 60000);
+    } else {
+      state.maintenanceActive = false;
+      state.maintenanceUntil = 0;
+    }
+    saveSiteState(state);
+  }
+
+  function triggerPanicMode(activate) {
+    if (activate) {
+      const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique et durcir drastiquement le site ?");
+      if (!confirmAction) return;
+      const mins = parseInt(document.getElementById("panic-duration").value, 10);
+      const textOnly = document.getElementById("panic-text-only").checked;
+      const state = getSiteState();
+      state.panicActive = true;
+      state.panicUntil = Date.now() + (mins * 60000);
+      state.panicTextOnly = textOnly;
+      saveSiteState(state);
+    } else {
+      const state = getSiteState();
+      state.panicActive = false;
+      state.panicUntil = 0;
+      state.panicTextOnly = false;
+      saveSiteState(state);
+    }
+  }
+
+  function updateSwitches() {
+    const state = getSiteState();
+    state.disableAI = document.getElementById("sw-disableAI").checked;
+    state.disableCopyPaste = document.getElementById("sw-disableCopyPaste").checked;
+    state.disableIframes = document.getElementById("sw-disableIframes").checked;
+    state.disableNavLinks = document.getElementById("sw-disableNavLinks").checked;
+    state.disableTranslation = document.getElementById("sw-disableTranslation").checked;
+    state.disableMedia = document.getElementById("sw-disableMedia").checked;
+    state.disableAnimations = document.getElementById("sw-disableAnimations").checked;
+    state.disablePDF = document.getElementById("sw-disablePDF").checked;
+    saveSiteState(state);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    if (sessionStorage.getItem("wg_console_auth") === "true") {
+      document.getElementById("auth-overlay").style.display = "none";
+      document.getElementById("terminal-content").style.display = "block";
+      loadCurrentState();
+    }
+  });
+</script>
+</body>
+</html>
