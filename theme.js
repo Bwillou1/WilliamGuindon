@@ -20,29 +20,16 @@
     const headerWrap = document.querySelector('header.site .wrap');
 
     if (nav) {
-      // Intégration du sélecteur de langue fluide, direct et sans bug
+      // Intégration du sélecteur de langue in-place fluide et fiable (100% conservation du design)
       let langDropdown = nav.querySelector('#nav-lang-dropdown');
       if (!langDropdown) {
         langDropdown = document.createElement('div');
         langDropdown.className = 'nav-dropdown nav-dropdown-right nav-translate-dropdown';
         langDropdown.id = 'nav-lang-dropdown';
 
-        const match = window.location.hostname.includes('translate.goog') || window.location.search.match(/tl=([a-zA-Z\-]+)/);
+        const match = document.cookie.match(/googtrans=\/fr\/([a-zA-Z\-]+)/);
         const activeLangCode = (match && match[1]) || localStorage.getItem('wg_user_lang') || 'fr';
         const langCodeDisplay = activeLangCode.toUpperCase().substring(0, 2);
-
-        const currentFullUrl = window.location.href;
-        const getTransUrl = (targetLang) => {
-          if (targetLang === 'fr') {
-            if (window.location.hostname.includes('translate.goog')) {
-              const uMatch = window.location.search.match(/u=([^&]+)/);
-              if (uMatch) return decodeURIComponent(uMatch[1]);
-              return 'https://williamguindon.me' + window.location.pathname;
-            }
-            return window.location.pathname;
-          }
-          return `https://translate.google.com/translate?sl=fr&tl=${targetLang}&u=${encodeURIComponent(currentFullUrl)}`;
-        };
 
         langDropdown.innerHTML = `
           <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
@@ -52,33 +39,33 @@
             <div class="nav-dropdown-group">
               <span class="nav-dropdown-group-title">Traduire / Translate</span>
               <div class="nav-dropdown-grid single-col">
-                <a href="${getTransUrl('fr')}" class="nav-dropdown-item lang-btn" data-lang="fr" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="fr" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇫🇷</span> <span>Français (Original)</span>
-                </a>
-                <a href="${getTransUrl('en')}" class="nav-dropdown-item lang-btn" data-lang="en" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="en" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇬🇧</span> <span>English</span>
-                </a>
-                <a href="${getTransUrl('es')}" class="nav-dropdown-item lang-btn" data-lang="es" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="es" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇪🇸</span> <span>Español</span>
-                </a>
-                <a href="${getTransUrl('de')}" class="nav-dropdown-item lang-btn" data-lang="de" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="de" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇩🇪</span> <span>Deutsch</span>
-                </a>
-                <a href="${getTransUrl('it')}" class="nav-dropdown-item lang-btn" data-lang="it" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="it" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇮🇹</span> <span>Italiano</span>
-                </a>
-                <a href="${getTransUrl('pt')}" class="nav-dropdown-item lang-btn" data-lang="pt" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="pt" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇵🇹</span> <span>Português</span>
-                </a>
-                <a href="${getTransUrl('zh-CN')}" class="nav-dropdown-item lang-btn" data-lang="zh-CN" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="zh-CN" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇨🇳</span> <span>中文</span>
-                </a>
-                <a href="${getTransUrl('ja')}" class="nav-dropdown-item lang-btn" data-lang="ja" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ja" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇯🇵</span> <span>日本語</span>
-                </a>
-                <a href="${getTransUrl('ar')}" class="nav-dropdown-item lang-btn" data-lang="ar" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </button>
+                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ar" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
                   <span>🇸🇦</span> <span>العربية</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -102,17 +89,98 @@
           });
         }
 
-        langDropdown.querySelectorAll('.lang-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const chosenLang = btn.getAttribute('data-lang');
-            if (chosenLang) {
-              if (chosenLang === 'fr') localStorage.removeItem('wg_user_lang');
-              else localStorage.setItem('wg_user_lang', chosenLang);
+        // Fonction d'application de la langue in-place sans perte de CSS
+        function applyInPlaceLanguage(lang) {
+          const host = window.location.hostname;
+          if (lang === 'fr') {
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            const parts = host.split('.');
+            if (parts.length > 2) {
+              const rootDomain = parts.slice(-2).join('.');
+              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${rootDomain};`;
             }
+            localStorage.removeItem('wg_user_lang');
+            window.location.reload();
+            return;
+          }
+
+          localStorage.setItem('wg_user_lang', lang);
+          document.cookie = `googtrans=/fr/${lang}; path=/;`;
+          document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host};`;
+          document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${host};`;
+          const parts = host.split('.');
+          if (parts.length > 2) {
+            const rootDomain = parts.slice(-2).join('.');
+            document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${rootDomain};`;
+          }
+
+          const combo = document.querySelector('.goog-te-combo');
+          if (combo) {
+            combo.value = lang;
+            combo.dispatchEvent(new Event('change'));
+            const txt = document.getElementById('current-lang-text');
+            if (txt) txt.textContent = lang.toUpperCase().substring(0, 2);
+          } else {
+            window.location.reload();
+          }
+        }
+
+        langDropdown.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const chosenLang = btn.getAttribute('data-lang');
             langDropdown.classList.remove('active');
             if (navLangBtn) navLangBtn.setAttribute('aria-expanded', 'false');
+            applyInPlaceLanguage(chosenLang);
           });
         });
+
+        // Conteneur discret pour le script Google Translate in-place
+        let gTranslateDiv = document.getElementById('google_translate_element');
+        if (!gTranslateDiv) {
+          gTranslateDiv = document.createElement('div');
+          gTranslateDiv.id = 'google_translate_element';
+          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
+          document.body.appendChild(gTranslateDiv);
+        }
+
+        // Initialisation du script Google Translate in-place
+        if (!window.googleTranslateElementInit) {
+          window.googleTranslateElementInit = function() {
+            try {
+              new google.translate.TranslateElement({
+                pageLanguage: 'fr',
+                includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
+                autoDisplay: false
+              }, 'google_translate_element');
+
+              const saved = localStorage.getItem('wg_user_lang');
+              if (saved && saved !== 'fr') {
+                setTimeout(() => {
+                  const cb = document.querySelector('.goog-te-combo');
+                  if (cb && cb.value !== saved) {
+                    cb.value = saved;
+                    cb.dispatchEvent(new Event('change'));
+                  }
+                }, 400);
+              }
+            } catch(e) {
+              console.warn('Google Translate init:', e);
+            }
+          };
+
+          if (!document.getElementById('google-translate-script')) {
+            const gtScript = document.createElement('script');
+            gtScript.id = 'google-translate-script';
+            gtScript.type = 'text/javascript';
+            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            gtScript.async = true;
+            document.head.appendChild(gtScript);
+          }
+        }
       }
 
       // Bouton Mode Sombre / Clair (Sans doublon)
