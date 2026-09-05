@@ -226,6 +226,26 @@
   <!-- ESPACE DE CONTRÔLE MAÎTRE (DÉVERROUILLÉ) -->
   <div id="console-workspace" style="display:none;">
     
+    <!-- MONITEUR DE DÉPLOIEMENT MONDIAL GITHUB -->
+    <div class="terminal-card" style="border: 1px solid var(--border); background: linear-gradient(180deg, #0d1712 0%, #080c09 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">🌐</span>
+          <span style="font-size:15px; font-weight:800; color:var(--text);">Déploiement Mondial & Synchronisation GitHub</span>
+        </div>
+        <div id="global-sync-badge" style="font-size:12px; font-weight:700; color:#4ade80; background:rgba(34,197,94,0.12); padding:6px 12px; border-radius:20px; border:1px solid #166534;">
+          ● Connecté en direct (@Bwillou1/WilliamGuindon)
+        </div>
+      </div>
+      <div class="terminal-card-desc" style="margin-bottom:14px;">
+        Toute action effectuée ici met à jour <code>data/site-state.json</code> directement dans le dépôt GitHub officiel. Chaque visiteur dans le monde reçoit les directives de sécurité en temps réel sans passer par le cache navigateur.
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button class="btn btn-ghost" onclick="fetchAndLoadProductionState()" style="font-size:12.5px; padding:7px 14px;">🔄 Recharger l'état de production</button>
+        <span id="last-sync-time" style="font-size:12px; color:var(--text-muted);">Dernière vérification : À l'instant</span>
+      </div>
+    </div>
+
     <!-- MODE RADICAL 1 : BLACKOUT -->
     <div class="terminal-card" style="border-left: 4px solid var(--accent);">
       <div class="terminal-card-title">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
@@ -531,7 +551,7 @@
           <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
         `;
       }
-      loadCurrentState();
+      fetchAndLoadProductionState();
     } else {
       if (workspace) workspace.style.display = "none";
       if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
@@ -666,18 +686,71 @@
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   }
 
+  async function fetchAndLoadProductionState() {
+    const badge = document.getElementById("global-sync-badge");
+    const timeEl = document.getElementById("last-sync-time");
+    if (badge) badge.innerHTML = "⏳ Synchronisation avec GitHub...";
+
+    const token = localStorage.getItem("wg_github_pat");
+    let state = null;
+
+    try {
+      if (token) {
+        const filePath = "data/site-state.json";
+        const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}?ref=main&_t=${Date.now()}`, {
+          headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (fileRes.ok) {
+          const fileData = await fileRes.json();
+          const decoded = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          state = JSON.parse(decoded);
+        }
+      }
+
+      if (!state) {
+        const stateUrl = new URL('data/site-state.json?_t=' + Date.now(), window.location.href).href;
+        const res = await fetch(stateUrl, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        });
+        if (res.ok) state = await res.json();
+      }
+
+      if (state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        loadCurrentState();
+        if (badge) badge.innerHTML = "● En direct sur GitHub (@Bwillou1/WilliamGuindon)";
+        if (timeEl) timeEl.textContent = "Dernière sync : " + new Date().toLocaleTimeString();
+        showToast("✅ État de production GitHub chargé avec succès.");
+      }
+    } catch (err) {
+      console.warn("Erreur chargement état distant:", err);
+      if (badge) badge.innerHTML = "⚠️ Connexion locale (vérifiez votre clé GitHub)";
+      loadCurrentState();
+    }
+  }
+
   async function saveAndSyncSiteState(state) {
     state.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     loadCurrentState();
-    showToast("💾 Sauvegardé. Synchronisation GitHub en cours...");
+
+    const badge = document.getElementById("global-sync-badge");
+    const timeEl = document.getElementById("last-sync-time");
+    if (badge) badge.innerHTML = "⏳ Déploiement mondial sur GitHub...";
+
+    showToast("💾 Enregistrement local effectué. Publication GitHub en cours...");
 
     const token = localStorage.getItem("wg_github_pat");
-    if (!token) return;
+    if (!token) {
+      if (badge) badge.innerHTML = "⚠️ Clé GitHub manquante (Sauvegarde locale uniquement)";
+      showToast("⚠️ Attention : Clé GitHub absente. L'état n'a pas été publié mondialement.");
+      return;
+    }
 
     try {
       const filePath = "data/site-state.json";
-      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}`, {
+      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}?ref=main&_t=${Date.now()}`, {
         headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.v3+json" }
       });
       let sha = null;
@@ -695,30 +768,51 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: "chore(security): mise à jour globale de l'état du site",
+          message: "chore(security): mise à jour de l'état global du site pour tous les visiteurs",
           content: contentB64,
           ...(sha ? { sha: sha } : {})
         })
       });
 
       if (putRes.ok) {
-        showToast("✅ État global synchronisé et publié sur GitHub pour tous les visiteurs !");
+        const putData = await putRes.json();
+        const commitSha = putData?.commit?.sha ? putData.commit.sha.substring(0, 7) : "OK";
+        if (badge) badge.innerHTML = `✅ Publié mondialement (Commit: <code>${commitSha}</code>)`;
+        if (timeEl) timeEl.textContent = "Dernier déploiement : " + new Date().toLocaleTimeString();
+        showToast(`🌍 Déploiement mondial réussi ! (Commit: ${commitSha}) - Tous les visiteurs recevront cette directive.`);
+      } else {
+        const errData = await putRes.json().catch(() => ({}));
+        const msg = errData.message || ("Code HTTP " + putRes.status);
+        if (badge) badge.innerHTML = `❌ Échec publication GitHub (${putRes.status})`;
+        showToast("❌ Erreur GitHub : " + msg);
+        alert("Erreur lors de la publication mondiale sur GitHub : " + msg + "\n\nVeuillez vérifier les permissions de votre jeton GitHub (droit 'repo' ou 'contents:write').");
       }
     } catch (err) {
-      console.warn("Erreur sync GitHub:", err);
+      console.error("Erreur sync GitHub:", err);
+      if (badge) badge.innerHTML = "❌ Échec de communication avec GitHub";
+      showToast("❌ Erreur réseau lors de la synchronisation GitHub.");
     }
   }
 
   function loadCurrentState() {
     const state = getSiteState();
-    document.getElementById("sw-disableAI").checked = !!state.disableAI;
-    document.getElementById("sw-disableCopyPaste").checked = !!state.disableCopyPaste;
-    document.getElementById("sw-disableIframes").checked = !!state.disableIframes;
-    document.getElementById("sw-disableNavLinks").checked = !!state.disableNavLinks;
-    document.getElementById("sw-disableTranslation").checked = !!state.disableTranslation;
-    document.getElementById("sw-disableMedia").checked = !!state.disableMedia;
-    document.getElementById("sw-disableAnimations").checked = !!state.disableAnimations;
-    document.getElementById("sw-disablePDF").checked = !!state.disablePDF;
+    const swAI = document.getElementById("sw-disableAI");
+    const swCP = document.getElementById("sw-disableCopyPaste");
+    const swIF = document.getElementById("sw-disableIframes");
+    const swNL = document.getElementById("sw-disableNavLinks");
+    const swTR = document.getElementById("sw-disableTranslation");
+    const swMD = document.getElementById("sw-disableMedia");
+    const swAN = document.getElementById("sw-disableAnimations");
+    const swPDF = document.getElementById("sw-disablePDF");
+
+    if (swAI) swAI.checked = !!state.disableAI;
+    if (swCP) swCP.checked = !!state.disableCopyPaste;
+    if (swIF) swIF.checked = !!state.disableIframes;
+    if (swNL) swNL.checked = !!state.disableNavLinks;
+    if (swTR) swTR.checked = !!state.disableTranslation;
+    if (swMD) swMD.checked = !!state.disableMedia;
+    if (swAN) swAN.checked = !!state.disableAnimations;
+    if (swPDF) swPDF.checked = !!state.disablePDF;
   }
 
   function toggleMaintenance(activate) {
