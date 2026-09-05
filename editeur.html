@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Éditeur Visuel en Direct — William Guindon</title>
+<title>Studio Éditeur Visuel Sécurisé — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#064e3b">
@@ -69,6 +69,11 @@
     color: var(--accent);
     border: 1px solid rgba(34, 197, 94, 0.3);
   }
+  .status-badge.locked {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
 
   /* Sélecteur d'affichage (Desktop, Tablet, Mobile) */
   .device-switcher {
@@ -130,6 +135,15 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .btn-danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+  }
 
   /* Zone de travail principale */
   .editor-workspace {
@@ -137,6 +151,7 @@
     display: flex;
     height: calc(100vh - 58px);
     overflow: hidden;
+    position: relative;
   }
 
   /* Panneau latéral des sections */
@@ -219,6 +234,7 @@
     align-items: center;
     padding: 16px;
     overflow: hidden;
+    position: relative;
   }
   .preview-frame-container {
     height: 100%;
@@ -271,45 +287,175 @@
     to { transform: translateY(0); opacity: 1; }
   }
 
-  /* Modale Authentification Studio */
-  .auth-modal-overlay {
+  /* ==================================================== */
+  /* ÉCRAN DE VERROUILLAGE TOTAL DU STUDIO                */
+  /* ==================================================== */
+  .editor-lock-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    display: none;
+    background: rgba(9, 13, 10, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999;
+    z-index: 999999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
-  .auth-modal-card {
+  .editor-lock-screen.unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .lock-card {
     background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 32px 28px;
-    max-width: 480px;
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 32px;
+    max-width: 520px;
     width: 90%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
     text-align: center;
-    position: relative;
   }
-  .auth-modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: transparent;
-    border: none;
+  .lock-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1.5px solid rgba(34, 197, 94, 0.3);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 16px auto;
+  }
+  .lock-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  .lock-subtitle {
     color: var(--text-muted);
-    font-size: 20px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .lock-field-group {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  .lock-label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .lock-input {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-dark);
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .lock-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  }
+  .lock-btn-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 8px;
+    justify-content: center;
+  }
+  .lock-error-box {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    font-size: 13px;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .lock-footer-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+  }
+  .lock-footer-links a, .lock-footer-links button {
+    color: var(--text-muted);
+    text-decoration: underline;
+    background: none;
+    border: none;
     cursor: pointer;
+    font-size: 12.5px;
+  }
+  .lock-footer-links a:hover, .lock-footer-links button:hover {
+    color: #ffffff;
   }
 </style>
 </head>
 <body>
 
+<!-- ÉCRAN DE VERROUILLAGE TOTAL : Bloque toute visualisation et modification -->
+<div class="editor-lock-screen" id="editor-lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon-wrap" id="lock-icon">🔒</div>
+    <h1 class="lock-title">Studio Éditeur Visuel</h1>
+    <p class="lock-subtitle">
+      La visualisation et l'édition en direct sont <strong>strictement verrouillées</strong>.<br>
+      Veuillez entrer le <strong>code d'accès administrateur</strong> et votre <strong>clé GitHub</strong> (@Bwillou1).
+    </p>
+
+    <!-- Formulaire d'authentification complète -->
+    <form id="lock-auth-form" onsubmit="handleLockAuthSubmit(event)">
+      <div class="lock-field-group">
+        <label class="lock-label" for="lock-pass-input">🔑 1. Code d'accès administrateur :</label>
+        <input type="password" id="lock-pass-input" class="lock-input" placeholder="Mot de passe admin" autocomplete="current-password" required>
+      </div>
+
+      <div class="lock-field-group">
+        <label class="lock-label" for="lock-token-input">🐙 2. Clé d'authentification GitHub (PAT) :</label>
+        <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
+      </div>
+
+      <button type="submit" class="btn btn-save lock-btn-submit" id="btn-lock-submit">
+        🔓 Déverrouiller l'Éditeur Visuel
+      </button>
+
+      <div id="lock-passkey-container" style="display:none; margin-top:12px;">
+        <button type="button" class="btn" style="width:100%; justify-content:center; padding:10px; background:rgba(34,197,94,0.1); border-color:var(--accent); color:var(--accent);" onclick="unlockWithPasskey()">
+          👆 Déverrouiller avec Touch ID / Face ID
+        </button>
+      </div>
+
+      <div class="lock-error-box" id="lock-error-box"></div>
+    </form>
+
+    <div class="lock-footer-links">
+      <a href="index.html">← Retour au site public</a>
+      <a href="admin.html">Espace Admin Rédaction →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Interface de l'éditeur (active seulement après déverrouillage) -->
 <header class="editor-topbar">
   <div class="topbar-left">
     <div class="brand-badge">
@@ -330,6 +476,7 @@
     <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
     <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe">✏️ Édition : Activée</button>
     <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()">💾 Sauvegarder & Publier en direct</button>
+    <button class="btn btn-danger" onclick="lockStudio()" title="Verrouiller le studio et déconnecter">🔒 Verrouiller</button>
   </div>
 </header>
 
@@ -351,7 +498,7 @@
   <!-- Prévisualisation interactive -->
   <main class="preview-wrapper">
     <div class="preview-frame-container" id="frame-container">
-      <iframe id="site-preview-iframe" src="index.html" title="Aperçu du site"></iframe>
+      <iframe id="site-preview-iframe" title="Aperçu du site" style="pointer-events:none; opacity:0; transition:opacity 0.3s ease;"></iframe>
     </div>
   </main>
 </div>
@@ -361,8 +508,166 @@
 <script>
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
+  const VALID_PASSWORD_HASHES = [
+    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595", // William2183! en SHA-256
+    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"  // Hash additionnel de sécurité
+  ];
+
   const iframe = document.getElementById("site-preview-iframe");
   let isEditModeActive = true;
+  let isAuthenticated = false;
+
+  // Calcul du hash SHA-256 (WebCrypto API native)
+  async function sha256Hex(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  // Validation stricte du jeton GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé GitHub invalide (doit commencer par ghp_ ou github_pat_)");
+    }
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide, expirée ou révoquée.");
+    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
+    const userData = await userRes.json();
+    if ((userData.login || "").toLowerCase() !== "bwillou1") {
+      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
+    }
+
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (repoRes.ok) {
+      const repoData = await repoRes.json();
+      if (!repoData.permissions || !repoData.permissions.push) {
+        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
+      }
+    }
+
+    return userData;
+  }
+
+  // Soumission du formulaire de déverrouillage initial
+  async function handleLockAuthSubmit(e) {
+    e.preventDefault();
+    const passInput = document.getElementById("lock-pass-input");
+    const tokenInput = document.getElementById("lock-token-input");
+    const submitBtn = document.getElementById("btn-lock-submit");
+    const errBox = document.getElementById("lock-error-box");
+
+    errBox.style.display = "none";
+    const passVal = (passInput.value || "").trim();
+    const tokenVal = (tokenInput.value || "").trim();
+
+    if (!passVal) {
+      errBox.textContent = "❌ Veuillez entrer le code d'accès administrateur.";
+      errBox.style.display = "block";
+      return;
+    }
+    if (!tokenVal) {
+      errBox.textContent = "❌ Veuillez entrer votre clé GitHub (PAT).";
+      errBox.style.display = "block";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "⏳ Vérification du code & clé GitHub...";
+
+    try {
+      // 1. Validation cryptographique SHA-256 du code admin
+      const passHash = await sha256Hex(passVal);
+      if (!VALID_PASSWORD_HASHES.includes(passHash)) {
+        throw new Error("Code d'accès administrateur incorrect.");
+      }
+
+      // 2. Validation de la clé GitHub auprès de l'API
+      await validateGitHubToken(tokenVal);
+
+      // Authentification validée !
+      localStorage.setItem("wg_github_pat", tokenVal);
+      sessionStorage.setItem("wg_editor_auth", "true");
+      unlockStudio();
+      showToast("🎉 Studio déverrouillé avec succès pour @Bwillou1 !");
+    } catch (err) {
+      errBox.textContent = "❌ " + err.message;
+      errBox.style.display = "block";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "🔓 Déverrouiller l'Éditeur Visuel";
+    }
+  }
+
+  // Déverrouillage effectif de l'éditeur et chargement de la prévisualisation
+  function unlockStudio() {
+    isAuthenticated = true;
+    const lockScreen = document.getElementById("editor-lock-screen");
+    lockScreen.classList.add("unlocked");
+
+    // Rendre l'iframe actif et visible
+    iframe.style.pointerEvents = "auto";
+    iframe.style.opacity = "1";
+
+    if (!iframe.src || iframe.src === "about:blank" || iframe.src.endsWith("editeur.html")) {
+      iframe.src = "index.html";
+    } else {
+      initializeIframeEditing();
+    }
+  }
+
+  // Verrouillage du studio
+  function lockStudio() {
+    isAuthenticated = false;
+    sessionStorage.removeItem("wg_editor_auth");
+    const lockScreen = document.getElementById("editor-lock-screen");
+    lockScreen.classList.remove("unlocked");
+
+    iframe.style.pointerEvents = "none";
+    iframe.style.opacity = "0";
+
+    const errBox = document.getElementById("lock-error-box");
+    if (errBox) errBox.style.display = "none";
+    showToast("🔒 Studio verrouillé.");
+  }
+
+  // Initialisation à l'ouverture de la page
+  window.addEventListener("DOMContentLoaded", async () => {
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+    if (isPasskey) {
+      const pbox = document.getElementById("lock-passkey-container");
+      if (pbox) pbox.style.display = "block";
+    }
+
+    const savedToken = localStorage.getItem("wg_github_pat");
+    const isSessionAuth = sessionStorage.getItem("wg_editor_auth") === "true";
+
+    if (savedToken && isSessionAuth) {
+      try {
+        await validateGitHubToken(savedToken);
+        unlockStudio();
+      } catch (err) {
+        console.warn("Jeton sauvegardé non valide ou expiré:", err);
+        lockStudio();
+      }
+    } else if (savedToken) {
+      // Pré-remplir le champ token si disponible
+      const tokenInput = document.getElementById("lock-token-input");
+      if (tokenInput) tokenInput.value = savedToken;
+    }
+  });
 
   // Responsive device switch
   function setDeviceMode(mode) {
@@ -381,40 +686,50 @@
     setTimeout(() => { toast.style.display = "none"; }, 5000);
   }
 
-  // Injection du mode visuel dans l'iframe
-  iframe.onload = () => {
+  function initializeIframeEditing() {
+    if (!isAuthenticated) return;
     try {
       const doc = iframe.contentDocument || iframe.contentWindow.document;
       
-      // Injecter le style d'édition visuelle
-      const style = doc.createElement("style");
-      style.id = "editor-injected-style";
-      style.innerHTML = `
-        [contenteditable="true"]:hover {
-          outline: 2px dashed #22c55e !important;
-          outline-offset: 4px;
-          cursor: text !important;
-        }
-        [contenteditable="true"]:focus {
-          outline: 2px solid #22c55e !important;
-          outline-offset: 4px;
-          background: rgba(34, 197, 94, 0.08) !important;
-        }
-        .section-highlight {
-          outline: 3px solid #22c55e !important;
-        }
-      `;
-      doc.head.appendChild(style);
+      let style = doc.getElementById("editor-injected-style");
+      if (!style) {
+        style = doc.createElement("style");
+        style.id = "editor-injected-style";
+        style.innerHTML = `
+          [contenteditable="true"]:hover {
+            outline: 2px dashed #22c55e !important;
+            outline-offset: 4px;
+            cursor: text !important;
+          }
+          [contenteditable="true"]:focus {
+            outline: 2px solid #22c55e !important;
+            outline-offset: 4px;
+            background: rgba(34, 197, 94, 0.08) !important;
+          }
+          .section-highlight {
+            outline: 3px solid #22c55e !important;
+          }
+        `;
+        doc.head.appendChild(style);
+      }
 
       enableContentEditing(doc);
       buildSidebarSections(doc);
     } catch (e) {
-      console.warn("Erreur d'accès iframe:", e);
+      console.warn("Erreur accès iframe:", e);
+    }
+  }
+
+  // Injection du mode visuel dans l'iframe lors du chargement
+  iframe.onload = () => {
+    if (isAuthenticated) {
+      initializeIframeEditing();
     }
   };
 
   // Rendre tous les textes cliquables et éditables
   function enableContentEditing(doc) {
+    if (!isAuthenticated) return;
     const editables = doc.querySelectorAll("h1, h2, h3, h4, h5, p, .lead, blockquote, .btn, .kicker, .fact-val, time");
     editables.forEach(el => {
       el.setAttribute("contenteditable", isEditModeActive ? "true" : "false");
@@ -424,6 +739,7 @@
 
   // Activer / Désactiver le mode édition
   function toggleEditMode() {
+    if (!isAuthenticated) return;
     isEditModeActive = !isEditModeActive;
     const btn = document.getElementById("btn-toggle-edit");
     btn.textContent = isEditModeActive ? "✏️ Édition : Activée" : "👁️ Aperçu seul";
@@ -462,7 +778,7 @@
 
   // Déplacer une section vers le haut ou le bas
   window.moveSection = (secId, direction) => {
-    if (!secId) return;
+    if (!isAuthenticated || !secId) return;
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     const target = doc.getElementById(secId);
     if (!target) return;
@@ -478,7 +794,7 @@
 
   // Masquer / Réafficher une section
   window.toggleSectionVisibility = (secId) => {
-    if (!secId) return;
+    if (!isAuthenticated || !secId) return;
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     const target = doc.getElementById(secId);
     if (!target) return;
@@ -493,178 +809,11 @@
     buildSidebarSections(doc);
   };
 
-  // Encodage / Décodage WebAuthn
-  function bufToBase64(buffer) {
-    let binary = "";
-    const bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
-  }
-
-  function base64ToBuf(base64) {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes.buffer;
-  }
-
-  // Validation stricte du jeton GitHub
-  async function validateGitHubToken(token) {
-    const cleanToken = (token || "").trim();
-    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
-      throw new Error("Format de clé invalide (doit commencer par ghp_ ou github_pat_)");
-    }
-    const userRes = await fetch(`${GITHUB_API}/user`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide, expirée ou révoquée.");
-    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
-    const userData = await userRes.json();
-    if ((userData.login || "").toLowerCase() !== "bwillou1") {
-      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
-    }
-
-    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    if (repoRes.ok) {
-      const repoData = await repoRes.json();
-      if (!repoData.permissions || !repoData.permissions.push) {
-        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
-      }
-    }
-
-    return userData;
-  }
-
-  // Modale d'authentification Studio
-  function openAuthModal() {
-    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
-    const modal = document.getElementById("editor-auth-modal");
-    const passkeyBox = document.getElementById("ed-passkey-box");
-    const tokenBox = document.getElementById("ed-token-box");
-    const errBox = document.getElementById("ed-token-error");
-
-    if (errBox) errBox.style.display = "none";
-
-    if (isPasskey) {
-      passkeyBox.style.display = "block";
-      tokenBox.style.display = "none";
-    } else {
-      passkeyBox.style.display = "none";
-      tokenBox.style.display = "block";
-    }
-
-    modal.style.display = "flex";
-  }
-
-  function closeAuthModal() {
-    const modal = document.getElementById("editor-auth-modal");
-    modal.style.display = "none";
-  }
-
-  function showEdTokenForm() {
-    document.getElementById("ed-passkey-box").style.display = "none";
-    document.getElementById("ed-token-box").style.display = "block";
-  }
-
-  async function unlockEditorPasskey() {
-    const credId = localStorage.getItem("wg_passkey_id");
-    if (!credId) {
-      showEdTokenForm();
-      return;
-    }
-
-    try {
-      const challenge = new Uint8Array(32);
-      window.crypto.getRandomValues(challenge);
-      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
-
-      const assertion = await navigator.credentials.get({
-        publicKey: {
-          challenge: challenge,
-          ...(rpId ? { rpId: rpId } : {}),
-          allowCredentials: [{
-            type: "public-key",
-            id: base64ToBuf(credId)
-          }],
-          userVerification: "required",
-          timeout: 60000
-        }
-      });
-
-      if (assertion) {
-        closeAuthModal();
-        showToast("Touch ID / Face ID validé ! Publication en cours...");
-        executePublishCommit();
-      }
-    } catch (err) {
-      console.warn("Échec Passkey Éditeur:", err);
-      showToast("Authentification biométrique annulée ou refusée.", false);
-    }
-  }
-
-  async function validateAndSaveEditorToken() {
-    const input = document.getElementById("ed-pat-input");
-    const val = (input.value || "").trim();
-    const btn = document.getElementById("btn-ed-validate-token");
-    const errBox = document.getElementById("ed-token-error");
-
-    errBox.style.display = "none";
-    if (!val) {
-      errBox.textContent = "Veuillez entrer votre jeton GitHub.";
-      errBox.style.display = "block";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "⏳ Vérification @Bwillou1...";
-
-    try {
-      await validateGitHubToken(val);
-      localStorage.setItem("wg_github_pat", val);
-      closeAuthModal();
-      showToast("Accès validé pour @Bwillou1 !");
-      executePublishCommit();
-    } catch (err) {
-      errBox.textContent = "❌ " + err.message;
-      errBox.style.display = "block";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "🔐 Valider et Publier sur GitHub";
-    }
-  }
-
   // Lancer la sauvegarde et publication directe sur GitHub
   async function saveSiteToGitHub() {
     const token = localStorage.getItem("wg_github_pat");
-    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
-
-    // Si on a déjà un jeton enregistré et valide, on publie directement
-    if (token) {
-      executePublishCommit();
-      return;
-    }
-
-    // Sinon, ouvrir la modale sécurisée (Passkey Touch ID ou saisie de clé)
-    openAuthModal();
-  }
-
-  // Exécution effective du commit sur GitHub
-  async function executePublishCommit() {
-    const token = localStorage.getItem("wg_github_pat");
-    if (!token) {
-      openAuthModal();
+    if (!token || !isAuthenticated) {
+      lockStudio();
       return;
     }
 
@@ -725,7 +874,7 @@
       console.error(err);
       if (err.message && err.message.includes("401")) {
         localStorage.removeItem("wg_github_pat");
-        openAuthModal();
+        lockStudio();
       }
       showToast("Erreur : " + err.message, false);
     } finally {
@@ -734,43 +883,5 @@
     }
   }
 </script>
-
-<!-- Modale d'Authentification / Passkey Apple pour l'Éditeur -->
-<div class="auth-modal-overlay" id="editor-auth-modal">
-  <div class="auth-modal-card">
-    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Fermer">✕</button>
-    
-    <!-- Écran Passkey biométrique si activé -->
-    <div id="ed-passkey-box" style="display:none;">
-      <div style="font-size:42px; margin-bottom:12px;">🛡️</div>
-      <h3 style="font-size:1.35rem; margin-bottom:8px; color:var(--text);">Publication Sécurisée</h3>
-      <p style="color:var(--text-muted); font-size:13.5px; line-height:1.5; margin-bottom:20px;">
-        Touch ID ou Face ID est activé pour <strong>@Bwillou1</strong>. Touchez le capteur ou regardez l'écran pour publier vos modifications en direct.
-      </p>
-      <button id="btn-ed-passkey" class="btn btn-save" style="width:100%; justify-content:center; padding:12px; font-size:15px;" onclick="unlockEditorPasskey()">
-        👆 Déverrouiller avec Touch ID / Face ID
-      </button>
-      <div style="margin-top:16px;">
-        <button onclick="showEdTokenForm()" class="btn" style="background:transparent; border:none; color:var(--text-muted); font-size:12.5px; text-decoration:underline; cursor:pointer;">
-          Utiliser ma clé GitHub manuellement
-        </button>
-      </div>
-    </div>
-
-    <!-- Écran Saisie de clé GitHub -->
-    <div id="ed-token-box">
-      <div style="font-size:36px; margin-bottom:12px;">🔑</div>
-      <h3 style="font-size:1.35rem; margin-bottom:8px; color:var(--text);">Autorisation @Bwillou1 Requise</h3>
-      <p style="color:var(--text-muted); font-size:13.5px; line-height:1.5; margin-bottom:18px;">
-        Entrez votre Personal Access Token GitHub (PAT). Seul le compte titulaire <strong>@Bwillou1</strong> avec droits d'écriture peut publier.
-      </p>
-      <input type="password" id="ed-pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-dark); color:var(--text); font-size:14px; margin-bottom:14px;">
-      <button id="btn-ed-validate-token" class="btn btn-save" style="width:100%; justify-content:center; padding:11px; font-size:14.5px;" onclick="validateAndSaveEditorToken()">
-        🔐 Valider et Publier sur GitHub
-      </button>
-      <div id="ed-token-error" style="display:none; margin-top:12px; padding:10px; border-radius:6px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13px; text-align:left;"></div>
-    </div>
-  </div>
-</div>
 </body>
 </html>
