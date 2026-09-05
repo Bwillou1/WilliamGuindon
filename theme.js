@@ -1281,6 +1281,93 @@
     }
   }
 
+  function initHomeBlogAndPhotos() {
+    const blogTrack = document.getElementById('home-blog-track');
+    const photosTrack = document.getElementById('home-photos-track');
+    if (!blogTrack && !photosTrack) return;
+
+    window.switchHomeTab = function(tab) {
+      const btnBlog = document.getElementById('btn-tab-blog-posts');
+      const btnPhotos = document.getElementById('btn-tab-blog-photos');
+      const carouselBlog = document.getElementById('home-blog-carousel');
+      const carouselPhotos = document.getElementById('home-photos-carousel');
+
+      if (tab === 'blog') {
+        if (btnBlog) btnBlog.classList.add('active');
+        if (btnPhotos) btnPhotos.classList.remove('active');
+        if (carouselBlog) carouselBlog.style.display = 'block';
+        if (carouselPhotos) carouselPhotos.style.display = 'none';
+      } else {
+        if (btnPhotos) btnPhotos.classList.add('active');
+        if (btnBlog) btnBlog.classList.remove('active');
+        if (carouselPhotos) carouselPhotos.style.display = 'block';
+        if (carouselBlog) carouselBlog.style.display = 'none';
+      }
+    };
+
+    if (blogTrack) {
+      fetch('data/blog.json?v=' + Date.now())
+        .then(res => res.json())
+        .then(posts => {
+          if (!posts || posts.length === 0) return;
+          blogTrack.innerHTML = posts.slice(0, 6).map(p => `
+            <article class="blog-preview-card">
+              <div class="blog-preview-thumb">
+                <img src="${p.coverImage || 'tourbiere.jpg'}" alt="${p.title}" loading="lazy">
+                <span class="blog-preview-category">${p.category || 'Actualité'}</span>
+              </div>
+              <div class="blog-preview-body">
+                <time class="blog-preview-date">${p.date} · Par ${p.author || 'William Guindon'}</time>
+                <h3 class="blog-preview-title">${p.title}</h3>
+                <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
+                <div class="blog-preview-footer">
+                  <a href="blog.html#${p.slug || p.id}" class="blog-preview-link">Lire l'article complet ↗</a>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        })
+        .catch(err => console.warn('Blog preview load:', err));
+    }
+
+    if (photosTrack) {
+      fetch('data/photos.json?v=' + Date.now())
+        .then(res => res.json())
+        .then(photos => {
+          if (!photos || photos.length === 0) return;
+          photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
+            <article class="blog-preview-card">
+              <div class="blog-preview-thumb">
+                <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy">
+                <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
+              </div>
+              <div class="blog-preview-body">
+                <time class="blog-preview-date">${ph.date || ''} ${ph.location ? '· ' + ph.location : ''}</time>
+                <h3 class="blog-preview-title">${ph.title}</h3>
+                <p class="blog-preview-excerpt">${ph.description || ''}</p>
+                <div class="blog-preview-footer">
+                  <a href="photos.html" class="blog-preview-link">Voir en grand ↗</a>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        })
+        .catch(err => console.warn('Photos preview load:', err));
+    }
+  }
+
+  function initApp() {
+    initTheme();
+    initCopyButtons();
+    initSmoothScroll();
+    initFaq();
+    initReadingProgress();
+    initShareButtons();
+    initAudioBio();
+    initFloatingAiHub();
+    initHomeBlogAndPhotos();
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {
