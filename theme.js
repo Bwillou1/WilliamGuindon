@@ -543,17 +543,17 @@
 
       // Repères temporels de synchronisation de la biographie complète
       const bioCues = [
-        { id: "hero-lead", selector: "#accueil .lead", start: 0.0, end: 20.02 },
-        { id: "apropos-intro", selector: "#apropos .apropos-intro-block", start: 20.02, end: 57.51 },
-        { id: "apropos-jeunesse", selector: "#apropos .apropos-jeunesse-block", start: 57.51, end: 101.07 },
-        { id: "apropos-benevolat", selector: "#apropos .apropos-benevolat-block", start: 101.07, end: 151.93 },
-        { id: "apropos-fiche", selector: "#apropos .apropos-fiche-block", start: 151.93, end: 186.83 },
-        { id: "faits-cce-2026", selector: "#faits li:nth-child(1)", start: 186.83, end: 226.96 },
-        { id: "faits-vaccin-2021", selector: "#faits li:nth-child(2)", start: 226.96, end: 250.82 },
-        { id: "faits-devoir-2025", selector: "#faits li:nth-child(3)", start: 250.82, end: 275.95 },
-        { id: "faits-cce-2026-depot", selector: "#faits li:nth-child(4)", start: 275.95, end: 317.04 },
-        { id: "faits-onu-2026", selector: "#faits li:nth-child(5)", start: 317.04, end: 351.94 },
-        { id: "stablex-synthese", selector: "#stablex", start: 351.94, end: 464.55 }
+        { id: "hero-lead", selector: "#accueil .lead", start: 0.0, end: 20.7 },
+        { id: "apropos-intro", selector: "#apropos .apropos-intro-block", start: 20.7, end: 59.4 },
+        { id: "apropos-jeunesse", selector: "#apropos .apropos-jeunesse-block", start: 59.4, end: 104.5 },
+        { id: "apropos-benevolat", selector: "#apropos .apropos-benevolat-block", start: 104.5, end: 157.1 },
+        { id: "apropos-fiche", selector: "#apropos .apropos-fiche-block", start: 157.1, end: 193.2 },
+        { id: "faits-cce-2026", selector: "#faits li:nth-child(1)", start: 193.2, end: 234.7 },
+        { id: "faits-vaccin-2021", selector: "#faits li:nth-child(2)", start: 234.7, end: 259.4 },
+        { id: "faits-devoir-2025", selector: "#faits li:nth-child(3)", start: 259.4, end: 285.4 },
+        { id: "faits-cce-2026-depot", selector: "#faits li:nth-child(4)", start: 285.4, end: 327.9 },
+        { id: "faits-onu-2026", selector: "#faits li:nth-child(5)", start: 327.9, end: 364.0 },
+        { id: "stablex-synthese", selector: "#stablex", start: 364.0, end: 480.7 }
       ];
 
       function formatTime(secs) {
@@ -583,7 +583,7 @@
           </button>
           <div class="bio-player-info">
             <div class="bio-player-title"><span class="bio-player-live-dot"></span> Écoute audio en cours</div>
-            <div class="bio-player-timer" id="bio-player-time">00:00 / 07:45</div>
+            <div class="bio-player-timer" id="bio-player-time">00:00 / 08:01</div>
           </div>
           <button type="button" class="bio-player-close" id="bio-btn-close" aria-label="Fermer la lecture" title="Fermer">✕</button>
         `;
@@ -602,7 +602,7 @@
 
         btnForward.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (bioAudio) bioAudio.currentTime = Math.min(bioAudio.duration || 464.55, bioAudio.currentTime + 10);
+          if (bioAudio) bioAudio.currentTime = Math.min(bioAudio.duration || 480.7, bioAudio.currentTime + 10);
         });
 
         btnPlayPause.addEventListener('click', (e) => {
@@ -629,9 +629,16 @@
         bioAudio = new Audio('assets/Audio/biographie-complete.mp3');
         bioAudio.preload = 'auto';
 
+        bioAudio.addEventListener('loadedmetadata', () => {
+          const timeEl = document.getElementById('bio-player-time');
+          if (timeEl && bioAudio.duration) {
+            timeEl.textContent = `${formatTime(bioAudio.currentTime)} / ${formatTime(bioAudio.duration)}`;
+          }
+        });
+
         bioAudio.addEventListener('timeupdate', () => {
           const ct = bioAudio.currentTime;
-          const dur = bioAudio.duration || 464.55;
+          const dur = bioAudio.duration || 480.7;
 
           const timeEl = document.getElementById('bio-player-time');
           if (timeEl) timeEl.textContent = `${formatTime(ct)} / ${formatTime(dur)}`;
