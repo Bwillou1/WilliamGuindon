@@ -1327,24 +1327,25 @@
         <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
           <div class="ai-modal-header">
             <div class="ai-modal-title" id="ai-modal-title">
-              <span>✨</span> Assistant IA & Dossier SEM-26-003
+              <span class="ai-live-dot"></span>
+              <span>Assistant IA · Dossier SEM-26-003</span>
             </div>
-            <button class="ai-modal-close" aria-label="Fermer le menu IA">✕</button>
+            <button class="ai-modal-close" aria-label="Fermer le panneau IA">✕</button>
           </div>
 
           <!-- Onglets Navigation IA -->
           <div class="ai-tabs" role="tablist">
             <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
             <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
-            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Autres IA</button>
+            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Liens IA</button>
           </div>
 
           <!-- Onglet 1 : Clavardage / Chat en direct -->
           <div class="ai-tab-content active" id="ai-tab-chat">
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
-                <span class="ai-nano-badge" id="ai-engine-badge">⚡ Mode IA : API Hugging Face (Mistral 7B)</span>
-                <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> ⚡ API Hugging Face Active</span>
+                <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
             </div>
 
@@ -1445,7 +1446,8 @@
 
     const ROUTEUR_URL = "https://router.huggingface.co/v1/chat/completions";
     const HF_TOKEN = [104, 102, 95, 100, 75, 108, 102, 115, 117, 101, 83, 98, 66, 65, 103, 108, 67, 84, 100, 84, 99, 90, 99, 113, 85, 68, 119, 73, 103, 89, 101, 73, 116, 77, 101, 79, 102].map(c => String.fromCharCode(c)).join('');
-    const MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3";
+    const PRIMARY_MODEL = "meta-llama/Llama-3.1-8B-Instruct";
+    const BACKUP_MODEL = "Qwen/Qwen2.5-72B-Instruct";
 
     const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
     const tabContents = aiModal.querySelectorAll('.ai-tab-content');
@@ -1465,6 +1467,17 @@
         if (targetContent) targetContent.classList.add('active');
       });
     });
+
+    function formatAiResponse(raw) {
+      if (!raw) return '';
+      let text = raw.trim();
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      text = text.replace(/^-\s+(.*)$/gm, '• $1');
+      text = text.replace(/\n\n/g, '<br><br>');
+      text = text.replace(/\n/g, '<br>');
+      return text;
+    }
 
     function generateLocalAnswer(query) {
       const q = query.toLowerCase();
@@ -1501,6 +1514,28 @@
     const chatBox = document.getElementById('ai-chat-box');
     const userInput = document.getElementById('ai-user-input');
 
+    async function callHuggingFace(modelName, messages, maxTokens = 350) {
+      const resp = await fetch(ROUTEUR_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${HF_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: modelName,
+          messages: messages,
+          temperature: 0.2,
+          max_tokens: maxTokens
+        })
+      });
+      if (!resp.ok) throw new Error(`HF Error HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (data && data.choices && data.choices[0] && data.choices[0].message) {
+        return data.choices[0].message.content;
+      }
+      throw new Error('Invalid HF payload');
+    }
+
     async function sendChatMessage(text) {
       if (!text || !text.trim()) return;
       const question = text.trim();
@@ -1514,49 +1549,34 @@
 
       const botBubble = document.createElement('div');
       botBubble.className = 'ai-chat-bubble bot';
-      botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face / Mistral AI)...</em>';
+      botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face AI)...</em>';
       chatBox.appendChild(botBubble);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      try {
-        const hfResponse = await fetch(ROUTEUR_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${HF_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: MODEL_ID,
-            messages: [
-              {
-                role: 'system',
-                content: "Tu es l'assistant spécialisé en droit de l'environnement canadien et québécois pour le site officiel de William Guindon (williamguindon.me). Ton but unique est d'informer rigoureusement sur le dossier de la Grande Tourbière de Blainville et la communication SEM-26-003 déposée auprès de la CCE (Commission de coopération environnementale). Directives strictes : 1. Exprime-toi dans un français juridique impeccable, neutre, concis et purement factuel. 2. Appuie-toi sur les mécanismes de l'ACEUM (art. 24.27/24.28) et la date butoir du 16 octobre 2026 imposée au Canada. 3. Mentionne le Rapport 371 du BAPE (projet prématuré), la Loi 93 adoptée sous bâillon (mars 2025), et les taux de cadmium 320x supérieurs aux normes si pertinent. 4. Ne donne jamais d'avis d'avocat ou de consultation juridique privée. Précise que les informations sont à but purement informatif. 5. Si une question sort du contexte SEM-26-003 / Grande Tourbière de Blainville ou enfreint la loi, refuse poliment en rappelant ton cadre d'information."
-              },
-              { role: 'user', content: question }
-            ],
-            temperature: 0.15,
-            max_tokens: 300
-          })
-        });
+      const systemPrompt = "Tu es l'assistant d'information officiel du site de William Guindon (williamguindon.me). Tu réponds avec rigueur, clarté et précision en français sur le dossier environnemental SEM-26-003 devant la CCE (Commission de coopération environnementale - ACEUM), la Grande Tourbière de Blainville, le projet d'agrandissement de Stablex (Cellule 6), la Loi 93 adoptée sous bâillon, le Rapport 371 du BAPE et l'échéance du 16 octobre 2026. Reste concis, factuel et neutre. Ne donne pas d'avis juridique formel.";
 
-        if (hfResponse.ok) {
-          const data = await hfResponse.json();
-          if (data && data.choices && data.choices[0] && data.choices[0].message) {
-            let reply = data.choices[0].message.content;
-            reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            reply = reply.replace(/\n/g, '<br>');
-            botBubble.innerHTML = reply;
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return;
-          }
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: question }
+      ];
+
+      try {
+        let reply = '';
+        try {
+          reply = await callHuggingFace(PRIMARY_MODEL, messages, 350);
+        } catch (errPrimary) {
+          console.warn('Primary model error, trying backup:', errPrimary);
+          reply = await callHuggingFace(BACKUP_MODEL, messages, 350);
         }
-        throw new Error('HF response error');
+
+        botBubble.innerHTML = formatAiResponse(reply);
+        chatBox.scrollTop = chatBox.scrollHeight;
       } catch (err) {
         console.warn('Hugging Face API fallback to local answer:', err);
         setTimeout(() => {
           botBubble.innerHTML = generateLocalAnswer(question);
           chatBox.scrollTop = chatBox.scrollHeight;
-        }, 250);
+        }, 200);
       }
     }
 
@@ -1577,7 +1597,7 @@
     const sumOutput = document.getElementById('ai-summary-output');
 
     async function runSummarizer(type) {
-      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face / Mistral)...</em>';
+      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
       const sumPrompts = {
         bullets: "Génère 5 points clés concis et factuels avec puces sur le dossier SEM-26-003, la Grande Tourbière de Blainville, Stablex, le BAPE 371 et la décision CCE.",
         tldr: "Résume en exactement 1 paragraphe dense et factuel l'essentiel de l'affaire SEM-26-003 et la décision CCE du 17 août 2026.",
@@ -1585,38 +1605,22 @@
       };
       const query = sumPrompts[type] || sumPrompts.bullets;
 
-      try {
-        const hfResponse = await fetch(ROUTEUR_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${HF_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: MODEL_ID,
-            messages: [
-              {
-                role: 'system',
-                content: "Tu es un synthétiseur juridique d'élite en droit environnemental canadien. Reste concis, précis et factuel."
-              },
-              { role: 'user', content: query }
-            ],
-            temperature: 0.1,
-            max_tokens: 300
-          })
-        });
+      const messages = [
+        {
+          role: 'system',
+          content: "Tu es un synthétiseur d'élite en droit de l'environnement canadien. Sois concis, structuré et purement factuel."
+        },
+        { role: 'user', content: query }
+      ];
 
-        if (hfResponse.ok) {
-          const data = await hfResponse.json();
-          if (data && data.choices && data.choices[0] && data.choices[0].message) {
-            let res = data.choices[0].message.content;
-            res = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            res = res.replace(/\n/g, '<br>');
-            sumOutput.innerHTML = `<strong>✨ Résumé Mistral AI (Hugging Face) :</strong><br>${res}`;
-            return;
-          }
+      try {
+        let res = '';
+        try {
+          res = await callHuggingFace(PRIMARY_MODEL, messages, 300);
+        } catch (_) {
+          res = await callHuggingFace(BACKUP_MODEL, messages, 300);
         }
-        throw new Error('Summarizer fallback');
+        sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
       } catch (err) {
         setTimeout(() => {
           if (type === 'bullets') {
