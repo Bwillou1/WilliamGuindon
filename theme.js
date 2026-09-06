@@ -1388,7 +1388,7 @@ DIRECTIVES DE RÉPONSE :
       text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:20px; margin:8px 0;">$1</ul>');
       text = text.replace(/\n\n/g, '<br><br>');
       text = text.replace(/\n/g, '<br>');
-      return text + '<span class="ai-msg-stamp">⚠️ Réponse IA brute non approuvée · Aucune valeur légale ni probante</span>';
+      return text;
     }
 
     function isRefusal(text) {
@@ -1428,7 +1428,7 @@ DIRECTIVES DE RÉPONSE :
         res = "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de résidus toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et l'adoption sous bâillon de la Loi 93. La CCE (Montréal) a formellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
       }
 
-      return res + '<span class="ai-msg-stamp">⚠️ Synthèse indicative non officielle · Sans valeur juridique</span>';
+      return res;
     }
 
     async function callHuggingFace(modelName, messages, maxTokens = 450) {
@@ -1450,7 +1450,7 @@ DIRECTIVES DE RÉPONSE :
       if (data && data.choices && data.choices[0] && data.choices[0].message) {
         const reply = data.choices[0].message.content;
         if (isRefusal(reply)) {
-          throw new Error('Safety guard refusal detected');
+          throw new Error('Safety refusal triggered fallback');
         }
         return reply;
       }
@@ -1464,7 +1464,6 @@ DIRECTIVES DE RÉPONSE :
       aiModal.className = 'ai-modal-overlay';
       aiModal.innerHTML = `
         <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
-          <div class="ai-watermark-overlay" aria-hidden="true"></div>
           <div class="ai-modal-header">
             <div class="ai-modal-title" id="ai-modal-title">
               <span class="ai-live-dot"></span>
