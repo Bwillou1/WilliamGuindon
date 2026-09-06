@@ -1532,34 +1532,20 @@ DIRECTIVES DE RÉPONSE :
           <!-- Onglet 3 : Liens IA externes -->
           <div class="ai-tab-content" id="ai-tab-models">
             <p class="ai-modal-desc">
-              Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
+              Analysez directement le dossier SEM-26-003 dans vos assistants et moteurs écologiques d'intelligence artificielle :
             </p>
             <div class="ai-modal-buttons">
-              <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
                 <div class="ai-btn-option-left">
-                  <span>🟢</span>
-                  <span>Ouvrir dans ChatGPT</span>
+                  <span>🌲</span>
+                  <span>Rechercher sur Ecosia AI</span>
                 </div>
                 <span>↗</span>
               </a>
-              <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+              <a href="https://ai.viro.app/" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
                 <div class="ai-btn-option-left">
-                  <span>🔵</span>
-                  <span>Ouvrir dans Google Gemini</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🟣</span>
-                  <span>Ouvrir dans Claude</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🟠</span>
-                  <span>Ouvrir dans Perplexity</span>
+                  <span>⚡</span>
+                  <span>Ouvrir sur Viro AI</span>
                 </div>
                 <span>↗</span>
               </a>
