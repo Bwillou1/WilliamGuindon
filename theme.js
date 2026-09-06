@@ -1653,9 +1653,9 @@ DIRECTIVES :
       try {
         let res = '';
         try {
-          res = await callHuggingFace(PRIMARY_MODEL, messages, 450);
+          res = await callHuggingFace(PRIMARY_MODEL, messages, 650);
         } catch (_) {
-          res = await callHuggingFace(BACKUP_MODEL, messages, 450);
+          res = await callHuggingFace(BACKUP_MODEL, messages, 650);
         }
         sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
       } catch (err) {
