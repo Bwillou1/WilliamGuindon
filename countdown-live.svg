@@ -1,16 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" style="background:#02150e;font-family:'Outfit',system-ui,-apple-system,sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" style="background:#02150e;font-family:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#02150e" />
-      <stop offset="50%" stop-color="#064e3b" />
+      <stop offset="45%" stop-color="#064e3b" />
       <stop offset="100%" stop-color="#022c22" />
     </linearGradient>
     <linearGradient id="card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.08)" />
-      <stop offset="100%" stop-color="rgba(0,0,0,0.35)" />
+      <stop offset="0%" stop-color="rgba(255,255,255,0.09)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.45)" />
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
+    <linearGradient id="sec-card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(34,197,94,0.15)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.55)" />
+    </linearGradient>
+    <filter id="card-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
       <feMerge>
         <feMergeNode in="blur" />
         <feMergeNode in="SourceGraphic" />
@@ -20,33 +24,46 @@
 
   <style>
     @keyframes pulse {
-      0% { r: 6px; opacity: 1; }
-      50% { r: 12px; opacity: 0.4; }
-      100% { r: 6px; opacity: 1; }
+      0% { r: 5px; opacity: 1; }
+      50% { r: 9px; opacity: 0.35; }
+      100% { r: 5px; opacity: 1; }
     }
     .pulse-dot {
       animation: pulse 2s infinite ease-in-out;
-      transform-origin: 132px 60px;
+      transform-origin: 132px 58px;
     }
     .unit-card {
-      rx: 20px;
+      rx: 16px;
       fill: url(#card-grad);
-      stroke: rgba(52, 211, 153, 0.3);
+      stroke: rgba(52, 211, 153, 0.35);
       stroke-width: 1.5;
     }
+    .unit-card-sec {
+      rx: 16px;
+      fill: url(#sec-card-grad);
+      stroke: rgba(52, 211, 153, 0.6);
+      stroke-width: 2;
+    }
     .unit-num {
-      font-size: 76px;
+      font-size: 72px;
       font-weight: 800;
       fill: #ffffff;
       text-anchor: middle;
       font-variant-numeric: tabular-nums;
     }
-    .unit-lbl {
-      font-size: 16px;
-      font-weight: 700;
+    .unit-num-sec {
+      font-size: 72px;
+      font-weight: 800;
       fill: #34d399;
       text-anchor: middle;
-      letter-spacing: 0.15em;
+      font-variant-numeric: tabular-nums;
+    }
+    .unit-lbl {
+      font-size: 15px;
+      font-weight: 700;
+      fill: #a7f3d0;
+      text-anchor: middle;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
   </style>
@@ -55,71 +72,77 @@
   <rect width="1200" height="630" fill="url(#bg-grad)" />
 
   <!-- Motif géométrique d'arrière-plan -->
-  <circle cx="600" cy="315" r="450" fill="none" stroke="rgba(52,211,153,0.04)" stroke-width="2" />
-  <circle cx="600" cy="315" r="300" fill="none" stroke="rgba(52,211,153,0.06)" stroke-width="1.5" />
+  <circle cx="600" cy="315" r="460" fill="none" stroke="rgba(52,211,153,0.04)" stroke-width="2" />
+  <circle cx="600" cy="315" r="320" fill="none" stroke="rgba(52,211,153,0.06)" stroke-width="1.5" />
   <circle cx="600" cy="315" r="180" fill="none" stroke="rgba(52,211,153,0.08)" stroke-width="1" />
 
   <!-- Header : Badge officiel CCE -->
-  <g transform="translate(0, 0)">
-    <rect x="110" y="42" width="460" height="36" rx="18" fill="rgba(6,78,59,0.8)" stroke="#34d399" stroke-width="1" />
-    <circle cx="132" cy="60" r="6" fill="#34d399" class="pulse-dot" />
-    <text x="150" y="65" font-size="13" font-weight="700" fill="#a7f3d0" letter-spacing="0.08em">CCE / ACEUM · DOSSIER SEM-26-003 · EN DIRECT</text>
+  <g>
+    <rect x="110" y="38" width="460" height="38" rx="19" fill="rgba(6,78,59,0.85)" stroke="#34d399" stroke-width="1.2" />
+    <circle cx="134" cy="57" r="6" fill="#34d399" class="pulse-dot" />
+    <text x="152" y="62" font-size="13" font-weight="700" fill="#a7f3d0" letter-spacing="0.08em">CCE / ACEUM · DOSSIER SEM-26-003 · EN DIRECT</text>
     
-    <text x="1090" y="65" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 16 OCTOBRE 2026</text>
+    <text x="1090" y="62" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 16 OCTOBRE 2026</text>
   </g>
 
   <!-- Titre Principal -->
-  <text x="600" y="145" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
+  <text x="600" y="132" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
     HORLOGE OFFICIELLE — RÉPONSE DU CANADA
   </text>
-  <text x="600" y="180" font-size="18" font-weight="500" fill="#93c5fd" text-anchor="middle">
-    Décompte en temps réel avant la réponse exigée au gouvernement fédéral canadien
+  <text x="600" y="168" font-size="17" font-weight="500" fill="#93c5fd" text-anchor="middle">
+    Décompte en temps réel avant la réponse exigée au gouvernement fédéral (Art. 24.27 ACEUM)
   </text>
 
-  <!-- Grille du Décompte (3 Unités Principales) -->
+  <!-- Grille du Décompte (4 Unités Principales) -->
   <!-- Jours -->
-  <g transform="translate(160, 220)">
-    <rect width="260" height="190" class="unit-card" />
-    <text x="130" y="115" class="unit-num">40</text>
-    <text x="130" y="160" class="unit-lbl">Jours</text>
+  <g transform="translate(120, 205)">
+    <rect width="215" height="175" class="unit-card" />
+    <text x="107" y="105" class="unit-num">40</text>
+    <text x="107" y="148" class="unit-lbl">Jours</text>
   </g>
 
   <!-- Heures -->
-  <g transform="translate(470, 220)">
-    <rect width="260" height="190" class="unit-card" />
-    <text x="130" y="115" class="unit-num">10</text>
-    <text x="130" y="160" class="unit-lbl">Heures</text>
+  <g transform="translate(365, 205)">
+    <rect width="215" height="175" class="unit-card" />
+    <text x="107" y="105" class="unit-num">07</text>
+    <text x="107" y="148" class="unit-lbl">Heures</text>
   </g>
 
   <!-- Minutes -->
-  <g transform="translate(780, 220)">
-    <rect width="260" height="190" class="unit-card" />
-    <text x="130" y="115" class="unit-num">11</text>
-    <text x="130" y="160" class="unit-lbl">Minutes</text>
+  <g transform="translate(610, 205)">
+    <rect width="215" height="175" class="unit-card" />
+    <text x="107" y="105" class="unit-num">52</text>
+    <text x="107" y="148" class="unit-lbl">Minutes</text>
+  </g>
+
+  <!-- Secondes -->
+  <g transform="translate(855, 205)">
+    <rect width="215" height="175" class="unit-card-sec" />
+    <text x="107" y="105" class="unit-num-sec">35</text>
+    <text x="107" y="148" class="unit-lbl">Secondes</text>
   </g>
 
   <!-- Total Minutes Callout Badge -->
-  <g transform="translate(250, 445)">
-    <rect width="700" height="52" rx="26" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
-    <path d="M30 18v6l4 4-4 4v6h16v-6l-4-4 4-4v-6H30z" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(80, -2)" />
-    <text x="365" y="478" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle">
-      <tspan fill="#ffffff" font-weight="800">58 211</tspan> minutes restantes au total avant la réponse officielle
+  <g transform="translate(200, 415)">
+    <rect width="800" height="54" rx="27" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
+    <text x="400" y="34" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle" dominant-baseline="middle">
+      <tspan fill="#ffffff" font-weight="800">58 072</tspan> minutes restantes au total avant la réponse officielle
     </text>
   </g>
 
   <!-- Footer Info & Signature -->
-  <g transform="translate(0, 0)">
-    <line x1="110" y1="535" x2="1090" y2="535" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+  <g>
+    <line x1="110" y1="505" x2="1090" y2="505" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
     
-    <text x="110" y="575" font-size="16" font-weight="600" fill="#e2e8f0">
+    <text x="110" y="546" font-size="16" font-weight="600" fill="#e2e8f0">
       Sauvegarde de la Grande Tourbière de Blainville (278 000 m²)
     </text>
-    <text x="110" y="600" font-size="14" font-weight="400" fill="#94a3b8">
+    <text x="110" y="572" font-size="14" font-weight="400" fill="#94a3b8">
       William Guindon — Premier mineur plaignant de l'histoire du registre CCE (Art. 24.27)
     </text>
 
     <!-- URL Pill -->
-    <rect x="860" y="555" width="230" height="42" rx="21" fill="#10b981" />
-    <text x="975" y="582" font-size="15" font-weight="800" fill="#02150e" text-anchor="middle">williamguindon.me/live</text>
+    <rect x="860" y="530" width="230" height="44" rx="22" fill="#10b981" />
+    <text x="975" y="557" font-size="15" font-weight="800" fill="#02150e" text-anchor="middle" dominant-baseline="middle">williamguindon.me/live</text>
   </g>
 </svg>

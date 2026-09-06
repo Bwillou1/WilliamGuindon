@@ -3014,25 +3014,69 @@ body.dark-theme .notif-link-ghost {
   margin: 0 auto 30px auto;
 }
 .live-tracker-card {
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto 30px auto;
-  padding: 36px 24px;
-  background: rgba(6, 78, 59, 0.25);
+  padding: 36px 28px;
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.35) 0%, rgba(2, 44, 34, 0.5) 100%);
   border: 1.5px solid var(--accent);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: center;
 }
 .live-precision-grid {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  margin: 20px 0;
+}
+.live-precision-grid .precision-time-unit {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1.5px solid rgba(52, 211, 153, 0.35);
+  border-radius: 12px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.live-precision-grid .precision-time-unit:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 .live-time-val {
-  font-size: clamp(36px, 6vw, 64px);
+  font-family: var(--font-heading, 'Outfit', system-ui, sans-serif);
+  font-size: clamp(32px, 5.5vw, 56px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 .live-time-val-secs {
-  font-size: clamp(36px, 6vw, 64px);
+  font-family: var(--font-heading, 'Outfit', system-ui, sans-serif);
+  font-size: clamp(32px, 5.5vw, 56px);
+  font-weight: 800;
   color: var(--accent);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 .live-time-lbl {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a7f3d0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+}
+@media (max-width: 580px) {
+  .live-precision-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .live-precision-grid .precision-time-unit {
+    padding: 16px 8px;
+  }
 }
 .live-total-minutes {
   margin-top: 24px;

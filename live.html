@@ -189,15 +189,18 @@
   <section class="hero-immersive live-hero-section">
     <div class="wrap">
 
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div class="status-beacon-pill" style="display:inline-flex; align-items:center; gap:8px; background:rgba(6,78,59,0.7); border:1px solid #34d399; padding:6px 18px; border-radius:9999px; font-size:0.82rem; font-weight:700; color:#a7f3d0; letter-spacing:0.06em;">
+          <span style="width:8px; height:8px; border-radius:50%; background:#34d399; display:inline-block; box-shadow:0 0 8px #34d399;"></span>
+          <span>HORLOGE OFFICIELLE EN DIRECT · CCE / ACEUM SEM-26-003</span>
         </div>
-        <span>HORLOGE OFFICIELLE EN DIRECT · CCE / ACEUM SEM-26-003</span>
       </div>
 
       <h1 class="live-title">
         Réponse du Canada : <span class="hero-title-main">Échéance 16 Octobre 2026</span>
       </h1>
       <p class="lead live-lead">
-        Décompte officiel à la seconde près avant l'échéance fixée par le Secrétariat de la Commission de coopération environnementale au gouvernement fédéral canadien (Art. 24.27(3) de l'ACEUM).
+        Décompte officiel en temps réel à la seconde près avant l'échéance fixée par le Secrétariat de la Commission de coopération environnementale au gouvernement fédéral canadien (Art. 24.27(3) de l'ACEUM).
       </p>
 
       <div class="tracker-card live-tracker-card">
@@ -289,16 +292,22 @@
   </div>
 </footer>
 
-<script src="theme.js?v=20260904-slider"></script>
 <script>
-  // Gestion personnalisée de l'horloge sur la page live
-  (function() {
+  // Gestion du décompte en direct à la seconde près
+  document.addEventListener('DOMContentLoaded', () => {
     const targetDate = new Date("2026-10-16T23:59:59-04:00").getTime();
     const totalMinutesEl = document.getElementById("live-total-minutes-label");
     const copyBtn = document.getElementById("btn-copy-live-link");
 
+    const dEl = document.getElementById("cd-days");
+    const hEl = document.getElementById("cd-hours");
+    const mEl = document.getElementById("cd-mins");
+    const sEl = document.getElementById("cd-secs");
+
+    const pad = (n) => String(n).padStart(2, '0');
+
     function updateLiveCountdown() {
-      const now = new Date().getTime();
+      const now = Date.now();
       const diff = Math.max(0, targetDate - now);
 
       const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -307,23 +316,15 @@
       const s = Math.floor((diff % (1000 * 60)) / 1000);
       const totalMins = Math.floor(diff / (1000 * 60));
 
-      const dEl = document.getElementById("cd-days");
-      const hEl = document.getElementById("cd-hours");
-      const mEl = document.getElementById("cd-mins");
-      const sEl = document.getElementById("cd-secs");
-
-      const pad = (n) => String(n).padStart(2, '0');
-
       if (dEl) dEl.textContent = pad(d);
       if (hEl) hEl.textContent = pad(h);
       if (mEl) mEl.textContent = pad(m);
       if (sEl) sEl.textContent = pad(s);
 
       if (totalMinutesEl) {
-        totalMinutesEl.innerHTML = `<svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant la réponse officielle du Canada`;
+        totalMinutesEl.innerHTML = `<svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant l'échéance officielle du Canada`;
       }
 
-      // Mise à jour du titre de l'onglet de navigation
       document.title = `[${d}j ${pad(h)}h ${pad(m)}m ${pad(s)}s] Horloge CCE en direct — William Guindon`;
     }
 
@@ -342,7 +343,7 @@
         }
       });
     }
-  })();
+  });
 </script>
 
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
