@@ -1317,12 +1317,6 @@
   }
 
   function initFloatingAiHub() {
-    const path = window.location.pathname;
-    const isHome = path === '/' || path.endsWith('index.html') || path === '' || path.endsWith('/');
-    
-    if (!isHome) return;
-    if (path.includes('ai.html') || path.includes('ai.txt') || path.includes('txt.html')) return;
-
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;
@@ -1339,11 +1333,6 @@
       `;
       document.body.appendChild(floatingBtn);
     }
-
-    const ROUTEUR_URL = "https://router.huggingface.co/v1/chat/completions";
-    const HF_TOKEN = [104, 102, 95, 100, 75, 108, 102, 115, 117, 101, 83, 98, 66, 65, 103, 108, 67, 84, 100, 84, 99, 90, 99, 113, 85, 68, 119, 73, 103, 89, 101, 73, 116, 77, 101, 79, 102].map(c => String.fromCharCode(c)).join('');
-    const PRIMARY_MODEL = "Qwen/Qwen2.5-72B-Instruct";
-    const BACKUP_MODEL = "meta-llama/Llama-3.3-70B-Instruct";
 
     const DOSSIER_CONTEXT = `
 Tu es l'assistant documentaire officiel du site public de William Guindon (williamguindon.me).
@@ -1383,7 +1372,7 @@ DIRECTIVES DE RÉPONSE :
 
     function formatAiResponse(raw) {
       if (!raw) return '';
-      let text = raw.trim();
+      let text = raw.trim().replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
       text = text.replace(/### (.*?)\n/g, '<h4 style="margin:10px 0 4px; color:var(--accent,#0284c7); font-size:1.05rem;">$1</h4>\n');
       text = text.replace(/## (.*?)\n/g, '<h3 style="margin:12px 0 6px; color:var(--accent,#0284c7); font-size:1.15rem;">$1</h3>\n');
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -1435,30 +1424,22 @@ DIRECTIVES DE RÉPONSE :
       return res;
     }
 
-    async function callHuggingFace(modelName, messages, maxTokens = 450) {
-      const resp = await fetch(ROUTEUR_URL, {
+    async function callGroq(messages, maxTokens = 450) {
+      const resp = await fetch('/api/groq-chat', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${HF_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: modelName,
-          messages: messages,
-          temperature: 0.1,
-          max_tokens: maxTokens
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: `${DOSSIER_CONTEXT}\n\n${messages.at(-1)?.content || ''}` }] })
       });
-      if (!resp.ok) throw new Error(`HF Error HTTP ${resp.status}`);
+      if (!resp.ok) throw new Error(`Groq Error HTTP ${resp.status}`);
       const data = await resp.json();
-      if (data && data.choices && data.choices[0] && data.choices[0].message) {
-        const reply = data.choices[0].message.content;
+      if (data && data.answer) {
+        const reply = data.answer;
         if (isRefusal(reply)) {
           throw new Error('Safety refusal triggered fallback');
         }
         return reply;
       }
-      throw new Error('Invalid HF payload');
+      throw new Error('Invalid Groq payload');
     }
 
     function initAiModal() {
@@ -1488,7 +1469,7 @@ DIRECTIVES DE RÉPONSE :
             <div class="ai-watermark-strip">[FILIGRANE : CONTENU GÉNÉRÉ PAR IA SANS VALIDATION OFFICIELLE • AUCUNE VALEUR JURIDIQUE]</div>
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
-                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> API Hugging Face Active</span>
+                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> API Groq sécurisée</span>
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
             </div>
@@ -1509,7 +1490,7 @@ DIRECTIVES DE RÉPONSE :
             </form>
 
             <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
-              <strong>Mode IA (Hugging Face AI) :</strong> Cet assistant est fourni à des fins purement informatives et documentaires sans valeur d'avis juridique. L'éditeur décline toute responsabilité quant aux réponses générées par le modèle ou aux requêtes des usagers. <strong>Respect de la Loi 25 (Québec) :</strong> Cet outil ne collecte, n'enregistre ni ne conserve aucun renseignement personnel. Les questions anonymes sont traitées en direct via l'infrastructure de Hugging Face conformément à leurs <a href="https://huggingface.co/terms-of-service" target="_blank" rel="noopener noreferrer" style="color: var(--accent, #0284c7); text-decoration: underline;">Directives d'utilisation</a>.
+              <strong>Mode IA Groq :</strong> Cet assistant est fourni à des fins purement informatives et documentaires sans valeur d'avis juridique. N'entrez aucune information sensible. Les questions sont traitées via notre proxy serveur, sans exposer la clé API au navigateur.
             </p>
           </div>
 
@@ -1610,7 +1591,7 @@ DIRECTIVES DE RÉPONSE :
 
         const botBubble = document.createElement('div');
         botBubble.className = 'ai-chat-bubble bot';
-        botBubble.innerHTML = '<em>Réflexion en cours (Hugging Face AI)...</em>';
+        botBubble.innerHTML = '<em>Réflexion en cours (Groq)...</em>';
         chatBox.appendChild(botBubble);
         chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -1622,16 +1603,16 @@ DIRECTIVES DE RÉPONSE :
         try {
           let reply = '';
           try {
-            reply = await callHuggingFace(PRIMARY_MODEL, messages, 400);
+            reply = await callGroq(messages, 400);
           } catch (errPrimary) {
-            console.warn('Primary model error, trying backup:', errPrimary);
-            reply = await callHuggingFace(BACKUP_MODEL, messages, 400);
+            console.warn('Groq error, using local fallback:', errPrimary);
+            throw errPrimary;
           }
 
           botBubble.innerHTML = formatAiResponse(reply);
           chatBox.scrollTop = chatBox.scrollHeight;
         } catch (err) {
-          console.warn('Hugging Face API fallback to local answer:', err);
+          console.warn('Groq API fallback to local answer:', err);
           setTimeout(() => {
             botBubble.innerHTML = generateLocalAnswer(question);
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -1656,7 +1637,7 @@ DIRECTIVES DE RÉPONSE :
       const sumOutput = document.getElementById('ai-summary-output');
 
       async function runSummarizer(type) {
-        sumOutput.innerHTML = '<em>Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
+        sumOutput.innerHTML = '<em>Analyse et génération du résumé par l\'IA (Groq)...</em>';
         const sumPrompts = {
           bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
           tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
@@ -1675,11 +1656,11 @@ DIRECTIVES DE RÉPONSE :
         try {
           let res = '';
           try {
-            res = await callHuggingFace(PRIMARY_MODEL, messages, 650);
+            res = await callGroq(messages, 650);
           } catch (_) {
-            res = await callHuggingFace(BACKUP_MODEL, messages, 650);
+            throw _;
           }
-          sumOutput.innerHTML = `<strong>Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
+          sumOutput.innerHTML = `<strong>Résumé IA (Groq) :</strong><br>${formatAiResponse(res)}`;
         } catch (err) {
           setTimeout(() => {
             if (type === 'bullets') {
