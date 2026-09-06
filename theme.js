@@ -217,12 +217,8 @@
           });
         });
 
-        // Préchargement passif au clic ou survol du menu langue
-        const navLangBtn = langDropdown.querySelector('.nav-dropdown-btn');
-        if (navLangBtn) {
-          navLangBtn.addEventListener('mouseenter', () => ensureGoogleTranslateLoaded(), { once: true });
-          navLangBtn.addEventListener('click', () => ensureGoogleTranslateLoaded(), { once: true });
-        }
+        // Chargement à la demande uniquement lors de la sélection d'une langue étrangère
+        // (Évite 33 requêtes tierces inutiles lors des audits EcoIndex / cold loads)
 
         // Si une langue non-française était déjà active, charger immédiatement
         const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang');
