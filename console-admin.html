@@ -293,30 +293,30 @@
 <main class="admin-wrap">
   <div class="admin-header">
     <div>
-      <h1 style="font-size:1.8rem; margin:0 0 6px;">⚡ Console Maîtresse Sécurisée</h1>
+      <h1 style="font-size:1.8rem; margin:0 0 6px;">Console Maîtresse Sécurisée</h1>
       <p style="color:var(--text-muted); font-size:14px; margin:0;">Contrôle global d'urgence, blackout et durcissement cyber-attaque.</p>
     </div>
     <div id="auth-status-bar">
-      <span style="font-size:13px; color:var(--text-muted);">🔴 Espace Verrouillé</span>
+      <span style="font-size:13px; color:var(--text-muted);"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Espace Verrouillé</span>
     </div>
   </div>
 
   <!-- Vérification initiale -->
   <div id="auth-checking-card" class="token-box" style="display:none; text-align:center; padding:32px;">
-    <div style="font-size:24px; margin-bottom:8px;">⏳</div>
+    <div style="margin-bottom:8px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--accent);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
     <strong style="color:var(--text); font-size:15px;">Vérification de la session en cours...</strong>
     <p style="color:var(--text-muted); font-size:13px; margin:4px 0 0;">Validation cryptographique auprès de GitHub.</p>
   </div>
 
   <!-- Carte Passkey Touch ID si activé -->
   <div id="passkey-card" class="token-box" style="display:none; text-align:center; padding:32px 24px;">
-    <div style="font-size:36px; margin-bottom:10px;">🛡️</div>
+    <div style="margin-bottom:10px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:36px;height:36px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
     <h3 style="margin:0 0 8px; font-size:1.35rem;">Déverrouillage Biométrique</h3>
     <p style="color:var(--text-muted); font-size:14px; margin:0 0 20px; line-height:1.5;">
       Touch ID / Face ID est configuré pour <strong>@Bwillou1</strong>.
     </p>
     <button id="btn-passkey-unlock" class="btn btn-primary" style="font-weight:700; padding:12px 28px; font-size:15px;">
-      👆 Déverrouiller avec Touch ID / Face ID
+      <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;margin-right:6px;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
     </button>
     <div style="margin-top:16px;">
       <button id="btn-use-token-fallback" class="btn btn-ghost" style="font-size:12.5px; cursor:pointer;">
@@ -328,7 +328,7 @@
   <!-- Formulaire d'authentification double facteur (exactement comme admin.html) -->
   <div id="token-card" class="token-box">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-      <span style="font-size:24px;">🛡️</span>
+      <svg class="svg-icon" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
       <div>
         <h3 style="margin:0; font-size:1.3rem;">Authentification Sécurisée (Double Facteur)</h3>
         <span style="font-size:12.5px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
@@ -341,7 +341,7 @@
     <!-- Zone de compte à rebours de blocage -->
     <div id="lockout-banner" style="display:none; margin-bottom:18px; padding:14px 18px; border-radius:10px; background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#ef4444;">
       <div style="font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px;">
-        <span>⏳</span> Accès temporairement verrouillé
+        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:#ef4444;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Accès temporairement verrouillé
       </div>
       <p id="lockout-timer-text" style="margin:6px 0 0; font-size:13.5px; line-height:1.5; font-weight:600;"></p>
     </div>
@@ -359,10 +359,10 @@
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
         <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14.5px;">
-          🔐 Vérifier & Déverrouiller la Console
+          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;margin-right:6px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Vérifier & Déverrouiller la Console
         </button>
         <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
-          ⏳ Vérification cryptographique et connexion GitHub...
+          Vérification cryptographique et connexion GitHub...
         </span>
       </div>
     </form>
@@ -370,7 +370,7 @@
     <div id="token-error-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
 
     <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <span>🛡️ <strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
+      <span><strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
       <span id="fp-device-tag" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Empreinte : Détection...</span>
     </div>
   </div>
@@ -380,9 +380,9 @@
     
     <!-- SÉLECTEUR DE VUE -->
     <div class="view-tabs">
-      <button id="tab-btn-cli" class="view-tab-btn active" onclick="switchConsoleView('cli')">💻 Terminal CLI Interactif Direct</button>
-      <button id="tab-btn-gui" class="view-tab-btn" onclick="switchConsoleView('gui')">🎛️ Panneau Graphique (GUI)</button>
-      <button id="tab-btn-all" class="view-tab-btn" onclick="switchConsoleView('all')">⚡ Vue Mixte (Terminal + GUI)</button>
+      <button id="tab-btn-cli" class="view-tab-btn active" onclick="switchConsoleView('cli')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Terminal CLI Interactif Direct</button>
+      <button id="tab-btn-gui" class="view-tab-btn" onclick="switchConsoleView('gui')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Panneau Graphique (GUI)</button>
+      <button id="tab-btn-all" class="view-tab-btn" onclick="switchConsoleView('all')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>Vue Mixte (Terminal + GUI)</button>
     </div>
 
     <!-- TERMINAL CLI INTERACTIF DIRECT -->
@@ -398,12 +398,12 @@
           <button class="cli-btn-mini" onclick="executeCliCommand('help')">? Aide</button>
           <button class="cli-btn-mini" onclick="executeCliCommand('status')">● Statut</button>
           <button class="cli-btn-mini" onclick="clearCliScreen()">Effacer</button>
-          <button class="cli-btn-mini" onclick="toggleCliFullscreen()">⛶ Plein écran</button>
+          <button class="cli-btn-mini" onclick="toggleCliFullscreen()">Plein écran</button>
         </div>
       </div>
       <div id="cli-output" class="cli-body">
         <div class="cli-output-line" style="color:#4ade80;">========================================================================</div>
-        <div class="cli-output-line" style="color:#22c55e; font-weight:800; font-size:14px;">⚡ TERMINAL MAÎTRE SÉCURISÉ — WILLIAM GUINDON SEC-CLI v2.0</div>
+        <div class="cli-output-line" style="color:#22c55e; font-weight:800; font-size:14px;">TERMINAL MAÎTRE SÉCURISÉ — WILLIAM GUINDON SEC-CLI v2.0</div>
         <div class="cli-output-line" style="color:#9bb0a2;">Connecté en direct au dépôt officiel <code>Bwillou1/WilliamGuindon</code> (Branche <code>main</code>)</div>
         <div class="cli-output-line" style="color:#9bb0a2;">Tapez <strong style="color:#38bdf8;">help</strong> ou <strong style="color:#38bdf8;">?</strong> pour afficher toutes les commandes de gestion et de sécurité.</div>
         <div class="cli-output-line" style="color:#4ade80;">========================================================================</div>
@@ -411,10 +411,10 @@
       <div class="cli-quick-bar">
         <span class="cli-quick-tag">COMMANDES RAPIDES :</span>
         <button class="cli-btn-mini" onclick="executeCliCommand('status')">status</button>
-        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 on')">🛡️ radical5 on</button>
-        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 off')">🛡️ radical5 off</button>
-        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 on')">⚖️ radical4 on</button>
-        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 off')">⚖️ radical4 off</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 on')">radical5 on</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical5 off')">radical5 off</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 on')">radical4 on</button>
+        <button class="cli-btn-mini" onclick="executeCliCommand('radical4 off')">radical4 off</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('switches')">switches</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('ls')">ls</button>
         <button class="cli-btn-mini" onclick="executeCliCommand('git status')">git status</button>
@@ -437,7 +437,7 @@
       <div class="terminal-card" style="border: 1px solid var(--border); background: linear-gradient(180deg, #0d1712 0%, #080c09 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:20px;">🌐</span>
+          <span style="font-size:20px;">[WEB]</span>
           <span style="font-size:15px; font-weight:800; color:var(--text);">Déploiement Mondial & Synchronisation GitHub</span>
         </div>
         <div id="global-sync-badge" style="font-size:12px; font-weight:700; color:#4ade80; background:rgba(34,197,94,0.12); padding:6px 12px; border-radius:20px; border:1px solid #166534;">
@@ -448,7 +448,7 @@
         Toute action effectuée ici met à jour <code>data/site-state.json</code> directement dans le dépôt GitHub officiel. Chaque visiteur dans le monde reçoit les directives de sécurité en temps réel sans passer par le cache navigateur.
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <button class="btn btn-ghost" onclick="fetchAndLoadProductionState()" style="font-size:12.5px; padding:7px 14px;">🔄 Recharger l'état de production</button>
+        <button class="btn btn-ghost" onclick="fetchAndLoadProductionState()" style="font-size:12.5px; padding:7px 14px;">[SYNC] Recharger l'état de production</button>
         <span id="last-sync-time" style="font-size:12px; color:var(--text-muted);">Dernière vérification : À l'instant</span>
       </div>
     </div>
@@ -456,7 +456,7 @@
     <!-- MODE RADICAL 1 : BLACKOUT -->
     <div class="terminal-card" style="border-left: 4px solid var(--accent);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">🚧 MODE RADICAL 1 : Blackout & Maintenance Totale</div>
+        <div class="terminal-card-title" style="margin:0;">[MAINT] MODE RADICAL 1 : Blackout & Maintenance Totale</div>
         <div id="maint-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid #166534;">
           Inactif
         </div>
@@ -466,26 +466,26 @@
         <div style="flex:1; min-width:240px;">
           <label class="form-label" for="maint-duration">Durée du Blackout (en minutes ou texte libre) :</label>
           <input type="text" id="maint-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 180, 1440, 945543..." oninput="updateMaintTimePreview()">
-          <div id="maint-duration-preview" style="font-size:11.5px; color:#4ade80; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
+          <div id="maint-duration-preview" style="font-size:11.5px; color:#4ade80; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 24 heures (1440 min)</div>
         </div>
         <button class="btn btn-primary" onclick="toggleMaintenance(true)">Activer le Blackout</button>
-        <button class="btn btn-ghost" onclick="toggleMaintenance(false)">🔒 Désactiver (Mot de passe requis)</button>
+        <button class="btn btn-ghost" onclick="toggleMaintenance(false)">[LOCKED] Désactiver (Mot de passe requis)</button>
       </div>
     </div>
 
     <!-- MODE RADICAL 2 : ANTI-DUPLICATION / ANTI-FORK -->
     <div class="terminal-card" style="border-left: 4px solid #38bdf8;">
-      <div class="terminal-card-title">🛡️ MODE RADICAL 2 : Protection Intellectuelle & Anti-Fork</div>
+      <div class="terminal-card-title">[SHIELD] MODE RADICAL 2 : Protection Intellectuelle & Anti-Fork</div>
       <div class="terminal-card-desc">Vérifie en continu l'origine du domaine d'exécution. Si un fork GitHub ou un miroir non autorisé est détecté, le code source et l'affichage sont automatiquement bloqués avec redirection vers williamguindon.me.</div>
       <div style="font-size:13.5px; color:#4ade80; display:flex; align-items:center; gap:8px;">
-        <span>✔ Protection active : seuls <strong>williamguindon.me</strong> et l'infrastructure officielle sont autorisés.</span>
+        <span>[OK] Protection active : seuls <strong>williamguindon.me</strong> et l'infrastructure officielle sont autorisés.</span>
       </div>
     </div>
 
     <!-- MODE RADICAL 3 : CYBER-ATTAQUE / PANIQUE -->
     <div class="terminal-card" style="border-left: 4px solid #eab308;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">🚨 MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
+        <div class="terminal-card-title" style="margin:0;">[ALERT] MODE RADICAL 3 : Cyber-Attaque & Durcissement Extrême (Mode Panique)</div>
         <div id="panic-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(234,179,8,0.1); color:#eab308; border:1px solid rgba(234,179,8,0.3);">
           Inactif
         </div>
@@ -495,21 +495,21 @@
         <div style="flex:1; min-width:240px;">
           <label class="form-label" for="panic-duration">Durée du Mode Panique (en minutes ou texte libre) :</label>
           <input type="text" id="panic-duration" class="form-control" value="120" placeholder="Ex: 1 min, 30, 120, 720, 945543..." oninput="updatePanicTimePreview()">
-          <div id="panic-duration-preview" style="font-size:11.5px; color:#eab308; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 2 heures (120 min)</div>
+          <div id="panic-duration-preview" style="font-size:11.5px; color:#eab308; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 2 heures (120 min)</div>
         </div>
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
           <input type="checkbox" id="panic-text-only" style="width:auto;">
           <label for="panic-text-only" style="margin:0; font-size:13px; font-weight:600;">Forcer le mode texte pur (.txt)</label>
         </div>
-        <button class="btn" style="background:#eab308; color:#000; font-weight:700;" onclick="triggerPanicMode(true)">⚠️ Déclencher le Mode Panique</button>
-        <button class="btn btn-ghost" onclick="triggerPanicMode(false)">🔒 Rétablir (Mot de passe requis)</button>
+        <button class="btn" style="background:#eab308; color:#000; font-weight:700;" onclick="triggerPanicMode(true)">[WARN] Déclencher le Mode Panique</button>
+        <button class="btn btn-ghost" onclick="triggerPanicMode(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
     <!-- MODE RADICAL 4 : FORTERESSE JURIDIQUE & CONFINEMENT CCE -->
     <div class="terminal-card" style="border-left: 4px solid #38bdf8; background: linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(11,19,41,0.6) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">⚖️ MODE RADICAL 4 : Forteresse Juridique & Confinement CCE (Verrouillage Probatoire)</div>
+        <div class="terminal-card-title" style="margin:0;">[LEGAL] MODE RADICAL 4 : Forteresse Juridique & Confinement CCE (Verrouillage Probatoire)</div>
         <div id="radical4-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid #0284c7;">
           Inactif
         </div>
@@ -519,21 +519,21 @@
         <div style="flex:1; min-width:220px;">
           <label class="form-label" for="radical4-duration">Durée du Confinement Juridique :</label>
           <input type="text" id="radical4-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 60, 1440, 945543..." oninput="updateRadical4TimePreview()">
-          <div id="radical4-duration-preview" style="font-size:11.5px; color:#38bdf8; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
+          <div id="radical4-duration-preview" style="font-size:11.5px; color:#38bdf8; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 24 heures (1440 min)</div>
         </div>
         <div style="flex:2; min-width:280px;">
           <label class="form-label" for="radical4-custom-msg">Communiqué juridique officiel / Injonction (optionnel) :</label>
           <input type="text" id="radical4-custom-msg" class="form-control" placeholder="Ex: Dossier SEM-26-003 : Enquête internationale en cours...">
         </div>
-        <button class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" onclick="triggerRadical4(true)">⚖️ Déclencher le Mode Juridique 4</button>
-        <button class="btn btn-ghost" onclick="triggerRadical4(false)">🔒 Rétablir (Mot de passe requis)</button>
+        <button class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" onclick="triggerRadical4(true)">[LEGAL] Déclencher le Mode Juridique 4</button>
+        <button class="btn btn-ghost" onclick="triggerRadical4(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
     <!-- MODE RADICAL 5 : BUNKER CYBERNÉTIQUE & AIR-GAP ABSOLU -->
     <div class="terminal-card" style="border-left: 4px solid #06b6d4; background: linear-gradient(180deg, rgba(8,47,73,0.6) 0%, rgba(3,7,18,0.7) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">🛡️ MODE RADICAL 5 : Bunker Cybernétique & Isolation Air-Gap (Protocole Alpha-Zero)</div>
+        <div class="terminal-card-title" style="margin:0;">[SHIELD] MODE RADICAL 5 : Bunker Cybernétique & Isolation Air-Gap (Protocole Alpha-Zero)</div>
         <div id="radical5-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid #0891b2;">
           Inactif
         </div>
@@ -543,21 +543,21 @@
         <div style="flex:1; min-width:220px;">
           <label class="form-label" for="radical5-duration">Durée du Confinement Bunker Air-Gap :</label>
           <input type="text" id="radical5-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 60, 1440, 945543..." oninput="updateRadical5TimePreview()">
-          <div id="radical5-duration-preview" style="font-size:11.5px; color:#22d3ee; margin-top:4px; font-family:monospace;">⏱️ Fin calculée : 24 heures (1440 min)</div>
+          <div id="radical5-duration-preview" style="font-size:11.5px; color:#22d3ee; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 24 heures (1440 min)</div>
         </div>
         <div style="flex:2; min-width:280px;">
           <label class="form-label" for="radical5-custom-msg">Directive de confinement / Message d'urgence (optionnel) :</label>
           <input type="text" id="radical5-custom-msg" class="form-control" placeholder="Ex: Isolation défensive activée suite à alerte de sécurité...">
         </div>
-        <button class="btn" style="background:#06b6d4; color:#020617; font-weight:900;" onclick="triggerRadical5(true)">🛡️ Déclencher le Mode Bunker 5</button>
-        <button class="btn btn-ghost" onclick="triggerRadical5(false)">🔒 Rétablir (Mot de passe requis)</button>
+        <button class="btn" style="background:#06b6d4; color:#020617; font-weight:900;" onclick="triggerRadical5(true)">[SHIELD] Déclencher le Mode Bunker 5</button>
+        <button class="btn btn-ghost" onclick="triggerRadical5(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
       </div>
     </div>
 
     <!-- MODE ALERTE TOXIQUE & CONTAMINATION IMMINENTE -->
     <div class="terminal-card" style="border-left: 4px solid #eab308; background: linear-gradient(180deg, rgba(28,20,4,0.6) 0%, rgba(12,10,3,0.7) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">☣️ Mode Alerte Toxique / Contamination Imminente (Bannière Centrale)</div>
+        <div class="terminal-card-title" style="margin:0;">[TOXIC] Mode Alerte Toxique / Contamination Imminente (Bannière Centrale)</div>
         <div id="toxic-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(234,179,8,0.1); color:#facc15; border:1px solid #ca8a04;">
           Inactif
         </div>
@@ -566,7 +566,7 @@
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:12px;">
         <div>
           <label class="form-label" for="toxic-title">Titre de l'Alerte Toxique :</label>
-          <input type="text" id="toxic-title" class="form-control" value="⚠️ ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE">
+          <input type="text" id="toxic-title" class="form-control" value="[WARN] ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE">
         </div>
         <div>
           <label class="form-label" for="toxic-link">Lien du rapport / publication :</label>
@@ -578,15 +578,15 @@
         </div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" style="background:#eab308; color:#000; font-weight:900;" onclick="triggerToxicAlert(true)">☣️ Activer la Bannière Toxique</button>
-        <button class="btn btn-ghost" onclick="triggerToxicAlert(false)">🔒 Désactiver</button>
+        <button class="btn" style="background:#eab308; color:#000; font-weight:900;" onclick="triggerToxicAlert(true)">[TOXIC] Activer la Bannière Toxique</button>
+        <button class="btn btn-ghost" onclick="triggerToxicAlert(false)">[LOCKED] Désactiver</button>
       </div>
     </div>
 
     <!-- MODE RIPOSTE MISE EN DEMEURE, DÉPÔT NOTARIÉ & GÉNÉRATEUR D'AFFICHE -->
     <div class="terminal-card" style="border-left: 4px solid #f43f5e; background: linear-gradient(180deg, rgba(24,8,11,0.6) 0%, rgba(10,3,4,0.7) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">🚨 Mode Riposte Mise en Demeure, Dépôt Notarié & Dénonciation IA</div>
+        <div class="terminal-card-title" style="margin:0;">[ALERT] Mode Riposte Mise en Demeure, Dépôt Notarié & Dénonciation IA</div>
         <div id="legal-notice-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(244,63,94,0.1); color:#fb7185; border:1px solid #be123c;">
           Inactif
         </div>
@@ -607,21 +607,21 @@
         </div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" style="background:#f43f5e; color:#fff; font-weight:900;" onclick="triggerLegalNoticeStrike(true)">🚨 Déclencher la Riposte & Dénonciation</button>
-        <button class="btn btn-ghost" onclick="triggerLegalNoticeStrike(false)">🔒 Désactiver</button>
-        <button class="btn" style="background:#1e293b; border:1px solid #f43f5e; color:#fda4af; font-weight:700;" onclick="testDownloadSocialPoster()">🎨 Tester le Générateur d'Affiche PNG (1200x630)</button>
+        <button class="btn" style="background:#f43f5e; color:#fff; font-weight:900;" onclick="triggerLegalNoticeStrike(true)">[ALERT] Déclencher la Riposte & Dénonciation</button>
+        <button class="btn btn-ghost" onclick="triggerLegalNoticeStrike(false)">[LOCKED] Désactiver</button>
+        <button class="btn" style="background:#1e293b; border:1px solid #f43f5e; color:#fda4af; font-weight:700;" onclick="testDownloadSocialPoster()">[THEME] Tester le Générateur d'Affiche PNG (1200x630)</button>
       </div>
     </div>
 
     <!-- CHAMBRE PROBATOIRE CCE & ÉVACUATION D'URGENCE -->
     <div class="terminal-card" style="border-left: 4px solid #22c55e; background: linear-gradient(180deg, rgba(11,25,17,0.6) 0%, rgba(4,13,7,0.7) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">🏛️ Mode Chambre Probatoire CCE SEM-26-003 & 🚪 Évacuation Numérique</div>
+        <div class="terminal-card-title" style="margin:0;">[CCE] Mode Chambre Probatoire CCE SEM-26-003 & [LOGOUT] Évacuation Numérique</div>
       </div>
       <div class="terminal-card-desc">Basculez le site en chambre des preuves CCE ou redirigez instantanément 100% du trafic en 0,1s vers un miroir externe sécurisé.</div>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
         <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #166534;">
-          <div style="font-weight:800; color:#4ade80; margin-bottom:6px;">🏛️ Chambre Probatoire CCE</div>
+          <div style="font-weight:800; color:#4ade80; margin-bottom:6px;">[CCE] Chambre Probatoire CCE</div>
           <div style="font-size:12px; color:#86efac; margin-bottom:10px;">Isole le site sur la liste certifiée des soumissions SEM-26-003.</div>
           <div style="display:flex; gap:8px;">
             <button class="btn" style="background:#22c55e; color:#042f2e; font-weight:900;" onclick="triggerCceVault(true)">Activer CCE Vault</button>
@@ -629,10 +629,10 @@
           </div>
         </div>
         <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #0284c7;">
-          <div style="font-weight:800; color:#38bdf8; margin-bottom:6px;">🚪 Évacuation Numérique Immédiate</div>
+          <div style="font-weight:800; color:#38bdf8; margin-bottom:6px;">[LOGOUT] Évacuation Numérique Immédiate</div>
           <input type="text" id="evacuate-target-url" class="form-control" style="font-size:12px; margin-bottom:8px;" value="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
           <div style="display:flex; gap:8px;">
-            <button class="btn" style="background:#0284c7; color:#fff; font-weight:900;" onclick="triggerEvacuation(true)">🚨 Évacuer (0.1s)</button>
+            <button class="btn" style="background:#0284c7; color:#fff; font-weight:900;" onclick="triggerEvacuation(true)">[ALERT] Évacuer (0.1s)</button>
             <button class="btn btn-ghost" onclick="triggerEvacuation(false)">Désactiver</button>
           </div>
         </div>
@@ -642,116 +642,116 @@
     <!-- BOÎTE NOIRE D'URGENCE & OUTILS TACTIQUES FORENSIC -->
     <div class="terminal-card" style="border-left: 4px solid #a855f7; background: linear-gradient(180deg, rgba(20,10,30,0.6) 0%, rgba(8,3,15,0.7) 100%);">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div class="terminal-card-title" style="margin:0;">⚡ Actions Spéciales Console & Outils Forensic</div>
+        <div class="terminal-card-title" style="margin:0;">[SYS] Actions Spéciales Console & Outils Forensic</div>
       </div>
       <div class="terminal-card-desc">Déclenchez à distance des actions immédiates sur les navigateurs des visiteurs et téléchargez des instantanés probatoires.</div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <button class="btn" style="background:#a855f7; color:#fff; font-weight:900;" onclick="triggerBlackboxExport()">📦 Télécharger la Boîte Noire (Dump JSON/TXT)</button>
-        <button class="btn" style="background:#ef4444; color:#fff; font-weight:900;" onclick="triggerNukeCache()">💣 Purge Totale d'Urgence (Nuke Cache)</button>
-        <button class="btn" style="background:#374151; color:#f3f4f6; font-weight:700;" onclick="triggerGhostModeToggle()">👻 Basculer Ghost Mode (503)</button>
+        <button class="btn" style="background:#a855f7; color:#fff; font-weight:900;" onclick="triggerBlackboxExport()">[PACKAGE] Télécharger la Boîte Noire (Dump JSON/TXT)</button>
+        <button class="btn" style="background:#ef4444; color:#fff; font-weight:900;" onclick="triggerNukeCache()">[NUKE] Purge Totale d'Urgence (Nuke Cache)</button>
+        <button class="btn" style="background:#374151; color:#f3f4f6; font-weight:700;" onclick="triggerGhostModeToggle()">[GHOST] Basculer Ghost Mode (503)</button>
       </div>
       <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
         <input type="text" id="broadcast-input-msg" class="form-control" style="flex:1; min-width:260px;" placeholder="Message d'alerte flash à diffuser à tous les visiteurs connectés...">
-        <button class="btn" style="background:#2563eb; color:#fff; font-weight:900;" onclick="sendBroadcastAlert()">📢 Émettre Alerte Flash</button>
+        <button class="btn" style="background:#2563eb; color:#fff; font-weight:900;" onclick="sendBroadcastAlert()">[BROADCAST] Émettre Alerte Flash</button>
       </div>
     </div>
 
     <!-- MATRICE DE COMMUTATEURS ON/OFF (35 COMMUTATEURS FONCTIONNELS) -->
     <div class="terminal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-        <div class="terminal-card-title" style="margin:0;">🎛️ Matrice des 28 Commutateurs Individuels (Kill-Switches)</div>
+        <div class="terminal-card-title" style="margin:0;">[SWITCHES] Matrice des 28 Commutateurs Individuels (Kill-Switches)</div>
         <span style="font-size:12px; background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid #22c55e; padding:3px 10px; border-radius:12px; font-weight:700;">Temps Réel 0ms</span>
       </div>
       <div class="terminal-card-desc">Activez ou désactivez à la volée n'importe quel sous-système du site. Les changements s'appliquent instantanément sur tous les navigateurs sans recharger la page.</div>
       
-      <div style="font-size:12.5px; font-weight:700; color:#38bdf8; margin:16px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🔒 Sécurité, Protection & Données</div>
+      <div style="font-size:12.5px; font-weight:700; color:#38bdf8; margin:16px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">[LOCKED] Sécurité, Protection & Données</div>
       <div class="switch-grid">
         <div class="switch-item" style="border-color: rgba(34,197,94,0.5); background: rgba(34,197,94,0.06);">
-          <span class="switch-label" style="color:#4ade80; font-weight:700;">📸 Bloquer Capture d'Écran (Flou + Nom William Guindon)</span>
+          <span class="switch-label" style="color:#4ade80; font-weight:700;">[PHOTO] Bloquer Capture d'Écran (Flou + Nom William Guindon)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-blockScreenshots" onchange="updateSwitches()">
         </div>
         <div class="switch-item" style="border-color: rgba(234,179,8,0.5); background: rgba(234,179,8,0.06);">
-          <span class="switch-label" style="color:#facc15; font-weight:700;">⚡ Désactiver JavaScript du Site (Mode No-Script)</span>
+          <span class="switch-label" style="color:#facc15; font-weight:700;">[SYS] Désactiver JavaScript du Site (Mode No-Script)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableSiteJS" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🤖 Désactiver toutes les IA</span>
+          <span class="switch-label">[AI] Désactiver toutes les IA</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableAI" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📋 Désactiver Copier/Coller</span>
+          <span class="switch-label">[CCE] Désactiver Copier/Coller</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableCopyPaste" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🖼️ Désactiver les Iframes</span>
+          <span class="switch-label">[IMG] Désactiver les Iframes</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableIframes" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🔗 Désactiver Liens Navigation</span>
+          <span class="switch-label">[LINK] Désactiver Liens Navigation</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableNavLinks" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🛡️ Bloquer Trackers & Widgets Externes</span>
+          <span class="switch-label">[SHIELD] Bloquer Trackers & Widgets Externes</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableExternalTracking" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🛑 Désactiver Boîtes Modales & Popups</span>
+          <span class="switch-label">[STOP] Désactiver Boîtes Modales & Popups</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableModals" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">✉️ Masquer Formulaires de Contact</span>
+          <span class="switch-label">[MSG] Masquer Formulaires de Contact</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-hideContactForms" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🔍 Désactiver Barres de Recherche</span>
+          <span class="switch-label">[SEARCH] Désactiver Barres de Recherche</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableSearchFilters" onchange="updateSwitches()">
         </div>
       </div>
 
-      <div style="font-size:12.5px; font-weight:700; color:#facc15; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🎬 Médias, Contenus & Documents</div>
+      <div style="font-size:12.5px; font-weight:700; color:#facc15; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">[MEDIA] Médias, Contenus & Documents</div>
       <div class="switch-grid">
         <div class="switch-item" style="border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.06);">
-          <span class="switch-label" style="color:#f87171; font-weight:700;">📄 Désactiver Visionnement & Téléchargement PDF</span>
+          <span class="switch-label" style="color:#f87171; font-weight:700;">[FILE] Désactiver Visionnement & Téléchargement PDF</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disablePDF" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🎬 Désactiver Médias (Images/Audio)</span>
+          <span class="switch-label">[MEDIA] Désactiver Médias (Images/Audio)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableMedia" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🔇 Couper Tous les Sons (Mute Total)</span>
+          <span class="switch-label">[MUTE] Couper Tous les Sons (Mute Total)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableSounds" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🗺️ Désactiver Cartes Interactives (GIS)</span>
+          <span class="switch-label">[MAP] Désactiver Cartes Interactives (GIS)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableMaps" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📰 Masquer Section Presse & Médias</span>
+          <span class="switch-label">[PRESS] Masquer Section Presse & Médias</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-hidePressSection" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">⏳ Masquer Chronologie / Timeline CCE</span>
+          <span class="switch-label">[...] Masquer Chronologie / Timeline CCE</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-hideTimeline" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">👤 Masquer Biographie & Profil</span>
+          <span class="switch-label">[USER] Masquer Biographie & Profil</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-hideBioSection" onchange="updateSwitches()">
         </div>
       </div>
 
-      <div style="font-size:12.5px; font-weight:700; color:#a78bfa; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">🎨 Affichage, Accessibilité & Ergonomie</div>
+      <div style="font-size:12.5px; font-weight:700; color:#a78bfa; margin:18px 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">[THEME] Affichage, Accessibilité & Ergonomie</div>
       <div class="switch-grid">
         <div class="switch-item">
-          <span class="switch-label">🌙 Forcer Mode Sombre (Dark)</span>
+          <span class="switch-label">[DARK] Forcer Mode Sombre (Dark)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-forceDarkMode" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">☀️ Forcer Mode Clair (Light)</span>
+          <span class="switch-label">[LIGHT] Forcer Mode Clair (Light)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-forceLightMode" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🔲 Forcer Contraste Élevé</span>
+          <span class="switch-label"> Forcer Contraste Élevé</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-highContrastMode" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
@@ -759,39 +759,39 @@
           <input type="checkbox" class="toggle-checkbox" id="sw-monochromeMode" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📖 Police Adaptée Dyslexie</span>
+          <span class="switch-label">[READ] Police Adaptée Dyslexie</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-dyslexiaFont" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">✨ Désactiver Animations CSS</span>
+          <span class="switch-label">[NEW] Désactiver Animations CSS</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableAnimations" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📜 Désactiver Défilement Fluide</span>
+          <span class="switch-label">[LOG] Désactiver Défilement Fluide</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableSmoothScroll" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">📌 Désactiver Navigation Flottante (Sticky)</span>
+          <span class="switch-label">[PIN] Désactiver Navigation Flottante (Sticky)</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableHeaderSticky" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">🌐 Désactiver Module Traduction</span>
+          <span class="switch-label">[WEB] Désactiver Module Traduction</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableTranslation" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">👥 Masquer Liens Réseaux Sociaux</span>
+          <span class="switch-label">[USERS] Masquer Liens Réseaux Sociaux</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-hideSocialButtons" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">💬 Masquer Infobulles & Badges</span>
+          <span class="switch-label">[CHAT] Masquer Infobulles & Badges</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableTooltips" onchange="updateSwitches()">
         </div>
         <div class="switch-item">
-          <span class="switch-label">⬆️ Masquer Bouton « Retour en Haut »</span>
+          <span class="switch-label">⬆ Masquer Bouton « Retour en Haut »</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-disableBackToTop" onchange="updateSwitches()">
         </div>
         <div class="switch-item" style="grid-column: 1 / -1; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.05);">
-          <span class="switch-label" style="color:#f87171; font-weight:700;">🚨 Activer le Bandeau Rouge Défilant d'Urgence</span>
+          <span class="switch-label" style="color:#f87171; font-weight:700;">[ALERT] Activer le Bandeau Rouge Défilant d'Urgence</span>
           <input type="checkbox" class="toggle-checkbox" id="sw-emergencyBannerOnly" onchange="updateSwitches()">
         </div>
       </div>
@@ -988,7 +988,7 @@
       if (workspace) workspace.style.display = "block";
       if (authBar) {
         authBar.innerHTML = `
-          <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
+          <span style="font-size:13px; color:var(--accent); font-weight:700;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;"></span> Connecté en tant que @Bwillou1</span>
           <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
         `;
       }
@@ -996,7 +996,7 @@
       focusCliInput();
     } else {
       if (workspace) workspace.style.display = "none";
-      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
+      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Espace Verrouillé</span>";
 
       const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
       if (isPasskey && localStorage.getItem("wg_passkey_id")) {
@@ -1049,7 +1049,7 @@
       state.bloqueJusqua = Date.now() + (penaltyMinutes * 60 * 1000);
       saveSecurityState(vId, state);
       updateLockoutUI(state.bloqueJusqua);
-      showTokenError(`❌ Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).`);
+      showTokenError(`[ERR] Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).`);
       return;
     }
 
@@ -1072,7 +1072,7 @@
       updateAuthUI(true);
       showToast(`Authentification 2FA réussie. Bienvenue @${userData.login} !`);
     } catch (err) {
-      showTokenError("❌ " + err.message);
+      showTokenError("[ERR] " + err.message);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
       if (spinner) spinner.style.display = "none";
@@ -1131,7 +1131,7 @@
   async function fetchAndLoadProductionState() {
     const badge = document.getElementById("global-sync-badge");
     const timeEl = document.getElementById("last-sync-time");
-    if (badge) badge.innerHTML = "⏳ Synchronisation avec GitHub...";
+    if (badge) badge.innerHTML = "[...] Synchronisation avec GitHub...";
 
     const token = localStorage.getItem("wg_github_pat");
     let state = null;
@@ -1163,11 +1163,11 @@
         loadCurrentState();
         if (badge) badge.innerHTML = "● En direct sur GitHub (@Bwillou1/WilliamGuindon)";
         if (timeEl) timeEl.textContent = "Dernière sync : " + new Date().toLocaleTimeString();
-        showToast("✅ État de production GitHub chargé avec succès.");
+        showToast("[OK] État de production GitHub chargé avec succès.");
       }
     } catch (err) {
       console.warn("Erreur chargement état distant:", err);
-      if (badge) badge.innerHTML = "⚠️ Connexion locale (vérifiez votre clé GitHub)";
+      if (badge) badge.innerHTML = "[WARN] Connexion locale (vérifiez votre clé GitHub)";
       loadCurrentState();
     }
   }
@@ -1183,14 +1183,14 @@
 
     const badge = document.getElementById("global-sync-badge");
     const timeEl = document.getElementById("last-sync-time");
-    if (badge) badge.innerHTML = "⏳ Déploiement mondial sur GitHub...";
+    if (badge) badge.innerHTML = "[...] Déploiement mondial sur GitHub...";
 
-    showToast("💾 Enregistrement local effectué. Publication GitHub en cours...");
+    showToast("[SAVE] Enregistrement local effectué. Publication GitHub en cours...");
 
     const token = localStorage.getItem("wg_github_pat");
     if (!token) {
-      if (badge) badge.innerHTML = "⚠️ Clé GitHub manquante (Sauvegarde locale uniquement)";
-      showToast("⚠️ Attention : Clé GitHub absente. L'état n'a pas été publié mondialement.");
+      if (badge) badge.innerHTML = "[WARN] Clé GitHub manquante (Sauvegarde locale uniquement)";
+      showToast("[WARN] Attention : Clé GitHub absente. L'état n'a pas été publié mondialement.");
       return;
     }
 
@@ -1223,23 +1223,23 @@
       if (putRes.ok) {
         const putData = await putRes.json();
         const commitSha = putData?.commit?.sha ? putData.commit.sha.substring(0, 7) : "OK";
-        if (badge) badge.innerHTML = `✅ Publié mondialement (Commit: <code>${commitSha}</code>)`;
+        if (badge) badge.innerHTML = `[OK] Publié mondialement (Commit: <code>${commitSha}</code>)`;
         if (timeEl) timeEl.textContent = "Dernier déploiement : " + new Date().toLocaleTimeString();
-        showToast(`🌍 Déploiement mondial réussi ! (Commit: ${commitSha}) - Tous les visiteurs recevront cette directive.`);
+        showToast(`[GLOBAL] Déploiement mondial réussi ! (Commit: ${commitSha}) - Tous les visiteurs recevront cette directive.`);
         if (typeof BroadcastChannel !== 'undefined') {
           try { new BroadcastChannel('wg_site_state_sync').postMessage(state); } catch (_) {}
         }
       } else {
         const errData = await putRes.json().catch(() => ({}));
         const msg = errData.message || ("Code HTTP " + putRes.status);
-        if (badge) badge.innerHTML = `❌ Échec publication GitHub (${putRes.status})`;
-        showToast("❌ Erreur GitHub : " + msg);
+        if (badge) badge.innerHTML = `[ERR] Échec publication GitHub (${putRes.status})`;
+        showToast("[ERR] Erreur GitHub : " + msg);
         alert("Erreur lors de la publication mondiale sur GitHub : " + msg + "\n\nVeuillez vérifier les permissions de votre jeton GitHub (droit 'repo' ou 'contents:write').");
       }
     } catch (err) {
       console.error("Erreur sync GitHub:", err);
-      if (badge) badge.innerHTML = "❌ Échec de communication avec GitHub";
-      showToast("❌ Erreur réseau lors de la synchronisation GitHub.");
+      if (badge) badge.innerHTML = "[ERR] Échec de communication avec GitHub";
+      showToast("[ERR] Erreur réseau lors de la synchronisation GitHub.");
     }
   }
 
@@ -1266,7 +1266,7 @@
     if (!el || !preview) return;
     const mins = parseMinutes(el.value, 1440);
     const endDate = new Date(Date.now() + mins * 60000);
-    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+    preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
   }
 
   function updatePanicTimePreview() {
@@ -1275,7 +1275,7 @@
     if (!el || !preview) return;
     const mins = parseMinutes(el.value, 120);
     const endDate = new Date(Date.now() + mins * 60000);
-    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+    preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
   }
 
   const ALL_SWITCH_KEYS = [
@@ -1404,7 +1404,7 @@
     if (!el || !preview) return;
     const mins = parseMinutes(el.value, 1440);
     const endDate = new Date(Date.now() + mins * 60000);
-    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+    preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
   }
 
   function updateRadical5TimePreview() {
@@ -1413,12 +1413,12 @@
     if (!el || !preview) return;
     const mins = parseMinutes(el.value, 1440);
     const endDate = new Date(Date.now() + mins * 60000);
-    preview.textContent = `⏱️ Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+    preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
   }
 
   async function triggerRadical4(activate) {
     if (activate) {
-      const confirmAction = confirm("⚖️ CONFIRMATION MODE RADICAL 4 :\nDéclencher le Confinement Juridique & Dossier CCE pour tous les visiteurs ?");
+      const confirmAction = confirm("[LEGAL] CONFIRMATION MODE RADICAL 4 :\nDéclencher le Confinement Juridique & Dossier CCE pour tous les visiteurs ?");
       if (!confirmAction) return;
       const rawVal = document.getElementById("radical4-duration").value;
       const customMsg = document.getElementById("radical4-custom-msg") ? document.getElementById("radical4-custom-msg").value.trim() : "";
@@ -1441,7 +1441,7 @@
 
   async function triggerRadical5(activate) {
     if (activate) {
-      const confirmAction = confirm("🛡️ CONFIRMATION MODE RADICAL 5 :\nDéclencher le Bunker Cybernétique & Isolation Air-Gap Totale pour tous les visiteurs ?");
+      const confirmAction = confirm("[SHIELD] CONFIRMATION MODE RADICAL 5 :\nDéclencher le Bunker Cybernétique & Isolation Air-Gap Totale pour tous les visiteurs ?");
       if (!confirmAction) return;
       const rawVal = document.getElementById("radical5-duration").value;
       const customMsg = document.getElementById("radical5-custom-msg") ? document.getElementById("radical5-custom-msg").value.trim() : "";
@@ -1474,11 +1474,11 @@
       if (textEl && textEl.value.trim()) state.toxicAlertText = textEl.value.trim();
       if (linkEl && linkEl.value.trim()) state.toxicAlertLink = linkEl.value.trim();
       await saveAndSyncSiteState(state);
-      alert("☣️ Bannière d'Alerte Toxique activée sur tout le site !");
+      alert("[TOXIC] Bannière d'Alerte Toxique activée sur tout le site !");
     } else {
       state.toxicAlertActive = false;
       await saveAndSyncSiteState(state);
-      alert("✅ Bannière d'Alerte Toxique désactivée.");
+      alert("[OK] Bannière d'Alerte Toxique désactivée.");
     }
   }
 
@@ -1494,13 +1494,13 @@
       if (titleEl && titleEl.value.trim()) state.legalNoticeTitle = titleEl.value.trim();
       if (descEl && descEl.value.trim()) state.legalNoticeDetails = descEl.value.trim();
       await saveAndSyncSiteState(state);
-      alert("🚨 Mode Riposte Mise en Demeure & Dénonciation IA activé !");
+      alert("[ALERT] Mode Riposte Mise en Demeure & Dénonciation IA activé !");
     } else {
       const isAuthorized = await verifyAdminPasswordPrompt("la désactivation de la Riposte Mise en Demeure");
       if (!isAuthorized) return;
       state.legalNoticeActive = false;
       await saveAndSyncSiteState(state);
-      alert("✅ Mode Riposte désactivé.");
+      alert("[OK] Mode Riposte désactivé.");
     }
   }
 
@@ -1525,7 +1525,7 @@
       ctx.strokeRect(14, 14, 1172, 602);
       ctx.fillStyle = '#f43f5e';
       ctx.font = 'bold 22px system-ui, sans-serif';
-      ctx.fillText('🚨 ALERTE LÉGALE & CITOYENNE // DOSSIER CCE SEM-26-003', 60, 80);
+      ctx.fillText('[ALERT] ALERTE LÉGALE & CITOYENNE // DOSSIER CCE SEM-26-003', 60, 80);
       ctx.fillStyle = '#ffffff';
       ctx.font = '900 36px system-ui, sans-serif';
       ctx.fillText(title, 60, 150);
@@ -1539,7 +1539,7 @@
       ctx.strokeRect(60, 250, 1080, 240);
       ctx.fillStyle = '#fecdd3';
       ctx.font = 'bold 24px system-ui, sans-serif';
-      ctx.fillText('⚖️ FAITS PROBATOIRES & SAISINE INTERNATIONALE :', 90, 300);
+      ctx.fillText('[LEGAL] FAITS PROBATOIRES & SAISINE INTERNATIONALE :', 90, 300);
       ctx.fillStyle = '#e2e8f0';
       ctx.font = '20px system-ui, sans-serif';
       ctx.fillText('• Soumission citoyenne officielle enregistrée à la Commission de coopération environnementale.', 90, 350);
@@ -1563,7 +1563,7 @@
     const state = getSiteState();
     state.cceVaultActive = !!activate;
     await saveAndSyncSiteState(state);
-    alert(activate ? "🏛️ Chambre Probatoire CCE SEM-26-003 activée !" : "✅ Chambre Probatoire désactivée.");
+    alert(activate ? "[CCE] Chambre Probatoire CCE SEM-26-003 activée !" : "[OK] Chambre Probatoire désactivée.");
   }
 
   async function triggerEvacuation(activate) {
@@ -1574,11 +1574,11 @@
       state.evacuateActive = true;
       state.evacuateUrl = url;
       await saveAndSyncSiteState(state);
-      alert(`🚪 Évacuation numérique activée vers : ${url}`);
+      alert(`[LOGOUT] Évacuation numérique activée vers : ${url}`);
     } else {
       state.evacuateActive = false;
       await saveAndSyncSiteState(state);
-      alert("✅ Évacuation numérique désactivée.");
+      alert("[OK] Évacuation numérique désactivée.");
     }
   }
 
@@ -1613,25 +1613,25 @@
     a.download = `boite-noire-forensic-wg-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    printCli("📦 Boîte noire forensic exportée et téléchargée avec succès.", "#a855f7");
+    printCli("[PACKAGE] Boîte noire forensic exportée et téléchargée avec succès.", "#a855f7");
   }
 
   async function triggerNukeCache() {
-    const confirmAction = confirm("💣 CONFIRMATION PURGE TOTALE :\nForcer la purge immédiate de TOUS les caches navigateurs de TOUS les visiteurs du monde ?");
+    const confirmAction = confirm("[NUKE] CONFIRMATION PURGE TOTALE :\nForcer la purge immédiate de TOUS les caches navigateurs de TOUS les visiteurs du monde ?");
     if (!confirmAction) return;
     const isAuthorized = await verifyAdminPasswordPrompt("la purge totale d'urgence");
     if (!isAuthorized) return;
     const state = getSiteState();
     state.nukeCacheTrigger = Date.now();
     await saveAndSyncSiteState(state);
-    alert("💣 Ordre de purge totale mondiale transmis avec succès !");
+    alert("[NUKE] Ordre de purge totale mondiale transmis avec succès !");
   }
 
   async function triggerGhostModeToggle() {
     const state = getSiteState();
     state.ghostModeActive = !state.ghostModeActive;
     await saveAndSyncSiteState(state);
-    alert(state.ghostModeActive ? "👻 Ghost Mode 503 activé (Faux serveur hors-ligne) !" : "✅ Ghost Mode désactivé.");
+    alert(state.ghostModeActive ? "[GHOST] Ghost Mode 503 activé (Faux serveur hors-ligne) !" : "[OK] Ghost Mode désactivé.");
   }
 
   async function sendBroadcastAlert() {
@@ -1647,23 +1647,23 @@
     state.broadcastTimestamp = Date.now();
     await saveAndSyncSiteState(state);
     msgEl.value = "";
-    alert("📢 Alerte Flash diffusée à tous les visiteurs !");
+    alert("[BROADCAST] Alerte Flash diffusée à tous les visiteurs !");
   }
 
   async function verifyAdminPasswordPrompt(actionName = "la désactivation") {
-    const enteredPass = prompt(`🔐 SÉCURITÉ MAÎTRE :\nVeuillez saisir votre mot de passe administrateur pour autoriser ${actionName} :`);
+    const enteredPass = prompt(`[AUTH] SÉCURITÉ MAÎTRE :\nVeuillez saisir votre mot de passe administrateur pour autoriser ${actionName} :`);
     if (enteredPass === null) return false; // Annulé
     const cleanPass = enteredPass.trim();
     if (!cleanPass) {
-      alert("❌ Mot de passe administrateur requis.");
+      alert("[ERR] Mot de passe administrateur requis.");
       return false;
     }
     const hash = await sha256Hex(cleanPass);
     if (VALID_PASSWORD_HASHES.includes(hash)) {
       return true;
     } else {
-      alert("❌ Mot de passe administrateur incorrect. Action non autorisée.");
-      showToast("❌ Échec d'authentification : mot de passe incorrect.");
+      alert("[ERR] Mot de passe administrateur incorrect. Action non autorisée.");
+      showToast("[ERR] Échec d'authentification : mot de passe incorrect.");
       return false;
     }
   }
@@ -1687,7 +1687,7 @@
 
   async function triggerPanicMode(activate) {
     if (activate) {
-      const confirmAction = confirm("⚠️ CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique pour tous les visiteurs ?");
+      const confirmAction = confirm("[WARN] CONFIRMATION CRITIQUE :\nÊtes-vous certain de vouloir déclencher le Mode Panique pour tous les visiteurs ?");
       if (!confirmAction) return;
       const rawVal = document.getElementById("panic-duration").value;
       const mins = parseMinutes(rawVal, 120);
@@ -1787,7 +1787,7 @@
     if (!output) return;
     output.innerHTML = `
       <div class="cli-output-line" style="color:#4ade80;">========================================================================</div>
-      <div class="cli-output-line" style="color:#22c55e; font-weight:800; font-size:14px;">⚡ TERMINAL MAÎTRE SÉCURISÉ — WILLIAM GUINDON SEC-CLI v2.0</div>
+      <div class="cli-output-line" style="color:#22c55e; font-weight:800; font-size:14px;">TERMINAL MAÎTRE SÉCURISÉ — WILLIAM GUINDON SEC-CLI v2.0</div>
       <div class="cli-output-line" style="color:#9bb0a2;">Connecté en direct au dépôt officiel <code>Bwillou1/WilliamGuindon</code> (Branche <code>main</code>)</div>
       <div class="cli-output-line" style="color:#9bb0a2;">Tapez <strong style="color:#38bdf8;">help</strong> ou <strong style="color:#38bdf8;">?</strong> pour afficher toutes les commandes de gestion et de sécurité.</div>
       <div class="cli-output-line" style="color:#4ade80;">========================================================================</div>
@@ -1821,9 +1821,9 @@
         case "help":
         case "?":
           printCli(`
-📚 MANUEL DES COMMANDES DISPONIBLES — WG-SEC-CLI :
+[DOCS] MANUEL DES COMMANDES DISPONIBLES — WG-SEC-CLI :
 
-🔒 SÉCURITÉ & MODES RADICAUX :
+[LOCKED] SÉCURITÉ & MODES RADICAUX :
   • status / state                : Affiche l'état global en temps réel du site et de GitHub.
   • blackout <on|off> [mins]      : Active ou désactive le mode maintenance blackout total (Mode 1).
   • panic <on|off> [mins] [--txt] : Active ou désactive le durcissement cyber-attaque (Mode 3).
@@ -1837,12 +1837,12 @@
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
   • restore / reset               : Rétablit tous les commutateurs et modes à l'état normal.
 
-🎛️ COMMUTATEURS (KILL-SWITCHES) :
+[SWITCHES] COMMUTATEURS (KILL-SWITCHES) :
   • switches / ls switches        : Liste les 30 commutateurs et leur état actuel (ON/OFF).
   • switch <nom> <on|off|toggle>  : Modifie l'état d'un commutateur individuel.
   • theme <dark|light>            : Force le thème d'affichage sur tout le site.
 
-📂 GESTION DU SITE & DÉPÔT GITHUB EN DIRECT :
+[DIR] GESTION DU SITE & DÉPÔT GITHUB EN DIRECT :
   • ls [chemin]                   : Liste les fichiers du dépôt GitHub officiel (ex: ls data).
   • cat <chemin_fichier>          : Affiche le contenu complet d'un fichier du site.
   • write <fichier> <contenu>     : Crée ou met à jour un fichier sur GitHub avec commit.
@@ -1850,7 +1850,7 @@
   • git status                    : Affiche la branche active, le SHA et le statut de déploiement.
   • git log [-n <nombre>]         : Affiche les derniers commits du dépôt officiel.
 
-⚡ ACTIONS, AUDIT & DIAGNOSTIC :
+[SYS] ACTIONS, AUDIT & DIAGNOSTIC :
   • broadcast <message>           : Envoie une alerte instantanée à tous les visiteurs connectés.
   • audit                         : Lance un audit complet de sécurité et d'intégrité du site.
   • cce / cce-status              : Affiche l'état officiel du dossier SEM-26-003 à la CCE.
@@ -1871,16 +1871,16 @@
           const isRad5 = Boolean(state.radical5Active && state.radical5Until > now);
           const activeSwitches = ALL_SWITCH_KEYS.filter(k => state[k]);
 
-          printCli("📊 RAPPORT D'ÉTAT SYSTÈME — williamguindon.me :", "#facc15");
+          printCli("[STATS] RAPPORT D'ÉTAT SYSTÈME — williamguindon.me :", "#facc15");
           printCli(`  • Dépôt GitHub : ${GITHUB_REPO} (Branche main)`);
-          printCli(`  • Mode Radical 1 (Blackout) : ${isMaint ? `🔴 ACTIF (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
-          printCli(`  • Mode Radical 2 (Anti-Fork) : 🟢 ACTIF (Domaines stricts autorisés)`);
-          printCli(`  • Mode Radical 3 (Panique Cyber) : ${isPanic ? `🟡 ACTIF (Fin: ${new Date(state.panicUntil).toLocaleTimeString()})` : "🟢 INACTIF"}`);
-          printCli(`  • Mode Radical 4 (Forteresse Juridique CCE) : ${isRad4 ? `🔵 ACTIF (Fin: ${new Date(state.radical4Until).toLocaleTimeString()})` : "🟢 INACTIF"}`);
-          printCli(`  • Mode Radical 5 (Bunker Air-Gap Protocole Alpha0) : ${isRad5 ? `🛡️ ACTIF (Fin: ${new Date(state.radical5Until).toLocaleTimeString()})` : "🟢 INACTIF"}`);
-          printCli(`  • Protection Anti-Capture Écran : ${state.blockScreenshots ? "🔴 ACTIVE (Flou + Nom)" : "🟢 INACTIVE"}`);
-          printCli(`  • Mode Sans JavaScript : ${state.disableSiteJS ? "🔴 ACTIF (No-Script)" : "🟢 INACTIF"}`);
-          printCli(`  • Visionnement PDF : ${state.disablePDF ? "🔴 DÉSACTIVÉ" : "🟢 AUTORISÉ"}`);
+          printCli(`  • Mode Radical 1 (Blackout) : ${isMaint ? `[OFF] ACTIF (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()})` : "[ON] INACTIF"}`);
+          printCli(`  • Mode Radical 2 (Anti-Fork) : [ON] ACTIF (Domaines stricts autorisés)`);
+          printCli(`  • Mode Radical 3 (Panique Cyber) : ${isPanic ? `[WARN] ACTIF (Fin: ${new Date(state.panicUntil).toLocaleTimeString()})` : "[ON] INACTIF"}`);
+          printCli(`  • Mode Radical 4 (Forteresse Juridique CCE) : ${isRad4 ? `[INFO] ACTIF (Fin: ${new Date(state.radical4Until).toLocaleTimeString()})` : "[ON] INACTIF"}`);
+          printCli(`  • Mode Radical 5 (Bunker Air-Gap Protocole Alpha0) : ${isRad5 ? `[SHIELD] ACTIF (Fin: ${new Date(state.radical5Until).toLocaleTimeString()})` : "[ON] INACTIF"}`);
+          printCli(`  • Protection Anti-Capture Écran : ${state.blockScreenshots ? "[OFF] ACTIVE (Flou + Nom)" : "[ON] INACTIVE"}`);
+          printCli(`  • Mode Sans JavaScript : ${state.disableSiteJS ? "[OFF] ACTIF (No-Script)" : "[ON] INACTIF"}`);
+          printCli(`  • Visionnement PDF : ${state.disablePDF ? "[OFF] DÉSACTIVÉ" : "[ON] AUTORISÉ"}`);
           printCli(`  • Commutateurs actifs (${activeSwitches.length}/${ALL_SWITCH_KEYS.length}) : ${activeSwitches.length > 0 ? activeSwitches.join(", ") : "Aucun (Site 100% normal)"}`);
           printCli(`  • Dernière mise à jour mondiale : ${state.updatedAt || "N/A"}`);
           break;
@@ -1897,12 +1897,12 @@
             state.radical4Until = Date.now() + (mins * 60000);
             state.radical4Message = customMsg;
             await saveAndSyncSiteState(state);
-            printCli(`⚖️ MODE RADICAL 4 (Forteresse Juridique & Confinement CCE) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical4Until).toLocaleTimeString()}).`, "#38bdf8");
+            printCli(`[LEGAL] MODE RADICAL 4 (Forteresse Juridique & Confinement CCE) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical4Until).toLocaleTimeString()}).`, "#38bdf8");
             if (customMsg) printCli(`  • Communiqué juridique officiel : "${customMsg}"`, "#facc15");
           } else if (action === "off") {
             const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Mode Radical 4 (Confinement Juridique)");
             if (!isAuthorized) {
-              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
               break;
             }
             const state = getSiteState();
@@ -1910,9 +1910,9 @@
             state.radical4Until = 0;
             state.radical4Message = "";
             await saveAndSyncSiteState(state);
-            printCli("✅ Mode Radical 4 désactivé. Rétablissement des fonctions normales.", "#4ade80");
+            printCli("[OK] Mode Radical 4 désactivé. Rétablissement des fonctions normales.", "#4ade80");
           } else {
-            printCli("❌ Usage : radical4 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
+            printCli("[ERR] Usage : radical4 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
           }
           break;
         }
@@ -1929,12 +1929,12 @@
             state.radical5Until = Date.now() + (mins * 60000);
             state.radical5Message = customMsg;
             await saveAndSyncSiteState(state);
-            printCli(`🛡️ MODE RADICAL 5 (Bunker Cybernétique & Isolation Air-Gap) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical5Until).toLocaleTimeString()}).`, "#06b6d4");
+            printCli(`[SHIELD] MODE RADICAL 5 (Bunker Cybernétique & Isolation Air-Gap) déclenché pour ${mins} minutes (Fin: ${new Date(state.radical5Until).toLocaleTimeString()}).`, "#06b6d4");
             if (customMsg) printCli(`  • Directive d'isolation : "${customMsg}"`, "#22d3ee");
           } else if (action === "off") {
             const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Mode Radical 5 (Bunker Air-Gap)");
             if (!isAuthorized) {
-              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
               break;
             }
             const state = getSiteState();
@@ -1942,9 +1942,9 @@
             state.radical5Until = 0;
             state.radical5Message = "";
             await saveAndSyncSiteState(state);
-            printCli("✅ Mode Radical 5 désactivé. Sortie du Bunker Air-Gap et rétablissement des fonctions.", "#4ade80");
+            printCli("[OK] Mode Radical 5 désactivé. Sortie du Bunker Air-Gap et rétablissement des fonctions.", "#4ade80");
           } else {
-            printCli("❌ Usage : radical5 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
+            printCli("[ERR] Usage : radical5 <on|off> [durée_en_minutes] [message_optionnel]", "#ef4444");
           }
           break;
         }
@@ -1952,19 +1952,19 @@
         case "toxic": {
           const action = (args[0] || "").toLowerCase();
           if (action === "on") {
-            const title = args[1] ? args.slice(1).join(" ") : "⚠️ ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE";
+            const title = args[1] ? args.slice(1).join(" ") : "[WARN] ALERTE CONTAMINATION TOXIQUE DÉTECTÉE — BLAINVILLE";
             const state = getSiteState();
             state.toxicAlertActive = true;
             state.toxicAlertTitle = title;
             await saveAndSyncSiteState(state);
-            printCli(`☣️ ALERTE TOXIQUE ACTIVÉE : "${title}"`, "#facc15");
+            printCli(`[TOXIC] ALERTE TOXIQUE ACTIVÉE : "${title}"`, "#facc15");
           } else if (action === "off") {
             const state = getSiteState();
             state.toxicAlertActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Bannière d'alerte toxique désactivée.", "#4ade80");
+            printCli("[OK] Bannière d'alerte toxique désactivée.", "#4ade80");
           } else {
-            printCli("❌ Usage : toxic <on|off> [titre_optionnel]", "#ef4444");
+            printCli("[ERR] Usage : toxic <on|off> [titre_optionnel]", "#ef4444");
           }
           break;
         }
@@ -1975,14 +1975,14 @@
             const state = getSiteState();
             state.cceVaultActive = true;
             await saveAndSyncSiteState(state);
-            printCli("🏛️ Mode Chambre Probatoire CCE SEM-26-003 activé sur tout le site.", "#22c55e");
+            printCli("[CCE] Mode Chambre Probatoire CCE SEM-26-003 activé sur tout le site.", "#22c55e");
           } else if (action === "off") {
             const state = getSiteState();
             state.cceVaultActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Mode Chambre Probatoire CCE désactivé.", "#4ade80");
+            printCli("[OK] Mode Chambre Probatoire CCE désactivé.", "#4ade80");
           } else {
-            printCli("🏛️ Dossier CCE : SEM-26-003 (ACEUM Chapitre 24). Tapez `cce-vault on` pour activer la chambre probatoire.", "#38bdf8");
+            printCli("[CCE] Dossier CCE : SEM-26-003 (ACEUM Chapitre 24). Tapez `cce-vault on` pour activer la chambre probatoire.", "#38bdf8");
           }
           break;
         }
@@ -1996,19 +1996,19 @@
             if (args[1]) state.legalNoticeImage = args[1];
             if (args[2]) state.legalNoticeTitle = args.slice(2).join(" ");
             await saveAndSyncSiteState(state);
-            printCli("🚨 Mode Riposte Mise en Demeure & Dénonciation IA activé !", "#f43f5e");
+            printCli("[ALERT] Mode Riposte Mise en Demeure & Dénonciation IA activé !", "#f43f5e");
           } else if (action === "off") {
             const isAuthorized = await verifyAdminPasswordPrompt("la désactivation de la Riposte Mise en Demeure");
             if (!isAuthorized) {
-              printCli("❌ Action refusée : mot de passe incorrect.", "#ef4444");
+              printCli("[ERR] Action refusée : mot de passe incorrect.", "#ef4444");
               break;
             }
             const state = getSiteState();
             state.legalNoticeActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Mode Riposte désactivé.", "#4ade80");
+            printCli("[OK] Mode Riposte désactivé.", "#4ade80");
           } else {
-            printCli("❌ Usage : legal-notice <on|off> [url_photo] [titre]", "#ef4444");
+            printCli("[ERR] Usage : legal-notice <on|off> [url_photo] [titre]", "#ef4444");
           }
           break;
         }
@@ -2021,14 +2021,14 @@
             state.evacuateActive = true;
             state.evacuateUrl = url;
             await saveAndSyncSiteState(state);
-            printCli(`🚨 Évacuation numérique activée vers : ${url}`, "#38bdf8");
+            printCli(`[ALERT] Évacuation numérique activée vers : ${url}`, "#38bdf8");
           } else if (action === "off") {
             const state = getSiteState();
             state.evacuateActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Évacuation numérique désactivée.", "#4ade80");
+            printCli("[OK] Évacuation numérique désactivée.", "#4ade80");
           } else {
-            printCli("❌ Usage : evacuate <on|off> [url_de_secours]", "#ef4444");
+            printCli("[ERR] Usage : evacuate <on|off> [url_de_secours]", "#ef4444");
           }
           break;
         }
@@ -2039,11 +2039,11 @@
           if (action === "on" || (!args[0] && !state.ghostModeActive)) {
             state.ghostModeActive = true;
             await saveAndSyncSiteState(state);
-            printCli("👻 Ghost Mode 503 activé (Faux serveur hors-ligne affiché aux visiteurs).", "#9ca3af");
+            printCli("[GHOST] Ghost Mode 503 activé (Faux serveur hors-ligne affiché aux visiteurs).", "#9ca3af");
           } else {
             state.ghostModeActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Ghost Mode désactivé.", "#4ade80");
+            printCli("[OK] Ghost Mode désactivé.", "#4ade80");
           }
           break;
         }
@@ -2053,7 +2053,7 @@
           const state = getSiteState();
           state.killDevTools = action === "on" || (!args[0] && !state.killDevTools);
           await saveAndSyncSiteState(state);
-          printCli(`⚡ Anti-Inspection Agressif (Kill-DevTools) : ${state.killDevTools ? "🔴 ON" : "🟢 OFF"}`, state.killDevTools ? "#ef4444" : "#4ade80");
+          printCli(`[SYS] Anti-Inspection Agressif (Kill-DevTools) : ${state.killDevTools ? "[OFF] ON" : "[ON] OFF"}`, state.killDevTools ? "#ef4444" : "#4ade80");
           break;
         }
 
@@ -2064,13 +2064,13 @@
             state.watermarkActive = true;
             if (args[1]) state.watermarkText = args.slice(1).join(" ");
             await saveAndSyncSiteState(state);
-            printCli(`🕵️‍♂️ Filigrane Forensic Dynamique activé : "${state.watermarkText}"`, "#a855f7");
+            printCli(`[FORENSIC] Filigrane Forensic Dynamique activé : "${state.watermarkText}"`, "#a855f7");
           } else if (action === "off") {
             state.watermarkActive = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Filigrane Forensic désactivé.", "#4ade80");
+            printCli("[OK] Filigrane Forensic désactivé.", "#4ade80");
           } else {
-            printCli("❌ Usage : watermark <on|off> [texte_personnalisé]", "#ef4444");
+            printCli("[ERR] Usage : watermark <on|off> [texte_personnalisé]", "#ef4444");
           }
           break;
         }
@@ -2090,7 +2090,7 @@
           const state = getSiteState();
           state.geoShieldActive = action === "on" || (!args[0] && !state.geoShieldActive);
           await saveAndSyncSiteState(state);
-          printCli(`🍁 Verrouillage Géographique (Geo-Shield Canada/QC) : ${state.geoShieldActive ? "🔴 ON" : "🟢 OFF"}`, state.geoShieldActive ? "#22c55e" : "#9ca3af");
+          printCli(`[GEO] Verrouillage Géographique (Geo-Shield Canada/QC) : ${state.geoShieldActive ? "[OFF] ON" : "[ON] OFF"}`, state.geoShieldActive ? "#22c55e" : "#9ca3af");
           break;
         }
 
@@ -2099,16 +2099,16 @@
           const state = getSiteState();
           state.ipfsRelayActive = action === "on" || (!args[0] && !state.ipfsRelayActive);
           await saveAndSyncSiteState(state);
-          printCli(`🛰️ Relais Miroir P2P / IPFS : ${state.ipfsRelayActive ? "🟢 ON" : "⚪ OFF"}`, "#38bdf8");
+          printCli(`[IPFS] Relais Miroir P2P / IPFS : ${state.ipfsRelayActive ? "[ON] ON" : "[OFF] OFF"}`, "#38bdf8");
           break;
         }
 
         case "switches": {
           const state = getSiteState();
-          printCli("🎛️ MATRICE DES 30 COMMUTATEURS DE SÉCURITÉ :", "#a78bfa");
+          printCli("[SWITCHES] MATRICE DES 30 COMMUTATEURS DE SÉCURITÉ :", "#a78bfa");
           ALL_SWITCH_KEYS.forEach((key, idx) => {
             const isSet = !!state[key];
-            const tag = isSet ? "[🟢 ON / ACTIF]" : "[⚪ OFF / INACTIF]";
+            const tag = isSet ? "[[ON] ON / ACTIF]" : "[[OFF] OFF / INACTIF]";
             const color = isSet ? "#4ade80" : "#9ca3af";
             printCli(`  ${String(idx + 1).padStart(2, "0")}. ${key.padEnd(24, " ")} : ${tag}`, color);
           });
@@ -2117,14 +2117,14 @@
 
         case "switch": {
           if (args.length < 2) {
-            printCli("❌ Usage : switch <nom_du_switch> <on|off|toggle>", "#ef4444");
+            printCli("[ERR] Usage : switch <nom_du_switch> <on|off|toggle>", "#ef4444");
             printCli("Exemple : switch disableAI on", "#9bb0a2");
             break;
           }
           const swName = args[0];
           const swVal = args[1].toLowerCase();
           if (!ALL_SWITCH_KEYS.includes(swName)) {
-            printCli(`❌ Commutateur inconnu : "${swName}". Tapez "switches" pour voir la liste valide.`, "#ef4444");
+            printCli(`[ERR] Commutateur inconnu : "${swName}". Tapez "switches" pour voir la liste valide.`, "#ef4444");
             break;
           }
           const state = getSiteState();
@@ -2135,12 +2135,12 @@
           } else if (swVal === "toggle") {
             state[swName] = !state[swName];
           } else {
-            printCli("❌ Valeur invalide. Utilisez 'on', 'off' ou 'toggle'.", "#ef4444");
+            printCli("[ERR] Valeur invalide. Utilisez 'on', 'off' ou 'toggle'.", "#ef4444");
             break;
           }
-          printCli(`⏳ Application et publication mondiale de ${swName} = ${state[swName]}...`, "#facc15");
+          printCli(`[...] Application et publication mondiale de ${swName} = ${state[swName]}...`, "#facc15");
           await saveAndSyncSiteState(state);
-          printCli(`✅ Commutateur ${swName} est maintenant [${state[swName] ? "ON / ACTIF" : "OFF / INACTIF"}]. Synchronisé sur GitHub et en direct.`, "#4ade80");
+          printCli(`[OK] Commutateur ${swName} est maintenant [${state[swName] ? "ON / ACTIF" : "OFF / INACTIF"}]. Synchronisé sur GitHub et en direct.`, "#4ade80");
           break;
         }
 
@@ -2152,7 +2152,7 @@
           else if (val === "off") state.blockScreenshots = false;
           else state.blockScreenshots = !state.blockScreenshots;
           await saveAndSyncSiteState(state);
-          printCli(`🔒 Protection Anti-Capture d'Écran : [${state.blockScreenshots ? "ACTIVÉE (Flou total + William Guindon)" : "DÉSACTIVÉE (Affichage normal)"}]`, "#4ade80");
+          printCli(`[LOCKED] Protection Anti-Capture d'Écran : [${state.blockScreenshots ? "ACTIVÉE (Flou total + William Guindon)" : "DÉSACTIVÉE (Affichage normal)"}]`, "#4ade80");
           break;
         }
 
@@ -2163,7 +2163,7 @@
           else if (val === "off") state.disableSiteJS = false;
           else state.disableSiteJS = !state.disableSiteJS;
           await saveAndSyncSiteState(state);
-          printCli(`⚙️ Mode Statique Sans JavaScript : [${state.disableSiteJS ? "ACTIVÉ" : "DÉSACTIVÉ"}]`, "#4ade80");
+          printCli(`[CONFIG] Mode Statique Sans JavaScript : [${state.disableSiteJS ? "ACTIVÉ" : "DÉSACTIVÉ"}]`, "#4ade80");
           break;
         }
 
@@ -2174,7 +2174,7 @@
           else if (val === "off") state.disablePDF = false;
           else state.disablePDF = !state.disablePDF;
           await saveAndSyncSiteState(state);
-          printCli(`📄 Visionnement & Téléchargement PDF : [${state.disablePDF ? "BLOQUÉ" : "AUTORISÉ"}]`, "#4ade80");
+          printCli(`[FILE] Visionnement & Téléchargement PDF : [${state.disablePDF ? "BLOQUÉ" : "AUTORISÉ"}]`, "#4ade80");
           break;
         }
 
@@ -2186,20 +2186,20 @@
             state.maintenanceActive = true;
             state.maintenanceUntil = Date.now() + (mins * 60000);
             await saveAndSyncSiteState(state);
-            printCli(`🚨 Blackout / Maintenance activé pour ${mins} minutes (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()}).`, "#ef4444");
+            printCli(`[ALERT] Blackout / Maintenance activé pour ${mins} minutes (Fin: ${new Date(state.maintenanceUntil).toLocaleTimeString()}).`, "#ef4444");
           } else if (action === "off") {
             const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Blackout");
             if (!isAuthorized) {
-              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
               break;
             }
             const state = getSiteState();
             state.maintenanceActive = false;
             state.maintenanceUntil = 0;
             await saveAndSyncSiteState(state);
-            printCli("✅ Blackout désactivé. Le site est de nouveau accessible normalement.", "#4ade80");
+            printCli("[OK] Blackout désactivé. Le site est de nouveau accessible normalement.", "#4ade80");
           } else {
-            printCli("❌ Usage : blackout <on|off> [durée_en_minutes]", "#ef4444");
+            printCli("[ERR] Usage : blackout <on|off> [durée_en_minutes]", "#ef4444");
           }
           break;
         }
@@ -2214,11 +2214,11 @@
             state.panicUntil = Date.now() + (mins * 60000);
             state.panicTextOnly = textOnly;
             await saveAndSyncSiteState(state);
-            printCli(`⚠️ Mode Panique Cyber-Attaque déclenché pour ${mins} minutes (Texte pur: ${textOnly ? "OUI" : "NON"}).`, "#eab308");
+            printCli(`[WARN] Mode Panique Cyber-Attaque déclenché pour ${mins} minutes (Texte pur: ${textOnly ? "OUI" : "NON"}).`, "#eab308");
           } else if (action === "off") {
             const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Mode Panique");
             if (!isAuthorized) {
-              printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
               break;
             }
             const state = getSiteState();
@@ -2226,9 +2226,9 @@
             state.panicUntil = 0;
             state.panicTextOnly = false;
             await saveAndSyncSiteState(state);
-            printCli("✅ Mode Panique désactivé. Rétablissement des fonctions normales.", "#4ade80");
+            printCli("[OK] Mode Panique désactivé. Rétablissement des fonctions normales.", "#4ade80");
           } else {
-            printCli("❌ Usage : panic <on|off> [durée_en_minutes] [--txt]", "#ef4444");
+            printCli("[ERR] Usage : panic <on|off> [durée_en_minutes] [--txt]", "#ef4444");
           }
           break;
         }
@@ -2237,7 +2237,7 @@
         case "reset": {
           const isAuthorized = await verifyAdminPasswordPrompt("la réinitialisation complète des sécurités");
           if (!isAuthorized) {
-            printCli("❌ Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+            printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
             break;
           }
           const state = getSiteState();
@@ -2254,47 +2254,47 @@
           state.radical5Message = "";
           ALL_SWITCH_KEYS.forEach(k => { state[k] = false; });
           await saveAndSyncSiteState(state);
-          printCli("✅ Réinitialisation terminée : Tous les modes (1 à 5) et commutateurs sont rétablis à l'état normal.", "#4ade80");
+          printCli("[OK] Réinitialisation terminée : Tous les modes (1 à 5) et commutateurs sont rétablis à l'état normal.", "#4ade80");
           break;
         }
 
         case "ls": {
           const path = args[0] || "";
-          printCli(`📂 Lecture du répertoire GitHub "${path || '/'}"...`, "#9bb0a2");
+          printCli(`[DIR] Lecture du répertoire GitHub "${path || '/'}"...`, "#9bb0a2");
           const headers = { "Accept": "application/vnd.github.v3+json" };
           if (token) headers["Authorization"] = "Bearer " + token;
           const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${path}?ref=main&_t=${Date.now()}`, { headers });
           if (!res.ok) {
-            printCli(`❌ Impossible de lister le chemin "${path}" (${res.status})`, "#ef4444");
+            printCli(`[ERR] Impossible de lister le chemin "${path}" (${res.status})`, "#ef4444");
             break;
           }
           const data = await res.json();
           if (Array.isArray(data)) {
             printCli(`Total : ${data.length} éléments dans ${path || '/'} :`, "#38bdf8");
             data.forEach(item => {
-              const icon = item.type === "dir" ? "📁" : "📄";
+              const icon = item.type === "dir" ? "[DIR]" : "[FILE]";
               const size = item.size ? `(${Math.round(item.size / 1024)} KB)` : "";
               printCli(`  ${icon} ${item.name.padEnd(30, " ")} ${size}`);
             });
           } else if (data && data.name) {
-            printCli(`📄 ${data.name} (${Math.round(data.size / 1024)} KB) - SHA: ${data.sha.substring(0, 7)}`);
+            printCli(`[FILE] ${data.name} (${Math.round(data.size / 1024)} KB) - SHA: ${data.sha.substring(0, 7)}`);
           }
           break;
         }
 
         case "cat": {
           if (!args[0]) {
-            printCli("❌ Usage : cat <chemin_du_fichier>", "#ef4444");
+            printCli("[ERR] Usage : cat <chemin_du_fichier>", "#ef4444");
             printCli("Exemple : cat data/site-state.json", "#9bb0a2");
             break;
           }
           const filePath = args[0];
-          printCli(`📖 Lecture de "${filePath}" sur GitHub...`, "#9bb0a2");
+          printCli(`[READ] Lecture de "${filePath}" sur GitHub...`, "#9bb0a2");
           const headers = { "Accept": "application/vnd.github.v3+json" };
           if (token) headers["Authorization"] = "Bearer " + token;
           const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${filePath}?ref=main&_t=${Date.now()}`, { headers });
           if (!res.ok) {
-            printCli(`❌ Fichier introuvable ou erreur de lecture (${res.status}) : ${filePath}`, "#ef4444");
+            printCli(`[ERR] Fichier introuvable ou erreur de lecture (${res.status}) : ${filePath}`, "#ef4444");
             break;
           }
           const fileData = await res.json();
@@ -2308,25 +2308,25 @@
             printCli(decoded, "#e6edf3");
             printCli(`--- FIN DU FICHIER ---`, "#facc15");
           } else {
-            printCli("❌ Ce chemin est un dossier ou ne contient aucun texte.", "#ef4444");
+            printCli("[ERR] Ce chemin est un dossier ou ne contient aucun texte.", "#ef4444");
           }
           break;
         }
 
         case "write": {
           if (args.length < 2) {
-            printCli("❌ Usage : write <chemin_fichier> <contenu_texte>", "#ef4444");
+            printCli("[ERR] Usage : write <chemin_fichier> <contenu_texte>", "#ef4444");
             printCli('Exemple : write note.txt "Ceci est une note"', "#9bb0a2");
             break;
           }
           if (!token) {
-            printCli("❌ Clé GitHub requise pour modifier des fichiers.", "#ef4444");
+            printCli("[ERR] Clé GitHub requise pour modifier des fichiers.", "#ef4444");
             break;
           }
           const writePath = args[0];
           const writeContent = args.slice(1).join(" ").replace(/^["']|["']$/g, '');
           
-          printCli(`💾 Publication de "${writePath}" sur GitHub...`, "#facc15");
+          printCli(`[SAVE] Publication de "${writePath}" sur GitHub...`, "#facc15");
           // Récupération du sha existant si le fichier existe
           const getRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${writePath}?ref=main&_t=${Date.now()}`, {
             headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.v3+json" }
@@ -2355,10 +2355,10 @@
           if (putRes.ok) {
             const putData = await putRes.json();
             const commitSha = putData?.commit?.sha ? putData.commit.sha.substring(0, 7) : "OK";
-            printCli(`✅ Fichier "${writePath}" enregistré et déployé avec succès ! (Commit: ${commitSha})`, "#4ade80");
+            printCli(`[OK] Fichier "${writePath}" enregistré et déployé avec succès ! (Commit: ${commitSha})`, "#4ade80");
           } else {
             const errData = await putRes.json().catch(() => ({}));
-            printCli(`❌ Erreur GitHub (${putRes.status}) : ${errData.message || 'Erreur'}`, "#ef4444");
+            printCli(`[ERR] Erreur GitHub (${putRes.status}) : ${errData.message || 'Erreur'}`, "#ef4444");
           }
           break;
         }
@@ -2366,15 +2366,15 @@
         case "rm":
         case "delete": {
           if (!args[0]) {
-            printCli("❌ Usage : rm <chemin_fichier>", "#ef4444");
+            printCli("[ERR] Usage : rm <chemin_fichier>", "#ef4444");
             break;
           }
           if (!token) {
-            printCli("❌ Clé GitHub requise.", "#ef4444");
+            printCli("[ERR] Clé GitHub requise.", "#ef4444");
             break;
           }
           const delPath = args[0];
-          const confirmDel = confirm(`⚠️ Confirmez-vous la suppression définitive du fichier "${delPath}" sur GitHub ?`);
+          const confirmDel = confirm(`[WARN] Confirmez-vous la suppression définitive du fichier "${delPath}" sur GitHub ?`);
           if (!confirmDel) {
             printCli("Suppression annulée.", "#9ca3af");
             break;
@@ -2383,7 +2383,7 @@
             headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github.v3+json" }
           });
           if (!getRes.ok) {
-            printCli(`❌ Fichier introuvable sur GitHub : ${delPath}`, "#ef4444");
+            printCli(`[ERR] Fichier introuvable sur GitHub : ${delPath}`, "#ef4444");
             break;
           }
           const existingData = await getRes.json();
@@ -2400,9 +2400,9 @@
             })
           });
           if (delRes.ok) {
-            printCli(`✅ Fichier "${delPath}" supprimé avec succès sur GitHub.`, "#4ade80");
+            printCli(`[OK] Fichier "${delPath}" supprimé avec succès sur GitHub.`, "#4ade80");
           } else {
-            printCli(`❌ Échec de la suppression (${delRes.status}).`, "#ef4444");
+            printCli(`[ERR] Échec de la suppression (${delRes.status}).`, "#ef4444");
           }
           break;
         }
@@ -2410,7 +2410,7 @@
         case "git": {
           const sub = (args[0] || "").toLowerCase();
           if (sub === "status") {
-            printCli(`🔍 Statut Git du dépôt ${GITHUB_REPO} :`, "#38bdf8");
+            printCli(`[SEARCH] Statut Git du dépôt ${GITHUB_REPO} :`, "#38bdf8");
             const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/commits/main`, {
               headers: token ? { "Authorization": "Bearer " + token } : {}
             });
@@ -2421,11 +2421,11 @@
               printCli(`  • Auteur : ${commit.commit.author.name} (${new Date(commit.commit.author.date).toLocaleString()})`);
               printCli(`  • Déploiement : Synchrone sans délai`);
             } else {
-              printCli("❌ Impossible de joindre l'API GitHub.", "#ef4444");
+              printCli("[ERR] Impossible de joindre l'API GitHub.", "#ef4444");
             }
           } else if (sub === "log") {
             const count = parseInt(args[1]) || 5;
-            printCli(`📜 Historique des ${count} derniers commits :`, "#38bdf8");
+            printCli(`[LOG] Historique des ${count} derniers commits :`, "#38bdf8");
             const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/commits?per_page=${count}`, {
               headers: token ? { "Authorization": "Bearer " + token } : {}
             });
@@ -2438,7 +2438,7 @@
                 printCli(`  • [${sha}] ${date} — ${msg}`, "#d1d5db");
               });
             } else {
-              printCli("❌ Erreur lors de la récupération du journal Git.", "#ef4444");
+              printCli("[ERR] Erreur lors de la récupération du journal Git.", "#ef4444");
             }
           } else {
             printCli("Usage : git <status|log>", "#ef4444");
@@ -2448,7 +2448,7 @@
 
         case "broadcast": {
           if (!args[0]) {
-            printCli("❌ Usage : broadcast <votre_message_alerte>", "#ef4444");
+            printCli("[ERR] Usage : broadcast <votre_message_alerte>", "#ef4444");
             break;
           }
           const msg = args.join(" ");
@@ -2457,26 +2457,26 @@
               new BroadcastChannel('wg_site_state_sync').postMessage({ broadcastMessage: msg, timestamp: Date.now() });
             } catch (_) {}
           }
-          printCli(`📢 Message diffusé en direct à tous les visiteurs connectés : "${msg}"`, "#4ade80");
+          printCli(`[BROADCAST] Message diffusé en direct à tous les visiteurs connectés : "${msg}"`, "#4ade80");
           break;
         }
 
         case "audit":
         case "security-audit": {
-          printCli("🛡️ AUDIT DE SÉCURITÉ DU SITE EN COURS...", "#facc15");
-          printCli("  ✔ [1/6] Vérification Anti-Fork : williamguindon.me & bwillou1.github.io autorisés.", "#4ade80");
-          printCli("  ✔ [2/6] Vérification CSP : connect-src autorise api.github.com et raw.githubusercontent.com.", "#4ade80");
-          printCli("  ✔ [3/6] Chiffrement & Hachage : SHA-256 WebCrypto natif actif.", "#4ade80");
-          printCli("  ✔ [4/6] Protection Force Brute : Verrouillage adaptatif actif.", "#4ade80");
-          printCli("  ✔ [5/6] Secret Leaks : Aucun secret ou mot de passe en clair dans le code.", "#4ade80");
-          printCli("  ✔ [6/6] Synchronisation : 0 ms de délai avec synchronisation d'état atomique.", "#4ade80");
-          printCli("🎉 SCORE DE SÉCURITÉ : 100/100 (Système durci et opérationnel)", "#4ade80");
+          printCli("[SHIELD] AUDIT DE SÉCURITÉ DU SITE EN COURS...", "#facc15");
+          printCli("  [OK] [1/6] Vérification Anti-Fork : williamguindon.me & bwillou1.github.io autorisés.", "#4ade80");
+          printCli("  [OK] [2/6] Vérification CSP : connect-src autorise api.github.com et raw.githubusercontent.com.", "#4ade80");
+          printCli("  [OK] [3/6] Chiffrement & Hachage : SHA-256 WebCrypto natif actif.", "#4ade80");
+          printCli("  [OK] [4/6] Protection Force Brute : Verrouillage adaptatif actif.", "#4ade80");
+          printCli("  [OK] [5/6] Secret Leaks : Aucun secret ou mot de passe en clair dans le code.", "#4ade80");
+          printCli("  [OK] [6/6] Synchronisation : 0 ms de délai avec synchronisation d'état atomique.", "#4ade80");
+          printCli("[OK] SCORE DE SÉCURITÉ : 100/100 (Système durci et opérationnel)", "#4ade80");
           break;
         }
 
         case "cce":
         case "cce-status": {
-          printCli("📋 DOSSIER OFFICIEL CCE SEM-26-003 :", "#38bdf8");
+          printCli("[CCE] DOSSIER OFFICIEL CCE SEM-26-003 :", "#38bdf8");
           printCli("  • Titre : Élimination des déchets dangereux à Blainville (Stablex)");
           printCli("  • Numéro de registre : SEM-26-003 (Article 24.27 de l'ACEUM)");
           printCli("  • Soumettant : William Guindon");
@@ -2492,7 +2492,7 @@
             state.forceDarkMode = (t === "dark");
             state.forceLightMode = (t === "light");
             await saveAndSyncSiteState(state);
-            printCli(`🎨 Thème global forcé : [${t.toUpperCase()}]`, "#4ade80");
+            printCli(`[THEME] Thème global forcé : [${t.toUpperCase()}]`, "#4ade80");
           } else {
             printCli("Usage : theme <dark|light>", "#ef4444");
           }
@@ -2501,7 +2501,7 @@
 
         case "whoami": {
           const vId = await getVisitorId();
-          printCli("👤 IDENTITÉ DE SESSION ACTIVE :", "#38bdf8");
+          printCli("[USER] IDENTITÉ DE SESSION ACTIVE :", "#38bdf8");
           printCli(`  • Utilisateur authentifié : @Bwillou1 (Administrateur titulaire)`);
           printCli(`  • Empreinte matérielle : ${vId}`);
           printCli(`  • Navigateur : ${navigator.userAgent.substring(0, 60)}...`);
@@ -2512,7 +2512,7 @@
         case "exec": {
           const jsCode = args.join(" ");
           if (!jsCode) {
-            printCli("❌ Usage : exec <code_javascript>", "#ef4444");
+            printCli("[ERR] Usage : exec <code_javascript>", "#ef4444");
             break;
           }
           const result = eval(jsCode);
@@ -2521,13 +2521,13 @@
         }
 
         case "date": {
-          printCli(`📅 Date locale : ${new Date().toLocaleString()}`, "#38bdf8");
-          printCli(`⏱️ Date UTC : ${new Date().toISOString()}`, "#38bdf8");
+          printCli(`[DATE] Date locale : ${new Date().toLocaleString()}`, "#38bdf8");
+          printCli(`[TIME] Date UTC : ${new Date().toISOString()}`, "#38bdf8");
           break;
         }
 
         case "history": {
-          printCli("📜 HISTORIQUE DES COMMANDES :", "#38bdf8");
+          printCli("[LOG] HISTORIQUE DES COMMANDES :", "#38bdf8");
           cliHistory.forEach((h, i) => {
             printCli(`  ${i + 1}. ${h}`);
           });
@@ -2540,11 +2540,11 @@
           break;
 
         default:
-          printCli(`❌ Commande inconnue : "${cmd}". Tapez "help" ou "?" pour voir la liste des commandes.`, "#ef4444");
+          printCli(`[ERR] Commande inconnue : "${cmd}". Tapez "help" ou "?" pour voir la liste des commandes.`, "#ef4444");
           break;
       }
     } catch (err) {
-      printCli(`❌ Erreur d'exécution : ${err.message}`, "#ef4444");
+      printCli(`[ERR] Erreur d'exécution : ${err.message}`, "#ef4444");
     }
 
     focusCliInput();

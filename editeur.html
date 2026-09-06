@@ -419,7 +419,7 @@
 <!-- ÉCRAN DE VERROUILLAGE TOTAL : Bloque toute visualisation et modification -->
 <div class="editor-lock-screen" id="editor-lock-screen">
   <div class="lock-card">
-    <div class="lock-icon-wrap" id="lock-icon">🔒</div>
+    <div class="lock-icon-wrap" id="lock-icon" style="display:flex;align-items:center;justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:currentColor;fill:none;stroke-width:2;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
     <h1 class="lock-title">Studio Éditeur Visuel</h1>
     <p class="lock-subtitle">
       La visualisation et l'édition en direct sont <strong>strictement verrouillées</strong>.<br>
@@ -429,22 +429,22 @@
     <!-- Formulaire d'authentification complète -->
     <form id="lock-auth-form" onsubmit="handleLockAuthSubmit(event)">
       <div class="lock-field-group">
-        <label class="lock-label" for="lock-pass-input">🔑 1. Code d'accès administrateur :</label>
+        <label class="lock-label" for="lock-pass-input">1. Code d'accès administrateur :</label>
         <input type="password" id="lock-pass-input" class="lock-input" placeholder="Mot de passe admin" autocomplete="current-password" required>
       </div>
 
       <div class="lock-field-group">
-        <label class="lock-label" for="lock-token-input">🐙 2. Clé d'authentification GitHub (PAT) :</label>
+        <label class="lock-label" for="lock-token-input">2. Clé d'authentification GitHub (PAT) :</label>
         <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
       </div>
 
-      <button type="submit" class="btn btn-save lock-btn-submit" id="btn-lock-submit">
-        🔓 Déverrouiller l'Éditeur Visuel
+      <button type="submit" class="btn btn-save lock-btn-submit" id="btn-lock-submit" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg><span id="btn-lock-submit-txt">Déverrouiller l'Éditeur Visuel</span>
       </button>
 
       <div id="lock-passkey-container" style="display:none; margin-top:12px;">
-        <button type="button" class="btn" style="width:100%; justify-content:center; padding:10px; background:rgba(34,197,94,0.1); border-color:var(--accent); color:var(--accent);" onclick="unlockWithPasskey()">
-          👆 Déverrouiller avec Touch ID / Face ID
+        <button type="button" class="btn" style="width:100%; justify-content:center; padding:10px; background:rgba(34,197,94,0.1); border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:8px;" onclick="unlockWithPasskey()">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
         </button>
       </div>
 
@@ -469,17 +469,17 @@
 
   <div class="topbar-center">
     <div class="device-switcher">
-      <button class="device-btn active" data-mode="desktop" onclick="setDeviceMode('desktop')">🖥️ PC</button>
-      <button class="device-btn" data-mode="tablet" onclick="setDeviceMode('tablet')">📱 Tablette</button>
-      <button class="device-btn" data-mode="mobile" onclick="setDeviceMode('mobile')">📱 Mobile</button>
+      <button class="device-btn active" data-mode="desktop" onclick="setDeviceMode('desktop')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>PC</button>
+      <button class="device-btn" data-mode="tablet" onclick="setDeviceMode('tablet')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Tablette</button>
+      <button class="device-btn" data-mode="mobile" onclick="setDeviceMode('mobile')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Mobile</button>
     </div>
   </div>
 
   <div class="topbar-right">
     <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
-    <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe">✏️ Édition : Activée</button>
-    <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()">💾 Sauvegarder & Publier en direct</button>
-    <button class="btn btn-danger" onclick="lockStudio()" title="Verrouiller le studio et déconnecter">🔒 Verrouiller</button>
+    <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span id="btn-toggle-edit-txt">Édition : Activée</span></button>
+    <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span id="btn-save-txt">Sauvegarder & Publier en direct</span></button>
+    <button class="btn btn-danger" onclick="lockStudio()" title="Verrouiller le studio et déconnecter"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Verrouiller</button>
   </div>
 </header>
 
@@ -487,14 +487,14 @@
   <!-- Panneau latéral des sections -->
   <aside class="editor-sidebar">
     <div class="sidebar-header">
-      <span>📦 Sections de la page d'accueil</span>
+      <span><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>Sections de la page d'accueil</span>
       <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
     </div>
     <div class="section-list" id="sidebar-sections-list">
       <!-- Rempli dynamiquement -->
     </div>
     <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
-      💡 <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
+      <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
     </div>
   </aside>
 
@@ -577,18 +577,18 @@
     const tokenVal = (tokenInput.value || "").trim();
 
     if (!passVal) {
-      errBox.textContent = "❌ Veuillez entrer le code d'accès administrateur.";
+      errBox.textContent = "Veuillez entrer le code d'accès administrateur.";
       errBox.style.display = "block";
       return;
     }
     if (!tokenVal) {
-      errBox.textContent = "❌ Veuillez entrer votre clé GitHub (PAT).";
+      errBox.textContent = "Veuillez entrer votre clé GitHub (PAT).";
       errBox.style.display = "block";
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "⏳ Vérification du code & clé GitHub...";
+    submitBtn.textContent = "Vérification du code & clé GitHub...";
 
     try {
       // 1. Validation cryptographique SHA-256 du code admin
@@ -604,13 +604,13 @@
       localStorage.setItem("wg_github_pat", tokenVal);
       sessionStorage.setItem("wg_editor_auth", "true");
       unlockStudio();
-      showToast("🎉 Studio déverrouillé avec succès pour @Bwillou1 !");
+      showToast("Studio déverrouillé avec succès pour @Bwillou1 !");
     } catch (err) {
-      errBox.textContent = "❌ " + err.message;
+      errBox.textContent = err.message;
       errBox.style.display = "block";
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "🔓 Déverrouiller l'Éditeur Visuel";
+      submitBtn.textContent = "Déverrouiller l'Éditeur Visuel";
     }
   }
 
@@ -643,7 +643,7 @@
 
     const errBox = document.getElementById("lock-error-box");
     if (errBox) errBox.style.display = "none";
-    showToast("🔒 Studio verrouillé.");
+    showToast("Studio verrouillé.");
   }
 
   // Initialisation à l'ouverture de la page
@@ -744,8 +744,13 @@
   function toggleEditMode() {
     if (!isAuthenticated) return;
     isEditModeActive = !isEditModeActive;
+    const btnTxt = document.getElementById("btn-toggle-edit-txt");
     const btn = document.getElementById("btn-toggle-edit");
-    btn.textContent = isEditModeActive ? "✏️ Édition : Activée" : "👁️ Aperçu seul";
+    if (btnTxt) {
+      btnTxt.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
+    } else {
+      btn.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
+    }
     btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
 
     const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -791,7 +796,7 @@
       const btnVis = document.createElement("button");
       btnVis.className = "control-btn";
       btnVis.title = "Afficher/Masquer";
-      btnVis.textContent = "👁️";
+      btnVis.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
       btnVis.addEventListener("click", () => toggleSectionVisibility(sec.id));
 
       controlsDiv.append(btnUp, btnDown, btnVis);
@@ -842,8 +847,10 @@
     }
 
     const saveBtn = document.getElementById("btn-save-site");
+    const saveTxt = document.getElementById("btn-save-txt");
     saveBtn.disabled = true;
-    saveBtn.textContent = "⏳ Publication sur GitHub...";
+    if (saveTxt) saveTxt.textContent = "Publication sur GitHub...";
+    else saveBtn.textContent = "Publication sur GitHub...";
 
     try {
       const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -893,7 +900,7 @@
         throw new Error(err.message || "Échec de l'enregistrement");
       }
 
-      showToast("🎉 Félicitations ! Votre site est mis à jour et en ligne !");
+      showToast("Félicitations ! Votre site est mis à jour et en ligne !");
     } catch (err) {
       console.error(err);
       if (err.message && err.message.includes("401")) {
@@ -903,7 +910,8 @@
       showToast("Erreur : " + err.message, false);
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = "💾 Sauvegarder & Publier en direct";
+      if (saveTxt) saveTxt.textContent = "Sauvegarder & Publier en direct";
+      else saveBtn.textContent = "Sauvegarder & Publier en direct";
     }
   }
 </script>

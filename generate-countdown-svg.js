@@ -117,8 +117,9 @@ function generateCountdownSvg() {
   <!-- Total Minutes Callout Badge -->
   <g transform="translate(250, 445)">
     <rect width="700" height="52" rx="26" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
-    <text x="350" y="478" font-size="19" font-weight="700" fill="#6ee7b7" text-anchor="middle">
-      ⏳ <tspan fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes au total avant la réponse officielle
+    <path d="M30 18v6l4 4-4 4v6h16v-6l-4-4 4-4v-6H30z" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(80, -2)" />
+    <text x="365" y="478" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle">
+      <tspan fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes au total avant la réponse officielle
     </text>
   </g>
 
@@ -127,7 +128,7 @@ function generateCountdownSvg() {
     <line x1="110" y1="535" x2="1090" y2="535" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
     
     <text x="110" y="575" font-size="16" font-weight="600" fill="#e2e8f0">
-      🌱 Sauvegarde de la Grande Tourbière de Blainville (278 000 m²)
+      Sauvegarde de la Grande Tourbière de Blainville (278 000 m²)
     </text>
     <text x="110" y="600" font-size="14" font-weight="400" fill="#94a3b8">
       William Guindon — Premier mineur plaignant de l'histoire du registre CCE (Art. 24.27)

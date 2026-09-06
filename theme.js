@@ -34,38 +34,39 @@
 
         langDropdown.innerHTML = `
           <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
-            <span>🌐 <span id="current-lang-text">FR</span> ▾</span>
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span><span id="current-lang-text">FR</span> ▾</span>
           </button>
           <div class="nav-dropdown-menu" style="min-width: 185px;">
             <div class="nav-dropdown-group">
               <span class="nav-dropdown-group-title">Traduire / Translate</span>
               <div class="nav-dropdown-grid single-col">
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="fr" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇫🇷</span> <span>Français (Original)</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">FR</span> <span>Français (Original)</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="en" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇬🇧</span> <span>English</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">EN</span> <span>English</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="es" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇪🇸</span> <span>Español</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">ES</span> <span>Español</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="de" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇩🇪</span> <span>Deutsch</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">DE</span> <span>Deutsch</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="it" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇮🇹</span> <span>Italiano</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">IT</span> <span>Italiano</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="pt" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇵🇹</span> <span>Português</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">PT</span> <span>Português</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="zh-CN" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇨🇳</span> <span>中文</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">ZH</span> <span>中文</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="ja" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇯🇵</span> <span>日本語</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">JA</span> <span>日本語</span>
                 </button>
                 <button type="button" class="nav-dropdown-item lang-btn" data-lang="ar" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span>🇸🇦</span> <span>العربية</span>
+                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">AR</span> <span>العربية</span>
                 </button>
               </div>
             </div>
@@ -634,19 +635,19 @@
 
         floatingPlayer.innerHTML = `
           <button type="button" class="bio-player-btn-circle" id="bio-btn-rewind" aria-label="Reculer de 10 secondes" title="Reculer de 10s">
-            ↺ 10s
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
           </button>
           <button type="button" class="bio-player-btn-circle bio-player-btn-main" id="bio-btn-playpause" aria-label="Pause" title="Lecture / Pause">
-            <span id="bio-play-icon">⏸</span>
+            <span id="bio-play-icon"><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg></span>
           </button>
           <button type="button" class="bio-player-btn-circle" id="bio-btn-forward" aria-label="Avancer de 10 secondes" title="Avancer de 10s">
-            10s ↻
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
           </button>
           <div class="bio-player-info">
             <div class="bio-player-title"><span class="bio-player-live-dot"></span> Écoute audio en cours</div>
             <div class="bio-player-timer" id="bio-player-time">00:00 / 08:01</div>
           </div>
-          <button type="button" class="bio-player-close" id="bio-btn-close" aria-label="Fermer la lecture" title="Fermer">✕</button>
+          <button type="button" class="bio-player-close" id="bio-btn-close" aria-label="Fermer la lecture" title="Fermer"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         `;
 
         document.body.appendChild(floatingPlayer);
@@ -733,7 +734,7 @@
           const fp = ensureFloatingPlayer();
           fp.classList.add('visible');
           const icon = document.getElementById('bio-play-icon');
-          if (icon) icon.textContent = '⏸';
+          if (icon) icon.innerHTML = '<svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
           audioBtn.classList.add('playing');
           audioBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> <span>Pause / Arrêter</span>`;
           if (statusLabel) statusLabel.textContent = 'Lecture audio en cours...';
@@ -741,7 +742,7 @@
 
         bioAudio.addEventListener('pause', () => {
           const icon = document.getElementById('bio-play-icon');
-          if (icon) icon.textContent = '▶';
+          if (icon) icon.innerHTML = '<svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
           if (statusLabel) statusLabel.textContent = 'En pause';
         });
 
@@ -950,13 +951,14 @@
       if (!notifBtn) return;
       const isEnabled = localStorage.getItem(notifStorageKey) === 'true' && Notification.permission === 'granted';
       const lang = document.documentElement.lang || 'fr';
+      const bellSvg = '<svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
       
       if (isEnabled) {
         notifBtn.classList.add('active');
-        notifBtn.innerHTML = lang.startsWith('en') ? '🔔 Alerts Active' : (lang.startsWith('es') ? '🔔 Alertas Activas' : '🔔 Alertes CCE Activées');
+        notifBtn.innerHTML = `${bellSvg} ` + (lang.startsWith('en') ? 'Alerts Active' : (lang.startsWith('es') ? 'Alertas Activas' : 'Alertes CCE Activées'));
       } else {
         notifBtn.classList.remove('active');
-        notifBtn.innerHTML = lang.startsWith('en') ? '🔔 Enable CCE Alerts' : (lang.startsWith('es') ? '🔔 Activar Alertas CCA' : '🔔 Activer les Alertes CCE');
+        notifBtn.innerHTML = `${bellSvg} ` + (lang.startsWith('en') ? 'Enable CCE Alerts' : (lang.startsWith('es') ? 'Activar Alertas CCA' : 'Activer les Alertes CCE'));
       }
     }
 
@@ -1019,7 +1021,7 @@
           const lastSeenDate = localStorage.getItem('wg_last_feed_notif');
 
           if (lastSeenDate && lastSeenDate !== pubDate) {
-            reg.showNotification(`📢 CCE / SEM-26-003 : Nouvelle Étape`, {
+            reg.showNotification(`CCE / SEM-26-003 : Nouvelle Étape`, {
               body: title,
               icon: '/icon-192.png',
               badge: '/apple-touch-icon.png',
@@ -1056,7 +1058,7 @@
         try {
           await navigator.clipboard.writeText(prContainer.innerText);
           const oldHtml = btn.innerHTML;
-          btn.innerHTML = '✓ Communiqué copié dans le presse-papiers !';
+          btn.innerHTML = '<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Communiqué copié dans le presse-papiers !';
           setTimeout(() => { btn.innerHTML = oldHtml; }, 3000);
         } catch (err) {
           console.error('Erreur copie:', err);
@@ -1258,19 +1260,21 @@
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           const isPlaying = btn.getAttribute('data-playing') === 'true';
+          const playSvg = '<svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+          const pauseSvg = '<svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
           audioBtns.forEach(b => {
             b.setAttribute('data-playing', 'false');
-            b.innerHTML = '▶';
+            b.innerHTML = playSvg;
           });
           if (!isPlaying) {
             btn.setAttribute('data-playing', 'true');
-            btn.innerHTML = '❚❚';
+            btn.innerHTML = pauseSvg;
             const targetUrl = btn.getAttribute('data-target-url');
             if (targetUrl) {
               setTimeout(() => {
                 window.open(targetUrl, '_blank', 'noopener,noreferrer');
                 btn.setAttribute('data-playing', 'false');
-                btn.innerHTML = '▶';
+                btn.innerHTML = playSvg;
               }, 1200);
             }
           }
@@ -1469,33 +1473,33 @@ DIRECTIVES DE RÉPONSE :
               <span class="ai-live-dot"></span>
               <span>Assistant IA · Dossier SEM-26-003</span>
             </div>
-            <button class="ai-modal-close" aria-label="Fermer le panneau IA">✕</button>
+            <button class="ai-modal-close" aria-label="Fermer le panneau IA"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
           </div>
 
           <!-- Onglets Navigation IA -->
           <div class="ai-tabs" role="tablist">
-            <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
-            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
-            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Liens IA</button>
+            <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Clavarder</button>
+            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Résumer</button>
+            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> Liens IA</button>
           </div>
 
           <!-- Onglet 1 : Clavardage / Chat en direct -->
           <div class="ai-tab-content active" id="ai-tab-chat">
-            <div class="ai-watermark-strip">⚠️ FILIGRANE : CONTENU GÉNÉRÉ PAR IA SANS VALIDATION OFFICIELLE • AUCUNE VALEUR JURIDIQUE</div>
+            <div class="ai-watermark-strip">[FILIGRANE : CONTENU GÉNÉRÉ PAR IA SANS VALIDATION OFFICIELLE • AUCUNE VALEUR JURIDIQUE]</div>
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
-                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> ⚡ API Hugging Face Active</span>
+                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> API Hugging Face Active</span>
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
             </div>
 
             <!-- Suggestions rapides -->
             <div class="ai-quick-pills">
-              <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
-              <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
-              <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
-              <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
-              <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
+              <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Loi 93</button>
+              <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Rapport BAPE 371</button>
+              <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Échéance 16 oct. 2026</button>
+              <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Faune &amp; Cadmium</button>
+              <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Contact Session</button>
             </div>
 
             <!-- Formulaire de saisie -->
@@ -1511,16 +1515,16 @@ DIRECTIVES DE RÉPONSE :
 
           <!-- Onglet 2 : Résumé instantané -->
           <div class="ai-tab-content" id="ai-tab-summary">
-            <div class="ai-watermark-strip">⚠️ SYNTHÈSE IA NON VALIDÉE • DOCUMENT NON OFFICIEL</div>
+            <div class="ai-watermark-strip">[SYNTHÈSE IA NON VALIDÉE • DOCUMENT NON OFFICIEL]</div>
             <div class="ai-summary-box">
               <div class="ai-summary-card">
                 <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
-                  ⚡ Génération de résumé automatique :
+                  Génération de résumé automatique :
                 </div>
                 <div class="ai-summary-actions">
-                  <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-bullets"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> Points clés (Bullets)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-tldr"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> TL;DR (1 paragraphe)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-legal"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Résumé Juridique CCE</button>
                 </div>
                 <div class="ai-summary-result" id="ai-summary-output">
                   Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
@@ -1537,21 +1541,21 @@ DIRECTIVES DE RÉPONSE :
             <div class="ai-modal-buttons">
               <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
                 <div class="ai-btn-option-left">
-                  <span>🌲</span>
+                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><path d="M12 2L4 12h5l-4 7h14l-4-7h5z"></path><rect x="11" y="19" width="2" height="3"></rect></svg></span>
                   <span>Rechercher sur Ecosia AI</span>
                 </div>
                 <span>↗</span>
               </a>
               <a href="https://ai.viro.app/" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
                 <div class="ai-btn-option-left">
-                  <span>⚡</span>
+                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
                   <span>Ouvrir sur Viro AI</span>
                 </div>
                 <span>↗</span>
               </a>
               <button type="button" class="ai-btn-option js-copy-ai-link">
                 <div class="ai-btn-option-left">
-                  <span>📋</span>
+                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>
                   <span>Copier le prompt et le lien pour l'IA</span>
                 </div>
                 <span class="js-copy-icon">Copier</span>
@@ -1566,7 +1570,7 @@ DIRECTIVES DE RÉPONSE :
       if (!copyAlert) {
         copyAlert = document.createElement('div');
         copyAlert.className = 'ai-copy-alert';
-        copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
+        copyAlert.innerHTML = `<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Lien pour l'IA copié dans le presse-papier !`;
         document.body.appendChild(copyAlert);
       }
 
@@ -1606,7 +1610,7 @@ DIRECTIVES DE RÉPONSE :
 
         const botBubble = document.createElement('div');
         botBubble.className = 'ai-chat-bubble bot';
-        botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face AI)...</em>';
+        botBubble.innerHTML = '<em>Réflexion en cours (Hugging Face AI)...</em>';
         chatBox.appendChild(botBubble);
         chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -1652,7 +1656,7 @@ DIRECTIVES DE RÉPONSE :
       const sumOutput = document.getElementById('ai-summary-output');
 
       async function runSummarizer(type) {
-        sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
+        sumOutput.innerHTML = '<em>Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
         const sumPrompts = {
           bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
           tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
@@ -1675,12 +1679,12 @@ DIRECTIVES DE RÉPONSE :
           } catch (_) {
             res = await callHuggingFace(BACKUP_MODEL, messages, 650);
           }
-          sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
+          sumOutput.innerHTML = `<strong>Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
         } catch (err) {
           setTimeout(() => {
             if (type === 'bullets') {
               sumOutput.innerHTML = `
-                <strong>📋 Points clés du dossier SEM-26-003 :</strong>
+                <strong>Points clés du dossier SEM-26-003 :</strong>
                 <ul style="padding-left:18px; margin:8px 0;">
                   <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
                   <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
@@ -1691,12 +1695,12 @@ DIRECTIVES DE RÉPONSE :
               `;
             } else if (type === 'tldr') {
               sumOutput.innerHTML = `
-                <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
+                <strong>En 1 paragraphe (TL;DR) :</strong><br>
                 À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
               `;
             } else {
               sumOutput.innerHTML = `
-                <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
+                <strong>Synthèse Juridique &amp; Traité CCE (Articles 24.27 &amp; 24.28 ACEUM) :</strong><br>
                 Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
               `;
             }
@@ -1849,7 +1853,7 @@ DIRECTIVES DE RÉPONSE :
         'DTSTAMP:20260905T180000Z',
         'DTSTART;VALUE=DATE:20261016',
         'DTEND;VALUE=DATE:20261017',
-        'SUMMARY:⚖️ Échéance CCE SEM-26-003 — Réponse officielle requise du Canada',
+        'SUMMARY:Échéance CCE SEM-26-003 — Réponse officielle requise du Canada',
         'DESCRIPTION:Date limite officielle fixée par la Commission de coopération environnementale (CCE / ACEUM Art. 24.27(3)) au gouvernement fédéral canadien pour répondre formellement à la soumission SEM-26-003 visant la protection de la Grande Tourbière de Blainville face aux déchets dangereux Stablex.\\n\\nSuivi en direct : https://williamguindon.me/live.html\\nRegistre documentaire : https://williamguindon.me/registre-cce-sem26003.html',
         'LOCATION:Commission de coopération environnementale (CCE), Montréal, QC, Canada',
         'URL:https://williamguindon.me/live.html',
@@ -1883,7 +1887,7 @@ DIRECTIVES DE RÉPONSE :
         generateAndDownloadCceIcs();
         
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<span aria-hidden="true">✓</span> Ajouté (.ics téléchargé) !';
+        btn.innerHTML = '<span aria-hidden="true"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Ajouté (.ics téléchargé) !';
         btn.style.pointerEvents = 'none';
         setTimeout(() => {
           btn.innerHTML = originalText;

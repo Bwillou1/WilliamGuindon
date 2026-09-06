@@ -267,20 +267,20 @@
 
   <!-- Carte Vérification au chargement -->
   <div id="auth-checking-card" class="token-box" style="text-align:center; padding:32px 20px; display:none;">
-    <div style="font-size:26px; margin-bottom:10px;">⏳</div>
+    <div style="margin-bottom:10px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--accent);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
     <div style="font-weight:700; font-size:16px; color:var(--text);">Vérification de sécurité auprès de GitHub...</div>
     <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Contrôle d'autorisation pour le compte @Bwillou1</div>
   </div>
 
   <!-- Carte Déverrouillage Passkey (Touch ID / Face ID) si actif -->
   <div id="passkey-card" class="token-box" style="display:none; text-align:center; padding:36px 24px;">
-    <div style="font-size:40px; margin-bottom:12px;">🛡️</div>
+    <div style="margin-bottom:12px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
     <h3 style="font-size:1.4rem; margin-bottom:8px;">Espace Verrouillé</h3>
     <p style="color:var(--text-muted); font-size:14px; max-width:440px; margin:0 auto 20px; line-height:1.5;">
       Protection biométrique Apple active. Authentifiez-vous avec Touch ID (Mac) ou Face ID (iPhone) pour accéder à votre espace de publication.
     </p>
-    <button id="btn-passkey-unlock" class="btn btn-primary" style="padding:12px 28px; font-size:15px; font-weight:700;">
-      👆 Déverrouiller avec Touch ID / Face ID
+    <button id="btn-passkey-unlock" class="btn btn-primary" style="padding:12px 28px; font-size:15px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+      <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
     </button>
     <div style="margin-top:18px;">
       <button id="btn-use-token-fallback" class="btn btn-ghost" style="font-size:12.5px; color:var(--text-muted); border:none; background:transparent; cursor:pointer; text-decoration:underline;">
@@ -292,7 +292,7 @@
   <!-- Carte Authentification Double Protection (Token GitHub + Mot de Passe + FingerprintJS) -->
   <div id="token-card" class="token-box">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-      <span style="font-size:24px;">🛡️</span>
+      <svg class="svg-icon" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
       <div>
         <h3 style="margin:0; font-size:1.3rem;">Authentification Sécurisée (Double Facteur)</h3>
         <span style="font-size:12.5px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
@@ -305,7 +305,7 @@
     <!-- Zone de compte à rebours de blocage (Force Brute & Pénalité Levenshtein) -->
     <div id="lockout-banner" style="display:none; margin-bottom:18px; padding:14px 18px; border-radius:10px; background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#ef4444;">
       <div style="font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px;">
-        <span>⏳</span> Accès temporairement verrouillé
+        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:#ef4444;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Accès temporairement verrouillé
       </div>
       <p id="lockout-timer-text" style="margin:6px 0 0; font-size:13.5px; line-height:1.5; font-weight:600;"></p>
     </div>
@@ -322,11 +322,11 @@
       </div>
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
-        <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14.5px;">
-          🔐 Vérifier & Déverrouiller
+        <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14.5px; display:inline-flex; align-items:center; gap:8px;">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Vérifier & Déverrouiller
         </button>
         <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
-          ⏳ Vérification cryptographique et connexion GitHub...
+          Vérification cryptographique et connexion GitHub...
         </span>
       </div>
     </form>
@@ -334,7 +334,7 @@
     <div id="token-error-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
 
     <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <span>🛡️ <strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
+      <span><strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
       <span id="fp-device-tag" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Empreinte : Détection...</span>
     </div>
   </div>
@@ -344,22 +344,22 @@
     <!-- Enrôlement Passkey Touch ID / Face ID Apple -->
     <div id="passkey-setup-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
       <div style="max-width:550px;">
-        <strong style="color:var(--text); font-size:14px;">👆 Activer Touch ID / Face ID (Passkey Apple)</strong>
+        <strong style="color:var(--text); font-size:14px;">Activer Touch ID / Face ID (Passkey Apple)</strong>
         <p style="margin:3px 0 0; font-size:13px; color:var(--text-muted); line-height:1.4;">
           Associez votre Mac ou votre iPhone pour déverrouiller cet espace en 1 seconde avec votre empreinte ou votre visage, sans jamais retaper de clé.
         </p>
       </div>
-      <button id="btn-enroll-passkey" class="btn btn-primary" style="font-size:13px; font-weight:700; padding:8px 16px;">
-        🛡️ Activer sur ce Mac / iPhone
+      <button id="btn-enroll-passkey" class="btn btn-primary" style="font-size:13px; font-weight:700; padding:8px 16px; display:inline-flex; align-items:center; gap:6px;">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Activer sur ce Mac / iPhone
       </button>
     </div>
 
     <div class="admin-tabs" style="align-items:center; flex-wrap:wrap; gap:8px;">
-      <button class="admin-tab active" data-tab="tab-blog">📝 Rédiger un Article (Blog)</button>
-      <button class="admin-tab" data-tab="tab-photo">📷 Publier une Photo</button>
-      <button class="admin-tab" data-tab="tab-manage">⚙️ Gérer mes publications</button>
-      <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:12.5px; text-decoration:none; padding:7px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">🎨 Studio Éditeur ↗</a>
-      <a href="console-admin.html" class="btn" style="font-size:12.5px; text-decoration:none; padding:7px 12px; background:#0f1713; border:1px solid #1f2922; color:#ef4444; font-weight:700;">⚡ Console Secrète ↗</a>
+      <button class="admin-tab active" data-tab="tab-blog"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Rédiger un Article (Blog)</button>
+      <button class="admin-tab" data-tab="tab-photo"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>Publier une Photo</button>
+      <button class="admin-tab" data-tab="tab-manage"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Gérer mes publications</button>
+      <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:12.5px; text-decoration:none; padding:7px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">Studio Éditeur ↗</a>
+      <a href="console-admin.html" class="btn" style="font-size:12.5px; text-decoration:none; padding:7px 12px; background:#0f1713; border:1px solid #1f2922; color:#ef4444; font-weight:700;">Console Secrète ↗</a>
     </div>
 
     <!-- Onglet 1 : Article Blog -->
@@ -398,7 +398,7 @@
           <label class="form-label">Image de couverture</label>
           <div class="file-dropzone" onclick="document.getElementById('blog-file').click()">
             <input type="file" id="blog-file" accept="image/*" style="display:none;">
-            <span>📸 Cliquez ou glissez une photo ici depuis votre appareil</span>
+            <span>Cliquez ou glissez une photo ici depuis votre appareil</span>
             <img id="blog-file-preview" class="file-preview" alt="Prévisualisation">
           </div>
         </div>
@@ -413,7 +413,7 @@
           <input type="text" id="blog-tags" class="form-control" placeholder="CCE, Tourbière, BAPE, Blainville">
         </div>
 
-        <button type="submit" id="btn-publish-blog" class="btn-submit">🚀 Publier l'article sur le Blog</button>
+        <button type="submit" id="btn-publish-blog" class="btn-submit">Publier l'article sur le Blog</button>
       </form>
     </div>
 
@@ -452,7 +452,7 @@
           <label class="form-label">Sélectionner la photo *</label>
           <div class="file-dropzone" onclick="document.getElementById('photo-file').click()">
             <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
-            <span>📷 Cliquez ou choisissez une photo haute définition</span>
+            <span>Cliquez ou choisissez une photo haute définition</span>
             <img id="photo-file-preview" class="file-preview" alt="Prévisualisation">
           </div>
         </div>
@@ -462,7 +462,7 @@
           <textarea id="photo-desc" class="form-control" style="min-height:90px;" placeholder="Détails, contexte scientifique ou observation..."></textarea>
         </div>
 
-        <button type="submit" id="btn-publish-photo" class="btn-submit">✨ Ajouter la photo à la Galerie</button>
+        <button type="submit" id="btn-publish-photo" class="btn-submit">Ajouter la photo à la Galerie</button>
       </form>
     </div>
 
@@ -895,7 +895,7 @@
       if (workspace) workspace.style.display = "block";
       if (authBar) {
         authBar.innerHTML = `
-          <span style="font-size:13px; color:var(--accent); font-weight:700;">🟢 Connecté en tant que @Bwillou1</span>
+          <span style="font-size:13px; color:var(--accent); font-weight:700; display:inline-flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;"></span> Connecté en tant que @Bwillou1</span>
           <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;" onclick="clearToken()">Déconnexion</button>
         `;
       }
@@ -909,7 +909,7 @@
       loadManageList();
     } else {
       if (workspace) workspace.style.display = "none";
-      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted);'>🔴 Espace Verrouillé</span>";
+      if (authBar) authBar.innerHTML = "<span style='font-size:13px; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px;'><span style='width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;'></span> Espace Verrouillé</span>";
 
       if (isPasskeySupported && localStorage.getItem("wg_passkey_enabled") === "true") {
         if (passkeyCard) passkeyCard.style.display = "block";
@@ -967,7 +967,7 @@
       updateLockoutUI(state.bloqueJusqua);
 
       const tamperMsg = isTampered ? " (Détection de contournement de stockage : facteur x5 appliqué)" : "";
-      showTokenError(`❌ Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).${tamperMsg}`);
+      showTokenError(`Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).${tamperMsg}`);
       return;
     }
 
@@ -996,7 +996,7 @@
         if (setupBanner) setupBanner.style.display = "flex";
       }
     } catch (err) {
-      showTokenError("❌ " + err.message);
+      showTokenError(err.message);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
       if (spinner) spinner.style.display = "none";
@@ -1157,7 +1157,7 @@
     e.preventDefault();
     const btn = document.getElementById("btn-publish-blog");
     btn.disabled = true;
-    btn.textContent = "⏳ Publication en cours sur GitHub...";
+    btn.textContent = "Publication en cours sur GitHub...";
 
     try {
       const title = document.getElementById("blog-title").value.trim();
@@ -1209,7 +1209,7 @@
         sha: fileData.sha
       });
 
-      showStatus("🎉 Article publié avec succès ! Il sera en ligne dans 30 secondes.", "success");
+      showStatus("Article publié avec succès ! Il sera en ligne dans 30 secondes.", "success");
       document.getElementById("form-blog").reset();
       document.getElementById("blog-file-preview").style.display = "none";
       loadManageList();
@@ -1218,7 +1218,7 @@
       showStatus("Erreur : " + err.message, "error");
     } finally {
       btn.disabled = false;
-      btn.textContent = "🚀 Publier l'article sur le Blog";
+      btn.textContent = "Publier l'article sur le Blog";
     }
   });
 
@@ -1227,7 +1227,7 @@
     e.preventDefault();
     const btn = document.getElementById("btn-publish-photo");
     btn.disabled = true;
-    btn.textContent = "⏳ Téléversement de la photo...";
+    btn.textContent = "Téléversement de la photo...";
 
     try {
       const title = document.getElementById("photo-title").value.trim();
@@ -1271,7 +1271,7 @@
         sha: fileData.sha
       });
 
-      showStatus("✨ Photo ajoutée avec succès à la Galerie !", "success");
+      showStatus("Photo ajoutée avec succès à la Galerie !", "success");
       document.getElementById("form-photo").reset();
       document.getElementById("photo-file-preview").style.display = "none";
       loadManageList();
@@ -1280,7 +1280,7 @@
       showStatus("Erreur : " + err.message, "error");
     } finally {
       btn.disabled = false;
-      btn.textContent = "✨ Ajouter la photo à la Galerie";
+      btn.textContent = "Ajouter la photo à la Galerie";
     }
   });
 

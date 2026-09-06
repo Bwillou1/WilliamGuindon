@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "node -e 'console.log(\"Validating repository assets...\")' && npm run validate",
-    "validate": "node -e 'const fs=require(\"fs\"); [\"sitemap.xml\",\"feed.xml\",\"manifest.json\",\"status.json\",\"agent-skills.json\",\"tools.json\"].forEach(f => { if(!fs.existsSync(f)) throw new Error(\"Missing: \"+f); console.log(\"✔ \"+f); }); console.log(\"All core assets verified.\");'",
+    "validate": "node -e 'const fs=require(\"fs\"); [\"sitemap.xml\",\"feed.xml\",\"manifest.json\",\"status.json\",\"agent-skills.json\",\"tools.json\"].forEach(f => { if(!fs.existsSync(f)) throw new Error(\"Missing: \"+f); console.log(\"[OK] \"+f); }); console.log(\"All core assets verified.\");'",
     "sync:cec": "node sync-cec.js",
     "generate:countdown": "node generate-countdown-svg.js"
   },
