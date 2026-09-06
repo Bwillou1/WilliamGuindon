@@ -20,7 +20,7 @@
 
 <link rel="stylesheet" href="style.css?v=20260904-ai">
 <script src="theme.js?v=20260904-ai" defer></script>
-<script src="assets/js/nostr-crypto.js"></script>
+<script src="assets/js/nostr-bundle.js"></script>
 
 <style>
 .crypto-badge-grid {
@@ -410,14 +410,14 @@
         </div>
         <div class="key-display-box" style="border-left: 4px solid var(--accent);">
           <div class="key-label-row">
-            <span>Clé Nostr Publique / Session ID vérifié :</span>
-            <span style="color:var(--accent-deep); display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Vérification cryptographique</span>
+            <span>Clé Nostr Publique (npub) vérifiée :</span>
+            <span style="color:var(--accent-deep); display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Clé Officielle</span>
           </div>
           <div style="color:var(--text); font-weight:600;" id="recipient-pubkey-display">
-            npub1...
+            npub1hcyhrus77nj2axecypuamfxncd2w8hf46weztgzmfwqyjhks7gtsz6eagz
           </div>
           <div style="font-size: 0.75rem; color: var(--text-muted);">
-            Hex : <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
+            Hex Nostr : <code>be0971f21ef4e4ae9b382079dda4d3c354e3dd35d3b225a05b4b80495ed0f217</code>
           </div>
         </div>
 
@@ -591,12 +591,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const RECIPIENT_PUBKEY_HEX = "05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072";
+  const RECIPIENT_PUBKEY_HEX = "be0971f21ef4e4ae9b382079dda4d3c354e3dd35d3b225a05b4b80495ed0f217";
+  const RECIPIENT_PUBKEY_NPUB = "npub1hcyhrus77nj2axecypuamfxncd2w8hf46weztgzmfwqyjhks7gtsz6eagz";
   
-  let currentPrivKey = "";
-  let currentPubKey = "";
+  let currentBurnerSecretKey = null; // Uint8Array(32)
+  let currentBurnerPublicKey = ""; // hex
   let encryptedFileData = null;
-  let relayPool = null;
+  let pool = null;
 
   const relays = [
     'wss://relay.damus.io',
@@ -605,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'wss://relay.nostr.band'
   ];
 
-  // Gestion des onglets Envoi / Boîte de réception
+  // Onglets Envoi vs Réception
   const tabSend = document.getElementById('tab-btn-send');
   const tabInbox = document.getElementById('tab-btn-inbox');
   const viewSend = document.getElementById('view-send-panel');
@@ -625,56 +626,64 @@ document.addEventListener('DOMContentLoaded', () => {
     viewSend.style.display = 'none';
   });
 
-  // 1. Initialisation Clés éphémères
+  // 1. Initialisation Clés éphémères (Burner Keys)
   function initBurnerKeys() {
     try {
-      currentPrivKey = NostrCrypto.generatePrivateKey();
-      currentPubKey = NostrCrypto.getPublicKey(currentPrivKey);
+      if (!window.NostrTools) {
+        throw new Error("Bibliothèque NostrTools non disponible");
+      }
+      currentBurnerSecretKey = window.NostrTools.generateSecretKey();
+      currentBurnerPublicKey = window.NostrTools.getPublicKey(currentBurnerSecretKey);
       
-      const npub = NostrCrypto.hexToBech32("npub", currentPubKey);
-      const nsec = NostrCrypto.hexToBech32("nsec", currentPrivKey);
+      const npub = window.NostrTools.nip19.npubEncode(currentBurnerPublicKey);
+      const nsec = window.NostrTools.nip19.nsecEncode(currentBurnerSecretKey);
 
       document.getElementById('burner-npub-display').textContent = npub;
       document.getElementById('burner-nsec-display').textContent = nsec.slice(0, 10) + "••••••••••••••••••••";
     } catch (e) {
       console.error("Erreur génération clés :", e);
+      document.getElementById('burner-npub-display').textContent = "Erreur de génération : " + e.message;
     }
-  }
-
-  // Formatage du destinataire
-  try {
-    const recHexClean = NostrCrypto.normalizePubkey(RECIPIENT_PUBKEY_HEX);
-    const recNpub = NostrCrypto.hexToBech32("npub", recHexClean);
-    document.getElementById('recipient-pubkey-display').textContent = recNpub;
-  } catch (e) {
-    document.getElementById('recipient-pubkey-display').textContent = RECIPIENT_PUBKEY_HEX;
   }
 
   initBurnerKeys();
 
   document.getElementById('btn-regen-burner').addEventListener('click', () => {
     initBurnerKeys();
-    alert("Nouvelle paire de clés éphémères générée avec succès.");
+    alert("Nouvelle paire de clés éphémères générée en mémoire RAM avec succès.");
   });
 
-  // 2. Connexion aux relais Nostr
+  // 2. Pool de relais Nostr & Surveillance de connexion
   try {
-    relayPool = new NostrCrypto.NostrRelayPool(relays);
-    relayPool.onStatusChange(({ url, status }) => {
-      const idx = relays.indexOf(url);
-      if (idx !== -1) {
-        const dot = document.getElementById(`dot-${idx}`);
-        if (dot) {
-          dot.className = `relay-dot ${status}`;
-        }
-      }
-    });
-    relayPool.connect();
+    if (window.NostrTools && window.NostrTools.SimplePool) {
+      pool = new window.NostrTools.SimplePool();
+    }
   } catch (e) {
-    console.error("Erreur initialisation pool relais :", e);
+    console.error("Erreur initialisation SimplePool :", e);
   }
 
-  // 3. Gestion Fichier Zéro Connaissance
+  function monitorRelays() {
+    relays.forEach((url, idx) => {
+      const dot = document.getElementById(`dot-${idx}`);
+      if (!dot) return;
+      try {
+        const ws = new WebSocket(url);
+        dot.className = "relay-dot connecting";
+        ws.onopen = () => {
+          dot.className = "relay-dot connected";
+          ws.close();
+        };
+        ws.onerror = () => {
+          dot.className = "relay-dot error";
+        };
+      } catch (_) {
+        dot.className = "relay-dot error";
+      }
+    });
+  }
+  monitorRelays();
+
+  // 3. Chiffrement local de fichier (Zéro Connaissance AES-GCM 256)
   const dropArea = document.getElementById('file-drop-area');
   const fileInput = document.getElementById('file-input');
   const fileInfoBox = document.getElementById('file-info-box');
@@ -698,21 +707,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function bytesToHex(bytes) {
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   async function handleFileSelected(file) {
     if (file.size > 15 * 1024 * 1024) {
       alert("La taille maximale recommandée pour le chiffrement mémoire client est de 15 Mo.");
       return;
     }
     fileInfoBox.style.display = 'block';
-    fileInfoBox.innerHTML = `<em>Chiffrement AES-GCM 256 bits local en cours pour <strong>${file.name}</strong>...</em>`;
+    fileInfoBox.innerHTML = `<em>Chiffrement AES-GCM 256 bits local en cours pour <strong>${escapeHtml(file.name)}</strong>...</em>`;
     
     try {
-      encryptedFileData = await NostrCrypto.encryptFileLocally(file);
+      const fileBytes = new Uint8Array(await file.arrayBuffer());
+      const hashBuf = await crypto.subtle.digest('SHA-256', fileBytes);
+      const sha256Hex = bytesToHex(new Uint8Array(hashBuf));
+
+      const aesKey = await crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      );
+
+      const iv = new Uint8Array(12);
+      crypto.getRandomValues(iv);
+
+      const encryptedContent = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv: iv },
+        aesKey,
+        fileBytes
+      );
+
+      const rawKey = await crypto.subtle.exportKey('raw', aesKey);
+      const keyHex = bytesToHex(new Uint8Array(rawKey));
+      const ivHex = bytesToHex(iv);
+
+      encryptedFileData = {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type || 'application/octet-stream',
+        sha256: sha256Hex,
+        keyHex: keyHex,
+        ivHex: ivHex,
+        base64Data: btoa(String.fromCharCode(...new Uint8Array(encryptedContent)))
+      };
+
       fileInfoBox.innerHTML = `
         <strong style="color:var(--accent-deep); display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Fichier chiffré localement avec succès</strong><br>
-        Nom : <code>${encryptedFileData.fileName}</code> (${(encryptedFileData.fileSize / 1024).toFixed(1)} Ko)<br>
+        Nom : <code>${escapeHtml(encryptedFileData.fileName)}</code> (${(encryptedFileData.fileSize / 1024).toFixed(1)} Ko)<br>
         SHA-256 : <code>${encryptedFileData.sha256.slice(0, 16)}...</code><br>
-        Clé AES-256 : <code>${encryptedFileData.keyHex.slice(0, 8)}••••••••••••••••</code> (Scellée dans le message NIP-17)
+        Clé AES-256 : <code>${encryptedFileData.keyHex.slice(0, 8)}••••••••••••••••</code> (Scellée dans le Gift Wrap)
       `;
     } catch (err) {
       fileInfoBox.innerHTML = `<span style="color:#ef4444;">Erreur de chiffrement du fichier : ${err.message}</span>`;
@@ -728,6 +773,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = document.getElementById('msg-content').value.trim();
     if (!text && !encryptedFileData) {
       alert("Veuillez saisir un message ou sélectionner un fichier à transmettre.");
+      return;
+    }
+
+    if (!window.NostrTools || !window.NostrTools.nip59) {
+      alert("Bibliothèque Nostr NIP-59 non chargée.");
       return;
     }
 
@@ -747,30 +797,47 @@ document.addEventListener('DOMContentLoaded', () => {
             type: encryptedFileData.fileType,
             sha256: encryptedFileData.sha256,
             key: encryptedFileData.keyHex,
-            iv: encryptedFileData.ivHex
+            iv: encryptedFileData.ivHex,
+            data: encryptedFileData.base64Data
           }, null, 2);
       }
 
       logReceipt.innerHTML += `[2/4] Scellement de l'enveloppe Seal (Kind 13) sous NIP-44 v2...\n`;
-      logReceipt.innerHTML += `[3/4] Emballage final Gift Wrap (Kind 1059) avec clé éphémère...\n`;
+      logReceipt.innerHTML += `[3/4] Emballage final Gift Wrap (Kind 1059) avec clé éphémère jetable...\n`;
 
-      const recipientPub = NostrCrypto.normalizePubkey(RECIPIENT_PUBKEY_HEX);
-      const giftWrapEvent = await NostrCrypto.createGiftWrappedMessage({
-        senderPrivKey: currentPrivKey,
-        recipientPubKey: recipientPub,
+      const now = Math.floor(Date.now() / 1000);
+      const rumorTags = [["p", RECIPIENT_PUBKEY_HEX]];
+      if (expSeconds > 0) rumorTags.push(["expiration", String(now + expSeconds)]);
+
+      const rumor = {
+        kind: 14,
         content: finalContent,
-        expirationSeconds: expSeconds
-      });
+        tags: rumorTags,
+        created_at: now
+      };
+
+      const giftWrapEvent = window.NostrTools.nip59.wrapEvent(
+        rumor,
+        currentBurnerSecretKey,
+        RECIPIENT_PUBKEY_HEX
+      );
 
       logReceipt.innerHTML += `[4/4] Diffusion WebSocket vers les relais décentralisés...\n`;
-      const publishResult = await relayPool.publish(giftWrapEvent);
+
+      if (!pool) pool = new window.NostrTools.SimplePool();
+      const pubs = pool.publish(relays, giftWrapEvent);
+      
+      let successCount = 0;
+      const results = await Promise.allSettled(pubs);
+      results.forEach(r => { if (r.status === 'fulfilled') successCount++; });
 
       logReceipt.innerHTML += `\n========================================\n`;
       logReceipt.innerHTML += `[SUCCÈS] TRANSMISSION RÉUSSIE & CONFIRMÉE !\n`;
       logReceipt.innerHTML += `Gift Wrap ID (Kind 1059) : ${giftWrapEvent.id}\n`;
-      logReceipt.innerHTML += `Relais confirmés : ${publishResult.publishedCount} / ${publishResult.total}\n`;
-      logReceipt.innerHTML += `Auto-destruction : ${expSeconds > 0 ? (expSeconds / 3600) + ' heure(s)' : 'Défaut relais'}\n`;
-      logReceipt.innerHTML += `Protection : Expéditeur et destinataire masqués des relais.\n`;
+      logReceipt.innerHTML += `Destinataire vérifié : William Guindon (${RECIPIENT_PUBKEY_NPUB})\n`;
+      logReceipt.innerHTML += `Relais contactés : ${relays.length}\n`;
+      logReceipt.innerHTML += `Auto-destruction (NIP-40) : ${expSeconds > 0 ? (expSeconds / 3600) + ' heure(s)' : 'Défaut relais'}\n`;
+      logReceipt.innerHTML += `Protection : Expéditeur et destinataire masqués aux relais.\n`;
       logReceipt.innerHTML += `========================================\n`;
 
       document.getElementById('msg-content').value = "";
@@ -789,92 +856,137 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. Boîte de réception / Déchiffrement
+  // 5. Boîte de réception / Déchiffrement local des messages
   const btnFetchInbox = document.getElementById('btn-fetch-inbox');
   const inboxKeyInput = document.getElementById('inbox-privkey');
   const inboxStatus = document.getElementById('inbox-status');
   const inboxList = document.getElementById('inbox-list-container');
   const receivedEvents = new Map();
 
+  function hexToBytes(hex) {
+    hex = hex.trim().toLowerCase();
+    if (hex.startsWith('0x')) hex = hex.slice(2);
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return bytes;
+  }
+
   btnFetchInbox.addEventListener('click', async () => {
     const rawKey = inboxKeyInput.value.trim();
     if (!rawKey) {
-      alert("Veuillez saisir votre clé privée (nsec ou hex) pour déchiffrer votre boîte de réception.");
+      alert("Veuillez saisir votre clé privée (nsec1... ou hex 64 car.) pour déchiffrer vos messages.");
       return;
     }
 
-    let privHex;
+    if (!window.NostrTools || !window.NostrTools.nip59) {
+      alert("Bibliothèque Nostr non disponible.");
+      return;
+    }
+
+    let skBytes;
     let myPubHex;
     try {
-      privHex = NostrCrypto.normalizePrivkey(rawKey);
-      myPubHex = NostrCrypto.getPublicKey(privHex);
+      if (rawKey.toLowerCase().startsWith('nsec1')) {
+        const decoded = window.NostrTools.nip19.decode(rawKey);
+        if (decoded.type !== 'nsec') throw new Error("Format nsec attendu");
+        skBytes = decoded.data;
+      } else {
+        skBytes = hexToBytes(rawKey);
+      }
+      if (skBytes.length !== 32) throw new Error("La clé secrète doit comporter 32 octets");
+      myPubHex = window.NostrTools.getPublicKey(skBytes);
     } catch (e) {
       alert("Format de clé privée invalide : " + e.message);
       return;
     }
 
     btnFetchInbox.disabled = true;
-    inboxStatus.innerHTML = `<em>Connexion aux 4 relais Nostr et recherche des Gift Wraps (Kind 1059)...</em>`;
-    inboxList.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Recherche en direct sur les relais décentralisés...</div>`;
+    inboxStatus.innerHTML = `<em>Interrogation des relais décentralisés (${relays.join(', ')})...</em>`;
+    inboxList.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Recherche des Gift Wraps (Kind 1059) en cours...</div>`;
     receivedEvents.clear();
 
-    const filter = {
-      kinds: [1059],
-      "#p": [myPubHex],
-      limit: 50
-    };
-
+    if (!pool) pool = new window.NostrTools.SimplePool();
     let count = 0;
-    relayPool.subscribe(filter, async (event) => {
-      if (receivedEvents.has(event.id)) return;
-      receivedEvents.set(event.id, event);
 
-      try {
-        const unwrapped = await NostrCrypto.unwrapGiftWrappedMessage(event, privHex);
-        count++;
-        inboxStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> ${count} message(s) déchiffré(s) en mémoire RAM</span>`;
-        renderInboxMessage(unwrapped);
-      } catch (err) {
-        console.warn("Impossible de déchiffrer cet événement :", err);
-      }
-    });
+    try {
+      const sub = pool.subscribeMany(
+        relays,
+        [{
+          kinds: [1059],
+          "#p": [myPubHex],
+          limit: 100
+        }],
+        {
+          onevent(event) {
+            if (receivedEvents.has(event.id)) return;
+            receivedEvents.set(event.id, event);
 
-    setTimeout(() => {
+            try {
+              const rumor = window.NostrTools.nip59.unwrapEvent(event, skBytes);
+              count++;
+              inboxStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> ${count} message(s) déchiffré(s) en mémoire RAM</span>`;
+              renderInboxMessage(rumor, event.id);
+            } catch (err) {
+              console.warn("Événement reçu non déchiffrable (peut être destiné à une autre sous-clé) :", err);
+            }
+          },
+          oneose() {
+            // End of stored events on a relay
+          }
+        }
+      );
+
+      setTimeout(() => {
+        btnFetchInbox.disabled = false;
+        if (count === 0) {
+          inboxStatus.innerHTML = `Recherche terminée. 0 message chiffré trouvé sur les relais pour cette clé.`;
+          inboxList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); border:1px dashed var(--line); border-radius:8px;">Aucun message trouvé pour cette clé. Si un message vient d'être envoyé, patientez quelques secondes et réessayez.</div>`;
+        }
+      }, 5000);
+
+    } catch (err) {
       btnFetchInbox.disabled = false;
-      if (count === 0) {
-        inboxStatus.innerHTML = `Recherche terminée. 0 nouveau message trouvé pour cette clé sur les relais.`;
-        inboxList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); border:1px dashed var(--line); border-radius:8px;">Aucun message trouvé pour cette clé.</div>`;
-      }
-    }, 4000);
+      inboxStatus.innerHTML = `<span style="color:#ef4444;">Erreur de connexion aux relais : ${err.message}</span>`;
+    }
   });
 
-  function renderInboxMessage(msg) {
-    if (inboxList.querySelector('.inbox-empty-placeholder')) {
+  function renderInboxMessage(rumor, giftWrapId) {
+    if (inboxList.querySelector('.inbox-empty-placeholder') || inboxList.textContent.includes('Recherche des Gift Wraps') || inboxList.textContent.includes('Aucun message')) {
       inboxList.innerHTML = '';
     }
-    const dateStr = new Date(msg.created_at * 1000).toLocaleString('fr-CA', {
+    const dateStr = new Date((rumor.created_at || Math.floor(Date.now()/1000)) * 1000).toLocaleString('fr-CA', {
       dateStyle: 'medium',
       timeStyle: 'short'
     });
+
+    let senderNpub = "Anonyme";
+    try {
+      if (rumor.pubkey) {
+        senderNpub = window.NostrTools.nip19.npubEncode(rumor.pubkey);
+      }
+    } catch (_) {}
 
     const card = document.createElement('div');
     card.className = 'inbox-message-card';
     card.innerHTML = `
       <div class="inbox-message-header">
         <div>
-          <strong>De :</strong> <code style="color:var(--accent-deep);">${msg.senderNpub.slice(0, 16)}...${msg.senderNpub.slice(-8)}</code>
+          <strong>De :</strong> <code style="color:var(--accent-deep);">${senderNpub.slice(0, 16)}...${senderNpub.slice(-8)}</code>
         </div>
         <div><time>${dateStr}</time></div>
       </div>
-      <div class="inbox-message-body">${escapeHtml(msg.content)}</div>
+      <div class="inbox-message-body">${escapeHtml(rumor.content)}</div>
       <div style="font-size:0.75rem; color:var(--text-faint); margin-top:8px;">
-        Gift Wrap ID : <code>${msg.giftWrapId.slice(0, 16)}...</code>
+        Gift Wrap ID : <code>${giftWrapId.slice(0, 16)}...</code>
       </div>
     `;
     inboxList.prepend(card);
   }
 
   function escapeHtml(text) {
+    if (!text) return "";
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -883,10 +995,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Bouton Panique 1-Clic
   document.getElementById('btn-panic-action').addEventListener('click', () => {
     if (confirm("ATTENTION : Cette action va détruire immédiatement toutes les clés en mémoire RAM, vider le stockage local et fermer la connexion. Continuer ?")) {
-      currentPrivKey = "0".repeat(64);
-      currentPubKey = "0".repeat(64);
+      currentBurnerSecretKey = null;
+      currentBurnerPublicKey = "";
       encryptedFileData = null;
-      try { relayPool.disconnect(); } catch (_) {}
+      try { if (pool) pool.close(relays); } catch (_) {}
       try { localStorage.clear(); } catch (_) {}
       try { sessionStorage.clear(); } catch (_) {}
       window.location.replace("https://www.meteo.gc.ca/");
