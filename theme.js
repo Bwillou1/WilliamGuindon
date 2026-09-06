@@ -127,6 +127,44 @@
           return false;
         }
 
+        function ensureGoogleTranslateLoaded(cb) {
+          let gTranslateDiv = document.getElementById('google_translate_element');
+          if (!gTranslateDiv) {
+            gTranslateDiv = document.createElement('div');
+            gTranslateDiv.id = 'google_translate_element';
+            gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;';
+            document.body.appendChild(gTranslateDiv);
+          }
+
+          if (!window.googleTranslateElementInit) {
+            window.googleTranslateElementInit = function() {
+              try {
+                if (window.google && google.translate && google.translate.TranslateElement) {
+                  new google.translate.TranslateElement({
+                    pageLanguage: 'fr',
+                    includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
+                    autoDisplay: false
+                  }, 'google_translate_element');
+                  if (typeof cb === 'function') cb();
+                }
+              } catch(e) {
+                console.warn('Google Translate init:', e);
+              }
+            };
+          }
+
+          if (!document.getElementById('google-translate-script')) {
+            const gtScript = document.createElement('script');
+            gtScript.id = 'google-translate-script';
+            gtScript.type = 'text/javascript';
+            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            gtScript.async = true;
+            document.head.appendChild(gtScript);
+          } else if (window.google && google.translate && typeof cb === 'function') {
+            cb();
+          }
+        }
+
         // Fonction d'application de la langue in-place
         function applyInPlaceLanguage(lang) {
           const txt = document.getElementById('current-lang-text');
@@ -147,19 +185,21 @@
           localStorage.setItem('wg_user_lang', lang);
           setGoogTransCookie(lang);
 
-          const success = triggerGoogleCombo(lang);
-          if (!success) {
-            let retries = 0;
-            const checkTimer = setInterval(() => {
-              retries++;
-              if (triggerGoogleCombo(lang)) {
-                clearInterval(checkTimer);
-              } else if (retries > 20) {
-                clearInterval(checkTimer);
-                window.location.reload();
-              }
-            }, 150);
-          }
+          ensureGoogleTranslateLoaded(() => {
+            const success = triggerGoogleCombo(lang);
+            if (!success) {
+              let retries = 0;
+              const checkTimer = setInterval(() => {
+                retries++;
+                if (triggerGoogleCombo(lang)) {
+                  clearInterval(checkTimer);
+                } else if (retries > 20) {
+                  clearInterval(checkTimer);
+                  window.location.reload();
+                }
+              }, 150);
+            }
+          });
         }
 
         langDropdown.querySelectorAll('.lang-btn').forEach(btn => {
@@ -177,53 +217,29 @@
           });
         });
 
-        // Charger Google Traduction uniquement pour la fonction de changement de langue.
-        let gTranslateDiv = document.getElementById('google_translate_element');
-        if (!gTranslateDiv) {
-          gTranslateDiv = document.createElement('div');
-          gTranslateDiv.id = 'google_translate_element';
-          gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;';
-          document.body.appendChild(gTranslateDiv);
+        // Préchargement passif au clic ou survol du menu langue
+        const navLangBtn = langDropdown.querySelector('.nav-dropdown-btn');
+        if (navLangBtn) {
+          navLangBtn.addEventListener('mouseenter', () => ensureGoogleTranslateLoaded(), { once: true });
+          navLangBtn.addEventListener('click', () => ensureGoogleTranslateLoaded(), { once: true });
         }
 
-        if (!window.googleTranslateElementInit) {
-          window.googleTranslateElementInit = function() {
-            try {
-              if (window.google && google.translate && google.translate.TranslateElement) {
-                new google.translate.TranslateElement({
-                  pageLanguage: 'fr',
-                  includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
-                  autoDisplay: false
-                }, 'google_translate_element');
-
-                const saved = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang');
-                if (saved && saved !== 'fr') {
-                  let attempts = 0;
-                  const pollTimer = setInterval(() => {
-                    attempts++;
-                    if (triggerGoogleCombo(saved)) {
-                      clearInterval(pollTimer);
-                      const txt = document.getElementById('current-lang-text');
-                      if (txt) txt.textContent = saved.toUpperCase().substring(0, 2);
-                    } else if (attempts > 25) {
-                      clearInterval(pollTimer);
-                    }
-                  }, 150);
-                }
+        // Si une langue non-française était déjà active, charger immédiatement
+        const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang');
+        if (savedLang && savedLang !== 'fr') {
+          ensureGoogleTranslateLoaded(() => {
+            let attempts = 0;
+            const pollTimer = setInterval(() => {
+              attempts++;
+              if (triggerGoogleCombo(savedLang)) {
+                clearInterval(pollTimer);
+                const txt = document.getElementById('current-lang-text');
+                if (txt) txt.textContent = savedLang.toUpperCase().substring(0, 2);
+              } else if (attempts > 25) {
+                clearInterval(pollTimer);
               }
-            } catch(e) {
-              console.warn('Google Translate init:', e);
-            }
-          };
-
-          if (!document.getElementById('google-translate-script')) {
-            const gtScript = document.createElement('script');
-            gtScript.id = 'google-translate-script';
-            gtScript.type = 'text/javascript';
-            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            gtScript.async = true;
-            document.head.appendChild(gtScript);
-          }
+            }, 150);
+          });
         }
 
       }
@@ -1304,8 +1320,8 @@
     if (path.includes('ai.html') || path.includes('ai.txt') || path.includes('txt.html')) return;
 
     let floatingBtn = document.querySelector('.floating-ai-btn');
-    let aiModal = document.querySelector('.ai-modal-overlay');
-    let copyAlert = document.querySelector('.ai-copy-alert');
+    let aiModal = null;
+    let copyAlert = null;
 
     if (!floatingBtn) {
       floatingBtn = document.createElement('button');
@@ -1318,130 +1334,6 @@
         <span>Clavarder / IA</span>
       `;
       document.body.appendChild(floatingBtn);
-    }
-
-    if (!aiModal) {
-      aiModal = document.createElement('div');
-      aiModal.className = 'ai-modal-overlay';
-      aiModal.innerHTML = `
-        <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
-          <div class="ai-modal-header">
-            <div class="ai-modal-title" id="ai-modal-title">
-              <span class="ai-live-dot"></span>
-              <span>Assistant IA · Dossier SEM-26-003</span>
-            </div>
-            <button class="ai-modal-close" aria-label="Fermer le panneau IA">✕</button>
-          </div>
-
-          <!-- Onglets Navigation IA -->
-          <div class="ai-tabs" role="tablist">
-            <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
-            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
-            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Liens IA</button>
-          </div>
-
-          <!-- Onglet 1 : Clavardage / Chat en direct -->
-          <div class="ai-tab-content active" id="ai-tab-chat">
-            <div class="ai-chat-messages" id="ai-chat-box">
-              <div class="ai-chat-bubble bot">
-                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> ⚡ API Hugging Face Active</span>
-                <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
-              </div>
-            </div>
-
-            <!-- Suggestions rapides -->
-            <div class="ai-quick-pills">
-              <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
-              <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
-              <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
-              <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
-              <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
-            </div>
-
-            <!-- Formulaire de saisie -->
-            <form class="ai-chat-input-row" id="ai-chat-form">
-              <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
-              <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
-            </form>
-
-            <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
-              <strong>Mode IA (Hugging Face AI) :</strong> Cet assistant est fourni à des fins purement informatives et documentaires sans valeur d'avis juridique. L'éditeur décline toute responsabilité quant aux réponses générées par le modèle ou aux requêtes des usagers. <strong>Respect de la Loi 25 (Québec) :</strong> Cet outil ne collecte, n'enregistre ni ne conserve aucun renseignement personnel. Les questions anonymes sont traitées en direct via l'infrastructure de Hugging Face conformément à leurs <a href="https://huggingface.co/terms-of-service" target="_blank" rel="noopener noreferrer" style="color: var(--accent, #0284c7); text-decoration: underline;">Directives d'utilisation</a>.
-            </p>
-          </div>
-
-          <!-- Onglet 2 : Résumé instantané (Chrome Summarizer & Synthèse) -->
-          <div class="ai-tab-content" id="ai-tab-summary">
-            <div class="ai-summary-box">
-              <div class="ai-summary-card">
-                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
-                  ⚡ Génération de résumé automatique :
-                </div>
-                <div class="ai-summary-actions">
-                  <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
-                </div>
-                <div class="ai-summary-result" id="ai-summary-output">
-                  Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Onglet 3 : Autres Modèles & Liens externes -->
-          <div class="ai-tab-content" id="ai-tab-models">
-            <p class="ai-modal-desc">
-              Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
-            </p>
-            <div class="ai-modal-buttons">
-              <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🟢</span>
-                  <span>Ouvrir dans ChatGPT</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🔵</span>
-                  <span>Ouvrir dans Google Gemini</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🟣</span>
-                  <span>Ouvrir dans Claude</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span>🟠</span>
-                  <span>Ouvrir dans Perplexity</span>
-                </div>
-                <span>↗</span>
-              </a>
-              <button type="button" class="ai-btn-option js-copy-ai-link">
-                <div class="ai-btn-option-left">
-                  <span>📋</span>
-                  <span>Copier le prompt et le lien pour l'IA</span>
-                </div>
-                <span class="js-copy-icon">Copier</span>
-              </button>
-            </div>
-          </div>
-
-        </div>
-      `;
-      document.body.appendChild(aiModal);
-    }
-
-    if (!copyAlert) {
-      copyAlert = document.createElement('div');
-      copyAlert.className = 'ai-copy-alert';
-      copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
-      document.body.appendChild(copyAlert);
     }
 
     const ROUTEUR_URL = "https://router.huggingface.co/v1/chat/completions";
@@ -1468,25 +1360,6 @@ DIRECTIVES :
 - Ne refuse pas de répondre aux questions factuelles ou documentaires sur ces textes publics et traités.
 - Précise au besoin qu'il s'agit d'une synthèse documentaire publique et non d'une consultation juridique personnalisée.
 `;
-
-    const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
-    const tabContents = aiModal.querySelectorAll('.ai-tab-content');
-
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tabKey = btn.getAttribute('data-tab');
-        tabBtns.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        tabContents.forEach(c => c.classList.remove('active'));
-
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        const targetContent = document.getElementById('ai-tab-' + tabKey);
-        if (targetContent) targetContent.classList.add('active');
-      });
-    });
 
     function formatAiResponse(raw) {
       if (!raw) return '';
@@ -1545,10 +1418,6 @@ DIRECTIVES :
       return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de millions de tonnes de déchets toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et le passage sous bâillon de la Loi 93. La CCE a officiellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
     }
 
-    const chatForm = document.getElementById('ai-chat-form');
-    const chatBox = document.getElementById('ai-chat-box');
-    const userInput = document.getElementById('ai-user-input');
-
     async function callHuggingFace(modelName, messages, maxTokens = 450) {
       const resp = await fetch(ROUTEUR_URL, {
         method: 'POST',
@@ -1575,160 +1444,311 @@ DIRECTIVES :
       throw new Error('Invalid HF payload');
     }
 
-    async function sendChatMessage(text) {
-      if (!text || !text.trim()) return;
-      const question = text.trim();
-      
-      const userBubble = document.createElement('div');
-      userBubble.className = 'ai-chat-bubble user';
-      userBubble.textContent = question;
-      chatBox.appendChild(userBubble);
-      userInput.value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
+    function initAiModal() {
+      if (aiModal) return;
 
-      const botBubble = document.createElement('div');
-      botBubble.className = 'ai-chat-bubble bot';
-      botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face AI)...</em>';
-      chatBox.appendChild(botBubble);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      aiModal = document.createElement('div');
+      aiModal.className = 'ai-modal-overlay';
+      aiModal.innerHTML = `
+        <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+          <div class="ai-modal-header">
+            <div class="ai-modal-title" id="ai-modal-title">
+              <span class="ai-live-dot"></span>
+              <span>Assistant IA · Dossier SEM-26-003</span>
+            </div>
+            <button class="ai-modal-close" aria-label="Fermer le panneau IA">✕</button>
+          </div>
 
-      const messages = [
-        { role: 'system', content: DOSSIER_CONTEXT },
-        { role: 'user', content: question }
-      ];
+          <!-- Onglets Navigation IA -->
+          <div class="ai-tabs" role="tablist">
+            <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
+            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
+            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Liens IA</button>
+          </div>
 
-      try {
-        let reply = '';
-        try {
-          reply = await callHuggingFace(PRIMARY_MODEL, messages, 400);
-        } catch (errPrimary) {
-          console.warn('Primary model error, trying backup:', errPrimary);
-          reply = await callHuggingFace(BACKUP_MODEL, messages, 400);
-        }
+          <!-- Onglet 1 : Clavardage / Chat en direct -->
+          <div class="ai-tab-content active" id="ai-tab-chat">
+            <div class="ai-chat-messages" id="ai-chat-box">
+              <div class="ai-chat-bubble bot">
+                <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> ⚡ API Hugging Face Active</span>
+                <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+              </div>
+            </div>
 
-        botBubble.innerHTML = formatAiResponse(reply);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (err) {
-        console.warn('Hugging Face API fallback to local answer:', err);
-        setTimeout(() => {
-          botBubble.innerHTML = generateLocalAnswer(question);
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }, 200);
+            <!-- Suggestions rapides -->
+            <div class="ai-quick-pills">
+              <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
+              <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
+              <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
+              <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
+              <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
+            </div>
+
+            <!-- Formulaire de saisie -->
+            <form class="ai-chat-input-row" id="ai-chat-form">
+              <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
+              <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
+            </form>
+
+            <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
+              <strong>Mode IA (Hugging Face AI) :</strong> Cet assistant est fourni à des fins purement informatives et documentaires sans valeur d'avis juridique. L'éditeur décline toute responsabilité quant aux réponses générées par le modèle ou aux requêtes des usagers. <strong>Respect de la Loi 25 (Québec) :</strong> Cet outil ne collecte, n'enregistre ni ne conserve aucun renseignement personnel. Les questions anonymes sont traitées en direct via l'infrastructure de Hugging Face conformément à leurs <a href="https://huggingface.co/terms-of-service" target="_blank" rel="noopener noreferrer" style="color: var(--accent, #0284c7); text-decoration: underline;">Directives d'utilisation</a>.
+            </p>
+          </div>
+
+          <!-- Onglet 2 : Résumé instantané -->
+          <div class="ai-tab-content" id="ai-tab-summary">
+            <div class="ai-summary-box">
+              <div class="ai-summary-card">
+                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
+                  ⚡ Génération de résumé automatique :
+                </div>
+                <div class="ai-summary-actions">
+                  <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
+                </div>
+                <div class="ai-summary-result" id="ai-summary-output">
+                  Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onglet 3 : Liens IA externes -->
+          <div class="ai-tab-content" id="ai-tab-models">
+            <p class="ai-modal-desc">
+              Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
+            </p>
+            <div class="ai-modal-buttons">
+              <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟢</span>
+                  <span>Ouvrir dans ChatGPT</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🔵</span>
+                  <span>Ouvrir dans Google Gemini</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟣</span>
+                  <span>Ouvrir dans Claude</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟠</span>
+                  <span>Ouvrir dans Perplexity</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <button type="button" class="ai-btn-option js-copy-ai-link">
+                <div class="ai-btn-option-left">
+                  <span>📋</span>
+                  <span>Copier le prompt et le lien pour l'IA</span>
+                </div>
+                <span class="js-copy-icon">Copier</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      `;
+      document.body.appendChild(aiModal);
+
+      if (!copyAlert) {
+        copyAlert = document.createElement('div');
+        copyAlert.className = 'ai-copy-alert';
+        copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
+        document.body.appendChild(copyAlert);
       }
-    }
 
-    if (chatForm) {
-      chatForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendChatMessage(userInput.value);
-      });
-    }
+      const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
+      const tabContents = aiModal.querySelectorAll('.ai-tab-content');
 
-    aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const q = pill.getAttribute('data-q');
-        sendChatMessage(q);
-      });
-    });
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabKey = btn.getAttribute('data-tab');
+          tabBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          tabContents.forEach(c => c.classList.remove('active'));
 
-    const sumOutput = document.getElementById('ai-summary-output');
-
-    async function runSummarizer(type) {
-      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
-      const sumPrompts = {
-        bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
-        tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
-        legal: "Rédige une note documentaire factuelle structurée expliquant le cadre juridique du dossier SEM-26-003 : articles 24.27 et 24.28 de l'ACEUM, application de la Loi sur les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP), et impact de la Loi 93."
-      };
-      const query = sumPrompts[type] || sumPrompts.bullets;
-
-      const messages = [
-        {
-          role: 'system',
-          content: DOSSIER_CONTEXT
-        },
-        { role: 'user', content: query }
-      ];
-
-      try {
-        let res = '';
-        try {
-          res = await callHuggingFace(PRIMARY_MODEL, messages, 650);
-        } catch (_) {
-          res = await callHuggingFace(BACKUP_MODEL, messages, 650);
-        }
-        sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
-      } catch (err) {
-        setTimeout(() => {
-          if (type === 'bullets') {
-            sumOutput.innerHTML = `
-              <strong>📋 Points clés du dossier SEM-26-003 :</strong>
-              <ul style="padding-left:18px; margin:8px 0;">
-                <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
-                <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
-                <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
-                <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
-                <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
-              </ul>
-            `;
-          } else if (type === 'tldr') {
-            sumOutput.innerHTML = `
-              <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
-              À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
-            `;
-          } else {
-            sumOutput.innerHTML = `
-              <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
-              Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
-            `;
-          }
-        }, 200);
-      }
-    }
-
-    const btnBullets = document.getElementById('btn-sum-bullets');
-    const btnTldr = document.getElementById('btn-sum-tldr');
-    const btnLegal = document.getElementById('btn-sum-legal');
-
-    if (btnBullets) btnBullets.addEventListener('click', () => runSummarizer('bullets'));
-    if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));
-    if (btnLegal) btnLegal.addEventListener('click', () => runSummarizer('legal'));
-
-    floatingBtn.addEventListener('click', () => {
-      aiModal.classList.add('active');
-      if (userInput) userInput.focus();
-    });
-
-    aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
-      aiModal.classList.remove('active');
-    });
-
-    aiModal.addEventListener('click', (e) => {
-      if (e.target === aiModal) {
-        aiModal.classList.remove('active');
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && aiModal.classList.contains('active')) {
-        aiModal.classList.remove('active');
-      }
-    });
-
-    const copyBtn = aiModal.querySelector('.js-copy-ai-link');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        const textToCopy = "Résume et analyse les faits sur William Guindon et la soumission CCE SEM-26-003 à partir de https://williamguindon.me/ai.html";
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          copyAlert.classList.add('show');
-          copyBtn.querySelector('.js-copy-icon').textContent = 'Copié !';
-          setTimeout(() => {
-            copyAlert.classList.remove('show');
-            copyBtn.querySelector('.js-copy-icon').textContent = 'Copier';
-          }, 3000);
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          const targetContent = document.getElementById('ai-tab-' + tabKey);
+          if (targetContent) targetContent.classList.add('active');
         });
       });
+
+      const chatForm = document.getElementById('ai-chat-form');
+      const chatBox = document.getElementById('ai-chat-box');
+      const userInput = document.getElementById('ai-user-input');
+
+      async function sendChatMessage(text) {
+        if (!text || !text.trim()) return;
+        const question = text.trim();
+        
+        const userBubble = document.createElement('div');
+        userBubble.className = 'ai-chat-bubble user';
+        userBubble.textContent = question;
+        chatBox.appendChild(userBubble);
+        userInput.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        const botBubble = document.createElement('div');
+        botBubble.className = 'ai-chat-bubble bot';
+        botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face AI)...</em>';
+        chatBox.appendChild(botBubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        const messages = [
+          { role: 'system', content: DOSSIER_CONTEXT },
+          { role: 'user', content: question }
+        ];
+
+        try {
+          let reply = '';
+          try {
+            reply = await callHuggingFace(PRIMARY_MODEL, messages, 400);
+          } catch (errPrimary) {
+            console.warn('Primary model error, trying backup:', errPrimary);
+            reply = await callHuggingFace(BACKUP_MODEL, messages, 400);
+          }
+
+          botBubble.innerHTML = formatAiResponse(reply);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (err) {
+          console.warn('Hugging Face API fallback to local answer:', err);
+          setTimeout(() => {
+            botBubble.innerHTML = generateLocalAnswer(question);
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }, 200);
+        }
+      }
+
+      if (chatForm) {
+        chatForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          sendChatMessage(userInput.value);
+        });
+      }
+
+      aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
+        pill.addEventListener('click', () => {
+          const q = pill.getAttribute('data-q');
+          sendChatMessage(q);
+        });
+      });
+
+      const sumOutput = document.getElementById('ai-summary-output');
+
+      async function runSummarizer(type) {
+        sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
+        const sumPrompts = {
+          bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
+          tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
+          legal: "Rédige une note documentaire factuelle structurée expliquant le cadre juridique du dossier SEM-26-003 : articles 24.27 et 24.28 de l'ACEUM, application de la Loi sur les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP), et impact de la Loi 93."
+        };
+        const query = sumPrompts[type] || sumPrompts.bullets;
+
+        const messages = [
+          {
+            role: 'system',
+            content: DOSSIER_CONTEXT
+          },
+          { role: 'user', content: query }
+        ];
+
+        try {
+          let res = '';
+          try {
+            res = await callHuggingFace(PRIMARY_MODEL, messages, 650);
+          } catch (_) {
+            res = await callHuggingFace(BACKUP_MODEL, messages, 650);
+          }
+          sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
+        } catch (err) {
+          setTimeout(() => {
+            if (type === 'bullets') {
+              sumOutput.innerHTML = `
+                <strong>📋 Points clés du dossier SEM-26-003 :</strong>
+                <ul style="padding-left:18px; margin:8px 0;">
+                  <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
+                  <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
+                  <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
+                  <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
+                  <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
+                </ul>
+              `;
+            } else if (type === 'tldr') {
+              sumOutput.innerHTML = `
+                <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
+                À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
+              `;
+            } else {
+              sumOutput.innerHTML = `
+                <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
+                Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
+              `;
+            }
+          }, 200);
+        }
+      }
+
+      const btnBullets = document.getElementById('btn-sum-bullets');
+      const btnTldr = document.getElementById('btn-sum-tldr');
+      const btnLegal = document.getElementById('btn-sum-legal');
+
+      if (btnBullets) btnBullets.addEventListener('click', () => runSummarizer('bullets'));
+      if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));
+      if (btnLegal) btnLegal.addEventListener('click', () => runSummarizer('legal'));
+
+      aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
+        aiModal.classList.remove('active');
+      });
+
+      aiModal.addEventListener('click', (e) => {
+        if (e.target === aiModal) {
+          aiModal.classList.remove('active');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && aiModal.classList.contains('active')) {
+          aiModal.classList.remove('active');
+        }
+      });
+
+      const copyBtn = aiModal.querySelector('.js-copy-ai-link');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const textToCopy = "Résume et analyse les faits sur William Guindon et la soumission CCE SEM-26-003 à partir de https://williamguindon.me/ai.html";
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            copyAlert.classList.add('show');
+            copyBtn.querySelector('.js-copy-icon').textContent = 'Copié !';
+            setTimeout(() => {
+              copyAlert.classList.remove('show');
+              copyBtn.querySelector('.js-copy-icon').textContent = 'Copier';
+            }, 3000);
+          });
+        });
+      }
     }
+
+    floatingBtn.addEventListener('click', () => {
+      initAiModal();
+      aiModal.classList.add('active');
+      const userInput = document.getElementById('ai-user-input');
+      if (userInput) userInput.focus();
+    });
   }
 
   function initHomeBlogAndPhotos() {
@@ -1755,15 +1775,15 @@ DIRECTIVES :
       }
     };
 
-    if (blogTrack) {
-      fetch('data/blog.json?v=' + Date.now())
+    if (blogTrack && blogTrack.children.length === 0) {
+      fetch('data/blog.json')
         .then(res => res.json())
         .then(posts => {
           if (!posts || posts.length === 0) return;
           blogTrack.innerHTML = posts.slice(0, 6).map(p => `
             <article class="blog-preview-card">
               <div class="blog-preview-thumb">
-                <img src="${p.coverImage || 'tourbiere.jpg'}" alt="${p.title}" loading="lazy">
+                <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title}" loading="lazy" decoding="async" width="380" height="215">
                 <span class="blog-preview-category">${p.category || 'Actualité'}</span>
               </div>
               <div class="blog-preview-body">
@@ -1780,15 +1800,15 @@ DIRECTIVES :
         .catch(err => console.warn('Blog preview load:', err));
     }
 
-    if (photosTrack) {
-      fetch('data/photos.json?v=' + Date.now())
+    if (photosTrack && photosTrack.children.length === 0) {
+      fetch('data/photos.json')
         .then(res => res.json())
         .then(photos => {
           if (!photos || photos.length === 0) return;
           photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
             <article class="blog-preview-card">
               <div class="blog-preview-thumb">
-                <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy">
+                <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy" decoding="async" width="380" height="215">
                 <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
               </div>
               <div class="blog-preview-body">
