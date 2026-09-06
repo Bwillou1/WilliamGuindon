@@ -1446,8 +1446,28 @@
 
     const ROUTEUR_URL = "https://router.huggingface.co/v1/chat/completions";
     const HF_TOKEN = [104, 102, 95, 100, 75, 108, 102, 115, 117, 101, 83, 98, 66, 65, 103, 108, 67, 84, 100, 84, 99, 90, 99, 113, 85, 68, 119, 73, 103, 89, 101, 73, 116, 77, 101, 79, 102].map(c => String.fromCharCode(c)).join('');
-    const PRIMARY_MODEL = "meta-llama/Llama-3.1-8B-Instruct";
-    const BACKUP_MODEL = "Qwen/Qwen2.5-72B-Instruct";
+    const PRIMARY_MODEL = "Qwen/Qwen2.5-72B-Instruct";
+    const BACKUP_MODEL = "meta-llama/Llama-3.3-70B-Instruct";
+
+    const DOSSIER_CONTEXT = `
+Tu es l'assistant documentaire officiel du site de William Guindon (williamguindon.me).
+Tu informes le public avec rigueur, structure et neutralité sur les faits publics vérifiés du dossier environnemental SEM-26-003.
+
+FAITS CLÉS DU DOSSIER :
+- Demandeur : William Guindon, militant écologiste québécois né en août 2011 (14-15 ans), élève à l'Externat Sacré-Cœur de Rosemère. Premier mineur de l'histoire des traités nord-américains à soumettre un recours recevable.
+- Instance : Secrétariat de la Commission de coopération environnementale (CCE), en vertu des articles 24.27 et 24.28 du chapitre 24 (Environnement) de l'ACEUM (CUSMA).
+- Enjeu : Projet d'enfouissement de millions de tonnes de résidus toxiques et industriels (Cellule no 6 de Stablex) dans la Grande Tourbière de Blainville (278 000 m² de milieux humides).
+- BAPE : Rapport 371 (septembre 2023) concluant au caractère « prématuré » du projet et recommandant son refus environnemental.
+- Loi 93 : Loi d'exception adoptée sous bâillon le 28 mars 2025 par l'Assemblée nationale du Québec (61-31) pour forcer l'expropriation des terrains municipaux et neutraliser les recours judiciaires.
+- Décision CCE : Détermination positive rendue le 17 août 2026 par le Secrétariat de la CCE, intimant le gouvernement du Canada à fournir une réponse écrite formelle sous 60 jours (date butoir : 16 octobre 2026) quant à l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).
+- Biodiversité & Contamination : 132 espèces d'oiseaux recensées, chauves-souris en péril, et concentrations de cadmium mesurées jusqu'à 320 fois les seuils de protection aquatique dans les tributaires voisins.
+- ONU : Mémoire formel soumis en mai 2026 au Rapporteur spécial de l'ONU sur les toxiques et les droits humains (Dr Marcos A. Orellana).
+
+DIRECTIVES :
+- Réponds en français clair, factuel, structuré en Markdown.
+- Ne refuse pas de répondre aux questions factuelles ou documentaires sur ces textes publics et traités.
+- Précise au besoin qu'il s'agit d'une synthèse documentaire publique et non d'une consultation juridique personnalisée.
+`;
 
     const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
     const tabContents = aiModal.querySelectorAll('.ai-tab-content');
@@ -1471,12 +1491,27 @@
     function formatAiResponse(raw) {
       if (!raw) return '';
       let text = raw.trim();
+      text = text.replace(/### (.*?)\n/g, '<h4 style="margin:10px 0 4px; color:var(--accent,#0284c7); font-size:1.05rem;">$1</h4>\n');
+      text = text.replace(/## (.*?)\n/g, '<h3 style="margin:12px 0 6px; color:var(--accent,#0284c7); font-size:1.15rem;">$1</h3>\n');
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      text = text.replace(/^-\s+(.*)$/gm, '• $1');
+      text = text.replace(/^[-*•]\s+(.*)$/gm, '<li style="margin-bottom:4px;">$1</li>');
+      text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:20px; margin:8px 0;">$1</ul>');
       text = text.replace(/\n\n/g, '<br><br>');
       text = text.replace(/\n/g, '<br>');
       return text;
+    }
+
+    function isRefusal(text) {
+      if (!text) return true;
+      const lower = text.toLowerCase();
+      return (
+        lower.includes("je suis désolé") ||
+        lower.includes("je ne peux pas fournir") ||
+        lower.includes("je ne suis pas en mesure") ||
+        lower.includes("pas d'informations sur un dossier") ||
+        lower.includes("comportement illégal")
+      );
     }
 
     function generateLocalAnswer(query) {
@@ -1514,7 +1549,7 @@
     const chatBox = document.getElementById('ai-chat-box');
     const userInput = document.getElementById('ai-user-input');
 
-    async function callHuggingFace(modelName, messages, maxTokens = 350) {
+    async function callHuggingFace(modelName, messages, maxTokens = 450) {
       const resp = await fetch(ROUTEUR_URL, {
         method: 'POST',
         headers: {
@@ -1524,14 +1559,18 @@
         body: JSON.stringify({
           model: modelName,
           messages: messages,
-          temperature: 0.2,
+          temperature: 0.3,
           max_tokens: maxTokens
         })
       });
       if (!resp.ok) throw new Error(`HF Error HTTP ${resp.status}`);
       const data = await resp.json();
       if (data && data.choices && data.choices[0] && data.choices[0].message) {
-        return data.choices[0].message.content;
+        const reply = data.choices[0].message.content;
+        if (isRefusal(reply)) {
+          throw new Error('Safety guard refusal detected');
+        }
+        return reply;
       }
       throw new Error('Invalid HF payload');
     }
@@ -1553,20 +1592,18 @@
       chatBox.appendChild(botBubble);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      const systemPrompt = "Tu es l'assistant d'information officiel du site de William Guindon (williamguindon.me). Tu réponds avec rigueur, clarté et précision en français sur le dossier environnemental SEM-26-003 devant la CCE (Commission de coopération environnementale - ACEUM), la Grande Tourbière de Blainville, le projet d'agrandissement de Stablex (Cellule 6), la Loi 93 adoptée sous bâillon, le Rapport 371 du BAPE et l'échéance du 16 octobre 2026. Reste concis, factuel et neutre. Ne donne pas d'avis juridique formel.";
-
       const messages = [
-        { role: 'system', content: systemPrompt },
+        { role: 'system', content: DOSSIER_CONTEXT },
         { role: 'user', content: question }
       ];
 
       try {
         let reply = '';
         try {
-          reply = await callHuggingFace(PRIMARY_MODEL, messages, 350);
+          reply = await callHuggingFace(PRIMARY_MODEL, messages, 400);
         } catch (errPrimary) {
           console.warn('Primary model error, trying backup:', errPrimary);
-          reply = await callHuggingFace(BACKUP_MODEL, messages, 350);
+          reply = await callHuggingFace(BACKUP_MODEL, messages, 400);
         }
 
         botBubble.innerHTML = formatAiResponse(reply);
@@ -1599,16 +1636,16 @@
     async function runSummarizer(type) {
       sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face)...</em>';
       const sumPrompts = {
-        bullets: "Génère 5 points clés concis et factuels avec puces sur le dossier SEM-26-003, la Grande Tourbière de Blainville, Stablex, le BAPE 371 et la décision CCE.",
-        tldr: "Résume en exactement 1 paragraphe dense et factuel l'essentiel de l'affaire SEM-26-003 et la décision CCE du 17 août 2026.",
-        legal: "Rédige une synthèse juridique concise sur l'application des articles 24.27 et 24.28 de l'ACEUM, la Loi sur les oiseaux migrateurs, la LEP et la Loi 93."
+        bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
+        tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
+        legal: "Rédige une note documentaire factuelle structurée expliquant le cadre juridique du dossier SEM-26-003 : articles 24.27 et 24.28 de l'ACEUM, application de la Loi sur les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP), et impact de la Loi 93."
       };
       const query = sumPrompts[type] || sumPrompts.bullets;
 
       const messages = [
         {
           role: 'system',
-          content: "Tu es un synthétiseur d'élite en droit de l'environnement canadien. Sois concis, structuré et purement factuel."
+          content: DOSSIER_CONTEXT
         },
         { role: 'user', content: query }
       ];
@@ -1616,9 +1653,9 @@
       try {
         let res = '';
         try {
-          res = await callHuggingFace(PRIMARY_MODEL, messages, 300);
+          res = await callHuggingFace(PRIMARY_MODEL, messages, 450);
         } catch (_) {
-          res = await callHuggingFace(BACKUP_MODEL, messages, 300);
+          res = await callHuggingFace(BACKUP_MODEL, messages, 450);
         }
         sumOutput.innerHTML = `<strong>✨ Résumé IA (Hugging Face) :</strong><br>${formatAiResponse(res)}`;
       } catch (err) {
