@@ -3310,11 +3310,11 @@ body.dark-theme .notif-link-ghost {
   margin: 28px 0 36px 0;
   overflow: hidden;
   position: relative;
-  border-radius: 6px;
+  border-radius: 12px;
   background: var(--bg-card);
   border: 1px solid var(--line);
-  padding: 16px 0;
-  box-shadow: var(--shadow);
+  padding: 14px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .media-logos-ticker-wrapper::before,
@@ -3323,7 +3323,7 @@ body.dark-theme .notif-link-ghost {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 50px;
+  width: 60px;
   z-index: 2;
   pointer-events: none;
 }
@@ -3340,9 +3340,11 @@ body.dark-theme .notif-link-ghost {
 
 .media-logos-ticker-track {
   display: flex;
-  gap: 32px;
+  align-items: center;
+  gap: 28px;
   width: max-content;
-  animation: mediaLogosScroll 50s linear infinite;
+  animation: mediaLogosScroll 35s linear infinite;
+  will-change: transform;
 }
 
 .media-logos-ticker-track:hover,
@@ -3365,38 +3367,30 @@ body.dark-theme .notif-link-ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 52px;
-  padding: 8px 18px;
-  background: #ffffff;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 42px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, filter 0.2s ease;
+  opacity: 0.9;
   flex-shrink: 0;
   text-decoration: none;
 }
 
 .media-logo-item:hover {
-  transform: none;
-  box-shadow: 0 8px 20px rgba(52, 211, 153, 0.3);
-}
-
-.media-logo-item.item-lapresse {
-  background: #E30613;
-  border-color: #E30613;
-}
-
-.media-logo-item.item-therover {
-  background: #111827;
-  border-color: #111827;
+  opacity: 1;
+  transform: translateY(-2px) scale(1.05);
 }
 
 .media-logo-item img {
-  max-height: 34px;
+  height: 38px;
   width: auto;
-  max-width: 130px;
+  max-width: 150px;
   object-fit: contain;
   display: block;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .press-carousel-wrapper {
@@ -3439,17 +3433,13 @@ body.dark-theme .notif-link-ghost {
   flex-direction: column !important;
   justify-content: space-between !important;
   box-shadow: var(--shadow);
-  
 }
-
-
 
 [data-theme="dark"] .press-card,
 body.dark-theme .press-card {
   background: rgba(4, 36, 27, 0.75);
   border: 1px solid rgba(52, 211, 153, 0.25);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  
 }
 
 [data-theme="dark"] .media-logos-ticker-wrapper,
@@ -3482,83 +3472,30 @@ body.dark-theme .media-logos-ticker-wrapper::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  padding: 8px 14px;
+  background: transparent;
+  padding: 0;
   border-radius: 6px;
-  height: 48px;
-  max-width: 150px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 40px;
+  max-width: 160px;
+  border: none;
+  box-shadow: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.95;
 }
 
 .press-logo-link:hover {
-  transform: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 1;
+  transform: translateY(-2px) scale(1.03);
 }
 
 .press-logo-img {
-  max-height: 32px;
+  height: 38px;
   width: auto;
-  max-width: 120px;
+  max-width: 140px;
   object-fit: contain;
   display: block;
-}
-
-.press-logo-link.logo-lapresse {
-  background: #E30613;
-  border-color: #E30613;
-  padding: 6px 12px;
-}
-
-.press-logo-link.logo-lapresse .press-logo-img {
-  max-height: 34px;
-}
-
-.press-logo-link.logo-cbc {
-  background: #ffffff;
-  padding: 6px 10px;
-}
-
-.press-logo-link.logo-cbc .press-logo-img {
-  max-height: 36px;
-}
-
-.press-logo-link.logo-ledevoir {
-  background: #ffffff;
-  padding: 6px 10px;
-}
-
-.press-logo-link.logo-ledevoir .press-logo-img {
-  max-height: 32px;
-}
-
-.press-logo-link.logo-tvbl {
-  background: #ffffff;
-  padding: 6px 10px;
-}
-
-.press-logo-link.logo-tvbl .press-logo-img {
-  max-height: 34px;
-}
-
-.press-logo-link.logo-asdelinfo {
-  background: #ffffff;
-  padding: 6px 10px;
-}
-
-.press-logo-link.logo-asdelinfo .press-logo-img {
-  max-height: 36px;
-}
-
-.press-logo-link.logo-therover {
-  background: #191919;
-  border-color: #191919;
-  padding: 6px 10px;
-}
-
-.press-logo-link.logo-therover .press-logo-img {
-  max-height: 36px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .press-date-tag {
