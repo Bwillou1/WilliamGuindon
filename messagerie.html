@@ -427,6 +427,62 @@
   font-size: 0.9rem;
   line-height: 1.6;
 }
+
+.session-restore-box {
+  background: var(--bg);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  display: none;
+}
+.session-restore-box.active {
+  display: block;
+}
+
+.reply-form-card {
+  margin-top: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.reply-textarea {
+  width: 100%;
+  min-height: 90px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+.reply-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.btn-reply-action {
+  background: var(--accent-deep);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+.btn-reply-action:hover {
+  background: var(--accent);
+}
 </style>
 </head>
 <body>
@@ -581,6 +637,30 @@
 
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; line-height: 1.4;">
             💡 <strong>Astuce :</strong> Conservez ou copiez votre clé si vous désirez revenir consulter la réponse de William dans l'onglet <em>« Boîte de réception »</em>.
+          </div>
+
+          <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <button id="btn-toggle-restore-box" type="button" class="btn btn-outline" style="font-size:0.82rem; padding:6px 12px; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+              <span>🔑 J'ai déjà une clé secrète (Reprendre ma session)</span>
+            </button>
+            <button id="btn-wipe-all" type="button" class="btn btn-outline" style="font-size:0.82rem; padding:6px 12px; color:#ef4444; border-color:#fca5a5; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>🧹 Tout effacer de cet appareil</span>
+            </button>
+          </div>
+
+          <div id="session-restore-panel" class="session-restore-box">
+            <label for="restore-nsec-input" style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:6px;">
+              Collez votre clé secrète existante (nsec... ou hex 64 car.) pour réutiliser votre identité :
+            </label>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <input type="password" id="restore-nsec-input" placeholder="nsec1..." style="flex:1; min-width:240px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:8px 12px; font-family:ui-monospace, monospace; font-size:0.85rem;">
+              <button id="btn-apply-restored-key" type="button" class="btn btn-primary" style="font-size:0.85rem; padding:8px 14px;">
+                <span>Charger cette identité</span>
+              </button>
+            </div>
+            <div id="restore-status-feedback" style="font-size:0.8rem; margin-top:6px;"></div>
           </div>
         </div>
 
@@ -825,6 +905,93 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initBurnerKeys();
+
+  // 1.1 Reprise de session / Restauration de clé
+  const btnToggleRestore = document.getElementById('btn-toggle-restore-box');
+  const sessionRestorePanel = document.getElementById('session-restore-panel');
+  const restoreNsecInput = document.getElementById('restore-nsec-input');
+  const btnApplyRestoredKey = document.getElementById('btn-apply-restored-key');
+  const restoreStatusFeedback = document.getElementById('restore-status-feedback');
+
+  if (btnToggleRestore && sessionRestorePanel) {
+    btnToggleRestore.addEventListener('click', () => {
+      sessionRestorePanel.classList.toggle('active');
+      if (sessionRestorePanel.classList.contains('active') && restoreNsecInput) {
+        restoreNsecInput.focus();
+      }
+    });
+  }
+
+  if (btnApplyRestoredKey && restoreNsecInput) {
+    btnApplyRestoredKey.addEventListener('click', () => {
+      const rawInput = restoreNsecInput.value.trim();
+      if (!rawInput) {
+        if (restoreStatusFeedback) {
+          restoreStatusFeedback.innerHTML = `<span style="color:#ef4444;">Veuillez coller une clé nsec ou hexadécimale valide.</span>`;
+        }
+        return;
+      }
+
+      try {
+        let restoredBytes;
+        if (rawInput.toLowerCase().startsWith('nsec1')) {
+          const decoded = window.NostrTools.nip19.decode(rawInput);
+          if (decoded.type !== 'nsec') throw new Error("Format nsec requis");
+          restoredBytes = decoded.data;
+        } else {
+          restoredBytes = hexToBytes(rawInput);
+        }
+
+        if (restoredBytes.length !== 32) {
+          throw new Error("La clé secrète doit comporter exactement 32 octets (64 caractères hexadécimaux)");
+        }
+
+        currentBurnerSecretKey = restoredBytes;
+        currentBurnerPublicKey = window.NostrTools.getPublicKey(currentBurnerSecretKey);
+        currentNpubString = window.NostrTools.nip19.npubEncode(currentBurnerPublicKey);
+        currentNsecString = window.NostrTools.nip19.nsecEncode(currentBurnerSecretKey);
+
+        const nsecInputEl = document.getElementById('burner-nsec-plain');
+        if (nsecInputEl) nsecInputEl.value = currentNsecString;
+
+        const npubEl = document.getElementById('burner-npub-display');
+        if (npubEl) npubEl.textContent = currentNpubString;
+
+        const inboxKeyEl = document.getElementById('inbox-privkey');
+        if (inboxKeyEl) inboxKeyEl.value = currentNsecString;
+
+        if (restoreStatusFeedback) {
+          restoreStatusFeedback.innerHTML = `<span style="color:var(--accent-deep); font-weight:700;">✓ Identité restaurée avec succès (${currentNpubString.slice(0, 16)}...). Vos sessions et discussions précédentes sont prêtes.</span>`;
+        }
+        restoreNsecInput.value = "";
+      } catch (err) {
+        if (restoreStatusFeedback) {
+          restoreStatusFeedback.innerHTML = `<span style="color:#ef4444;">Erreur de clé : ${escapeHtml(err.message)}</span>`;
+        }
+      }
+    });
+  }
+
+  // 1.2 Bouton Tout effacer de cet appareil
+  const btnWipeAll = document.getElementById('btn-wipe-all');
+  if (btnWipeAll) {
+    btnWipeAll.addEventListener('click', () => {
+      if (confirm("Voulez-vous réinitialiser et détruire toutes les clés locales sur cet appareil ? Une nouvelle clé anonyme vierge sera créée.")) {
+        try { localStorage.clear(); } catch (_) {}
+        try { sessionStorage.clear(); } catch (_) {}
+        document.getElementById('msg-content').value = "";
+        const inboxKeyEl = document.getElementById('inbox-privkey');
+        if (inboxKeyEl) inboxKeyEl.value = "";
+        const restoreInputEl = document.getElementById('restore-nsec-input');
+        if (restoreInputEl) restoreInputEl.value = "";
+        if (restoreStatusFeedback) restoreStatusFeedback.innerHTML = "";
+        fileInfoBox.style.display = 'none';
+        encryptedFileData = null;
+        initBurnerKeys();
+        alert("Toutes les données de session ont été effacées. Une nouvelle clé secrète anonyme a été générée.");
+      }
+    });
+  }
 
   // Bouton Afficher / Masquer la clé
   const btnToggleNsec = document.getElementById('btn-toggle-nsec');
@@ -1115,6 +1282,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inboxStatus = document.getElementById('inbox-status');
   const inboxList = document.getElementById('inbox-list-container');
   const receivedEvents = new Map();
+  let currentDecryptionKeyBytes = null;
 
   function hexToBytes(hex) {
     hex = hex.trim().toLowerCase();
@@ -1150,6 +1318,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (skBytes.length !== 32) throw new Error("La clé secrète doit comporter 32 octets");
       myPubHex = window.NostrTools.getPublicKey(skBytes);
+      currentDecryptionKeyBytes = skBytes;
     } catch (e) {
       alert("Format de clé privée invalide : " + e.message);
       return;
@@ -1180,7 +1349,7 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             const rumor = window.NostrTools.nip59.unwrapEvent(event, skBytes);
             count++;
-            renderInboxMessage(rumor, event.id, "NIP-59 Gift Wrap (Triple Chiffrement)");
+            renderInboxMessage(rumor, event.id, "NIP-59 Gift Wrap (Triple Chiffrement)", skBytes);
           } catch (err) {
             console.warn("Événement 1059 non déchiffrable :", err);
           }
@@ -1192,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', () => {
               content: decryptedText,
               pubkey: event.pubkey,
               created_at: event.created_at
-            }, event.id, "NIP-04 Message Direct Standard");
+            }, event.id, "NIP-04 Message Direct Standard", skBytes);
           } catch (err) {
             console.warn("Événement 4 non déchiffrable :", err);
           }
@@ -1213,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function renderInboxMessage(rumor, eventId, protocolLabel = "") {
+  function renderInboxMessage(rumor, eventId, protocolLabel = "", senderSecretKeyBytes = null) {
     if (inboxList.querySelector('.inbox-empty-placeholder') || inboxList.textContent.includes('Recherche') || inboxList.textContent.includes('Aucun message')) {
       inboxList.innerHTML = '';
     }
@@ -1223,6 +1392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let senderNpub = "Anonyme";
+    let senderPubHex = rumor.pubkey || "";
     try {
       if (rumor.pubkey) {
         senderNpub = window.NostrTools.nip19.npubEncode(rumor.pubkey);
@@ -1234,16 +1404,120 @@ document.addEventListener('DOMContentLoaded', () => {
     card.innerHTML = `
       <div class="inbox-message-header">
         <div>
-          <strong>De :</strong> <code style="color:var(--accent-deep); font-size:0.85rem;">${senderNpub.slice(0, 16)}...${senderNpub.slice(-8)}</code>
+          <strong>De :</strong> <code style="color:var(--accent-deep); font-size:0.85rem;" title="${senderNpub}">${senderNpub.slice(0, 16)}...${senderNpub.slice(-8)}</code>
           ${protocolLabel ? `<span style="font-size:0.75rem; background:var(--accent-wash); color:var(--accent-deep); padding:2px 6px; border-radius:4px; margin-left:6px;">${escapeHtml(protocolLabel)}</span>` : ''}
         </div>
         <div><time>${dateStr}</time></div>
       </div>
       <div class="inbox-message-body" style="margin-top:10px; font-size:1rem;">${escapeHtml(rumor.content)}</div>
-      <div style="font-size:0.75rem; color:var(--text-faint); margin-top:12px;">
-        ID Événement : <code>${eventId.slice(0, 16)}...</code>
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:14px; padding-top:10px; border-top:1px solid var(--line);">
+        <div style="font-size:0.75rem; color:var(--text-faint);">
+          ID Événement : <code>${eventId.slice(0, 16)}...</code>
+        </div>
+        ${senderPubHex ? `
+        <button type="button" class="btn-reply-action btn-reply-toggle" style="padding:5px 12px; font-size:0.82rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
+          <span>Répondre à cet interlocuteur</span>
+        </button>` : ''}
       </div>
+
+      ${senderPubHex ? `
+      <div class="reply-form-card" style="display:none;">
+        <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:6px; color:var(--accent-deep);">
+          Répondre confidentiellement à <code>${senderNpub.slice(0, 12)}...</code> :
+        </label>
+        <textarea class="reply-textarea" placeholder="Tapez votre réponse chiffrée ici..."></textarea>
+        <div style="display:flex; justify-content:flex-end; gap:8px; align-items:center;">
+          <button type="button" class="btn btn-outline btn-reply-cancel" style="padding:6px 12px; font-size:0.82rem;">Annuler</button>
+          <button type="button" class="btn-reply-action btn-reply-send">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <span>Envoyer la réponse (Gift Wrap)</span>
+          </button>
+        </div>
+        <div class="reply-status-box" style="font-size:0.8rem; margin-top:8px;"></div>
+      </div>` : ''}
     `;
+
+    if (senderPubHex) {
+      const toggleBtn = card.querySelector('.btn-reply-toggle');
+      const replyBox = card.querySelector('.reply-form-card');
+      const cancelBtn = card.querySelector('.btn-reply-cancel');
+      const sendReplyBtn = card.querySelector('.btn-reply-send');
+      const replyTextarea = card.querySelector('.reply-textarea');
+      const replyStatus = card.querySelector('.reply-status-box');
+
+      if (toggleBtn && replyBox) {
+        toggleBtn.addEventListener('click', () => {
+          replyBox.style.display = replyBox.style.display === 'none' ? 'block' : 'none';
+          if (replyBox.style.display === 'block') replyTextarea.focus();
+        });
+      }
+
+      if (cancelBtn && replyBox) {
+        cancelBtn.addEventListener('click', () => {
+          replyBox.style.display = 'none';
+          replyTextarea.value = '';
+          if (replyStatus) replyStatus.innerHTML = '';
+        });
+      }
+
+      if (sendReplyBtn && replyTextarea) {
+        sendReplyBtn.addEventListener('click', async () => {
+          const replyText = replyTextarea.value.trim();
+          if (!replyText) {
+            alert("Veuillez saisir votre réponse.");
+            return;
+          }
+
+          const mySecKey = senderSecretKeyBytes || currentDecryptionKeyBytes || currentBurnerSecretKey;
+          if (!mySecKey) {
+            alert("Clé secrète introuvable. Veuillez recharger votre clé.");
+            return;
+          }
+
+          sendReplyBtn.disabled = true;
+          sendReplyBtn.textContent = "Chiffrement et diffusion...";
+          if (replyStatus) replyStatus.innerHTML = `<em>Scellement NIP-59 / NIP-44 v2 et envoi aux relais...</em>`;
+
+          try {
+            const now = Math.floor(Date.now() / 1000);
+            const rumorObj = {
+              kind: 14,
+              content: replyText,
+              tags: [["p", senderPubHex], ["e", eventId]],
+              created_at: now
+            };
+
+            const wrap = window.NostrTools.nip59.wrapEvent(
+              rumorObj,
+              mySecKey,
+              senderPubHex
+            );
+
+            if (!pool) pool = new window.NostrTools.SimplePool();
+            const pubs = pool.publish(relays, wrap);
+            await Promise.allSettled(pubs);
+
+            if (replyStatus) {
+              replyStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700;">✓ Réponse chiffrée NIP-59 transmise avec succès à l'interlocuteur !</span>`;
+            }
+            replyTextarea.value = '';
+            setTimeout(() => {
+              sendReplyBtn.disabled = false;
+              sendReplyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> <span>Envoyer la réponse (Gift Wrap)</span>`;
+            }, 3000);
+          } catch (err) {
+            if (replyStatus) {
+              replyStatus.innerHTML = `<span style="color:#ef4444;">Erreur d'envoi : ${escapeHtml(err.message)}</span>`;
+            }
+            sendReplyBtn.disabled = false;
+            sendReplyBtn.innerHTML = `<span>Réessayer</span>`;
+          }
+        });
+      }
+    }
+
     inboxList.prepend(card);
   }
 
