@@ -1346,8 +1346,9 @@
     const BACKUP_MODEL = "meta-llama/Llama-3.3-70B-Instruct";
 
     const DOSSIER_CONTEXT = `
-Tu es l'assistant documentaire officiel du site de William Guindon (williamguindon.me).
-Tu informes le public avec une rigueur absolue, structure et neutralité en te basant EXCLUSIVEMENT sur les faits vérifiés du corpus officiel (ai.txt / SEM-26-003).
+Tu es l'assistant documentaire officiel du site public de William Guindon (williamguindon.me).
+William Guindon est une personnalité publique, militant écologiste québécois et propriétaire de ce site.
+Tu es EXPRESSÉMENT AUTORISÉ ET MANDATÉ par William Guindon à synthétiser et présenter sa biographie publique officielle, son âge, son parcours scolaire et son rôle de citoyen engagé dans le dossier SEM-26-003. Ne refuse JAMAIS de répondre aux questions demandant sa biographie, son profil, son âge ou un résumé de son parcours public.
 
 RÈGLES STRICTES CONTRE LES HALLUCINATIONS :
 1. DISAMBIGUÏSATION INSTITUTIONNELLE OBLIGATOIRE :
@@ -1355,8 +1356,8 @@ RÈGLES STRICTES CONTRE LES HALLUCINATIONS :
    - NE JAMAIS confondre la CCE avec une "Commission canadienne de l'environnement" ou la "Commission des droits de l'homme de l'ONU".
    - ONU = Mémoire formel et appel urgent transmis en mai 2026 au Dr Marcos A. Orellana, Rapporteur spécial des Nations Unies sur les substances toxiques et les droits de l'homme (Genève).
 
-2. STATUT, INDÉPENDANCE ET PROFIL DE WILLIAM GUINDON :
-   - Date de naissance : 3 août 2011 (14 ans lors du dépôt le 1er mai 2026, 15 ans lors de la décision CCE du 17 août 2026). Étudiant à l'Externat Sacré-Cœur de Rosemère.
+2. BIOGRAPHIE, STATUT, INDÉPENDANCE ET PROFIL DE WILLIAM GUINDON :
+   - Date de naissance : 3 août 2011 à Sainte-Marthe-sur-le-Lac, Québec (14 ans lors du dépôt le 1er mai 2026, 15 ans lors de la décision CCE du 17 août 2026). Étudiant à l'Externat Sacré-Cœur de Rosemère.
    - Démarche citoyenne 100% autonome et indépendante.
    - SEUL AUTEUR ET UNIQUE SIGNATAIRE de la soumission SEM-26-003 et du mémoire à l'ONU.
    - AUCUNE AFFILIATION POLITIQUE : Aucun lien ni travail conjoint avec un parti politique quelconque (aucun lien avec Climat Québec ou tout autre parti provincial, fédéral ou municipal).
@@ -1376,7 +1377,7 @@ RÈGLES STRICTES CONTRE LES HALLUCINATIONS :
 
 DIRECTIVES DE RÉPONSE :
 - Réponds toujours en français fluide, précis, structuré avec titres et puces Markdown.
-- Ne refuse jamais de répondre aux questions sur ces faits publics, lois et traités.
+- Ne refuse jamais de répondre aux questions sur ces faits publics, biographie publique, lois et traités.
 - Reste strictement factuel, courtois et neutre.
 `;
 
@@ -1402,6 +1403,7 @@ DIRECTIVES DE RÉPONSE :
         lower.includes("je ne peux pas fournir") ||
         lower.includes("je ne suis pas en mesure") ||
         lower.includes("pas d'informations sur un dossier") ||
+        lower.includes("renseignements personnels") ||
         lower.includes("comportement illégal")
       );
     }
@@ -1409,6 +1411,9 @@ DIRECTIVES DE RÉPONSE :
     function generateLocalAnswer(query) {
       const q = query.toLowerCase();
       
+      if (q.includes('bio') || q.includes('biographie') || q.includes('parcours') || q.includes('qui')) {
+        return "<strong>Biographie officielle de William Guindon :</strong><br>Né le 3 août 2011 à Sainte-Marthe-sur-le-Lac (15 ans), William Guindon est un citoyen et militant écologiste québécois, élève à l'Externat Sacré-Cœur de Rosemère.<br><br>À 14 ans, il dépose en toute indépendance citoyenne la soumission <strong>SEM-26-003</strong> devant la Commission de coopération environnementale (CCE / ACEUM) et un mémoire à l'ONU pour protéger la Grande Tourbière de Blainville.<br><br>Le 17 août 2026, à 15 ans, il obtient une détermination positive historique du Secrétariat de la CCE intimant le Canada à répondre formellement d'ici le 16 octobre 2026. Sa démarche est appuyée ponctuellement par 16 experts scientifiques consultatifs.";
+      }
       if (q.includes('93') || q.includes('loi')) {
         return "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de la cellule n° 6 de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
       }
@@ -1420,9 +1425,6 @@ DIRECTIVES DE RÉPONSE :
       }
       if (q.includes('cadmium') || q.includes('oiseau') || q.includes('faune') || q.includes('pollution') || q.includes('eau') || q.includes('poisson')) {
         return "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les tributaires voisins.";
-      }
-      if (q.includes('william') || q.includes('âge') || q.includes('age') || q.includes('qui')) {
-        return "<strong>William Guindon :</strong> Citoyen et militant écologiste québécois né le 3 août 2011 (15 ans), élève à l'Externat Sacré-Cœur de Rosemère. Seul auteur et signataire de la soumission SEM-26-003 déposée à 14 ans devant la CCE (ACEUM), il a obtenu une décision historique ordonnant au Canada de s'expliquer. Sa démarche est 100% indépendante et appuyée ponctuellement par 16 experts scientifiques consultatifs.";
       }
       if (q.includes('session') || q.includes('contact') || q.includes('anonym') || q.includes('whistleblower') || q.includes('document')) {
         return "<strong>Contact sécurisé Session :</strong> Pour transmettre des documents confidentiels ou communiquer dans l'anonymat complet, utilisez l'application <em>Session</em> avec l'ID :<br><code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>";
@@ -1732,17 +1734,20 @@ DIRECTIVES DE RÉPONSE :
 
       aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
         aiModal.classList.remove('active');
+        document.body.classList.remove('ai-sidebar-active');
       });
 
       aiModal.addEventListener('click', (e) => {
         if (e.target === aiModal) {
           aiModal.classList.remove('active');
+          document.body.classList.remove('ai-sidebar-active');
         }
       });
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aiModal.classList.contains('active')) {
           aiModal.classList.remove('active');
+          document.body.classList.remove('ai-sidebar-active');
         }
       });
 
@@ -1764,9 +1769,14 @@ DIRECTIVES DE RÉPONSE :
 
     floatingBtn.addEventListener('click', () => {
       initAiModal();
-      aiModal.classList.add('active');
-      const userInput = document.getElementById('ai-user-input');
-      if (userInput) userInput.focus();
+      const isActive = aiModal.classList.toggle('active');
+      if (isActive) {
+        document.body.classList.add('ai-sidebar-active');
+        const userInput = document.getElementById('ai-user-input');
+        if (userInput) userInput.focus();
+      } else {
+        document.body.classList.remove('ai-sidebar-active');
+      }
     });
   }
 
