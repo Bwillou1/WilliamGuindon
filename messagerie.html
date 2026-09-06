@@ -1156,48 +1156,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnFetchInbox.disabled = true;
-    inboxStatus.innerHTML = `<em>Interrogation des relais décentralisés (${relays.join(', ')})...</em>`;
-    inboxList.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Recherche des Gift Wraps (Kind 1059) en cours...</div>`;
+    inboxStatus.innerHTML = `<em>Interrogation en direct des relais décentralisés (${relays.join(', ')})...</em>`;
+    inboxList.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Recherche et déchiffrement en mémoire RAM...</div>`;
     receivedEvents.clear();
 
     if (!pool) pool = new window.NostrTools.SimplePool();
     let count = 0;
 
     try {
-      const sub = pool.subscribeMany(
-        relays,
-        [{
-          kinds: [1059],
-          "#p": [myPubHex],
-          limit: 100
-        }],
-        {
-          onevent(event) {
-            if (receivedEvents.has(event.id)) return;
-            receivedEvents.set(event.id, event);
+      const events = await pool.querySync(relays, {
+        kinds: [1059, 4],
+        "#p": [myPubHex],
+        limit: 100
+      });
 
-            try {
-              const rumor = window.NostrTools.nip59.unwrapEvent(event, skBytes);
-              count++;
-              inboxStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> ${count} message(s) déchiffré(s) en mémoire RAM</span>`;
-              renderInboxMessage(rumor, event.id);
-            } catch (err) {
-              console.warn("Événement reçu non déchiffrable (peut être destiné à une autre sous-clé) :", err);
-            }
-          },
-          oneose() {
-            // End of stored events on a relay
+      inboxList.innerHTML = '';
+
+      for (const event of events) {
+        if (receivedEvents.has(event.id)) continue;
+        receivedEvents.set(event.id, event);
+
+        if (event.kind === 1059 && window.NostrTools.nip59) {
+          try {
+            const rumor = window.NostrTools.nip59.unwrapEvent(event, skBytes);
+            count++;
+            renderInboxMessage(rumor, event.id, "NIP-59 Gift Wrap (Triple Chiffrement)");
+          } catch (err) {
+            console.warn("Événement 1059 non déchiffrable :", err);
+          }
+        } else if (event.kind === 4 && window.NostrTools.nip04) {
+          try {
+            const decryptedText = await window.NostrTools.nip04.decrypt(skBytes, event.pubkey, event.content);
+            count++;
+            renderInboxMessage({
+              content: decryptedText,
+              pubkey: event.pubkey,
+              created_at: event.created_at
+            }, event.id, "NIP-04 Message Direct Standard");
+          } catch (err) {
+            console.warn("Événement 4 non déchiffrable :", err);
           }
         }
-      );
+      }
 
-      setTimeout(() => {
-        btnFetchInbox.disabled = false;
-        if (count === 0) {
-          inboxStatus.innerHTML = `Recherche terminée. 0 message chiffré trouvé sur les relais pour cette clé.`;
-          inboxList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); border:1px dashed var(--line); border-radius:8px;">Aucun message trouvé pour cette clé. Si un message vient d'être envoyé, patientez quelques secondes et réessayez.</div>`;
-        }
-      }, 5000);
+      btnFetchInbox.disabled = false;
+      if (count === 0) {
+        inboxStatus.innerHTML = `Recherche terminée. 0 message chiffré trouvé sur les relais pour cette clé.`;
+        inboxList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); border:1px dashed var(--line); border-radius:8px;">Aucun message trouvé pour cette clé. Si un message vient d'être envoyé, patientez quelques secondes et réessayez.</div>`;
+      } else {
+        inboxStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700; display:inline-flex; align-items:center; gap:4px;"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> ${count} message(s) déchiffré(s) en mémoire RAM</span>`;
+      }
 
     } catch (err) {
       btnFetchInbox.disabled = false;
@@ -1205,8 +1213,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function renderInboxMessage(rumor, giftWrapId) {
-    if (inboxList.querySelector('.inbox-empty-placeholder') || inboxList.textContent.includes('Recherche des Gift Wraps') || inboxList.textContent.includes('Aucun message')) {
+  function renderInboxMessage(rumor, eventId, protocolLabel = "") {
+    if (inboxList.querySelector('.inbox-empty-placeholder') || inboxList.textContent.includes('Recherche') || inboxList.textContent.includes('Aucun message')) {
       inboxList.innerHTML = '';
     }
     const dateStr = new Date((rumor.created_at || Math.floor(Date.now()/1000)) * 1000).toLocaleString('fr-CA', {
@@ -1226,13 +1234,14 @@ document.addEventListener('DOMContentLoaded', () => {
     card.innerHTML = `
       <div class="inbox-message-header">
         <div>
-          <strong>De :</strong> <code style="color:var(--accent-deep);">${senderNpub.slice(0, 16)}...${senderNpub.slice(-8)}</code>
+          <strong>De :</strong> <code style="color:var(--accent-deep); font-size:0.85rem;">${senderNpub.slice(0, 16)}...${senderNpub.slice(-8)}</code>
+          ${protocolLabel ? `<span style="font-size:0.75rem; background:var(--accent-wash); color:var(--accent-deep); padding:2px 6px; border-radius:4px; margin-left:6px;">${escapeHtml(protocolLabel)}</span>` : ''}
         </div>
         <div><time>${dateStr}</time></div>
       </div>
-      <div class="inbox-message-body">${escapeHtml(rumor.content)}</div>
-      <div style="font-size:0.75rem; color:var(--text-faint); margin-top:8px;">
-        Gift Wrap ID : <code>${giftWrapId.slice(0, 16)}...</code>
+      <div class="inbox-message-body" style="margin-top:10px; font-size:1rem;">${escapeHtml(rumor.content)}</div>
+      <div style="font-size:0.75rem; color:var(--text-faint); margin-top:12px;">
+        ID Événement : <code>${eventId.slice(0, 16)}...</code>
       </div>
     `;
     inboxList.prepend(card);
