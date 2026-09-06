@@ -121,10 +121,13 @@
     const isMaintenanceActive = Boolean(state.maintenanceActive && state.maintenanceUntil && now < state.maintenanceUntil);
     const isPanicActive = Boolean(state.panicActive && state.panicUntil && now < state.panicUntil);
 
-    // 0. Nuke Cache Check (Purge Totale Forcée)
-    if (state.nukeCacheTrigger) {
-      const lastNuke = parseInt(localStorage.getItem('wg_last_nuke_ts') || '0', 10);
-      if (state.nukeCacheTrigger > lastNuke) {
+    // 0. Nuke Cache Check (Purge Totale Forcée pour utilisateurs existants)
+    if (state.nukeCacheTrigger && state.nukeCacheTrigger > 0) {
+      const storedVal = localStorage.getItem('wg_last_nuke_ts');
+      const lastNuke = storedVal ? parseInt(storedVal, 10) : 0;
+      if (lastNuke === 0) {
+        localStorage.setItem('wg_last_nuke_ts', String(state.nukeCacheTrigger));
+      } else if (state.nukeCacheTrigger > lastNuke) {
         localStorage.setItem('wg_last_nuke_ts', String(state.nukeCacheTrigger));
         try { sessionStorage.clear(); } catch (_) {}
         if ('caches' in window) {
