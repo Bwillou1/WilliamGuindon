@@ -1674,20 +1674,24 @@
     const docTitle = docInfo ? docInfo.title : "Document SEM-26-003";
 
     try {
-      if (viewerHasNano && window.ai && (window.ai.languageModel || window.ai.assistant)) {
-        if (!viewerAiSession) {
-          const lm = window.ai.languageModel || window.ai.assistant;
-          viewerAiSession = await lm.create({
-            systemPrompt: `Tu es l'assistant d'analyse juridique pour le lecteur officiel de William Guindon (SEM-26-003). Tu analyses le document actuellement ouvert : "${docTitle}". Réponds de manière concise, précise et factuelle en français.`
-          });
-        }
-        const answer = await viewerAiSession.prompt(query);
-        botBubble.textContent = answer;
-        dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
-        return;
-      }
+      const documentContext = await extractPdfText('page');
+      const response = await fetch('/api/groq-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{
+            role: 'user',
+            content: `Document actif : ${docTitle}\nPage active : ${state.currentPage}\nContexte extrait : ${documentContext.slice(0, 6000)}\n\nQuestion : ${query}`
+          }]
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.answer) throw new Error(result.error || 'Réponse Groq invalide');
+      botBubble.textContent = result.answer;
+      dom.viewerChatMessages.scrollTop = dom.viewerChatMessages.scrollHeight;
+      return;
     } catch (err) {
-      console.warn("Fallback QA local:", err);
+      console.warn('Fallback QA local:', err);
     }
 
     // Répondeur intelligent contextuel avec construction DOM 100% sécurisée

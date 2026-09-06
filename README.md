@@ -109,6 +109,10 @@ npx serve .
 python3 -m http.server 8080
 ```
 
+### Assistant IA Groq
+
+Le chat global utilise une fonction Netlify comme proxy serveur vers Groq. La clé ne doit jamais être ajoutée au dépôt, au HTML ou au JavaScript client. Dans les variables d’environnement Netlify, définir `GROQ_API_KEY` avec une nouvelle clé Groq et, facultativement, `GROQ_MODEL` (par défaut : `llama-3.3-70b-versatile`).
+
 ---
 
 ## 🔒 Contact & Canaux Sécurisés
