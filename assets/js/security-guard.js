@@ -239,66 +239,45 @@
     applyState(cached, true);
   } catch (e) {}
 
-  // Synchronisation distante continue multi-sources sans blocage ni délai CDN
+  // Synchronisation distante propre sans surcharge réseau ni blocage CDN
   let isFetching = false;
   async function fetchRemoteState() {
     if (isFetching) return;
     isFetching = true;
 
-    const ts = Date.now();
-    const endpoints = [
-      {
-        url: `https://api.github.com/repos/Bwillou1/WilliamGuindon/contents/data/site-state.json?ref=main&_t=${ts}`,
-        headers: { 'Accept': 'application/vnd.github.v3+json, application/vnd.github.v3.raw', 'Cache-Control': 'no-cache' }
-      },
-      {
-        url: `https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/data/site-state.json?_t=${ts}`,
+    try {
+      const ts = Date.now();
+      const res = await fetch('data/site-state.json?_t=' + ts, {
+        cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
-      },
-      {
-        url: new URL('data/site-state.json?_t=' + ts, window.location.href).href,
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
-      }
-    ];
-
-    for (const ep of endpoints) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch(ep.url, {
-          cache: 'no-store',
-          signal: controller.signal,
-          headers: ep.headers
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          let rawData = null;
-          try {
-            rawData = await res.json();
-          } catch (_) {
-            try { rawData = await res.text(); } catch (__) {}
-          }
-          const remoteState = parseRemotePayload(rawData);
-          if (remoteState && typeof remoteState === 'object' && shouldAcceptState(remoteState)) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
-            applyState(remoteState);
-            if (syncChannel) {
-              try { syncChannel.postMessage(remoteState); } catch (_) {}
-            }
-            break;
+      });
+      if (res.ok) {
+        const rawData = await res.json();
+        const remoteState = parseRemotePayload(rawData);
+        if (remoteState && typeof remoteState === 'object' && shouldAcceptState(remoteState)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(remoteState));
+          applyState(remoteState);
+          if (syncChannel) {
+            try { syncChannel.postMessage(remoteState); } catch (_) {}
           }
         }
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
     isFetching = false;
   }
 
   function startSync() {
-    fetchRemoteState();
+    // Synchronisation différée pour préserver les performances de chargement initial (EcoIndex Grade A)
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => fetchRemoteState(), { timeout: 4000 });
+    } else {
+      setTimeout(fetchRemoteState, 2500);
+    }
+    // Polling doux uniquement quand la page est visible
     setInterval(() => {
       if (!document.hidden) fetchRemoteState();
-    }, 1500);
+    }, 60000);
   }
 
   // 3. SYSTÈME ANTI-CONTOURNEMENT & AUTO-GUÉRISON DOM (MUTATIONOBSERVER + INTEGRITY LOOP)

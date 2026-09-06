@@ -465,7 +465,11 @@
       }
     }
 
-    loadDynamicStatus();
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => loadDynamicStatus(), { timeout: 3500 });
+    } else {
+      setTimeout(loadDynamicStatus, 2500);
+    }
 
     if (document.getElementById('countdown-days')) {
       updateCountdown();
@@ -1771,6 +1775,33 @@ DIRECTIVES DE RÉPONSE :
     const photosTrack = document.getElementById('home-photos-track');
     if (!blogTrack && !photosTrack) return;
 
+    function loadPhotosIfEmpty() {
+      if (photosTrack && photosTrack.children.length === 0) {
+        fetch('data/photos.json')
+          .then(res => res.json())
+          .then(photos => {
+            if (!photos || photos.length === 0) return;
+            photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
+              <article class="blog-preview-card">
+                <div class="blog-preview-thumb">
+                  <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy" decoding="async" width="380" height="215">
+                  <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
+                </div>
+                <div class="blog-preview-body">
+                  <time class="blog-preview-date">${ph.date || ''} ${ph.location ? '· ' + ph.location : ''}</time>
+                  <h3 class="blog-preview-title">${ph.title}</h3>
+                  <p class="blog-preview-excerpt">${ph.description || ''}</p>
+                  <div class="blog-preview-footer">
+                    <a href="photos.html" class="blog-preview-link">Voir en grand ↗</a>
+                  </div>
+                </div>
+              </article>
+            `).join('');
+          })
+          .catch(err => console.warn('Photos preview load:', err));
+      }
+    }
+
     window.switchHomeTab = function(tab) {
       const btnBlog = document.getElementById('btn-tab-blog-posts');
       const btnPhotos = document.getElementById('btn-tab-blog-photos');
@@ -1787,6 +1818,7 @@ DIRECTIVES DE RÉPONSE :
         if (btnBlog) btnBlog.classList.remove('active');
         if (carouselPhotos) carouselPhotos.style.display = 'block';
         if (carouselBlog) carouselBlog.style.display = 'none';
+        loadPhotosIfEmpty();
       }
     };
 
@@ -1813,31 +1845,6 @@ DIRECTIVES DE RÉPONSE :
           `).join('');
         })
         .catch(err => console.warn('Blog preview load:', err));
-    }
-
-    if (photosTrack && photosTrack.children.length === 0) {
-      fetch('data/photos.json')
-        .then(res => res.json())
-        .then(photos => {
-          if (!photos || photos.length === 0) return;
-          photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
-            <article class="blog-preview-card">
-              <div class="blog-preview-thumb">
-                <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy" decoding="async" width="380" height="215">
-                <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
-              </div>
-              <div class="blog-preview-body">
-                <time class="blog-preview-date">${ph.date || ''} ${ph.location ? '· ' + ph.location : ''}</time>
-                <h3 class="blog-preview-title">${ph.title}</h3>
-                <p class="blog-preview-excerpt">${ph.description || ''}</p>
-                <div class="blog-preview-footer">
-                  <a href="photos.html" class="blog-preview-link">Voir en grand ↗</a>
-                </div>
-              </div>
-            </article>
-          `).join('');
-        })
-        .catch(err => console.warn('Photos preview load:', err));
     }
     // Module de génération et téléchargement de fichier de calendrier natif (.ics)
     function generateAndDownloadCceIcs() {
