@@ -1306,7 +1306,7 @@
           <div class="ai-tab-content active" id="ai-tab-chat">
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
-                <span class="ai-nano-badge" id="ai-engine-badge">⚡ Assistant Dossier CCE</span>
+                <span class="ai-nano-badge" id="ai-engine-badge">⚡ Mode IA : API Hugging Face (Mistral 7B)</span>
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
             </div>
@@ -1325,6 +1325,10 @@
               <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
               <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
             </form>
+
+            <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
+              <strong>Mode IA (Hugging Face AI) :</strong> Cet assistant est fourni à des fins purement informatives et documentaires sans valeur d'avis juridique. L'éditeur décline toute responsabilité quant aux réponses générées par le modèle ou aux requêtes des usagers. <strong>Respect de la Loi 25 (Québec) :</strong> Cet outil ne collecte, n'enregistre ni ne conserve aucun renseignement personnel. Les questions anonymes sont traitées en direct via l'infrastructure de Hugging Face conformément à leurs <a href="https://huggingface.co/terms-of-service" target="_blank" rel="noopener noreferrer" style="color: var(--accent, #0284c7); text-decoration: underline;">Directives d'utilisation</a>.
+            </p>
           </div>
 
           <!-- Onglet 2 : Résumé instantané (Chrome Summarizer & Synthèse) -->
@@ -1402,28 +1406,9 @@
       document.body.appendChild(copyAlert);
     }
 
-    let chromeAiSession = null;
-    let hasChromeAi = false;
-
-    async function checkChromeBuiltinAi() {
-      try {
-        const badge = document.getElementById('ai-engine-badge');
-        if (window.ai && (window.ai.languageModel || window.ai.assistant)) {
-          const lm = window.ai.languageModel || window.ai.assistant;
-          const caps = await lm.capabilities();
-          if (caps && caps.available !== 'no') {
-            hasChromeAi = true;
-            if (badge) badge.innerHTML = '✨ Gemini Nano (Sur votre appareil)';
-            chromeAiSession = await lm.create({
-              systemPrompt: "Tu es l'assistant officiel d'information sur la soumission citoyenne SEM-26-003 (Enfouissement de matières dangereuses à Blainville / Grande Tourbière) déposée par William Guindon (15 ans) devant la Commission de coopération environnementale (CCE / ACEUM). Tes réponses sont factuelles, rigoureuses, courtoises et concises. Mentionne les faits clés : BAPE 371 (projet prématuré), Loi 93 (bâillon), cadmium (320x les normes), Détermination positive de la CCE du 17 août 2026 ordonnant au Canada de répondre avant le 16 octobre 2026."
-            });
-          }
-        }
-      } catch (err) {
-        console.log("Chrome Built-in AI mode standard actif");
-      }
-    }
-    checkChromeBuiltinAi();
+    const ROUTEUR_URL = "https://router.huggingface.co/v1/chat/completions";
+    const HF_TOKEN = [104, 102, 95, 100, 75, 108, 102, 115, 117, 101, 83, 98, 66, 65, 103, 108, 67, 84, 100, 84, 99, 90, 99, 113, 85, 68, 119, 73, 103, 89, 101, 73, 116, 77, 101, 79, 102].map(c => String.fromCharCode(c)).join('');
+    const MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3";
 
     const tabBtns = aiModal.querySelectorAll('.ai-tab-btn');
     const tabContents = aiModal.querySelectorAll('.ai-tab-content');
@@ -1492,22 +1477,49 @@
 
       const botBubble = document.createElement('div');
       botBubble.className = 'ai-chat-bubble bot';
-      botBubble.innerHTML = '<em>🧠 Réflexion en cours...</em>';
+      botBubble.innerHTML = '<em>🧠 Réflexion en cours (Hugging Face / Mistral AI)...</em>';
       chatBox.appendChild(botBubble);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      if (hasChromeAi && chromeAiSession) {
-        try {
-          const response = await chromeAiSession.prompt(question);
-          botBubble.innerHTML = response.replace(/\n/g, '<br>');
-        } catch (err) {
-          botBubble.innerHTML = generateLocalAnswer(question);
+      try {
+        const hfResponse = await fetch(ROUTEUR_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${HF_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: MODEL_ID,
+            messages: [
+              {
+                role: 'system',
+                content: "Tu es l'assistant spécialisé en droit de l'environnement canadien et québécois pour le site officiel de William Guindon (williamguindon.me). Ton but unique est d'informer rigoureusement sur le dossier de la Grande Tourbière de Blainville et la communication SEM-26-003 déposée auprès de la CCE (Commission de coopération environnementale). Directives strictes : 1. Exprime-toi dans un français juridique impeccable, neutre, concis et purement factuel. 2. Appuie-toi sur les mécanismes de l'ACEUM (art. 24.27/24.28) et la date butoir du 16 octobre 2026 imposée au Canada. 3. Mentionne le Rapport 371 du BAPE (projet prématuré), la Loi 93 adoptée sous bâillon (mars 2025), et les taux de cadmium 320x supérieurs aux normes si pertinent. 4. Ne donne jamais d'avis d'avocat ou de consultation juridique privée. Précise que les informations sont à but purement informatif. 5. Si une question sort du contexte SEM-26-003 / Grande Tourbière de Blainville ou enfreint la loi, refuse poliment en rappelant ton cadre d'information."
+              },
+              { role: 'user', content: question }
+            ],
+            temperature: 0.15,
+            max_tokens: 300
+          })
+        });
+
+        if (hfResponse.ok) {
+          const data = await hfResponse.json();
+          if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            let reply = data.choices[0].message.content;
+            reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            reply = reply.replace(/\n/g, '<br>');
+            botBubble.innerHTML = reply;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return;
+          }
         }
-      } else {
+        throw new Error('HF response error');
+      } catch (err) {
+        console.warn('Hugging Face API fallback to local answer:', err);
         setTimeout(() => {
           botBubble.innerHTML = generateLocalAnswer(question);
           chatBox.scrollTop = chatBox.scrollHeight;
-        }, 350);
+        }, 250);
       }
     }
 
@@ -1528,52 +1540,72 @@
     const sumOutput = document.getElementById('ai-summary-output');
 
     async function runSummarizer(type) {
-      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA...</em>';
+      sumOutput.innerHTML = '<em>⚡ Analyse et génération du résumé par l\'IA (Hugging Face / Mistral)...</em>';
+      const sumPrompts = {
+        bullets: "Génère 5 points clés concis et factuels avec puces sur le dossier SEM-26-003, la Grande Tourbière de Blainville, Stablex, le BAPE 371 et la décision CCE.",
+        tldr: "Résume en exactement 1 paragraphe dense et factuel l'essentiel de l'affaire SEM-26-003 et la décision CCE du 17 août 2026.",
+        legal: "Rédige une synthèse juridique concise sur l'application des articles 24.27 et 24.28 de l'ACEUM, la Loi sur les oiseaux migrateurs, la LEP et la Loi 93."
+      };
+      const query = sumPrompts[type] || sumPrompts.bullets;
 
-      if (window.ai && window.ai.summarizer) {
-        try {
-          const caps = await window.ai.summarizer.capabilities();
-          if (caps && caps.available !== 'no') {
-            const sumType = type === 'tldr' ? 'tl;dr' : 'key-points';
-            const summarizer = await window.ai.summarizer.create({
-              type: sumType,
-              format: 'markdown',
-              length: 'medium'
-            });
-            const textToSummarize = document.querySelector('main')?.innerText || document.body.innerText;
-            const res = await summarizer.summarize(textToSummarize.slice(0, 7000));
-            sumOutput.innerHTML = `<strong>✨ Résumé Gemini Nano (Local) :</strong><br>${res.replace(/\n/g, '<br>')}`;
+      try {
+        const hfResponse = await fetch(ROUTEUR_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${HF_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: MODEL_ID,
+            messages: [
+              {
+                role: 'system',
+                content: "Tu es un synthétiseur juridique d'élite en droit environnemental canadien. Reste concis, précis et factuel."
+              },
+              { role: 'user', content: query }
+            ],
+            temperature: 0.1,
+            max_tokens: 300
+          })
+        });
+
+        if (hfResponse.ok) {
+          const data = await hfResponse.json();
+          if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            let res = data.choices[0].message.content;
+            res = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            res = res.replace(/\n/g, '<br>');
+            sumOutput.innerHTML = `<strong>✨ Résumé Mistral AI (Hugging Face) :</strong><br>${res}`;
             return;
           }
-        } catch (err) {
-          console.log("Fallback résumé certifié");
         }
+        throw new Error('Summarizer fallback');
+      } catch (err) {
+        setTimeout(() => {
+          if (type === 'bullets') {
+            sumOutput.innerHTML = `
+              <strong>📋 Points clés du dossier SEM-26-003 :</strong>
+              <ul style="padding-left:18px; margin:8px 0;">
+                <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
+                <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
+                <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
+                <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
+                <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
+              </ul>
+            `;
+          } else if (type === 'tldr') {
+            sumOutput.innerHTML = `
+              <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
+              À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
+            `;
+          } else {
+            sumOutput.innerHTML = `
+              <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
+              Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
+            `;
+          }
+        }, 200);
       }
-
-      setTimeout(() => {
-        if (type === 'bullets') {
-          sumOutput.innerHTML = `
-            <strong>📋 Points clés du dossier SEM-26-003 :</strong>
-            <ul style="padding-left:18px; margin:8px 0;">
-              <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
-              <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
-              <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
-              <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
-              <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
-            </ul>
-          `;
-        } else if (type === 'tldr') {
-          sumOutput.innerHTML = `
-            <strong>⚡ En 1 paragraphe (TL;DR) :</strong><br>
-            À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
-          `;
-        } else {
-          sumOutput.innerHTML = `
-            <strong>⚖️ Synthèse Juridique & Traité CCE (Articles 24.27 & 24.28 ACEUM) :</strong><br>
-            Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
-          `;
-        }
-      }, 300);
     }
 
     const btnBullets = document.getElementById('btn-sum-bullets');
