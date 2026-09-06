@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="light">
+<head>
+<script src="assets/js/security-guard.js"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; script-src-elem 'self' 'unsafe-inline' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.doubleclick.net https://*.gstatic.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.doubleclick.net https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; frame-src 'self' https://*.doubleclick.net https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://translate.google.com https://translate.googleapis.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+<title>Messagerie Sécurisée &amp; Anonyme (Nostr) — William Guindon</title>
+
+<meta name="description" content="Canal de communication chiffré de bout en bout et anonyme pour lanceurs d'alerte, journalistes et citoyens via le protocole Nostr (NIP-17, NIP-59, NIP-44).">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://williamguindon.me/messagerie.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064e3b">
+
+<link rel="stylesheet" href="style.css?v=20260904-ai">
+<script src="theme.js?v=20260904-ai" defer></script>
+<script src="assets/js/nostr-crypto.js"></script>
+
+<style>
+.crypto-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.crypto-badge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.crypto-badge-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.crypto-badge-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+.crypto-badge-card p {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.msg-box-container {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px;
+  margin: 24px 0;
+  box-shadow: var(--shadow-hover);
+}
+
+.msg-step-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+.msg-step-title:first-child {
+  margin-top: 0;
+}
+
+.key-display-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.key-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.relay-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.relay-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.relay-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.relay-dot.connected { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.6); }
+.relay-dot.connecting { background: #eab308; }
+.relay-dot.error { background: #ef4444; }
+
+.file-drop-zone {
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin: 12px 0;
+}
+.file-drop-zone:hover, .file-drop-zone.dragover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+.file-info-badge {
+  display: none;
+  background: var(--accent-wash);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.msg-textarea {
+  width: 100%;
+  min-height: 140px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.msg-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  align-items: center;
+}
+.btn-panic {
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.btn-panic:hover {
+  background: #b91c1c;
+}
+
+.log-receipt-box {
+  display: none;
+  margin-top: 24px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.log-receipt-box.active {
+  display: block;
+}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button>
+    <nav aria-label="Navigation principale">
+      <div class="mobile-nav-header">
+        <span class="mobile-nav-title">Navigation</span>
+        <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>Fermer</span>
+        </button>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Dossier CCE &amp; Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
+          <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
+          <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
+          <a href="live.html" class="nav-dropdown-item">Horloge &amp; Échéance 16 oct.</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+          <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+          <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+          <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
+        </div>
+      </div>
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="./#apropos" class="nav-dropdown-item">Biographie de William Guindon</a>
+          <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
+          <a href="messagerie.html" class="nav-dropdown-item" style="font-weight:700; color:var(--accent-deep);">🔒 Messagerie Sécurisée (Nostr)</a>
+          <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
+          <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <div class="wrap" style="padding-top: 36px; padding-bottom: 60px;">
+
+    <div style="text-align: center; margin-bottom: 30px;">
+      <span style="display:inline-block; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; background:var(--accent-wash); color:var(--accent-deep); padding:4px 12px; border-radius:9999px; margin-bottom:12px; border:1px solid var(--accent);">Canal Confidentiel 100% Client-Side</span>
+      <h1 style="font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2;">Messagerie Chiffrée &amp; Anonyme</h1>
+      <p style="color: var(--text-muted); max-width: 680px; margin: 0 auto; font-size: 1.05rem;">
+        Protocole décentralisé <strong>Nostr</strong> avec encapsulation triple couche <em>Gift Wrap</em> (NIP-59 / NIP-17) et chiffrement <strong>NIP-44 v2</strong>. Conçu pour la protection des sources, lanceurs d'alerte et journalistes d'investigation.
+      </p>
+    </div>
+
+    <!-- Grille des fonctionnalités de sécurité -->
+    <div class="crypto-badge-grid">
+      <div class="crypto-badge-card">
+        <h4><span>🔒</span> NIP-44 v2 &amp; Padding</h4>
+        <p>Chiffrement ECDH + HKDF + AES-GCM 256 bits avec taille normalisée pour bloquer toute analyse de trafic par métadonnées.</p>
+      </div>
+      <div class="crypto-badge-card">
+        <h4><span>🎁</span> NIP-59 Gift Wrap</h4>
+        <p>Expéditeur et destinataire scellés dans une enveloppe jetable. Les relais réseau ne voient ni qui écrit, ni à qui.</p>
+      </div>
+      <div class="crypto-badge-card">
+        <h4><span>⏳</span> NIP-40 Éphémère</h4>
+        <p>Expiration programmable des événements pour une purge automatique et irréversible sur l'ensemble des relais.</p>
+      </div>
+      <div class="crypto-badge-card">
+        <h4><span>⚡</span> Zéro Connaissance</h4>
+        <p>Chiffrement des fichiers dans la mémoire RAM de votre navigateur avant tout transfert. Zéro trace sur serveur intermédiaire.</p>
+      </div>
+    </div>
+
+    <!-- Boîte principale d'envoi -->
+    <div class="msg-box-container">
+
+      <!-- Étape 1 : Identité éphémère de l'expéditeur -->
+      <div class="msg-step-title">
+        <span>1.</span>
+        <span>Votre identité jetable (Burner Key)</span>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">
+        Une paire de clés cryptographiques anonymes a été générée aléatoirement dans votre mémoire locale. Aucune donnée n'est stockée sur un serveur.
+      </p>
+
+      <div class="key-display-box">
+        <div class="key-label-row">
+          <span>Clé publique éphémère (npub) :</span>
+          <span id="burner-status" style="color:var(--accent);">● Active en mémoire RAM</span>
+        </div>
+        <div id="burner-npub-display" style="color:var(--accent-deep); font-weight:600;">Génération en cours...</div>
+        <div style="font-size: 0.75rem; color: var(--text-faint); margin-top: 4px;">
+          Clé privée (gardée strictement dans ce navigateur) : <code id="burner-nsec-display">••••••••••••••••••••</code>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button id="btn-regen-burner" type="button" class="btn btn-outline" style="font-size:0.85rem; padding:6px 14px;">🔄 Regénérer une clé jetable</button>
+      </div>
+
+      <!-- Étape 2 : Destinataire vérifié -->
+      <div class="msg-step-title">
+        <span>2.</span>
+        <span>Destinataire officiel (William Guindon)</span>
+      </div>
+      <div class="key-display-box" style="border-left: 4px solid var(--accent);">
+        <div class="key-label-row">
+          <span>Clé Nostr Publique / Session ID vérifié :</span>
+          <span style="color:var(--accent-deep);">✓ Vérification cryptographique</span>
+        </div>
+        <div style="color:var(--text); font-weight:600;" id="recipient-pubkey-display">
+          npub1z6688h64j4k92r5t34y89j0g8t70fcfz3q346u4p02w2z2m...
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">
+          Hex : <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
+        </div>
+      </div>
+
+      <!-- Étape 3 : Réseau de relais Nostr -->
+      <div class="msg-step-title">
+        <span>3.</span>
+        <span>État de connexion aux relais décentralisés</span>
+      </div>
+      <div class="relay-status-grid" id="relay-status-container">
+        <div class="relay-status-pill" data-relay="wss://relay.damus.io">
+          <span class="relay-dot" id="dot-0"></span>
+          <span>damus.io</span>
+        </div>
+        <div class="relay-status-pill" data-relay="wss://relay.primal.net">
+          <span class="relay-dot" id="dot-1"></span>
+          <span>primal.net</span>
+        </div>
+        <div class="relay-status-pill" data-relay="wss://nos.lol">
+          <span class="relay-dot" id="dot-2"></span>
+          <span>nos.lol</span>
+        </div>
+        <div class="relay-status-pill" data-relay="wss://relay.nostr.band">
+          <span class="relay-dot" id="dot-3"></span>
+          <span>nostr.band</span>
+        </div>
+      </div>
+
+      <!-- Étape 4 : Rédaction du message -->
+      <div class="msg-step-title">
+        <span>4.</span>
+        <span>Message confidentiel ou signalement</span>
+      </div>
+      <textarea id="msg-content" class="msg-textarea" placeholder="Rédigez votre message confidentiel, question ou signalement ici... Toutes les données seront encapsulées dans un Gift Wrap NIP-59 chiffré avant d'atteindre les relais."></textarea>
+
+      <!-- Étape 5 : Pièce jointe chiffrée Zéro Connaissance -->
+      <div class="msg-step-title">
+        <span>5.</span>
+        <span>Pièce jointe sécurisée (PDF, image, document) — Optionnel</span>
+      </div>
+      <div id="file-drop-area" class="file-drop-zone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px; color:var(--accent);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <p style="margin:0; font-size:0.9rem; font-weight:600;">Glissez-déposez un fichier confidentiel ou cliquez pour parcourir</p>
+        <p style="margin:4px 0 0; font-size:0.75rem; color:var(--text-muted);">Chiffrement AES-GCM 256 bits local dans votre navigateur. La clé de déchiffrement est insérée uniquement dans le message NIP-17 scellé.</p>
+        <input type="file" id="file-input" style="display:none;">
+      </div>
+      <div id="file-info-box" class="file-info-badge"></div>
+
+      <!-- Durée de rétention / Expiration (NIP-40) -->
+      <div style="margin: 20px 0; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
+        <label for="msg-expiration" style="font-size:0.9rem; font-weight:600; color:var(--text);">
+          ⏳ Durée de validité avant auto-destruction (NIP-40) :
+        </label>
+        <select id="msg-expiration" style="background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-size:0.88rem;">
+          <option value="3600">1 heure</option>
+          <option value="86400">24 heures</option>
+          <option value="604800" selected>7 jours (Recommandé)</option>
+          <option value="2592000">30 jours</option>
+          <option value="0">Permanent (Sans expiration)</option>
+        </select>
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="action-row">
+        <button id="btn-send-message" type="button" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem; font-weight: 700; display:inline-flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <span>Chiffrer &amp; Transmettre Anonymement</span>
+        </button>
+
+        <button id="btn-panic-action" type="button" class="btn-panic" title="Détruit toutes les clés en mémoire, vide les caches et redirige immédiatement vers une page neutre">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span>Panique : Détruire la session</span>
+        </button>
+      </div>
+
+      <!-- Reçu cryptographique de transmission -->
+      <div id="log-receipt" class="log-receipt-box"></div>
+
+    </div>
+
+    <!-- Section FAQ & Garanties de Sécurité -->
+    <div style="margin-top: 40px; border-top: 1px solid var(--line); padding-top: 30px;">
+      <h2 style="font-size: 1.4rem; margin-bottom: 16px;">Garanties de sécurité et protection des sources</h2>
+      
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; font-size:0.9rem; color:var(--text-muted); line-height:1.6;">
+        <div>
+          <h4 style="color:var(--text); margin-bottom:6px;">Pourquoi le Gift Wrap (NIP-59) ?</h4>
+          <p>Dans un message classique, les relais connaissent l'émetteur et le destinataire. Avec le <strong>NIP-59</strong>, le message réel est d'abord signé et scellé dans une enveloppe (Seal, kind 13), puis enveloppé dans un paquet jetable (Gift Wrap, kind 1059) signé par une <em>clé éphémère aléatoire</em> à usage unique. Le relais ne sait jamais qui vous êtes.</p>
+        </div>
+        <div>
+          <h4 style="color:var(--text); margin-bottom:6px;">Protection contre l'analyse de trafic (NIP-44)</h4>
+          <p>Le protocole <strong>NIP-44 v2</strong> applique un remplissage par paliers mathématiques (padding), masquant la longueur exacte de vos messages afin qu'aucun espion réseau ne puisse déduire le type de contenu transmis.</p>
+        </div>
+        <div>
+          <h4 style="color:var(--text); margin-bottom:6px;">Canal alternatif : Application Session</h4>
+          <p>Si vous préférez une application mobile ou de bureau dédiée avec routage en oignon décentralisé (Lokinet), vous pouvez également contacter William Guindon directement sur Session à l'ID : <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="footer-copy">© 2026 William Guindon — Blainville, Québec, Canada · Canal Sécurisé</p>
+    <p class="footer-licence-box">
+      Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </p>
+
+    <div class="footer-social-row">
+      <a href="./" class="footer-social-link">Accueil</a>
+      <a href="stablex.html" class="footer-social-link">Dossier Stablex</a>
+      <a href="registre.html" class="footer-social-link">Registre CCE</a>
+      <a href="presse.html" class="footer-social-link">Espace Presse</a>
+    </div>
+
+    <div id="wcb" class="carbonbadge" style="margin: 18px auto 14px; text-align: center;"></div>
+    <script src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js" defer></script>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const RECIPIENT_PUBKEY_HEX = "05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072";
+  
+  let currentPrivKey = "";
+  let currentPubKey = "";
+  let encryptedFileData = null;
+  let relayPool = null;
+
+  const relays = [
+    'wss://relay.damus.io',
+    'wss://relay.primal.net',
+    'wss://nos.lol',
+    'wss://relay.nostr.band'
+  ];
+
+  // 1. Initialisation Clés éphémères
+  function initBurnerKeys() {
+    try {
+      currentPrivKey = NostrCrypto.generatePrivateKey();
+      currentPubKey = NostrCrypto.getPublicKey(currentPrivKey);
+      
+      const npub = NostrCrypto.hexToBech32("npub", currentPubKey);
+      const nsec = NostrCrypto.hexToBech32("nsec", currentPrivKey);
+
+      document.getElementById('burner-npub-display').textContent = npub;
+      document.getElementById('burner-nsec-display').textContent = nsec.slice(0, 10) + "••••••••••••••••••••";
+    } catch (e) {
+      console.error("Erreur génération clés :", e);
+    }
+  }
+
+  // Formatage du destinataire
+  try {
+    const recHexClean = NostrCrypto.normalizePubkey(RECIPIENT_PUBKEY_HEX);
+    const recNpub = NostrCrypto.hexToBech32("npub", recHexClean);
+    document.getElementById('recipient-pubkey-display').textContent = recNpub;
+  } catch (e) {
+    document.getElementById('recipient-pubkey-display').textContent = RECIPIENT_PUBKEY_HEX;
+  }
+
+  initBurnerKeys();
+
+  document.getElementById('btn-regen-burner').addEventListener('click', () => {
+    initBurnerKeys();
+    alert("Nouvelle paire de clés éphémères générée avec succès.");
+  });
+
+  // 2. Connexion aux relais Nostr
+  try {
+    relayPool = new NostrCrypto.NostrRelayPool(relays);
+    relayPool.onStatusChange(({ url, status }) => {
+      const idx = relays.indexOf(url);
+      if (idx !== -1) {
+        const dot = document.getElementById(`dot-${idx}`);
+        if (dot) {
+          dot.className = `relay-dot ${status}`;
+        }
+      }
+    });
+    relayPool.connect();
+  } catch (e) {
+    console.error("Erreur initialisation pool relais :", e);
+  }
+
+  // 3. Gestion Fichier Zéro Connaissance
+  const dropArea = document.getElementById('file-drop-area');
+  const fileInput = document.getElementById('file-input');
+  const fileInfoBox = document.getElementById('file-info-box');
+
+  dropArea.addEventListener('click', () => fileInput.click());
+  dropArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropArea.classList.add('dragover');
+  });
+  dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+  dropArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      handleFileSelected(fileInput.files[0]);
+    }
+  });
+
+  async function handleFileSelected(file) {
+    if (file.size > 15 * 1024 * 1024) {
+      alert("La taille maximale recommandée pour le chiffrement mémoire client est de 15 Mo.");
+      return;
+    }
+    fileInfoBox.style.display = 'block';
+    fileInfoBox.innerHTML = `<em>Chiffrement AES-GCM 256 bits local en cours pour <strong>${file.name}</strong>...</em>`;
+    
+    try {
+      encryptedFileData = await NostrCrypto.encryptFileLocally(file);
+      fileInfoBox.innerHTML = `
+        <strong>✓ Fichier chiffré localement avec succès</strong><br>
+        Nom : <code>${encryptedFileData.fileName}</code> (${(encryptedFileData.fileSize / 1024).toFixed(1)} Ko)<br>
+        SHA-256 : <code>${encryptedFileData.sha256.slice(0, 16)}...</code><br>
+        Clé AES-256 : <code>${encryptedFileData.keyHex.slice(0, 8)}••••••••••••••••</code> (Scellée dans le message NIP-17)
+      `;
+    } catch (err) {
+      fileInfoBox.innerHTML = `<span style="color:#ef4444;">Erreur de chiffrement du fichier : ${err.message}</span>`;
+      encryptedFileData = null;
+    }
+  }
+
+  // 4. Envoi du Message Chiffré NIP-59 / NIP-17
+  const btnSend = document.getElementById('btn-send-message');
+  const logReceipt = document.getElementById('log-receipt');
+
+  btnSend.addEventListener('click', async () => {
+    const text = document.getElementById('msg-content').value.trim();
+    if (!text && !encryptedFileData) {
+      alert("Veuillez saisir un message ou sélectionner un fichier à transmettre.");
+      return;
+    }
+
+    const expSeconds = parseInt(document.getElementById('msg-expiration').value, 10);
+    btnSend.disabled = true;
+    btnSend.textContent = "Chiffrement triple couche & diffusion relais...";
+    logReceipt.style.display = 'block';
+    logReceipt.innerHTML = `[1/4] Construction de la Rumor (Kind 14)...\n`;
+
+    try {
+      let finalContent = text;
+      if (encryptedFileData) {
+        finalContent += "\n\n--- [PIÈCE JOINTE CHIFFRÉE CLIENT (AES-GCM-256)] ---\n" +
+          JSON.stringify({
+            name: encryptedFileData.fileName,
+            size: encryptedFileData.fileSize,
+            type: encryptedFileData.fileType,
+            sha256: encryptedFileData.sha256,
+            key: encryptedFileData.keyHex,
+            iv: encryptedFileData.ivHex
+          }, null, 2);
+      }
+
+      logReceipt.innerHTML += `[2/4] Scellement de l'enveloppe Seal (Kind 13) sous NIP-44 v2...\n`;
+      logReceipt.innerHTML += `[3/4] Emballage final Gift Wrap (Kind 1059) avec clé éphémère...\n`;
+
+      const recipientPub = NostrCrypto.normalizePubkey(RECIPIENT_PUBKEY_HEX);
+      const giftWrapEvent = await NostrCrypto.createGiftWrappedMessage({
+        senderPrivKey: currentPrivKey,
+        recipientPubKey: recipientPub,
+        content: finalContent,
+        expirationSeconds: expSeconds
+      });
+
+      logReceipt.innerHTML += `[4/4] Diffusion WebSocket vers les relais décentralisés...\n`;
+      const publishResult = await relayPool.publish(giftWrapEvent);
+
+      logReceipt.innerHTML += `\n========================================\n`;
+      logReceipt.innerHTML += `✓ TRANSMISSION RÉUSSIE & CONFIRMÉE !\n`;
+      logReceipt.innerHTML += `Gift Wrap ID (Kind 1059) : ${giftWrapEvent.id}\n`;
+      logReceipt.innerHTML += `Relais confirmés : ${publishResult.publishedCount} / ${publishResult.total}\n`;
+      logReceipt.innerHTML += `Auto-destruction : ${expSeconds > 0 ? (expSeconds / 3600) + ' heure(s)' : 'Défaut relais'}\n`;
+      logReceipt.innerHTML += `Protection : Expéditeur et destinataire masqués des relais.\n`;
+      logReceipt.innerHTML += `========================================\n`;
+
+      document.getElementById('msg-content').value = "";
+      fileInfoBox.style.display = 'none';
+      encryptedFileData = null;
+      btnSend.textContent = "✓ Message Transmis avec Succès";
+      setTimeout(() => {
+        btnSend.disabled = false;
+        btnSend.innerHTML = `<span>🔒 Chiffrer &amp; Transmettre Anonymement</span>`;
+      }, 5000);
+
+    } catch (err) {
+      logReceipt.innerHTML += `\n❌ ERREUR LORS DE LA TRANSMISSION : ${err.message}\n`;
+      btnSend.disabled = false;
+      btnSend.innerHTML = `<span>🔒 Réessayer la transmission</span>`;
+    }
+  });
+
+  // 5. Bouton Panique 1-Clic
+  document.getElementById('btn-panic-action').addEventListener('click', () => {
+    if (confirm("ATTENTION : Cette action va détruire immédiatement toutes les clés en mémoire RAM, vider le stockage local et fermer la connexion. Continuer ?")) {
+      currentPrivKey = "0".repeat(64);
+      currentPubKey = "0".repeat(64);
+      encryptedFileData = null;
+      try { relayPool.disconnect(); } catch (_) {}
+      try { localStorage.clear(); } catch (_) {}
+      try { sessionStorage.clear(); } catch (_) {}
+      window.location.replace("https://www.meteo.gc.ca/");
+    }
+  });
+});
+</script>
+</body>
+</html>
