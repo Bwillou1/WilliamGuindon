@@ -459,67 +459,74 @@
   </div>
 </div>
 
-<!-- Interface de l'éditeur (active seulement après déverrouillage) -->
-<header class="editor-topbar">
-  <div class="topbar-left">
-    <div class="brand-badge">
-      <span>Studio Wix-Style</span> · William Guindon
+<div id="editor-root"></div>
+
+<!-- Gabarit de l'éditeur : Injecté uniquement APRÈS authentification 2FA réussie -->
+<template id="editor-workspace-tmpl">
+  <header class="editor-topbar">
+    <div class="topbar-left">
+      <div class="brand-badge">
+        <span>Studio Wix-Style</span> · William Guindon
+      </div>
+      <span class="status-badge" id="live-indicator">● Mode Visuel Actif</span>
     </div>
-    <span class="status-badge" id="live-indicator">● Mode Visuel Actif</span>
+
+    <div class="topbar-center">
+      <div class="device-switcher">
+        <button class="device-btn active" data-mode="desktop"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>PC</button>
+        <button class="device-btn" data-mode="tablet"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Tablette</button>
+        <button class="device-btn" data-mode="mobile"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Mobile</button>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
+      <button class="btn" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span id="btn-toggle-edit-txt">Édition : Activée</span></button>
+      <button class="btn btn-save" id="btn-save-site"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span id="btn-save-txt">Sauvegarder & Publier en direct</span></button>
+      <button class="btn btn-danger" id="btn-lock-studio" title="Verrouiller le studio et déconnecter"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Verrouiller</button>
+    </div>
+  </header>
+
+  <div class="editor-workspace">
+    <!-- Panneau latéral des sections -->
+    <aside class="editor-sidebar">
+      <div class="sidebar-header">
+        <span><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>Sections de la page d'accueil</span>
+        <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
+      </div>
+      <div class="section-list" id="sidebar-sections-list">
+        <!-- Rempli dynamiquement -->
+      </div>
+      <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
+        <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
+      </div>
+    </aside>
+
+    <!-- Prévisualisation interactive -->
+    <main class="preview-wrapper">
+      <div class="preview-frame-container" id="frame-container">
+        <iframe id="site-preview-iframe" title="Aperçu du site"></iframe>
+      </div>
+    </main>
   </div>
-
-  <div class="topbar-center">
-    <div class="device-switcher">
-      <button class="device-btn active" data-mode="desktop" onclick="setDeviceMode('desktop')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>PC</button>
-      <button class="device-btn" data-mode="tablet" onclick="setDeviceMode('tablet')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Tablette</button>
-      <button class="device-btn" data-mode="mobile" onclick="setDeviceMode('mobile')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Mobile</button>
-    </div>
-  </div>
-
-  <div class="topbar-right">
-    <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
-    <button class="btn" onclick="toggleEditMode()" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span id="btn-toggle-edit-txt">Édition : Activée</span></button>
-    <button class="btn btn-save" id="btn-save-site" onclick="saveSiteToGitHub()"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span id="btn-save-txt">Sauvegarder & Publier en direct</span></button>
-    <button class="btn btn-danger" onclick="lockStudio()" title="Verrouiller le studio et déconnecter"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Verrouiller</button>
-  </div>
-</header>
-
-<div class="editor-workspace">
-  <!-- Panneau latéral des sections -->
-  <aside class="editor-sidebar">
-    <div class="sidebar-header">
-      <span><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>Sections de la page d'accueil</span>
-      <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
-    </div>
-    <div class="section-list" id="sidebar-sections-list">
-      <!-- Rempli dynamiquement -->
-    </div>
-    <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
-      <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
-    </div>
-  </aside>
-
-  <!-- Prévisualisation interactive -->
-  <main class="preview-wrapper">
-    <div class="preview-frame-container" id="frame-container">
-      <iframe id="site-preview-iframe" title="Aperçu du site" style="pointer-events:none; opacity:0; transition:opacity 0.3s ease;"></iframe>
-    </div>
-  </main>
-</div>
+</template>
 
 <div class="editor-toast" id="editor-toast"></div>
 
 <script>
+(() => {
+  'use strict';
+
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
   const VALID_PASSWORD_HASHES = [
-    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595", // Hash SHA-256 maître
-    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"  // Hash additionnel de sécurité
+    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595",
+    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"
   ];
 
-  const iframe = document.getElementById("site-preview-iframe");
   let isEditModeActive = true;
   let isAuthenticated = false;
+  let currentAuthToken = "";
 
   // Calcul du hash SHA-256 (WebCrypto API native)
   async function sha256Hex(text) {
@@ -528,6 +535,10 @@
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  function getToken() {
+    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || localStorage.getItem("wg_github_pat") || "";
   }
 
   // Validation stricte du jeton GitHub
@@ -562,178 +573,31 @@
       }
     }
 
+    currentAuthToken = cleanToken;
     return userData;
   }
 
-  // Soumission du formulaire de déverrouillage initial
-  async function handleLockAuthSubmit(e) {
-    e.preventDefault();
-    const passInput = document.getElementById("lock-pass-input");
-    const tokenInput = document.getElementById("lock-token-input");
-    const submitBtn = document.getElementById("btn-lock-submit");
-    const errBox = document.getElementById("lock-error-box");
-
-    errBox.style.display = "none";
-    const passVal = (passInput.value || "").trim();
-    const tokenVal = (tokenInput.value || "").trim();
-
-    if (!passVal) {
-      errBox.textContent = "Veuillez entrer le code d'accès administrateur.";
-      errBox.style.display = "block";
-      return;
-    }
-    if (!tokenVal) {
-      errBox.textContent = "Veuillez entrer votre clé GitHub (PAT).";
-      errBox.style.display = "block";
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Vérification du code & clé GitHub...";
-
-    try {
-      // 1. Validation cryptographique SHA-256 du code admin
-      const passHash = await sha256Hex(passVal);
-      if (!VALID_PASSWORD_HASHES.includes(passHash)) {
-        throw new Error("Code d'accès administrateur incorrect.");
-      }
-
-      // 2. Validation de la clé GitHub auprès de l'API
-      await validateGitHubToken(tokenVal);
-
-      // Authentification validée !
-      localStorage.setItem("wg_github_pat", tokenVal);
-      sessionStorage.setItem("wg_editor_auth", "true");
-      unlockStudio();
-      showToast("Studio déverrouillé avec succès pour @Bwillou1 !");
-    } catch (err) {
-      errBox.textContent = err.message;
-      errBox.style.display = "block";
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Déverrouiller l'Éditeur Visuel";
-    }
-  }
-
-  // Déverrouillage effectif de l'éditeur et chargement de la prévisualisation
-  function unlockStudio() {
-    isAuthenticated = true;
-    const lockScreen = document.getElementById("editor-lock-screen");
-    lockScreen.classList.add("unlocked");
-
-    // Rendre l'iframe actif et visible
-    iframe.style.pointerEvents = "auto";
-    iframe.style.opacity = "1";
-
-    if (!iframe.src || iframe.src === "about:blank" || iframe.src.endsWith("editeur.html")) {
-      iframe.src = "index.html";
-    } else {
-      initializeIframeEditing();
-    }
-  }
-
-  // Verrouillage du studio
-  function lockStudio() {
-    isAuthenticated = false;
-    sessionStorage.removeItem("wg_editor_auth");
-    const lockScreen = document.getElementById("editor-lock-screen");
-    lockScreen.classList.remove("unlocked");
-
-    iframe.style.pointerEvents = "none";
-    iframe.style.opacity = "0";
-
-    const errBox = document.getElementById("lock-error-box");
-    if (errBox) errBox.style.display = "none";
-    showToast("Studio verrouillé.");
-  }
-
-  // Initialisation à l'ouverture de la page
-  window.addEventListener("DOMContentLoaded", async () => {
-    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
-    if (isPasskey) {
-      const pbox = document.getElementById("lock-passkey-container");
-      if (pbox) pbox.style.display = "block";
-    }
-
-    const savedToken = localStorage.getItem("wg_github_pat");
-    const isSessionAuth = sessionStorage.getItem("wg_editor_auth") === "true";
-
-    if (savedToken && isSessionAuth) {
-      try {
-        await validateGitHubToken(savedToken);
-        unlockStudio();
-      } catch (err) {
-        console.warn("Jeton sauvegardé non valide ou expiré:", err);
-        lockStudio();
-      }
-    } else if (savedToken) {
-      // Pré-remplir le champ token si disponible
-      const tokenInput = document.getElementById("lock-token-input");
-      if (tokenInput) tokenInput.value = savedToken;
-    }
-  });
-
-  // Responsive device switch
-  function setDeviceMode(mode) {
-    document.querySelectorAll(".device-btn").forEach(b => b.classList.remove("active"));
-    document.querySelector(`.device-btn[data-mode="${mode}"]`).classList.add("active");
-    const container = document.getElementById("frame-container");
-    container.className = "preview-frame-container " + (mode === "desktop" ? "" : mode);
-  }
-
-  // Toast notification
   function showToast(msg, isSuccess = true) {
     const toast = document.getElementById("editor-toast");
+    if (!toast) return;
     toast.textContent = msg;
     toast.style.borderColor = isSuccess ? "var(--accent)" : "var(--danger)";
     toast.style.display = "block";
     setTimeout(() => { toast.style.display = "none"; }, 5000);
   }
 
-  function initializeIframeEditing() {
-    if (!isAuthenticated) return;
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      
-      let style = doc.getElementById("editor-injected-style");
-      if (!style) {
-        style = doc.createElement("style");
-        style.id = "editor-injected-style";
-        style.innerHTML = `
-          [contenteditable="true"]:hover {
-            outline: 2px dashed #22c55e !important;
-            outline-offset: 4px;
-            cursor: text !important;
-          }
-          [contenteditable="true"]:focus {
-            outline: 2px solid #22c55e !important;
-            outline-offset: 4px;
-            background: rgba(34, 197, 94, 0.08) !important;
-          }
-          .section-highlight {
-            outline: 3px solid #22c55e !important;
-          }
-        `;
-        doc.head.appendChild(style);
-      }
-
-      enableContentEditing(doc);
-      buildSidebarSections(doc);
-    } catch (e) {
-      console.warn("Erreur accès iframe:", e);
+  function setDeviceMode(mode) {
+    document.querySelectorAll(".device-btn").forEach(b => b.classList.remove("active"));
+    const activeBtn = document.querySelector(`.device-btn[data-mode="${mode}"]`);
+    if (activeBtn) activeBtn.classList.add("active");
+    const container = document.getElementById("frame-container");
+    if (container) {
+      container.className = "preview-frame-container " + (mode === "desktop" ? "" : mode);
     }
   }
 
-  // Injection du mode visuel dans l'iframe lors du chargement
-  iframe.onload = () => {
-    if (isAuthenticated) {
-      initializeIframeEditing();
-    }
-  };
-
-  // Rendre tous les textes cliquables et éditables
   function enableContentEditing(doc) {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !doc) return;
     const editables = doc.querySelectorAll("h1, h2, h3, h4, h5, p, .lead, blockquote, .btn, .kicker, .fact-val, time");
     editables.forEach(el => {
       el.setAttribute("contenteditable", isEditModeActive ? "true" : "false");
@@ -741,27 +605,44 @@
     });
   }
 
-  // Activer / Désactiver le mode édition
-  function toggleEditMode() {
-    if (!isAuthenticated) return;
-    isEditModeActive = !isEditModeActive;
-    const btnTxt = document.getElementById("btn-toggle-edit-txt");
-    const btn = document.getElementById("btn-toggle-edit");
-    if (btnTxt) {
-      btnTxt.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
-    } else {
-      btn.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
-    }
-    btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
-
+  function moveSection(secId, direction) {
+    if (!isAuthenticated || !secId) return;
+    const iframe = document.getElementById("site-preview-iframe");
+    if (!iframe) return;
     const doc = iframe.contentDocument || iframe.contentWindow.document;
-    enableContentEditing(doc);
-    showToast(isEditModeActive ? "Mode édition activé : cliquez sur les textes pour éditer" : "Mode aperçu activé");
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (direction === -1 && target.previousElementSibling && target.previousElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target, target.previousElementSibling);
+    } else if (direction === 1 && target.nextElementSibling && target.nextElementSibling.tagName === "SECTION") {
+      target.parentNode.insertBefore(target.nextElementSibling, target);
+    }
+    buildSidebarSections(doc);
+    showToast("Ordre de la section mis à jour !");
   }
 
-  // Construction de la liste des sections dans la colonne de gauche
+  function toggleSectionVisibility(secId) {
+    if (!isAuthenticated || !secId) return;
+    const iframe = document.getElementById("site-preview-iframe");
+    if (!iframe) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const target = doc.getElementById(secId);
+    if (!target) return;
+
+    if (target.style.display === "none") {
+      target.style.display = "";
+      showToast("Section réaffichée !");
+    } else {
+      target.style.display = "none";
+      showToast("Section masquée !");
+    }
+    buildSidebarSections(doc);
+  }
+
   function buildSidebarSections(doc) {
     const container = document.getElementById("sidebar-sections-list");
+    if (!container) return;
     container.replaceChildren();
 
     const sections = doc.querySelectorAll("main section, header.site");
@@ -806,42 +687,66 @@
     });
   }
 
-  // Déplacer une section vers le haut ou le bas
-  window.moveSection = (secId, direction) => {
-    if (!isAuthenticated || !secId) return;
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const target = doc.getElementById(secId);
-    if (!target) return;
-
-    if (direction === -1 && target.previousElementSibling && target.previousElementSibling.tagName === "SECTION") {
-      target.parentNode.insertBefore(target, target.previousElementSibling);
-    } else if (direction === 1 && target.nextElementSibling && target.nextElementSibling.tagName === "SECTION") {
-      target.parentNode.insertBefore(target.nextElementSibling, target);
+  function toggleEditMode() {
+    if (!isAuthenticated) return;
+    isEditModeActive = !isEditModeActive;
+    const btnTxt = document.getElementById("btn-toggle-edit-txt");
+    const btn = document.getElementById("btn-toggle-edit");
+    if (btnTxt) {
+      btnTxt.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
+    } else if (btn) {
+      btn.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
     }
-    buildSidebarSections(doc);
-    showToast("Ordre de la section mis à jour !");
-  };
+    if (btn) btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
 
-  // Masquer / Réafficher une section
-  window.toggleSectionVisibility = (secId) => {
-    if (!isAuthenticated || !secId) return;
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const target = doc.getElementById(secId);
-    if (!target) return;
-
-    if (target.style.display === "none") {
-      target.style.display = "";
-      showToast("Section réaffichée !");
-    } else {
-      target.style.display = "none";
-      showToast("Section masquée !");
+    const iframe = document.getElementById("site-preview-iframe");
+    if (iframe) {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      enableContentEditing(doc);
     }
-    buildSidebarSections(doc);
-  };
+    showToast(isEditModeActive ? "Mode édition activé : cliquez sur les textes pour éditer" : "Mode aperçu activé");
+  }
 
-  // Lancer la sauvegarde et publication directe sur GitHub
+  function initializeIframeEditing() {
+    if (!isAuthenticated) return;
+    const iframe = document.getElementById("site-preview-iframe");
+    if (!iframe) return;
+
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc) return;
+
+      let style = doc.getElementById("editor-injected-style");
+      if (!style) {
+        style = doc.createElement("style");
+        style.id = "editor-injected-style";
+        style.innerHTML = `
+          [contenteditable="true"]:hover {
+            outline: 2px dashed #22c55e !important;
+            outline-offset: 4px;
+            cursor: text !important;
+          }
+          [contenteditable="true"]:focus {
+            outline: 2px solid #22c55e !important;
+            outline-offset: 4px;
+            background: rgba(34, 197, 94, 0.08) !important;
+          }
+          .section-highlight {
+            outline: 3px solid #22c55e !important;
+          }
+        `;
+        doc.head.appendChild(style);
+      }
+
+      enableContentEditing(doc);
+      buildSidebarSections(doc);
+    } catch (e) {
+      console.warn("Erreur accès iframe:", e);
+    }
+  }
+
   async function saveSiteToGitHub() {
-    const token = localStorage.getItem("wg_github_pat");
+    const token = getToken();
     if (!token || !isAuthenticated) {
       lockStudio();
       return;
@@ -849,14 +754,13 @@
 
     const saveBtn = document.getElementById("btn-save-site");
     const saveTxt = document.getElementById("btn-save-txt");
-    saveBtn.disabled = true;
+    if (saveBtn) saveBtn.disabled = true;
     if (saveTxt) saveTxt.textContent = "Publication sur GitHub...";
-    else saveBtn.textContent = "Publication sur GitHub...";
 
     try {
+      const iframe = document.getElementById("site-preview-iframe");
       const doc = iframe.contentDocument || iframe.contentWindow.document;
 
-      // Nettoyer les attributs d'édition avant de sauvegarder
       const cleanDoc = doc.cloneNode(true);
       const injectedStyle = cleanDoc.getElementById("editor-injected-style");
       if (injectedStyle) injectedStyle.remove();
@@ -868,7 +772,6 @@
 
       const htmlContent = "<!DOCTYPE html>\n" + cleanDoc.documentElement.outerHTML;
 
-      // Récupérer le SHA actuel de index.html
       const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
         headers: {
           "Authorization": "Bearer " + token,
@@ -878,10 +781,8 @@
       if (!fileRes.ok) throw new Error("Impossible d'accéder à index.html sur GitHub");
       const fileData = await fileRes.json();
 
-      // Encode UTF-8 vers Base64
       const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
 
-      // Pousser le commit sur GitHub
       const updateRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
         method: "PUT",
         headers: {
@@ -905,16 +806,203 @@
     } catch (err) {
       console.error(err);
       if (err.message && err.message.includes("401")) {
-        localStorage.removeItem("wg_github_pat");
         lockStudio();
       }
       showToast("Erreur : " + err.message, false);
     } finally {
-      saveBtn.disabled = false;
+      if (saveBtn) saveBtn.disabled = false;
       if (saveTxt) saveTxt.textContent = "Sauvegarder & Publier en direct";
-      else saveBtn.textContent = "Sauvegarder & Publier en direct";
     }
   }
+
+  function unlockStudio() {
+    isAuthenticated = true;
+    const lockScreen = document.getElementById("editor-lock-screen");
+    if (lockScreen) lockScreen.classList.add("unlocked");
+
+    const root = document.getElementById("editor-root");
+    const tmpl = document.getElementById("editor-workspace-tmpl");
+    if (root && tmpl) {
+      root.replaceChildren(tmpl.content.cloneNode(true));
+
+      // Device switchers
+      root.querySelectorAll(".device-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          setDeviceMode(btn.getAttribute("data-mode"));
+        });
+      });
+
+      // Actions topbar
+      const toggleBtn = document.getElementById("btn-toggle-edit");
+      if (toggleBtn) toggleBtn.onclick = toggleEditMode;
+
+      const saveBtn = document.getElementById("btn-save-site");
+      if (saveBtn) saveBtn.onclick = saveSiteToGitHub;
+
+      const lockBtn = document.getElementById("btn-lock-studio");
+      if (lockBtn) lockBtn.onclick = lockStudio;
+
+      // Iframe setup
+      const iframe = document.getElementById("site-preview-iframe");
+      if (iframe) {
+        iframe.onload = () => {
+          if (isAuthenticated) initializeIframeEditing();
+        };
+        iframe.src = "index.html";
+      }
+    }
+  }
+
+  function lockStudio() {
+    isAuthenticated = false;
+    currentAuthToken = "";
+    sessionStorage.removeItem("wg_editor_auth");
+    sessionStorage.removeItem("wg_github_pat");
+    localStorage.removeItem("wg_github_pat");
+
+    const root = document.getElementById("editor-root");
+    if (root) root.replaceChildren();
+
+    const lockScreen = document.getElementById("editor-lock-screen");
+    if (lockScreen) lockScreen.classList.remove("unlocked");
+
+    const errBox = document.getElementById("lock-error-box");
+    if (errBox) errBox.style.display = "none";
+    showToast("Studio verrouillé.");
+  }
+
+  async function handleLockAuthSubmit(e) {
+    e.preventDefault();
+    const passInput = document.getElementById("lock-pass-input");
+    const tokenInput = document.getElementById("lock-token-input");
+    const submitBtn = document.getElementById("btn-lock-submit");
+    const errBox = document.getElementById("lock-error-box");
+
+    if (errBox) errBox.style.display = "none";
+    const passVal = (passInput.value || "").trim();
+    const tokenVal = (tokenInput.value || "").trim();
+
+    if (!passVal) {
+      if (errBox) {
+        errBox.textContent = "Veuillez entrer le code d'accès administrateur.";
+        errBox.style.display = "block";
+      }
+      return;
+    }
+    if (!tokenVal) {
+      if (errBox) {
+        errBox.textContent = "Veuillez entrer votre clé GitHub (PAT).";
+        errBox.style.display = "block";
+      }
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Vérification du code & clé GitHub...";
+    }
+
+    try {
+      const passHash = await sha256Hex(passVal);
+      if (!VALID_PASSWORD_HASHES.includes(passHash)) {
+        throw new Error("Code d'accès administrateur incorrect.");
+      }
+
+      await validateGitHubToken(tokenVal);
+
+      sessionStorage.setItem("wg_github_pat", tokenVal);
+      sessionStorage.setItem("wg_editor_auth", "true");
+      unlockStudio();
+      showToast("Studio déverrouillé avec succès pour @Bwillou1 !");
+    } catch (err) {
+      if (errBox) {
+        errBox.textContent = err.message;
+        errBox.style.display = "block";
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Déverrouiller l'Éditeur Visuel";
+      }
+    }
+  }
+
+  function base64ToBuf(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  async function unlockWithPasskey() {
+    const credId = localStorage.getItem("wg_passkey_id");
+    if (!credId) return;
+
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge: challenge,
+          ...(rpId ? { rpId: rpId } : {}),
+          allowCredentials: [{
+            type: "public-key",
+            id: base64ToBuf(credId)
+          }],
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        const savedToken = getToken();
+        if (savedToken) {
+          await validateGitHubToken(savedToken);
+          unlockStudio();
+          showToast("Déverrouillé avec succès via Touch ID / Face ID !");
+        }
+      }
+    } catch (err) {
+      console.warn("Échec Touch ID:", err);
+    }
+  }
+
+  const authForm = document.getElementById("lock-auth-form");
+  if (authForm) {
+    authForm.addEventListener("submit", handleLockAuthSubmit);
+  }
+
+  // Initialisation à l'ouverture de la page
+  window.addEventListener("DOMContentLoaded", async () => {
+    const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
+    if (isPasskey) {
+      const pbox = document.getElementById("lock-passkey-container");
+      if (pbox) {
+        pbox.style.display = "block";
+        const pkBtn = pbox.querySelector("button");
+        if (pkBtn) pkBtn.onclick = unlockWithPasskey;
+      }
+    }
+
+    const savedToken = getToken();
+    const isSessionAuth = sessionStorage.getItem("wg_editor_auth") === "true";
+
+    if (savedToken && isSessionAuth) {
+      try {
+        await validateGitHubToken(savedToken);
+        unlockStudio();
+      } catch (err) {
+        console.warn("Jeton sauvegardé non valide ou expiré:", err);
+        lockStudio();
+      }
+    } else if (savedToken) {
+      const tokenInput = document.getElementById("lock-token-input");
+      if (tokenInput) tokenInput.value = savedToken;
+    }
+  });
+})();
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>

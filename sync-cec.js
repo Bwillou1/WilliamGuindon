@@ -48,6 +48,13 @@ async function syncDossierStatus() {
     timestamp_sync: new Date().toISOString()
   };
 
+  let existingData = null;
+  if (fs.existsSync(STATUS_FILE_PATH)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(STATUS_FILE_PATH, 'utf8'));
+    } catch (e) {}
+  }
+
   try {
     const apiRes = await fetch(WP_API_ENDPOINT, {
       headers: { 'User-Agent': 'DossierSyncBot/1.0 (williamguindon.me)' }
@@ -64,8 +71,19 @@ async function syncDossierStatus() {
     console.warn("Notice : API REST CCE non joignable immédiatement, utilisation du statut vérifié local.", err.message);
   }
 
-  fs.writeFileSync(STATUS_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`[${new Date().toISOString()}] Synchronisation status.json réussie.`);
+  // Vérifier s'il y a un réel changement par rapport au fichier existant
+  const hasChanged = !existingData ||
+    existingData.wp_modified !== data.wp_modified ||
+    existingData.etat_fr !== data.etat_fr ||
+    existingData.prochaine_echeance !== data.prochaine_echeance;
+
+  if (hasChanged) {
+    data.timestamp_sync = new Date().toISOString();
+    fs.writeFileSync(STATUS_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`[${new Date().toISOString()}] Synchronisation status.json réussie (Mise à jour enregistrée).`);
+  } else {
+    console.log(`[${new Date().toISOString()}] Aucun changement détecté depuis la CCE. status.json inchangé (évite les commits fantômes).`);
+  }
 }
 
 syncDossierStatus();

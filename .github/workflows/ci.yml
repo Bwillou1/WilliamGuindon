@@ -65,3 +65,6 @@ jobs:
           test -f robots.txt || (echo "robots.txt manquant" && exit 1)
           test -f llms.txt || (echo "llms.txt manquant" && exit 1)
           echo "✔ Tous les fichiers critiques de déploiement sont présents."
+
+      - name: Validation stricte des assets et du Service Worker
+        run: npm test
