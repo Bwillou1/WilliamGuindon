@@ -75,43 +75,40 @@
         if (langTxtEl) langTxtEl.textContent = langCodeDisplay;
         nav.appendChild(langDropdown);
 
-        const navLangBtn = langDropdown.querySelector('#nav-lang-btn');
-        if (navLangBtn) {
-          navLangBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown').forEach(d => {
-              if (d !== langDropdown) {
-                d.classList.remove('active');
-                const b = d.querySelector('.nav-dropdown-btn, .nav-notif-btn');
-                if (b) b.setAttribute('aria-expanded', 'false');
-              }
-            });
-            const isOpen = langDropdown.classList.toggle('active');
-            navLangBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-          });
-        }
-
         // Fonction d'application de la langue in-place (Cookie de session pur, sans persistance sur disque)
         function applyInPlaceLanguage(lang) {
           const host = window.location.hostname;
+          const domainParts = host.split('.');
+          
           if (lang === 'fr') {
             document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax;";
-            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host}; SameSite=Lax;`;
+            if (domainParts.length > 1) {
+              const rootDomain = domainParts.slice(-2).join('.');
+              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host}; SameSite=Lax;`;
+              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host}; SameSite=Lax;`;
+              document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${rootDomain}; SameSite=Lax;`;
+            }
             sessionStorage.removeItem('wg_user_lang');
             window.location.reload();
             return;
           }
 
           sessionStorage.setItem('wg_user_lang', lang);
-          // Cookie de session pur (sans expires / max-age) : s'efface automatiquement à la fermeture de l'onglet
           document.cookie = `googtrans=/fr/${lang}; path=/; SameSite=Lax;`;
-          document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host}; SameSite=Lax;`;
+          if (domainParts.length > 1) {
+            const rootDomain = domainParts.slice(-2).join('.');
+            document.cookie = `googtrans=/fr/${lang}; path=/; domain=${host}; SameSite=Lax;`;
+            document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${host}; SameSite=Lax;`;
+            document.cookie = `googtrans=/fr/${lang}; path=/; domain=.${rootDomain}; SameSite=Lax;`;
+          }
 
           const combo = document.querySelector('.goog-te-combo');
           if (combo) {
             combo.value = lang;
-            combo.dispatchEvent(new Event('change'));
+            if (typeof combo.onchange === 'function') {
+              try { combo.onchange(); } catch(_) {}
+            }
+            combo.dispatchEvent(new Event('change', { bubbles: true }));
             const txt = document.getElementById('current-lang-text');
             if (txt) txt.textContent = lang.toUpperCase().substring(0, 2);
           } else {
@@ -125,7 +122,11 @@
             e.stopPropagation();
             const chosenLang = btn.getAttribute('data-lang');
             langDropdown.classList.remove('active');
-            if (navLangBtn) navLangBtn.setAttribute('aria-expanded', 'false');
+            const navLangBtn = langDropdown.querySelector('.nav-dropdown-btn');
+            if (navLangBtn) {
+              navLangBtn.setAttribute('aria-expanded', 'false');
+              navLangBtn.blur();
+            }
             applyInPlaceLanguage(chosenLang);
           });
         });
@@ -137,20 +138,55 @@
           gTranslateDiv.id = 'google_translate_element';
           gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;';
           document.body.appendChild(gTranslateDiv);
+        } else {
+          // Nettoyer si des reliquats statiques y sont présents
+          gTranslateDiv.innerHTML = '';
         }
 
         if (!window.googleTranslateElementInit) {
           window.googleTranslateElementInit = function() {
             try {
-              new google.translate.TranslateElement({
-                pageLanguage: 'fr',
-                includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
-                autoDisplay: false
-              }, 'google_translate_element');
-            } catch (error) {
-              console.warn('Google Translate init:', error);
+              if (window.google && google.translate && google.translate.TranslateElement) {
+                new google.translate.TranslateElement({
+                  pageLanguage: 'fr',
+                  includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
+                  autoDisplay: false
+                }, 'google_translate_element');
+
+                const saved = sessionStorage.getItem('wg_user_lang');
+                if (saved && saved !== 'fr') {
+                  const checkCombo = (attempts = 0) => {
+                    const cb = document.querySelector('.goog-te-combo');
+                    if (cb) {
+                      if (cb.value !== saved) {
+                        cb.value = saved;
+                        if (typeof cb.onchange === 'function') {
+                          try { cb.onchange(); } catch(_) {}
+                        }
+                        cb.dispatchEvent(new Event('change', { bubbles: true }));
+                      }
+                      const txt = document.getElementById('current-lang-text');
+                      if (txt) txt.textContent = saved.toUpperCase().substring(0, 2);
+                    } else if (attempts < 15) {
+                      setTimeout(() => checkCombo(attempts + 1), 200);
+                    }
+                  };
+                  setTimeout(checkCombo, 300);
+                }
+              }
+            } catch(e) {
+              console.warn('Google Translate init:', e);
             }
           };
+
+          if (!document.getElementById('google-translate-script')) {
+            const gtScript = document.createElement('script');
+            gtScript.id = 'google-translate-script';
+            gtScript.type = 'text/javascript';
+            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            gtScript.async = true;
+            document.head.appendChild(gtScript);
+          }
         }
 
       }
@@ -1230,134 +1266,141 @@
     if (!isHome) return;
     if (path.includes('ai.html') || path.includes('ai.txt') || path.includes('txt.html')) return;
 
-    if (document.querySelector('.floating-ai-btn')) return;
+    let floatingBtn = document.querySelector('.floating-ai-btn');
+    let aiModal = document.querySelector('.ai-modal-overlay');
+    let copyAlert = document.querySelector('.ai-copy-alert');
 
-    const floatingBtn = document.createElement('button');
-    floatingBtn.className = 'floating-ai-btn';
-    floatingBtn.setAttribute('aria-label', 'Clavarder ou résumer avec l\'IA');
-    floatingBtn.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-      </svg>
-      <span>Clavarder / IA</span>
-    `;
+    if (!floatingBtn) {
+      floatingBtn = document.createElement('button');
+      floatingBtn.className = 'floating-ai-btn';
+      floatingBtn.setAttribute('aria-label', 'Clavarder ou résumer avec l\'IA');
+      floatingBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        <span>Clavarder / IA</span>
+      `;
+      document.body.appendChild(floatingBtn);
+    }
 
-    const aiModal = document.createElement('div');
-    aiModal.className = 'ai-modal-overlay';
-    aiModal.innerHTML = `
-      <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
-        <div class="ai-modal-header">
-          <div class="ai-modal-title" id="ai-modal-title">
-            <span>✨</span> Assistant IA & Dossier SEM-26-003
+    if (!aiModal) {
+      aiModal = document.createElement('div');
+      aiModal.className = 'ai-modal-overlay';
+      aiModal.innerHTML = `
+        <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+          <div class="ai-modal-header">
+            <div class="ai-modal-title" id="ai-modal-title">
+              <span>✨</span> Assistant IA & Dossier SEM-26-003
+            </div>
+            <button class="ai-modal-close" aria-label="Fermer le menu IA">✕</button>
           </div>
-          <button class="ai-modal-close" aria-label="Fermer le menu IA">✕</button>
-        </div>
 
-        <!-- Onglets Navigation IA -->
-        <div class="ai-tabs" role="tablist">
-          <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
-          <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
-          <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Autres IA</button>
-        </div>
+          <!-- Onglets Navigation IA -->
+          <div class="ai-tabs" role="tablist">
+            <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true">💬 Clavarder</button>
+            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false">⚡ Résumer</button>
+            <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false">🤖 Autres IA</button>
+          </div>
 
-        <!-- Onglet 1 : Clavardage / Chat en direct -->
-        <div class="ai-tab-content active" id="ai-tab-chat">
-          <div class="ai-chat-messages" id="ai-chat-box">
-            <div class="ai-chat-bubble bot">
-              <span class="ai-nano-badge" id="ai-engine-badge">⚡ Assistant Dossier CCE</span>
-              <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+          <!-- Onglet 1 : Clavardage / Chat en direct -->
+          <div class="ai-tab-content active" id="ai-tab-chat">
+            <div class="ai-chat-messages" id="ai-chat-box">
+              <div class="ai-chat-bubble bot">
+                <span class="ai-nano-badge" id="ai-engine-badge">⚡ Assistant Dossier CCE</span>
+                <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+              </div>
+            </div>
+
+            <!-- Suggestions rapides -->
+            <div class="ai-quick-pills">
+              <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
+              <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
+              <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
+              <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
+              <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
+            </div>
+
+            <!-- Formulaire de saisie -->
+            <form class="ai-chat-input-row" id="ai-chat-form">
+              <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
+              <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
+            </form>
+          </div>
+
+          <!-- Onglet 2 : Résumé instantané (Chrome Summarizer & Synthèse) -->
+          <div class="ai-tab-content" id="ai-tab-summary">
+            <div class="ai-summary-box">
+              <div class="ai-summary-card">
+                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
+                  ⚡ Génération de résumé automatique :
+                </div>
+                <div class="ai-summary-actions">
+                  <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
+                  <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
+                </div>
+                <div class="ai-summary-result" id="ai-summary-output">
+                  Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Suggestions rapides -->
-          <div class="ai-quick-pills">
-            <button type="button" class="ai-pill-btn" data-q="C'est quoi la loi 93 ?">📜 Loi 93</button>
-            <button type="button" class="ai-pill-btn" data-q="Qu'a conclu le rapport du BAPE 371 ?">🔍 Rapport BAPE 371</button>
-            <button type="button" class="ai-pill-btn" data-q="Pourquoi le 16 octobre 2026 est-il crucial ?">⏳ Échéance 16 oct. 2026</button>
-            <button type="button" class="ai-pill-btn" data-q="Quels sont les impacts sur les oiseaux et le cadmium ?">🦅 Faune & Cadmium</button>
-            <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?">🔒 Contact Session</button>
-          </div>
-
-          <!-- Formulaire de saisie -->
-          <form class="ai-chat-input-row" id="ai-chat-form">
-            <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
-            <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
-          </form>
-        </div>
-
-        <!-- Onglet 2 : Résumé instantané (Chrome Summarizer & Synthèse) -->
-        <div class="ai-tab-content" id="ai-tab-summary">
-          <div class="ai-summary-box">
-            <div class="ai-summary-card">
-              <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
-                ⚡ Génération de résumé automatique :
-              </div>
-              <div class="ai-summary-actions">
-                <button type="button" class="ai-action-btn" id="btn-sum-bullets">📋 Points clés (Bullets)</button>
-                <button type="button" class="ai-action-btn" id="btn-sum-tldr">⚡ TL;DR (1 paragraphe)</button>
-                <button type="button" class="ai-action-btn" id="btn-sum-legal">⚖️ Résumé Juridique CCE</button>
-              </div>
-              <div class="ai-summary-result" id="ai-summary-output">
-                Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
-              </div>
+          <!-- Onglet 3 : Autres Modèles & Liens externes -->
+          <div class="ai-tab-content" id="ai-tab-models">
+            <p class="ai-modal-desc">
+              Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
+            </p>
+            <div class="ai-modal-buttons">
+              <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟢</span>
+                  <span>Ouvrir dans ChatGPT</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🔵</span>
+                  <span>Ouvrir dans Google Gemini</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟣</span>
+                  <span>Ouvrir dans Claude</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
+                <div class="ai-btn-option-left">
+                  <span>🟠</span>
+                  <span>Ouvrir dans Perplexity</span>
+                </div>
+                <span>↗</span>
+              </a>
+              <button type="button" class="ai-btn-option js-copy-ai-link">
+                <div class="ai-btn-option-left">
+                  <span>📋</span>
+                  <span>Copier le prompt et le lien pour l'IA</span>
+                </div>
+                <span class="js-copy-icon">Copier</span>
+              </button>
             </div>
           </div>
+
         </div>
+      `;
+      document.body.appendChild(aiModal);
+    }
 
-        <!-- Onglet 3 : Autres Modèles & Liens externes -->
-        <div class="ai-tab-content" id="ai-tab-models">
-          <p class="ai-modal-desc">
-            Analysez directement le dossier SEM-26-003 dans votre assistant d'intelligence artificielle favori :
-          </p>
-          <div class="ai-modal-buttons">
-            <a href="https://chatgpt.com/?q=R%C3%A9sume+et+synth%C3%A9tise+le+dossier+SEM-26-003+de+William+Guindon+%C3%A0+partir+de+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-              <div class="ai-btn-option-left">
-                <span>🟢</span>
-                <span>Ouvrir dans ChatGPT</span>
-              </div>
-              <span>↗</span>
-            </a>
-            <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-              <div class="ai-btn-option-left">
-                <span>🔵</span>
-                <span>Ouvrir dans Google Gemini</span>
-              </div>
-              <span>↗</span>
-            </a>
-            <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-              <div class="ai-btn-option-left">
-                <span>🟣</span>
-                <span>Ouvrir dans Claude</span>
-              </div>
-              <span>↗</span>
-            </a>
-            <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbi%C3%A8re+Stablex+https%3A%2F%2Fwilliamguindon.me%2Fai.html" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-              <div class="ai-btn-option-left">
-                <span>🟠</span>
-                <span>Ouvrir dans Perplexity</span>
-              </div>
-              <span>↗</span>
-            </a>
-            <button type="button" class="ai-btn-option js-copy-ai-link">
-              <div class="ai-btn-option-left">
-                <span>📋</span>
-                <span>Copier le prompt et le lien pour l'IA</span>
-              </div>
-              <span class="js-copy-icon">Copier</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    `;
-
-    const copyAlert = document.createElement('div');
-    copyAlert.className = 'ai-copy-alert';
-    copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
-
-    document.body.appendChild(floatingBtn);
-    document.body.appendChild(aiModal);
-    document.body.appendChild(copyAlert);
+    if (!copyAlert) {
+      copyAlert = document.createElement('div');
+      copyAlert.className = 'ai-copy-alert';
+      copyAlert.innerHTML = `✅ Lien pour l'IA copié dans le presse-papier !`;
+      document.body.appendChild(copyAlert);
+    }
 
     let chromeAiSession = null;
     let hasChromeAi = false;
