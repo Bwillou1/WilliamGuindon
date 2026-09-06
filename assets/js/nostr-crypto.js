@@ -379,6 +379,34 @@
     return await finalizeEvent(giftWrapUnsigned, ephemeralPrivKey);
   }
 
+  async function unwrapGiftWrappedMessage(giftWrapEvent, recipientPrivKey) {
+    if (!giftWrapEvent || giftWrapEvent.kind !== 1059) {
+      throw new Error("Événement invalide (doit être de kind 1059 Gift Wrap)");
+    }
+    const cleanPriv = normalizePrivkey(recipientPrivKey);
+
+    // 1. Déchiffrement de l'enveloppe Gift Wrap (kind 1059) -> Seal (kind 13)
+    const sealJson = await nip44Decrypt(giftWrapEvent.content, cleanPriv, giftWrapEvent.pubkey);
+    const sealEvent = JSON.parse(sealJson);
+    if (!sealEvent || sealEvent.kind !== 13) {
+      throw new Error("Sceau invalide à l'intérieur du Gift Wrap (kind 13 attendu)");
+    }
+
+    // 2. Déchiffrement du Sceau (kind 13) -> Rumor (kind 14)
+    const rumorJson = await nip44Decrypt(sealEvent.content, cleanPriv, sealEvent.pubkey);
+    const rumor = JSON.parse(rumorJson);
+
+    return {
+      senderPubKey: rumor.pubkey || sealEvent.pubkey,
+      senderNpub: hexToBech32("npub", rumor.pubkey || sealEvent.pubkey),
+      content: rumor.content,
+      created_at: rumor.created_at || giftWrapEvent.created_at,
+      tags: rumor.tags || [],
+      giftWrapId: giftWrapEvent.id,
+      sealId: sealEvent.id
+    };
+  }
+
   // --- ZERO-KNOWLEDGE ENCRYPTED FILE SHARING (AES-GCM-256) ---
   async function encryptFileLocally(file) {
     const fileBytes = new Uint8Array(await file.arrayBuffer());
@@ -577,6 +605,39 @@
       return { success: publishedCount > 0, publishedCount, total: this.sockets.size };
     }
 
+    subscribe(filter, onEvent) {
+      const subId = 'sub_' + Math.random().toString(36).substring(2, 9);
+      const reqJson = JSON.stringify(["REQ", subId, filter]);
+
+      this.sockets.forEach((ws) => {
+        const handleMsg = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            if (Array.isArray(data) && data[0] === "EVENT" && data[1] === subId) {
+              onEvent(data[2]);
+            }
+          } catch (_) {}
+        };
+        ws.addEventListener('message', handleMsg);
+        if (ws.readyState === WebSocket.OPEN) {
+          try { ws.send(reqJson); } catch (_) {}
+        } else {
+          ws.addEventListener('open', () => {
+            try { ws.send(reqJson); } catch (_) {}
+          }, { once: true });
+        }
+      });
+
+      return () => {
+        const closeJson = JSON.stringify(["CLOSE", subId]);
+        this.sockets.forEach((ws) => {
+          if (ws.readyState === WebSocket.OPEN) {
+            try { ws.send(closeJson); } catch (_) {}
+          }
+        });
+      };
+    }
+
     disconnect() {
       this.sockets.forEach(ws => {
         try { ws.close(); } catch (_) {}
@@ -597,6 +658,7 @@
     nip44Decrypt,
     finalizeEvent,
     createGiftWrappedMessage,
+    unwrapGiftWrappedMessage,
     encryptFileLocally,
     decryptFileLocally,
     NostrRelayPool

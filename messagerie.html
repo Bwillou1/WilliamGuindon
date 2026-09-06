@@ -56,12 +56,43 @@
   margin: 0;
 }
 
+.msg-tab-switcher {
+  display: flex;
+  gap: 10px;
+  margin: 24px 0 16px;
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.msg-tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.msg-tab-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
+}
+
 .msg-box-container {
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 28px;
-  margin: 24px 0;
+  margin: 16px 0 24px;
   box-shadow: var(--shadow-hover);
 }
 
@@ -210,8 +241,41 @@
   color: var(--text);
   white-space: pre-wrap;
 }
-.log-receipt-box.active {
-  display: block;
+
+.inbox-message-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.inbox-message-card:hover {
+  border-color: var(--accent);
+}
+.inbox-message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.inbox-message-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.inbox-guide-box {
+  background: var(--accent-wash);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 </style>
 </head>
@@ -271,7 +335,7 @@
 <main id="main-content">
   <div class="wrap" style="padding-top: 36px; padding-bottom: 60px;">
 
-    <div style="text-align: center; margin-bottom: 30px;">
+    <div style="text-align: center; margin-bottom: 24px;">
       <span style="display:inline-block; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; background:var(--accent-wash); color:var(--accent-deep); padding:4px 12px; border-radius:9999px; margin-bottom:12px; border:1px solid var(--accent);">Canal Confidentiel 100% Client-Side</span>
       <h1 style="font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2;">Messagerie Chiffrée &amp; Anonyme</h1>
       <p style="color: var(--text-muted); max-width: 680px; margin: 0 auto; font-size: 1.05rem;">
@@ -279,145 +343,207 @@
       </p>
     </div>
 
-    <!-- Grille des fonctionnalités de sécurité -->
-    <div class="crypto-badge-grid">
-      <div class="crypto-badge-card">
-        <h4><span>🔒</span> NIP-44 v2 &amp; Padding</h4>
-        <p>Chiffrement ECDH + HKDF + AES-GCM 256 bits avec taille normalisée pour bloquer toute analyse de trafic par métadonnées.</p>
+    <!-- Onglets Envoi vs Réception -->
+    <div class="msg-tab-switcher">
+      <button type="button" class="msg-tab-btn active" id="tab-btn-send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        <span>📤 Envoyer un message sécurisé</span>
+      </button>
+      <button type="button" class="msg-tab-btn" id="tab-btn-inbox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>📥 Boîte de réception (William Guindon)</span>
+      </button>
+    </div>
+
+    <!-- SECTION ENVOI -->
+    <div id="view-send-panel">
+
+      <!-- Grille des fonctionnalités de sécurité -->
+      <div class="crypto-badge-grid">
+        <div class="crypto-badge-card">
+          <h4><span>🔒</span> NIP-44 v2 &amp; Padding</h4>
+          <p>Chiffrement ECDH + HKDF + AES-GCM 256 bits avec taille normalisée pour bloquer toute analyse de trafic par métadonnées.</p>
+        </div>
+        <div class="crypto-badge-card">
+          <h4><span>🎁</span> NIP-59 Gift Wrap</h4>
+          <p>Expéditeur et destinataire scellés dans une enveloppe jetable. Les relais réseau ne voient ni qui écrit, ni à qui.</p>
+        </div>
+        <div class="crypto-badge-card">
+          <h4><span>⏳</span> NIP-40 Éphémère</h4>
+          <p>Expiration programmable des événements pour une purge automatique et irréversible sur l'ensemble des relais.</p>
+        </div>
+        <div class="crypto-badge-card">
+          <h4><span>⚡</span> Zéro Connaissance</h4>
+          <p>Chiffrement des fichiers dans la mémoire RAM de votre navigateur avant tout transfert. Zéro trace sur serveur intermédiaire.</p>
+        </div>
       </div>
-      <div class="crypto-badge-card">
-        <h4><span>🎁</span> NIP-59 Gift Wrap</h4>
-        <p>Expéditeur et destinataire scellés dans une enveloppe jetable. Les relais réseau ne voient ni qui écrit, ni à qui.</p>
-      </div>
-      <div class="crypto-badge-card">
-        <h4><span>⏳</span> NIP-40 Éphémère</h4>
-        <p>Expiration programmable des événements pour une purge automatique et irréversible sur l'ensemble des relais.</p>
-      </div>
-      <div class="crypto-badge-card">
-        <h4><span>⚡</span> Zéro Connaissance</h4>
-        <p>Chiffrement des fichiers dans la mémoire RAM de votre navigateur avant tout transfert. Zéro trace sur serveur intermédiaire.</p>
+
+      <div class="msg-box-container">
+        <!-- Étape 1 : Identité éphémère de l'expéditeur -->
+        <div class="msg-step-title">
+          <span>1.</span>
+          <span>Votre identité jetable (Burner Key)</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">
+          Une paire de clés cryptographiques anonymes a été générée aléatoirement dans votre mémoire locale. Aucune donnée n'est stockée sur un serveur.
+        </p>
+
+        <div class="key-display-box">
+          <div class="key-label-row">
+            <span>Clé publique éphémère (npub) :</span>
+            <span id="burner-status" style="color:var(--accent);">● Active en mémoire RAM</span>
+          </div>
+          <div id="burner-npub-display" style="color:var(--accent-deep); font-weight:600;">Génération en cours...</div>
+          <div style="font-size: 0.75rem; color: var(--text-faint); margin-top: 4px;">
+            Clé privée (gardée strictement dans ce navigateur) : <code id="burner-nsec-display">••••••••••••••••••••</code>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <button id="btn-regen-burner" type="button" class="btn btn-outline" style="font-size:0.85rem; padding:6px 14px;">🔄 Regénérer une clé jetable</button>
+        </div>
+
+        <!-- Étape 2 : Destinataire vérifié -->
+        <div class="msg-step-title">
+          <span>2.</span>
+          <span>Destinataire officiel (William Guindon)</span>
+        </div>
+        <div class="key-display-box" style="border-left: 4px solid var(--accent);">
+          <div class="key-label-row">
+            <span>Clé Nostr Publique / Session ID vérifié :</span>
+            <span style="color:var(--accent-deep);">✓ Vérification cryptographique</span>
+          </div>
+          <div style="color:var(--text); font-weight:600;" id="recipient-pubkey-display">
+            npub1...
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">
+            Hex : <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
+          </div>
+        </div>
+
+        <!-- Étape 3 : Réseau de relais Nostr -->
+        <div class="msg-step-title">
+          <span>3.</span>
+          <span>État de connexion aux relais décentralisés</span>
+        </div>
+        <div class="relay-status-grid" id="relay-status-container">
+          <div class="relay-status-pill" data-relay="wss://relay.damus.io">
+            <span class="relay-dot" id="dot-0"></span>
+            <span>damus.io</span>
+          </div>
+          <div class="relay-status-pill" data-relay="wss://relay.primal.net">
+            <span class="relay-dot" id="dot-1"></span>
+            <span>primal.net</span>
+          </div>
+          <div class="relay-status-pill" data-relay="wss://nos.lol">
+            <span class="relay-dot" id="dot-2"></span>
+            <span>nos.lol</span>
+          </div>
+          <div class="relay-status-pill" data-relay="wss://relay.nostr.band">
+            <span class="relay-dot" id="dot-3"></span>
+            <span>nostr.band</span>
+          </div>
+        </div>
+
+        <!-- Étape 4 : Rédaction du message -->
+        <div class="msg-step-title">
+          <span>4.</span>
+          <span>Message confidentiel ou signalement</span>
+        </div>
+        <textarea id="msg-content" class="msg-textarea" placeholder="Rédigez votre message confidentiel, question ou signalement ici... Toutes les données seront encapsulées dans un Gift Wrap NIP-59 chiffré avant d'atteindre les relais."></textarea>
+
+        <!-- Étape 5 : Pièce jointe chiffrée Zéro Connaissance -->
+        <div class="msg-step-title">
+          <span>5.</span>
+          <span>Pièce jointe sécurisée (PDF, image, document) — Optionnel</span>
+        </div>
+        <div id="file-drop-area" class="file-drop-zone">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px; color:var(--accent);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p style="margin:0; font-size:0.9rem; font-weight:600;">Glissez-déposez un fichier confidentiel ou cliquez pour parcourir</p>
+          <p style="margin:4px 0 0; font-size:0.75rem; color:var(--text-muted);">Chiffrement AES-GCM 256 bits local dans votre navigateur. La clé de déchiffrement est insérée uniquement dans le message NIP-17 scellé.</p>
+          <input type="file" id="file-input" style="display:none;">
+        </div>
+        <div id="file-info-box" class="file-info-badge"></div>
+
+        <!-- Durée de rétention / Expiration (NIP-40) -->
+        <div style="margin: 20px 0; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
+          <label for="msg-expiration" style="font-size:0.9rem; font-weight:600; color:var(--text);">
+            ⏳ Durée de validité avant auto-destruction (NIP-40) :
+          </label>
+          <select id="msg-expiration" style="background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-size:0.88rem;">
+            <option value="3600">1 heure</option>
+            <option value="86400">24 heures</option>
+            <option value="604800" selected>7 jours (Recommandé)</option>
+            <option value="2592000">30 jours</option>
+            <option value="0">Permanent (Sans expiration)</option>
+          </select>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="action-row">
+          <button id="btn-send-message" type="button" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem; font-weight: 700; display:inline-flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <span>Chiffrer &amp; Transmettre Anonymement</span>
+          </button>
+
+          <button id="btn-panic-action" type="button" class="btn-panic" title="Détruit toutes les clés en mémoire, vide les caches et redirige immédiatement vers une page neutre">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Panique : Détruire la session</span>
+          </button>
+        </div>
+
+        <!-- Reçu cryptographique de transmission -->
+        <div id="log-receipt" class="log-receipt-box"></div>
       </div>
     </div>
 
-    <!-- Boîte principale d'envoi -->
-    <div class="msg-box-container">
-
-      <!-- Étape 1 : Identité éphémère de l'expéditeur -->
-      <div class="msg-step-title">
-        <span>1.</span>
-        <span>Votre identité jetable (Burner Key)</span>
-      </div>
-      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">
-        Une paire de clés cryptographiques anonymes a été générée aléatoirement dans votre mémoire locale. Aucune donnée n'est stockée sur un serveur.
-      </p>
-
-      <div class="key-display-box">
-        <div class="key-label-row">
-          <span>Clé publique éphémère (npub) :</span>
-          <span id="burner-status" style="color:var(--accent);">● Active en mémoire RAM</span>
-        </div>
-        <div id="burner-npub-display" style="color:var(--accent-deep); font-weight:600;">Génération en cours...</div>
-        <div style="font-size: 0.75rem; color: var(--text-faint); margin-top: 4px;">
-          Clé privée (gardée strictement dans ce navigateur) : <code id="burner-nsec-display">••••••••••••••••••••</code>
-        </div>
+    <!-- SECTION BOÎTE DE RÉCEPTION (WILLIAM GUINDON) -->
+    <div id="view-inbox-panel" style="display:none;">
+      
+      <div class="inbox-guide-box">
+        <h4 style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+          <span>ℹ️</span> Comment recevoir et lire vos messages ?
+        </h4>
+        <p style="margin-bottom:8px;">
+          Vous pouvez consulter les messages qui vous sont adressés de <strong>trois manières sécurisées</strong> :
+        </p>
+        <ol style="margin-left: 20px; margin-bottom: 8px;">
+          <li><strong>Directement ici dans votre navigateur :</strong> Saisissez votre clé privée (<code>nsec</code>) ci-dessous pour interroger les relais et déchiffrer vos messages en direct.</li>
+          <li><strong>Sur une application Nostr (Mobile / PC) :</strong> Ouvrez <em>Primal</em> (iOS/Android/Web), <em>Damus</em> (iOS) ou <em>Amethyst</em> (Android), connectez-vous avec votre clé Nostr et vos messages privés (DMs NIP-17 / NIP-59) apparaîtront automatiquement dans vos discussions.</li>
+          <li><strong>Sur l'application Session :</strong> Ouvrez l'application Session avec votre identifiant <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>.</li>
+        </ol>
       </div>
 
-      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button id="btn-regen-burner" type="button" class="btn btn-outline" style="font-size:0.85rem; padding:6px 14px;">🔄 Regénérer une clé jetable</button>
-      </div>
+      <div class="msg-box-container">
+        <div class="msg-step-title">
+          <span>📥</span>
+          <span>Lecteur Sécurisé de la Boîte de Réception</span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
+          Le déchiffrement s'effectue <strong>localement dans votre navigateur</strong>. Votre clé privée n'est jamais envoyée sur Internet.
+        </p>
 
-      <!-- Étape 2 : Destinataire vérifié -->
-      <div class="msg-step-title">
-        <span>2.</span>
-        <span>Destinataire officiel (William Guindon)</span>
-      </div>
-      <div class="key-display-box" style="border-left: 4px solid var(--accent);">
-        <div class="key-label-row">
-          <span>Clé Nostr Publique / Session ID vérifié :</span>
-          <span style="color:var(--accent-deep);">✓ Vérification cryptographique</span>
+        <div style="margin-bottom: 18px;">
+          <label for="inbox-privkey" style="font-size:0.9rem; font-weight:700; display:block; margin-bottom:6px;">
+            Saisissez votre clé privée secrète (nsec... ou hex 64 car.) :
+          </label>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input type="password" id="inbox-privkey" placeholder="nsec1..." style="flex:1; min-width:260px; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-family:ui-monospace, monospace; font-size:0.9rem;">
+            <button id="btn-fetch-inbox" type="button" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+              <span>🔓 Déchiffrer mes messages</span>
+            </button>
+          </div>
         </div>
-        <div style="color:var(--text); font-weight:600;" id="recipient-pubkey-display">
-          npub1z6688h64j4k92r5t34y89j0g8t70fcfz3q346u4p02w2z2m...
-        </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);">
-          Hex : <code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
-        </div>
-      </div>
 
-      <!-- Étape 3 : Réseau de relais Nostr -->
-      <div class="msg-step-title">
-        <span>3.</span>
-        <span>État de connexion aux relais décentralisés</span>
-      </div>
-      <div class="relay-status-grid" id="relay-status-container">
-        <div class="relay-status-pill" data-relay="wss://relay.damus.io">
-          <span class="relay-dot" id="dot-0"></span>
-          <span>damus.io</span>
-        </div>
-        <div class="relay-status-pill" data-relay="wss://relay.primal.net">
-          <span class="relay-dot" id="dot-1"></span>
-          <span>primal.net</span>
-        </div>
-        <div class="relay-status-pill" data-relay="wss://nos.lol">
-          <span class="relay-dot" id="dot-2"></span>
-          <span>nos.lol</span>
-        </div>
-        <div class="relay-status-pill" data-relay="wss://relay.nostr.band">
-          <span class="relay-dot" id="dot-3"></span>
-          <span>nostr.band</span>
+        <div id="inbox-status" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;"></div>
+
+        <!-- Liste des messages reçus -->
+        <div id="inbox-list-container">
+          <div style="text-align:center; padding:30px; color:var(--text-faint); border:1px dashed var(--line); border-radius:8px;">
+            Saisissez votre clé privée ci-dessus et cliquez sur « Déchiffrer mes messages » pour interroger les relais en direct.
+          </div>
         </div>
       </div>
-
-      <!-- Étape 4 : Rédaction du message -->
-      <div class="msg-step-title">
-        <span>4.</span>
-        <span>Message confidentiel ou signalement</span>
-      </div>
-      <textarea id="msg-content" class="msg-textarea" placeholder="Rédigez votre message confidentiel, question ou signalement ici... Toutes les données seront encapsulées dans un Gift Wrap NIP-59 chiffré avant d'atteindre les relais."></textarea>
-
-      <!-- Étape 5 : Pièce jointe chiffrée Zéro Connaissance -->
-      <div class="msg-step-title">
-        <span>5.</span>
-        <span>Pièce jointe sécurisée (PDF, image, document) — Optionnel</span>
-      </div>
-      <div id="file-drop-area" class="file-drop-zone">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px; color:var(--accent);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-        <p style="margin:0; font-size:0.9rem; font-weight:600;">Glissez-déposez un fichier confidentiel ou cliquez pour parcourir</p>
-        <p style="margin:4px 0 0; font-size:0.75rem; color:var(--text-muted);">Chiffrement AES-GCM 256 bits local dans votre navigateur. La clé de déchiffrement est insérée uniquement dans le message NIP-17 scellé.</p>
-        <input type="file" id="file-input" style="display:none;">
-      </div>
-      <div id="file-info-box" class="file-info-badge"></div>
-
-      <!-- Durée de rétention / Expiration (NIP-40) -->
-      <div style="margin: 20px 0; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
-        <label for="msg-expiration" style="font-size:0.9rem; font-weight:600; color:var(--text);">
-          ⏳ Durée de validité avant auto-destruction (NIP-40) :
-        </label>
-        <select id="msg-expiration" style="background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-size:0.88rem;">
-          <option value="3600">1 heure</option>
-          <option value="86400">24 heures</option>
-          <option value="604800" selected>7 jours (Recommandé)</option>
-          <option value="2592000">30 jours</option>
-          <option value="0">Permanent (Sans expiration)</option>
-        </select>
-      </div>
-
-      <!-- Boutons d'action -->
-      <div class="action-row">
-        <button id="btn-send-message" type="button" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem; font-weight: 700; display:inline-flex; align-items:center; gap:8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          <span>Chiffrer &amp; Transmettre Anonymement</span>
-        </button>
-
-        <button id="btn-panic-action" type="button" class="btn-panic" title="Détruit toutes les clés en mémoire, vide les caches et redirige immédiatement vers une page neutre">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          <span>Panique : Détruire la session</span>
-        </button>
-      </div>
-
-      <!-- Reçu cryptographique de transmission -->
-      <div id="log-receipt" class="log-receipt-box"></div>
-
     </div>
 
     <!-- Section FAQ & Garanties de Sécurité -->
@@ -477,6 +603,26 @@ document.addEventListener('DOMContentLoaded', () => {
     'wss://nos.lol',
     'wss://relay.nostr.band'
   ];
+
+  // Gestion des onglets Envoi / Boîte de réception
+  const tabSend = document.getElementById('tab-btn-send');
+  const tabInbox = document.getElementById('tab-btn-inbox');
+  const viewSend = document.getElementById('view-send-panel');
+  const viewInbox = document.getElementById('view-inbox-panel');
+
+  tabSend.addEventListener('click', () => {
+    tabSend.classList.add('active');
+    tabInbox.classList.remove('active');
+    viewSend.style.display = 'block';
+    viewInbox.style.display = 'none';
+  });
+
+  tabInbox.addEventListener('click', () => {
+    tabInbox.classList.add('active');
+    tabSend.classList.remove('active');
+    viewInbox.style.display = 'block';
+    viewSend.style.display = 'none';
+  });
 
   // 1. Initialisation Clés éphémères
   function initBurnerKeys() {
@@ -642,7 +788,98 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. Bouton Panique 1-Clic
+  // 5. Boîte de réception / Déchiffrement
+  const btnFetchInbox = document.getElementById('btn-fetch-inbox');
+  const inboxKeyInput = document.getElementById('inbox-privkey');
+  const inboxStatus = document.getElementById('inbox-status');
+  const inboxList = document.getElementById('inbox-list-container');
+  const receivedEvents = new Map();
+
+  btnFetchInbox.addEventListener('click', async () => {
+    const rawKey = inboxKeyInput.value.trim();
+    if (!rawKey) {
+      alert("Veuillez saisir votre clé privée (nsec ou hex) pour déchiffrer votre boîte de réception.");
+      return;
+    }
+
+    let privHex;
+    let myPubHex;
+    try {
+      privHex = NostrCrypto.normalizePrivkey(rawKey);
+      myPubHex = NostrCrypto.getPublicKey(privHex);
+    } catch (e) {
+      alert("Format de clé privée invalide : " + e.message);
+      return;
+    }
+
+    btnFetchInbox.disabled = true;
+    inboxStatus.innerHTML = `<em>Connexion aux 4 relais Nostr et recherche des Gift Wraps (Kind 1059)...</em>`;
+    inboxList.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Recherche en direct sur les relais décentralisés...</div>`;
+    receivedEvents.clear();
+
+    const filter = {
+      kinds: [1059],
+      "#p": [myPubHex],
+      limit: 50
+    };
+
+    let count = 0;
+    relayPool.subscribe(filter, async (event) => {
+      if (receivedEvents.has(event.id)) return;
+      receivedEvents.set(event.id, event);
+
+      try {
+        const unwrapped = await NostrCrypto.unwrapGiftWrappedMessage(event, privHex);
+        count++;
+        inboxStatus.innerHTML = `<span style="color:var(--accent-deep); font-weight:700;">✓ ${count} message(s) déchiffré(s) en mémoire RAM</span>`;
+        renderInboxMessage(unwrapped);
+      } catch (err) {
+        console.warn("Impossible de déchiffrer cet événement :", err);
+      }
+    });
+
+    setTimeout(() => {
+      btnFetchInbox.disabled = false;
+      if (count === 0) {
+        inboxStatus.innerHTML = `Recherche terminée. 0 nouveau message trouvé pour cette clé sur les relais.`;
+        inboxList.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); border:1px dashed var(--line); border-radius:8px;">Aucun message trouvé pour cette clé.</div>`;
+      }
+    }, 4000);
+  });
+
+  function renderInboxMessage(msg) {
+    if (inboxList.querySelector('.inbox-empty-placeholder')) {
+      inboxList.innerHTML = '';
+    }
+    const dateStr = new Date(msg.created_at * 1000).toLocaleString('fr-CA', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+
+    const card = document.createElement('div');
+    card.className = 'inbox-message-card';
+    card.innerHTML = `
+      <div class="inbox-message-header">
+        <div>
+          <strong>De :</strong> <code style="color:var(--accent-deep);">${msg.senderNpub.slice(0, 16)}...${msg.senderNpub.slice(-8)}</code>
+        </div>
+        <div><time>${dateStr}</time></div>
+      </div>
+      <div class="inbox-message-body">${escapeHtml(msg.content)}</div>
+      <div style="font-size:0.75rem; color:var(--text-faint); margin-top:8px;">
+        Gift Wrap ID : <code>${msg.giftWrapId.slice(0, 16)}...</code>
+      </div>
+    `;
+    inboxList.prepend(card);
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // 6. Bouton Panique 1-Clic
   document.getElementById('btn-panic-action').addEventListener('click', () => {
     if (confirm("ATTENTION : Cette action va détruire immédiatement toutes les clés en mémoire RAM, vider le stockage local et fermer la connexion. Continuer ?")) {
       currentPrivKey = "0".repeat(64);
