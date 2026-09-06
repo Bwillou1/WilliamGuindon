@@ -6,6 +6,20 @@ const EXPERT_MODEL = process.env.GROQ_MODEL_EXPERT || 'openai/gpt-oss-120b';
 const MAX_BODY_BYTES = 32 * 1024;
 const MAX_MESSAGES = 12;
 const MAX_MESSAGE_CHARS = 7000;
+const AUTHORIZED_SEARCH_DOMAINS = [
+  'cec.org',
+  'bape.gouv.qc.ca',
+  'legisquebec.gouv.qc.ca',
+  'laws-lois.justice.gc.ca',
+  'environnement.gouv.qc.ca',
+  'canada.ca',
+  'registre-environmental-registry.canada.ca',
+  'blainville.ca',
+  'canlii.org',
+  'stablex.com',
+  'eausecours.org',
+  'mouvementmare.org'
+];
 
 const ROUTING_POLICY = `
 IDENTITÉ ET MISSION
@@ -14,7 +28,7 @@ Tu es l'assistant documentaire officiel du site de William Guindon. Ton périmè
 AIGUILLAGE STRICT
 Avant de répondre, évalue uniquement la question de l'internaute, sans déduire sa complexité du contexte technique fourni.
 1. NIVEAU FAIBLE : salutations, oui/non, intention, question d'un mot ou navigation simple. Réponds directement avec un modèle léger, en français.
-2. NIVEAU NORMAL : questions factuelles générales, dates clés, chronologie courte et explications brèves. Réponds directement avec un modèle rapide, en français.
+2. NIVEAU NORMAL : questions factuelles générales, dates clés, chronologie courte, explications brèves, recherche web, actualités et demandes Google. Réponds directement avec un modèle rapide, en français.
 3. NIVEAU MEDIUM : résumé d'une section, synthèse du BAPE 371, explication d'impacts écologiques, des 278 000 m², des consultations ou d'une décision préliminaire. Réponds strictement et uniquement : [ROUTE:MOYEN]
 4. NIVEAU EXPERT : analyse juridique contradictoire, articles 24.27/24.28 ACEUM, conformité fédérale, LEP, LCPE, Loi sur les pêches, droit international, cadmium et dépassements 320x ou question technique avancée. Réponds strictement et uniquement : [ROUTE:EXPERT]
 Ne justifie jamais un aiguillage. Une réponse aiguillée ne contient aucun autre caractère que sa balise.
@@ -37,11 +51,12 @@ function classifyQuestion(question) {
   const expert = /(24\.27|24\.28|aceum|cusma|lcom|loi sur les oiseaux|lep|loi sur les espèces|droit international|juridique|jurisprud|cadmium|320\s*(fois|x)|technique|conformité)/i;
   const medium = /(résum|resume|section|motif|décision|decision|soumission révisée|soumission revisee|milieux humides|278\s*000|audience|bape|rapport 371|tourbière|tourbiere)/i;
   const low = /^(bonjour|salut|allo|merci|oui|non|qui|quoi|où|ou|aide|menu|accueil|contact|date|hello|hi)\s*[!?.,]*$/i;
-  const navigation = /(où trouver|ouvrir|aller à|lien|page|navigation|comment contacter|messagerie|visualiseur)/i;
-  if (expert.test(text)) return { route: 'EXPERT', model: EXPERT_MODEL };
-  if (medium.test(text)) return { route: 'MOYEN', model: MEDIUM_MODEL };
-  if (low.test(text) || navigation.test(text) && text.length < 120) return { route: 'FAIBLE', model: LOW_MODEL };
-  return { route: 'NORMAL', model: NORMAL_MODEL };
+    const navigation = /(où trouver|ouvrir|aller à|lien|page|navigation|comment contacter|messagerie|visualiseur)/i;
+    const webSearch = /(recherch|google|web|internet|actualité|actualite|nouvelles|cette semaine|dans les médias|dans les medias)/i;
+  if (expert.test(text)) return { route: 'EXPERT', model: EXPERT_MODEL, webSearch: false };
+  if (medium.test(text)) return { route: 'MOYEN', model: MEDIUM_MODEL, webSearch: false };
+  if (low.test(text) || navigation.test(text) && text.length < 120) return { route: 'FAIBLE', model: LOW_MODEL, webSearch: false };
+  return { route: 'NORMAL', model: NORMAL_MODEL, webSearch: webSearch.test(text) };
 }
 
 exports.handler = async (event) => {
@@ -98,21 +113,26 @@ exports.handler = async (event) => {
   }
 
   try {
+    const requestBody = {
+      model: routing.model,
+      temperature: 0.2,
+      max_tokens: 700,
+      messages: [
+        {
+          role: 'system',
+          content: `${ROUTING_POLICY}\n\nCette question est classée au niveau ${routing.route}. Réponds directement en français, de façon concise, factuelle et prudente. Base-toi uniquement sur les sources autorisées et indique clairement quand une information manque. Pour une demande de recherche web, utilise la recherche web intégrée de Groq si elle est disponible, cite les sources autorisées consultées et précise la date de vérification. Ne prétends jamais avoir consulté le web si ce n’est pas le cas.`
+        },
+        ...safeMessages
+      ]
+    };
+    if (routing.webSearch && routing.model === NORMAL_MODEL) {
+      requestBody.search_settings = { include_domains: AUTHORIZED_SEARCH_DOMAINS };
+    }
+
     const groqResponse = await fetch(GROQ_ENDPOINT, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: routing.model,
-        temperature: 0.2,
-        max_tokens: 700,
-        messages: [
-          {
-            role: 'system',
-            content: `${ROUTING_POLICY}\n\nCette question est classée au niveau ${routing.route}. Réponds directement en français, de façon concise, factuelle et prudente. Base-toi uniquement sur les sources autorisées et indique clairement quand une information manque.`
-          },
-          ...safeMessages
-        ]
-      })
+      body: JSON.stringify(requestBody)
     });
     const result = await groqResponse.json();
     if (!groqResponse.ok) {

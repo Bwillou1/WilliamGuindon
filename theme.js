@@ -1633,11 +1633,9 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
           botBubble.innerHTML = formatAiResponse(reply);
           chatBox.scrollTop = chatBox.scrollHeight;
         } catch (err) {
-          console.warn('Groq API fallback to local answer:', err);
-          setTimeout(() => {
-            botBubble.innerHTML = generateLocalAnswer(question);
-            chatBox.scrollTop = chatBox.scrollHeight;
-          }, 200);
+          console.warn('Groq API unavailable:', err);
+          botBubble.textContent = 'Le service de recherche IA est temporairement indisponible. Vérifiez la configuration Groq/Netlify, puis réessayez.';
+          chatBox.scrollTop = chatBox.scrollHeight;
         }
       }
 
