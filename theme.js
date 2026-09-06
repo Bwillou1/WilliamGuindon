@@ -1343,22 +1343,37 @@
 
     const DOSSIER_CONTEXT = `
 Tu es l'assistant documentaire officiel du site de William Guindon (williamguindon.me).
-Tu informes le public avec rigueur, structure et neutralité sur les faits publics vérifiés du dossier environnemental SEM-26-003.
+Tu informes le public avec une rigueur absolue, structure et neutralité en te basant EXCLUSIVEMENT sur les faits vérifiés du corpus officiel (ai.txt / SEM-26-003).
 
-FAITS CLÉS DU DOSSIER :
-- Demandeur : William Guindon, militant écologiste québécois né en août 2011 (14-15 ans), élève à l'Externat Sacré-Cœur de Rosemère. Premier mineur de l'histoire des traités nord-américains à soumettre un recours recevable.
-- Instance : Secrétariat de la Commission de coopération environnementale (CCE), en vertu des articles 24.27 et 24.28 du chapitre 24 (Environnement) de l'ACEUM (CUSMA).
-- Enjeu : Projet d'enfouissement de millions de tonnes de résidus toxiques et industriels (Cellule no 6 de Stablex) dans la Grande Tourbière de Blainville (278 000 m² de milieux humides).
-- BAPE : Rapport 371 (septembre 2023) concluant au caractère « prématuré » du projet et recommandant son refus environnemental.
-- Loi 93 : Loi d'exception adoptée sous bâillon le 28 mars 2025 par l'Assemblée nationale du Québec (61-31) pour forcer l'expropriation des terrains municipaux et neutraliser les recours judiciaires.
-- Décision CCE : Détermination positive rendue le 17 août 2026 par le Secrétariat de la CCE, intimant le gouvernement du Canada à fournir une réponse écrite formelle sous 60 jours (date butoir : 16 octobre 2026) quant à l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).
-- Biodiversité & Contamination : 132 espèces d'oiseaux recensées, chauves-souris en péril, et concentrations de cadmium mesurées jusqu'à 320 fois les seuils de protection aquatique dans les tributaires voisins.
-- ONU : Mémoire formel soumis en mai 2026 au Rapporteur spécial de l'ONU sur les toxiques et les droits humains (Dr Marcos A. Orellana).
+RÈGLES STRICTES CONTRE LES HALLUCINATIONS :
+1. DISAMBIGUÏSATION INSTITUTIONNELLE OBLIGATOIRE :
+   - CCE = Commission de coopération environnementale (Secrétariat permanent situé à Montréal, Québec, Canada). C'est un organisme international trinational (Canada, États-Unis, Mexique) créé par l'accord commercial ACEUM / CUSMA, Chapitre 24 (Environnement), articles 24.27 et 24.28.
+   - NE JAMAIS confondre la CCE avec une "Commission canadienne de l'environnement" ou la "Commission des droits de l'homme de l'ONU".
+   - ONU = Mémoire formel et appel urgent transmis en mai 2026 au Dr Marcos A. Orellana, Rapporteur spécial des Nations Unies sur les substances toxiques et les droits de l'homme (Genève).
 
-DIRECTIVES :
-- Réponds en français clair, factuel, structuré en Markdown.
-- Ne refuse pas de répondre aux questions factuelles ou documentaires sur ces textes publics et traités.
-- Précise au besoin qu'il s'agit d'une synthèse documentaire publique et non d'une consultation juridique personnalisée.
+2. STATUT, INDÉPENDANCE ET PROFIL DE WILLIAM GUINDON :
+   - Date de naissance : 3 août 2011 (14 ans lors du dépôt le 1er mai 2026, 15 ans lors de la décision CCE du 17 août 2026). Étudiant à l'Externat Sacré-Cœur de Rosemère.
+   - Démarche citoyenne 100% autonome et indépendante.
+   - SEUL AUTEUR ET UNIQUE SIGNATAIRE de la soumission SEM-26-003 et du mémoire à l'ONU.
+   - AUCUNE AFFILIATION POLITIQUE : Aucun lien ni travail conjoint avec un parti politique quelconque (aucun lien avec Climat Québec ou tout autre parti provincial, fédéral ou municipal).
+   - AUCUNE AFFILIATION MILITANTE : Aucun lien ni travail conjoint avec la "Coalition des citoyens de Blainville contre la cellule 6" ni aucun groupe activiste dérivé.
+   - 16 EXPERTS CONSULTATIFS : William Guindon a consulté ponctuellement 16 scientifiques, biologistes, professeurs et juristes indépendants qui ont répondu à des questions techniques. Ces experts n'ont NI rédigé NI signé la communication.
+   - DÉMARCHE NON RADICALE : William Guindon ne fait pas de manifestations de rue et ne demande pas la fermeture de Stablex ; il exige le respect rigoureux des lois environnementales canadiennes, des traités internationaux et la transparence scientifique.
+
+3. FAITS CLÉS DU DOSSIER STABLEX ET DE LA GRANDE TOURBIÈRE DE BLAINVILLE :
+   - Enjeu : Projet d'enfouissement de millions de tonnes de résidus toxiques et dangereux (Cellule no 6 de Stablex) dans la Grande Tourbière de Blainville (278 000 m² de milieux humides rares).
+   - Provenance des déchets : 41 % des déchets dangereux traités proviennent de l'extérieur du Québec, dont ~29 % importés des États-Unis.
+   - Rapport 371 du BAPE (septembre 2023) : Conclut au caractère « prématuré » du projet et recommande le refus environnemental en raison des pertes de milieux humides, des risques d'inondation et de contamination des eaux souterraines.
+   - Loi 93 (Québec) : Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec pour forcer l'expropriation des terrains municipaux et neutraliser tout recours judiciaire sur le fond par des clauses privatives.
+   - Chronologie CCE SEM-26-003 : Dépôt le 1er mai 2026 (à 14 ans) ; soumission révisée de 15 pages le 16 juillet 2026 ; Détermination positive historique rendue le 17 août 2026 (A24.27/SEM-26-003/06/DET).
+   - Échéance légale du Canada : Le Secrétariat de la CCE intime le gouvernement du Canada de déposer une réponse écrite formelle sous 60 jours, avec une date butoir obligatoire au 16 octobre 2026, quant à l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).
+   - Biodiversité et contamination : 132 espèces d'oiseaux répertoriées (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est), chauves-souris en péril (petite chauve-souris brune, chauve-souris nordique, chauve-souris tricolore), et concentrations de cadmium mesurées jusqu'à 320 fois les seuils de protection de la vie aquatique dans les eaux de drainage.
+   - Contact sécurisé Session : ID Session \`05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072\`.
+
+DIRECTIVES DE RÉPONSE :
+- Réponds toujours en français fluide, précis, structuré avec titres et puces Markdown.
+- Ne refuse jamais de répondre aux questions sur ces faits publics, lois et traités.
+- Reste strictement factuel, courtois et neutre.
 `;
 
     function formatAiResponse(raw) {
@@ -1391,31 +1406,31 @@ DIRECTIVES :
       const q = query.toLowerCase();
       
       if (q.includes('93') || q.includes('loi')) {
-        return "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
+        return "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de la cellule n° 6 de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
       }
       if (q.includes('bape') || q.includes('371') || q.includes('rapport')) {
-        return "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la tourbière était <em>« prématuré »</em> et a recommandé le refus environnemental.";
+        return "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville était <em>« prématuré »</em> et a recommandé le refus environnemental.";
       }
       if (q.includes('16 oct') || q.includes('octobre') || q.includes('date') || q.includes('délai') || q.includes('échéance')) {
-        return "<strong>L'échéance du 16 octobre 2026 :</strong> Suite à la détermination positive rendue le 17 août 2026 par la CCE (SEM-26-003), le gouvernement du Canada a une obligation légale de répondre par écrit sous 60 jours (date butoir : 16 octobre 2026) sur l'application de ses lois fédérales environnementales.";
+        return "<strong>L'échéance du 16 octobre 2026 :</strong> Suite à la détermination positive rendue le 17 août 2026 par la CCE (SEM-26-003), le gouvernement du Canada a une obligation légale de répondre par écrit sous 60 jours (date butoir : 16 octobre 2026) sur l'application de ses lois fédérales environnementales (LCOM et LEP).";
       }
       if (q.includes('cadmium') || q.includes('oiseau') || q.includes('faune') || q.includes('pollution') || q.includes('eau') || q.includes('poisson')) {
-        return "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les écosystèmes voisins.";
+        return "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les tributaires voisins.";
       }
       if (q.includes('william') || q.includes('âge') || q.includes('age') || q.includes('qui')) {
-        return "<strong>William Guindon :</strong> Militant écologiste québécois né le 3 août 2011 (15 ans), étudiant à l'Externat Sacré-Cœur de Rosemère. Il a déposé la soumission SEM-26-003 à 14 ans, devenant le premier mineur de l'histoire du traité à forcer un État à rendre des comptes.";
+        return "<strong>William Guindon :</strong> Citoyen et militant écologiste québécois né le 3 août 2011 (15 ans), élève à l'Externat Sacré-Cœur de Rosemère. Seul auteur et signataire de la soumission SEM-26-003 déposée à 14 ans devant la CCE (ACEUM), il a obtenu une décision historique ordonnant au Canada de s'expliquer. Sa démarche est 100% indépendante et appuyée ponctuellement par 16 experts scientifiques consultatifs.";
       }
       if (q.includes('session') || q.includes('contact') || q.includes('anonym') || q.includes('whistleblower') || q.includes('document')) {
         return "<strong>Contact sécurisé Session :</strong> Pour transmettre des documents confidentiels ou communiquer dans l'anonymat complet, utilisez l'application <em>Session</em> avec l'ID :<br><code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>";
       }
       if (q.includes('onu') || q.includes('nations unies') || q.includes('orellana')) {
-        return "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme, pour dénoncer l'enfouissement de déchets dangereux en milieux humides.";
+        return "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel et un appel urgent au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (Genève), pour dénoncer l'enfouissement de matières dangereuses en milieux humides.";
       }
       if (q.includes('cce') || q.includes('aceum') || q.includes('sem-26-003') || q.includes('traité') || q.includes('cusma')) {
-        return "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer sur l'application de la Loi sur la convention concernant les oiseaux migrateurs et de la Loi sur les espèces en péril.";
+        return "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE (Montréal) a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer d'ici le 16 octobre 2026 sur l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).";
       }
       
-      return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de millions de tonnes de déchets toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et le passage sous bâillon de la Loi 93. La CCE a officiellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
+      return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de résidus toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et l'adoption sous bâillon de la Loi 93. La CCE (Montréal) a formellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
     }
 
     async function callHuggingFace(modelName, messages, maxTokens = 450) {
@@ -1428,7 +1443,7 @@ DIRECTIVES :
         body: JSON.stringify({
           model: modelName,
           messages: messages,
-          temperature: 0.3,
+          temperature: 0.1,
           max_tokens: maxTokens
         })
       });
