@@ -1392,7 +1392,7 @@ DIRECTIVES DE RÉPONSE :
       text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:20px; margin:8px 0;">$1</ul>');
       text = text.replace(/\n\n/g, '<br><br>');
       text = text.replace(/\n/g, '<br>');
-      return text;
+      return text + '<span class="ai-msg-stamp">⚠️ Réponse IA brute non approuvée · Aucune valeur légale ni probante</span>';
     }
 
     function isRefusal(text) {
@@ -1410,33 +1410,29 @@ DIRECTIVES DE RÉPONSE :
 
     function generateLocalAnswer(query) {
       const q = query.toLowerCase();
+      let res = '';
       
       if (q.includes('bio') || q.includes('biographie') || q.includes('parcours') || q.includes('qui')) {
-        return "<strong>Biographie officielle de William Guindon :</strong><br>Né le 3 août 2011 à Sainte-Marthe-sur-le-Lac (15 ans), William Guindon est un citoyen et militant écologiste québécois, élève à l'Externat Sacré-Cœur de Rosemère.<br><br>À 14 ans, il dépose en toute indépendance citoyenne la soumission <strong>SEM-26-003</strong> devant la Commission de coopération environnementale (CCE / ACEUM) et un mémoire à l'ONU pour protéger la Grande Tourbière de Blainville.<br><br>Le 17 août 2026, à 15 ans, il obtient une détermination positive historique du Secrétariat de la CCE intimant le Canada à répondre formellement d'ici le 16 octobre 2026. Sa démarche est appuyée ponctuellement par 16 experts scientifiques consultatifs.";
+        res = "<strong>Biographie officielle de William Guindon :</strong><br>Né le 3 août 2011 à Sainte-Marthe-sur-le-Lac (15 ans), William Guindon est un citoyen et militant écologiste québécois, élève à l'Externat Sacré-Cœur de Rosemère.<br><br>À 14 ans, il dépose en toute indépendance citoyenne la soumission <strong>SEM-26-003</strong> devant la Commission de coopération environnementale (CCE / ACEUM) et un mémoire à l'ONU pour protéger la Grande Tourbière de Blainville.<br><br>Le 17 août 2026, à 15 ans, il obtient une détermination positive historique du Secrétariat de la CCE intimant le Canada à répondre formellement d'ici le 16 octobre 2026. Sa démarche est appuyée ponctuellement par 16 experts scientifiques consultatifs.";
+      } else if (q.includes('93') || q.includes('loi')) {
+        res = "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de la cellule n° 6 de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
+      } else if (q.includes('bape') || q.includes('371') || q.includes('rapport')) {
+        res = "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville était <em>« prématuré »</em> et a recommandé le refus environnemental.";
+      } else if (q.includes('16 oct') || q.includes('octobre') || q.includes('date') || q.includes('délai') || q.includes('échéance')) {
+        res = "<strong>L'échéance du 16 octobre 2026 :</strong> Suite à la détermination positive rendue le 17 août 2026 par la CCE (SEM-26-003), le gouvernement du Canada a une obligation légale de répondre par écrit sous 60 jours (date butoir : 16 octobre 2026) sur l'application de ses lois fédérales environnementales (LCOM et LEP).";
+      } else if (q.includes('cadmium') || q.includes('oiseau') || q.includes('faune') || q.includes('pollution') || q.includes('eau') || q.includes('poisson')) {
+        res = "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les tributaires voisins.";
+      } else if (q.includes('session') || q.includes('contact') || q.includes('anonym') || q.includes('whistleblower') || q.includes('document')) {
+        res = "<strong>Contact sécurisé Session :</strong> Pour transmettre des documents confidentiels ou communiquer dans l'anonymat complet, utilisez l'application <em>Session</em> avec l'ID :<br><code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>";
+      } else if (q.includes('onu') || q.includes('nations unies') || q.includes('orellana')) {
+        res = "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel et un appel urgent au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (Genève), pour dénoncer l'enfouissement de matières dangereuses en milieux humides.";
+      } else if (q.includes('cce') || q.includes('aceum') || q.includes('sem-26-003') || q.includes('traité') || q.includes('cusma')) {
+        res = "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE (Montréal) a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer d'ici le 16 octobre 2026 sur l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).";
+      } else {
+        res = "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de résidus toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et l'adoption sous bâillon de la Loi 93. La CCE (Montréal) a formellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
       }
-      if (q.includes('93') || q.includes('loi')) {
-        return "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de la cellule n° 6 de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
-      }
-      if (q.includes('bape') || q.includes('371') || q.includes('rapport')) {
-        return "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville était <em>« prématuré »</em> et a recommandé le refus environnemental.";
-      }
-      if (q.includes('16 oct') || q.includes('octobre') || q.includes('date') || q.includes('délai') || q.includes('échéance')) {
-        return "<strong>L'échéance du 16 octobre 2026 :</strong> Suite à la détermination positive rendue le 17 août 2026 par la CCE (SEM-26-003), le gouvernement du Canada a une obligation légale de répondre par écrit sous 60 jours (date butoir : 16 octobre 2026) sur l'application de ses lois fédérales environnementales (LCOM et LEP).";
-      }
-      if (q.includes('cadmium') || q.includes('oiseau') || q.includes('faune') || q.includes('pollution') || q.includes('eau') || q.includes('poisson')) {
-        return "<strong>Faune & Contamination :</strong> Le site abrite 132 espèces d'oiseaux (66 % nicheuses, dont la Paruline du Canada et le Pioui de l'Est) et des chauves-souris en péril. Des analyses indépendantes (Eau Secours / WaterShed Monitoring) ont révélé des concentrations de cadmium jusqu'à <strong>320 fois supérieures</strong> aux seuils de protection de la vie aquatique dans les tributaires voisins.";
-      }
-      if (q.includes('session') || q.includes('contact') || q.includes('anonym') || q.includes('whistleblower') || q.includes('document')) {
-        return "<strong>Contact sécurisé Session :</strong> Pour transmettre des documents confidentiels ou communiquer dans l'anonymat complet, utilisez l'application <em>Session</em> avec l'ID :<br><code>05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>";
-      }
-      if (q.includes('onu') || q.includes('nations unies') || q.includes('orellana')) {
-        return "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel et un appel urgent au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (Genève), pour dénoncer l'enfouissement de matières dangereuses en milieux humides.";
-      }
-      if (q.includes('cce') || q.includes('aceum') || q.includes('sem-26-003') || q.includes('traité') || q.includes('cusma')) {
-        return "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE (Montréal) a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer d'ici le 16 octobre 2026 sur l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).";
-      }
-      
-      return "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de résidus toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et l'adoption sous bâillon de la Loi 93. La CCE (Montréal) a formellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
+
+      return res + '<span class="ai-msg-stamp">⚠️ Synthèse indicative non officielle · Sans valeur juridique</span>';
     }
 
     async function callHuggingFace(modelName, messages, maxTokens = 450) {
@@ -1472,6 +1468,7 @@ DIRECTIVES DE RÉPONSE :
       aiModal.className = 'ai-modal-overlay';
       aiModal.innerHTML = `
         <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+          <div class="ai-watermark-overlay" aria-hidden="true"></div>
           <div class="ai-modal-header">
             <div class="ai-modal-title" id="ai-modal-title">
               <span class="ai-live-dot"></span>
@@ -1489,6 +1486,7 @@ DIRECTIVES DE RÉPONSE :
 
           <!-- Onglet 1 : Clavardage / Chat en direct -->
           <div class="ai-tab-content active" id="ai-tab-chat">
+            <div class="ai-watermark-strip">⚠️ FILIGRANE : CONTENU GÉNÉRÉ PAR IA SANS VALIDATION OFFICIELLE • AUCUNE VALEUR JURIDIQUE</div>
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
                 <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> ⚡ API Hugging Face Active</span>
@@ -1518,6 +1516,7 @@ DIRECTIVES DE RÉPONSE :
 
           <!-- Onglet 2 : Résumé instantané -->
           <div class="ai-tab-content" id="ai-tab-summary">
+            <div class="ai-watermark-strip">⚠️ SYNTHÈSE IA NON VALIDÉE • DOCUMENT NON OFFICIEL</div>
             <div class="ai-summary-box">
               <div class="ai-summary-card">
                 <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
