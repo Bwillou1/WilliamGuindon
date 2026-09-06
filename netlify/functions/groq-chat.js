@@ -1,5 +1,6 @@
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
-const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+const LOW_MODEL = process.env.GROQ_MODEL_LOW || 'openai/gpt-oss-20b';
+const NORMAL_MODEL = process.env.GROQ_MODEL_NORMAL || 'groq/compound-mini';
 const MEDIUM_MODEL = process.env.GROQ_MODEL_MEDIUM || 'qwen/qwen3.8-27b';
 const EXPERT_MODEL = process.env.GROQ_MODEL_EXPERT || 'openai/gpt-oss-120b';
 const MAX_BODY_BYTES = 32 * 1024;
@@ -12,9 +13,10 @@ Tu es l'assistant documentaire officiel du site de William Guindon. Ton périmè
 
 AIGUILLAGE STRICT
 Avant de répondre, évalue uniquement la question de l'internaute, sans déduire sa complexité du contexte technique fourni.
-1. NIVEAU 1 : salutations, faits simples, dates clés, chronologie de base, définitions courtes et navigation. Réponds directement, en français, avec concision et neutralité.
-2. NIVEAU 2 : résumé d'une section, synthèse du BAPE 371, explication d'impacts écologiques, des 278 000 m², des consultations ou d'une décision préliminaire. Réponds strictement et uniquement : [ROUTE:MOYEN]
-3. NIVEAU 3 : analyse juridique contradictoire, articles 24.27/24.28 ACEUM, conformité fédérale, LEP, LCPE, Loi sur les pêches, droit international, cadmium et dépassements 320x ou question technique avancée. Réponds strictement et uniquement : [ROUTE:EXPERT]
+1. NIVEAU FAIBLE : salutations, oui/non, intention, question d'un mot ou navigation simple. Réponds directement avec un modèle léger, en français.
+2. NIVEAU NORMAL : questions factuelles générales, dates clés, chronologie courte et explications brèves. Réponds directement avec un modèle rapide, en français.
+3. NIVEAU MEDIUM : résumé d'une section, synthèse du BAPE 371, explication d'impacts écologiques, des 278 000 m², des consultations ou d'une décision préliminaire. Réponds strictement et uniquement : [ROUTE:MOYEN]
+4. NIVEAU EXPERT : analyse juridique contradictoire, articles 24.27/24.28 ACEUM, conformité fédérale, LEP, LCPE, Loi sur les pêches, droit international, cadmium et dépassements 320x ou question technique avancée. Réponds strictement et uniquement : [ROUTE:EXPERT]
 Ne justifie jamais un aiguillage. Une réponse aiguillée ne contient aucun autre caractère que sa balise.
 
 SOURCES AUTORISÉES
@@ -34,9 +36,12 @@ function classifyQuestion(question) {
   const text = question.toLocaleLowerCase('fr-CA');
   const expert = /(24\.27|24\.28|aceum|cusma|lcom|loi sur les oiseaux|lep|loi sur les espèces|droit international|juridique|jurisprud|cadmium|320\s*(fois|x)|technique|conformité)/i;
   const medium = /(résum|resume|section|motif|décision|decision|soumission révisée|soumission revisee|milieux humides|278\s*000|audience|bape|rapport 371|tourbière|tourbiere)/i;
+  const low = /^(bonjour|salut|allo|merci|oui|non|qui|quoi|où|ou|aide|menu|accueil|contact|date|hello|hi)\s*[!?.,]*$/i;
+  const navigation = /(où trouver|ouvrir|aller à|lien|page|navigation|comment contacter|messagerie|visualiseur)/i;
   if (expert.test(text)) return { route: 'EXPERT', model: EXPERT_MODEL };
   if (medium.test(text)) return { route: 'MOYEN', model: MEDIUM_MODEL };
-  return { route: 'DIRECT', model: process.env.GROQ_MODEL_DIRECT || DEFAULT_MODEL };
+  if (low.test(text) || navigation.test(text) && text.length < 120) return { route: 'FAIBLE', model: LOW_MODEL };
+  return { route: 'NORMAL', model: NORMAL_MODEL };
 }
 
 exports.handler = async (event) => {
@@ -84,7 +89,7 @@ exports.handler = async (event) => {
 
   const question = safeMessages[safeMessages.length - 1].content;
   const routing = classifyQuestion(question);
-  if (routing.route !== 'DIRECT') {
+  if (routing.route === 'MOYEN' || routing.route === 'EXPERT') {
     return {
       statusCode: 200,
       headers,
@@ -103,7 +108,7 @@ exports.handler = async (event) => {
         messages: [
           {
             role: 'system',
-            content: `${ROUTING_POLICY}\n\nPour cette question classée en réponse directe, réponds directement en français, de façon concise, factuelle et prudente. Base-toi uniquement sur le contexte public fourni et indique clairement quand une information manque.`
+            content: `${ROUTING_POLICY}\n\nCette question est classée au niveau ${routing.route}. Réponds directement en français, de façon concise, factuelle et prudente. Base-toi uniquement sur les sources autorisées et indique clairement quand une information manque.`
           },
           ...safeMessages
         ]
