@@ -5,7 +5,7 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; script-src-elem 'self' 'unsafe-inline' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.doubleclick.net https://*.gstatic.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.doubleclick.net https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com; frame-src 'self' https://*.doubleclick.net https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://translate.google.com https://translate.googleapis.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net; script-src-elem 'self' 'unsafe-inline' https://*.gstatic.com https://*.doubleclick.net https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.doubleclick.net https://*.gstatic.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.doubleclick.net https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net; frame-src 'self' https://*.doubleclick.net https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
 
 <title>Messagerie Sécurisée &amp; Anonyme (Nostr) — William Guindon</title>
 
@@ -483,6 +483,210 @@
 .btn-reply-action:hover {
   background: var(--accent);
 }
+
+/* Conversation-first layout */
+.messaging-page {
+  max-width: 900px;
+}
+.messaging-hero {
+  text-align: left !important;
+  margin: 0 0 18px !important;
+  padding: 0 4px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.messaging-hero > span {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 8px !important;
+  color: var(--accent-deep) !important;
+  font-size: .72rem !important;
+  letter-spacing: .09em !important;
+}
+.messaging-hero > span::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.messaging-hero h1 {
+  font-size: clamp(1.75rem, 4vw, 2.35rem) !important;
+  margin-bottom: 6px !important;
+}
+.messaging-hero p {
+  max-width: 680px !important;
+  margin: 0 !important;
+  font-size: .92rem !important;
+}
+.msg-tab-switcher {
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: none;
+}
+.msg-tab-btn {
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: .88rem;
+}
+.msg-tab-btn.active {
+  background: var(--text);
+  color: var(--bg-card);
+  box-shadow: none;
+}
+.simple-intro-card {
+  margin: 0 0 18px;
+  padding: 11px 14px;
+  gap: 10px;
+  border: 0;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--accent-wash);
+  box-shadow: none;
+}
+.simple-intro-icon {
+  width: 30px;
+  height: 30px;
+}
+.simple-intro-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.simple-intro-text h3 {
+  margin-bottom: 1px;
+  font-size: .88rem;
+}
+.simple-intro-text p {
+  font-size: .78rem;
+  line-height: 1.4;
+}
+.msg-box-container {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.msg-step-title {
+  margin: 0 0 9px;
+  font-size: .98rem;
+  gap: 8px;
+}
+.msg-step-title > span:first-child {
+  color: var(--accent-deep);
+  font-size: .78rem;
+}
+.msg-textarea {
+  min-height: 112px;
+  padding: 13px 15px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  border-color: var(--line);
+  font-size: .96rem;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, .03);
+}
+.file-drop-zone {
+  margin: 10px 0 0;
+  padding: 10px 14px !important;
+  border-width: 1px;
+  border-radius: 14px;
+  text-align: left;
+}
+.file-drop-zone p {
+  justify-content: flex-start !important;
+}
+.key-highlight-card {
+  margin: 16px 0 18px;
+  padding: 13px 15px;
+  border-width: 1px;
+  border-radius: 14px;
+  background: var(--bg-card);
+}
+.key-highlight-card > p,
+.key-highlight-card > div:last-child {
+  font-size: .78rem !important;
+}
+.key-input-row {
+  flex-wrap: wrap;
+}
+.key-input-plain {
+  min-width: 180px;
+  border-radius: 11px;
+}
+#btn-send-message {
+  max-width: none !important;
+  width: 100% !important;
+  min-height: 50px;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+.tech-details-box {
+  margin-top: 18px;
+}
+.inbox-guide-box {
+  margin: 0 0 14px;
+  padding: 13px 15px;
+  border: 0;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--accent-wash);
+  font-size: .82rem;
+}
+.inbox-guide-box ol {
+  padding-left: 18px;
+}
+.inbox-message-card {
+  max-width: 78%;
+  padding: 10px 13px;
+  margin: 0 0 10px;
+  border: 0;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--bg-card);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
+}
+.inbox-message-header {
+  margin-bottom: 3px;
+  font-size: .7rem;
+}
+.inbox-message-body {
+  font-size: .91rem;
+  line-height: 1.45;
+}
+@media (max-width: 640px) {
+  .messaging-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .msg-tab-btn {
+    padding: 8px 9px;
+    font-size: .78rem;
+  }
+  .msg-tab-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .msg-tab-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .key-input-row > button {
+    flex: 1;
+  }
+  .inbox-message-card {
+    max-width: 92%;
+  }
+}
 </style>
 </head>
 <body>
@@ -539,9 +743,9 @@
 </header>
 
 <main id="main-content">
-  <div class="wrap" style="padding-top: 36px; padding-bottom: 60px;">
+  <div class="wrap messaging-page" style="padding-top: 36px; padding-bottom: 60px;">
 
-    <div style="text-align: center; margin-bottom: 24px;">
+    <div class="messaging-hero" style="text-align: center; margin-bottom: 24px;">
       <span style="display:inline-block; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; background:var(--accent-wash); color:var(--accent-deep); padding:4px 12px; border-radius:9999px; margin-bottom:12px; border:1px solid var(--accent);">Canal Confidentiel 100% Client-Side</span>
       <h1 style="font-size: 2.2rem; margin-bottom: 12px; line-height: 1.2;">Messagerie Chiffrée &amp; Anonyme</h1>
       <p style="color: var(--text-muted); max-width: 680px; margin: 0 auto; font-size: 1.05rem;">

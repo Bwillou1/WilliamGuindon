@@ -76,6 +76,24 @@
         if (langTxtEl) langTxtEl.textContent = langCodeDisplay;
         nav.appendChild(langDropdown);
 
+        const gtranslateMenu = langDropdown.querySelector('.nav-dropdown-menu');
+        if (gtranslateMenu) {
+          gtranslateMenu.innerHTML = '<div class="gtranslate_wrapper"></div>';
+        }
+        window.gtranslateSettings = {
+          default_language: 'fr',
+          languages: ['fr', 'en', 'es'],
+          wrapper_selector: '.gtranslate_wrapper'
+        };
+        if (!document.querySelector('script[data-gtranslate-widget]')) {
+          const gtranslateScript = document.createElement('script');
+          gtranslateScript.src = 'https://cdn.gtranslate.net/widgets/latest/uswds.js';
+          gtranslateScript.defer = true;
+          gtranslateScript.setAttribute('data-gtranslate-widget', 'true');
+          document.head.appendChild(gtranslateScript);
+        }
+        if (false) {
+
         // Helper pour les cookies de traduction Google
         function setGoogTransCookie(lang) {
           const host = window.location.hostname;
@@ -239,6 +257,7 @@
           });
         }
 
+        }
       }
 
       // Bouton Mode Sombre / Clair (Sans doublon, Stockage Session uniquement)
