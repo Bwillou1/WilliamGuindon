@@ -1957,17 +1957,13 @@
     }
   }
 
-  function printCli(text, color = "#d1d5db", isHtml = false) {
+  function printCli(text, color = "#d1d5db") {
     const output = document.getElementById("cli-output");
     if (!output) return;
     const line = document.createElement("div");
     line.className = "cli-output-line";
     line.style.color = color;
-    if (isHtml) {
-      line.innerHTML = text;
-    } else {
-      line.textContent = text;
-    }
+    line.textContent = String(text ?? "");
     output.appendChild(line);
     output.scrollTop = output.scrollHeight;
   }

@@ -173,8 +173,8 @@ async function main() {
     ACCOUNT_ID = zone.account.id;
   }
 
-  console.log(`${c.green}✔ Zone détectée :${c.reset} ${zone.name} (Zone ID: ${c.yellow}${zoneId}${c.reset})`);
-  console.log(`${c.green}✔ Compte Cloudflare :${c.reset} ${zone.account ? zone.account.name : 'N/A'} (Account ID: ${c.yellow}${ACCOUNT_ID}${c.reset})`);
+  console.log(`${c.green}✔ Zone détectée :${c.reset} ${zone.name}`);
+  console.log(`${c.green}✔ Compte Cloudflare :${c.reset} ${zone.account ? zone.account.name : 'N/A'}`);
 
   // Vérification & bascule des enregistrements DNS en mode Proxy (nuage orange)
   console.log(`\nRecherche des enregistrements DNS pour activation du proxy...`);
@@ -390,7 +390,18 @@ async function main() {
         console.log(`  -> Redirection : ${c.cyan}${locationHeader.trim()}${c.reset}`);
       }
 
-      if (firstLine.includes('302') || firstLine.includes('403') || (locationHeader && locationHeader.includes('cloudflareaccess.com'))) {
+      let isAccessBlocked = firstLine.includes('302') || firstLine.includes('403');
+      if (locationHeader) {
+        try {
+          const locVal = locationHeader.replace(/^location:\s*/i, '').trim();
+          const parsedLoc = new URL(locVal, testUrl);
+          if (parsedLoc.hostname === 'cloudflareaccess.com' || parsedLoc.hostname.endsWith('.cloudflareaccess.com')) {
+            isAccessBlocked = true;
+          }
+        } catch {}
+      }
+
+      if (isAccessBlocked) {
         console.log(`  -> ${c.green}✔ VÉRIFIÉ : Accès non-authentifié bloqué / redirigé vers Cloudflare Access !${c.reset}`);
       } else if (firstLine.includes('200')) {
         console.log(`  -> ${c.red}⚠️ ALERTE : La page répond en HTTP 200 sans challenge Access (propagation DNS/cache Cloudflare en cours ?)${c.reset}`);

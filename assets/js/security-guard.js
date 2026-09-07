@@ -570,11 +570,11 @@
       if (clone) {
         clone.querySelectorAll('script, style, #panic-alert-banner, #maint-wrapper, #panic-text-only-wrapper').forEach(el => el.remove());
         const rawText = clone.innerText || clone.textContent || '';
-        txtOverlay.innerHTML = `
-          <div style="max-width:850px;margin:0 auto;background:#161b22;padding:24px;border:1px solid #30363d;border-radius:10px;white-space:pre-wrap;">
-            ${rawText.trim()}
-          </div>
-        `;
+        const innerDiv = document.createElement('div');
+        innerDiv.style.cssText = 'max-width:850px;margin:0 auto;background:#161b22;padding:24px;border:1px solid #30363d;border-radius:10px;white-space:pre-wrap;';
+        innerDiv.textContent = rawText.trim();
+        txtOverlay.innerHTML = '';
+        txtOverlay.appendChild(innerDiv);
       }
       (document.body || document.documentElement).appendChild(txtOverlay);
     }
@@ -832,7 +832,18 @@
 
     const title = state.legalNoticeTitle || 'DÉNONCIATION PUBLIQUE : TENTATIVE DE BÂILLONNEMENT JURIDIQUE';
     const details = state.legalNoticeDetails || 'Notification d\'intimidation reçue. L\'intégralité des preuves et soumissions environnementales est versée au domaine public et au dossier CCE SEM-26-003.';
-    const photoUrl = state.legalNoticeImage || '';
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    const safeTitle = escapeHtml(title);
+    const safeDetails = escapeHtml(details);
 
     el.innerHTML = `
       <div style="background:#18080b;border:2.5px solid #f43f5e;border-radius:20px;padding:32px;max-width:840px;width:100%;box-shadow:0 0 60px rgba(244,63,94,0.35),0 30px 90px rgba(0,0,0,0.95);">
@@ -841,14 +852,14 @@
           <div style="display:inline-block;background:rgba(244,63,94,0.18);color:#fb7185;border:1.5px solid #f43f5e;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;">
             DÉNONCIATION PUBLIQUE // RIPOSTE LÉGALE &amp; CITOYENNE
           </div>
-          <h1 style="color:#ffffff;font-size:22px;margin:12px 0 6px;font-weight:900;">${title}</h1>
-          <p style="color:#fecdd3;font-size:14px;line-height:1.5;margin:0;">${details}</p>
+          <h1 style="color:#ffffff;font-size:22px;margin:12px 0 6px;font-weight:900;">${safeTitle}</h1>
+          <p style="color:#fecdd3;font-size:14px;line-height:1.5;margin:0;">${safeDetails}</p>
         </div>
 
         ${photoUrl ? `
           <div style="background:#0a0304;border:1px solid #881337;border-radius:12px;padding:12px;margin-bottom:20px;text-align:center;">
             <div style="font-size:12px;color:#fb7185;font-weight:700;margin-bottom:8px;">PIÈCE REÇUE (MISE EN DEMEURE / DOCUMENT OFFICIEL) :</div>
-            <img src="${photoUrl}" alt="Mise en demeure" style="max-height:300px;max-width:100%;border-radius:8px;border:1px solid #f43f5e;box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+            <img src="${escapeHtml(photoUrl)}" alt="Mise en demeure" style="max-height:300px;max-width:100%;border-radius:8px;border:1px solid #f43f5e;box-shadow:0 10px 30px rgba(0,0,0,0.8);">
           </div>
         ` : ''}
 
@@ -858,11 +869,20 @@
         </div>
 
         <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
-          <button id="btn-generate-strike-poster" onclick="generateSocialStrikePoster('${title.replace(/'/g, "\\'")}')" style="background:#f43f5e;color:#fff;font-weight:900;padding:12px 24px;border:none;border-radius:10px;cursor:pointer;font-size:14px;box-shadow:0 0 25px rgba(244,63,94,0.5);">Télécharger l'Affiche Réseaux Sociaux (PNG HD)</button>
+          <button id="btn-generate-strike-poster" type="button" style="background:#f43f5e;color:#fff;font-weight:900;padding:12px 24px;border:none;border-radius:10px;cursor:pointer;font-size:14px;box-shadow:0 0 25px rgba(244,63,94,0.5);">Télécharger l'Affiche Réseaux Sociaux (PNG HD)</button>
           <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="background:#1e293b;border:1px solid #475569;color:#f8fafc;font-weight:700;padding:12px 20px;border-radius:10px;text-decoration:none;font-size:13px;">Dossier CCE ↗</a>
         </div>
       </div>
     `;
+
+    const strikeBtn = el.querySelector('#btn-generate-strike-poster');
+    if (strikeBtn) {
+      strikeBtn.addEventListener('click', function() {
+        if (typeof window.generateSocialStrikePoster === 'function') {
+          window.generateSocialStrikePoster(title);
+        }
+      });
+    }
   }
 
   function removeLegalNoticeStrikeScreen() {

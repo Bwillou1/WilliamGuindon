@@ -1378,7 +1378,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Clé AES-256 : <code>${encryptedFileData.keyHex.slice(0, 8)}••••••••••••••••</code> (Scellée dans le Gift Wrap)
       `;
     } catch (err) {
-      fileInfoBox.innerHTML = `<span style="color:#ef4444;">Erreur de chiffrement du fichier : ${err.message}</span>`;
+      fileInfoBox.innerHTML = `<span style="color:#ef4444;">Erreur de chiffrement du fichier : ${escapeHtml(err.message || String(err))}</span>`;
       encryptedFileData = null;
     }
   }
@@ -1583,7 +1583,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       btnFetchInbox.disabled = false;
-      inboxStatus.innerHTML = `<span style="color:#ef4444;">Erreur de connexion aux relais : ${err.message}</span>`;
+      inboxStatus.innerHTML = `<span style="color:#ef4444;">Erreur de connexion aux relais : ${escapeHtml(err.message || String(err))}</span>`;
     }
   });
 

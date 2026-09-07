@@ -65,16 +65,35 @@ if (fs.existsSync(swPath)) {
   errors.push('[SW] sw.js introuvable à la racine');
 }
 
+// Helper pour extraire le texte brut sans regex tag stripping (évite alertes CodeQL)
+function stripHtml(input) {
+  if (!input || typeof input !== 'string') return '';
+  let out = '';
+  let inTag = false;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (ch === '<') {
+      inTag = true;
+    } else if (ch === '>') {
+      inTag = false;
+    } else if (!inTag) {
+      out += ch;
+    }
+  }
+  return out.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+}
+
 // 3. Validation de cohérence FAQ (HTML visible vs JSON-LD Schema.org FAQPage)
 const indexPath = path.join(__dirname, '..', 'index.html');
 if (fs.existsSync(indexPath)) {
   const indexHtml = fs.readFileSync(indexPath, 'utf8');
 
   // Parse JSON-LD FAQPage
-  const scripts = indexHtml.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g) || [];
+  const scriptRegex = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   let faqJsonLd = null;
-  for (const s of scripts) {
-    const raw = s.replace(/<\/?script[^>]*>/g, "");
+  let scriptMatch;
+  while ((scriptMatch = scriptRegex.exec(indexHtml)) !== null) {
+    const raw = scriptMatch[1].trim();
     try {
       const data = JSON.parse(raw);
       if (data["@graph"]) {
@@ -91,8 +110,8 @@ if (fs.existsSync(indexPath)) {
   const detailsRegex = /<details[^>]*class="[^"]*faq[^"]*"[^>]*>[\s\S]*?<summary>(.*?)<\/summary>[\s\S]*?<p class="faq-content">([\s\S]*?)<\/p>[\s\S]*?<\/details>/g;
   let m;
   while ((m = detailsRegex.exec(indexHtml)) !== null) {
-    const q = m[1].replace(/<[^>]+>/g, "").trim();
-    const a = m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+    const q = stripHtml(m[1]).trim();
+    const a = stripHtml(m[2]).replace(/\s+/g, " ").trim();
     visibleFaqs.push({ q, a });
   }
 
@@ -105,7 +124,7 @@ if (fs.existsSync(indexPath)) {
     for (let i = 0; i < visibleFaqs.length; i++) {
       const v = visibleFaqs[i];
       const j = faqJsonLd.mainEntity[i];
-      const jText = (j.acceptedAnswer?.text || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+      const jText = stripHtml(j.acceptedAnswer?.text || "").replace(/\s+/g, " ").trim();
 
       if (v.q !== j.name) {
         errors.push(`[FAQ Q${i+1}] Intitulé question différent : HTML "${v.q}" vs JSON-LD "${j.name}"`);
@@ -123,6 +142,33 @@ console.log('\nVérification des liens internes et ressources locales dans les f
 const htmlFiles = fs.readdirSync(path.join(__dirname, '..')).filter(f => f.endsWith('.html'));
 let checkedLinksCount = 0;
 
+function getInternalPath(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return null;
+  const trimmed = rawUrl.trim();
+  if (trimmed.startsWith('#') || trimmed.startsWith('//') || trimmed.includes('${')) return null;
+
+  try {
+    if (/^https?:\/\//i.test(trimmed)) {
+      const parsed = new URL(trimmed);
+      if (parsed.hostname === 'williamguindon.me' || parsed.hostname === 'www.williamguindon.me') {
+        const p = parsed.pathname;
+        return p === '/' ? 'index.html' : p;
+      }
+      return null;
+    }
+
+    // Autres protocoles (mailto, tel, javascript, data, blob, etc.)
+    if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
+      return null;
+    }
+
+    const clean = trimmed.split('?')[0].split('#')[0];
+    return clean === '' || clean === '/' ? 'index.html' : clean;
+  } catch {
+    return null;
+  }
+}
+
 for (const htmlFile of htmlFiles) {
   const htmlPath = path.join(__dirname, '..', htmlFile);
   const content = fs.readFileSync(htmlPath, 'utf8');
@@ -133,40 +179,25 @@ for (const htmlFile of htmlFiles) {
 
   while ((match = linkRegex.exec(content)) !== null) {
     const rawLink = match[1].trim();
+    const cleanUrl = getInternalPath(rawLink);
 
-    // Skip external URLs, protocol-relative, anchors, schemas, data URIs and JS template literals
-    if (
-      !rawLink ||
-      rawLink.startsWith('http://') ||
-      rawLink.startsWith('https://') ||
-      rawLink.startsWith('//') ||
-      rawLink.startsWith('#') ||
-      rawLink.startsWith('mailto:') ||
-      rawLink.startsWith('tel:') ||
-      rawLink.startsWith('javascript:') ||
-      rawLink.startsWith('data:') ||
-      rawLink.startsWith('blob:') ||
-      rawLink.includes('${')
-    ) {
+    if (cleanUrl === null) {
       continue;
     }
 
     checkedLinksCount++;
 
-    // Strip query string and hash
-    const cleanUrl = rawLink.split('?')[0].split('#')[0];
-    if (cleanUrl) {
-      const targetRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
-      const targetFullPath = path.join(__dirname, '..', targetRelPath);
+    const targetRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
+    const targetFullPath = path.join(__dirname, '..', targetRelPath);
 
-      if (!fs.existsSync(targetFullPath)) {
-        errors.push(`[LIEN CASSE] Dans "${htmlFile}" : cible introuvable "${rawLink}" (résolu en: ${targetRelPath})`);
-      }
+    if (!fs.existsSync(targetFullPath)) {
+      errors.push(`[LIEN CASSE] Dans "${htmlFile}" : cible introuvable "${rawLink}" (résolu en: ${targetRelPath})`);
     }
 
     // If it's a viewer.html with ?file= param, also check the file parameter
-    if (rawLink.startsWith('viewer.html?file=') || rawLink.startsWith('/viewer.html?file=')) {
-      const urlParams = new URLSearchParams(rawLink.split('?')[1] || '');
+    if (rawLink.includes('viewer.html?file=')) {
+      const queryPart = rawLink.split('?')[1] || '';
+      const urlParams = new URLSearchParams(queryPart.split('#')[0]);
       const docFile = urlParams.get('file');
       if (docFile && !docFile.startsWith('http')) {
         const docClean = docFile.startsWith('/') ? docFile.slice(1) : docFile;
