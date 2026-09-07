@@ -392,7 +392,7 @@
             <div class="file-dropzone" id="blog-dropzone">
               <input type="file" id="blog-file" accept="image/*" style="display:none;">
               <span>Cliquez ou glissez une photo ici depuis votre appareil</span>
-              <img id="blog-file-preview" class="file-preview" alt="Prévisualisation">
+              <img id="blog-file-preview" class="file-preview" alt="Prévisualisation" width="300" height="200">
             </div>
           </div>
 
@@ -446,7 +446,7 @@
             <div class="file-dropzone" id="photo-dropzone">
               <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
               <span>Cliquez ou choisissez une photo haute définition</span>
-              <img id="photo-file-preview" class="file-preview" alt="Prévisualisation">
+              <img id="photo-file-preview" class="file-preview" alt="Prévisualisation" width="300" height="200">
             </div>
           </div>
 
@@ -753,7 +753,7 @@
       photoList.innerHTML = photoData.map(ph => `
         <div class="item-list-row">
           <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${ph.imageUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+            <img src="${ph.imageUrl}" class="admin-photo-thumb" width="40" height="40" alt="${ph.title || 'Photo'}" loading="lazy">
             <div>
               <strong>${ph.title}</strong>
               <div style="font-size:12px; color:var(--text-muted);">${ph.date} · ${ph.location || ""}</div>

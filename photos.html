@@ -309,7 +309,7 @@
 <div class="lightbox-modal" id="lightbox-modal" role="dialog" aria-modal="true">
   <div class="lightbox-content">
     <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Fermer">&times;</button>
-    <img src="" alt="" id="lightbox-img" class="lightbox-img">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3C/svg%3E" alt="Agrandissement photo" id="lightbox-img" class="lightbox-img" width="1200" height="800">
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 </div>
@@ -375,7 +375,7 @@
 
       card.innerHTML = `
         <div class="photo-img-wrap">
-          <img src="${item.imageUrl}" alt="${item.title}" class="photo-img" loading="lazy">
+          <img src="${item.imageUrl}" alt="${item.title}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
           <span class="photo-badge">${item.category || "Terrain"}</span>
           <div class="photo-overlay">
             <div class="photo-title">${item.title}</div>
