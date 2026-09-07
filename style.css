@@ -1373,8 +1373,6 @@ dialog.doc-dialog[open]::backdrop {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.45);
-  
-  -webkit-
   z-index: var(--z-dropdown);
   opacity: 0;
   transition: opacity 0.25s ease;
@@ -1385,6 +1383,11 @@ dialog.doc-dialog[open]::backdrop {
   display: block;
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Verrouille le defilement de la page quand le menu mobile est ouvert */
+body.no-scroll {
+  overflow: hidden;
 }
 
 @media (max-width: 992px) {
