@@ -131,11 +131,24 @@ Dans le tableau de bord Cloudflare (**SSL/TLS** ➔ **Edge Certificates** ➔ **
 - **Apply HSTS policy to subdomains (includeSubDomains)** : Coché
 - **Preload (Enable HSTS preload)** : Coché
 
-### 3. Cloudflare Access (Zero Trust)
-Verrouillage périmétrique strict par code OTP (email) sur les routes d'administration :
-- `https://williamguindon.me/console-admin.html`
-- `https://williamguindon.me/admin.html`
-- `https://williamguindon.me/editeur.html`
+### 3. Accès administration (Cloudflare Access)
+Les interfaces d'administration (`admin.html`, `console-admin.html`, `editeur.html`) sont retirées de toute navigation publique et protégées au niveau réseau par **Cloudflare Zero Trust (Access)** (gratuit jusqu'à 50 utilisateurs). L'accès direct aux URLs exige une authentification par code à usage unique (OTP) envoyé par e-mail.
+
+#### Paramétrage manuel (Cloudflare Zero Trust Dashboard) :
+1. Se rendre dans **Zero Trust** ➔ **Access** ➔ **Applications** ➔ cliquer sur **Add an application**.
+2. Choisir **Self-hosted**.
+3. Renseigner l'application :
+   - **Application name** : `Administration - William Guindon`
+   - **Application domain** : `williamguindon.me`
+   - **Path** : `/admin.html` (créer de même pour `/console-admin.html` et `/editeur.html` ou un préfixe commun).
+4. Configurer la politique d'accès (**Policy**) :
+   - **Policy name** : `Admin Only`
+   - **Action** : `Allow`
+   - **Rule configuration** : Selector `Emails`, Value `guindonwilliam2@gmail.com` (ou votre e-mail administrateur).
+5. Enregistrer l'application.
+
+#### Paramétrage automatisé :
+Le script [`scripts/cloudflare-zero-trust-setup.js`](scripts/cloudflare-zero-trust-setup.js) configure automatiquement ces 3 applications et la politique d'accès associée via l'API REST Cloudflare v4.
 
 ---
 
