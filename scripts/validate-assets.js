@@ -14,6 +14,7 @@ const CORE_FILES = [
   'viewer.html',
   'ai.html',
   'txt.html',
+  'netiquette.html',
   'sitemap.xml',
   'feed.xml',
   'manifest.json',
