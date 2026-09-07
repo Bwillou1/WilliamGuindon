@@ -25,51 +25,196 @@
   const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41z"/></svg>`;
   const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.3 22c5.3 0 9.7-4.3 9.7-9.7 0-2.7-1.1-5.1-2.9-6.9-.5-.5-1.3-.1-1.2.6.7 3.5-.3 7.3-3 10-2.7 2.7-6.5 3.7-10 3-.7-.1-1.1.7-.6 1.2 1.8 1.8 4.2 2.8 6.8 2.8zm-2.8-5c2.7-.2 5.1-1.5 6.8-3.5C13 13.3 10 9.9 10 6c0-.8.1-1.6.3-2.4C7.4 4.5 5 7.4 5 10.9 5 14.3 7 16.7 9.5 17z"/></svg>`;
 
+  // Gestionnaire de traduction in-place (FR / EN / ES)
+  function setGoogTransCookie(lang) {
+    const host = window.location.hostname;
+    const domainParts = host.split('.');
+    const rootDomain = domainParts.length > 1 ? '.' + domainParts.slice(-2).join('.') : '.' + host;
+
+    if (!lang || lang === 'fr') {
+      const expire = "expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      const paths = ['/', window.location.pathname];
+      paths.forEach(p => {
+        document.cookie = `googtrans=; ${expire} path=${p};`;
+        document.cookie = `googtrans=; ${expire} path=${p}; domain=${host};`;
+        document.cookie = `googtrans=; ${expire} path=${p}; domain=${rootDomain};`;
+      });
+    } else {
+      const values = [`/fr/${lang}`, `/auto/${lang}`];
+      values.forEach(val => {
+        document.cookie = `googtrans=${val}; path=/; SameSite=Lax;`;
+        document.cookie = `googtrans=${val}; path=/; domain=${host}; SameSite=Lax;`;
+        document.cookie = `googtrans=${val}; path=/; domain=${rootDomain}; SameSite=Lax;`;
+      });
+    }
+  }
+
+  function triggerGoogleTranslateCombo(lang) {
+    const combo = document.querySelector('.goog-te-combo');
+    if (!combo || !combo.options || combo.options.length === 0) return false;
+
+    let matchedIndex = -1;
+    for (let i = 0; i < combo.options.length; i++) {
+      if (combo.options[i].value.toLowerCase() === lang.toLowerCase()) {
+        matchedIndex = i;
+        break;
+      }
+    }
+
+    if (matchedIndex >= 0) {
+      combo.selectedIndex = matchedIndex;
+      combo.value = combo.options[matchedIndex].value;
+      if (typeof combo.onchange === 'function') {
+        try { combo.onchange(); } catch(_) {}
+      }
+      combo.dispatchEvent(new Event('change', { bubbles: true }));
+      combo.dispatchEvent(new Event('input', { bubbles: true }));
+      return true;
+    }
+    return false;
+  }
+
+  function ensureGoogleTranslateLoaded(cb) {
+    let gDiv = document.getElementById('google_translate_element');
+    if (!gDiv) {
+      gDiv = document.createElement('div');
+      gDiv.id = 'google_translate_element';
+      gDiv.style.cssText = 'display:none;position:absolute;top:-9999px;left:-9999px;';
+      document.body.appendChild(gDiv);
+    }
+
+    if (!window.googleTranslateElementInit) {
+      window.googleTranslateElementInit = function() {
+        try {
+          if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'fr',
+              includedLanguages: 'fr,en,es',
+              autoDisplay: false
+            }, 'google_translate_element');
+            if (typeof cb === 'function') cb();
+          }
+        } catch (e) {
+          if (DEBUG) console.warn('GT Init:', e);
+        }
+      };
+    }
+
+    if (!document.getElementById('google-translate-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-translate-script';
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.head.appendChild(script);
+    } else if (window.google && window.google.translate && typeof cb === 'function') {
+      cb();
+    }
+  }
+
+  function applyLanguage(targetLang) {
+    const codeEl = document.querySelector('.nav-lang-dropdown .current-lang-code');
+    if (codeEl) codeEl.textContent = targetLang.toUpperCase();
+
+    const items = document.querySelectorAll('.nav-lang-dropdown .lang-select-btn');
+    items.forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === targetLang);
+    });
+
+    if (targetLang === 'fr') {
+      sessionStorage.removeItem('wg_user_lang');
+      localStorage.removeItem('wg_user_lang');
+      setGoogTransCookie(null);
+      if (triggerGoogleTranslateCombo('fr')) {
+        setTimeout(() => { window.location.reload(); }, 200);
+      } else {
+        window.location.reload();
+      }
+      return;
+    }
+
+    sessionStorage.setItem('wg_user_lang', targetLang);
+    localStorage.setItem('wg_user_lang', targetLang);
+    setGoogTransCookie(targetLang);
+
+    ensureGoogleTranslateLoaded(() => {
+      if (!triggerGoogleTranslateCombo(targetLang)) {
+        let attempts = 0;
+        const interval = setInterval(() => {
+          attempts++;
+          if (triggerGoogleTranslateCombo(targetLang) || attempts > 20) {
+            clearInterval(interval);
+          }
+        }, 150);
+      }
+    });
+  }
+
   function initApp() {
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 
-    // Intégration du sélecteur de langue fluide et autonome (FR / EN / ES)
+    // Intégration du sélecteur de langue unique (FR / EN / ES)
     if (nav) {
-      let langDropdown = nav.querySelector('#nav-lang-dropdown');
+      let langDropdown = nav.querySelector('.nav-lang-dropdown');
       if (!langDropdown) {
         langDropdown = document.createElement('div');
-        langDropdown.id = 'nav-lang-dropdown';
-        langDropdown.className = 'nav-lang-dropdown';
+        langDropdown.className = 'nav-dropdown nav-lang-dropdown';
 
-        const path = window.location.pathname;
-        let currentLang = 'FR';
-        if (path.includes('en.html')) currentLang = 'EN';
-        else if (path.includes('es.html')) currentLang = 'ES';
+        const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang') || 'fr';
+        const currentLangUpper = (savedLang === 'en' ? 'EN' : savedLang === 'es' ? 'ES' : 'FR');
 
         langDropdown.innerHTML = `
-          <button class="nav-lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Changer de langue / Change language">
-            <svg class="svg-icon lang-globe-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
+            <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="current-lang-code">${currentLang}</span>
-            <svg class="svg-icon lang-chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <span class="current-lang-code">${currentLangUpper}</span>
+            <span>▾</span>
           </button>
-          <div class="nav-lang-menu" role="menu">
-            <a href="index.html" class="nav-lang-item ${currentLang === 'FR' ? 'active' : ''}" role="menuitem" hreflang="fr" lang="fr">
+          <div class="nav-dropdown-menu nav-lang-menu" role="menu">
+            <span class="nav-dropdown-group-title">Langue / Language</span>
+            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'fr' ? 'active' : ''}" data-lang="fr" role="menuitem">
               <span class="lang-name">Français</span>
               <span class="lang-tag">FR</span>
-            </a>
-            <a href="en.html" class="nav-lang-item ${currentLang === 'EN' ? 'active' : ''}" role="menuitem" hreflang="en" lang="en">
+            </button>
+            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'en' ? 'active' : ''}" data-lang="en" role="menuitem">
               <span class="lang-name">English</span>
               <span class="lang-tag">EN</span>
-            </a>
-            <a href="es.html" class="nav-lang-item ${currentLang === 'ES' ? 'active' : ''}" role="menuitem" hreflang="es" lang="es">
+            </button>
+            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'es' ? 'active' : ''}" data-lang="es" role="menuitem">
               <span class="lang-name">Español</span>
               <span class="lang-tag">ES</span>
-            </a>
+            </button>
           </div>
         `;
-        nav.appendChild(langDropdown);
+
+        const notifDropdown = nav.querySelector('.nav-notif-dropdown');
+        if (notifDropdown) {
+          nav.insertBefore(langDropdown, notifDropdown);
+        } else {
+          nav.appendChild(langDropdown);
+        }
+
+        langDropdown.querySelectorAll('.lang-select-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const targetLang = btn.getAttribute('data-lang');
+            langDropdown.classList.remove('active');
+            const navBtn = langDropdown.querySelector('.nav-dropdown-btn');
+            if (navBtn) {
+              navBtn.setAttribute('aria-expanded', 'false');
+              navBtn.blur();
+            }
+            applyLanguage(targetLang);
+          });
+        });
+
+        if (savedLang && savedLang !== 'fr') {
+          applyLanguage(savedLang);
+        }
       }
 
       // Bouton Mode Sombre / Clair

@@ -40,9 +40,7 @@ Ce dépôt GitHub constitue la source de vérité publique hébergeant le site o
 
 ```
 .
-├── 📄 index.html              # Page d'accueil officielle (Français) + Données Schema.org JSON-LD
-├── 📄 en.html                 # Version anglaise officielle (English)
-├── 📄 es.html                 # Version espagnole officielle (Español)
+├── 📄 index.html              # Page d'accueil officielle (Français) + Données Schema.org JSON-LD (Multilingue in-place)
 ├── 📄 registre.html # Registre documentaire interactif du dossier CCE
 ├── 📄 live.html               # Compte à rebours temps réel de l'échéance fédérale CCE
 ├── 📄 communiques.html        # Archives des communiqués de presse officiels

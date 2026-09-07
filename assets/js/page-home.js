@@ -1,6 +1,6 @@
 /**
  * page-home.js — William Guindon (williamguindon.me)
- * Module spécifique à la page d'accueil (index.html, en.html, es.html) :
+ * Module spécifique à la page d'accueil (index.html) :
  * Carrousel de presse interactif, compteurs animés, aperçu des articles et photos.
  */
 (function () {

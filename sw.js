@@ -1,11 +1,9 @@
-const CACHE_NAME = 'wg-pwa-v18';
+const CACHE_NAME = 'wg-pwa-v19';
 const MAX_CACHE_ENTRIES = 60;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/en.html',
-  '/es.html',
   '/registre.html',
   '/presse.html',
   '/stablex.html',
