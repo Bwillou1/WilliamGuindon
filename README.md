@@ -150,6 +150,8 @@ Les interfaces d'administration (`admin.html`, `console-admin.html`, `editeur.ht
 #### Paramétrage automatisé :
 Le script [`scripts/cloudflare-zero-trust-setup.js`](scripts/cloudflare-zero-trust-setup.js) configure automatiquement ces 3 applications et la politique d'accès associée via l'API REST Cloudflare v4.
 
+> **Sécurité du jeton GitHub (PAT)** : Le PAT ne doit être utilisé qu'avec une portée minimale (repo seul), une expiration courte, et depuis une session protégée par Cloudflare Access.
+
 ---
 
 ## 🔒 Contact & Canaux Sécurisés
