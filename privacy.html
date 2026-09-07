@@ -253,11 +253,12 @@
         <li><strong>Absence totale d'obligation et décharge intégrale :</strong> L'envoi d'un message chiffré ne confère aucun mandat, n'établit aucune relation professionnelle ou légale, et n'engage en aucun cas William Guindon à répondre, publier, divulguer ou traiter les éléments transmis. L'expéditeur demeure l'unique responsable de ses transmissions et de la garde de ses clés privées.</li>
       </ul>
 
-      <h2>5. Module d'Assistance Virtuelle IA (Groq)</h2>
+      <h2>5. Module d'Assistance Virtuelle IA (Cloudflare Workers &amp; Groq)</h2>
       <p>Le site met à disposition un assistant conversationnel citoyen pour faciliter l'accès et la compréhension de la documentation environnementale publique (dossier CCE SEM-26-003). Le traitement est encadré selon les règles suivantes :</p>
       <ul>
-        <li><strong>Traitement transitoire et anonyme :</strong> Les questions posées et un extrait limité de la page consultée sont transmis en temps réel via notre proxy serveur sécurisé à <em>Groq</em>. La clé Groq n'est jamais envoyée au navigateur et aucun compte n'est requis pour utiliser l'assistant.</li>
-        <li><strong>Absence de journalisation persistante :</strong> L'éditeur du site ne conserve aucun registre des conversations ni des prompts soumis à l'assistant.</li>
+        <li><strong>Proxy sans serveur sécurisé (Cloudflare Workers) :</strong> Les requêtes formulées à l'assistant sont acheminées via une fonction sans serveur (<em>Serverless Edge Worker</em>) exécutée sur le réseau périphérique de <strong>Cloudflare</strong>. Ce proxy isole complètement la clé secrète d'inférence, filtre les requêtes et applique des garde-fous stricts sans jamais stocker le contenu sur un serveur persistant.</li>
+        <li><strong>Traitement transitoire et anonyme :</strong> Les questions posées et un extrait contextuel de la documentation publique sont transmis en temps réel par le Worker vers le moteur d'inférence <em>Groq</em>. Aucun compte utilisateur, cookie ou identifiant nominatif n'est exigé ou transmis.</li>
+        <li><strong>Absence de journalisation persistante :</strong> L'éditeur du site ne conserve aucun registre des conversations, aucun historique de clavardage ni aucun journal des prompts soumis à l'assistant.</li>
         <li><strong>Non-utilisation pour l'entraînement :</strong> Les données de vos requêtes ne sont en aucun cas utilisées par l'éditeur pour entraîner ou affiner des modèles d'intelligence artificielle.</li>
         <li><strong>Absence de conseil et décharge de responsabilité :</strong> Les réponses de l'IA sont générées de façon probabiliste et automatisée. Elles ne constituent en aucun cas une promesse, un avis d'expert ou une prise de position formelle de l'éditeur.</li>
         <li><strong>Mise en garde :</strong> Il est formellement recommandé aux utilisateurs de ne saisir aucun renseignement personnel confidentiel ou sensible dans l'interface de clavardage IA.</li>
@@ -267,13 +268,24 @@
       <p>Les renseignements personnels sont conservés uniquement pendant la durée nécessaire à l'accomplissement des fins pour lesquelles ils ont été recueillis, conformément aux exigences légales :</p>
       <ul>
         <li><strong>Correspondance courriel et demandes citoyennes :</strong> Conservées pour une durée maximale de 24 mois à compter du dernier échange pour assurer le suivi documentaire et les obligations légales, sauf demande expresse de suppression anticipée.</li>
-        <li class="legal-no-log"><strong>Journaux techniques et adresses IP (Politique de non-conservation) :</strong> L'éditeur applique une politique stricte d'absence de journalisation nominative (<em>No-Log</em>). Aucune adresse IP brute n'est enregistrée de manière persistante, conservée ou corrélée à vos visites sur nos serveurs. Les métriques de routage ou de sécurité réseau éventuellement traitées en transit par les infrastructures d'hébergement ou de protection (CDN) le sont de manière strictement volatile en mémoire vive ou font l'objet d'une anonymisation immédiate et irréversible, sans stockage de données identifiantes.</li>
+        <li><strong class="legal-no-log">Journaux techniques et adresses IP (Politique de non-conservation) :</strong> L'éditeur applique une politique stricte d'absence de journalisation nominative (<em>No-Log</em>). Aucune adresse IP brute n'est enregistrée de manière persistante, conservée ou corrélée à vos visites sur nos serveurs. Les métriques de routage ou de sécurité réseau éventuellement traitées en transit par les infrastructures d'hébergement ou de protection (CDN) le sont de manière strictement volatile en mémoire vive ou font l'objet d'une anonymisation immédiate et irréversible, sans stockage de données identifiantes.</li>
       </ul>
 
-      <h2>7. Communication des Données et Sous-Traitants Tiers</h2>
-      <p>Vos renseignements personnels ne sont communiqués à aucun tiers, à l'exception stricte des prestataires techniques indispensables au fonctionnement sécurisé du site web :</p>
+      <h2>7. Communication des Données, Sous-Traitants Tiers et Infrastructure Réseau</h2>
+      <p>Vos renseignements personnels ne sont communiqués à aucun tiers, à l'exception stricte des prestataires techniques et d'infrastructure indispensables au fonctionnement sécurisé, résilient et performant du site web :</p>
       <ul>
-        <li><strong>Fournisseurs d'hébergement et de distribution de contenu (CDN) :</strong> Prestataires conformes aux normes ISO 27001 / SOC 2 garantissant la sécurité physique et logique des infrastructures.</li>
+        <li>
+          <strong>Cloudflare, Inc. (Proxy inverse, CDN, Sécurité réseau &amp; Workers) :</strong>
+          <br>
+          Le domaine <code>williamguindon.me</code> est protégé et distribué via le réseau mondial de <strong>Cloudflare</strong>. À ce titre, Cloudflare agit comme mandataire inverse (<em>Reverse Proxy</em>) et réseau de diffusion de contenu (CDN) :
+          <ul>
+            <li><em>Sécurité et atténuation des attaques :</em> Cloudflare analyse les requêtes HTTP/HTTPS entrantes de manière transitoire afin de bloquer les attaques par déni de service distribué (DDoS), les requêtes malveillantes et les robots automatisés illégitimes.</li>
+            <li><em>Traitement des adresses IP :</em> Les adresses IP des visiteurs sont traitées en mémoire vive aux points de présence périphériques (<em>edge</em>) uniquement pour acheminer le trafic et assurer la sécurité du réseau conformément à l'intérêt légitime de sécurité (art. 6.1.f RGPD / Loi 25), sans profilage commercial ni croisement de données publicitaires.</li>
+            <li><em>Cloudflare Zero Trust (Access) :</em> Les routes d'administration et de gestion de contenu privées sont sécurisées par une passerelle Zero Trust exigeant une authentification forte (OTP par courriel) réservée à l'administrateur. Aucun compte ni mot de passe n'est exigé des visiteurs publics du site.</li>
+            <li><em>Sécurité et conformité :</em> Cloudflare est certifié ISO/IEC 27001, SOC 2 Type II et applique des standards de sécurité stricts conformes aux exigences de la Loi 25 et du RGPD.</li>
+          </ul>
+        </li>
+        <li><strong>GitHub Pages / GitHub Inc. :</strong> Hébergement du code source et des fichiers statiques publics sous infrastructure certifiée SOC 1 / SOC 2.</li>
         <li><strong>Obligation légale :</strong> William Guindon ne divulguera des renseignements personnels que si une ordonnance judiciaire valide, une loi applicable ou un tribunal compétent l'y contraint expressément, dans le respect des privilèges légaux et des protections accordées aux sources journalistiques et citoyennes.</li>
       </ul>
 
@@ -294,10 +306,12 @@
       <h2>9. Sécurité des Données et Mesures de Protection</h2>
       <p>Des mesures de sécurité physiques, organisationnelles et technologiques rigoureuses sont déployées pour préserver l'intégrité, la confidentialité et la disponibilité de vos données :</p>
       <ul>
-        <li>Protocole de chiffrement TLS 1.3 / HTTPS obligatoire avec politique HSTS renforcée ;</li>
+        <li>Protocole de chiffrement TLS 1.3 / HTTPS obligatoire de bout en bout avec politique de préchargement HSTS (<em>HTTP Strict Transport Security</em>) renforcée ;</li>
+        <li>Distribution via le réseau périphérique sécurisé Cloudflare avec pare-feu applicatif (WAF) et protection anti-DDoS active ;</li>
         <li>Politique de sécurité de contenu stricte (Content Security Policy - CSP) bloquant toute exécution de scripts ou ressources non autorisées ;</li>
-        <li>Protection contre le détournement de clics (*clickjacking*) via en-têtes <code>X-Frame-Options: DENY</code> et <code>frame-ancestors 'none'</code> ;</li>
-        <li>Cloisonnement des permissions matérielles (désactivation par défaut de la caméra, microphone, géolocalisation et périphériques USB).</li>
+        <li>Protection contre le détournement de clics (*clickjacking*) via en-têtes HTTP <code>X-Frame-Options: DENY</code> et <code>frame-ancestors 'none'</code> servis à la périphérie ;</li>
+        <li>Cloisonnement des permissions matérielles (désactivation par défaut de la caméra, microphone, géolocalisation et périphériques USB via <code>Permissions-Policy</code>) ;</li>
+        <li>Protection Zero Trust isolant hermétiquement les interfaces d'administration sans stockage local de mots de passe maîtres.</li>
       </ul>
 
       <h2>10. Protection des Enfants et Mineurs</h2>
