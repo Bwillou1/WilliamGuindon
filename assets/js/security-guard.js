@@ -9,24 +9,6 @@
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
   const STORAGE_KEY = 'wg_radical_site_state';
 
-  // 1. DÉTECTION ANTI-FORK & ANTI-DUPLICATION IMMÉDIATE
-  const currentHost = window.location.hostname.toLowerCase();
-  const isAuthorized = ALLOWED_HOSTS.some(h => currentHost === h || currentHost.endsWith('.' + h));
-
-  if (!isAuthorized && currentHost !== "") {
-    document.documentElement.innerHTML = `<head><meta charset="utf-8"><title>Accès Non Autorisé</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>body{background:#0a0d0b;color:#f87171;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:20px;box-sizing:border-box}
-      .box{background:#181212;border:1.5px solid #ef4444;border-radius:14px;padding:36px;max-width:540px;box-shadow:0 10px 40px rgba(0,0,0,0.85)}
-      h1{color:#ef4444;font-size:22px;margin-bottom:12px;font-weight:800}p{color:#d1d5db;font-size:14.5px;line-height:1.6}
-      a{color:#22c55e;font-weight:700;text-decoration:none}a:hover{text-decoration:underline}</style></head>
-      <body><div class="box"><h1>Erreur : Ce site n'est pas l'original</h1>
-      <p>Ce site constitue une copie ou un fork non officiel.<br><br>
-      Veuillez accéder au site officiel et sécurisé sur :<br><br>
-      <a href="https://williamguindon.me">https://williamguindon.me ↗</a></p></div></body>`;
-    throw new Error("Arrêt sentinelle : domaine non autorisé.");
-  }
-
   // Ne pas bloquer la console admin elle-même
   const isConsolePage = window.location.pathname.includes('console-admin.html');
   if (isConsolePage) return;
