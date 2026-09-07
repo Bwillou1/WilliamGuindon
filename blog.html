@@ -340,11 +340,11 @@
   <div class="blog-toolbar">
     <input type="text" id="blog-search" class="search-input" placeholder="Rechercher un article..." aria-label="Rechercher dans le blog">
     <div class="category-pills" id="category-filters">
-      <button class="category-pill active" data-cat="all">Tous</button>
-      <button class="category-pill" data-cat="Dossier CCE">Dossier CCE</button>
-      <button class="category-pill" data-cat="Juridique">Juridique</button>
-      <button class="category-pill" data-cat="Terrain">Terrain</button>
-      <button class="category-pill" data-cat="Médias">Médias</button>
+      <button type="button" class="category-pill active" data-cat="all">Tous</button>
+      <button type="button" class="category-pill" data-cat="Dossier CCE">Dossier CCE</button>
+      <button type="button" class="category-pill" data-cat="Juridique">Juridique</button>
+      <button type="button" class="category-pill" data-cat="Terrain">Terrain</button>
+      <button type="button" class="category-pill" data-cat="Médias">Médias</button>
     </div>
   </div>
 
@@ -361,7 +361,7 @@
 <!-- Modal pour lecture complète -->
 <div class="article-modal" id="article-modal" role="dialog" aria-modal="true">
   <div class="article-modal-content">
-    <button class="modal-close-btn" id="modal-close" aria-label="Fermer">&times;</button>
+    <button type="button" class="modal-close-btn" id="modal-close" aria-label="Fermer">&times;</button>
     <div id="modal-article-body"></div>
   </div>
 </div>
@@ -468,7 +468,7 @@
       <div class="article-full-text">${post.content}</div>
       <div style="margin-top:24px; border-top:1px solid var(--line); padding-top:16px;">
         <div style="margin-bottom:12px;">${tagsHtml}</div>
-        <button class="btn btn-primary" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !');">Partager cet article</button>
+        <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !');">Partager cet article</button>
       </div>
     `;
     modal.classList.add("open");
