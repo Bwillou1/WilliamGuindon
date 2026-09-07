@@ -231,7 +231,7 @@
 
     // 9. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
-    setIntegrityAndPolling(isSpecialModeActive(state));
+    setSpecialModeIntegrity(isSpecialModeActive(state));
   }
 
   // Application immédiate au chargement initial depuis le stockage local / session
@@ -282,9 +282,8 @@
   let isIntegrityArmed = false;
   let integrityObserver = null;
   let integrityInterval = null;
-  let pollingInterval = null;
 
-  function setIntegrityAndPolling(active) {
+  function setSpecialModeIntegrity(active) {
     if (active) {
       if (!isIntegrityArmed) {
         isIntegrityArmed = true;
@@ -337,12 +336,6 @@
           }, 400);
         }
       }
-
-      if (!pollingInterval) {
-        pollingInterval = setInterval(() => {
-          if (!document.hidden) fetchRemoteState();
-        }, 60000);
-      }
     } else {
       if (isIntegrityArmed) {
         isIntegrityArmed = false;
@@ -354,10 +347,6 @@
           clearInterval(integrityInterval);
           integrityInterval = null;
         }
-      }
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-        pollingInterval = null;
       }
     }
   }
@@ -380,9 +369,6 @@
     if (!document.hidden) fetchRemoteState();
   });
   window.addEventListener('focus', () => {
-    if (!document.hidden) fetchRemoteState();
-  });
-  window.addEventListener('pageshow', () => {
     if (!document.hidden) fetchRemoteState();
   });
 
