@@ -721,6 +721,11 @@
     }
 
     // Boutons de copie
+    // Boutons d'impression légale
+    document.querySelectorAll('.legal-print-button').forEach(btn => {
+      btn.addEventListener('click', () => window.print());
+    });
+
     const copyBtns = document.querySelectorAll('.btn-copy-id, .btn-copy-session');
     copyBtns.forEach(btn => {
       btn.addEventListener('click', async (e) => {

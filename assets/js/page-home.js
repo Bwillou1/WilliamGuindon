@@ -306,6 +306,11 @@
         }
       }
 
+      const btnBlogTab = document.getElementById('btn-tab-blog-posts');
+      const btnPhotosTab = document.getElementById('btn-tab-blog-photos');
+      if (btnBlogTab) btnBlogTab.addEventListener('click', () => window.switchHomeTab('blog'));
+      if (btnPhotosTab) btnPhotosTab.addEventListener('click', () => window.switchHomeTab('photos'));
+
       window.switchHomeTab = function(tab) {
         const btnBlog = document.getElementById('btn-tab-blog-posts');
         const btnPhotos = document.getElementById('btn-tab-blog-photos');

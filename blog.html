@@ -468,7 +468,7 @@
       <div class="article-full-text">${post.content}</div>
       <div style="margin-top:24px; border-top:1px solid var(--line); padding-top:16px;">
         <div style="margin-bottom:12px;">${tagsHtml}</div>
-        <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié !');">Partager cet article</button>
+        <button type="button" class="btn btn-primary" id="btn-share-post">Partager cet article</button>
       </div>
     `;
     modal.classList.add("open");
@@ -515,5 +515,6 @@
   loadBlogPosts();
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+<script>document.getElementById("btn-share-post")?.addEventListener("click", () => { navigator.clipboard.writeText(window.location.href); alert("Lien copié !"); });</script>
 </body>
 </html>

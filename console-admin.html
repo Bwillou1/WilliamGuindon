@@ -375,13 +375,13 @@
       
       <!-- SÉLECTEUR DE VUE UNIFIÉ MULTI-ESPACES -->
       <div class="view-tabs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
-        <button type="button" id="tab-btn-cli" class="view-tab-btn active" onclick="switchConsoleView('cli')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Terminal CLI</button>
-        <button type="button" id="tab-btn-gui" class="view-tab-btn" onclick="switchConsoleView('gui')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Panneau Graphique (GUI)</button>
-        <button type="button" id="tab-btn-editor" class="view-tab-btn" onclick="switchConsoleView('editor')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>Studio Éditeur Visuel</button>
-        <button type="button" id="tab-btn-cms" class="view-tab-btn" onclick="switchConsoleView('cms')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Gestionnaire Contenus & Presse</button>
-        <button type="button" id="tab-btn-nostr" class="view-tab-btn" onclick="switchConsoleView('nostr')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>⚡ Protocoles & Nostr Direct</button>
-        <button type="button" id="tab-btn-preview" class="view-tab-btn" onclick="switchConsoleView('preview')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Aperçu Direct Site</button>
-        <button type="button" id="tab-btn-all" class="view-tab-btn" onclick="switchConsoleView('all')"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>Vue Mixte (CLI + GUI)</button>
+        <button type="button" id="tab-btn-cli" class="view-tab-btn active" data-console-view="cli"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Terminal CLI</button>
+        <button type="button" id="tab-btn-gui" class="view-tab-btn" data-console-view="gui"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Panneau Graphique (GUI)</button>
+        <button type="button" id="tab-btn-editor" class="view-tab-btn" data-console-view="editor"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>Studio Éditeur Visuel</button>
+        <button type="button" id="tab-btn-cms" class="view-tab-btn" data-console-view="cms"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Gestionnaire Contenus & Presse</button>
+        <button type="button" id="tab-btn-nostr" class="view-tab-btn" data-console-view="nostr"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>⚡ Protocoles & Nostr Direct</button>
+        <button type="button" id="tab-btn-preview" class="view-tab-btn" data-console-view="preview"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Aperçu Direct Site</button>
+        <button type="button" id="tab-btn-all" class="view-tab-btn" data-console-view="all"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>Vue Mixte (CLI + GUI)</button>
       </div>
 
       <!-- TERMINAL CLI INTERACTIF DIRECT -->
@@ -394,10 +394,10 @@
           </div>
           <div class="cli-title">wg-sec-terminal — root@williamguindon-sec (Git API Live)</div>
           <div class="cli-actions">
-            <button type="button" class="cli-btn-mini" onclick="executeCliCommand('help')">? Aide</button>
-            <button type="button" class="cli-btn-mini" onclick="executeCliCommand('status')">● Statut</button>
-            <button type="button" class="cli-btn-mini" onclick="clearCliScreen()">Effacer</button>
-            <button type="button" class="cli-btn-mini" onclick="toggleCliFullscreen()">Plein écran</button>
+            <button type="button" class="cli-btn-mini" data-cli-cmd="help">? Aide</button>
+            <button type="button" class="cli-btn-mini" data-cli-cmd="status">● Statut</button>
+            <button type="button" class="cli-btn-mini" data-action="clear-cli">Effacer</button>
+            <button type="button" class="cli-btn-mini" data-action="toggle-cli-fullscreen">Plein écran</button>
           </div>
         </div>
         <div id="cli-output" class="cli-body">
@@ -409,18 +409,18 @@
         </div>
         <div class="cli-quick-bar">
           <span class="cli-quick-tag">COMMANDES RAPIDES :</span>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('status')">status</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('radical5 on')">radical5 on</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('radical5 off')">radical5 off</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('radical4 on')">radical4 on</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('radical4 off')">radical4 off</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('switches')">switches</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('ls')">ls</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('git status')">git status</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('git log')">git log</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('audit')">audit</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('cce')">cce</button>
-          <button type="button" class="cli-btn-mini" onclick="executeCliCommand('whoami')">whoami</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="status">status</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="radical5 on">radical5 on</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="radical5 off">radical5 off</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="radical4 on">radical4 on</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="radical4 off">radical4 off</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="switches">switches</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="ls">ls</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="git status">git status</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="git log">git log</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="audit">audit</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="cce">cce</button>
+          <button type="button" class="cli-btn-mini" data-cli-cmd="whoami">whoami</button>
         </div>
         <div style="background:#090d0b; padding:10px 16px; border-top:1px solid #1a271f;">
           <div class="cli-prompt-line">
@@ -447,7 +447,7 @@
           Toute action effectuée ici met à jour <code>data/site-state.json</code> directement dans le dépôt GitHub officiel. Chaque visiteur dans le monde reçoit les directives de sécurité en temps réel sans passer par le cache navigateur.
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <button type="button" class="btn btn-ghost" onclick="fetchAndLoadProductionState()" style="font-size:12.5px; padding:7px 14px;">[SYNC] Recharger l'état de production</button>
+          <button type="button" class="btn btn-ghost" data-action="fetch-prod-state" style="font-size:12.5px; padding:7px 14px;">[SYNC] Recharger l'état de production</button>
           <span id="last-sync-time" style="font-size:12px; color:var(--text-muted);">Dernière vérification : À l'instant</span>
         </div>
       </div>
@@ -467,8 +467,8 @@
             <input type="text" id="maint-duration" class="form-control" value="1440" placeholder="Ex: 1 min, 180, 1440, 945543..." oninput="updateMaintTimePreview()">
             <div id="maint-duration-preview" style="font-size:11.5px; color:#4ade80; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 24 heures (1440 min)</div>
           </div>
-          <button type="button" class="btn btn-primary" onclick="toggleMaintenance(true)">Activer le Blackout</button>
-          <button type="button" class="btn btn-ghost" onclick="toggleMaintenance(false)">[LOCKED] Désactiver (Mot de passe requis)</button>
+          <button type="button" class="btn btn-primary" data-action="maintenance-on">Activer le Blackout</button>
+          <button type="button" class="btn btn-ghost" data-action="maintenance-off">[LOCKED] Désactiver (Mot de passe requis)</button>
         </div>
       </div>
 
@@ -500,8 +500,8 @@
             <input type="checkbox" id="panic-text-only" style="width:auto;">
             <label for="panic-text-only" style="margin:0; font-size:13px; font-weight:600;">Forcer le mode texte pur (.txt)</label>
           </div>
-          <button type="button" class="btn" style="background:#eab308; color:#000; font-weight:700;" onclick="triggerPanicMode(true)">[WARN] Déclencher le Mode Panique</button>
-          <button type="button" class="btn btn-ghost" onclick="triggerPanicMode(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
+          <button type="button" class="btn" style="background:#eab308; color:#000; font-weight:700;" data-action="panic-on">[WARN] Déclencher le Mode Panique</button>
+          <button type="button" class="btn btn-ghost" data-action="panic-off">[LOCKED] Rétablir (Mot de passe requis)</button>
         </div>
       </div>
 
@@ -524,8 +524,8 @@
             <label class="form-label" for="radical4-custom-msg">Communiqué juridique officiel / Injonction (optionnel) :</label>
             <input type="text" id="radical4-custom-msg" class="form-control" placeholder="Ex: Dossier SEM-26-003 : Enquête internationale en cours...">
           </div>
-          <button type="button" class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" onclick="triggerRadical4(true)">[LEGAL] Déclencher le Mode Juridique 4</button>
-          <button type="button" class="btn btn-ghost" onclick="triggerRadical4(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
+          <button type="button" class="btn" style="background:#38bdf8; color:#030712; font-weight:800;" data-action="radical4-on">[LEGAL] Déclencher le Mode Juridique 4</button>
+          <button type="button" class="btn btn-ghost" data-action="radical4-off">[LOCKED] Rétablir (Mot de passe requis)</button>
         </div>
       </div>
 
@@ -548,8 +548,8 @@
             <label class="form-label" for="radical5-custom-msg">Directive de confinement / Message d'urgence (optionnel) :</label>
             <input type="text" id="radical5-custom-msg" class="form-control" placeholder="Ex: Isolation défensive activée suite à alerte de sécurité...">
           </div>
-          <button type="button" class="btn" style="background:#06b6d4; color:#020617; font-weight:900;" onclick="triggerRadical5(true)">[SHIELD] Déclencher le Mode Bunker 5</button>
-          <button type="button" class="btn btn-ghost" onclick="triggerRadical5(false)">[LOCKED] Rétablir (Mot de passe requis)</button>
+          <button type="button" class="btn" style="background:#06b6d4; color:#020617; font-weight:900;" data-action="radical5-on">[SHIELD] Déclencher le Mode Bunker 5</button>
+          <button type="button" class="btn btn-ghost" data-action="radical5-off">[LOCKED] Rétablir (Mot de passe requis)</button>
         </div>
       </div>
 
@@ -577,8 +577,8 @@
           </div>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" class="btn" style="background:#eab308; color:#000; font-weight:900;" onclick="triggerToxicAlert(true)">[TOXIC] Activer la Bannière Toxique</button>
-          <button type="button" class="btn btn-ghost" onclick="triggerToxicAlert(false)">[LOCKED] Désactiver</button>
+          <button type="button" class="btn" style="background:#eab308; color:#000; font-weight:900;" data-action="toxic-on">[TOXIC] Activer la Bannière Toxique</button>
+          <button type="button" class="btn btn-ghost" data-action="toxic-off">[LOCKED] Désactiver</button>
         </div>
       </div>
 
@@ -606,9 +606,9 @@
           </div>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" class="btn" style="background:#f43f5e; color:#fff; font-weight:900;" onclick="triggerLegalNoticeStrike(true)">[ALERT] Déclencher la Riposte & Dénonciation</button>
-          <button type="button" class="btn btn-ghost" onclick="triggerLegalNoticeStrike(false)">[LOCKED] Désactiver</button>
-          <button type="button" class="btn" style="background:#1e293b; border:1px solid #f43f5e; color:#fda4af; font-weight:700;" onclick="testDownloadSocialPoster()">[THEME] Tester le Générateur d'Affiche PNG (1200x630)</button>
+          <button type="button" class="btn" style="background:#f43f5e; color:#fff; font-weight:900;" data-action="legal-notice-on">[ALERT] Déclencher la Riposte & Dénonciation</button>
+          <button type="button" class="btn btn-ghost" data-action="legal-notice-off">[LOCKED] Désactiver</button>
+          <button type="button" class="btn" style="background:#1e293b; border:1px solid #f43f5e; color:#fda4af; font-weight:700;" data-action="test-social-poster">[THEME] Tester le Générateur d'Affiche PNG (1200x630)</button>
         </div>
       </div>
 
@@ -623,16 +623,16 @@
             <div style="font-weight:800; color:#4ade80; margin-bottom:6px;">[CCE] Chambre Probatoire CCE</div>
             <div style="font-size:12px; color:#86efac; margin-bottom:10px;">Isole le site sur la liste certifiée des soumissions SEM-26-003.</div>
             <div style="display:flex; gap:8px;">
-              <button type="button" class="btn" style="background:#22c55e; color:#042f2e; font-weight:900;" onclick="triggerCceVault(true)">Activer CCE Vault</button>
-              <button type="button" class="btn btn-ghost" onclick="triggerCceVault(false)">Désactiver</button>
+              <button type="button" class="btn" style="background:#22c55e; color:#042f2e; font-weight:900;" data-action="cce-vault-on">Activer CCE Vault</button>
+              <button type="button" class="btn btn-ghost" data-action="cce-vault-off">Désactiver</button>
             </div>
           </div>
           <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #0284c7;">
             <div style="font-weight:800; color:#38bdf8; margin-bottom:6px;">[LOGOUT] Évacuation Numérique Immédiate</div>
             <input type="text" id="evacuate-target-url" class="form-control" style="font-size:12px; margin-bottom:8px;" value="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
             <div style="display:flex; gap:8px;">
-              <button type="button" class="btn" style="background:#0284c7; color:#fff; font-weight:900;" onclick="triggerEvacuation(true)">[ALERT] Évacuer (0.1s)</button>
-              <button type="button" class="btn btn-ghost" onclick="triggerEvacuation(false)">Désactiver</button>
+              <button type="button" class="btn" style="background:#0284c7; color:#fff; font-weight:900;" data-action="evacuate-on">[ALERT] Évacuer (0.1s)</button>
+              <button type="button" class="btn btn-ghost" data-action="evacuate-off">Désactiver</button>
             </div>
           </div>
         </div>
@@ -645,13 +645,13 @@
         </div>
         <div class="terminal-card-desc">Déclenchez à distance des actions immédiates sur les navigateurs des visiteurs et téléchargez des instantanés probatoires.</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <button type="button" class="btn" style="background:#a855f7; color:#fff; font-weight:900;" onclick="triggerBlackboxExport()">[PACKAGE] Télécharger la Boîte Noire (Dump JSON/TXT)</button>
-          <button type="button" class="btn" style="background:#ef4444; color:#fff; font-weight:900;" onclick="triggerNukeCache()">[NUKE] Purge Totale d'Urgence (Nuke Cache)</button>
-          <button type="button" class="btn" style="background:#374151; color:#f3f4f6; font-weight:700;" onclick="triggerGhostModeToggle()">[GHOST] Basculer Ghost Mode (503)</button>
+          <button type="button" class="btn" style="background:#a855f7; color:#fff; font-weight:900;" data-action="blackbox-export">[PACKAGE] Télécharger la Boîte Noire (Dump JSON/TXT)</button>
+          <button type="button" class="btn" style="background:#ef4444; color:#fff; font-weight:900;" data-action="nuke-cache">[NUKE] Purge Totale d'Urgence (Nuke Cache)</button>
+          <button type="button" class="btn" style="background:#374151; color:#f3f4f6; font-weight:700;" data-action="ghost-mode-toggle">[GHOST] Basculer Ghost Mode (503)</button>
         </div>
         <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <input type="text" id="broadcast-input-msg" class="form-control" style="flex:1; min-width:260px;" placeholder="Message d'alerte flash à diffuser à tous les visiteurs connectés...">
-          <button type="button" class="btn" style="background:#2563eb; color:#fff; font-weight:900;" onclick="sendBroadcastAlert()">[BROADCAST] Émettre Alerte Flash</button>
+          <button type="button" class="btn" style="background:#2563eb; color:#fff; font-weight:900;" data-action="broadcast-alert">[BROADCAST] Émettre Alerte Flash</button>
         </div>
       </div>
 
@@ -805,7 +805,7 @@
             <span style="font-weight:700; color:#22c55e; font-size:13.5px;">Studio Éditeur Visuel Intégré (Session Active)</span>
           </div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn btn-ghost" onclick="const f=document.getElementById('iframe-editor'); if(f) f.src='editeur.html';" style="font-size:12px; padding:4px 10px;">↻ Recharger</button>
+            <button type="button" class="btn btn-ghost" data-action="reload-iframe-editor" style="font-size:12px; padding:4px 10px;">↻ Recharger</button>
             <a href="editeur.html" target="_blank" class="btn btn-ghost" style="font-size:12px; padding:4px 10px; text-decoration:none;">↗ Ouvrir dans un onglet</a>
           </div>
         </div>
@@ -820,7 +820,7 @@
             <span style="font-weight:700; color:#38bdf8; font-size:13.5px;">Gestionnaire de Contenus & Presse (Session Active)</span>
           </div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn btn-ghost" onclick="const f=document.getElementById('iframe-cms'); if(f) f.src='admin.html';" style="font-size:12px; padding:4px 10px;">↻ Recharger</button>
+            <button type="button" class="btn btn-ghost" data-action="reload-iframe-cms" style="font-size:12px; padding:4px 10px;">↻ Recharger</button>
             <a href="admin.html" target="_blank" class="btn btn-ghost" style="font-size:12px; padding:4px 10px; text-decoration:none;">↗ Ouvrir dans un onglet</a>
           </div>
         </div>
@@ -843,7 +843,7 @@
             <div style="font-size:12.5px; font-weight:700; color:#a855f7; text-transform:uppercase; margin-bottom:6px;">Clé Publique Titulaire (npub) :</div>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <code id="nostr-public-npub" style="font-family:monospace; background:#09090f; padding:8px 12px; border-radius:6px; color:#e9d5ff; font-size:13px; flex:1; word-break:break-all; border:1px solid #3b2d63;">npub1hcyhrus77nj2axecypuamfxncd2w8hf46weztgzmfwqyjhks7gtsz6eagz</code>
-              <button type="button" class="btn btn-ghost" onclick="navigator.clipboard.writeText('npub1hcyhrus77nj2axecypuamfxncd2w8hf46weztgzmfwqyjhks7gtsz6eagz'); showToast('Clé publique npub copiée dans le presse-papier !');" style="font-size:12.5px; padding:6px 12px;">Copier npub</button>
+              <button type="button" class="btn btn-ghost" data-action="copy-npub" style="font-size:12.5px; padding:6px 12px;">Copier npub</button>
             </div>
           </div>
 
@@ -852,8 +852,8 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
               <div style="font-weight:700; color:#38bdf8; font-size:14px;">Votre Clé de Session Sécurisée (Chiffrement Client-Side) :</div>
               <div style="display:flex; gap:8px;">
-                <button type="button" class="btn" style="background:#38bdf8; color:#030712; font-size:12.5px; padding:5px 12px; font-weight:700;" onclick="generateSimpleNostrKeypair()">✨ Générer une clé anonyme en 1-clic</button>
-                <button type="button" class="btn" style="background:#ef4444; color:#fff; font-size:12.5px; padding:5px 12px; font-weight:700;" onclick="purgeNostrSession()">🗑️ Purger & Détruire mes clés</button>
+                <button type="button" class="btn" style="background:#38bdf8; color:#030712; font-size:12.5px; padding:5px 12px; font-weight:700;" data-action="generate-nostr-keys">✨ Générer une clé anonyme en 1-clic</button>
+                <button type="button" class="btn" style="background:#ef4444; color:#fff; font-size:12.5px; padding:5px 12px; font-weight:700;" data-action="purge-nostr-keys">🗑️ Purger & Détruire mes clés</button>
               </div>
             </div>
 
@@ -861,8 +861,8 @@
               <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:4px;">Votre Clé Privée (nsec - STRICTEMENT CONFIDENTIELLE & MASQUÉE) :</label>
               <div style="display:flex; gap:8px;">
                 <input type="password" id="nostr-user-nsec" placeholder="nsec1... (masquée automatiquement pour votre sécurité)" style="font-family:monospace; background:#05070a; border:1px solid #1e293b; color:#4ade80; padding:8px 12px; border-radius:6px; flex:1; font-size:13px;">
-                <button type="button" class="btn btn-ghost" onclick="const el=document.getElementById('nostr-user-nsec'); el.type = el.type === 'password' ? 'text' : 'password';" style="font-size:12px; padding:6px 10px;">👁️ Afficher/Masquer</button>
-                <button type="button" class="btn btn-ghost" onclick="const el=document.getElementById('nostr-user-nsec'); if(el.value){ navigator.clipboard.writeText(el.value); showToast('Clé privée nsec copiée'); }" style="font-size:12px; padding:6px 10px;">Copier</button>
+                <button type="button" class="btn btn-ghost" data-action="toggle-nsec-visibility" style="font-size:12px; padding:6px 10px;">👁️ Afficher/Masquer</button>
+                <button type="button" class="btn btn-ghost" data-action="copy-nsec" style="font-size:12px; padding:6px 10px;">Copier</button>
               </div>
             </div>
 
@@ -885,7 +885,7 @@
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
               <div style="font-size:12px; color:#6b7280;">Relais connectés : <code>damus.io</code>, <code>nos.lol</code>, <code>snort.social</code>, <code>primal.net</code></div>
-              <button type="button" class="btn btn-primary" onclick="sendNostrDirectMessage()" style="padding:8px 18px; font-weight:700;">Envoyer via Relais Décentralisés (Chiffrement E2EE)</button>
+              <button type="button" class="btn btn-primary" data-action="send-nostr-dm" style="padding:8px 18px; font-weight:700;">Envoyer via Relais Décentralisés (Chiffrement E2EE)</button>
             </div>
           </div>
         </div>
@@ -899,7 +899,7 @@
             <span style="font-weight:700; color:#eab308; font-size:13.5px;">Aperçu Temps Réel du Site Public (williamguindon.me)</span>
           </div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn btn-ghost" onclick="const f=document.getElementById('iframe-preview'); if(f) f.src='index.html';" style="font-size:12px; padding:4px 10px;">↻ Actualiser</button>
+            <button type="button" class="btn btn-ghost" data-action="reload-iframe-preview" style="font-size:12px; padding:4px 10px;">↻ Actualiser</button>
             <a href="index.html" target="_blank" class="btn btn-ghost" style="font-size:12px; padding:4px 10px; text-decoration:none;">↗ Ouvrir dans un nouvel onglet</a>
           </div>
         </div>
@@ -957,6 +957,85 @@
   function getToken() {
     return currentAuthToken || sessionStorage.getItem("wg_github_pat") || "";
   }
+
+  
+    // Gestionnaire d'actions déléguées pour les boutons de la console
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action], [data-cli-cmd], [data-console-view]');
+      if (!btn) return;
+
+      if (btn.hasAttribute('data-console-view')) {
+        const view = btn.getAttribute('data-console-view');
+        switchConsoleView(view);
+      } else if (btn.hasAttribute('data-cli-cmd')) {
+        const cmd = btn.getAttribute('data-cli-cmd');
+        executeCliCommand(cmd);
+      } else if (btn.hasAttribute('data-action')) {
+        const act = btn.getAttribute('data-action');
+        switch (act) {
+          case 'clear-cli': clearCliScreen(); break;
+          case 'toggle-cli-fullscreen': toggleCliFullscreen(); break;
+          case 'fetch-prod-state': fetchAndLoadProductionState(); break;
+          case 'maintenance-on': toggleMaintenance(true); break;
+          case 'maintenance-off': toggleMaintenance(false); break;
+          case 'panic-on': triggerPanicMode(true); break;
+          case 'panic-off': triggerPanicMode(false); break;
+          case 'radical4-on': triggerRadical4(true); break;
+          case 'radical4-off': triggerRadical4(false); break;
+          case 'radical5-on': triggerRadical5(true); break;
+          case 'radical5-off': triggerRadical5(false); break;
+          case 'toxic-on': triggerToxicAlert(true); break;
+          case 'toxic-off': triggerToxicAlert(false); break;
+          case 'legal-notice-on': triggerLegalNoticeStrike(true); break;
+          case 'legal-notice-off': triggerLegalNoticeStrike(false); break;
+          case 'test-social-poster': testDownloadSocialPoster(); break;
+          case 'cce-vault-on': triggerCceVault(true); break;
+          case 'cce-vault-off': triggerCceVault(false); break;
+          case 'evacuate-on': triggerEvacuation(true); break;
+          case 'evacuate-off': triggerEvacuation(false); break;
+          case 'blackbox-export': triggerBlackboxExport(); break;
+          case 'nuke-cache': triggerNukeCache(); break;
+          case 'ghost-mode-toggle': triggerGhostModeToggle(); break;
+          case 'broadcast-alert': sendBroadcastAlert(); break;
+          case 'reload-iframe-editor': {
+            const f = document.getElementById('iframe-editor');
+            if (f) f.src = 'editeur.html';
+            break;
+          }
+          case 'reload-iframe-cms': {
+            const f = document.getElementById('iframe-cms');
+            if (f) f.src = 'admin.html';
+            break;
+          }
+          case 'reload-iframe-preview': {
+            const f = document.getElementById('iframe-preview');
+            if (f) f.src = 'index.html';
+            break;
+          }
+          case 'copy-npub': {
+            navigator.clipboard.writeText('npub1hcyhrus77nj2axecypuamfxncd2w8hf46weztgzmfwqyjhks7gtsz6eagz');
+            showToast('Clé publique npub copiée dans le presse-papier !');
+            break;
+          }
+          case 'generate-nostr-keys': generateSimpleNostrKeypair(); break;
+          case 'purge-nostr-keys': purgeNostrSession(); break;
+          case 'toggle-nsec-visibility': {
+            const el = document.getElementById('nostr-user-nsec');
+            if (el) el.type = el.type === 'password' ? 'text' : 'password';
+            break;
+          }
+          case 'copy-nsec': {
+            const el = document.getElementById('nostr-user-nsec');
+            if (el && el.value) {
+              navigator.clipboard.writeText(el.value);
+              showToast('Clé privée nsec copiée');
+            }
+            break;
+          }
+          case 'send-nostr-dm': sendNostrDirectMessage(); break;
+        }
+      }
+    });
 
   function mountConsoleWorkspace() {
     const root = document.getElementById("console-root");
@@ -1030,7 +1109,7 @@
           <button type="button" class="btn btn-ghost" id="btn-console-logout" style="padding:4px 10px; font-size:12px; margin-left:8px; cursor:pointer;">Déconnexion / Effacer le token</button>
         `;
         const logoutBtn = document.getElementById("btn-console-logout");
-        if (logoutBtn) logoutBtn.onclick = clearToken;
+        if (logoutBtn) logoutBtn.addEventListener('click', clearToken);
       }
       mountConsoleWorkspace();
     } else {
