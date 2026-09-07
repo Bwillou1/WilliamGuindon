@@ -1463,6 +1463,18 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
       throw new Error('Invalid Groq payload');
     }
 
+    function showOfflineBanner() {
+      let banner = document.getElementById('ai-offline-banner');
+      if (!banner && aiModal) {
+        banner = document.createElement('div');
+        banner.id = 'ai-offline-banner';
+        banner.style.cssText = 'background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);color:#fef08a;font-size:12px;padding:6px 12px;border-radius:8px;margin:8px 16px 0;display:flex;align-items:center;gap:6px;';
+        banner.innerHTML = '<span style="font-size:13px;">⚡</span> Assistant hors ligne — mode local actif';
+        const tabChat = aiModal.querySelector('#ai-tab-chat');
+        if (tabChat) tabChat.insertBefore(banner, tabChat.firstChild);
+      }
+    }
+
     function initAiModal() {
       if (aiModal) return;
 
@@ -1538,33 +1550,23 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
           <!-- Onglet 3 : Liens IA externes -->
           <div class="ai-tab-content" id="ai-tab-models">
             <p class="ai-modal-desc">
-              Analysez directement le dossier SEM-26-003 dans vos assistants et moteurs écologiques d'intelligence artificielle :
+              Explorez le dossier complet avec vos propres modèles et assistants IA préférés grâce à nos exports de données ouverts :
             </p>
-            <div class="ai-modal-buttons">
-              <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><path d="M12 2L4 12h5l-4 7h14l-4-7h5z"></path><rect x="11" y="19" width="2" height="3"></rect></svg></span>
-                  <span>Rechercher sur Ecosia AI</span>
-                </div>
-                <span>↗</span>
+            <div class="ai-models-list">
+              <a href="ai.txt" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Fichier Source ai.txt</div>
+                <div class="ai-model-desc">Corpus de faits bruts vérifiés &amp; chronologie complète pour RAG / LLM.</div>
               </a>
-              <a href="https://ai.viro.app/" target="_blank" rel="noopener noreferrer" class="ai-btn-option">
-                <div class="ai-btn-option-left">
-                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
-                  <span>Ouvrir sur Viro AI</span>
-                </div>
-                <span>↗</span>
+              <a href="llms.txt" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Fichier Standard llms.txt</div>
+                <div class="ai-model-desc">Index documentaire standardisé pour agents IA &amp; assistants conversationnels.</div>
               </a>
-              <button type="button" class="ai-btn-option js-copy-ai-link">
-                <div class="ai-btn-option-left">
-                  <span><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--accent);"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>
-                  <span>Copier le prompt et le lien pour l'IA</span>
-                </div>
-                <span class="js-copy-icon">Copier</span>
-              </button>
+              <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> llms-full.txt (Dossier Intégral)</div>
+                <div class="ai-model-desc">Transcription intégrale de l'ensemble des pièces juridiques pour modèles à large contexte.</div>
+              </a>
             </div>
           </div>
-
         </div>
       `;
       document.body.appendChild(aiModal);
@@ -1626,15 +1628,16 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
           try {
             reply = await callGroq(messages, 400);
           } catch (errPrimary) {
-            console.warn('Groq error, using local fallback:', errPrimary);
-            throw errPrimary;
+            showOfflineBanner();
+            reply = generateLocalAnswer(question);
           }
 
           botBubble.innerHTML = formatAiResponse(reply);
           chatBox.scrollTop = chatBox.scrollHeight;
         } catch (err) {
-          console.warn('Groq API unavailable:', err);
-          botBubble.textContent = 'Le service de recherche IA est temporairement indisponible. Vérifiez la configuration Groq/Netlify, puis réessayez.';
+          showOfflineBanner();
+          const fallbackReply = generateLocalAnswer(question);
+          botBubble.innerHTML = formatAiResponse(fallbackReply);
           chatBox.scrollTop = chatBox.scrollHeight;
         }
       }
@@ -1681,6 +1684,7 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
           }
           sumOutput.innerHTML = `<strong>Résumé IA (Groq) :</strong><br>${formatAiResponse(res)}`;
         } catch (err) {
+          showOfflineBanner();
           setTimeout(() => {
             if (type === 'bullets') {
               sumOutput.innerHTML = `

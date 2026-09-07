@@ -152,6 +152,26 @@ Le script [`scripts/cloudflare-zero-trust-setup.js`](scripts/cloudflare-zero-tru
 
 > **Sécurité du jeton GitHub (PAT)** : Le PAT ne doit être utilisé qu'avec une portée minimale (repo seul), une expiration courte, et depuis une session protégée par Cloudflare Access.
 
+### 4. Déploiement du Worker Groq (`/api/groq-chat`)
+L'assistant IA documentaire repose sur un Cloudflare Worker autonome ([`workers/groq-chat.js`](workers/groq-chat.js)) servant de proxy sécurisé pour l'API Groq (sans exposer de secret côté client) avec aiguillage intelligent en 4 niveaux (`FAIBLE`, `NORMAL`, `MOYEN`, `EXPERT`).
+
+#### Déploiement via Wrangler :
+1. **Déployer le worker** :
+   ```bash
+   npx wrangler deploy
+   ```
+2. **Définir la clé secrète Groq** (chiffrée dans Cloudflare, jamais versionnée) :
+   ```bash
+   npx wrangler secret put GROQ_API_KEY
+   ```
+3. **Associer la route sur le domaine personnalisé** :
+   Dans le tableau de bord Cloudflare (**Workers & Pages** ➔ **williamguindon-groq-chat** ➔ **Settings** ➔ **Domains & Routes**) :
+   - Cliquer sur **Add route**
+   - **Route** : `williamguindon.me/api/groq-chat*`
+   - **Zone** : `williamguindon.me`
+
+*En cas d'indisponibilité ou avant le déploiement du Worker, l'interface bascule instantanément et de façon transparente sur le moteur documentaire local intégré.*
+
 ---
 
 ## 🔒 Contact & Canaux Sécurisés
