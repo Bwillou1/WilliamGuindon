@@ -109,9 +109,33 @@ npx serve .
 python3 -m http.server 8080
 ```
 
-### Assistant IA Groq
+---
 
-Le chat global utilise une fonction Netlify comme proxy serveur vers Groq. La clé ne doit jamais être ajoutée au dépôt, au HTML ou au JavaScript client. Dans les variables d’environnement Netlify, définir `GROQ_API_KEY` avec une nouvelle clé Groq et, facultativement, `GROQ_MODEL` (par défaut : `llama-3.3-70b-versatile`).
+## 🛡️ Sécurité (Cloudflare)
+
+Le site est hébergé statiquement sur GitHub Pages et positionné derrière le proxy **Cloudflare** (mode proxy / DNS orange cloud). GitHub Pages ne permettant pas de configurer nativement les en-têtes HTTP de réponse, la politique de sécurité et le verrouillage sont appliqués directement au niveau de Cloudflare (ou via le script d'automatisation [`scripts/cloudflare-zero-trust-setup.js`](scripts/cloudflare-zero-trust-setup.js)) :
+
+### 1. Transform Rule (« Modify Response Header » sur `/*`)
+Dans le tableau de bord Cloudflare (**Rules** ➔ **Transform Rules** ➔ **Modify Response Header**) :
+- `Strict-Transport-Security` : `max-age=31536000; includeSubDomains; preload`
+- `X-Content-Type-Options` : `nosniff`
+- `X-Frame-Options` : `SAMEORIGIN`
+- `Referrer-Policy` : `strict-origin-when-cross-origin`
+- `Permissions-Policy` : `camera=(), microphone=(), geolocation=(), payment=(), usb=()`
+- `Content-Security-Policy` : `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self';`
+
+### 2. SSL/TLS & HSTS
+Dans le tableau de bord Cloudflare (**SSL/TLS** ➔ **Edge Certificates** ➔ **HTTP Strict Transport Security (HSTS)**) :
+- **Status** : Activé (`Enable HSTS`)
+- **Max Age Header** : `1 year (31536000 seconds)`
+- **Apply HSTS policy to subdomains (includeSubDomains)** : Coché
+- **Preload (Enable HSTS preload)** : Coché
+
+### 3. Cloudflare Access (Zero Trust)
+Verrouillage périmétrique strict par code OTP (email) sur les routes d'administration :
+- `https://williamguindon.me/console-admin.html`
+- `https://williamguindon.me/admin.html`
+- `https://williamguindon.me/editeur.html`
 
 ---
 
