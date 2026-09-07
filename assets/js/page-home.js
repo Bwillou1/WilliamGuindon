@@ -295,7 +295,7 @@
               photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
                 <article class="blog-preview-card">
                   <div class="blog-preview-thumb">
-                    <img src="${ph.imageUrl}" alt="${ph.title}" loading="lazy" decoding="async" width="380" height="215">
+                    <img src="${ph.imageUrl}" alt="${ph.title || 'Photographie de la Grande Tourbière'}" loading="lazy" decoding="async" width="380" height="215">
                     <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
                   </div>
                   <div class="blog-preview-body">
@@ -346,7 +346,7 @@
             blogTrack.innerHTML = posts.slice(0, 6).map(p => `
               <article class="blog-preview-card">
                 <div class="blog-preview-thumb">
-                  <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title}" loading="lazy" decoding="async" width="380" height="215">
+                  <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title || 'Article du carnet de bord'}" loading="lazy" decoding="async" width="380" height="215">
                   <span class="blog-preview-category">${p.category || 'Actualité'}</span>
                 </div>
                 <div class="blog-preview-body">

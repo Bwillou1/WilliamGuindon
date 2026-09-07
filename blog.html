@@ -440,7 +440,7 @@
 
       card.innerHTML = `
         <div class="blog-card-img-wrap">
-          <img src="${coverSrc}" alt="${post.title}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215">
+          <img src="${coverSrc}" alt="${post.title || 'Publication du carnet de bord'}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215">
           <span class="blog-card-category">${post.category || "Actualité"}</span>
         </div>
         <div class="blog-card-body">
@@ -457,7 +457,7 @@
   function openArticleModal(post) {
     const modal = document.getElementById("article-modal");
     const body = document.getElementById("modal-article-body");
-    const coverHtml = post.coverImage ? `<img src="${post.coverImage}" alt="${post.title}" class="article-full-img" loading="lazy" decoding="async" width="800" height="450">` : "";
+    const coverHtml = post.coverImage ? `<img src="${post.coverImage}" alt="${post.title || 'Illustration article'}" class="article-full-img" loading="lazy" decoding="async" width="800" height="450">` : "";
     const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join(" ");
 
     body.innerHTML = `

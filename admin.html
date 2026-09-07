@@ -829,6 +829,7 @@
           reader.onload = (evt) => {
             if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
               blogPrev.src = evt.target.result;
+              blogPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation de l'image de couverture";
               blogPrev.style.display = "inline-block";
             }
           };
@@ -849,6 +850,7 @@
           reader.onload = (evt) => {
             if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
               photoPrev.src = evt.target.result;
+              photoPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation de la photographie";
               photoPrev.style.display = "inline-block";
             }
           };

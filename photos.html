@@ -375,7 +375,7 @@
 
       card.innerHTML = `
         <div class="photo-img-wrap">
-          <img src="${item.imageUrl}" alt="${item.title}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
+          <img src="${item.imageUrl}" alt="${item.title || 'Photographie'}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
           <span class="photo-badge">${item.category || "Terrain"}</span>
           <div class="photo-overlay">
             <div class="photo-title">${item.title}</div>
@@ -393,7 +393,7 @@
     const caption = document.getElementById("lightbox-caption");
 
     img.src = item.imageUrl;
-    img.alt = item.title;
+    img.alt = item.title || "Photographie agrandie";
     caption.innerHTML = `
       <h3>${item.title}</h3>
       <p>${item.description || ""}</p>
