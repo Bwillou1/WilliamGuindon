@@ -7,6 +7,7 @@
 (function () {
   'use strict';
 
+  const DEBUG = false;
   const themeStorageKey = 'william-guindon-theme';
 
   function getInitialTheme() {
@@ -255,7 +256,7 @@
           syncDateEl.textContent = data.derniere_mise_a_jour;
         }
       } catch (err) {
-        console.warn('Statut CCE local utilisé (impossible de charger status.json)', err);
+        if (DEBUG) console.warn('Statut CCE local utilisé (impossible de charger status.json)', err);
       }
     }
 
@@ -381,7 +382,7 @@
         e.stopPropagation();
         if (!bioAudio) return;
         if (bioAudio.paused) {
-          bioAudio.play().catch(err => console.warn('Audio play error:', err));
+          bioAudio.play().catch(err => { if (DEBUG) console.warn('Audio play error:', err); });
         } else {
           bioAudio.pause();
         }
@@ -476,7 +477,7 @@
       });
 
       bioAudio.addEventListener('error', (err) => {
-        console.warn('Erreur de lecture audio:', err);
+        if (DEBUG) console.warn('Erreur de lecture audio:', err);
         stopBioAudio();
       });
 
@@ -507,7 +508,7 @@
         const player = initBioAudio();
         if (player.paused) {
           player.play().catch(err => {
-            console.warn('Lecture audio bloquée ou non disponible:', err);
+            if (DEBUG) console.warn('Lecture audio bloquée ou non disponible:', err);
           });
         } else {
           player.pause();
@@ -549,7 +550,7 @@
           .then((reg) => {
             checkBackgroundFeedUpdates(reg);
           })
-          .catch((err) => console.log('SW registration skipped:', err));
+          .catch((err) => { if (DEBUG) console.log('SW registration skipped:', err); });
       });
     }
 
@@ -705,7 +706,7 @@
             }
           }
         } catch (err) {
-          console.warn('Erreur notification push:', err);
+          if (DEBUG) console.warn('Erreur notification push:', err);
         }
       });
     }
@@ -737,7 +738,9 @@
             btn.classList.remove('copied');
           }, 2000);
         } catch (err) {
-          console.error('Erreur copie:', err);
+          if (DEBUG) console.error('Erreur copie:', err);
+          btn.innerHTML = '<span>Échec copie</span>';
+          setTimeout(() => { btn.innerHTML = originalText; }, 2000);
         }
       });
     });

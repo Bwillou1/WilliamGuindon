@@ -6,6 +6,8 @@
 (function () {
   'use strict';
 
+  const DEBUG = false;
+
   function initHomePage() {
     // 1. Compteurs animés avec IntersectionObserver
     const counters = document.querySelectorAll('.counter-num');
@@ -300,7 +302,7 @@
                 </article>
               `).join('');
             })
-            .catch(err => console.warn('Photos preview load:', err));
+            .catch(err => { if (DEBUG) console.warn('Photos preview load:', err); });
         }
       }
 
@@ -346,7 +348,7 @@
               </article>
             `).join('');
           })
-          .catch(err => console.warn('Blog preview load:', err));
+          .catch(err => { if (DEBUG) console.warn('Blog preview load:', err); });
       }
     }
   }
