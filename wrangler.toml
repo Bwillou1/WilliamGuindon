@@ -1,7 +1,8 @@
 name = "williamguindon-groq-chat"
 main = "workers/groq-chat.js"
 compatibility_date = "2026-09-01"
+account_id = "00ae76e7cc375a8175a3dde4f2a48ec0"
 
-# Déploiement : wrangler deploy
-# Définir le secret : wrangler secret put GROQ_API_KEY
-# Monter la route sur le domaine : williamguindon.me/api/groq-chat*
+routes = [
+  { pattern = "williamguindon.me/api/groq-chat*", zone_name = "williamguindon.me" }
+]
