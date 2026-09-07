@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v16';
+const CACHE_NAME = 'wg-pwa-v17';
 const MAX_CACHE_ENTRIES = 60;
 
 const ASSETS_TO_CACHE = [
@@ -18,6 +18,9 @@ const ASSETS_TO_CACHE = [
   '/llms-full.txt',
   '/style.css',
   '/theme.js',
+  '/assets/js/theme-core.js',
+  '/assets/js/page-home.js',
+  '/assets/js/chat-ai.js',
   '/assets/css/pdf-viewer.css',
   '/assets/js/pdf-viewer.js',
   '/assets/vendor/pdfjs/pdf.min.js',
