@@ -420,22 +420,22 @@
 <!-- ÉCRAN DE VERROUILLAGE TOTAL : Bloque toute visualisation et modification -->
 <div class="editor-lock-screen" id="editor-lock-screen">
   <div class="lock-card">
+    <!-- Encart d'information Cloudflare Access -->
+    <div class="cf-access-notice" style="margin-bottom:16px; padding:10px 14px; border-radius:8px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px; text-align:left;">
+      <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--accent);fill:none;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <span><strong>Accès protégé par Cloudflare Access.</strong> L'ancien mot de passe maître est supprimé.</span>
+    </div>
+
     <div class="lock-icon-wrap" id="lock-icon" style="display:flex;align-items:center;justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:currentColor;fill:none;stroke-width:2;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
     <h1 class="lock-title">Studio Éditeur Visuel</h1>
     <p class="lock-subtitle">
-      La visualisation et l'édition en direct sont <strong>strictement verrouillées</strong>.<br>
-      Veuillez entrer le <strong>code d'accès administrateur</strong> et votre <strong>clé GitHub</strong> (@Bwillou1).
+      Veuillez entrer votre <strong>clé d'authentification GitHub</strong> (@Bwillou1) pour déverrouiller la visualisation et la publication.
     </p>
 
     <!-- Formulaire d'authentification complète -->
     <form id="lock-auth-form" onsubmit="handleLockAuthSubmit(event)">
       <div class="lock-field-group">
-        <label class="lock-label" for="lock-pass-input">1. Code d'accès administrateur :</label>
-        <input type="password" id="lock-pass-input" class="lock-input" placeholder="Mot de passe admin" autocomplete="current-password" required>
-      </div>
-
-      <div class="lock-field-group">
-        <label class="lock-label" for="lock-token-input">2. Clé d'authentification GitHub (PAT) :</label>
+        <label class="lock-label" for="lock-token-input">Clé d'authentification GitHub (PAT avec droit "repo") :</label>
         <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
       </div>
 
@@ -515,27 +515,12 @@
 
 <script>
 (() => {
-  'use strict';
-
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
-  const VALID_PASSWORD_HASHES = [
-    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595",
-    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"
-  ];
 
   let isEditModeActive = true;
   let isAuthenticated = false;
   let currentAuthToken = "";
-
-  // Calcul du hash SHA-256 (WebCrypto API native)
-  async function sha256Hex(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-  }
 
   function getToken() {
     return currentAuthToken || sessionStorage.getItem("wg_github_pat") || localStorage.getItem("wg_github_pat") || "";
@@ -873,22 +858,13 @@
 
   async function handleLockAuthSubmit(e) {
     e.preventDefault();
-    const passInput = document.getElementById("lock-pass-input");
     const tokenInput = document.getElementById("lock-token-input");
     const submitBtn = document.getElementById("btn-lock-submit");
     const errBox = document.getElementById("lock-error-box");
 
     if (errBox) errBox.style.display = "none";
-    const passVal = (passInput.value || "").trim();
     const tokenVal = (tokenInput.value || "").trim();
 
-    if (!passVal) {
-      if (errBox) {
-        errBox.textContent = "Veuillez entrer le code d'accès administrateur.";
-        errBox.style.display = "block";
-      }
-      return;
-    }
     if (!tokenVal) {
       if (errBox) {
         errBox.textContent = "Veuillez entrer votre clé GitHub (PAT).";
@@ -899,15 +875,10 @@
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = "Vérification du code & clé GitHub...";
+      submitBtn.textContent = "Vérification de la clé GitHub...";
     }
 
     try {
-      const passHash = await sha256Hex(passVal);
-      if (!VALID_PASSWORD_HASHES.includes(passHash)) {
-        throw new Error("Code d'accès administrateur incorrect.");
-      }
-
       await validateGitHubToken(tokenVal);
 
       sessionStorage.setItem("wg_github_pat", tokenVal);

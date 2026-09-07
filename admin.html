@@ -289,36 +289,29 @@
     </div>
   </div>
 
-  <!-- Carte Authentification Double Protection (Token GitHub + Mot de Passe + FingerprintJS) -->
+  <!-- Encart d'information Cloudflare Access -->
+  <div class="cf-access-notice" style="margin-bottom:18px; padding:12px 16px; border-radius:8px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:10px;">
+    <svg class="svg-icon" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    <span><strong>Accès protégé par Cloudflare Access.</strong> L'ancien mot de passe maître est supprimé.</span>
+  </div>
+
+  <!-- Carte Authentification (Token GitHub) -->
   <div id="token-card" class="token-box">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
       <svg class="svg-icon" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
       <div>
-        <h3 style="margin:0; font-size:1.3rem;">Authentification Sécurisée (Double Facteur)</h3>
+        <h3 style="margin:0; font-size:1.3rem;">Authentification Administrateur</h3>
         <span style="font-size:12.5px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
       </div>
     </div>
     <p style="color:var(--text-muted); font-size:14px; margin: 8px 0 16px; line-height:1.5;">
-      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la gestion et la publication, veuillez entrer votre <strong>Personal Access Token GitHub</strong> ainsi que votre <strong>mot de passe maître</strong>. Toute tentative non autorisée fait l'objet d'un verrouillage adaptatif par empreinte matérielle (FingerprintJS).
+      Cet espace communique directement avec l'API GitHub. Pour déverrouiller la gestion et la publication, veuillez saisir votre <strong>Personal Access Token GitHub</strong> (PAT avec droit « repo »).
     </p>
-
-    <!-- Zone de compte à rebours de blocage (Force Brute & Pénalité Levenshtein) -->
-    <div id="lockout-banner" style="display:none; margin-bottom:18px; padding:14px 18px; border-radius:10px; background:rgba(239,68,68,0.12); border:1px solid #ef4444; color:#ef4444;">
-      <div style="font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:8px;">
-        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:#ef4444;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Accès temporairement verrouillé
-      </div>
-      <p id="lockout-timer-text" style="margin:6px 0 0; font-size:13.5px; line-height:1.5; font-weight:600;"></p>
-    </div>
 
     <form id="admin-auth-form" onsubmit="return false;">
       <div class="form-group">
-        <label class="form-label" for="github-pat-input">1. Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
+        <label class="form-label" for="github-pat-input">Jeton d'accès GitHub personnel (PAT avec droit "repo") :</label>
         <input type="password" id="github-pat-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="admin-password-input">2. Mot de passe maître administrateur :</label>
-        <input type="password" id="admin-password-input" class="form-control" placeholder="••••••••••••••••" autocomplete="current-password">
       </div>
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
@@ -326,16 +319,15 @@
           <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Vérifier & Déverrouiller
         </button>
         <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
-          Vérification cryptographique et connexion GitHub...
+          Vérification et connexion à l'API GitHub...
         </span>
       </div>
     </form>
 
     <div id="token-error-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; font-size:13.5px; font-weight:600; line-height:1.5;"></div>
 
-    <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <span><strong>Protection cryptographique :</strong> Vérification SHA-256 (WebCrypto) & anti-force brute adaptative.</span>
-      <span id="fp-device-tag" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Empreinte : Détection...</span>
+    <div style="margin-top:20px; padding-top:14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-muted); line-height:1.6;">
+      <span><strong>Périmètre de sécurité :</strong> Authentification d'entrée gérée par Cloudflare Access (Zero Trust OTP).</span>
     </div>
   </div>
 
@@ -519,63 +511,7 @@
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
 
-  // Hashes SHA-256 maîtres
-  const VALID_PASSWORD_HASHES = [
-    "d185e468eef0ca9b626ef91f3eb12cb696144e1e0a29486c4fae9b378077c595",
-    "f33b220606cfab1f099933497f9e7ddc40594b2d06e2bedbad688b1eba7a5775"
-  ];
-
   let currentAuthToken = "";
-
-  // Calcul du hash SHA-256 (WebCrypto API native)
-  async function sha256Hex(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-  }
-
-  function calculatePenaltyMinutes(compteurEchecs, isTampered) {
-    const attempts = Math.max(1, compteurEchecs || 1);
-    let penaltyMinutes = 0;
-    if (attempts === 1) {
-      penaltyMinutes = 1;
-    } else if (attempts === 2) {
-      penaltyMinutes = 3;
-    } else {
-      penaltyMinutes = Math.min(720, Math.pow(attempts, 2) * 2);
-    }
-    if (isTampered) {
-      penaltyMinutes *= 5;
-    }
-    return Math.min(penaltyMinutes, 720);
-  }
-
-  let cachedVisitorId = null;
-
-  async function getVisitorId() {
-    if (cachedVisitorId) return cachedVisitorId;
-    try {
-      if (window.FingerprintJS) {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        cachedVisitorId = result.visitorId;
-        return cachedVisitorId;
-      }
-    } catch (err) {
-      console.warn("FingerprintJS CDN warning:", err);
-    }
-    const rawData = [
-      navigator.userAgent,
-      navigator.language,
-      screen.colorDepth,
-      screen.width + "x" + screen.height,
-      new Date().getTimezoneOffset()
-    ].join("||");
-    cachedVisitorId = (await sha256Hex(rawData)).substring(0, 16);
-    return cachedVisitorId;
-  }
 
   function getCookie(name) {
     const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
@@ -586,104 +522,6 @@
     const d = new Date();
     d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
     document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toUTCString() + ";SameSite=Strict";
-  }
-
-  function getSecurityState(visitorId) {
-    const localKey = "wg_sec_state_" + visitorId;
-    const shadowKey = "wg_sec_shadow_" + visitorId;
-    const localRaw = localStorage.getItem(localKey);
-    const shadowRaw = getCookie(shadowKey) || sessionStorage.getItem(shadowKey);
-
-    let state = null;
-    let isTampered = false;
-
-    if (localRaw) {
-      try { state = JSON.parse(localRaw); } catch (e) {}
-    }
-
-    if (!state && shadowRaw) {
-      try {
-        const shadowState = JSON.parse(shadowRaw);
-        if (shadowState && (shadowState.compteurEchecs > 0 || shadowState.bloqueJusqua > Date.now())) {
-          state = shadowState;
-          isTampered = true;
-        }
-      } catch (e) {}
-    }
-
-    if (!state) {
-      state = { compteurEchecs: 0, dernierEchecTimestamp: 0, bloqueJusqua: 0 };
-    }
-
-    const now = Date.now();
-    if (state.dernierEchecTimestamp && (now - state.dernierEchecTimestamp > 24 * 60 * 60 * 1000)) {
-      state.compteurEchecs = 0;
-      state.bloqueJusqua = 0;
-    }
-
-    return { state, isTampered };
-  }
-
-  function saveSecurityState(visitorId, state) {
-    const localKey = "wg_sec_state_" + visitorId;
-    const shadowKey = "wg_sec_shadow_" + visitorId;
-    const jsonStr = JSON.stringify(state);
-    try { localStorage.setItem(localKey, jsonStr); } catch (e) {}
-    try { sessionStorage.setItem(shadowKey, jsonStr); } catch (e) {}
-    try { setCookie(shadowKey, jsonStr, 7); } catch (e) {}
-  }
-
-  let countdownTimerId = null;
-
-  function updateLockoutUI(bloqueJusqua) {
-    const banner = document.getElementById("lockout-banner");
-    const timerText = document.getElementById("lockout-timer-text");
-    const patInput = document.getElementById("github-pat-input");
-    const passInput = document.getElementById("admin-password-input");
-    const submitBtn = document.getElementById("btn-save-token");
-
-    if (countdownTimerId) {
-      clearInterval(countdownTimerId);
-      countdownTimerId = null;
-    }
-
-    const now = Date.now();
-    if (bloqueJusqua && bloqueJusqua > now) {
-      if (patInput) patInput.disabled = true;
-      if (passInput) passInput.disabled = true;
-      if (submitBtn) submitBtn.disabled = true;
-      if (banner) banner.style.display = "block";
-
-      function renderCountdown() {
-        const diffMs = bloqueJusqua - Date.now();
-        if (diffMs <= 0) {
-          clearInterval(countdownTimerId);
-          countdownTimerId = null;
-          if (patInput) patInput.disabled = false;
-          if (passInput) passInput.disabled = false;
-          if (submitBtn) submitBtn.disabled = false;
-          if (banner) banner.style.display = "none";
-          if (timerText) timerText.textContent = "";
-          return;
-        }
-        const totalSeconds = Math.ceil(diffMs / 1000);
-        const mins = Math.floor(totalSeconds / 60);
-        const secs = totalSeconds % 60;
-        if (timerText) {
-          timerText.innerHTML = `Veuillez patienter <strong>${mins} minute(s) et ${secs < 10 ? '0' : ''}${secs} seconde(s)</strong> avant de réessayer.`;
-        }
-      }
-
-      renderCountdown();
-      countdownTimerId = setInterval(renderCountdown, 1000);
-      return true;
-    } else {
-      if (patInput) patInput.disabled = false;
-      if (passInput) passInput.disabled = false;
-      if (submitBtn) submitBtn.disabled = false;
-      if (banner) banner.style.display = "none";
-      return false;
-    }
   }
 
   function showTokenError(msg) {
@@ -1216,18 +1054,8 @@
   }
 
   async function handleAuthSubmission() {
-    const vId = await getVisitorId();
-    const { state, isTampered } = getSecurityState(vId);
-
-    if (updateLockoutUI(state.bloqueJusqua)) {
-      showTokenError("Accès temporairement bloqué suite à des échecs d'authentification.");
-      return;
-    }
-
     const patInput = document.getElementById("github-pat-input");
-    const passInput = document.getElementById("admin-password-input");
     const tokenVal = (patInput.value || "").trim();
-    const passVal = (passInput.value || "");
     const errorBanner = document.getElementById("token-error-banner");
     const spinner = document.getElementById("token-spinner");
     const submitBtn = document.getElementById("btn-save-token");
@@ -1238,29 +1066,6 @@
       showTokenError("Veuillez saisir votre jeton personnel GitHub (PAT).");
       return;
     }
-    if (!passVal) {
-      showTokenError("Veuillez saisir le mot de passe maître de sécurité.");
-      return;
-    }
-
-    // Validation SHA-256
-    const passHash = await sha256Hex(passVal);
-    const isPasswordCorrect = VALID_PASSWORD_HASHES.includes(passHash);
-
-    if (!isPasswordCorrect) {
-      state.compteurEchecs = (state.compteurEchecs || 0) + 1;
-      state.dernierEchecTimestamp = Date.now();
-
-      const penaltyMinutes = calculatePenaltyMinutes(state.compteurEchecs, isTampered);
-      state.bloqueJusqua = Date.now() + (penaltyMinutes * 60 * 1000);
-      saveSecurityState(vId, state);
-
-      updateLockoutUI(state.bloqueJusqua);
-
-      const tamperMsg = isTampered ? " (Détection de contournement de stockage : facteur x5 appliqué)" : "";
-      showTokenError(`Mot de passe incorrect (Tentative ${state.compteurEchecs}). Verrouillage de sécurité appliqué pendant ${penaltyMinutes} minute(s).${tamperMsg}`);
-      return;
-    }
 
     if (submitBtn) submitBtn.disabled = true;
     if (spinner) spinner.style.display = "inline";
@@ -1268,18 +1073,12 @@
     try {
       const userData = await validateGitHubToken(tokenVal);
 
-      state.compteurEchecs = 0;
-      state.bloqueJusqua = 0;
-      state.dernierEchecTimestamp = 0;
-      saveSecurityState(vId, state);
-
       currentAuthToken = tokenVal;
       sessionStorage.setItem("wg_github_pat", tokenVal);
       patInput.value = "";
-      passInput.value = "";
 
       updateAuthUI(true);
-      showStatus(`Authentification 2FA réussie. Bienvenue @${userData.login} !`, "success");
+      showStatus(`Authentification réussie. Bienvenue @${userData.login} !`, "success");
     } catch (err) {
       showTokenError(err.message);
     } finally {
@@ -1289,15 +1088,6 @@
   }
 
   async function initAuth() {
-    const vId = await getVisitorId();
-    const fpDeviceTag = document.getElementById("fp-device-tag");
-    if (fpDeviceTag) {
-      fpDeviceTag.textContent = `Empreinte : ${vId.substring(0, 10)}...`;
-    }
-
-    const { state } = getSecurityState(vId);
-    updateLockoutUI(state.bloqueJusqua);
-
     const token = getToken();
     const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
 
