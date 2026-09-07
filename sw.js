@@ -1,4 +1,6 @@
-const CACHE_NAME = 'wg-pwa-v15';
+const CACHE_NAME = 'wg-pwa-v16';
+const MAX_CACHE_ENTRIES = 60;
+
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -34,6 +36,49 @@ const ASSETS_TO_CACHE = [
   '/status.json'
 ];
 
+/**
+ * Purge les entrées les plus anciennes du cache lorsque la taille maximale est atteinte
+ */
+async function trimCache(cacheName, maxEntries) {
+  try {
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    if (keys.length > maxEntries) {
+      const itemsToDelete = keys.slice(0, keys.length - maxEntries);
+      await Promise.all(itemsToDelete.map((key) => cache.delete(key)));
+    }
+  } catch (err) {
+    console.warn('[SW] Échec du nettoyage du quota de cache:', err);
+  }
+}
+
+/**
+ * Vérifie si une réponse peut être mise en cache en respectant les critères de sécurité et de type
+ */
+function isCacheable(request, response) {
+  if (!response || response.status !== 200 || response.type === 'opaque') {
+    return false;
+  }
+
+  const url = new URL(request.url);
+
+  // 1. Uniquement Same-Origin
+  if (url.origin !== self.location.origin) {
+    return false;
+  }
+
+  // 2. Exclure les requêtes dynamiques d'API
+  if (url.pathname.startsWith('/api/')) {
+    return false;
+  }
+
+  // 3. Filtrer par en-tête Content-Type (HTML, CSS, JS, Images, Fonts, JSON, PDF, XML, Text)
+  const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  const eligibleContentType = /^(text\/(html|css|javascript|plain|xml)|application\/(javascript|json|pdf|xml)|image\/|font\/)/i.test(contentType);
+
+  return eligibleContentType;
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
@@ -61,18 +106,38 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const isNavigation = event.request.mode === 'navigate';
+
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
+        if (isCacheable(event.request, networkResponse)) {
           const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
+          caches.open(CACHE_NAME).then(async (cache) => {
+            await cache.put(event.request, responseClone);
+            await trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
           });
         }
         return networkResponse;
       })
-      .catch(() => caches.match(event.request))
+      .catch(async () => {
+        // Recherche dans le cache local
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        // Fallback pour les navigations hors-ligne
+        if (isNavigation) {
+          const fallback = await caches.match('/index.html');
+          if (fallback) {
+            return fallback;
+          }
+        }
+
+        return Promise.reject(new Error('Ressource hors-ligne indisponible'));
+      })
   );
 });
 
