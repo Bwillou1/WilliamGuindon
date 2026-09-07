@@ -204,20 +204,20 @@
 
       <div class="tracker-card live-tracker-card">
         <div class="precision-countdown-grid live-precision-grid">
-          <div class="precision-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-days">--</div>
+          <div class="precision-time-unit live-time-unit">
+            <div class="precision-time-val live-time-val" id="cd-days">—</div>
             <div class="precision-time-lbl live-time-lbl">Jours</div>
           </div>
-          <div class="precision-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-hours">--</div>
+          <div class="precision-time-unit live-time-unit">
+            <div class="precision-time-val live-time-val" id="cd-hours">—</div>
             <div class="precision-time-lbl live-time-lbl">Heures</div>
           </div>
-          <div class="precision-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-mins">--</div>
+          <div class="precision-time-unit live-time-unit">
+            <div class="precision-time-val live-time-val" id="cd-mins">—</div>
             <div class="precision-time-lbl live-time-lbl">Minutes</div>
           </div>
-          <div class="precision-time-unit">
-            <div class="precision-time-val live-time-val-secs" id="cd-secs">--</div>
+          <div class="precision-time-unit live-time-unit">
+            <div class="precision-time-val live-time-val-secs" id="cd-secs">—</div>
             <div class="precision-time-lbl live-time-lbl">Secondes</div>
           </div>
         </div>
@@ -294,7 +294,8 @@
 <script>
   // Gestion du décompte en direct à la seconde près
   document.addEventListener('DOMContentLoaded', () => {
-    const targetDate = new Date("2026-10-16T23:59:59-04:00").getTime();
+    // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
+    const targetDate = new Date("2026-10-16T00:00:00-04:00").getTime();
     const totalMinutesEl = document.getElementById("live-total-minutes-label");
     const copyBtn = document.getElementById("btn-copy-live-link");
 

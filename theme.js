@@ -433,7 +433,8 @@
       requestAnimationFrame(step);
     }
 
-    let cceTargetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
+    // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
+    let cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
 
     function updateCountdown() {
       const daysElement = document.getElementById('countdown-days');
@@ -809,7 +810,8 @@
     }
 
     function updatePrecisionCountdown() {
-      const targetDate = new Date('2026-10-16T23:59:59-04:00').getTime();
+      // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
+      const targetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
       const now = new Date().getTime();
       const diff = Math.max(0, targetDate - now);
 

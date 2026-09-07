@@ -17,8 +17,8 @@ async function syncDossierStatus() {
     titre_en: "Hazardous Waste Disposal in Blainville",
     etat_fr: "Réponse de la Partie demandée (art. 24.27(3))",
     etat_en: "Response requested from Party (Art. 24.27(3))",
-    decision_positive: true,
-    prochaine_echeance: "2026-10-16T23:59:59-04:00",
+    // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
+    prochaine_echeance: "2026-10-16T00:00:00-04:00",
     echeance_libelle_fr: "16 octobre 2026",
     echeance_libelle_en: "October 16, 2026",
     derniere_mise_a_jour: "17 août 2026",
