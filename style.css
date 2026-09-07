@@ -3228,6 +3228,23 @@ body.dark-theme .notif-link-ghost {
   color: var(--text-muted);
 }
 
+
+.viewer-ai-output { display: none; background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; max-height: 220px; overflow-y: auto; }
+.viewer-chat-messages { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 8px; padding: 4px 0; }
+.ai-chat-bubble-sm { font-size: 11.5px; padding: 8px 10px; }
+.viewer-ai-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.viewer-quick-pill { font-size: 10.5px; padding: 3px 7px; }
+.viewer-chat-form { display: flex; gap: 4px; }
+.viewer-chat-input { font-size: 12px; height: 32px; }
+.viewer-chat-submit { padding: 0 10px; height: 32px; font-size: 12px; }
+.low-bandwidth-alert { position: fixed; top: 60px; left: 16px; right: 16px; z-index: 9999; }
+.btn-close-banner-msg { background: none; border: none; cursor: pointer; font-weight: bold; color: inherit; }
+.grid-empty-msg { text-align: center; color: var(--text-muted); grid-column: 1/-1; }
+
+
+.viewer-loading-text { font-size: 13px; font-weight: 600; color: var(--text); }
+.shortcuts-dialog-title { margin: 0; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
+
 @media print {
   @page {
     margin: 1cm 1.2cm;
@@ -4736,6 +4753,23 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 }
 
 /* EcoIndex Print CSS Support */
+
+.viewer-ai-output { display: none; background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; max-height: 220px; overflow-y: auto; }
+.viewer-chat-messages { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 8px; padding: 4px 0; }
+.ai-chat-bubble-sm { font-size: 11.5px; padding: 8px 10px; }
+.viewer-ai-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.viewer-quick-pill { font-size: 10.5px; padding: 3px 7px; }
+.viewer-chat-form { display: flex; gap: 4px; }
+.viewer-chat-input { font-size: 12px; height: 32px; }
+.viewer-chat-submit { padding: 0 10px; height: 32px; font-size: 12px; }
+.low-bandwidth-alert { position: fixed; top: 60px; left: 16px; right: 16px; z-index: 9999; }
+.btn-close-banner-msg { background: none; border: none; cursor: pointer; font-weight: bold; color: inherit; }
+.grid-empty-msg { text-align: center; color: var(--text-muted); grid-column: 1/-1; }
+
+
+.viewer-loading-text { font-size: 13px; font-weight: 600; color: var(--text); }
+.shortcuts-dialog-title { margin: 0; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
+
 @media print {
   body {
     background: #ffffff !important;
@@ -4814,6 +4848,58 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   .legal-toolbar { align-items: stretch; flex-direction: column; padding: 14px; }
   .legal-print-button { justify-content: center; width: 100%; }
 }
+
+/* Classes sémantiques pour extraction des styles inline */
+.nav-notif-btn svg, .header-notif-svg { vertical-align: middle; }
+.scroll-progress-bar { width: 0; }
+.btn-add-cce-calendar { margin-top: 15px; font-size: 13.5px; padding: 9px 20px; display: inline-flex; align-items: center; gap: 8px; }
+.home-blog-intro { color: var(--text-muted); margin-bottom: 24px; }
+.btn-doc-action { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.footer-session-links { margin: 14px 0 12px; display: flex; flex-wrap: wrap; gap: 10px; }
+.footer-session-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 18px; font-weight: 700; }
+.footer-session-btn-outline { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 18px; }
+.footer-session-subtext { margin: 12px 0 0; }
+.carbonbadge-wrap { margin: 18px auto 14px; text-align: center; }
+.live-status-container { text-align: center; margin-bottom: 24px; }
+.status-beacon-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,78,59,0.7); border: 1px solid #34d399; padding: 6px 18px; border-radius: 9999px; font-size: 0.82rem; font-weight: 700; color: #a7f3d0; letter-spacing: 0.06em; }
+.status-beacon-dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; display: inline-block; box-shadow: 0 0 8px #34d399; }
+.legal-callout { background: var(--accent-wash); border: 1px solid var(--accent); border-radius: 10px; padding: 18px; margin-bottom: 28px; }
+.legal-callout-title { margin-top: 0; font-size: 1.1rem; color: var(--accent-deep); display: flex; align-items: center; gap: 8px; }
+.legal-callout-desc { margin-bottom: 0; font-size: 0.95rem; line-height: 1.6; }
+.contact-button-clean { background: none; border: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0; }
+.blog-empty-state { display: none; }
+.blog-detail-category { position: static; display: inline-block; margin-bottom: 10px; }
+.blog-detail-title { font-size: 1.8rem; margin-bottom: 8px; }
+.blog-detail-time { color: var(--text-faint); font-size: 13.5px; display: block; margin-bottom: 14px; }
+.blog-detail-footer { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 16px; }
+.blog-detail-tags { margin-bottom: 12px; }
+.photo-lightbox-meta { font-size: 12px; color: #a7f3d0; display: flex; align-items: center; gap: 4px; justify-content: center; }
+.zoom-box { display: flex; align-items: center; gap: 3px; }
+.tool-btn-search-nav { width: 30px; height: 34px; }
+.ai-nano-badge { margin-bottom: 10px; }
+.viewer-ai-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.btn-viewer-summary { width: 100%; justify-content: center; padding: 7px 10px; font-size: 12px; }
+.btn-viewer-summary-page { width: 100%; justify-content: center; padding: 6px 10px; font-size: 12px; }
+.viewer-ai-chat-section { border-top: 1px solid var(--line); padding-top: 10px; }
+.viewer-ai-chat-title { font-weight: 600; font-size: 12px; margin-bottom: 6px; color: var(--text); }
+
+
+
+.viewer-ai-output { display: none; background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.5; margin-bottom: 12px; max-height: 220px; overflow-y: auto; }
+.viewer-chat-messages { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 8px; padding: 4px 0; }
+.ai-chat-bubble-sm { font-size: 11.5px; padding: 8px 10px; }
+.viewer-ai-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.viewer-quick-pill { font-size: 10.5px; padding: 3px 7px; }
+.viewer-chat-form { display: flex; gap: 4px; }
+.viewer-chat-input { font-size: 12px; height: 32px; }
+.viewer-chat-submit { padding: 0 10px; height: 32px; font-size: 12px; }
+.low-bandwidth-alert { position: fixed; top: 60px; left: 16px; right: 16px; z-index: 9999; }
+.btn-close-banner-msg { background: none; border: none; cursor: pointer; font-weight: bold; color: inherit; }
+.grid-empty-msg { text-align: center; color: var(--text-muted); grid-column: 1/-1; }
+
+
+.viewer-loading-text { font-size: 13px; font-weight: 600; color: var(--text); }
+.shortcuts-dialog-title { margin: 0; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
 
 @media print {
   @page { margin: 1.35cm 1.5cm; size: portrait; }

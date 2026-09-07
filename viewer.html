@@ -76,7 +76,7 @@
 
         <div class="tool-separator"></div>
 
-        <div class="zoom-box" style="display:flex; align-items:center; gap:3px;">
+        <div class="zoom-box">
           <button type="button" id="btn-zoom-out" class="tool-btn" title="Zoom arrière (-)" aria-label="Zoom arrière">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
           </button>
@@ -195,8 +195,8 @@
             <div class="search-box">
               <div class="search-input-wrap">
                 <input type="text" id="input-search" class="search-input" placeholder="Rechercher dans le texte..." aria-label="Recherche textuelle">
-                <button type="button" id="btn-search-prev" class="tool-btn" title="Occurrence précédente" style="width:30px; height:34px;">▲</button>
-                <button type="button" id="btn-search-next" class="tool-btn" title="Occurrence suivante" style="width:30px; height:34px;">▼</button>
+                <button type="button" id="btn-search-prev" class="tool-btn tool-btn-search-nav" title="Occurrence précédente">▲</button>
+                <button type="button" id="btn-search-next" class="tool-btn tool-btn-search-nav" title="Occurrence suivante">▼</button>
               </div>
               <div class="search-meta-bar">
                 <span id="search-count-label">0 résultat</span>
@@ -208,41 +208,41 @@
 
           <div id="pane-ai" class="sidebar-pane" role="tabpanel">
             <div class="viewer-ai-container">
-              <div class="ai-nano-badge" style="margin-bottom:10px;">
+              <div class="ai-nano-badge">
                 <span class="ai-nano-dot"></span>
                 <span id="viewer-ai-status">Prêt · Groq sécurisé via le serveur</span>
               </div>
               
-              <div class="viewer-ai-actions" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
-                <button id="btn-viewer-summarize" class="btn btn-primary" type="button" style="width:100%; justify-content:center; padding:7px 10px; font-size:12px;">
+              <div class="viewer-ai-actions">
+                <button id="btn-viewer-summarize" class="btn btn-primary btn-viewer-summary" type="button">
                   Résumer le document complet
                 </button>
-                <button id="btn-viewer-summarize-page" class="btn btn-ghost" type="button" style="width:100%; justify-content:center; padding:6px 10px; font-size:12px;">
+                <button id="btn-viewer-summarize-page" class="btn btn-ghost btn-viewer-summary-page" type="button">
                   Résumer la page active (<span id="viewer-ai-current-page-label">Page 1</span>)
                 </button>
               </div>
 
-              <div id="viewer-ai-output" class="viewer-ai-output" style="display:none; background:var(--bg-card); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:12px; line-height:1.5; margin-bottom:12px; max-height:220px; overflow-y:auto;">
+              <div id="viewer-ai-output" class="viewer-ai-output" >
               </div>
 
-              <div class="viewer-ai-chat-section" style="border-top:1px solid var(--line); padding-top:10px;">
-                <div style="font-weight:600; font-size:12px; margin-bottom:6px; color:var(--text);">Clavarder avec ce document</div>
+              <div class="viewer-ai-chat-section">
+                <div class="viewer-ai-chat-title">Clavarder avec ce document</div>
                 
-                <div id="viewer-chat-messages" class="viewer-chat-messages" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; margin-bottom:8px; padding:4px 0;">
-                  <div class="ai-chat-bubble bot" style="font-size:11.5px; padding:8px 10px;">
+                <div id="viewer-chat-messages" class="viewer-chat-messages" >
+                  <div class="ai-chat-bubble bot ai-chat-bubble-sm">
                     Bonjour ! Je peux analyser ce document juridique en temps réel. Posez-moi une question sur le contenu, les arguments ou les articles de loi.
                   </div>
                 </div>
 
-                <div class="viewer-ai-pills" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
-                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels sont les points clés de ce document ?" style="font-size:10.5px; padding:3px 7px;">Points clés</button>
-                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels articles de loi ou conventions sont cités ?" style="font-size:10.5px; padding:3px 7px;">Articles de loi</button>
-                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quelles sont les conclusions et prochaines étapes ?" style="font-size:10.5px; padding:3px 7px;">Conclusions</button>
+                <div class="viewer-ai-pills">
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels sont les points clés de ce document ?" >Points clés</button>
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quels articles de loi ou conventions sont cités ?" >Articles de loi</button>
+                  <button class="ai-pill-btn viewer-quick-pill" type="button" data-query="Quelles sont les conclusions et prochaines étapes ?" >Conclusions</button>
                 </div>
 
-                <form id="viewer-chat-form" style="display:flex; gap:4px;">
-                  <input type="text" id="viewer-chat-input" class="search-input" placeholder="Poser une question..." style="font-size:12px; height:32px;" required>
-                  <button type="submit" class="btn btn-primary" style="padding:0 10px; height:32px; font-size:12px;">Envoyer</button>
+                <form id="viewer-chat-form" class="viewer-chat-form">
+                  <input type="text" id="viewer-chat-input" class="search-input viewer-chat-input" placeholder="Poser une question..." required>
+                  <button type="submit" class="btn btn-primary viewer-chat-submit">Envoyer</button>
                 </form>
               </div>
             </div>
@@ -258,7 +258,7 @@
 
         <div id="viewer-loading" class="viewer-loading" aria-live="polite">
           <div class="spinner"></div>
-          <span id="loading-text" style="font-size:13px; font-weight:600; color:var(--text);">Chargement du document haute fidélité...</span>
+          <span id="loading-text" class="viewer-loading-text">Chargement du document haute fidélité...</span>
         </div>
 
         <div id="pages-container" class="pages-container"></div>
@@ -295,7 +295,7 @@
 
     <dialog id="shortcuts-dialog" class="shortcuts-dialog">
       <div class="shortcuts-header">
-        <h3 style="margin:0; font-size:16px; display:inline-flex; align-items:center; gap:6px;"><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg> Raccourcis Clavier (KOReader / PDFSlick)</h3>
+        <h3 class="shortcuts-dialog-title"><svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg> Raccourcis Clavier (KOReader / PDFSlick)</h3>
         <button type="button" class="tool-btn" id="btn-close-shortcuts-dialog" aria-label="Fermer">&times;</button>
       </div>
       <div class="shortcuts-grid">
@@ -386,14 +386,14 @@
       if (conn && (conn.saveData || conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || (conn.downlink && conn.downlink < 0.25))) {
         const warnBanner = document.createElement('div');
         warnBanner.className = 'low-bandwidth-alert';
-        warnBanner.style.position = 'fixed';
-        warnBanner.style.top = '60px';
-        warnBanner.style.left = '16px';
-        warnBanner.style.right = '16px';
-        warnBanner.style.zIndex = '9999';
+        
+        
+        
+        
+        
         warnBanner.innerHTML = `
           <span><strong>Connexion très lente détectée (3G/LoRa) :</strong> Le lecteur interactif peut être lent. Vous pouvez <a href="assets/docs/26-2-det2_fr.pdf" download>télécharger le PDF directement</a> ou consulter la <a href="txt.html">version texte</a>.</span>
-          <button type="button" style="background:none;border:none;cursor:pointer;font-weight:bold;color:inherit;" id="btn-close-banner-msg">&times;</button>
+          <button type="button" class="btn-close-banner-msg" id="btn-close-banner-msg">&times;</button>
         `;
         document.body.appendChild(warnBanner);
       }
