@@ -341,11 +341,19 @@
         }
       });
 
+      let scrollTicking = false;
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 40) {
-          headerWrap.closest('header.site')?.classList.add('scrolled');
-        } else {
-          headerWrap.closest('header.site')?.classList.remove('scrolled');
+        if (!scrollTicking) {
+          window.requestAnimationFrame(() => {
+            const header = headerWrap.closest('header.site');
+            if (window.scrollY > 40) {
+              header?.classList.add('scrolled');
+            } else {
+              header?.classList.remove('scrolled');
+            }
+            scrollTicking = false;
+          });
+          scrollTicking = true;
         }
       }, { passive: true });
 
