@@ -120,10 +120,74 @@ if (fs.existsSync(indexPath)) {
   }
 }
 
+// 4. Vérification de l'intégrité des liens internes et ressources locales dans toutes les pages HTML
+console.log('\nVérification des liens internes et ressources locales dans les fichiers HTML :');
+const htmlFiles = fs.readdirSync(path.join(__dirname, '..')).filter(f => f.endsWith('.html'));
+let checkedLinksCount = 0;
+
+for (const htmlFile of htmlFiles) {
+  const htmlPath = path.join(__dirname, '..', htmlFile);
+  const content = fs.readFileSync(htmlPath, 'utf8');
+
+  // Match href and src attributes
+  const linkRegex = /(?:href|src)=["']([^"']+)["']/g;
+  let match;
+
+  while ((match = linkRegex.exec(content)) !== null) {
+    const rawLink = match[1].trim();
+
+    // Skip external URLs, protocol-relative, anchors, schemas, data URIs and JS template literals
+    if (
+      !rawLink ||
+      rawLink.startsWith('http://') ||
+      rawLink.startsWith('https://') ||
+      rawLink.startsWith('//') ||
+      rawLink.startsWith('#') ||
+      rawLink.startsWith('mailto:') ||
+      rawLink.startsWith('tel:') ||
+      rawLink.startsWith('javascript:') ||
+      rawLink.startsWith('data:') ||
+      rawLink.startsWith('blob:') ||
+      rawLink.includes('${')
+    ) {
+      continue;
+    }
+
+    checkedLinksCount++;
+
+    // Strip query string and hash
+    const cleanUrl = rawLink.split('?')[0].split('#')[0];
+    if (cleanUrl) {
+      const targetRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
+      const targetFullPath = path.join(__dirname, '..', targetRelPath);
+
+      if (!fs.existsSync(targetFullPath)) {
+        errors.push(`[LIEN CASSE] Dans "${htmlFile}" : cible introuvable "${rawLink}" (résolu en: ${targetRelPath})`);
+      }
+    }
+
+    // If it's a viewer.html with ?file= param, also check the file parameter
+    if (rawLink.startsWith('viewer.html?file=') || rawLink.startsWith('/viewer.html?file=')) {
+      const urlParams = new URLSearchParams(rawLink.split('?')[1] || '');
+      const docFile = urlParams.get('file');
+      if (docFile && !docFile.startsWith('http')) {
+        const docClean = docFile.startsWith('/') ? docFile.slice(1) : docFile;
+        const docFullPath = path.join(__dirname, '..', docClean);
+        if (!fs.existsSync(docFullPath)) {
+          errors.push(`[DOC MANQUANT] Dans "${htmlFile}" via viewer : document introuvable "${docFile}"`);
+        }
+      }
+    }
+  }
+}
+
+console.log(`✔ [LIENS OK] ${checkedLinksCount} liens/ressources internes vérifiés sans erreur.`);
+
 if (errors.length > 0) {
   console.error('\n❌ ERREURS DÉTECTÉES :');
   errors.forEach(err => console.error(`  - ${err}`));
   process.exit(1);
 } else {
-  console.log('\n🎉 TOUS LES ASSETS, ENTRÉES DU SERVICE WORKER ET FAQ SONT VALIDES À 100% !');
+  console.log('\n🎉 TOUS LES ASSETS, ENTRÉES DU SERVICE WORKER, FAQ ET LIENS SONT VALIDES À 100% !');
 }
+

@@ -2,10 +2,13 @@
   "name": "william-guindon-official",
   "version": "1.0.0",
   "description": "Site officiel, registre documentaire et ressources publiques de William Guindon (Dossier CCE SEM-26-003)",
-  "main": "index.html",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node scripts/validate-assets.js",
     "validate": "node scripts/validate-assets.js",
+    "build:nostr": "esbuild node_modules/nostr-tools/lib/cjs/index.js --bundle --minify --format=iife --global-name=NostrTools --outfile=assets/js/nostr-bundle.js",
     "sync:cec": "node sync-cec.js",
     "generate:countdown": "node generate-countdown-svg.js",
     "cloudflare:setup": "node scripts/cloudflare-zero-trust-setup.js"

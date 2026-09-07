@@ -66,5 +66,35 @@ jobs:
           test -f llms.txt || (echo "llms.txt manquant" && exit 1)
           echo "✔ Tous les fichiers critiques de déploiement sont présents."
 
-      - name: Validation stricte des assets et du Service Worker
+      - name: Validation stricte des assets, du Service Worker et des liens
         run: npm test
+
+  html:
+    name: Lint & Structure HTML5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validation HTML5
+        run: npx --yes html-validate "*.html"
+
+  secrets:
+    name: Détection des Secrets (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyse Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
