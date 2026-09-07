@@ -124,7 +124,14 @@
         carouselContainer.style.transform = `translateX(-${offset}px)`;
 
         dots.forEach((dot, i) => {
-          dot.classList.toggle('active', i === currentIndex);
+          const isActive = (i === currentIndex);
+          dot.classList.toggle('active', isActive);
+          if (isActive) {
+            dot.setAttribute('aria-current', 'true');
+          } else {
+            dot.removeAttribute('aria-current');
+          }
+          dot.setAttribute('aria-label', `Diapositive ${i + 1} sur ${dots.length}`);
         });
 
         if (prevBtn) {
