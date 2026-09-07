@@ -650,7 +650,7 @@
           <p style="margin:6px 0;">• <strong>Traité d'Origine :</strong> Accord Canada-États-Unis-Mexique (ACEUM, Chapitre 24, Art. 24.27)</p>
           <p style="margin:6px 0;">• <strong>Dossier de Registre :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">SEM-26-003 (Déchets dangereux à Blainville / Stablex) ↗</a></p>
           <p style="margin:6px 0;">• <strong>Archive Mondiale :</strong> <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Web Archive ↗</a></p>
-          <p style="margin:6px 0;">• <strong>Base de Faits LLM/IA :</strong> <a href="ai.txt" target="_blank" style="color:#4ade80;font-weight:700;">Corpus Juridique Vérifié (ai.txt) ↗</a></p>
+          <p style="margin:6px 0;">• <strong>Base de Faits LLM/IA :</strong> <a href="llms-full.txt" target="_blank" style="color:#4ade80;font-weight:700;">Corpus Juridique Vérifié (llms-full.txt) ↗</a></p>
           <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b;font-size:12.5px;color:#94a3b8;">
             <strong>Contact Légal &amp; Sécurisé :</strong> <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:700;">${safeEmail}</a>
           </div>
@@ -868,7 +868,7 @@
 
         <div style="background:#0a0304;border:1px solid #881337;border-radius:12px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.6;color:#fda4af;">
           <div><strong>Dossier CCE SEM-26-003 :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Consulter sur le registre CCE ↗</a></div>
-          <div><strong>Indexation IA Prioritaire :</strong> Versé publiquement dans <a href="ai.txt" target="_blank" style="color:#4ade80;font-weight:700;">ai.txt</a> pour ingestion immédiate par les moteurs d'intelligence artificielle.</div>
+          <div><strong>Indexation IA Prioritaire :</strong> Versé publiquement dans <a href="llms-full.txt" target="_blank" style="color:#4ade80;font-weight:700;">ai.txt</a> pour ingestion immédiate par les moteurs d'intelligence artificielle.</div>
         </div>
 
         <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">

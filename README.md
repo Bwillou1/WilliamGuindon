@@ -3,7 +3,7 @@
 # William Guindon — Site Officiel & Registre Public
 
 [![Site Web](https://img.shields.io/badge/Site_Officiel-williamguindon.me-00875a?style=flat-square&logo=safari)](https://williamguindon.me)
-[![CCE Dossier](https://img.shields.io/badge/CCE%20SEM--26--003-R%C3%A9ponse%20du%20Canada%20requise-d9381e?style=flat-square)](https://williamguindon.me/registre-cce-sem26003.html)
+[![CCE Dossier](https://img.shields.io/badge/CCE%20SEM--26--003-R%C3%A9ponse%20du%20Canada%20requise-d9381e?style=flat-square)](https://williamguindon.me/registre.html)
 [![Licence](https://img.shields.io/badge/Licence-CC%20BY--NC--ND%204.0-blue?style=flat-square)](LICENSE)
 [![CI Status](https://img.shields.io/badge/CI-V%C3%A9rification%20Int%C3%A8gre-2ea44f?style=flat-square)](.github/workflows/ci.yml)
 [![AI Ready](https://img.shields.io/badge/AI%20Protocol-llms.txt%20%7C%20WebMCP-8a2be2?style=flat-square)](https://williamguindon.me/llms.txt)
@@ -11,7 +11,7 @@
 
 **Dépôt officiel du site web, de la documentation juridique et des ressources publiques de William Guindon.**
 
-[Site Officiel](https://williamguindon.me) • [Suivi en direct CCE](https://williamguindon.me/live.html) • [Dossier SEM-26-003](https://williamguindon.me/registre-cce-sem26003.html) • [Espace IA (llms.txt)](https://williamguindon.me/ai.html) • [Version Texte Ultra-Légère](https://williamguindon.me/txt.html)
+[Site Officiel](https://williamguindon.me) • [Suivi en direct CCE](https://williamguindon.me/live.html) • [Dossier SEM-26-003](https://williamguindon.me/registre.html) • [Espace IA (llms.txt)](https://williamguindon.me/ai.html) • [Version Texte Ultra-Légère](https://williamguindon.me/txt.html)
 
 </div>
 
@@ -43,7 +43,7 @@ Ce dépôt GitHub constitue la source de vérité publique hébergeant le site o
 ├── 📄 index.html              # Page d'accueil officielle (Français) + Données Schema.org JSON-LD
 ├── 📄 en.html                 # Version anglaise officielle (English)
 ├── 📄 es.html                 # Version espagnole officielle (Español)
-├── 📄 registre-cce-sem26003.html # Registre documentaire interactif du dossier CCE
+├── 📄 registre.html # Registre documentaire interactif du dossier CCE
 ├── 📄 live.html               # Compte à rebours temps réel de l'échéance fédérale CCE
 ├── 📄 communiques.html        # Archives des communiqués de presse officiels
 ├── 📄 presse.html             # Revue de presse et mentions médiatiques
