@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v17';
+const CACHE_NAME = 'wg-pwa-v18';
 const MAX_CACHE_ENTRIES = 60;
 
 const ASSETS_TO_CACHE = [
@@ -31,6 +31,7 @@ const ASSETS_TO_CACHE = [
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
   '/manifest.json',
   '/favicon.svg',
+  '/favicon-32.png',
   '/apple-touch-icon.png',
   '/icon-192.png',
   '/icon-512.png',
