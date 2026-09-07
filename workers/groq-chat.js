@@ -89,8 +89,7 @@ export default {
 
     const apiKey = env?.GROQ_API_KEY || (typeof GROQ_API_KEY !== 'undefined' ? GROQ_API_KEY : (typeof globalThis !== 'undefined' && globalThis.GROQ_API_KEY ? globalThis.GROQ_API_KEY : null));
     if (!apiKey) {
-      const keys = env ? Object.keys(env) : [];
-      return new Response(JSON.stringify({ error: 'Le service IA n’est pas configuré.', debug_keys: keys }), {
+      return new Response(JSON.stringify({ error: 'Le service IA n’est pas configuré.' }), {
         status: 503,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
