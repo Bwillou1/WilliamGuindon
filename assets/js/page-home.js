@@ -363,6 +363,160 @@
           .catch(err => { if (DEBUG) console.warn('Blog preview load:', err); });
       }
     }
+
+    // 6. Lecteur Audio Biographie Synchronisé (Karaoké Citoyen)
+    const btnAudioRead = document.getElementById('btn-audio-read');
+    if (btnAudioRead) {
+      let audio = null;
+      let cues = null;
+      let floatingPlayer = null;
+      let playPauseBtn = null;
+      let timerEl = null;
+      let currentActiveCueEl = null;
+
+      function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+      }
+
+      function createFloatingPlayer() {
+        if (floatingPlayer) return floatingPlayer;
+        floatingPlayer = document.createElement('div');
+        floatingPlayer.id = 'bio-floating-player';
+        floatingPlayer.className = 'bio-floating-player';
+        floatingPlayer.setAttribute('role', 'region');
+        floatingPlayer.setAttribute('aria-label', 'Lecteur audio biographique');
+
+        floatingPlayer.innerHTML = `
+          <button type="button" class="bio-player-btn-circle" id="bio-audio-rewind" aria-label="Reculer de 10 secondes">↺ 10s</button>
+          <button type="button" class="bio-player-btn-circle bio-player-btn-main" id="bio-audio-play-pause" aria-label="Pause">⏸</button>
+          <button type="button" class="bio-player-btn-circle" id="bio-audio-forward" aria-label="Avancer de 10 secondes">10s ↻</button>
+          <div class="bio-player-info">
+            <span class="bio-player-title"><span class="bio-player-live-dot"></span> Biographie audio</span>
+            <span class="bio-player-timer" id="bio-audio-time">00:00 / 06:10</span>
+          </div>
+          <button type="button" class="bio-player-close" id="bio-audio-close" aria-label="Fermer le lecteur audio">✕</button>
+        `;
+        document.body.appendChild(floatingPlayer);
+
+        playPauseBtn = floatingPlayer.querySelector('#bio-audio-play-pause');
+        timerEl = floatingPlayer.querySelector('#bio-audio-time');
+
+        floatingPlayer.querySelector('#bio-audio-rewind').addEventListener('click', () => {
+          if (audio) audio.currentTime = Math.max(0, audio.currentTime - 10);
+        });
+
+        floatingPlayer.querySelector('#bio-audio-forward').addEventListener('click', () => {
+          if (audio) audio.currentTime = Math.min(audio.duration || 370, audio.currentTime + 10);
+        });
+
+        playPauseBtn.addEventListener('click', () => {
+          if (!audio) return;
+          if (audio.paused) {
+            audio.play().catch(() => {});
+          } else {
+            audio.pause();
+          }
+        });
+
+        floatingPlayer.querySelector('#bio-audio-close').addEventListener('click', stopAudioReading);
+
+        return floatingPlayer;
+      }
+
+      function highlightCue(time) {
+        if (!cues || !cues.length) return;
+        const activeCue = cues.find(c => time >= c.start && time < c.end);
+        
+        if (activeCue) {
+          const targetEl = document.querySelector(activeCue.selector);
+          if (targetEl && targetEl !== currentActiveCueEl) {
+            if (currentActiveCueEl) currentActiveCueEl.classList.remove('active-speech-cue');
+            targetEl.classList.add('active-speech-cue');
+            currentActiveCueEl = targetEl;
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else if (currentActiveCueEl) {
+          currentActiveCueEl.classList.remove('active-speech-cue');
+          currentActiveCueEl = null;
+        }
+      }
+
+      function stopAudioReading() {
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+        document.body.classList.remove('bio-reading-active');
+        if (floatingPlayer) floatingPlayer.classList.remove('visible');
+        if (currentActiveCueEl) {
+          currentActiveCueEl.classList.remove('active-speech-cue');
+          currentActiveCueEl = null;
+        }
+        btnAudioRead.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <span>Écouter la biographie</span>
+        `;
+      }
+
+      async function startOrToggleAudio() {
+        if (!audio) {
+          audio = new Audio('assets/Audio/biographie-complete.mp3');
+          createFloatingPlayer();
+
+          try {
+            const res = await fetch('data/biographie-audio-cues.json');
+            const data = await res.json();
+            cues = data.cues;
+          } catch (_) {
+            cues = [];
+          }
+
+          audio.addEventListener('play', () => {
+            document.body.classList.add('bio-reading-active');
+            floatingPlayer.classList.add('visible');
+            if (playPauseBtn) playPauseBtn.textContent = '⏸';
+            btnAudioRead.innerHTML = `
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+              <span>Pause audio</span>
+            `;
+          });
+
+          audio.addEventListener('pause', () => {
+            if (playPauseBtn) playPauseBtn.textContent = '▶';
+            btnAudioRead.innerHTML = `
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+              <span>Reprendre la lecture</span>
+            `;
+          });
+
+          audio.addEventListener('timeupdate', () => {
+            if (timerEl) {
+              const cur = formatTime(audio.currentTime);
+              const dur = formatTime(audio.duration || 370);
+              timerEl.textContent = `${cur} / ${dur}`;
+            }
+            highlightCue(audio.currentTime);
+          });
+
+          audio.addEventListener('ended', stopAudioReading);
+        }
+
+        if (audio.paused) {
+          audio.play().catch(e => {
+            if (DEBUG) console.warn('Audio play error:', e);
+          });
+        } else {
+          audio.pause();
+        }
+      }
+
+      btnAudioRead.addEventListener('click', (e) => {
+        e.preventDefault();
+        startOrToggleAudio();
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

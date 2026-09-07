@@ -952,7 +952,31 @@
 
     window.downloadCceIcs = generateAndDownloadCceIcs;
 
+    initScrollReveal();
     handleLowBandwidth();
+  }
+
+  function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (!reveals.length) return;
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.05,
+        rootMargin: '0px 0px 50px 0px'
+      });
+
+      reveals.forEach(el => observer.observe(el));
+    } else {
+      reveals.forEach(el => el.classList.add('visible'));
+    }
   }
 
   function routeAiCrawlers() {
