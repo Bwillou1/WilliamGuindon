@@ -513,8 +513,18 @@
       function initBioAudio() {
         if (bioAudio) return bioAudio;
 
-        bioAudio = new Audio('assets/Audio/biographie-complete.mp3');
-        bioAudio.preload = 'auto';
+        bioAudio = document.createElement('audio');
+        bioAudio.preload = 'none';
+
+        const sourceOpus = document.createElement('source');
+        sourceOpus.src = 'assets/Audio/biographie-complete.opus';
+        sourceOpus.type = 'audio/ogg; codecs=opus';
+        bioAudio.appendChild(sourceOpus);
+
+        const sourceMp3 = document.createElement('source');
+        sourceMp3.src = 'assets/Audio/biographie-complete.mp3';
+        sourceMp3.type = 'audio/mpeg';
+        bioAudio.appendChild(sourceMp3);
 
         bioAudio.addEventListener('loadedmetadata', () => {
           const timeEl = document.getElementById('bio-player-time');
