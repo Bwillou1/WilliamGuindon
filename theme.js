@@ -21,243 +21,48 @@
     const headerWrap = document.querySelector('header.site .wrap');
 
     if (nav) {
-      // Intégration du sélecteur de langue in-place fluide et fiable
+      // Intégration du sélecteur de langue fluide et autonome (FR / EN / ES)
       let langDropdown = nav.querySelector('#nav-lang-dropdown');
       if (!langDropdown) {
         langDropdown = document.createElement('div');
         langDropdown.className = 'nav-dropdown nav-dropdown-right nav-translate-dropdown';
         langDropdown.id = 'nav-lang-dropdown';
 
-        const match = document.cookie.match(/googtrans=\/fr\/([a-zA-Z\-]+)/);
-        const activeLangCode = (match && match[1]) || sessionStorage.getItem('wg_user_lang') || 'fr';
-        const langCodeDisplay = activeLangCode.toUpperCase().substring(0, 2);
+        const path = window.location.pathname;
+        let currentLang = 'FR';
+        if (path.endsWith('en.html')) {
+          currentLang = 'EN';
+        } else if (path.endsWith('es.html')) {
+          currentLang = 'ES';
+        } else if (document.documentElement.lang && document.documentElement.lang.startsWith('en')) {
+          currentLang = 'EN';
+        } else if (document.documentElement.lang && document.documentElement.lang.startsWith('es')) {
+          currentLang = 'ES';
+        }
 
         langDropdown.innerHTML = `
           <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true" id="nav-lang-btn" aria-label="Changer de langue / Change language" style="display:inline-flex; align-items:center; gap:5px; font-weight:600;">
             <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            <span><span id="current-lang-text">FR</span> ▾</span>
+            <span><span id="current-lang-text">${currentLang}</span> ▾</span>
           </button>
           <div class="nav-dropdown-menu" style="min-width: 185px;">
             <div class="nav-dropdown-group">
-              <span class="nav-dropdown-group-title">Traduire / Translate</span>
+              <span class="nav-dropdown-group-title">Langue / Language</span>
               <div class="nav-dropdown-grid single-col">
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="fr" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                <a href="./" class="nav-dropdown-item lang-btn" hreflang="fr-CA" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px; color:inherit;">
                   <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">FR</span> <span>Français (Original)</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="en" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </a>
+                <a href="en.html" class="nav-dropdown-item lang-btn" hreflang="en-CA" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px; color:inherit;">
                   <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">EN</span> <span>English</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="es" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
+                </a>
+                <a href="es.html" class="nav-dropdown-item lang-btn" hreflang="es-MX" style="display:flex; align-items:center; gap:8px; width:100%; text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 12px; color:inherit;">
                   <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">ES</span> <span>Español</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="de" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">DE</span> <span>Deutsch</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="it" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">IT</span> <span>Italiano</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="pt" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">PT</span> <span>Português</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="zh-CN" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">ZH</span> <span>中文</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ja" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">JA</span> <span>日本語</span>
-                </button>
-                <button type="button" class="nav-dropdown-item lang-btn" data-lang="ar" style="display:flex; align-items:center; gap:8px; width:100%; border:none; background:none; text-align:left; cursor:pointer; font-size:13.5px; font-weight:600; padding:8px 12px;">
-                  <span style="font-family:ui-monospace, monospace; font-size:11px; background:var(--card-bg, #04241b); border:1px solid var(--line); border-radius:4px; padding:2px 5px; color:var(--accent);">AR</span> <span>العربية</span>
-                </button>
+                </a>
               </div>
             </div>
           </div>
         `;
-        const langTxtEl = langDropdown.querySelector('#current-lang-text');
-        if (langTxtEl) langTxtEl.textContent = langCodeDisplay;
         nav.appendChild(langDropdown);
-
-        const gtranslateMenu = langDropdown.querySelector('.nav-dropdown-menu');
-        if (gtranslateMenu) {
-          gtranslateMenu.innerHTML = '<div class="gtranslate_wrapper"></div>';
-        }
-        window.gtranslateSettings = {
-          default_language: 'fr',
-          languages: ['fr', 'en', 'es'],
-          wrapper_selector: '.gtranslate_wrapper'
-        };
-        if (!document.querySelector('script[data-gtranslate-widget]')) {
-          const gtranslateScript = document.createElement('script');
-          gtranslateScript.src = 'https://cdn.gtranslate.net/widgets/latest/uswds.js';
-          gtranslateScript.defer = true;
-          gtranslateScript.setAttribute('data-gtranslate-widget', 'true');
-          document.head.appendChild(gtranslateScript);
-        }
-        if (false) {
-
-        // Helper pour les cookies de traduction Google
-        function setGoogTransCookie(lang) {
-          const host = window.location.hostname;
-          const domainParts = host.split('.');
-          const rootDomain = domainParts.length > 1 ? domainParts.slice(-2).join('.') : host;
-
-          if (!lang || lang === 'fr') {
-            const expire = "expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            document.cookie = `googtrans=; ${expire} path=/; SameSite=Lax;`;
-            document.cookie = `googtrans=; ${expire} path=/; domain=${host}; SameSite=Lax;`;
-            document.cookie = `googtrans=; ${expire} path=/; domain=.${host}; SameSite=Lax;`;
-            if (domainParts.length > 1) {
-              document.cookie = `googtrans=; ${expire} path=/; domain=.${rootDomain}; SameSite=Lax;`;
-            }
-          } else {
-            const values = [`/fr/${lang}`, `/auto/${lang}`];
-            values.forEach(val => {
-              document.cookie = `googtrans=${val}; path=/; SameSite=Lax;`;
-              document.cookie = `googtrans=${val}; path=/; domain=${host}; SameSite=Lax;`;
-              document.cookie = `googtrans=${val}; path=/; domain=.${host}; SameSite=Lax;`;
-              if (domainParts.length > 1) {
-                document.cookie = `googtrans=${val}; path=/; domain=.${rootDomain}; SameSite=Lax;`;
-              }
-            });
-          }
-        }
-
-        function triggerGoogleCombo(targetLang) {
-          const combo = document.querySelector('.goog-te-combo');
-          if (!combo || !combo.options || combo.options.length === 0) return false;
-
-          let matchedIndex = -1;
-          for (let i = 0; i < combo.options.length; i++) {
-            if (combo.options[i].value.toLowerCase() === targetLang.toLowerCase()) {
-              matchedIndex = i;
-              break;
-            }
-          }
-
-          if (matchedIndex >= 0) {
-            combo.selectedIndex = matchedIndex;
-            combo.value = combo.options[matchedIndex].value;
-            if (typeof combo.onchange === 'function') {
-              try { combo.onchange(); } catch(_) {}
-            }
-            combo.dispatchEvent(new Event('change', { bubbles: true }));
-            combo.dispatchEvent(new Event('input', { bubbles: true }));
-            return true;
-          }
-          return false;
-        }
-
-        function ensureGoogleTranslateLoaded(cb) {
-          let gTranslateDiv = document.getElementById('google_translate_element');
-          if (!gTranslateDiv) {
-            gTranslateDiv = document.createElement('div');
-            gTranslateDiv.id = 'google_translate_element';
-            gTranslateDiv.style.cssText = 'position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;';
-            document.body.appendChild(gTranslateDiv);
-          }
-
-          if (!window.googleTranslateElementInit) {
-            window.googleTranslateElementInit = function() {
-              try {
-                if (window.google && google.translate && google.translate.TranslateElement) {
-                  new google.translate.TranslateElement({
-                    pageLanguage: 'fr',
-                    includedLanguages: 'en,es,de,it,pt,ar,zh-CN,ja',
-                    autoDisplay: false
-                  }, 'google_translate_element');
-                  if (typeof cb === 'function') cb();
-                }
-              } catch(e) {
-                console.warn('Google Translate init:', e);
-              }
-            };
-          }
-
-          if (!document.getElementById('google-translate-script')) {
-            const gtScript = document.createElement('script');
-            gtScript.id = 'google-translate-script';
-            gtScript.type = 'text/javascript';
-            gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            gtScript.async = true;
-            document.head.appendChild(gtScript);
-          } else if (window.google && google.translate && typeof cb === 'function') {
-            cb();
-          }
-        }
-
-        // Fonction d'application de la langue in-place
-        function applyInPlaceLanguage(lang) {
-          const txt = document.getElementById('current-lang-text');
-          if (txt) txt.textContent = lang.toUpperCase().substring(0, 2);
-
-          if (lang === 'fr') {
-            sessionStorage.removeItem('wg_user_lang');
-            localStorage.removeItem('wg_user_lang');
-            setGoogTransCookie(null);
-            triggerGoogleCombo('fr');
-            setTimeout(() => {
-              window.location.reload();
-            }, 200);
-            return;
-          }
-
-          sessionStorage.setItem('wg_user_lang', lang);
-          localStorage.setItem('wg_user_lang', lang);
-          setGoogTransCookie(lang);
-
-          ensureGoogleTranslateLoaded(() => {
-            const success = triggerGoogleCombo(lang);
-            if (!success) {
-              let retries = 0;
-              const checkTimer = setInterval(() => {
-                retries++;
-                if (triggerGoogleCombo(lang)) {
-                  clearInterval(checkTimer);
-                } else if (retries > 20) {
-                  clearInterval(checkTimer);
-                  window.location.reload();
-                }
-              }, 150);
-            }
-          });
-        }
-
-        langDropdown.querySelectorAll('.lang-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const chosenLang = btn.getAttribute('data-lang');
-            langDropdown.classList.remove('active');
-            const navLangBtn = langDropdown.querySelector('.nav-dropdown-btn');
-            if (navLangBtn) {
-              navLangBtn.setAttribute('aria-expanded', 'false');
-              navLangBtn.blur();
-            }
-            applyInPlaceLanguage(chosenLang);
-          });
-        });
-
-        // Chargement à la demande uniquement lors de la sélection d'une langue étrangère
-        // (Évite 33 requêtes tierces inutiles lors des audits EcoIndex / cold loads)
-
-        // Si une langue non-française était déjà active, charger immédiatement
-        const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang');
-        if (savedLang && savedLang !== 'fr') {
-          ensureGoogleTranslateLoaded(() => {
-            let attempts = 0;
-            const pollTimer = setInterval(() => {
-              attempts++;
-              if (triggerGoogleCombo(savedLang)) {
-                clearInterval(pollTimer);
-                const txt = document.getElementById('current-lang-text');
-                if (txt) txt.textContent = savedLang.toUpperCase().substring(0, 2);
-              } else if (attempts > 25) {
-                clearInterval(pollTimer);
-              }
-            }, 150);
-          });
-        }
-
-        }
       }
 
       // Bouton Mode Sombre / Clair (Sans doublon, Stockage Session uniquement)
