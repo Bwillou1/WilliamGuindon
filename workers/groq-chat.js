@@ -87,7 +87,7 @@ export default {
       });
     }
 
-    const apiKey = env?.GROQ_API_KEY;
+    const apiKey = env?.GROQ_API_KEY || (typeof GROQ_API_KEY !== 'undefined' ? GROQ_API_KEY : (typeof globalThis !== 'undefined' && globalThis.GROQ_API_KEY ? globalThis.GROQ_API_KEY : null));
     if (!apiKey) {
       return new Response(JSON.stringify({ error: 'Le service IA n’est pas configuré.' }), {
         status: 503,
