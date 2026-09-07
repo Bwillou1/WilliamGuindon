@@ -15,7 +15,7 @@
   const DOCS_CATALOG = {
     'decision-17-aout-2026': {
       title: "Détermination positive du Secrétariat CCE (17 août 2026)",
-      file: "assets/docs/decision-secretariat-17-aout-2026.pdf",
+      file: "assets/docs/26-2-det2_fr.pdf",
       badge: "SEM-26-003 · CCE / ACEUM",
       date: "17 août 2026",
       pages: 28,
@@ -39,7 +39,7 @@
     },
     'decision-3-juin-2026': {
       title: "Décision préliminaire du Secrétariat CCE (3 juin 2026)",
-      file: "assets/docs/decision-secretariat-3-juin-2026.pdf",
+      file: "assets/docs/26-3-det_fr.pdf",
       badge: "SEM-26-003 · CCE / ACEUM",
       date: "3 juin 2026",
       pages: 17,

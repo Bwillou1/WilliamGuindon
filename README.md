@@ -31,7 +31,7 @@ Ce dépôt GitHub constitue la source de vérité publique hébergeant le site o
 - **1ᵉʳ mai 2026** — Dépôt de la communication officielle **[SEM-26-003](https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/)** auprès de la Commission de coopération environnementale (CCE / ACEUM).
 - **Mai 2026** — Transmission d'une [Déposition formelle et appel urgent (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf) au Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (*Dr Marcos A. Orellana*).
 - **16 juillet 2026** — Dépôt de la [Communication révisée SEM-26-003 (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf) au Secrétariat de la CCE.
-- **17 août 2026** — **[Détermination positive historique de la CCE (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/decision-secretariat-17-aout-2026.pdf)** : le Secrétariat ordonne une réponse officielle du gouvernement du Canada avant le **16 octobre 2026**.
+- **17 août 2026** — **[Détermination positive historique de la CCE (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-2-det2_fr.pdf)** : le Secrétariat ordonne une réponse officielle du gouvernement du Canada avant le **16 octobre 2026**.
 - **Couverture médiatique** : [The Rover](https://therover.ca/blainville-teenager-takes-stablex-fight-international/) · [Le Devoir](https://www.ledevoir.com/) · [CBC News](https://www.cbc.ca/) · [Journal de Montréal](https://www.journaldemontreal.com/2021/11/28/francois-legault-felicite-le-premier-enfant-vaccine-1).
 
 ---

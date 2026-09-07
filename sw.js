@@ -24,7 +24,7 @@ const ASSETS_TO_CACHE = [
   '/assets/vendor/pdfjs/pdf.min.js',
   '/assets/vendor/pdfjs/pdf.worker.min.js',
   '/assets/vendor/pdfjs/pdf_viewer.css',
-  '/assets/docs/decision-secretariat-17-aout-2026.pdf',
+  '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
   '/manifest.json',
   '/favicon.svg',
