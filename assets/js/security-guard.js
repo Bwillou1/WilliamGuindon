@@ -14,8 +14,7 @@
   const isAuthorized = ALLOWED_HOSTS.some(h => currentHost === h || currentHost.endsWith('.' + h));
 
   if (!isAuthorized && currentHost !== "") {
-    document.documentElement.innerHTML = `
-      <html lang="fr"><head><meta charset="utf-8"><title>Accès Non Autorisé</title>
+    document.documentElement.innerHTML = `<head><meta charset="utf-8"><title>Accès Non Autorisé</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>body{background:#0a0d0b;color:#f87171;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:20px;box-sizing:border-box}
       .box{background:#181212;border:1.5px solid #ef4444;border-radius:14px;padding:36px;max-width:540px;box-shadow:0 10px 40px rgba(0,0,0,0.85)}
@@ -24,9 +23,7 @@
       <body><div class="box"><h1>Erreur : Ce site n'est pas l'original</h1>
       <p>Ce site constitue une copie ou un fork non officiel.<br><br>
       Veuillez accéder au site officiel et sécurisé sur :<br><br>
-      <a href="https://williamguindon.me">https://williamguindon.me ↗</a></p></div></body></html>
-    `;
-    window.stop();
+      <a href="https://williamguindon.me">https://williamguindon.me ↗</a></p></div></body>`;
     throw new Error("Arrêt sentinelle : domaine non autorisé.");
   }
 
@@ -234,6 +231,7 @@
 
     // 9. Commutateurs individuels (28 Kill-Switches réversibles 0ms)
     applyKillSwitches(state);
+    setIntegrityAndPolling(isSpecialModeActive(state));
   }
 
   // Application immédiate au chargement initial depuis le stockage local / session
@@ -270,81 +268,112 @@
     isFetching = false;
   }
 
+  function isSpecialModeActive(state) {
+    if (!state || typeof state !== 'object') return false;
+    const now = Date.now();
+    if (state.maintenanceActive && state.maintenanceUntil > now) return true;
+    if (state.panicActive) return true;
+    if (state.radical4Active && state.radical4Until > now) return true;
+    if (state.radical5Active && state.radical5Until > now) return true;
+    if (state.ghostModeActive) return true;
+    return false;
+  }
+
+  let isIntegrityArmed = false;
+  let integrityObserver = null;
+  let integrityInterval = null;
+  let pollingInterval = null;
+
+  function setIntegrityAndPolling(active) {
+    if (active) {
+      if (!isIntegrityArmed) {
+        isIntegrityArmed = true;
+        if (!integrityObserver && typeof MutationObserver !== 'undefined') {
+          integrityObserver = new MutationObserver(() => {
+            if (lastAppliedStateJson) {
+              try {
+                const state = JSON.parse(lastAppliedStateJson);
+                const now = Date.now();
+                if (state.maintenanceActive && state.maintenanceUntil > now && !document.getElementById('maint-wrapper')) {
+                  renderMaintenanceScreen(state.maintenanceUntil);
+                }
+                if (state.radical4Active && state.radical4Until > now && !document.getElementById('radical4-wrapper')) {
+                  renderRadical4Screen(state.radical4Until, state.radical4Message);
+                }
+                if (state.radical5Active && state.radical5Until > now && !document.getElementById('radical5-wrapper')) {
+                  renderRadical5Screen(state.radical5Until, state.radical5Message);
+                }
+                if (!document.getElementById('wg-killswitch-styles')) {
+                  applyKillSwitches(state);
+                }
+              } catch (_) {}
+            }
+          });
+          const target = document.documentElement || document.body;
+          if (target) {
+            integrityObserver.observe(target, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+          }
+        }
+
+        if (!integrityInterval) {
+          integrityInterval = setInterval(() => {
+            if (!lastAppliedStateJson) return;
+            try {
+              const state = JSON.parse(lastAppliedStateJson);
+              const now = Date.now();
+              if (state.maintenanceActive && state.maintenanceUntil > now) {
+                if (!document.getElementById('maint-wrapper')) renderMaintenanceScreen(state.maintenanceUntil);
+              }
+              if (state.radical4Active && state.radical4Until > now) {
+                if (!document.getElementById('radical4-wrapper')) renderRadical4Screen(state.radical4Until, state.radical4Message);
+              }
+              if (state.radical5Active && state.radical5Until > now) {
+                if (!document.getElementById('radical5-wrapper')) renderRadical5Screen(state.radical5Until, state.radical5Message);
+              }
+              if (!document.getElementById('wg-killswitch-styles')) {
+                applyKillSwitches(state);
+              }
+            } catch (_) {}
+          }, 400);
+        }
+      }
+
+      if (!pollingInterval) {
+        pollingInterval = setInterval(() => {
+          if (!document.hidden) fetchRemoteState();
+        }, 60000);
+      }
+    } else {
+      if (isIntegrityArmed) {
+        isIntegrityArmed = false;
+        if (integrityObserver) {
+          integrityObserver.disconnect();
+          integrityObserver = null;
+        }
+        if (integrityInterval) {
+          clearInterval(integrityInterval);
+          integrityInterval = null;
+        }
+      }
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      }
+    }
+  }
+
   function startSync() {
-    // Synchronisation différée pour préserver les performances de chargement initial (EcoIndex Grade A)
     if ('requestIdleCallback' in window) {
       window.requestIdleCallback(() => fetchRemoteState(), { timeout: 4000 });
     } else {
       setTimeout(fetchRemoteState, 2500);
     }
-    // Polling doux uniquement quand la page est visible
-    setInterval(() => {
-      if (!document.hidden) fetchRemoteState();
-    }, 60000);
-  }
-
-  // 3. SYSTÈME ANTI-CONTOURNEMENT & AUTO-GUÉRISON DOM (MUTATIONOBSERVER + INTEGRITY LOOP)
-  let isIntegrityArmed = false;
-  function armAntiTamperIntegrity() {
-    if (isIntegrityArmed) return;
-    isIntegrityArmed = true;
-
-    const observer = new MutationObserver(() => {
-      if (lastAppliedStateJson) {
-        try {
-          const state = JSON.parse(lastAppliedStateJson);
-          const now = Date.now();
-          if (state.maintenanceActive && state.maintenanceUntil > now && !document.getElementById('maint-wrapper')) {
-            renderMaintenanceScreen(state.maintenanceUntil);
-          }
-          if (state.radical4Active && state.radical4Until > now && !document.getElementById('radical4-wrapper')) {
-            renderRadical4Screen(state.radical4Until, state.radical4Message);
-          }
-          if (state.radical5Active && state.radical5Until > now && !document.getElementById('radical5-wrapper')) {
-            renderRadical5Screen(state.radical5Until, state.radical5Message);
-          }
-          if (!document.getElementById('wg-killswitch-styles')) {
-            applyKillSwitches(state);
-          }
-        } catch (_) {}
-      }
-    });
-
-    const target = document.documentElement || document.body;
-    if (target) {
-      observer.observe(target, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
-    }
-
-    // Boucle d'intégrité active toutes les 400ms (empêche toute suppression via DevTools)
-    setInterval(() => {
-      if (!lastAppliedStateJson) return;
-      try {
-        const state = JSON.parse(lastAppliedStateJson);
-        const now = Date.now();
-        if (state.maintenanceActive && state.maintenanceUntil > now) {
-          if (!document.getElementById('maint-wrapper')) renderMaintenanceScreen(state.maintenanceUntil);
-        }
-        if (state.radical4Active && state.radical4Until > now) {
-          if (!document.getElementById('radical4-wrapper')) renderRadical4Screen(state.radical4Until, state.radical4Message);
-        }
-        if (state.radical5Active && state.radical5Until > now) {
-          if (!document.getElementById('radical5-wrapper')) renderRadical5Screen(state.radical5Until, state.radical5Message);
-        }
-        if (!document.getElementById('wg-killswitch-styles')) {
-          applyKillSwitches(state);
-        }
-      } catch (_) {}
-    }, 400);
   }
 
   if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', () => {
-      startSync();
-      armAntiTamperIntegrity();
-    }, { once: true });
+    window.addEventListener('DOMContentLoaded', () => { startSync(); }, { once: true });
   } else {
     startSync();
-    armAntiTamperIntegrity();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -361,66 +390,11 @@
   // LOGIQUES D'APPLICATION RÉVERSIBLES À 0MS
   // ==========================================
 
-  let isDevToolsLocked = false;
   function lockInspectorAndDevTools() {
-    if (isDevToolsLocked) return;
-    isDevToolsLocked = true;
-
-    document.addEventListener('contextmenu', e => {
-      if (lastAppliedStateJson && (
-        lastAppliedStateJson.includes('"maintenanceActive":true') ||
-        lastAppliedStateJson.includes('"panicActive":true') ||
-        lastAppliedStateJson.includes('"radical4Active":true') ||
-        lastAppliedStateJson.includes('"radical5Active":true') ||
-        lastAppliedStateJson.includes('"disableDevTools":true')
-      )) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-    }, true);
-
-    document.addEventListener('keydown', e => {
-      if (!lastAppliedStateJson || (
-        !lastAppliedStateJson.includes('"maintenanceActive":true') &&
-        !lastAppliedStateJson.includes('"panicActive":true') &&
-        !lastAppliedStateJson.includes('"radical4Active":true') &&
-        !lastAppliedStateJson.includes('"radical5Active":true') &&
-        !lastAppliedStateJson.includes('"disableDevTools":true')
-      )) {
-        return;
-      }
-      const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
-      const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : e.ctrlKey;
-      const key = (e.key || '').toLowerCase();
-      const code = e.keyCode || e.which;
-
-      if (key === 'f12' || code === 123) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-      if (cmdOrCtrl && e.shiftKey && (key === 'i' || key === 'j' || key === 'c' || key === 'k' || code === 73 || code === 74 || code === 67 || code === 75)) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-      if (cmdOrCtrl && e.altKey && (key === 'i' || key === 'j' || key === 'c' || key === 'u' || code === 73 || code === 74 || code === 67 || code === 85)) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-      if (cmdOrCtrl && (key === 'u' || code === 85 || key === 's' || code === 83)) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-    }, true);
+    // Pas de blocage clic-droit ni devtools par défaut
   }
 
-  // --- MODE ANTI-CAPTURE D'ÉCRAN À LA VOLÉE (DÉCLENCHÉ UNIQUEMENT LORS DE LA CAPTURE) ---
-  let screenshotShieldTimeout = null;
-
+  // --- MODE ANTI-CAPTURE D'ÉCRAN À LA VOLÉE ---
   function triggerScreenshotBlur() {
     let shield = document.getElementById('wg-screenshot-shield');
     if (!shield) {
@@ -474,7 +448,6 @@
 
       // Touche Impr. Écran (PrintScreen standard Windows/Linux, code 44)
       if (key === 'printscreen' || code === 44) {
-        e.preventDefault();
         triggerScreenshotBlur();
         return false;
       }
@@ -491,7 +464,6 @@
 
       // Impression / Capture PDF: Cmd+P ou Ctrl+P
       if (cmdOrCtrl && (key === 'p' || code === 80)) {
-        e.preventDefault();
         triggerScreenshotBlur();
         return false;
       }
@@ -780,24 +752,8 @@
   }
 
   // --- ANTI-INSPECTION AGRESSIF (KILL DEVTOOLS) ---
-  let killDevToolsInterval = null;
   function handleKillDevTools(active) {
-    if (active) {
-      if (!killDevToolsInterval) {
-        killDevToolsInterval = setInterval(() => {
-          const start = Date.now();
-          (function() { Function("debugger")(); })();
-          if (Date.now() - start > 100) {
-            document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:22px;font-weight:bold;text-align:center;padding:20px;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:48px;height:48px;stroke:#ef4444;margin-bottom:12px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>DÉTECTION D\'INSPECTION ILLÉGALE<br><span style="font-size:14px;color:#fff;margin-top:10px;display:block;">Session interrompue par le protocole de défense active.</span></div>';
-          }
-        }, 150);
-      }
-    } else {
-      if (killDevToolsInterval) {
-        clearInterval(killDevToolsInterval);
-        killDevToolsInterval = null;
-      }
-    }
+    // Pas d'anti-devtools agressif par défaut
   }
 
   // --- MODE ALERTE TOXIQUE / CONTAMINATION IMMINENTE (BANNIÈRE / MODALE CENTRALE) ---
@@ -1035,25 +991,22 @@
     if (el) el.remove();
   }
 
-  // --- VERROUILLAGE GÉOGRAPHIQUE (GEO-SHIELD) ---
+  // --- BANNIÈRE D'INFORMATION GÉOGRAPHIQUE (GEO-SHIELD INFORMATIF) ---
   function renderGeoShield() {
-    const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-    const isCanada = tz.includes('montreal') || tz.includes('toronto') || tz.includes('halifax') || tz.includes('vancouver') || tz.includes('winnipeg') || tz.includes('edmonton') || tz.includes('canada');
-    if (!isCanada) {
-      let el = document.getElementById('wg-geo-shield-overlay');
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'wg-geo-shield-overlay';
-        el.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#090d0b;color:#f0fdf4;z-index:99999999;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;font-family:system-ui,sans-serif;';
-        el.innerHTML = `
-          <div style="background:#111a14;border:2px solid #22c55e;border-radius:18px;padding:36px;max-width:540px;text-align:center;">
-            <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-            <h2 style="color:#22c55e;font-size:22px;margin:0 0 10px;">Accès Restreint par Géolocalisation</h2>
-            <p style="color:#9bb0a2;font-size:14px;line-height:1.6;margin:0 0 18px;">Le site est temporairement réservé aux consultations locales et territoriales autorisées.</p>
-          </div>
-        `;
-        (document.body || document.documentElement).appendChild(el);
-      }
+    let el = document.getElementById('wg-geo-shield-overlay');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'wg-geo-shield-overlay';
+      el.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:99999;background:#111a14;border:1.5px solid #22c55e;border-radius:12px;padding:12px 16px;max-width:340px;box-shadow:0 10px 30px rgba(0,0,0,0.6);font-family:system-ui,sans-serif;color:#f0fdf4;font-size:12.5px;display:flex;gap:10px;align-items:flex-start;';
+      el.innerHTML = `
+        <div style="color:#22c55e;font-size:16px;line-height:1;">ℹ️</div>
+        <div style="flex:1;">
+          <strong style="color:#22c55e;display:block;margin-bottom:2px;">Consultation publique</strong>
+          <span style="color:#9bb0a2;line-height:1.4;">Registre officiel CCE SEM-26-003 accessible au niveau international.</span>
+        </div>
+        <button onclick="document.getElementById('wg-geo-shield-overlay').remove()" style="background:none;border:none;color:#9bb0a2;cursor:pointer;font-size:14px;padding:0 4px;" aria-label="Fermer">✕</button>
+      `;
+      (document.body || document.documentElement).appendChild(el);
     }
   }
 
