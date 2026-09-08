@@ -15,6 +15,7 @@ const CORE_FILES = [
   'ai.html',
   'txt.html',
   'netiquette.html',
+  'politiques.html',
   'sitemap.xml',
   'feed.xml',
   'manifest.json',

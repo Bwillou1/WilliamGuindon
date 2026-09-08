@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v20';
+const CACHE_NAME = 'wg-pwa-v21';
 const MAX_CACHE_ENTRIES = 60;
 
 const ASSETS_TO_CACHE = [
@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
   '/ai.html',
   '/txt.html',
   '/netiquette.html',
+  '/politiques.html',
   '/llms.txt',
   '/llms-full.txt',
   '/style.css',
