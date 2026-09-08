@@ -1,5 +1,5 @@
-const CACHE_NAME = 'wg-pwa-v21';
-const MAX_CACHE_ENTRIES = 60;
+const CACHE_NAME = 'wg-pwa-v22';
+const MAX_CACHE_ENTRIES = 75;
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -13,7 +13,16 @@ const ASSETS_TO_CACHE = [
   '/ai.html',
   '/txt.html',
   '/netiquette.html',
-  '/politiques.html',
+  '/deontologie.html',
+  '/independance.html',
+  '/ia-ethique.html',
+  '/anti-slapp.html',
+  '/embargo.html',
+  '/experts.html',
+  '/tracabilite.html',
+  '/opsec.html',
+  '/statut-mineur.html',
+  '/vie-privee-parents.html',
   '/llms.txt',
   '/llms-full.txt',
   '/style.css',

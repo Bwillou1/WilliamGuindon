@@ -1050,6 +1050,10 @@
     if (state.disableAI) {
       css.push('#leafMenuContainer, .leaf-menu, .ai-mega-dropdown, #ai-nav-item, a[href*="ai.html"], a[href*="llms.txt"] { display: none !important; }');
     }
+    if (state.disableMessaging) {
+      css.push('#messaging-disabled-banner, .messaging-disabled-notice { display: flex !important; }');
+      css.push('#chat-app, .messenger-container, .chat-panel, .message-input-area, .chat-input-wrapper, .reply-form-card, #form-compose, .msg-textarea, .simple-intro-card { opacity: 0.45 !important; pointer-events: none !important; filter: grayscale(80%) !important; }');
+    }
     if (state.disablePDF) {
       css.push('a[href$=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"] { display: none !important; }');
     }
