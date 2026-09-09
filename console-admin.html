@@ -655,6 +655,21 @@
         </div>
       </div>
 
+      <!-- VERROUILLAGE D'URGENCE DE LA MESSAGERIE (PROTECTION CRÉATEUR) -->
+      <div class="terminal-card" style="border-left: 4px solid #f43f5e; background: linear-gradient(180deg, rgba(244,63,94,0.08) 0%, rgba(15,23,42,0.6) 100%);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <div class="terminal-card-title" style="margin:0;">[MSG] Verrouillage d'Urgence de la Messagerie (Protection William)</div>
+          <div id="msg-lock-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid rgba(34,197,94,0.3);">
+            Messagerie Ouverte
+          </div>
+        </div>
+        <div class="terminal-card-desc">Bloque immédiatement la rédaction de messages sur tout le site, désactive et grise la boîte de messagerie en affichant l'avertissement : <em>« Le créateur a préféré désactiver l'option temporairement (pour me protéger et tout) »</em>.</div>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="btn" style="background:#f43f5e; color:#fff; font-weight:800;" data-action="lock-messaging-on">[LOCK] Bloquer &amp; Désactiver la Messagerie</button>
+          <button type="button" class="btn btn-ghost" data-action="lock-messaging-off" style="color:#4ade80; border-color:rgba(74,222,128,0.4);">[UNLOCK] Débloquer &amp; Réactiver la Messagerie</button>
+        </div>
+      </div>
+
       <!-- MATRICE DE COMMUTATEURS ON/OFF (35 COMMUTATEURS FONCTIONNELS) -->
       <div class="terminal-card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
@@ -1001,6 +1016,8 @@
           case 'nuke-cache': triggerNukeCache(); break;
           case 'ghost-mode-toggle': triggerGhostModeToggle(); break;
           case 'broadcast-alert': sendBroadcastAlert(); break;
+          case 'lock-messaging-on': triggerMessagingLock(true); break;
+          case 'lock-messaging-off': triggerMessagingLock(false); break;
           case 'reload-iframe-editor': {
             const f = document.getElementById('iframe-editor');
             if (f) f.src = 'editeur.html';
@@ -1485,6 +1502,21 @@
       }
     }
 
+    const msgLockPill = document.getElementById("msg-lock-status-pill");
+    if (msgLockPill) {
+      if (state.disableMessaging) {
+        msgLockPill.textContent = "● MESSAGERIE BLOQUÉE";
+        msgLockPill.style.background = "rgba(239,68,68,0.25)";
+        msgLockPill.style.color = "#f87171";
+        msgLockPill.style.borderColor = "#ef4444";
+      } else {
+        msgLockPill.textContent = "Messagerie Ouverte";
+        msgLockPill.style.background = "rgba(34,197,94,0.1)";
+        msgLockPill.style.color = "#4ade80";
+        msgLockPill.style.borderColor = "rgba(34,197,94,0.3)";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
     updateRadical4TimePreview();
@@ -1594,6 +1626,19 @@
       state.legalNoticeActive = false;
       await saveAndSyncSiteState(state);
       alert("[OK] Mode Riposte désactivé.");
+    }
+  }
+
+  // --- ACTIONS VERROUILLAGE D'URGENCE DE LA MESSAGERIE ---
+  async function triggerMessagingLock(activate) {
+    const state = getSiteState();
+    state.disableMessaging = !!activate;
+    await saveAndSyncSiteState(state);
+    loadCurrentState();
+    if (activate) {
+      showToast("[MSG] Messagerie verrouillée et désactivée sur tout le site.");
+    } else {
+      showToast("[MSG] Messagerie déverrouillée et réactivée.");
     }
   }
 
@@ -2025,6 +2070,7 @@
   • screenshot-shield <on|off>    : Active/désactive le floutage anti-capture d'écran.
   • no-js <on|off>                : Active/désactive le mode statique sans JavaScript.
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
+  • msg <lock|unlock>             : Bloque ou réactive la messagerie instantanée (Protection créateur).
   • restore / reset               : Rétablit tous les commutateurs et modes à l'état normal.
 
 [SWITCHES] COMMUTATEURS (KILL-SWITCHES) :
@@ -2155,6 +2201,21 @@
             printCli("[OK] Bannière d'alerte toxique désactivée.", "#4ade80");
           } else {
             printCli("[ERR] Usage : toxic <on|off> [titre_optionnel]", "#ef4444");
+          }
+          break;
+        }
+
+        case "msg":
+        case "messagerie": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "lock" || action === "block" || action === "off" || action === "disable") {
+            await triggerMessagingLock(true);
+            printCli("[MSG] Messagerie verrouillée et désactivée sur tout le site (Protection créateur active).", "#f87171");
+          } else if (action === "unlock" || action === "open" || action === "on" || action === "enable") {
+            await triggerMessagingLock(false);
+            printCli("[MSG] Messagerie déverrouillée et réactivée.", "#4ade80");
+          } else {
+            printCli("[ERR] Usage : msg <lock|unlock>", "#ef4444");
           }
           break;
         }

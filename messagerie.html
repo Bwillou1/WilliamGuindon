@@ -833,11 +833,11 @@
     </div>
 
     <!-- Bandeau de désactivation de protection temporaire -->
-    <div id="messaging-disabled-banner" class="messaging-disabled-notice" style="display: none; background: rgba(239,68,68,0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 18px 22px; margin: 0 0 24px; color: var(--text); align-items: flex-start; gap: 14px;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+    <div id="messaging-disabled-banner" class="messaging-disabled-notice" style="display: none; background: rgba(239,68,68,0.12); border: 2px solid #ef4444; border-radius: 12px; padding: 20px 24px; margin: 0 0 24px; color: var(--text); align-items: flex-start; gap: 16px; box-shadow: 0 8px 24px rgba(239,68,68,0.15);">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
       <div>
-        <h3 style="margin: 0 0 6px; font-size: 1.05rem; color: #ef4444; font-weight: 700;">Messagerie temporairement désactivée</h3>
-        <p style="margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--text-muted);">Le créateur a préféré désactiver l'option temporairement pour des raisons de protection et de sécurité.</p>
+        <h3 style="margin: 0 0 6px; font-size: 1.1rem; color: #ef4444; font-weight: 800; letter-spacing: -0.01em;">Messagerie désactivée</h3>
+        <p style="margin: 0; font-size: 1rem; line-height: 1.5; color: var(--text); font-weight: 600;">Le créateur a préféré désactiver l'option temporairement (pour me protéger et tout).</p>
       </div>
     </div>
 
@@ -1171,6 +1171,129 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentNsecString = "";
   let currentNpubString = "";
+
+  // 0. Surveillance réactive et verrouillage de sécurité de la messagerie
+  function applyMessagingDisabledState(isDisabled) {
+    const banner = document.getElementById('messaging-disabled-banner');
+    const msgArea = document.getElementById('msg-content');
+    const btnSendEl = document.getElementById('btn-send-message');
+    const fileZone = document.getElementById('file-drop-area');
+    const sendPanel = document.getElementById('view-send-panel');
+
+    if (isDisabled) {
+      if (banner) banner.style.display = 'flex';
+      if (msgArea) {
+        msgArea.disabled = true;
+        msgArea.readOnly = true;
+        msgArea.setAttribute('disabled', 'disabled');
+        msgArea.setAttribute('readonly', 'readonly');
+        msgArea.placeholder = "Le créateur a préféré désactiver l'option temporairement (pour me protéger et tout)";
+        msgArea.value = "";
+        msgArea.style.opacity = '0.65';
+        msgArea.style.cursor = 'not-allowed';
+        msgArea.style.background = 'rgba(239, 68, 68, 0.06)';
+        msgArea.style.borderColor = '#ef4444';
+      }
+      if (btnSendEl) {
+        btnSendEl.disabled = true;
+        btnSendEl.setAttribute('disabled', 'disabled');
+        btnSendEl.textContent = "Messagerie désactivée temporairement";
+        btnSendEl.style.pointerEvents = 'none';
+        btnSendEl.style.opacity = '0.4';
+      }
+      if (fileZone) {
+        fileZone.style.pointerEvents = 'none';
+        fileZone.style.opacity = '0.35';
+      }
+      if (sendPanel) {
+        sendPanel.style.filter = 'grayscale(80%)';
+        sendPanel.style.opacity = '0.6';
+      }
+    } else {
+      if (banner) banner.style.display = 'none';
+      if (msgArea) {
+        msgArea.disabled = false;
+        msgArea.readOnly = false;
+        msgArea.removeAttribute('disabled');
+        msgArea.removeAttribute('readonly');
+        msgArea.placeholder = "Tapez votre message confidentiel ici...";
+        msgArea.style.opacity = '';
+        msgArea.style.cursor = '';
+        msgArea.style.background = '';
+        msgArea.style.borderColor = '';
+      }
+      if (btnSendEl) {
+        btnSendEl.disabled = false;
+        btnSendEl.removeAttribute('disabled');
+        btnSendEl.textContent = "Envoyer le message chiffré";
+        btnSendEl.style.pointerEvents = '';
+        btnSendEl.style.opacity = '';
+      }
+      if (fileZone) {
+        fileZone.style.pointerEvents = '';
+        fileZone.style.opacity = '';
+      }
+      if (sendPanel) {
+        sendPanel.style.filter = '';
+        sendPanel.style.opacity = '';
+      }
+    }
+  }
+
+  async function checkMessagingState() {
+    try {
+      const cached = localStorage.getItem('wg_site_state');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (typeof parsed.disableMessaging === 'boolean') {
+          applyMessagingDisabledState(parsed.disableMessaging);
+        }
+      }
+      const res = await fetch('data/site-state.json?_t=' + Date.now());
+      if (res.ok) {
+        const data = await res.json();
+        applyMessagingDisabledState(!!data.disableMessaging);
+      }
+    } catch (e) {
+      console.warn("Vérification statut messagerie :", e);
+    }
+  }
+
+  checkMessagingState();
+  setInterval(checkMessagingState, 2500);
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'wg_site_state') {
+      try {
+        const state = JSON.parse(e.newValue);
+        applyMessagingDisabledState(!!state.disableMessaging);
+      } catch(_) {}
+    }
+  });
+
+  try {
+    const stateChannel = new BroadcastChannel('wg_site_state_channel');
+    stateChannel.onmessage = (msg) => {
+      if (msg.data && msg.data.type === 'STATE_UPDATED' && msg.data.state) {
+        applyMessagingDisabledState(!!msg.data.state.disableMessaging);
+      }
+    };
+  } catch(_) {}
+
+  const msgContentArea = document.getElementById('msg-content');
+  if (msgContentArea) {
+    msgContentArea.addEventListener('click', () => {
+      const cached = localStorage.getItem('wg_site_state');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed.disableMessaging) {
+            alert("La messagerie est actuellement désactivée.\n\nLe créateur a préféré désactiver l'option temporairement (pour me protéger et tout).");
+          }
+        } catch(_) {}
+      }
+    });
+  }
 
   // 1. Initialisation Clés éphémères (Burner Keys)
   function initBurnerKeys() {

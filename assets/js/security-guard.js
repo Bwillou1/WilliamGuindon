@@ -1052,7 +1052,9 @@
     }
     if (state.disableMessaging) {
       css.push('#messaging-disabled-banner, .messaging-disabled-notice { display: flex !important; }');
-      css.push('#chat-app, .messenger-container, .chat-panel, .message-input-area, .chat-input-wrapper, .reply-form-card, #form-compose, .msg-textarea, .simple-intro-card { opacity: 0.45 !important; pointer-events: none !important; filter: grayscale(80%) !important; }');
+      css.push('#chat-app, .messenger-container, .chat-panel, .message-input-area, .chat-input-wrapper, .reply-form-card, #form-compose, .simple-intro-card, #view-send-panel, #view-inbox-panel, .msg-box-container { opacity: 0.55 !important; filter: grayscale(90%) !important; }');
+      css.push('#msg-content, .msg-textarea { pointer-events: none !important; cursor: not-allowed !important; user-select: none !important; background: rgba(239,68,68,0.06) !important; border-color: #ef4444 !important; opacity: 0.7 !important; }');
+      css.push('#btn-send-message, #file-drop-area, #btn-apply-restored-key, #btn-toggle-restore-box, #btn-inbox-login, #btn-reply-send { pointer-events: none !important; cursor: not-allowed !important; opacity: 0.3 !important; }');
     }
     if (state.disablePDF) {
       css.push('a[href$=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"] { display: none !important; }');
@@ -1157,9 +1159,38 @@
           (document.body || document.documentElement).appendChild(pdfNotice);
         }
       }
+    // Verrouillage direct DOM de la messagerie
+    const msgBanner = document.getElementById('messaging-disabled-banner');
+    const msgArea = document.getElementById('msg-content');
+    const btnSendMsg = document.getElementById('btn-send-message');
+    if (state.disableMessaging) {
+      if (msgBanner) msgBanner.style.display = 'flex';
+      if (msgArea) {
+        msgArea.disabled = true;
+        msgArea.readOnly = true;
+        msgArea.setAttribute('disabled', 'disabled');
+        msgArea.setAttribute('readonly', 'readonly');
+        msgArea.placeholder = "Le créateur a préféré désactiver l'option temporairement (pour me protéger et tout)";
+      }
+      if (btnSendMsg) {
+        btnSendMsg.disabled = true;
+        btnSendMsg.setAttribute('disabled', 'disabled');
+        btnSendMsg.textContent = "Messagerie désactivée temporairement";
+      }
     } else {
-      const pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
-      if (pdfNotice) pdfNotice.remove();
+      if (msgBanner) msgBanner.style.display = 'none';
+      if (msgArea && !msgArea.hasAttribute('data-custom-disabled')) {
+        msgArea.disabled = false;
+        msgArea.readOnly = false;
+        msgArea.removeAttribute('disabled');
+        msgArea.removeAttribute('readonly');
+        msgArea.placeholder = "Tapez votre message confidentiel ici...";
+      }
+      if (btnSendMsg && btnSendMsg.textContent === "Messagerie désactivée temporairement") {
+        btnSendMsg.disabled = false;
+        btnSendMsg.removeAttribute('disabled');
+        btnSendMsg.textContent = "Envoyer le message chiffré";
+      }
     }
 
     styleEl.textContent = css.join('\n');
