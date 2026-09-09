@@ -20,47 +20,103 @@
       gap: 20px;
       margin-top: 32px;
     }
+
+    /* Carte en mode clair : contraste élevé et lisibilité optimale */
     .policy-card {
-      background: var(--surface, #0f172a);
-      border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 12px;
       padding: 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-decoration: none;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
     .policy-card:hover {
       transform: translateY(-3px);
-      border-color: var(--brand, #10b981);
+      border-color: #059669;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
+
     .policy-tag {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      color: var(--brand, #10b981);
+      color: #065f46; /* Vert émeraude foncé très lisible */
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 8px;
     }
+
     .policy-card h3 {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
+      font-weight: 700;
       margin: 0 0 10px 0;
-      color: var(--text, #f8fafc);
+      color: #0f172a; /* Texte quasi-noir très net */
+      line-height: 1.35;
     }
+
     .policy-card p {
-      font-size: 0.9rem;
-      color: var(--text-muted, #94a3b8);
+      font-size: 0.95rem;
+      color: #334155; /* Gris ardoise soutenu */
       margin: 0 0 16px 0;
-      line-height: 1.5;
+      line-height: 1.6;
     }
+
     .policy-action {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--brand, #10b981);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #047857;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .policy-card:hover .policy-action {
+      text-decoration: underline;
+      color: #065f46;
+    }
+
+    /* Prise en charge automatique du mode sombre */
+    @media (prefers-color-scheme: dark) {
+      .policy-card {
+        background-color: #1e293b;
+        border-color: #334155;
+        box-shadow: none;
+      }
+      .policy-tag {
+        color: #34d399;
+      }
+      .policy-card h3 {
+        color: #f8fafc;
+      }
+      .policy-card p {
+        color: #cbd5e1;
+      }
+      .policy-action {
+        color: #34d399;
+      }
+    }
+
+    /* Prise en charge via data-theme="dark" injecté par theme-core.js */
+    [data-theme="dark"] .policy-card {
+      background-color: #1e293b;
+      border-color: #334155;
+      box-shadow: none;
+    }
+    [data-theme="dark"] .policy-tag {
+      color: #34d399;
+    }
+    [data-theme="dark"] .policy-card h3 {
+      color: #f8fafc;
+    }
+    [data-theme="dark"] .policy-card p {
+      color: #cbd5e1;
+    }
+    [data-theme="dark"] .policy-action {
+      color: #34d399;
     }
   </style>
 </head>
@@ -94,7 +150,7 @@
           <button class="nav-dropdown-btn nav-rubrique-active" type="button"><span>Politiques &amp; Cadre légal ▾</span></button>
           <div class="nav-dropdown-menu">
             <div class="nav-dropdown-group">
-              <a href="politiques.html" class="nav-dropdown-item active">Index des politiques</a>
+              <a href="politiques.html" class="nav-dropdown-item active">0. Registre des politiques</a>
               <a href="deontologie.html" class="nav-dropdown-item">01. Déontologie</a>
               <a href="statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
               <a href="vie-privee-parents.html" class="nav-dropdown-item">10. Vie privée &amp; Rôle des parents</a>
