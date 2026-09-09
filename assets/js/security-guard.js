@@ -1170,7 +1170,7 @@
         msgArea.readOnly = true;
         msgArea.setAttribute('disabled', 'disabled');
         msgArea.setAttribute('readonly', 'readonly');
-        msgArea.placeholder = "Le créateur a préféré désactiver l'option temporairement (pour me protéger et tout)";
+        msgArea.placeholder = "Le créateur a préféré désactiver l'option temporairement.";
       }
       if (btnSendMsg) {
         btnSendMsg.disabled = true;
