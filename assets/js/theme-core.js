@@ -879,6 +879,15 @@
       btn.addEventListener('click', () => window.print());
     });
 
+    // Boutons de contact courriel sécurisé
+    document.querySelectorAll('.js-secure-mail').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const safeMail = ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
+        window.location.href = `mailto:${safeMail}`;
+      });
+    });
+
     const copyBtns = document.querySelectorAll('.btn-copy-id, .btn-copy-session');
     copyBtns.forEach(btn => {
       btn.addEventListener('click', async (e) => {
