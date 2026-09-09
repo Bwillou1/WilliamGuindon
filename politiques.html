@@ -14,6 +14,34 @@
   <link rel="stylesheet" href="style.css?v=20260904-slider">
   <script src="assets/js/theme-core.js" defer></script>
   <style>
+    /* Bannière d'avertissement page statique */
+    .static-notice {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #059669;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #334155;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .static-notice svg {
+      flex-shrink: 0;
+      color: #047857;
+    }
+    .static-notice a {
+      color: #047857;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .static-notice a:hover {
+      color: #065f46;
+    }
+
     .policies-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -44,7 +72,7 @@
     .policy-tag {
       font-size: 0.8rem;
       font-weight: 700;
-      color: #065f46; /* Vert émeraude foncé très lisible */
+      color: #065f46;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 8px;
@@ -54,13 +82,13 @@
       font-size: 1.25rem;
       font-weight: 700;
       margin: 0 0 10px 0;
-      color: #0f172a; /* Texte quasi-noir très net */
+      color: #0f172a;
       line-height: 1.35;
     }
 
     .policy-card p {
       font-size: 0.95rem;
-      color: #334155; /* Gris ardoise soutenu */
+      color: #334155;
       margin: 0 0 16px 0;
       line-height: 1.6;
     }
@@ -79,8 +107,20 @@
       color: #065f46;
     }
 
-    /* Prise en charge automatique du mode sombre */
+    /* Support automatique du mode sombre */
     @media (prefers-color-scheme: dark) {
+      .static-notice {
+        background-color: #1e293b;
+        border-color: #334155;
+        border-left-color: #34d399;
+        color: #cbd5e1;
+      }
+      .static-notice svg {
+        color: #34d399;
+      }
+      .static-notice a {
+        color: #34d399;
+      }
       .policy-card {
         background-color: #1e293b;
         border-color: #334155;
@@ -100,7 +140,19 @@
       }
     }
 
-    /* Prise en charge via data-theme="dark" injecté par theme-core.js */
+    /* Support via attribut data-theme="dark" */
+    [data-theme="dark"] .static-notice {
+      background-color: #1e293b;
+      border-color: #334155;
+      border-left-color: #34d399;
+      color: #cbd5e1;
+    }
+    [data-theme="dark"] .static-notice svg {
+      color: #34d399;
+    }
+    [data-theme="dark"] .static-notice a {
+      color: #34d399;
+    }
     [data-theme="dark"] .policy-card {
       background-color: #1e293b;
       border-color: #334155;
@@ -172,6 +224,11 @@
 
     <section>
       <div class="wrap legal-wrap">
+        <div class="static-notice" role="note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div>Cette page est statique et les onglets ne sont pas complets. Veuillez cliquer sur <a href="./">William Guindon</a> pour retourner à l'accueil.</div>
+        </div>
+
         <div class="legal-toolbar" role="toolbar" aria-label="Actions du document légal">
           <div class="legal-toolbar-label">
             <span class="legal-toolbar-kicker">Répertoire officiel</span>
