@@ -242,13 +242,17 @@ DIRECTIVES DE RÉPONSE :
             </div>
 
             <div class="ai-models-list">
-              <a href="https://ai.viro.app/chat" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Viro AI Chat ↗</div>
-                <div class="ai-model-desc">Clavardez directement avec vos modèles IA sur le dossier William Guindon.</div>
+              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbiere+Blainville" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Perplexity AI (Recherche avec sources) ↗</div>
+                <div class="ai-model-desc">Recherche assistée par IA avec citations directes des sources officielles.</div>
               </a>
-              <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Recherche Ecosia (William Guindon) ↗</div>
-                <div class="ai-model-desc">Moteur de recherche écologique et indexation web de l'actualité à Blainville.</div>
+              <a href="https://chatgpt.com/" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ChatGPT (OpenAI) ↗</div>
+                <div class="ai-model-desc">Ouvrez ChatGPT pour analyser le dossier avec le prompt ai.txt.</div>
+              </a>
+              <a href="https://claude.ai/new" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Claude (Anthropic) ↗</div>
+                <div class="ai-model-desc">Analysez les documents juridiques et la décision CCE avec Claude.</div>
               </a>
               <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
                 <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Fichier Source llms-full.txt</div>

@@ -887,17 +887,29 @@
       });
     });
 
-    const copyBtns = document.querySelectorAll('.btn-copy-id, .btn-copy-session');
+    const copyBtns = document.querySelectorAll('.btn-copy-id, .btn-copy-session, .btn-copy-box, .js-copy-trigger, .btn-copy-fact');
     copyBtns.forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
-        const textToCopy = btn.getAttribute('data-copy');
+        let textToCopy = btn.getAttribute('data-copy');
+        const targetId = btn.getAttribute('data-target');
+        if (!textToCopy && targetId) {
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) textToCopy = targetEl.innerText.trim();
+        }
+        if (!textToCopy) {
+          const parentBox = btn.closest('.copybox, .ai-press-box');
+          if (parentBox) {
+            const contentEl = parentBox.querySelector('.copybox-content, .ai-press-code, p');
+            if (contentEl) textToCopy = contentEl.innerText.trim();
+          }
+        }
         if (!textToCopy) return;
 
         try {
           await navigator.clipboard.writeText(textToCopy);
           const originalText = btn.innerHTML;
-          btn.innerHTML = '<span>Copié !</span>';
+          btn.innerHTML = '<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Copié !</span>';
           btn.classList.add('copied');
           setTimeout(() => {
             btn.innerHTML = originalText;
@@ -905,6 +917,7 @@
           }, 2000);
         } catch (err) {
           if (DEBUG) console.error('Erreur copie:', err);
+          const originalText = btn.innerHTML;
           btn.innerHTML = '<span>Échec copie</span>';
           setTimeout(() => { btn.innerHTML = originalText; }, 2000);
         }
