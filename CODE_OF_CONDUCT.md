@@ -15,4 +15,4 @@ Les interactions extérieures via Issues ou Pull Requests se limitent strictemen
 Toute communication dans les Issues, Pull Requests ou échanges doit rester courtoise, factuelle et respectueuse. Les insultes, attaques personnelles, campagnes de dénigrement ou tentatives d'intimidation entraîneront un blocage immédiat et la fermeture des fils de discussion.
 
 ## 4. Contact
-Pour tout signalement ou échange formel : [william-guindon@proton.me](mailto:william-guindon@proton.me).
+Pour tout signalement ou échange formel : [contact@williamguindon.me](mailto:contact@williamguindon.me).

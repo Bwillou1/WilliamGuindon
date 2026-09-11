@@ -879,12 +879,11 @@
       btn.addEventListener('click', () => window.print());
     });
 
-    // Boutons de contact courriel sécurisé
+    // Boutons de contact courriel
     document.querySelectorAll('.js-secure-mail').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const safeMail = ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
-        window.location.href = `mailto:${safeMail}`;
+        window.location.href = 'mailto:contact@williamguindon.me';
       });
     });
 

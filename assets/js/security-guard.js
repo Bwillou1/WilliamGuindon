@@ -458,10 +458,7 @@
   function renderMaintenanceScreen(untilTimestamp) {
     lockInspectorAndDevTools();
 
-    function getObfuscatedEmail() {
-      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
-    }
-    const safeEmail = getObfuscatedEmail();
+    const safeEmail = "contact@williamguindon.me";
     const timeLeftMin = Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000));
 
     let overlay = document.getElementById('maint-wrapper');
@@ -582,10 +579,7 @@
   function renderRadical4Screen(untilTimestamp, customMessage) {
     lockInspectorAndDevTools();
 
-    function getObfuscatedEmail() {
-      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
-    }
-    const safeEmail = getObfuscatedEmail();
+    const safeEmail = "contact@williamguindon.me";
     const timeLeftMin = untilTimestamp ? Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000)) : null;
 
     let overlay = document.getElementById('radical4-wrapper');
@@ -640,10 +634,7 @@
   function renderRadical5Screen(untilTimestamp, customMessage) {
     lockInspectorAndDevTools();
 
-    function getObfuscatedEmail() {
-      return ["gui", "ndon", "will", "iam", "2", "@", "gma", "il.", "com"].join('');
-    }
-    const safeEmail = getObfuscatedEmail();
+    const safeEmail = "contact@williamguindon.me";
     const timeLeftMin = untilTimestamp ? Math.max(1, Math.round((untilTimestamp - Date.now()) / 60000)) : null;
 
     let overlay = document.getElementById('radical5-wrapper');

@@ -142,7 +142,7 @@ Les interfaces d'administration (`admin.html`, `console-admin.html`, `editeur.ht
 4. Configurer la politique d'accès (**Policy**) :
    - **Policy name** : `Admin Only`
    - **Action** : `Allow`
-   - **Rule configuration** : Selector `Emails`, Value `guindonwilliam2@gmail.com` (ou votre e-mail administrateur).
+   - **Rule configuration** : Selector `Emails`, Value `contact@williamguindon.me` (ou votre e-mail administrateur).
 5. Enregistrer l'application.
 
 #### Paramétrage automatisé :
