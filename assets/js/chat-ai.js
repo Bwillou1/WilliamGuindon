@@ -218,12 +218,34 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
             </div>
           </div>
 
-          <!-- Onglet 3 : Liens IA externes -->
+          <!-- Onglet 3 : Liens IA externes & Prompts -->
           <div class="ai-tab-content" id="ai-tab-models">
             <p class="ai-modal-desc">
-              Explorez le dossier complet avec vos propres modèles et assistants IA préférés grâce à nos exports de données ouverts :
+              Explorez le dossier complet avec vos assistants et modèles d'IA favoris grâce à nos prompts prêts à l'emploi et nos exports ouverts :
             </p>
+
+            <!-- Boîte Prompt Clé en Main -->
+            <div style="background: var(--surface-2, rgba(0,0,0,0.25)); border: 1px solid var(--accent, #10b981); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:8px;">
+                <strong style="font-size: 13px; color: var(--accent-deep, #10b981);">Prompt IA Prêt à l'Emploi (ai.txt)</strong>
+                <button type="button" class="ai-action-btn js-copy-ai-prompt" style="padding: 4px 10px; font-size: 12px; cursor: pointer;">
+                  <span class="js-copy-prompt-icon">Copier le prompt</span>
+                </button>
+              </div>
+              <div id="ai-preset-prompt-text" style="font-size: 12px; line-height: 1.5; color: var(--text-muted); font-family: monospace; max-height: 90px; overflow-y: auto; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+                Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html
+              </div>
+            </div>
+
             <div class="ai-models-list">
+              <a href="https://ai.viro.app/chat" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Viro AI Chat ↗</div>
+                <div class="ai-model-desc">Clavardez directement avec vos modèles IA sur le dossier William Guindon.</div>
+              </a>
+              <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Recherche Ecosia (William Guindon) ↗</div>
+                <div class="ai-model-desc">Moteur de recherche écologique et indexation web de l'actualité à Blainville.</div>
+              </a>
               <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
                 <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Fichier Source llms-full.txt</div>
                 <div class="ai-model-desc">Corpus de faits bruts vérifiés &amp; chronologie complète pour RAG / LLM.</div>
@@ -232,9 +254,9 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
                 <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Fichier Standard llms.txt</div>
                 <div class="ai-model-desc">Index documentaire standardisé pour agents IA &amp; assistants conversationnels.</div>
               </a>
-              <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> llms-full.txt (Dossier Intégral)</div>
-                <div class="ai-model-desc">Transcription intégrale de l'ensemble des pièces juridiques pour modèles à large contexte.</div>
+              <a href="ai.html" class="ai-model-card" target="_blank" rel="noopener">
+                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Registre Documentaire IA (ai.html)</div>
+                <div class="ai-model-desc">Hub technique complet et instructions de cadrage anti-hallucination.</div>
               </a>
             </div>
           </div>
@@ -409,6 +431,26 @@ Le routage strict est effectué par le serveur : réponse directe pour les quest
           document.body.classList.remove('ai-sidebar-active');
         }
       });
+
+      const copyPromptBtn = aiModal.querySelector('.js-copy-ai-prompt');
+      if (copyPromptBtn) {
+        copyPromptBtn.addEventListener('click', () => {
+          const promptEl = document.getElementById('ai-preset-prompt-text');
+          const textToCopy = promptEl ? promptEl.innerText.trim() : "Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html";
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            if (copyAlert) {
+              copyAlert.innerHTML = `<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Prompt IA copié dans le presse-papier !`;
+              copyAlert.classList.add('show');
+            }
+            const icon = copyPromptBtn.querySelector('.js-copy-prompt-icon');
+            if (icon) icon.textContent = 'Copié !';
+            setTimeout(() => {
+              if (copyAlert) copyAlert.classList.remove('show');
+              if (icon) icon.textContent = 'Copier le prompt';
+            }, 3000);
+          });
+        });
+      }
 
       const copyBtn = aiModal.querySelector('.js-copy-ai-link');
       if (copyBtn) {

@@ -7,6 +7,7 @@ console.log('=== Vérification de l\'intégrité des assets et du Service Worker
 const CORE_FILES = [
   'index.html',
   'registre.html',
+  'enquete-partis.html',
   'live.html',
   'communiques.html',
   'presse.html',

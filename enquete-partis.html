@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<script src="assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com; object-src 'none';">
+
+<title>Enquête Citoyenne : Position des partis politiques (Dossier Stablex &amp; Décision CCE SEM-26-003) — William Guindon</title>
+<meta name="description" content="Méthodologie de l'enquête citoyenne et recueil des positions des formations politiques provinciales (CAQ, PLQ, PQ, QS, PCQ, Climat Québec) sur le dossier Stablex et la décision CCE SEM-26-003.">
+<meta name="author" content="William Tristan Logan Théo Guindon">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://williamguindon.me/enquete-partis.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/enquete-partis.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/enquete-partis.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#064e3b">
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Enquête Citoyenne : Position des partis politiques sur Stablex et la décision CCE SEM-26-003">
+<meta property="og:description" content="Méthodologie, protocole de collecte et publication des réponses officielles des formations politiques provinciales sur le dossier de la Grande Tourbière de Blainville et la décision CCE.">
+<meta property="og:url" content="https://williamguindon.me/enquete-partis.html">
+<meta property="og:image" content="https://williamguindon.me/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_CA">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Enquête Citoyenne : Position des partis politiques sur Stablex et la décision CCE SEM-26-003">
+<meta name="twitter:description" content="Méthodologie, protocole de collecte et publication des réponses officielles des formations politiques provinciales.">
+<meta name="twitter:image" content="https://williamguindon.me/og-image.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Report",
+      "@id": "https://williamguindon.me/enquete-partis.html#report",
+      "url": "https://williamguindon.me/enquete-partis.html",
+      "name": "Méthodologie de l'enquête citoyenne — Positionnement des formations politiques sur le dossier Stablex (Cellule 6) et la décision de la CCE (SEM-26-003)",
+      "headline": "Enquête citoyenne sur le positionnement des formations politiques provinciales face au dossier Stablex et à la décision CCE SEM-26-003",
+      "description": "Protocole méthodologique complet, grille de classification et recueil des positions écrites des formations politiques du Québec sur l'expansion de la cellule 6 de Stablex et l'ordonnance de la CCE.",
+      "inLanguage": "fr-CA",
+      "datePublished": "2026-09-11T16:00:00-04:00",
+      "dateModified": "2026-09-11T16:00:00-04:00",
+      "author": {
+        "@type": "Person",
+        "@id": "https://williamguindon.me/#person",
+        "name": "William Tristan Logan Théo Guindon",
+        "url": "https://williamguindon.me/"
+      },
+      "publisher": {
+        "@type": "Person",
+        "@id": "https://williamguindon.me/#person",
+        "name": "William Guindon"
+      },
+      "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "identifier": "https://doi.org/10.5281/zenodo.22714995",
+      "sameAs": "https://zenodo.org/records/22714995"
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="style.css?v=20260904-slider">
+<script src="assets/js/theme-core.js" defer></script>
+<style>
+  .methodo-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    background: var(--surface-2, rgba(255,255,255,0.03));
+    border: 1px solid var(--line, rgba(255,255,255,0.1));
+    border-radius: 12px;
+    padding: 20px;
+    margin: 24px 0 32px;
+  }
+  .methodo-meta-item {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .methodo-meta-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-deep, #10b981);
+    margin-bottom: 4px;
+  }
+  .methodo-prologue-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(56, 189, 248, 0.05) 100%);
+    border-left: 4px solid var(--accent, #10b981);
+    border-radius: 0 12px 12px 0;
+    padding: 22px 26px;
+    margin: 32px 0 40px;
+  }
+  .methodo-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    margin: 24px 0 32px;
+    border-radius: 10px;
+    border: 1px solid var(--line, rgba(255,255,255,0.12));
+    background: var(--surface-1, rgba(255,255,255,0.02));
+  }
+  .methodo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    text-align: left;
+  }
+  .methodo-table th {
+    background: var(--surface-2, rgba(255,255,255,0.06));
+    color: var(--text);
+    font-weight: 800;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line, rgba(255,255,255,0.15));
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .methodo-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line, rgba(255,255,255,0.08));
+    color: var(--text);
+    vertical-align: top;
+  }
+  .methodo-table tr:last-child td {
+    border-bottom: none;
+  }
+  .methodo-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+  .badge-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .badge-status-reponse { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+  .badge-status-decline { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid #eab308; }
+  .badge-status-accuse { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #0284c7; }
+  .badge-status-silence { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+  .neutrality-box {
+    background: var(--surface-2, rgba(255,255,255,0.04));
+    border: 2px solid var(--accent, #10b981);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 40px 0 24px;
+  }
+  .doi-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: rgba(0,0,0,0.25);
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+    margin: 16px 0 24px;
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button>
+    <nav aria-label="Navigation principale">
+      <div class="mobile-nav-header">
+        <span class="mobile-nav-title">Navigation</span>
+        <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>Fermer</span>
+        </button>
+      </div>
+
+      <!-- Rubrique 1 : Dossier CCE & Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn nav-rubrique-active" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Dossier CCE &amp; Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Enquête SEM-26-003</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="enquete-partis.html" class="nav-dropdown-item active">Enquête Citoyenne (Partis politiques)</a>
+              <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
+              <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Échéance 16 oct.</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Publications &amp; Presse</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Politiques & Cadre légal -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Politiques &amp; Cadre légal ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-group">
+            <span class="nav-dropdown-group-title">Chartes &amp; Engagements</span>
+            <div class="nav-dropdown-grid single-col">
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Déclaration Anti-SLAPP</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Presse</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+              <a href="statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="vie-privee-parents.html" class="nav-dropdown-item">10. Vie privée &amp; Rôle des parents</a>
+              <span class="nav-dropdown-group-title" style="margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line);">Documents légaux associés</span>
+              <a href="terms.html" class="nav-dropdown-item">Conditions d'utilisation</a>
+              <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Bell Dropdown -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="Nouvelle alerte active" aria-label="Nouvelle alerte"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alerte Média &amp; Enquête CCE</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
+              <h5 class="notif-item-title">Position des partis politiques (Dossier Stablex &amp; CCE)</h5>
+              <p class="notif-item-desc">Publication de la méthodologie et des résultats de l'enquête citoyenne auprès des formations politiques provinciales sur le dossier Stablex (Cellule 6) et la décision CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter l'enquête ↗</a>
+                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Rapport Zenodo (PDF) ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">ENQUÊTE CITOYENNE · DOSSIER STABLEX (CELLULE 6) · DÉCISION CCE SEM-26-003</span>
+      <h1>Méthodologie de l'enquête citoyenne — Positionnement des formations politiques sur le dossier Stablex (Cellule 6) et la décision de la CCE (SEM-26-003)</h1>
+      <p>Étude documentaire, protocole de consultation écrite et recueil intégral des réponses officielles des formations politiques provinciales du Québec.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap legal-wrap">
+      
+      <!-- Barre d'outils d'actions -->
+      <div class="legal-toolbar" role="toolbar" aria-label="Actions du document d'enquête">
+        <div class="legal-toolbar-label">
+          <span class="legal-toolbar-kicker">Étude citoyenne officielle</span>
+          <span>Version 1.0 — Vendredi 11 septembre 2026 (avant 16 h 00 HAE)</span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size: 0.85rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span>Rapport PDF (Zenodo) ↗</span>
+          </a>
+          <button class="legal-print-button" type="button" aria-label="Imprimer ce document">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
+            <span>Imprimer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Fiche signalétique et métadonnées -->
+      <div class="methodo-meta-grid">
+        <div class="methodo-meta-item">
+          <span class="methodo-meta-label">Auteur</span>
+          <strong>William Tristan Logan Théo Guindon</strong><br>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Citoyen engagé et auteur de la soumission SEM-26-003 auprès de la CCE</span>
+        </div>
+        <div class="methodo-meta-item">
+          <span class="methodo-meta-label">Date &amp; Heure de référence</span>
+          <strong>Vendredi 11 septembre 2026</strong><br>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Avant l'échéance de 16 h 00 HAE (UTC−4)</span>
+        </div>
+        <div class="methodo-meta-item">
+          <span class="methodo-meta-label">Publication &amp; Archive Certifiée</span>
+          <strong>williamguindon.me · Zenodo</strong><br>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">DOI : <a href="https://doi.org/10.5281/zenodo.22714995" target="_blank" rel="noopener noreferrer">10.5281/zenodo.22714995</a></span>
+        </div>
+        <div class="methodo-meta-item">
+          <span class="methodo-meta-label">Licence Légale</span>
+          <strong>Creative Commons CC BY-NC-ND 4.0</strong><br>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Attribution – Pas d'utilisation commerciale – Pas de modification</span>
+        </div>
+      </div>
+
+      <div class="doi-badge-row">
+        <span><strong>Identifiant d'archive numérique pérenne :</strong></span>
+        <code>DOI: 10.5281/zenodo.22714995</code>
+        <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size: 0.8rem; padding: 4px 10px; margin-left: auto;">Consulter le dépôt officiel Zenodo ↗</a>
+      </div>
+
+      <!-- Prologue -->
+      <div class="methodo-prologue-box">
+        <h2 style="margin-top: 0; font-size: 1.3rem; color: var(--accent-deep, #10b981);">Prologue — Pourquoi cette enquête</h2>
+        <p>En tant que jeune soumetteur de la soumission <strong>SEM-26-003</strong> (Grande Tourbière de Blainville) auprès de la Commission de coopération environnementale (CCE), je me suis interrogé sur la position des partis politiques provinciaux du Québec concernant le dossier Stablex (cellule 6).</p>
+        <p>Or, un constat s'est rapidement imposé : <strong>personne ne pouvait poser cette question de manière neutre</strong>. Un parti politique ne peut pas demander à un autre parti quelle est son opinion : une telle démarche serait d'emblée partisane. Quant aux pages citoyennes qui couvrent ce dossier, elles présentent presque toutes un biais : leurs administrateurs sont soit eux-mêmes députés ou candidats d'un parti, soit liés par des liens d'amitié ou d'allégeance avec une formation politique.</p>
+        <p>À ce stade, j'étais l'une des seules personnes en mesure de mener cette démarche de façon indépendante, et le public connaît mon niveau de factualité. C'est donc en <strong>citoyen strictement indépendant, sans aucune affiliation partisane</strong>, que j'ai décidé de demander moi-même, par écrit et de manière identique, la position officielle de chaque formation politique, et de publier l'ensemble des réponses — et des absences de réponse — sans interprétation.</p>
+        <p style="margin-bottom: 0; font-weight: 700; text-align: right; color: var(--text);">— William Guindon</p>
+      </div>
+
+      <!-- Section 1 -->
+      <h2>1. Objet et contexte</h2>
+      <p>Le <strong>17 août 2026</strong>, la Commission de coopération environnementale (CCE) a rendu une décision concernant la soumission citoyenne <strong>SEM-26-003</strong> relative à la Grande Tourbière de Blainville et au site d'enfouissement Stablex (Cellule 6). Le gouvernement du Canada est tenu de produire sa réponse officielle d'ici le <strong>16 octobre 2026</strong>.</p>
+      <p>Dans le contexte de la campagne électorale québécoise de 2026, cette enquête citoyenne a pour objet de recueillir, par écrit, la position officielle de chaque formation politique concernée sur deux questions précises (une de compétence provinciale, une de compétence fédérale/intergouvernementale), puis de consigner l'ensemble des résultats — réponses, redirections, accusés de réception et absences de réponse — dans un document d'étude, de manière brute, intégrale et transparente. Des résumés de cette étude, clairement identifiés comme tels, sont ensuite diffusés sur les réseaux sociaux (Facebook, LinkedIn) avec un lien vers le document rédigé à l'identique.</p>
+      <p>L'enquête est :</p>
+      <ul>
+        <li><strong>indépendante</strong> : menée sans affiliation, financement ou appui d'aucune formation politique;</li>
+        <li><strong>factuelle</strong> : aucune interprétation, analyse ou graduation des réponses n'est effectuée;</li>
+        <li><strong>non partisane</strong> : l'auteur refuse par avance que son nom, ses travaux ou ce dossier soient instrumentalisés à des fins partisanes ou intégrés aux outils de communication politique de quelque parti que ce soit.</li>
+      </ul>
+
+      <!-- Section 2 -->
+      <h2>2. Nature de l'enquête</h2>
+      <p>Il s'agit d'une consultation écrite directe des formations politiques par courriel et, pour plusieurs formations, par leur formulaire de contact officiel, dont les résultats sont consignés dans une étude citoyenne publiée à l'identique sur le site web officiel (voir section 9). L'enquête ne constitue ni un sondage, ni une étude scientifique, ni une procédure officielle : c'est une démarche de transparence citoyenne documentée par la présente méthodologie.</p>
+
+      <!-- Section 3 -->
+      <h2>3. Périmètre et sélection des formations politiques</h2>
+      <p><strong>Critère de sélection :</strong> les principales formations politiques provinciales actives dans la circonscription de Blainville ou concernées au premier chef par le dossier ont été interrogées : la Coalition Avenir Québec (CAQ), le Parti libéral du Québec (PLQ), le Parti Québécois (PQ), Québec solidaire (QS), le Parti conservateur du Québec (PCQ) et Climat Québec.</p>
+      <p>La question de niveau fédéral / intergouvernemental a été soumise à l'ensemble de ces formations provinciales, chacune étant invitée à indiquer comment elle entend s'assurer que le gouvernement canadien réponde rigoureusement à la décision de la CCE, laquelle relève d'Ottawa.</p>
+      <p><em>Note :</em> les adresses du Nouveau Parti démocratique (<code>info@ndp.ca</code>), du Parti conservateur du Canada (<code>info@conservative.ca</code>) et du ministre fédéral de l'Environnement (<code>ministre-minister@ec.gc.ca</code>) figuraient en copie du courriel initial à titre informatif seulement; ces destinataires n'ont pas fait l'objet de la demande de positionnement et ne font pas partie du périmètre de l'enquête.</p>
+      <p>Le même questionnaire, identique, a été transmis à toutes les formations (voir section 4); chaque formation était libre de répondre à la ou aux questions relevant de son champ de compétence.</p>
+
+      <h3>Tableau des formations interrogées</h3>
+      <div class="methodo-table-wrap">
+        <table class="methodo-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Formation politique</th>
+              <th style="width: 15%;">Palier</th>
+              <th>Canaux utilisés</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Coalition Avenir Québec (CAQ)</strong></td>
+              <td>Provincial</td>
+              <td>Courriel du député de Blainville (<code>Mario.Laframboise.BLAI@assnat.qc.ca</code>), autre adresse officielle (<code>mlaframboise@lacaq.org</code>), adresses officielles ainsi que l'adresse médias du parti et formulaire de contact officiel</td>
+            </tr>
+            <tr>
+              <td><strong>Parti libéral du Québec (PLQ)</strong></td>
+              <td>Provincial</td>
+              <td>Courriel du candidat / représentant (<code>sebastien.daoust@plq.org</code>) et adresse officielle du parti (<code>info@plq.org</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Parti Québécois (PQ)</strong></td>
+              <td>Provincial</td>
+              <td>Courriel du candidat / représentant (<code>nlegal@pq.org</code>), adresses officielles du parti et formulaire de contact officiel</td>
+            </tr>
+            <tr>
+              <td><strong>Québec solidaire (QS)</strong></td>
+              <td>Provincial</td>
+              <td>Adresses officielles du parti (<code>info@</code>, <code>medias@</code>, <code>assos@quebecsolidaire.net</code>) et formulaire de contact officiel</td>
+            </tr>
+            <tr>
+              <td><strong>Parti conservateur du Québec (PCQ)</strong></td>
+              <td>Provincial</td>
+              <td>Courriel du candidat dans Blainville (<code>pascal.quevillon@conservateur.quebec</code>) et formulaire de contact officiel</td>
+            </tr>
+            <tr>
+              <td><strong>Climat Québec</strong></td>
+              <td>Provincial</td>
+              <td>Courriel de la représentante (<code>mcarchambault@climat.quebec</code>) et adresses officielles du parti — contacté le 10 septembre 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted);"><em>* Note sur les adresses :</em> Les titres, adresses et canaux de contact ont été établis de bonne foi à partir des informations publiques disponibles et sont sujets à correction sur signalement.</p>
+      <p><strong>Source et recherche des adresses :</strong> Les coordonnées ont principalement été tirées de sources publiques officielles (sites web officiels des formations, registres du Directeur général des élections du Québec, d'Élections Canada, de l'Assemblée nationale du Québec et du Parlement du Canada). En complément, l'outil spécialisé Hunter.io a été utilisé afin d'identifier les formats d'adresses institutionnelles et de retrouver des adresses de courriel internes pertinentes au sein des différentes structures politiques et cabinets parlementaires.</p>
+      <p style="font-size: 0.85rem; background: var(--surface-2, rgba(255,255,255,0.03)); padding: 12px 16px; border-radius: 8px; border-left: 3px solid var(--line);">
+        <strong>Note — Réserve sur les identifications :</strong> Les identifications de personnes, de fonctions (député, candidat, permanence), d'adresses et de canaux présentées dans cette étude sont documentées de bonne foi, à partir des informations dont disposait l'auteur au moment de la rédaction. Malgré toute la diligence raisonnable exercée, elles peuvent comporter des erreurs ou des omissions et ne constituent la désignation officielle d'aucune personne ni d'aucune organisation. Toute personne ou organisation qui constaterait une erreur est invitée à en aviser l'auteur (<code>guindonwilliam2@gmail.com</code>); une correction sera apportée avec diligence.
+      </p>
+
+      <!-- Section 4 -->
+      <h2>4. Questionnaire</h2>
+      <p>Deux questions, formulées une seule fois et transmises à l'identique à toutes les formations :</p>
+      <ol>
+        <li>
+          <strong>Au niveau provincial :</strong> Quelle est la position officielle de votre parti concernant les autorisations accordées à la cellule 6 de Stablex et l'application passée de la Loi 93? Si vous accédez au pouvoir, comptez-vous réévaluer ce dossier à la lumière des données scientifiques et environnementales récentes (notamment concernant les concentrations de cadmium et la protection de la Grande Tourbière)?
+        </li>
+        <li>
+          <strong>Au niveau fédéral / intergouvernemental :</strong> Comment votre parti compte-t-il s'assurer que le gouvernement canadien réponde de manière rigoureuse à l'ordonnance (décision) de la CCE et fasse respecter les lois fédérales (notamment la Loi sur les espèces en péril et la Loi sur les pêches) dans ce secteur?
+        </li>
+      </ol>
+      <p><strong>Échéance unique communiquée à toutes les formations :</strong> vendredi 11 septembre 2026 à 16 h 00 HAE. Cette échéance a été annoncée dès l'envoi initial du 7 septembre 2026 et rappelée dans chaque relance.</p>
+
+      <!-- Section 5 -->
+      <h2>5. Protocole de collecte et calendrier</h2>
+      
+      <h3>5.1 Envoi initial</h3>
+      <p>La demande initiale a été transmise le <strong>lundi 7 septembre 2026 à 15 h 54 min 48 s HAE</strong> (19 h 54 min 48 s UTC) par courriel. Les formations politiques figuraient en copie conforme invisible (Cci), l'auteur s'adressant à sa propre adresse en destinataire apparent, de manière à protéger les adresses des formations les unes des autres et à conserver une trace centralisée des envois.</p>
+
+      <h3>5.2 Relances</h3>
+      <p>Les relances ont été effectuées au cas par cas (de manière adaptative), au fil des réponses reçues, dans le respect de l'échéance unique du 11 septembre 2026 à 16 h :</p>
+      <ol>
+        <li><strong>Relance générale</strong> (9 septembre 2026, 17 h 05 min 44 s HAE) aux formations n'ayant pas répondu;</li>
+        <li><strong>Relance ciblée</strong> vers les adresses médias et associations du PQ, de la CAQ et de QS (9 septembre 2026, 17 h 30 min 18 s HAE);</li>
+        <li><strong>Relance ciblée</strong> vers les boîtes officielles du PQ et de la CAQ (10 septembre 2026, 9 h 37 min 44 s HAE).</li>
+      </ol>
+      <p>Un suivi individuel en trois échanges a également eu lieu avec le candidat du Parti conservateur du Québec (8 et 9 septembre), détaillé au journal chronologique du document d'étude (voir section 9.1).</p>
+      <p>Chaque relance mentionnait explicitement : (a) l'échéance du 11 septembre 2026 à 16 h; (b) le fait que le PLQ et/ou d'autres formations avaient déjà transmis leur position; (c) la règle applicable en l'absence de réponse (voir section 7).</p>
+
+      <h3>5.3 Utilisation des formulaires de contact officiels</h3>
+      <p>En complément des courriels, le formulaire de contact officiel des formations suivantes a également été utilisé : Québec solidaire (QS), Parti conservateur du Québec (PCQ) et Parti Québécois (PQ). Ces formulaires ne générant pas systématiquement d'accusé de réception horodaté, leur utilisation est consignée de bonne foi; toute erreur ou omission dans cette consignation sera corrigée sur signalement (voir la note de bas de page de la section 3).</p>
+
+      <h3>5.4 Échecs de distribution documentés</h3>
+      <div class="methodo-table-wrap">
+        <table class="methodo-table">
+          <thead>
+            <tr>
+              <th style="width: 30%;">Date et heure (HAE)</th>
+              <th style="width: 30%;">Adresse</th>
+              <th>Conséquence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>9 septembre 2026, 17 h 06</strong></td>
+              <td><code>mlaframboise@lacaq.org</code></td>
+              <td>Relance non livrée par ce canal (la CAQ a néanmoins reçu la demande par ses autres canaux et a accusé réception le 10 septembre à 9 h 32 min 09 s)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><em>Mesure corrective :</em> l'utilisation complémentaire des formulaires de contact officiels et des adresses générales a permis d'assurer la réception de la demande par l'ensemble des formations politiques.</p>
+
+      <h3>5.5 Journal chronologique complet</h3>
+      <p>Le journal chronologique complet et horodaté de l'ensemble des événements (envois, réponses, accusés de réception, relances, échecs de distribution) figure au document d'étude (voir section 9.1); la présente méthodologie n'en reproduit pas le détail.</p>
+
+      <!-- Section 6 -->
+      <h2>6. Authentification des réponses</h2>
+      <p>Chaque réponse a été reçue d'une adresse appartenant à un domaine officiel de la formation politique concernée (<code>@plq.org</code>, <code>@quebecsolidaire.net</code>, <code>@conservateur.quebec</code>, <code>@coalitionavenirquebec.org</code>, <code>@pq.org</code>, <code>@climat.quebec</code>). Les réponses sont publiées avec l'identification complète de l'expéditeur (adresse, date, heure, objet). Aucune réponse reçue d'un domaine non officiel n'aurait été retenue sans vérification supplémentaire.</p>
+
+      <!-- Section 7 -->
+      <h2>7. Grille de classement des réponses</h2>
+      <p>Les statuts suivants, appliqués uniformément, sont les seuls utilisés dans l'étude pour qualifier la situation de chaque formation politique :</p>
+      
+      <div class="methodo-table-wrap">
+        <table class="methodo-table">
+          <thead>
+            <tr>
+              <th style="width: 35%;">Statut</th>
+              <th>Définition exacte</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge-status badge-status-reponse">Réponse officielle</span></td>
+              <td>Position écrite substantielle transmise par la formation, répondant à une ou aux deux questions.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-status badge-status-decline">Réponse reçue (décline de répondre)</span></td>
+              <td>Réponse officielle transmise indiquant le refus de répondre ou de se positionner. (Cas du Parti conservateur du Québec, réponse reçue le 11 septembre 2026 à 14 h 12 min HAE.)</td>
+            </tr>
+            <tr>
+              <td><span class="badge-status badge-status-accuse">Aucune réponse sur le fond</span></td>
+              <td>Seul un accusé de réception a été reçu, sans position, à l'échéance. (Cas de la CAQ et du PQ si aucune position n'est reçue d'ici 16 h.)</td>
+            </tr>
+            <tr>
+              <td><span class="badge-status badge-status-silence">Aucune réponse transmise</span></td>
+              <td>Silence complet de la formation à l'échéance du 11 septembre 2026 à 16 h 00 HAE.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-status" style="background: rgba(148,163,184,0.15); color: #cbd5e1; border: 1px solid #64748b;">Contacté tardivement — aucune réponse reçue</span></td>
+              <td>Formation contactée avec un délai réduit sans qu'une réponse n'ait été reçue à l'échéance.</td>
+            </tr>
+            <tr>
+              <td><span class="badge-status" style="background: rgba(239,68,68,0.1); color: #fda4af; border: 1px solid #f43f5e;">Contact impossible (échec de distribution)</span></td>
+              <td>Échec de livraison documenté et non corrigé par un autre canal.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Règle de clôture :</strong> l'état des réponses consigné dans l'étude est arrêté le <strong>vendredi 11 septembre 2026 à 16 h 00 min 00 s HAE</strong>. Toute réponse reçue après cette heure est ajoutée intégralement, avec son horodatage exact et la mention <em>« Reçue après l'échéance »</em>, sans modification de l'état arrêté à 16 h.</p>
+
+      <!-- Section 8 -->
+      <h2>8. Traitement des absences de réponse</h2>
+      <p>Conformément à ce qui a été annoncé aux formations, en l'absence de réponse à l'échéance, la section de l'étude consacrée à la formation concernée comprend :</p>
+      <ol start="4">
+        <li>la mention formelle du statut applicable (section 7);</li>
+        <li>les positions et déclarations publiques antérieures de la formation sur le dossier Stablex / Loi 93, lorsqu'elles existent — uniquement si elles sont datées, sourcées et vérifiables, avec lien vers la source originale;</li>
+        <li>l'historique parlementaire pertinent, notamment le vote des députés de la formation sur la Loi 93, tel que consigné aux registres officiels (Journal des débats de l'Assemblée nationale).</li>
+      </ol>
+      <p>Aucune position antérieure n'est rapportée sans source explicite. Aucun ajout, résumé ou reformulation interprétative n'est effectué.</p>
+
+      <!-- Section 9 -->
+      <h2>9. Forme des livrables et publication</h2>
+
+      <h3>9.1 Livrable principal : le document d'étude</h3>
+      <p>Les résultats de l'enquête ne sont pas présentés sous forme de tableau comparatif, mais sous la forme d'un <strong>document d'étude citoyenne</strong> publié à l'identique sur <code>williamguindon.me</code>. Le contenu du site web officiel est rigoureusement identique au présent document. Chaque formation politique y fait l'objet d'une section dédiée, de structure équivalente.</p>
+      <p>Les parties explicatives (contexte, historique, déroulement) sont strictement factuelles et sourcées; elles n'interprètent pas les réponses des partis et n'y ajoutent aucune opinion. Aucune graduation, cote ou analyse qualitative des engagements n'est réalisée. L'exhaustivité promise aux formations politiques dans les courriels (« compte rendu public », « synthèse exhaustive ») est remplie par ce document d'étude, qui couvre chaque formation dans une section dédiée.</p>
+
+      <h3>9.2 Résumés pour les réseaux sociaux</h3>
+      <p>Des résumés de l'étude — notamment sous forme de carrousels — sont diffusés sur les plateformes de l'auteur (Facebook et LinkedIn). Ces publications :</p>
+      <ul>
+        <li>sont clairement identifiées comme des résumés du document d'étude complet;</li>
+        <li>comportent un lien direct vers le document identique publié sur <code>williamguindon.me</code>;</li>
+        <li>demeurent factuelles et non partisanes;</li>
+        <li>ne contiennent aucune citation tronquée ou sortie de son contexte : toute citation utilisée dans un résumé est reprise textuellement de l'étude et reste attribuable à son expéditeur;</li>
+        <li>doivent être repartagées dans leur intégralité : aucune formation politique ni aucun citoyen n'est autorisé à en extraire des parties isolées afin d'en déformer le contexte neutre (voir la clause de neutralité en fin de document).</li>
+      </ul>
+
+      <h3>9.3 Diffusion</h3>
+      <p>L'étude complète est publiée sur le site de l'auteur et acheminée aux journalistes et salles de nouvelles couvrant l'environnement et la campagne électorale québécoise. L'ensemble des courriels envoyés par l'auteur fait partie des documents publiés, afin que la démarche soit entièrement vérifiable.</p>
+
+      <!-- Section 10 -->
+      <h2>10. Éthique et garanties</h2>
+      <ol start="7">
+        <li><strong>Indépendance totale :</strong> aucune affiliation, commandite ou appui partisan; refus explicite de toute instrumentalisation du dossier, du nom de l'auteur ou de ses travaux.</li>
+        <li><strong>Équité de traitement :</strong> questionnaire identique, échéance unique et relances documentées pour toutes les formations.</li>
+        <li><strong>Transparence intégrale :</strong> publication des demandes envoyées, des réponses reçues, des accusés de réception, des redirections et des absences de réponse, avec horodatage. Les publications diffusées sur les réseaux sociaux sont explicitement présentées comme des résumés et renvoient systématiquement au document produit à l'identique sur le site web.</li>
+        <li><strong>Exactitude :</strong> transcription fidèle des échanges; les seules interventions autorisées sont la correction d'évidences matérielles (numérotation) et l'ajout de mentions factuelles (p. ex. « Reçue après l'échéance »).</li>
+        <li><strong>Protection des renseignements :</strong> avis de confidentialité joint aux envois (Loi 25, RGPD, Code civil du Québec); diffusion des adresses de courriel limitée aux métadonnées nécessaires à la transparence de l'enquête.</li>
+        <li><strong>Statut de l'auteur :</strong> l'enquête est menée par un citoyen mineur agissant en son nom personnel; ce statut n'accorde ni ne retire aucune valeur probante aux réponses reçues.</li>
+      </ol>
+
+      <!-- Section 11 -->
+      <h2>11. Limites de l'enquête</h2>
+      <p>La lecture des résultats doit tenir compte des limites suivantes, toutes documentées :</p>
+      <ol start="13">
+        <li><strong>Délai de réponse très court</strong> (environ 4 jours, du 7 au 11 septembre), imposé par le calendrier électoral et l'échéance fédérale de réponse à la CCE (16 octobre 2026). Certaines formations peuvent ne pas avoir été en mesure de produire une position officielle dans ce délai.</li>
+        <li><strong>Canaux génériques :</strong> plusieurs demandes ont été adressées à des boîtes courriel générales (<code>info@</code>, médias), sans garantie d'acheminement interne jusqu'à l'instance décisionnelle.</li>
+        <li><strong>Relances adaptatives :</strong> le nombre et le moment des relances ont été déterminés au cas par cas plutôt que par un protocole fixé d'avance; toutes les relances sont néanmoins consignées au journal chronologique du document d'étude.</li>
+        <li><strong>Contact tardif de Climat Québec</strong> (10 septembre 2026, moins de 24 h avant l'échéance); bien qu'aucun délai supplémentaire n'ait été accordé, une réponse officielle a été reçue le 11 septembre à 10 h 26 min HAE.</li>
+        <li><strong>Échecs de distribution :</strong> une adresse courriel n'a pas livré la relance (voir section 5.4); la CAQ a néanmoins reçu la demande par ses autres canaux officiels et son formulaire de contact.</li>
+        <li><strong>Preuves techniques :</strong> les échanges sont conservés dans la boîte courriel de l'auteur, mais aucun export formel des courriels originaux avec en-têtes complets n'a encore été réalisé. Recommandation à exécuter avant toute diffusion publique : exporter chaque courriel au format .eml (en-têtes complets) et archiver les notifications d'échec de distribution.</li>
+        <li><strong>Auto-déclaration des réponses :</strong> les positions publiées sont celles transmises par les formations elles-mêmes; elles n'engagent que leurs auteurs et ne font l'objet d'aucune vérification indépendante.</li>
+        <li><strong>Classement du PCQ :</strong> la réponse reçue le 11 septembre 2026 à 14 h 12 min HAE indiquant le refus de répondre a été classée sous le statut « Réponse reçue (décline de répondre) ».</li>
+        <li><strong>Identification des adresses et des canaux :</strong> les identifications de personnes, de fonctions, d'adresses et de canaux sont documentées de bonne foi à partir des informations dont disposait l'auteur; malgré la diligence exercée, elles peuvent comporter des erreurs ou omissions, lesquelles seront corrigées sur signalement (voir la note de bas de page de la section 3).</li>
+      </ol>
+
+      <!-- Section 12 -->
+      <h2>12. Reproductibilité et contact</h2>
+      <p>La présente méthodologie, le questionnaire et l'intégralité des verbatims sont publiés ensemble, au sein du document d'étude, afin que toute personne puisse vérifier le déroulement exact de l'enquête.</p>
+      <p><strong>Contact :</strong> William Guindon — <button class="btn-link js-secure-mail contact-button-clean" type="button" style="text-decoration: underline; color: var(--link); font-weight: 700; background: none; border: none; padding: 0; cursor: pointer;">guindonwilliam2@gmail.com</button> · <code>williamguindon.me</code> · Dossier CCE — <strong>SEM-26-003</strong></p>
+
+      <!-- Annexe -->
+      <h2>Annexe — État des réponses au moment de la rédaction (avant clôture de 16 h 00 HAE)</h2>
+      <div class="methodo-table-wrap">
+        <table class="methodo-table">
+          <thead>
+            <tr>
+              <th style="width: 30%;">Formation politique</th>
+              <th style="width: 25%;">Statut au 11 sept. (avant 16h)</th>
+              <th>Détails de réception &amp; horodatage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Parti libéral du Québec (PLQ)</strong></td>
+              <td><span class="badge-status badge-status-reponse">Réponse officielle</span></td>
+              <td>Reçue le 8 septembre 2026 à 07 h 06 min 44 s HAE (<code>contenu@plq.org</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Québec solidaire (QS)</strong></td>
+              <td><span class="badge-status badge-status-reponse">Réponse officielle</span></td>
+              <td>Reçue le 10 septembre 2026 à 15 h 12 min 25 s HAE (Fabien Tremblay, <code>fabien.tremblay@quebecsolidaire.net</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Parti conservateur du Québec (PCQ)</strong></td>
+              <td><span class="badge-status badge-status-decline">Décline de répondre</span></td>
+              <td>Réponse officielle reçue le 11 septembre 2026 à 14 h 12 min HAE par laquelle le parti décline de répondre à l'enquête.</td>
+            </tr>
+            <tr>
+              <td><strong>Coalition Avenir Québec (CAQ)</strong></td>
+              <td><span class="badge-status badge-status-accuse">Accusé de réception uniquement</span></td>
+              <td>Accusé de réception automatique reçu le 10 septembre 2026 à 09 h 32 min 09 s HAE (<code>info@coalitionavenirquebec.org</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Parti Québécois (PQ)</strong></td>
+              <td><span class="badge-status badge-status-accuse">Accusé de réception uniquement</span></td>
+              <td>Accusé de réception automatique reçu le 10 septembre 2026 à 09 h 37 min 58 s HAE (<code>info+noreply@pq.org</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Climat Québec</strong></td>
+              <td><span class="badge-status badge-status-reponse">Réponse officielle</span></td>
+              <td>Reçue le 11 septembre 2026 à 10 h 26 min HAE (<code>mcarchambault@climat.quebec</code>).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Clause de neutralité -->
+      <div class="neutrality-box">
+        <h3 style="margin-top: 0; color: var(--accent-deep, #10b981);">Clause de neutralité et de diffusion</h3>
+        <p>Cette enquête d'intérêt public est menée par William Guindon à titre de <strong>citoyen strictement indépendant</strong>. L'auteur n'est affilié à aucun parti politique ni groupe de pression.</p>
+        <ul>
+          <li><strong>Équité absolue :</strong> tous les partis politiques ont reçu exactement le même questionnaire, selon le même protocole.</li>
+          <li><strong>Neutralité stricte :</strong> les synthèses reposent uniquement sur les réponses écrites officielles reçues ou sur les archives publiques parlementaires. Elles ne constituent ni un appui ni une prise de position.</li>
+          <li><strong>Intégrité du document :</strong> la méthodologie, le carrousel et le rapport (publié à l'identique sur <code>williamguindon.me</code>) doivent être repartagés dans leur intégralité. Aucune formation politique ni aucun citoyen n'est autorisé à en extraire des parties isolées afin d'en déformer le contexte neutre.</li>
+        </ul>
+        <p style="font-size: 0.9rem; margin-bottom: 8px;">Méthodologie, carrousel et rapport complet sous licence <strong>CC BY-NC-ND 4.0</strong> (Attribution – Pas d'utilisation commerciale – Pas de modification).</p>
+        <p style="font-size: 0.9rem; margin-bottom: 0;">→ Dossier complet et correspondances : <a href="https://williamguindon.me/">williamguindon.me</a> · Signalement d'erreur : <button class="btn-link js-secure-mail contact-button-clean" type="button" style="text-decoration: underline; color: var(--link); font-weight: 700; background: none; border: none; padding: 0; cursor: pointer;">contact@williamguindon.me</button></p>
+      </div>
+
+      <!-- Liens finaux et impression -->
+      <div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; align-items: center;">
+        <div>Dossier CCE SEM-26-003 · williamguindon.me · Zenodo DOI: 10.5281/zenodo.22714995</div>
+        <div style="display: flex; gap: 10px;">
+          <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size: 0.85rem; padding: 6px 12px;">Télécharger PDF Zenodo ↗</a>
+          <button class="legal-print-button" type="button" aria-label="Imprimer la page">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
+            <span>Imprimer</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official citizen investigation &amp; CEC archive</span></div>
+    <div class="footer-licence-box">
+      Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/profile.php?id=61591437730054" target="_blank" rel="noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="footer-social-link">Archive Zenodo ↗</a>
+      <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="enquete-partis.html">Enquête citoyenne</a> · 
+      <a href="deontologie.html">Déontologie</a> · 
+      <a href="independance.html">Indépendance</a> · 
+      <a href="ia-ethique.html">Éthique IA</a> · 
+      <a href="anti-slapp.html">Anti-SLAPP</a> · 
+      <a href="embargo.html">Embargo &amp; Presse</a> · 
+      <a href="terms.html">Conditions d'utilisation</a> · 
+      <a href="privacy.html">Confidentialité</a> · 
+      <a href="blog.html">Blog</a> · 
+      <a href="viewer.html">Documents</a> · 
+      <a href="stablex.html">Dossier Stablex</a> · 
+      <a href="#main-content">Haut ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>
