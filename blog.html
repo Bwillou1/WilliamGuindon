@@ -129,6 +129,12 @@
     text-transform: uppercase;
     backdrop-filter: blur(4px);
   }
+  .blog-card-category.special {
+    background: #059669 !important;
+    color: #ffffff !important;
+    border: 1px solid #34d399 !important;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
   .blog-card-body {
     padding: 20px;
     display: flex;
@@ -257,6 +263,7 @@
             <span class="nav-dropdown-group-title">Enquête SEM-26-003</span>
             <div class="nav-dropdown-grid single-col">
               <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
+              <a href="enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
               <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
               <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
               <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
@@ -466,16 +473,23 @@
 
     posts.forEach(post => {
       const card = document.createElement("article");
-      card.className = "blog-card";
-      card.onclick = () => openArticleModal(post);
+      card.className = "blog-card" + (post.category === "Spécial" ? " special-card" : "");
+      card.onclick = () => {
+        if (post.externalUrl) {
+          window.location.href = post.externalUrl;
+        } else {
+          openArticleModal(post);
+        }
+      };
 
       const coverSrc = post.coverImage || "tourbiere.jpg";
       const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join("");
+      const isSpecial = post.category === "Spécial";
 
       card.innerHTML = `
         <div class="blog-card-img-wrap">
           <img src="${coverSrc}" alt="${post.title || 'Publication du carnet de bord'}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215">
-          <span class="blog-card-category">${post.category || "Actualité"}</span>
+          <span class="blog-card-category ${isSpecial ? 'special' : ''}">${post.category || "Actualité"}</span>
         </div>
         <div class="blog-card-body">
           <time class="blog-card-date">${post.date} · Par ${post.author || "William Guindon"}</time>
@@ -493,16 +507,23 @@
     const body = document.getElementById("modal-article-body");
     const coverHtml = post.coverImage ? `<img src="${post.coverImage}" alt="${post.title || 'Illustration article'}" class="article-full-img" loading="lazy" decoding="async" width="800" height="450">` : "";
     const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join(" ");
+    const isSpecial = post.category === "Spécial";
+    const actionBtn = post.externalUrl
+      ? `<a href="${post.externalUrl}" class="btn btn-primary" style="margin-right:10px;">Consulter le rapport officiel ↗</a>`
+      : "";
 
     body.innerHTML = `
-      <span class="blog-card-category blog-detail-category">${post.category || "Actualité"}</span>
+      <span class="blog-card-category blog-detail-category ${isSpecial ? 'special' : ''}">${post.category || "Actualité"}</span>
       <h1 class="blog-detail-title">${post.title}</h1>
       <time class="blog-detail-time">Publié le ${post.date} par ${post.author || "William Guindon"}</time>
       ${coverHtml}
       <div class="article-full-text">${post.content}</div>
       <div class="blog-detail-footer">
         <div class="blog-detail-tags">${tagsHtml}</div>
-        <button type="button" class="btn btn-primary" id="btn-share-post">Partager cet article</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          ${actionBtn}
+          <button type="button" class="btn btn-ghost" id="btn-share-post">Partager cet article</button>
+        </div>
       </div>
     `;
     modal.classList.add("open");

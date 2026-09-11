@@ -344,17 +344,17 @@
           .then(posts => {
             if (!posts || posts.length === 0) return;
             blogTrack.innerHTML = posts.slice(0, 6).map(p => `
-              <article class="blog-preview-card">
+              <article class="blog-preview-card ${p.category === 'Spécial' ? 'special-card' : ''}">
                 <div class="blog-preview-thumb">
                   <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title || 'Article du carnet de bord'}" loading="lazy" decoding="async" width="380" height="215">
-                  <span class="blog-preview-category">${p.category || 'Actualité'}</span>
+                  <span class="blog-preview-category ${p.category === 'Spécial' ? 'special' : ''}">${p.category || 'Actualité'}</span>
                 </div>
                 <div class="blog-preview-body">
                   <time class="blog-preview-date">${p.date} · Par ${p.author || 'William Guindon'}</time>
                   <h3 class="blog-preview-title">${p.title}</h3>
                   <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
                   <div class="blog-preview-footer">
-                    <a href="blog.html#${p.slug || p.id}" class="blog-preview-link">Lire l'article complet ↗</a>
+                    <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link">Lire l'article complet ↗</a>
                   </div>
                 </div>
               </article>
