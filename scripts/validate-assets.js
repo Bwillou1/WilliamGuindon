@@ -15,6 +15,7 @@ const CORE_FILES = [
   'viewer.html',
   'ai.html',
   'txt.html',
+  'politiques.html',
   'netiquette.html',
   'deontologie.html',
   'independance.html',
