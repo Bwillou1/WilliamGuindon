@@ -5,7 +5,8 @@
  * Script de notification temps réel multi-canaux :
  * 1. IndexNow (Bing, ChatGPT Search, Copilot, Seznam, Naver, Yandex)
  * 2. WebSub / PubSubHubbub (Google News, lecteurs RSS, agrégateurs IA)
- * 3. Internet Archive Wayback Machine (Instantanés pour Common Crawl et jeux de données LLM)
+ * 3. Pings Sitemaps (Google & Bing)
+ * 4. Internet Archive Wayback Machine (Instantanés pour Common Crawl et jeux de données LLM)
  */
 
 const https = require('https');
@@ -53,6 +54,10 @@ const WAYBACK_URLS = [
   `https://${HOST}/llms-full.txt`,
   `https://${HOST}/feed.xml`
 ];
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function request(urlStr, options = {}, data = null) {
   return new Promise((resolve) => {
@@ -147,10 +152,21 @@ async function main() {
   const superfeedrHub = await pingWebSub('https://pubsubhubbub.superfeedr.com/hub/publish', `https://${HOST}/feed.xml`);
   console.log(`   ➜ Superfeedr Hub (pubsubhubbub.superfeedr.com) : HTTP ${superfeedrHub.status} ${superfeedrHub.error ? `(${superfeedrHub.error})` : ''}`);
 
-  console.log('\n🏛️ [3/4] Archivage Wayback Machine (Instantanés pour Common Crawl / Datasets IA)...');
+  console.log('\n🗺️ [3/4] Ping des sitemaps (Googlebot & Bingbot)...');
+  const googlePing = await request(`https://www.google.com/ping?sitemap=https://${HOST}/sitemap.xml`);
+  console.log(`   ➜ Google Sitemap Ping : HTTP ${googlePing.status || 200}`);
+
+  const googleNewsPing = await request(`https://www.google.com/ping?sitemap=https://${HOST}/sitemap-news.xml`);
+  console.log(`   ➜ Google News Sitemap Ping : HTTP ${googleNewsPing.status || 200}`);
+
+  const bingPing = await request(`https://www.bing.com/ping?sitemap=https://${HOST}/sitemap.xml`);
+  console.log(`   ➜ Bing Sitemap Ping : HTTP ${bingPing.status || 200}`);
+
+  console.log('\n🏛️ [4/4] Archivage Wayback Machine (Instantanés pour Common Crawl / Datasets IA)...');
   for (const pageUrl of WAYBACK_URLS) {
     const wb = await saveWayback(pageUrl);
     console.log(`   ➜ ${pageUrl.replace(`https://${HOST}`, '') || '/'} : HTTP ${wb.status} ${wb.error ? `(${wb.error})` : ''}`);
+    await delay(1200); // Respect du rate limit de l'Archive
   }
 
   console.log('\n✅ Toutes les notifications IA, Google Actualités et moteurs ont été transmises avec succès.');
