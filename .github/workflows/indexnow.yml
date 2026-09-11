@@ -26,6 +26,7 @@ jobs:
               "keyLocation": "https://williamguindon.me/8781d75e5905f04a95157c0c264d928b.txt",
               "urlList": [
                 "https://williamguindon.me/",
+                "https://williamguindon.me/enquete-partis.html",
                 "https://williamguindon.me/stablex.html",
                 "https://williamguindon.me/presse.html",
                 "https://williamguindon.me/communiques.html",
@@ -41,4 +42,6 @@ jobs:
       - name: Archive Wayback Machine (preuve d'anteriorite + crawl IA)
         run: |
           curl -s "https://web.archive.org/save/https://williamguindon.me/" \
-            -o /dev/null -w "Wayback HTTP: %{http_code}\n" || true
+            -o /dev/null -w "Wayback Home HTTP: %{http_code}\n" || true
+          curl -s "https://web.archive.org/save/https://williamguindon.me/enquete-partis.html" \
+            -o /dev/null -w "Wayback Enquete HTTP: %{http_code}\n" || true
