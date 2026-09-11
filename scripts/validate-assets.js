@@ -28,6 +28,7 @@ const CORE_FILES = [
   'statut-mineur.html',
   'vie-privee-parents.html',
   'sitemap.xml',
+  'sitemap-news.xml',
   'feed.xml',
   'manifest.json',
   'status.json',
