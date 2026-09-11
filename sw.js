@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v24';
+const CACHE_NAME = 'wg-pwa-v25';
 const MAX_CACHE_ENTRIES = 75;
 
 const ASSETS_TO_CACHE = [
@@ -47,6 +47,8 @@ const ASSETS_TO_CACHE = [
   '/icon-192.png',
   '/icon-512.png',
   '/og-image.jpg',
+  '/assets/media/william-guindon.jpg',
+  '/assets/media/william-guindon.webp',
   '/feed.xml',
   '/status.json'
 ];
