@@ -4124,6 +4124,14 @@ body.ai-sidebar-active {
   transition: margin-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+body.ai-sidebar-active .floating-ai-btn,
+.ai-modal-overlay.active ~ .floating-ai-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(24px) scale(0.85);
+}
+
 @media (min-width: 901px) {
   .ai-modal-overlay {
     position: fixed;
