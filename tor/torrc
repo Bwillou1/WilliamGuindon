@@ -1,0 +1,23 @@
+# ==============================================================================
+# Configuration Service Caché Tor v3 (Onion) — William Guindon
+# Dossier CCE SEM-26-003 · Grande Tourbière de Blainville & Stablex
+# ==============================================================================
+
+# Port de contrôle Tor (optionnel, pour statut et monitoring)
+ControlPort 9051
+
+# Répertoire des données Tor
+DataDirectory /var/lib/tor
+
+# Configuration du Service Caché v3
+HiddenServiceDir /var/lib/tor/williamguindon_hidden_service/
+HiddenServiceVersion 3
+HiddenServicePort 80 127.0.0.1:8080
+
+# Directives de sécurité et d'anonymat renforcées
+HiddenServiceAllowUnknownPorts 0
+HiddenServiceSingleHopMode 0
+HiddenServiceNonAnonymousMode 0
+
+# Logs de fonctionnement
+Log notice stdout

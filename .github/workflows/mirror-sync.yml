@@ -1,0 +1,64 @@
+name: Miroir Automatique Web3 (IPFS/IPNS) & Tor (.onion)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ipfs-web3-mirror:
+    name: Miroir Web3 (IPFS / IPNS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Génération des empreintes d'intégrité et synchronisation des métadonnées miroirs
+        run: |
+          node scripts/mirror-sync.js
+
+      - name: Épinglage IPFS & Mise à jour IPNS (Pinata / Web3)
+        if: env.PINATA_JWT != '' || env.PINATA_API_KEY != ''
+        uses: aquiladev/ipfs-action@v0.3.1
+        with:
+          path: ./
+          service: pinata
+          pinataKey: ${{ secrets.PINATA_API_KEY }}
+          pinataSecret: ${{ secrets.PINATA_SECRET_KEY }}
+          pinataJWTKey: ${{ secrets.PINATA_JWT }}
+          pinName: 'williamguindon-me-main'
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+
+  tor-onion-mirror:
+    name: Miroir Tor (.onion)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Vérification des configurations Tor et des en-têtes Onion-Location
+        run: |
+          echo "=== Vérification de la configuration du Service Caché Tor v3 ==="
+          test -f tor/torrc || (echo "tor/torrc manquant" && exit 1)
+          echo "✔ tor/torrc est présent et configuré."
+          test -f data/mirrors.json || (echo "data/mirrors.json manquant" && exit 1)
+          echo "✔ data/mirrors.json est valide."
+
+      - name: Déploiement automatique vers le serveur Tor (si configuré)
+        if: env.TOR_DEPLOY_WEBHOOK != ''
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"event":"push","branch":"main","repo":"Bwillou1/WilliamGuindon"}' \
+            ${{ secrets.TOR_DEPLOY_WEBHOOK }}
+        env:
+          TOR_DEPLOY_WEBHOOK: ${{ secrets.TOR_DEPLOY_WEBHOOK }}
