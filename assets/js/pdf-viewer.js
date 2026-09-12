@@ -763,8 +763,8 @@
         <tr><td class="label">Date :</td><td class="value">${info.CreationDate ? formatPDFDate(info.CreationDate) : '2026'}</td></tr>
         <tr><td class="label">Licence :</td><td class="value"><span style="background:rgba(34,197,94,0.15); color:var(--accent); font-weight:700; padding:2px 6px; border-radius:4px; font-size:11px;">CC BY-NC-ND 4.0</span></td></tr>
         ${catalogItem && catalogItem.sha256 ? `<tr><td class="label">SHA-256 :</td><td class="value"><code style="font-size:11px; word-break:break-all; background:rgba(0,0,0,0.06); padding:2px 4px; border-radius:3px;">${catalogItem.sha256}</code></td></tr>` : ''}
-        ${catalogItem && catalogItem.ipfsUrl ? `<tr><td class="label">Miroir IPFS :</td><td class="value"><a href="${catalogItem.ipfsUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:700;">Consulter sur dweb.link ↗</a></td></tr>` : ''}
-        <tr><td class="label">Fichier source :</td><td class="value"><a href="${state.currentFile}" download style="color:var(--accent); font-weight:700;">Télécharger le binaire original ↗</a></td></tr>
+        ${catalogItem ? `<tr><td class="label">Miroir Git (Raw) :</td><td class="value"><a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/${catalogItem.file}" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:700;">Ouvrir la copie certifiée Git ↗</a></td></tr>` : ''}
+        <tr><td class="label">Fichier local :</td><td class="value"><a href="${state.currentFile}" download style="color:var(--accent); font-weight:700;">Télécharger le binaire original ↗</a></td></tr>
       `;
       dom.docMetaTable.innerHTML = html;
     } catch (e) {
