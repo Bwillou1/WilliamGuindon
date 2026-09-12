@@ -121,6 +121,10 @@
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </button>
 
+        <button type="button" id="btn-cite" class="tool-btn" title="Citer ce document (BibTeX / RIS / APA)" aria-label="Citer ce document">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 12h6M9 16h4"></path></svg>
+        </button>
+
         <button type="button" id="btn-print" class="tool-btn" title="Imprimer le document" aria-label="Imprimer">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         </button>
@@ -353,7 +357,11 @@
         <div class="license-citation-box">
           <div class="citation-label-row">
             <span>Citation Recommandée (ISO 690 / APA / Juridique) :</span>
-            <button id="btn-copy-citation" class="btn-copy-mini" type="button" title="Copier la citation">Copier Citation</button>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button id="btn-copy-citation" class="btn-copy-mini" type="button" title="Copier la citation texte">Copier</button>
+              <button id="btn-export-bibtex" class="btn-copy-mini" type="button" title="Télécharger le fichier BibTeX (.bib) pour Zotero / LaTeX">BibTeX (.bib)</button>
+              <button id="btn-export-ris" class="btn-copy-mini" type="button" title="Télécharger le fichier RIS (.ris) pour Mendeley / EndNote">RIS (.ris)</button>
+            </div>
           </div>
           <div id="license-citation-text" class="citation-content">Guindon, W. (2026). SEM-26-003. Commission de coopération environnementale.</div>
         </div>

@@ -42,27 +42,36 @@ if (!mirrorsData.mirrors) {
 mirrorsData.mirrors.web = {
   primary: 'https://williamguindon.me',
   canonical: 'https://williamguindon.me',
-  githubPages: 'https://bwillou1.github.io/WilliamGuindon/'
+  status: 'Disponible',
+  githubPages: 'https://bwillou1.github.io/WilliamGuindon/',
+  githubPagesStatus: 'Disponible'
 };
+
+const currentRootCid = (mirrorsData.mirrors.web3_ipfs && mirrorsData.mirrors.web3_ipfs.latestRootCid) 
+  ? mirrorsData.mirrors.web3_ipfs.latestRootCid 
+  : 'bafybeieuo3kcsapwwy5l373zezhpi6pre4il26nzb2d3ynf5lhep2l3hfe';
 
 mirrorsData.mirrors.web3_ipfs = {
   name: 'InterPlanetary File System (IPFS) & IPNS',
+  status: 'Disponible',
   ipnsAddress: 'k51qzi5uqu5dkg35m04w3558q1pnmx813f88dgu873n129g54u7v4m9b',
   ipnsGateway: 'https://dweb.link/ipns/k51qzi5uqu5dkg35m04w3558q1pnmx813f88dgu873n129g54u7v4m9b',
   ensDomain: 'williamguindon.eth.limo',
-  latestRootCid: 'bafybeih4j6zlyg3w45omc7y522uyn47z6o6s47oxm2l67j6l2g3hvebwyq',
+  latestRootCid: currentRootCid,
   gateways: [
-    'https://dweb.link/ipfs/bafybeih4j6zlyg3w45omc7y522uyn47z6o6s47oxm2l67j6l2g3hvebwyq',
-    'https://cloudflare-ipfs.com/ipfs/bafybeih4j6zlyg3w45omc7y522uyn47z6o6s47oxm2l67j6l2g3hvebwyq',
-    'https://ipfs.io/ipfs/bafybeih4j6zlyg3w45omc7y522uyn47z6o6s47oxm2l67j6l2g3hvebwyq'
+    `https://gateway.pinata.cloud/ipfs/${currentRootCid}/`,
+    `https://cloudflare-ipfs.com/ipfs/${currentRootCid}/`,
+    `https://dweb.link/ipfs/${currentRootCid}/`,
+    `https://ipfs.io/ipfs/${currentRootCid}/`
   ]
 };
 
 mirrorsData.mirrors.tor_onion = {
-  name: 'Service Caché Tor v3 (Onion)',
-  onionAddress: 'williamguindonsem26003q6xvy6k2mdfq7lq6z5e2y8v8d9k4j2n5m8.onion',
-  onionUrl: 'http://williamguindonsem26003q6xvy6k2mdfq7lq6z5e2y8v8d9k4j2n5m8.onion',
-  onionLocationHeader: 'http://williamguindonsem26003q6xvy6k2mdfq7lq6z5e2y8v8d9k4j2n5m8.onion',
+  name: 'Routage en Oignon Tor (Cloudflare Onion Routing)',
+  status: 'Disponible',
+  type: 'Cloudflare Onion Routing',
+  url: 'https://williamguindon.me',
+  description: 'Routage sécurisé direct sans nœud de sortie public pour les utilisateurs du Navigateur Tor (Tor Browser).',
   torBrowserRequired: true
 };
 

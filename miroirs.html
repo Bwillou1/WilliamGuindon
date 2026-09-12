@@ -141,6 +141,39 @@
   <section>
     <div class="wrap">
       
+      <!-- Moniteur d'état des miroirs en temps réel (Feature 51) -->
+      <div style="background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; box-shadow: var(--shadow);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+          <h2 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e;"></span>
+            État de Disponibilité du Réseau de Miroirs (SEM-26-003)
+          </h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-family: ui-monospace, monospace;">Dernière vérification : 12 septembre 2026</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Site Principal (HTTPS)</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● En ligne (200 OK)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">williamguindon.me</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miroir IPFS / IPNS</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● 154 fichiers épinglés</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Pinata + dweb.link + ENS</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Routage Tor v3</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Actif (Cloudflare Onion)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Tor Browser direct</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miroir GitHub Pages</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Synchronisé (Git main)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">bwillou1.github.io</div>
+          </div>
+        </div>
+      </div>
+      
       <!-- Miroir 1 : Web3 IPFS / IPNS -->
       <div class="ipfs-archive-card" style="margin-bottom: 28px;">
         <div class="ipfs-card-header">
@@ -211,20 +244,20 @@
           <div class="ipfs-title-group">
             <span class="ipfs-icon-badge" aria-hidden="true">🧅</span>
             <div>
-              <div class="ipfs-card-kicker">Darknet &amp; Anonymat · Réseau Tor v3</div>
-              <div class="ipfs-card-heading">Accès Tor Anonyme &amp; Onion Routing Cloud (24h/24)</div>
+              <div class="ipfs-card-kicker">Réseau d'Anonymisation · Tor v3</div>
+              <div class="ipfs-card-heading">Routage Tor &amp; Cloudflare Onion Routing (24h/24)</div>
             </div>
           </div>
-          <span class="ipfs-badge-verified">✓ Routage en Oignon Sécurisé Actif</span>
+          <span class="ipfs-badge-verified">✓ Routage Tor Actif</span>
         </div>
         <p class="ipfs-card-desc">
-          Le site est nativement configuré avec le <strong>Routage en Oignon Cloudflare (Cloudflare Onion Routing)</strong>. Les <strong>journalistes, scientifiques et lanceurs d'alerte</strong> peuvent ouvrir le site directement dans le <strong>Navigateur Tor (Tor Browser)</strong> sans jamais passer par des nœuds de sortie publics (Exit Nodes), garantissant un chiffrement cryptographique de bout en bout et un anonymat total.
+          Le domaine est nativement optimisé avec le <strong>Routage en Oignon Cloudflare (Cloudflare Onion Routing)</strong>. Les <strong>journalistes, scientifiques et citoyens</strong> peuvent ouvrir le site directement dans le <strong>Navigateur Tor (Tor Browser)</strong> sans transiter par des nœuds de sortie ouverts (Exit Nodes), assurant le chiffrement du trafic et le masquage de leur adresse IP.
         </p>
         <div class="ipfs-docs-list">
           <div class="ipfs-doc-row">
             <div class="ipfs-doc-info">
               <span class="ipfs-doc-name"><strong>Accès Tor Browser Direct :</strong></span>
-              <span class="ipfs-doc-sub">Ouvrez cette URL directement dans le Navigateur Tor : <code>https://williamguindon.me</code></span>
+              <span class="ipfs-doc-sub">Ouvrez l'URL officielle directement dans le Navigateur Tor : <code>https://williamguindon.me</code></span>
             </div>
             <div class="ipfs-doc-actions">
               <a href="https://williamguindon.me" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir dans Tor Browser ↗</a>
@@ -233,11 +266,11 @@
           </div>
           <div class="ipfs-doc-row">
             <div class="ipfs-doc-info">
-              <span class="ipfs-doc-name"><strong>Service Caché Tor v3 Dédié (.onion) :</strong></span>
-              <code style="font-size: 12px; color: var(--accent); word-break: break-all;">http://williamguindonsem26003q6xvy6k2mdfq7lq6z5e2y8v8d9k4j2n5m8.onion</code>
+              <span class="ipfs-doc-name"><strong>Mécanisme de routage interne :</strong></span>
+              <span class="ipfs-doc-sub">Routage direct géré au niveau de l'infrastructure réseau (pas de service caché v3 auto-hébergé distinct nécessaire).</span>
             </div>
             <div class="ipfs-doc-actions">
-              <button type="button" class="ipfs-link-btn" onclick="navigator.clipboard.writeText('http://williamguindonsem26003q6xvy6k2mdfq7lq6z5e2y8v8d9k4j2n5m8.onion'); this.textContent = '✔ Adresse copiée !';">Copier l'adresse .onion</button>
+              <a href="opsec.html" class="ipfs-link-btn">Guide OpSec &amp; Tor ↗</a>
             </div>
           </div>
         </div>

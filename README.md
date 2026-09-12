@@ -19,7 +19,7 @@
 
 ## 📌 Aperçu
 
-**William Guindon** (né le 3 août 2011 à Sainte-Marthe-sur-le-Lac, Québec, Canada) est un militant écologiste québécois et étudiant à l'Externat Sacré-Cœur de Rosemère. Il est l'auteur de la communication citoyenne internationale **SEM-26-003** auprès de la Commission de coopération environnementale (CCE / ACEUM) visant la protection de la **Grande Tourbière de Blainville** contre l'expansion du site d'enfouissement de déchets dangereux Stablex.
+**William Guindon** (né en 2011 au Québec, Canada) est un militant écologiste québécois et étudiant dans les Laurentides. Il est l'auteur de la communication citoyenne internationale **SEM-26-003** auprès de la Commission de coopération environnementale (CCE / ACEUM) visant la protection de la **Grande Tourbière de Blainville** contre l'expansion du site d'enfouissement de déchets dangereux Stablex.
 
 Ce dépôt GitHub constitue la source de vérité publique hébergeant le site officiel, les intégrations pour modèles de langage (LLMs / Agents IA), ainsi que le registre documentaire des décisions et pièces juridiques.
 
@@ -31,7 +31,7 @@ Ce dépôt GitHub constitue la source de vérité publique hébergeant le site o
 - **1ᵉʳ mai 2026** — Dépôt de la communication officielle **[SEM-26-003](https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/)** auprès de la Commission de coopération environnementale (CCE / ACEUM).
 - **Mai 2026** — Transmission d'une [Déposition formelle et appel urgent (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf) au Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (*Dr Marcos A. Orellana*).
 - **16 juillet 2026** — Dépôt de la [Communication révisée SEM-26-003 (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf) au Secrétariat de la CCE.
-- **17 août 2026** — **[Détermination positive historique de la CCE (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-2-det2_fr.pdf)** : le Secrétariat ordonne une réponse officielle du gouvernement du Canada avant le **16 octobre 2026**.
+- **17 août 2026** — **[Détermination positive historique de la CCE (PDF)](https://williamguindon.me/viewer.html?file=assets/docs/26-2-det2_fr.pdf)** : le Secrétariat valide la recevabilité de la communication et demande une réponse officielle du gouvernement du Canada avant le **16 octobre 2026** (art. 24.27(2) & 24.27(3) de l'ACEUM).
 - **Couverture médiatique** : [The Rover](https://therover.ca/blainville-teenager-takes-stablex-fight-international/) · [Le Devoir](https://www.ledevoir.com/) · [CBC News](https://www.cbc.ca/) · [Journal de Montréal](https://www.journaldemontreal.com/2021/11/28/francois-legault-felicite-le-premier-enfant-vaccine-1).
 
 ---

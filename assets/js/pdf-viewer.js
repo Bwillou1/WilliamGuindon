@@ -203,7 +203,10 @@
     btnConfirmDownload: document.getElementById('btn-confirm-download'),
     btnCopyShareLink: document.getElementById('btn-copy-share-link'),
     btnCopyHash: document.getElementById('btn-copy-hash'),
-    btnCopyCitation: document.getElementById('btn-copy-citation')
+    btnCopyCitation: document.getElementById('btn-copy-citation'),
+    btnCite: document.getElementById('btn-cite'),
+    btnExportBibtex: document.getElementById('btn-export-bibtex'),
+    btnExportRis: document.getElementById('btn-export-ris')
   };
 
   /**
@@ -915,6 +918,60 @@
     } else if (tabName === 'ai') {
       checkViewerAiCapabilities();
       if (dom.viewerChatInput) setTimeout(() => dom.viewerChatInput.focus(), 150);
+    } else if (tabName === 'info') {
+      renderDocInfoPane();
+    }
+  }
+
+  function renderDocInfoPane() {
+    if (!dom.paneInfo) return;
+    const doc = getCurrentDocInfo();
+    dom.paneInfo.innerHTML = `
+      <div style="padding: 16px;">
+        <h4 style="font-size: 1.05rem; margin: 0 0 12px; color: var(--text);">${escapeHTML(doc.title)}</h4>
+        <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 16px;">
+          <div><strong>Auteur :</strong> ${escapeHTML(doc.author)}</div>
+          <div><strong>Date :</strong> ${escapeHTML(doc.date || '2026')}</div>
+          <div><strong>Pages :</strong> ${state.totalPages}</div>
+          <div><strong>Licence :</strong> CC BY-NC-ND 4.0 International</div>
+          <div style="margin-top: 8px;"><strong>Empreinte SHA-256 :</strong></div>
+          <code style="font-size: 11px; word-break: break-all; color: var(--accent); background: var(--bg-card); padding: 4px 6px; border-radius: 4px; display: block; margin-top: 4px;">${escapeHTML(doc.sha256)}</code>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+          <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 6px;">Citation Académique &amp; Juridique</div>
+          <p style="font-size: 0.8rem; margin: 0 0 10px; line-height: 1.5; color: var(--text);">${escapeHTML(doc.citation)}</p>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="btn-copy-mini" id="sidebar-btn-copy-cit">Copier</button>
+            <button type="button" class="btn-copy-mini" id="sidebar-btn-bibtex">BibTeX (.bib)</button>
+            <button type="button" class="btn-copy-mini" id="sidebar-btn-ris">RIS (.ris)</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" id="sidebar-btn-full-license" style="width: 100%; font-size: 0.88rem; padding: 8px 12px;">
+          Certificat de licence &amp; Téléchargement
+        </button>
+      </div>
+    `;
+
+    const btnCop = dom.paneInfo.querySelector('#sidebar-btn-copy-cit');
+    const btnBib = dom.paneInfo.querySelector('#sidebar-btn-bibtex');
+    const btnRis = dom.paneInfo.querySelector('#sidebar-btn-ris');
+    const btnFull = dom.paneInfo.querySelector('#sidebar-btn-full-license');
+
+    if (btnCop) {
+      btnCop.addEventListener('click', () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(doc.citation).then(() => showToast("Citation copiée !"));
+        }
+      });
+    }
+    if (btnBib && dom.btnExportBibtex) {
+      btnBib.addEventListener('click', () => dom.btnExportBibtex.click());
+    }
+    if (btnRis && dom.btnExportRis) {
+      btnRis.addEventListener('click', () => dom.btnExportRis.click());
+    }
+    if (btnFull) {
+      btnFull.addEventListener('click', () => openLicenseDialog());
     }
   }
 
@@ -1158,6 +1215,73 @@
       });
     }
 
+    function getCurrentDocInfo() {
+      const key = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
+      return (key && DOCS_CATALOG[key]) ? DOCS_CATALOG[key] : {
+        title: state.currentFile.split('/').pop(),
+        file: state.currentFile,
+        author: "William Guindon",
+        date: "2026",
+        sha256: "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710",
+        citation: "Guindon, W. (2026). Document officiel SEM-26-003. Commission de coopération environnementale."
+      };
+    }
+
+    function downloadFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    if (dom.btnExportBibtex) {
+      dom.btnExportBibtex.addEventListener('click', () => {
+        const doc = getCurrentDocInfo();
+        const bibKey = (doc.file ? doc.file.split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_') : 'sem26003_doc');
+        const bibContent = `@misc{${bibKey}_2026,
+  author = {${doc.author || 'Guindon, William'}},
+  title = {${doc.title || 'Document officiel SEM-26-003'}},
+  year = {2026},
+  howpublished = {Commission de coopération environnementale (CCE / ACEUM)},
+  url = {https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}},
+  note = {Dossier CCE SEM-26-003 · Empreinte SHA-256: ${doc.sha256 || ''}}
+}
+`;
+        downloadFile(`${bibKey}.bib`, bibContent, 'application/x-bibtex;charset=utf-8');
+        showToast("Fichier BibTeX (.bib) téléchargé !");
+      });
+    }
+
+    if (dom.btnExportRis) {
+      dom.btnExportRis.addEventListener('click', () => {
+        const doc = getCurrentDocInfo();
+        const risKey = (doc.file ? doc.file.split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_') : 'sem26003_doc');
+        const risContent = `TY  - ELEC
+AU  - ${doc.author || 'Guindon, William'}
+TI  - ${doc.title || 'Document officiel SEM-26-003'}
+PY  - 2026
+PB  - Commission de coopération environnementale
+UR  - https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}
+M3  - Dossier CCE SEM-26-003
+N1  - Empreinte SHA-256: ${doc.sha256 || ''}
+ER  - 
+`;
+        downloadFile(`${risKey}.ris`, risContent, 'application/x-research-info-systems;charset=utf-8');
+        showToast("Fichier RIS (.ris) téléchargé !");
+      });
+    }
+
+    if (dom.btnCite) {
+      dom.btnCite.addEventListener('click', () => {
+        openLicenseDialog();
+      });
+    }
+
     if (dom.btnCopyShareLink) {
       dom.btnCopyShareLink.addEventListener('click', () => {
         const shareUrl = `${window.location.origin}${window.location.pathname}?file=${encodeURIComponent(state.currentFile)}#page=${state.currentPage}`;
@@ -1396,7 +1520,7 @@
       date: "2026",
       pages: state.totalPages,
       type: "Pièce documentaire officielle",
-      sha256: "15edd3a2bec9cb88fdddece208291172711518b1d2465aa2db255a01247ff149",
+      sha256: "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710",
       citation: `Guindon, W. (2026). Document officiel SEM-26-003. Commission de coopération environnementale.`,
       author: "William Guindon",
       license: "Creative Commons CC BY-NC-ND 4.0 International"
