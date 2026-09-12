@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v25';
+const CACHE_NAME = 'wg-pwa-v26';
 const MAX_CACHE_ENTRIES = 75;
 
 const ASSETS_TO_CACHE = [
@@ -158,7 +158,17 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Notifications Web & CCE Milestone Alerts
+// Gestionnaire de messages (Skip Waiting & Purge immédiate)
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING' || event.data?.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+  if (event.data === 'PURGE_CACHE' || event.data?.action === 'purgeCache') {
+    caches.keys().then((keys) => Promise.all(keys.map(k => caches.delete(k))));
+  }
+});
+
+// Notifications Web & Alertes d'échéance CCE
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const urlToOpen = event.notification.data?.url || '/';
@@ -176,3 +186,5 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+
+

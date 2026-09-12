@@ -225,6 +225,22 @@
         }
       }
 
+      // Bouton Recherche Rapide Globale (Cmd+K)
+      let searchBtn = nav.querySelector('.nav-search-btn');
+      if (!searchBtn) {
+        searchBtn = document.createElement('button');
+        searchBtn.className = 'nav-search-btn';
+        searchBtn.type = 'button';
+        searchBtn.setAttribute('aria-label', 'Recherche instantanée (⌘K)');
+        searchBtn.innerHTML = `
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span class="nav-search-text">Recherche</span>
+          <kbd class="nav-search-kbd">⌘K</kbd>
+        `;
+        nav.insertBefore(searchBtn, nav.firstChild);
+        searchBtn.addEventListener('click', () => openQuickSearch());
+      }
+
       // Bouton Mode Sombre / Clair
       let toggleBtn = nav.querySelector('.theme-toggle-btn');
       if (!toggleBtn) {
@@ -704,14 +720,47 @@
       setInterval(updatePrecisionCountdown, 1000);
     }
 
-    // PWA & Service Worker
+    // PWA & Service Worker avec vérification instantanée des mises à jour
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
           .then((reg) => {
+            // Forcer la vérification de mise à jour dès l'ouverture
+            reg.update().catch(() => {});
+
+            // Si un nouveau worker est en attente, le promouvoir immédiatement
+            if (reg.waiting) {
+              reg.waiting.postMessage('SKIP_WAITING');
+            }
+
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    newWorker.postMessage('SKIP_WAITING');
+                  }
+                });
+              }
+            });
+
             checkBackgroundFeedUpdates(reg);
           })
           .catch((err) => { if (DEBUG) console.log('SW registration skipped:', err); });
+      });
+
+      // Rechargement transparent sans cache lors du déploiement d'une nouvelle version
+      let isRefreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          window.location.reload();
+        }
+      });
+
+      // Re-vérifier l'état du site dès que l'utilisateur revient sur l'onglet
+      window.addEventListener('focus', () => {
+        navigator.serviceWorker.getRegistration().then(reg => reg?.update().catch(() => {}));
       });
     }
 
@@ -989,9 +1038,209 @@
 
     window.downloadCceIcs = generateAndDownloadCceIcs;
 
+    initQuickSearch();
     initScrollReveal();
     handleLowBandwidth();
   }
+
+  // --- RECHERCHE INSTANTANÉE GLOBALE (CMD+K / CTRL+K) ---
+  const SEARCH_INDEX = [
+    // Pages principales
+    { title: "Accueil & Biographie Officielle", desc: "William Guindon, démarche citoyenne SEM-26-003 et faits officiels", url: "index.html", tag: "Page" },
+    { title: "Registre CCE SEM-26-003", desc: "Portail officiel intégré de la Commission de coopération environnementale", url: "registre.html", tag: "Registre" },
+    { title: "Enquête Citoyenne : Partis Politiques", desc: "Positionnement des partis québécois et fédéraux face à Stablex", url: "enquete-partis.html", tag: "Rapport" },
+    { title: "Revue de Presse & Couverture Médiatique", desc: "Radio-Canada, Le Devoir, La Presse, The Rover, TVBL, Les As de l'info", url: "presse.html", tag: "Presse" },
+    { title: "Dossier Stablex & Grande Tourbière", desc: "Enjeux de la cellule 6 et sauvegarde des milieux humides de Blainville", url: "stablex.html", tag: "Dossier" },
+    { title: "Communiqués Officiels", desc: "Avis publics, annonces et déclarations de presse de William Guindon", url: "communiques.html", tag: "Presse" },
+    { title: "Horloge Live — Échéance 16 Octobre 2026", desc: "Compte à rebours temps réel de la réponse obligatoire du Canada", url: "live.html", tag: "Direct" },
+    { title: "Lecteur de Documents PDF Officiels", desc: "Visionneuse haute fidélité des décisions CCE et soumissions intégrales", url: "viewer.html", tag: "Documents" },
+    { title: "Espace IA & Registre Technique", desc: "Hub de données ouvertes, prompt ai.txt et exports pour modèles LLM", url: "ai.html", tag: "IA" },
+    { title: "Version Texte Ultra-Légère", desc: "Édition textuelle éco-conçue sans JavaScript pour connexions lentes", url: "txt.html", tag: "Éco" },
+    { title: "Galerie Photos & Milieux Naturels", desc: "Photographies authentiques de la Grande Tourbière de Blainville", url: "photos.html", tag: "Photos" },
+    { title: "Messagerie Chiffrée & Lanceurs d'alerte", desc: "Canal confidentiel anonyme de bout en bout (Nostr / Session)", url: "messagerie.html", tag: "Sécurité" },
+    { title: "Ligne Déontologique & Indépendance", desc: "Autonomie citoyenne intégrale et refus de tout financement partisan", url: "deontologie.html", tag: "Éthique" },
+    { title: "Politique Anti-SLAPP & Protection", desc: "Protection juridique contre les poursuites-bâillons et intimidation", url: "anti-slapp.html", tag: "Droit" },
+    { title: "Traçabilité & Empreintes SHA-256", desc: "Intégrité cryptographique et archivage immuable des pièces", url: "tracabilite.html", tag: "Sécurité" },
+
+    // Lois & Articles Juridiques
+    { title: "Loi 93 (Québec - Bâillon du 28 mars 2025)", desc: "Expropriation forcée des terrains municipaux et clauses privatives", url: "stablex.html#loi93", tag: "Loi" },
+    { title: "Rapport 371 du BAPE (Septembre 2023)", desc: "Avis défavorable et recommandation de refus environnemental", url: "stablex.html#bape", tag: "Rapport" },
+    { title: "ACEUM — Chapitre 24 (Articles 24.27 & 24.28)", desc: "Procédure internationale de communication citoyenne en environnement", url: "registre.html", tag: "Traité" },
+    { title: "Loi sur la convention concernant les oiseaux migrateurs (LCOM)", desc: "Loi fédérale canadienne protégeant 132 espèces répertoriées", url: "viewer.html?file=assets/docs/26-3-det_fr.pdf", tag: "Loi" },
+    { title: "Loi sur les espèces en péril (LEP)", desc: "Protection des chauves-souris et faune menacée de la tourbière", url: "viewer.html?file=assets/docs/26-3-det_fr.pdf", tag: "Loi" },
+    { title: "Déposition Formelle à l'ONU (Genève)", desc: "Mémoire transmis au Rapporteur spécial Dr Marcos A. Orellana", url: "viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf", tag: "ONU" },
+
+    // Faits clés & Chiffres
+    { title: "Échéance Légale du 16 Octobre 2026", desc: "Date limite impérative fixée par la CCE pour la réponse du Canada", url: "live.html", tag: "Échéance" },
+    { title: "Détermination Positive CCE (17 août 2026)", desc: "Validation historique de l'admissibilité de la communication SEM-26-003", url: "viewer.html?file=assets/docs/26-3-det_fr.pdf", tag: "Décision" },
+    { title: "Contamination au Cadmium (320x les seuils)", desc: "Concentrations toxiques mesurées dans les eaux de drainage", url: "index.html#faits", tag: "Science" },
+    { title: "Grande Tourbière de Blainville (278 000 m²)", desc: "Milieu humide rare, réservoir de biodiversité et puits de carbone", url: "index.html#faits", tag: "Écosystème" },
+    { title: "16 Experts Scientifiques Consultatifs", desc: "Biologistes, professeurs et juristes indépendants ayant appuyé la démarche", url: "experts.html", tag: "Science" },
+    { title: "Contact Courriel & Demandes Officielles", desc: "Demandes d'entrevues médias, scientifiques et citoyens", url: "index.html#contact", tag: "Contact" }
+  ];
+
+  let searchModalEl = null;
+  let activeSearchIdx = 0;
+
+  function createQuickSearchModal() {
+    if (searchModalEl) return searchModalEl;
+
+    searchModalEl = document.createElement('div');
+    searchModalEl.className = 'quick-search-modal';
+    searchModalEl.setAttribute('role', 'dialog');
+    searchModalEl.setAttribute('aria-modal', 'true');
+    searchModalEl.setAttribute('aria-label', 'Recherche instantanée');
+
+    searchModalEl.innerHTML = `
+      <div class="quick-search-backdrop"></div>
+      <div class="quick-search-dialog">
+        <div class="quick-search-header">
+          <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="quick-search-input" id="quick-search-input" placeholder="Rechercher une page, loi, date, rapport BAPE, fait clé..." autocomplete="off" spellcheck="false" aria-label="Champ de recherche">
+          <button type="button" class="quick-search-close-btn" aria-label="Fermer la recherche"><kbd>ESC</kbd></button>
+        </div>
+        <div class="quick-search-body">
+          <div class="quick-search-results" id="quick-search-results"></div>
+        </div>
+        <div class="quick-search-footer">
+          <span><kbd class="qs-kbd">↑</kbd><kbd class="qs-kbd">↓</kbd> Naviguer</span>
+          <span><kbd class="qs-kbd">↵</kbd> Ouvrir</span>
+          <span><kbd class="qs-kbd">ESC</kbd> Fermer</span>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(searchModalEl);
+
+    const input = searchModalEl.querySelector('#quick-search-input');
+    const resultsContainer = searchModalEl.querySelector('#quick-search-results');
+    const backdrop = searchModalEl.querySelector('.quick-search-backdrop');
+    const closeBtn = searchModalEl.querySelector('.quick-search-close-btn');
+
+    function renderResults(query) {
+      const q = (query || '').trim().toLowerCase();
+      const filtered = q === '' ? SEARCH_INDEX.slice(0, 7) : SEARCH_INDEX.filter(item => {
+        return item.title.toLowerCase().includes(q) ||
+               item.desc.toLowerCase().includes(q) ||
+               item.tag.toLowerCase().includes(q) ||
+               item.url.toLowerCase().includes(q);
+      });
+
+      activeSearchIdx = 0;
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="quick-search-empty">
+            <p>Aucun résultat pour « <strong>${query}</strong> »</p>
+            <p class="quick-search-empty-sub">Essayez un mot-clé comme <em>BAPE 371</em>, <em>Loi 93</em>, <em>Cadmium</em>, <em>CCE</em> ou <em>Contact</em>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      resultsContainer.innerHTML = filtered.map((item, idx) => `
+        <a href="${item.url}" class="quick-search-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
+          <div class="qs-item-left">
+            <span class="qs-item-tag">${item.tag}</span>
+            <div class="qs-item-content">
+              <div class="qs-item-title">${item.title}</div>
+              <div class="qs-item-desc">${item.desc}</div>
+            </div>
+          </div>
+          <span class="qs-item-arrow">↵</span>
+        </a>
+      `).join('');
+
+      resultsContainer.querySelectorAll('.quick-search-item').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          resultsContainer.querySelectorAll('.quick-search-item').forEach(i => i.classList.remove('selected'));
+          el.classList.add('selected');
+          activeSearchIdx = parseInt(el.getAttribute('data-idx') || '0', 10);
+        });
+      });
+    }
+
+    input.addEventListener('input', () => {
+      renderResults(input.value);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = resultsContainer.querySelectorAll('.quick-search-item');
+      if (items.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeSearchIdx = (activeSearchIdx + 1) % items.length;
+        items.forEach((it, i) => it.classList.toggle('selected', i === activeSearchIdx));
+        items[activeSearchIdx]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeSearchIdx = (activeSearchIdx - 1 + items.length) % items.length;
+        items.forEach((it, i) => it.classList.toggle('selected', i === activeSearchIdx));
+        items[activeSearchIdx]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = items[activeSearchIdx];
+        if (selected) {
+          const href = selected.getAttribute('href');
+          if (href) {
+            closeQuickSearch();
+            window.location.href = href;
+          }
+        }
+      }
+    });
+
+    backdrop.addEventListener('click', closeQuickSearch);
+    closeBtn.addEventListener('click', closeQuickSearch);
+
+    return searchModalEl;
+  }
+
+  function openQuickSearch() {
+    const modal = createQuickSearchModal();
+    modal.classList.add('active');
+    document.body.classList.add('quick-search-active');
+    const input = modal.querySelector('#quick-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+      input.dispatchEvent(new Event('input'));
+    }
+  }
+
+  function closeQuickSearch() {
+    if (searchModalEl) {
+      searchModalEl.classList.remove('active');
+      document.body.classList.remove('quick-search-active');
+    }
+  }
+
+  function initQuickSearch() {
+    window.openQuickSearch = openQuickSearch;
+    window.closeQuickSearch = closeQuickSearch;
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        if (searchModalEl && searchModalEl.classList.contains('active')) {
+          closeQuickSearch();
+        } else {
+          openQuickSearch();
+        }
+      } else if (e.key === 'Escape' && searchModalEl && searchModalEl.classList.contains('active')) {
+        e.preventDefault();
+        closeQuickSearch();
+      } else if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        if (!searchModalEl || !searchModalEl.classList.contains('active')) {
+          e.preventDefault();
+          openQuickSearch();
+        }
+      }
+    });
+  }
+
 
   function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
