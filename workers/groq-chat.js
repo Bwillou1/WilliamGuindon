@@ -59,8 +59,38 @@ RÈGLES DE RÉDACTION :
 - Reste courtois, neutre et précis sans inventer de faits non documentés.
 `;
 
-function getModel(env) {
-  return env?.GROQ_MODEL || env?.GROQ_MODEL_NORMAL || env?.GROQ_MODEL_EXPERT || 'groq/compound-mini';
+function classifyAndRoute(query, env) {
+  const q = String(query || '').toLowerCase();
+  const defaultEnvModel = env?.GROQ_MODEL;
+
+  // Si un modèle spécifique est forcé par variable d'environnement, on le priorise
+  if (defaultEnvModel) {
+    return [defaultEnvModel, 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+  }
+
+  // Route 1 : Expert / Juridique / Analyse poussée
+  const isExpert = (
+    q.includes('aceum') || q.includes('cusma') || q.includes('24.27') || q.includes('24.28') ||
+    q.includes('juridique') || q.includes('bâillon') || q.includes('privative') ||
+    q.includes('lcom') || q.includes('lep') || q.includes('lcpe') || q.includes('orellana') ||
+    q.includes('convention') || q.includes('dossier factuel')
+  );
+  if (isExpert) {
+    return ['llama-3.3-70b-versatile', 'groq/compound', 'groq/compound-mini', 'llama-3.1-8b-instant'];
+  }
+
+  // Route 2 : Recherche & Actualité / Faits spécifiques du dossier
+  const isWebOrDossier = (
+    q.includes('stablex') || q.includes('bape') || q.includes('371') || q.includes('cadmium') ||
+    q.includes('tourbière') || q.includes('oiseau') || q.includes('eau') || q.includes('presse') ||
+    q.includes('devoir') || q.includes('radio-canada') || q.includes('loi 93') || q.includes('blainville')
+  );
+  if (isWebOrDossier) {
+    return ['groq/compound-mini', 'groq/compound', 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+  }
+
+  // Route 3 : Rapide / Questions générales & biographiques
+  return ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'groq/compound-mini'];
 }
 
 export default {
@@ -138,12 +168,9 @@ export default {
       });
     }
 
-    const primaryModel = getModel(env);
-    const candidateModels = [
-      primaryModel,
-      'llama-3.3-70b-versatile',
-      'llama-3.1-8b-instant'
-    ].filter((m, idx, arr) => arr.indexOf(m) === idx);
+    const lastUserMessage = safeMessages.slice().reverse().find(m => m.role === 'user')?.content || '';
+    const candidateModels = classifyAndRoute(lastUserMessage, env)
+      .filter((m, idx, arr) => arr.indexOf(m) === idx);
 
     let finalAnswer = null;
     let finalTools = null;
