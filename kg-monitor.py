@@ -14,10 +14,11 @@ from datetime import date
 
 QUERIES = [
     "William Guindon",
-    "William Guindon Blainville",
-    "William Guindon militant",
-    "Grande Tourbière de Blainville",
+    "Stablex Blainville",
     "SEM-26-003",
+    "Tourbière de Blainville",
+    "Justice environnementale Blainville",
+    "Pollution Blainville adolescent",
 ]
 
 SERVICE_URL = "https://kgsearch.googleapis.com/v1/entities:search"
