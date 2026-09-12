@@ -15,11 +15,11 @@
   }
 
   loadScript('assets/js/theme-core.js');
+  loadScript('assets/js/chat-ai.js');
 
   const path = window.location.pathname;
   const isHome = path === '/' || path.endsWith('index.html') || path === '';
   if (isHome) {
     loadScript('assets/js/page-home.js');
-    loadScript('assets/js/chat-ai.js');
   }
 })();

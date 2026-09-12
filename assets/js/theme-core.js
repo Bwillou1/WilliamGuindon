@@ -150,6 +150,14 @@
   }
 
   function initApp() {
+    // Module IA documentaire global (accessible sur l'ensemble des pages)
+    if (!document.querySelector('script[src*="chat-ai.js"]')) {
+      const chatScript = document.createElement('script');
+      chatScript.src = 'assets/js/chat-ai.js';
+      chatScript.defer = true;
+      document.head.appendChild(chatScript);
+    }
+
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 
