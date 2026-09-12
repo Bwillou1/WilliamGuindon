@@ -5,7 +5,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
 
 <title>Espace Rédaction & Administration — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
@@ -264,7 +264,7 @@
   }
 
   /* ==================================================== */
-  /* ÉDITEUR WYSIWYG RICHE (STYLE TRUMBOWYG)              */
+  /* ÉDITEUR WYSIWYG RICHE (COMPOSANT MAISON)             */
   /* ==================================================== */
   .trumbo-box {
     border: 1px solid var(--line);
@@ -613,7 +613,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Contenu complet de l'article (Éditeur Trumbowyg) *</label>
+            <label class="form-label">Contenu complet de l'article (Éditeur WYSIWYG intégré) *</label>
             <div class="trumbo-box" id="blog-trumbo-box">
               <div class="trumbo-toolbar">
                 <div class="trumbo-btn-group">
@@ -786,7 +786,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Corps du communiqué (Éditeur Trumbowyg) *</label>
+            <label class="form-label">Corps du communiqué (Éditeur WYSIWYG intégré) *</label>
             <div class="trumbo-box" id="communique-trumbo-box">
               <div class="trumbo-toolbar">
                 <div class="trumbo-btn-group">
@@ -991,7 +991,7 @@
   }
 
   // ====================================================
-  // ÉDITEUR WYSIWYG TRUMBOWYG-COMPATIBLE
+  // ÉDITEUR WYSIWYG INTÉGRÉ
   // ====================================================
   function initWysiwyg(boxId, hiddenTextareaId) {
     const box = document.getElementById(boxId);
@@ -1217,7 +1217,7 @@
     if (photoDate) photoDate.value = today;
     if (commDate) commDate.value = today;
 
-    // Initialisation des éditeurs WYSIWYG Trumbowyg
+    // Initialisation des éditeurs WYSIWYG (composant maison, sans dépendance externe)
     const blogWysiwyg = initWysiwyg("blog-trumbo-box", "blog-content");
     const commWysiwyg = initWysiwyg("communique-trumbo-box", "communique-content");
 

@@ -481,7 +481,7 @@
         <div style="background:#090d0b;border:1px solid #1f2922;border-radius:10px;padding:16px;text-align:left;margin-bottom:24px;font-size:13.5px;color:#d1d5db;">
           <div style="font-weight:700;color:#ffffff;margin-bottom:8px;">Références Légales &amp; Archives Officielles :</div>
           <p style="margin:4px 0;">• Soumission CCE : <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Registre SEM-26-003 (ACEUM) ↗</a></p>
-          <p style="margin:4px 0;">• Archive officielle : <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Web Archive CCE ↗</a></p>
+          <p style="margin:4px 0;">• Archive officielle : <a href="https://web.archive.org/web/*/https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#4ade80;">Web Archive CCE ↗</a></p>
           <p style="margin:8px 0 0 0;">• Contact sécurisé : <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:600;">${safeEmail}</a></p>
         </div>
 
@@ -611,7 +611,7 @@
           <p style="margin:6px 0;">• <strong>Instance Internationale :</strong> Commission de coopération environnementale (CCE / CEC)</p>
           <p style="margin:6px 0;">• <strong>Traité d'Origine :</strong> Accord Canada-États-Unis-Mexique (ACEUM, Chapitre 24, Art. 24.27)</p>
           <p style="margin:6px 0;">• <strong>Dossier de Registre :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">SEM-26-003 (Déchets dangereux à Blainville / Stablex) ↗</a></p>
-          <p style="margin:6px 0;">• <strong>Archive Mondiale :</strong> <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Web Archive ↗</a></p>
+          <p style="margin:6px 0;">• <strong>Archive Mondiale :</strong> <a href="https://web.archive.org/web/*/https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Web Archive ↗</a></p>
           <p style="margin:6px 0;">• <strong>Base de Faits LLM/IA :</strong> <a href="llms-full.txt" target="_blank" style="color:#4ade80;font-weight:700;">Corpus Juridique Vérifié (llms-full.txt) ↗</a></p>
           <div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b;font-size:12.5px;color:#94a3b8;">
             <strong>Contact Légal &amp; Sécurisé :</strong> <a href="mailto:${safeEmail}" style="color:#38bdf8;font-weight:700;">${safeEmail}</a>
@@ -775,7 +775,7 @@
         <div style="background:#040d07;border:1px solid #14532d;border-radius:12px;padding:18px;margin-bottom:20px;font-size:13.5px;line-height:1.7;">
           <div style="color:#4ade80;font-weight:800;margin-bottom:8px;">PIÈCES OFFICIELLES ET LIENS DIRECTS :</div>
           <div>• <strong>Registre International CCE :</strong> <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Dossier SEM-26-003 sur cec.org ↗</a></div>
-          <div>• <strong>Archive Mondiale Inaltérable :</strong> <a href="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Wayback Machine ↗</a></div>
+          <div>• <strong>Archive Mondiale Inaltérable :</strong> <a href="https://web.archive.org/web/*/https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener" style="color:#38bdf8;font-weight:700;">Copie Certifiée Wayback Machine ↗</a></div>
           <div>• <strong>Traité d'Origine :</strong> Accord Canada-États-Unis-Mexique (ACEUM, Chapitre 24, Articles 24.27 &amp; 24.28)</div>
           <div>• <strong>Requérant :</strong> William Guindon</div>
         </div>

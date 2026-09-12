@@ -146,10 +146,13 @@ Le bot de sync utilise `chore(sync): … [skip ci]` — **toujours garder `[skip
   doit être répliquée dans les trois, ou la divergence doit être assumée explicitement.
 - Ne jamais ajouter `'unsafe-eval'` ailleurs, ni élargir `frame-ancestors` / `object-src`.
 
-### 📄 Divers
+### 📄 Divers & Licences
 - Ne pas toucher à `assets/vendor/**` (PDF.js) ni aux fichiers minifiés.
-- Ne pas reformater massivement : les diffs géants rendent la revue impossible et gonflent
-  inutilement l'historique.
+- **Interdiction de bundler ou copier du code sous licence GPL** (ex. badge carbone `b.min.js`, qui doit rester chargé dynamiquement via unpkg sans précache ni auto-hébergement).
+- **Interdiction de retirer `isEvalSupported: false` dans la configuration pdf.js** (`assets/js/pdf-viewer.js`, mitigation active contre CVE-2024-4367).
+- **Obligation de maintenir l'en-tête de portée dans `LICENSE` et l'inventaire `THIRD-PARTY-NOTICES.md`** à chaque ajout ou modification de dépendance tierce.
+- **Obligation de vérifier la validité de toute URL externe via User-Agent navigateur** (notamment `cec.org` et registres officiels protégés par WAF).
+- Ne pas reformater massivement : les diffs géants rendent la revue impossible et gonflent inutilement l'historique.
 - `LICENSE` est CC BY-NC-ND 4.0 — ne pas le changer.
 
 ---

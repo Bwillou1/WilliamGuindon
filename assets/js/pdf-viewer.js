@@ -283,6 +283,7 @@
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         enableXfa: true,
+        // CVE-2024-4367 (exécution de JS arbitraire à l'ouverture d'un PDF piégé) : neutralisée en conservant isEvalSupported à false. Ne jamais repasser à true.
         isEvalSupported: false
       });
 

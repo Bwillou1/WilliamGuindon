@@ -5,7 +5,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
 
 <title>Console Maîtresse Sécurisée — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
@@ -629,7 +629,7 @@
           </div>
           <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:10px; border:1px solid #0284c7;">
             <div style="font-weight:800; color:#38bdf8; margin-bottom:6px;">[LOGOUT] Évacuation Numérique Immédiate</div>
-            <input type="text" id="evacuate-target-url" class="form-control" style="font-size:12px; margin-bottom:8px;" value="https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
+            <input type="text" id="evacuate-target-url" class="form-control" style="font-size:12px; margin-bottom:8px;" value="https://web.archive.org/web/*/https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/">
             <div style="display:flex; gap:8px;">
               <button type="button" class="btn" style="background:#0284c7; color:#fff; font-weight:900;" data-action="evacuate-on">[ALERT] Évacuer (0.1s)</button>
               <button type="button" class="btn btn-ghost" data-action="evacuate-off">Désactiver</button>
@@ -2267,7 +2267,7 @@
         case "evacuate": {
           const action = (args[0] || "").toLowerCase();
           if (action === "on") {
-            const url = args[1] || "https://web.archive.org/web/*/http://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
+            const url = args[1] || "https://web.archive.org/web/*/https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
             const state = getSiteState();
             state.evacuateActive = true;
             state.evacuateUrl = url;

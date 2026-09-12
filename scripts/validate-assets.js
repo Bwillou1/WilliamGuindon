@@ -29,6 +29,7 @@ const CORE_FILES = [
   'statut-mineur.html',
   'vie-privee-parents.html',
   'dependances-licences.html',
+  'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
   'sitemap-news.xml',
   'feed.xml',
@@ -52,19 +53,16 @@ for (const file of CORE_FILES) {
 
 // 2. Vérification stricte des assets en cache dans sw.js
 const swPath = path.join(__dirname, '..', 'sw.js');
+let cachedAssets = [];
 if (fs.existsSync(swPath)) {
   const swContent = fs.readFileSync(swPath, 'utf8');
   const match = swContent.match(/ASSETS_TO_CACHE\s*=\s*\[([\s\S]*?)\];/);
   if (match) {
-    let assets = [];
-    try {
-      assets = eval('[' + match[1] + ']');
-    } catch (e) {
-      errors.push(`[SYNTAXE] Échec du parsing ASSETS_TO_CACHE dans sw.js : ${e.message}`);
-    }
+    const rawItems = match[1].match(/['"]([^'"]+)['"]/g) || [];
+    cachedAssets = rawItems.map(s => s.replace(/['"]/g, ''));
 
-    console.log(`\nVérification des ${assets.length} assets déclarés dans sw.js (caches.addAll) :`);
-    for (const a of assets) {
+    console.log(`\nVérification des ${cachedAssets.length} assets déclarés dans sw.js (caches.addAll) :`);
+    for (const a of cachedAssets) {
       const relPath = a === '/' ? 'index.html' : a.startsWith('/') ? a.slice(1) : a;
       const cleanPath = relPath.split('?')[0].split('#')[0];
       const fullPath = path.join(__dirname, '..', cleanPath);
@@ -80,6 +78,102 @@ if (fs.existsSync(swPath)) {
 } else {
   errors.push('[SW] sw.js introuvable à la racine');
 }
+
+// 2b. Vérification de la présence de dependances-licences.html dans sw.js et sitemap.xml
+const sitemapPath = path.join(__dirname, '..', 'sitemap.xml');
+if (fs.existsSync(sitemapPath)) {
+  const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+  if (!sitemapContent.includes('dependances-licences.html')) {
+    errors.push('[SITEMAP] Entrée dependances-licences.html manquante dans sitemap.xml');
+  } else {
+    console.log('✔ [SITEMAP OK] dependances-licences.html présent dans sitemap.xml');
+  }
+}
+
+if (!cachedAssets.includes('/dependances-licences.html') && !cachedAssets.includes('dependances-licences.html')) {
+  errors.push('[SW] dependances-licences.html manquant dans ASSETS_TO_CACHE de sw.js');
+} else {
+  console.log('✔ [SW OK] dependances-licences.html présent dans ASSETS_TO_CACHE');
+}
+
+// 2c. Vérification des en-têtes de licences tierces (Apache-2.0 / MIT)
+console.log('\nVérification des avis de licences tierces dans les bundles distribués :');
+const licenseChecks = [
+  { file: 'assets/vendor/pdfjs/pdf.min.js', required: 'Apache License' },
+  { file: 'assets/vendor/pdfjs/pdf.worker.min.js', required: 'Apache License' },
+  { file: 'assets/vendor/pdfjs/pdf_viewer.css', required: 'Apache License' },
+  { file: 'assets/js/nostr-bundle.js', required: 'Bundled license information' }
+];
+
+for (const check of licenseChecks) {
+  const checkPath = path.join(__dirname, '..', check.file);
+  if (fs.existsSync(checkPath)) {
+    const fileContent = fs.readFileSync(checkPath, 'utf8');
+    if (!fileContent.includes(check.required)) {
+      errors.push(`[LICENCE] En-tête de licence tierce manquant dans "${check.file}" (obligation Apache-2.0 / MIT) : un rebuild a probablement supprimé les avis. Restaure output.legalComments.`);
+    } else {
+      console.log(`✔ [LICENCE OK] En-tête validé dans ${check.file}`);
+    }
+  }
+}
+
+// 2d. Vérification d'absence de b.min.js GPL auto-hébergé sous assets/
+function findFilesRecursive(dir, filename, found = []) {
+  if (!fs.existsSync(dir)) return found;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      findFilesRecursive(full, filename, found);
+    } else if (entry.name === filename) {
+      found.push(full);
+    }
+  }
+  return found;
+}
+
+const gplFiles = findFilesRecursive(path.join(__dirname, '..', 'assets'), 'b.min.js');
+if (gplFiles.length > 0) {
+  errors.push(`[GPL DETECTE] Badge carbone GPL-3.0 détecté en local (${gplFiles.join(', ')}) : il doit rester chargé depuis unpkg.com.`);
+} else {
+  console.log('✔ [GPL OK] Aucun fichier GPL-3.0 (b.min.js) auto-hébergé dans assets/');
+}
+
+// 2e. Vérification de la mitigation CVE-2024-4367 dans assets/js/pdf-viewer.js
+const pdfViewerJsPath = path.join(__dirname, '..', 'assets', 'js', 'pdf-viewer.js');
+if (fs.existsSync(pdfViewerJsPath)) {
+  const viewerContent = fs.readFileSync(pdfViewerJsPath, 'utf8');
+  if (!viewerContent.includes('isEvalSupported: false')) {
+    errors.push('[SECURITE CRITIQUE] isEvalSupported: false manquant dans assets/js/pdf-viewer.js (protection CVE-2024-4367 requise).');
+  } else {
+    console.log('✔ [SECURITE OK] Mitigation CVE-2024-4367 active (isEvalSupported: false)');
+  }
+}
+
+// 2f. Vérification d'absence de liens non chiffrés vers www.cec.org
+console.log('\nVérification de l\'absence de liens non chiffrés vers www.cec.org :');
+const scanExts = ['.html', '.json', '.js', '.xml'];
+const forbiddenPrefix = 'http://' + 'www.cec.org';
+
+function scanDirForHttpCec(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name !== 'node_modules' && entry.name !== '.git' && entry.name !== 'scripts') {
+        scanDirForHttpCec(full);
+      }
+    } else if (scanExts.some(ext => entry.name.endsWith(ext))) {
+      const content = fs.readFileSync(full, 'utf8');
+      if (content.includes(forbiddenPrefix)) {
+        const rel = path.relative(path.join(__dirname, '..'), full);
+        errors.push(`[HTTP CEC] Lien non chiffré "${forbiddenPrefix}" trouvé dans : ${rel}`);
+      }
+    }
+  }
+}
+scanDirForHttpCec(path.join(__dirname, '..'));
+console.log('✔ [HTTPS CEC OK] 0 occurrence de lien http vers www.cec.org trouvée.');
 
 // Helper pour extraire le texte brut sans regex tag stripping (évite alertes CodeQL)
 function stripHtml(input) {
