@@ -28,6 +28,7 @@ const CORE_FILES = [
   'opsec.html',
   'statut-mineur.html',
   'vie-privee-parents.html',
+  'dependances-licences.html',
   'sitemap.xml',
   'sitemap-news.xml',
   'feed.xml',
