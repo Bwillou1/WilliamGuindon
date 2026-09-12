@@ -93,14 +93,37 @@ function classifyAndRoute(query, env) {
   return ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'groq/compound-mini'];
 }
 
+function cleanModelOutput(text) {
+  if (!text) return '';
+  return text
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/<thought>[\s\S]*?<\/thought>/gi, '')
+    .replace(/\[ROUTE:[A-Z]+\]/gi, '')
+    .trim();
+}
+
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  const allowedOrigins = [
+    'https://williamguindon.me',
+    'https://www.williamguindon.me',
+    'https://bwillou1.github.io',
+    'http://localhost:8080',
+    'http://127.0.0.1:8080'
+  ];
+
+  const matchedOrigin = allowedOrigins.includes(origin) ? origin : 'https://williamguindon.me';
+  return {
+    'Access-Control-Allow-Origin': matchedOrigin,
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Cache-Control': 'no-store'
+  };
+}
+
 export default {
   async fetch(request, env) {
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': 'https://williamguindon.me',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Cache-Control': 'no-store'
-    };
+    const corsHeaders = getCorsHeaders(request);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders });
@@ -177,6 +200,9 @@ export default {
     let lastError = null;
 
     for (const model of candidateModels) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
+
       try {
         const isCompound = model.includes('compound');
         const requestBody = {
@@ -201,8 +227,11 @@ export default {
         const groqResponse = await fetch(GROQ_ENDPOINT, {
           method: 'POST',
           headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (!groqResponse.ok) {
           lastError = `HTTP ${groqResponse.status}`;
@@ -210,19 +239,20 @@ export default {
         }
 
         const result = await groqResponse.json();
-        const content = result?.choices?.[0]?.message?.content;
-        if (content && content.trim()) {
-          finalAnswer = content.trim();
+        const content = cleanModelOutput(result?.choices?.[0]?.message?.content);
+        if (content && content.length > 0) {
+          finalAnswer = content;
           finalTools = result?.choices?.[0]?.message?.executed_tools || null;
           break;
         }
       } catch (err) {
-        lastError = err?.message || 'fetch error';
+        clearTimeout(timeoutId);
+        lastError = err?.name === 'AbortError' ? 'timeout' : (err?.message || 'fetch error');
       }
     }
 
     if (!finalAnswer) {
-      return new Response(JSON.stringify({ error: `Indisponible (${lastError || 'rejet'})` }), {
+      return new Response(JSON.stringify({ error: `Service IA momentanément occupé (${lastError || 'indisponible'})` }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

@@ -63,13 +63,31 @@ DIRECTIVES DE RÉPONSE :
 
     function formatAiResponse(raw) {
       if (!raw) return '';
+      // Échappement HTML préventif
       let text = raw.trim().replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
-      text = text.replace(/### (.*?)\n/g, '<h4 style="margin:10px 0 4px; color:var(--accent,#0284c7); font-size:1.05rem;">$1</h4>\n');
-      text = text.replace(/## (.*?)\n/g, '<h3 style="margin:12px 0 6px; color:var(--accent,#0284c7); font-size:1.15rem;">$1</h3>\n');
+      
+      // Blocs de code
+      text = text.replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.15); padding:10px; border-radius:6px; overflow-x:auto; font-family:monospace; font-size:12px; margin:8px 0; border:1px solid var(--border-color, rgba(255,255,255,0.1));">$1</pre>');
+      text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.12); padding:2px 5px; border-radius:4px; font-family:monospace; font-size:12px;">$1</code>');
+
+      // Titres Markdown
+      text = text.replace(/^### (.*?)$/gm, '<h4 style="margin:10px 0 4px; color:var(--accent,#10b981); font-size:1.02rem; font-weight:700;">$1</h4>');
+      text = text.replace(/^## (.*?)$/gm, '<h3 style="margin:12px 0 6px; color:var(--accent,#10b981); font-size:1.1rem; font-weight:700;">$1</h3>');
+      text = text.replace(/^# (.*?)$/gm, '<h2 style="margin:14px 0 8px; color:var(--accent,#10b981); font-size:1.2rem; font-weight:700;">$1</h2>');
+
+      // Gras et Italique
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+      // Liens Markdown [Titre](url) et URLs brutes
+      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">$1 ↗</a>');
+      text = text.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">$1 ↗</a>');
+
+      // Listes à puces
       text = text.replace(/^[-*•]\s+(.*)$/gm, '<li style="margin-bottom:4px;">$1</li>');
-      text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:20px; margin:8px 0;">$1</ul>');
+      text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:18px; margin:8px 0;">$1</ul>');
+
+      // Sauts de ligne
       text = text.replace(/\n\n/g, '<br><br>');
       text = text.replace(/\n/g, '<br>');
       return text;
@@ -314,6 +332,13 @@ DIRECTIVES DE RÉPONSE :
         }
       }
 
+      function scrollChatToBottom() {
+        if (!chatBox) return;
+        requestAnimationFrame(() => {
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
+      }
+
       async function sendChatMessage(text) {
         if (isBusy || !text || !text.trim()) return;
         const question = text.trim().slice(0, 400);
@@ -333,13 +358,13 @@ DIRECTIVES DE RÉPONSE :
         userBubble.className = 'ai-chat-bubble user';
         userBubble.textContent = question;
         chatBox.appendChild(userBubble);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        scrollChatToBottom();
 
         const botBubble = document.createElement('div');
         botBubble.className = 'ai-chat-bubble bot';
         botBubble.innerHTML = '<em>Recherche et analyse documentaire en cours...</em>';
         chatBox.appendChild(botBubble);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        scrollChatToBottom();
 
         const messages = [
           { role: 'system', content: DOSSIER_CONTEXT },
@@ -356,12 +381,12 @@ DIRECTIVES DE RÉPONSE :
           }
 
           botBubble.innerHTML = formatAiResponse(reply);
-          chatBox.scrollTop = chatBox.scrollHeight;
+          scrollChatToBottom();
         } catch (err) {
           showOfflineBanner();
           const fallbackReply = generateLocalAnswer(question);
           botBubble.innerHTML = formatAiResponse(fallbackReply);
-          chatBox.scrollTop = chatBox.scrollHeight;
+          scrollChatToBottom();
         } finally {
           if (userInput) userInput.disabled = false;
           startCooldown(4);
@@ -384,8 +409,14 @@ DIRECTIVES DE RÉPONSE :
       });
 
       const sumOutput = document.getElementById('ai-summary-output');
+      const btnBullets = document.getElementById('btn-sum-bullets');
+      const btnTldr = document.getElementById('btn-sum-tldr');
+      const btnLegal = document.getElementById('btn-sum-legal');
+      const summaryBtns = [btnBullets, btnTldr, btnLegal].filter(Boolean);
 
       async function runSummarizer(type) {
+        if (!sumOutput) return;
+        summaryBtns.forEach(b => { b.disabled = true; });
         sumOutput.innerHTML = '<em>Analyse et génération de la synthèse documentaire...</em>';
         const sumPrompts = {
           bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
@@ -412,30 +443,30 @@ DIRECTIVES DE RÉPONSE :
           sumOutput.innerHTML = `<strong>Synthèse Documentaire :</strong><br>${formatAiResponse(res)}`;
         } catch (err) {
           showOfflineBanner();
-          setTimeout(() => {
-            if (type === 'bullets') {
-              sumOutput.innerHTML = `
-                <strong>Points clés du dossier SEM-26-003 :</strong>
-                <ul style="padding-left:18px; margin:8px 0;">
-                  <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
-                  <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
-                  <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
-                  <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
-                  <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
-                </ul>
-              `;
-            } else if (type === 'tldr') {
-              sumOutput.innerHTML = `
-                <strong>En 1 paragraphe (TL;DR) :</strong><br>
-                À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
-              `;
-            } else {
-              sumOutput.innerHTML = `
-                <strong>Synthèse Juridique &amp; Traité CCE (Articles 24.27 &amp; 24.28 ACEUM) :</strong><br>
-                Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
-              `;
-            }
-          }, 200);
+          if (type === 'bullets') {
+            sumOutput.innerHTML = `
+              <strong>Points clés du dossier SEM-26-003 :</strong>
+              <ul style="padding-left:18px; margin:8px 0;">
+                <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
+                <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
+                <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
+                <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
+                <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
+              </ul>
+            `;
+          } else if (type === 'tldr') {
+            sumOutput.innerHTML = `
+              <strong>En 1 paragraphe (TL;DR) :</strong><br>
+              À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, la CCE a tranché en sa faveur et sommé le Canada de s'expliquer avant le 16 octobre 2026.
+            `;
+          } else {
+            sumOutput.innerHTML = `
+              <strong>Synthèse Juridique &amp; Traité CCE (Articles 24.27 &amp; 24.28 ACEUM) :</strong><br>
+              Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
+            `;
+          }
+        } finally {
+          summaryBtns.forEach(b => { b.disabled = false; });
         }
       }
 
