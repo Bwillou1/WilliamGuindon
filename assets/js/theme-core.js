@@ -1059,6 +1059,7 @@
     { title: "Galerie Photos & Milieux Naturels", desc: "Photographies authentiques de la Grande Tourbière de Blainville", url: "photos.html", tag: "Photos" },
     { title: "Messagerie Chiffrée & Lanceurs d'alerte", desc: "Canal confidentiel anonyme de bout en bout (Nostr / Session)", url: "messagerie.html", tag: "Sécurité" },
     { title: "Ligne Déontologique & Indépendance", desc: "Autonomie citoyenne intégrale et refus de tout financement partisan", url: "deontologie.html", tag: "Éthique" },
+    { title: "Miroirs Décentralisés (IPFS / Tor)", desc: "Accès permanent Web3 IPFS, Service Caché Tor v3 et intégrité SHA-256", url: "miroirs.html", tag: "Miroirs" },
     { title: "Politique Anti-SLAPP & Protection", desc: "Protection juridique contre les poursuites-bâillons et intimidation", url: "anti-slapp.html", tag: "Droit" },
     { title: "Traçabilité & Empreintes SHA-256", desc: "Intégrité cryptographique et archivage immuable des pièces", url: "tracabilite.html", tag: "Sécurité" },
 
