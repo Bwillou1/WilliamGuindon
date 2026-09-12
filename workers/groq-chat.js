@@ -60,7 +60,7 @@ RÈGLES DE RÉDACTION :
 `;
 
 function getModel(env) {
-  return env?.GROQ_MODEL || env?.GROQ_MODEL_NORMAL || env?.GROQ_MODEL_EXPERT || 'llama-3.3-70b-versatile';
+  return env?.GROQ_MODEL || env?.GROQ_MODEL_NORMAL || env?.GROQ_MODEL_EXPERT || 'groq/compound-mini';
 }
 
 export default {
@@ -139,11 +139,12 @@ export default {
     }
 
     const modelName = getModel(env);
+    const isCompound = modelName.includes('compound');
 
     try {
       const requestBody = {
         model: modelName,
-        temperature: 0.3,
+        temperature: 0.2,
         max_tokens: 800,
         messages: [
           {
@@ -153,6 +154,12 @@ export default {
           ...safeMessages
         ]
       };
+
+      if (isCompound) {
+        requestBody.search_settings = {
+          include_domains: AUTHORIZED_SEARCH_DOMAINS
+        };
+      }
 
       const groqResponse = await fetch(GROQ_ENDPOINT, {
         method: 'POST',
@@ -169,6 +176,7 @@ export default {
       }
 
       const answer = result?.choices?.[0]?.message?.content;
+      const executedTools = result?.choices?.[0]?.message?.executed_tools || null;
       if (!answer) {
         return new Response(JSON.stringify({ error: 'Réponse IA vide.' }), {
           status: 502,
@@ -176,7 +184,7 @@ export default {
         });
       }
 
-      return new Response(JSON.stringify({ answer }), {
+      return new Response(JSON.stringify({ answer, executed_tools: executedTools }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
