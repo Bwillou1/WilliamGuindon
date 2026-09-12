@@ -389,7 +389,7 @@ DIRECTIVES DE RÉPONSE :
           scrollChatToBottom();
         } finally {
           if (userInput) userInput.disabled = false;
-          startCooldown(4);
+          startCooldown(3);
         }
       }
 

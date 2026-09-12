@@ -59,39 +59,8 @@ RÈGLES DE RÉDACTION :
 - Reste courtois, neutre et précis sans inventer de faits non documentés.
 `;
 
-function classifyAndRoute(query, env) {
-  const q = String(query || '').toLowerCase();
-  const defaultEnvModel = env?.GROQ_MODEL;
-
-  // Si un modèle spécifique est forcé par variable d'environnement, on le priorise
-  if (defaultEnvModel) {
-    return [defaultEnvModel, 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
-  }
-
-  // Route 1 : Expert / Juridique / Analyse poussée
-  const isExpert = (
-    q.includes('aceum') || q.includes('cusma') || q.includes('24.27') || q.includes('24.28') ||
-    q.includes('juridique') || q.includes('bâillon') || q.includes('privative') ||
-    q.includes('lcom') || q.includes('lep') || q.includes('lcpe') || q.includes('orellana') ||
-    q.includes('convention') || q.includes('dossier factuel')
-  );
-  if (isExpert) {
-    return ['llama-3.3-70b-versatile', 'groq/compound', 'groq/compound-mini', 'llama-3.1-8b-instant'];
-  }
-
-  // Route 2 : Recherche & Actualité / Faits spécifiques du dossier
-  const isWebOrDossier = (
-    q.includes('stablex') || q.includes('bape') || q.includes('371') || q.includes('cadmium') ||
-    q.includes('tourbière') || q.includes('oiseau') || q.includes('eau') || q.includes('presse') ||
-    q.includes('devoir') || q.includes('radio-canada') || q.includes('loi 93') || q.includes('blainville')
-  );
-  if (isWebOrDossier) {
-    return ['groq/compound-mini', 'groq/compound', 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
-  }
-
-  // Route 3 : Rapide / Questions générales & biographiques
-  return ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'groq/compound-mini'];
-}
+const PRIMARY_MODEL = 'llama-3.3-70b-versatile';
+const FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
 function cleanModelOutput(text) {
   if (!text) return '';
@@ -191,24 +160,21 @@ export default {
       });
     }
 
-    const lastUserMessage = safeMessages.slice().reverse().find(m => m.role === 'user')?.content || '';
-    const candidateModels = classifyAndRoute(lastUserMessage, env)
-      .filter((m, idx, arr) => arr.indexOf(m) === idx);
+    const primaryModel = env?.GROQ_MODEL || PRIMARY_MODEL;
+    const candidateModels = [primaryModel, FALLBACK_MODEL].filter((m, idx, arr) => arr.indexOf(m) === idx);
 
     let finalAnswer = null;
-    let finalTools = null;
     let lastError = null;
 
     for (const model of candidateModels) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       try {
-        const isCompound = model.includes('compound');
         const requestBody = {
           model: model,
           temperature: 0.2,
-          max_tokens: 300,
+          max_tokens: 350,
           messages: [
             {
               role: 'system',
@@ -217,12 +183,6 @@ export default {
             ...safeMessages
           ]
         };
-
-        if (isCompound) {
-          requestBody.search_settings = {
-            include_domains: AUTHORIZED_SEARCH_DOMAINS
-          };
-        }
 
         const groqResponse = await fetch(GROQ_ENDPOINT, {
           method: 'POST',
@@ -235,14 +195,13 @@ export default {
 
         if (!groqResponse.ok) {
           lastError = `HTTP ${groqResponse.status}`;
-          continue;
+          continue; // Bascule immédiate vers le fallback (ex. 429 rate limit)
         }
 
         const result = await groqResponse.json();
         const content = cleanModelOutput(result?.choices?.[0]?.message?.content);
         if (content && content.length > 0) {
           finalAnswer = content;
-          finalTools = result?.choices?.[0]?.message?.executed_tools || null;
           break;
         }
       } catch (err) {
@@ -252,13 +211,13 @@ export default {
     }
 
     if (!finalAnswer) {
-      return new Response(JSON.stringify({ error: `Service IA momentanément occupé (${lastError || 'indisponible'})` }), {
+      return new Response(JSON.stringify({ error: `Service IA temporairement indisponible (${lastError || '429'})` }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    return new Response(JSON.stringify({ answer: finalAnswer, executed_tools: finalTools }), {
+    return new Response(JSON.stringify({ answer: finalAnswer }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

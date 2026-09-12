@@ -253,13 +253,12 @@ réduit la charge de ~80 % sans changer le comportement.
 
 `workers/groq-chat.js` applique une politique stricte :
 
-- **Architecture unifiée Groq Compound & Cascade de Résilience** : interrogation directe du modèle avec recherche web serveur (`groq/compound-mini`, `groq/compound`, ou variable `GROQ_MODEL`) et fallback automatique en cascade (`llama-3.3-70b-versatile`, `llama-3.1-8b-instant`) pour garantir 100% de disponibilité sans interruption ni faux rejets `[ROUTE:*]`.
-- **Limites :** corps ≤ 32 Ko, ≤ 12 messages, ≤ 7 000 caractères/message, `max_tokens: 800`,
-  `temperature: 0.2`. **Ne pas les augmenter** sans raison documentée : ce sont des garde-fous
-  anti-abus et anti-facture.
-- **Recherche web** intégrée côté serveur avec `search_settings`, restreinte à
-  `AUTHORIZED_SEARCH_DOMAINS` (domaines institutionnels CCE, BAPE, Lois fédérales/provinciales et revues de presse vérifiées). **Ne jamais élargir cette liste**
-  à des réseaux sociaux ou plateformes de sociofinancement.
+- **Architecture à deux niveaux (Haute précision & Zéro panne)** :
+  1. Modèle principal : `llama-3.3-70b-versatile` (ou variable `GROQ_MODEL`) avec prompt documentaire complet (Loi 93, BAPE 371, échéance 16 octobre 2026, cadmium, CCE).
+  2. Filet de secours automatique (Fallback 429 / indisponibilité) : `llama-3.1-8b-instant` basculant instantanément sans interruption pour l'utilisateur.
+- **Limites :** corps ≤ 32 Ko, ≤ 12 messages, ≤ 7 000 caractères/message, `max_tokens: 350`,
+  `temperature: 0.2`.
+- **Protections d'interface :** `maxlength="400"` et délai anti-spam (cooldown) de 3 secondes.
 - CORS verrouillé sur `https://williamguindon.me`.
 
 ---
