@@ -225,48 +225,113 @@ DIRECTIVES DE RÉPONSE :
 
           <!-- Onglet 3 : Liens IA externes & Prompts -->
           <div class="ai-tab-content" id="ai-tab-models">
-            <p class="ai-modal-desc">
-              Explorez le dossier complet avec vos assistants et modèles d'IA favoris grâce à nos prompts prêts à l'emploi et nos exports ouverts :
-            </p>
+            <div class="ai-models-scroll">
+              <p class="ai-modal-desc">
+                Explorez le dossier complet avec vos assistants et moteurs favoris grâce à nos prompts documentaires prêts à l'emploi et nos exports ouverts :
+              </p>
 
-            <!-- Boîte Prompt Clé en Main -->
-            <div style="background: var(--surface-2, rgba(0,0,0,0.25)); border: 1px solid var(--accent, #10b981); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:8px;">
-                <strong style="font-size: 13px; color: var(--accent-deep, #10b981);">Prompt IA Prêt à l'Emploi (ai.txt)</strong>
-                <button type="button" class="ai-action-btn js-copy-ai-prompt" style="padding: 4px 10px; font-size: 12px; cursor: pointer;">
-                  <span class="js-copy-prompt-icon">Copier le prompt</span>
-                </button>
+              <!-- Boîte Prompt Clé en Main -->
+              <div class="ai-prompt-box">
+                <div class="ai-prompt-header">
+                  <span class="ai-prompt-title">
+                    <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    Prompt Documentaire (ai.txt)
+                  </span>
+                  <button type="button" class="ai-copy-btn js-copy-ai-prompt" aria-label="Copier le prompt">
+                    <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span class="js-copy-prompt-icon">Copier le prompt</span>
+                  </button>
+                </div>
+                <div id="ai-preset-prompt-text" class="ai-prompt-code">Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html</div>
               </div>
-              <div id="ai-preset-prompt-text" style="font-size: 12px; line-height: 1.5; color: var(--text-muted); font-family: monospace; max-height: 90px; overflow-y: auto; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
-                Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html
-              </div>
-            </div>
 
-            <div class="ai-models-list">
-              <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbiere+Blainville" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Perplexity AI (Recherche avec sources) ↗</div>
-                <div class="ai-model-desc">Recherche assistée par IA avec citations directes des sources officielles.</div>
-              </a>
-              <a href="https://chatgpt.com/" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ChatGPT (OpenAI) ↗</div>
-                <div class="ai-model-desc">Ouvrez ChatGPT pour analyser le dossier avec le prompt ai.txt.</div>
-              </a>
-              <a href="https://claude.ai/new" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Claude (Anthropic) ↗</div>
-                <div class="ai-model-desc">Analysez les documents juridiques et la décision CCE avec Claude.</div>
-              </a>
-              <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Fichier Source llms-full.txt</div>
-                <div class="ai-model-desc">Corpus de faits bruts vérifiés &amp; chronologie complète pour RAG / LLM.</div>
-              </a>
-              <a href="llms.txt" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Fichier Standard llms.txt</div>
-                <div class="ai-model-desc">Index documentaire standardisé pour agents IA &amp; assistants conversationnels.</div>
-              </a>
-              <a href="ai.html" class="ai-model-card" target="_blank" rel="noopener">
-                <div class="ai-model-name"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Registre Documentaire IA (ai.html)</div>
-                <div class="ai-model-desc">Hub technique complet et instructions de cadrage anti-hallucination.</div>
-              </a>
+              <!-- Section 1 : Clavardage & Recherche Assistée -->
+              <div class="ai-section-title">Clavardage &amp; Moteurs IA</div>
+              <div class="ai-models-grid">
+                <a href="https://ai.viro.app/chat" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">✨</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Viro AI Chat ↗</div>
+                      <div class="ai-model-desc">Clavardez directement avec vos modèles IA sur le dossier William Guindon.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="https://www.ecosia.org/search?q=+William+Guindon+Blainville" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">🌳</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Recherche Ecosia ↗</div>
+                      <div class="ai-model-desc">Moteur écologique &amp; indexation web sur l'actualité à Blainville.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbiere+Blainville" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">🔍</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Perplexity AI ↗</div>
+                      <div class="ai-model-desc">Recherche assistée par IA avec citations directes des sources officielles.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="https://chatgpt.com/" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">💬</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">ChatGPT (OpenAI) ↗</div>
+                      <div class="ai-model-desc">Ouvrez ChatGPT pour analyser le dossier avec le prompt ai.txt.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="https://claude.ai/new" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">🧠</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Claude (Anthropic) ↗</div>
+                      <div class="ai-model-desc">Analysez les documents juridiques et la décision CCE avec Claude.</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Section 2 : Registres & Exports pour LLM -->
+              <div class="ai-section-title">Exports RAG &amp; Données Ouvertes</div>
+              <div class="ai-models-grid">
+                <a href="llms-full.txt" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">📄</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Fichier Source llms-full.txt ↗</div>
+                      <div class="ai-model-desc">Corpus brut de faits vérifiés &amp; chronologie complète pour LLM / RAG.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="llms.txt" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">📋</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Fichier Standard llms.txt ↗</div>
+                      <div class="ai-model-desc">Index documentaire standardisé pour agents IA &amp; assistants.</div>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="ai.html" class="ai-model-card" target="_blank" rel="noopener">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">🛡️</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name">Registre Documentaire IA (ai.html) ↗</div>
+                      <div class="ai-model-desc">Hub technique complet et instructions de cadrage anti-hallucination.</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
