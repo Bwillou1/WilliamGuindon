@@ -155,7 +155,7 @@ export default {
         const requestBody = {
           model: model,
           temperature: 0.2,
-          max_tokens: 800,
+          max_tokens: 300,
           messages: [
             {
               role: 'system',

@@ -4417,8 +4417,18 @@ body.ai-sidebar-active {
   align-items: center;
   justify-content: center;
 }
-.ai-chat-send-btn:hover {
+.ai-chat-send-btn:hover:not(:disabled) {
   opacity: 0.9;
+}
+.ai-chat-send-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--text-faint, #94a3b8);
+}
+.ai-chat-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: var(--surface-2, rgba(0, 0, 0, 0.05));
 }
 
 .ai-summary-box {

@@ -176,8 +176,8 @@ DIRECTIVES DE RÉPONSE :
 
             <!-- Formulaire de saisie -->
             <form class="ai-chat-input-row" id="ai-chat-form">
-              <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off">
-              <button type="submit" class="ai-chat-send-btn" aria-label="Envoyer">Envoyer</button>
+              <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off" maxlength="400">
+              <button type="submit" class="ai-chat-send-btn" id="ai-send-btn" aria-label="Envoyer">Envoyer</button>
             </form>
 
             <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
@@ -284,16 +284,55 @@ DIRECTIVES DE RÉPONSE :
       const chatForm = document.getElementById('ai-chat-form');
       const chatBox = document.getElementById('ai-chat-box');
       const userInput = document.getElementById('ai-user-input');
+      const sendBtn = document.getElementById('ai-send-btn');
+      let isBusy = false;
+      let cooldownInterval = null;
+
+      function startCooldown(seconds = 4) {
+        isBusy = true;
+        if (sendBtn) {
+          sendBtn.disabled = true;
+          let remaining = seconds;
+          sendBtn.textContent = `Attente (${remaining}s)`;
+          
+          if (cooldownInterval) clearInterval(cooldownInterval);
+          cooldownInterval = setInterval(() => {
+            remaining -= 1;
+            if (remaining > 0) {
+              sendBtn.textContent = `Attente (${remaining}s)`;
+            } else {
+              clearInterval(cooldownInterval);
+              cooldownInterval = null;
+              sendBtn.disabled = false;
+              sendBtn.textContent = 'Envoyer';
+              isBusy = false;
+              if (userInput) userInput.focus();
+            }
+          }, 1000);
+        } else {
+          setTimeout(() => { isBusy = false; }, seconds * 1000);
+        }
+      }
 
       async function sendChatMessage(text) {
-        if (!text || !text.trim()) return;
-        const question = text.trim();
+        if (isBusy || !text || !text.trim()) return;
+        const question = text.trim().slice(0, 400);
+        if (!question) return;
         
+        isBusy = true;
+        if (sendBtn) {
+          sendBtn.disabled = true;
+          sendBtn.textContent = 'Envoi...';
+        }
+        if (userInput) {
+          userInput.value = '';
+          userInput.disabled = true;
+        }
+
         const userBubble = document.createElement('div');
         userBubble.className = 'ai-chat-bubble user';
         userBubble.textContent = question;
         chatBox.appendChild(userBubble);
-        userInput.value = '';
         chatBox.scrollTop = chatBox.scrollHeight;
 
         const botBubble = document.createElement('div');
@@ -323,18 +362,22 @@ DIRECTIVES DE RÉPONSE :
           const fallbackReply = generateLocalAnswer(question);
           botBubble.innerHTML = formatAiResponse(fallbackReply);
           chatBox.scrollTop = chatBox.scrollHeight;
+        } finally {
+          if (userInput) userInput.disabled = false;
+          startCooldown(4);
         }
       }
 
       if (chatForm) {
         chatForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          sendChatMessage(userInput.value);
+          if (userInput) sendChatMessage(userInput.value);
         });
       }
 
       aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
         pill.addEventListener('click', () => {
+          if (isBusy) return;
           const q = pill.getAttribute('data-q');
           sendChatMessage(q);
         });
