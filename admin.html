@@ -17,7 +17,7 @@
 
 <style>
   .admin-wrap {
-    max-width: 880px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 30px 20px 80px;
   }
@@ -37,17 +37,26 @@
     margin-bottom: 24px;
     border-bottom: 1px solid var(--line);
     padding-bottom: 12px;
+    align-items: center;
+    flex-wrap: wrap;
   }
   .admin-tab {
-    padding: 8px 18px;
+    padding: 8px 16px;
     border-radius: 8px;
     background: var(--bg-card);
     border: 1px solid var(--line);
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .admin-tab:hover {
+    border-color: var(--accent);
+    color: var(--text);
   }
   .admin-tab.active {
     background: var(--accent);
@@ -82,8 +91,12 @@
     border: 1px solid var(--line);
     background: var(--bg);
     color: var(--text);
-    font-size: 15px;
+    font-size: 14px;
     font-family: inherit;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent);
   }
   textarea.form-control {
     min-height: 180px;
@@ -114,6 +127,8 @@
   }
   .file-preview {
     max-height: 180px;
+    max-width: 100%;
+    object-fit: cover;
     border-radius: 8px;
     margin-top: 12px;
     display: none;
@@ -127,12 +142,12 @@
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, background 0.2s;
     width: 100%;
     margin-top: 10px;
   }
   .btn-submit:hover {
-    opacity: 0.9;
+    opacity: 0.92;
   }
   .btn-submit:disabled {
     opacity: 0.5;
@@ -144,6 +159,7 @@
     margin-bottom: 20px;
     display: none;
     font-size: 14px;
+    font-weight: 600;
   }
   .status-success {
     background: rgba(34, 197, 94, 0.15);
@@ -168,19 +184,201 @@
     align-items: center;
     padding: 12px 0;
     border-bottom: 1px solid var(--line);
+    gap: 12px;
   }
   .item-list-row:last-child {
     border-bottom: none;
   }
+  .admin-photo-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #000;
+    flex-shrink: 0;
+  }
+  .btn-action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn-edit {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-edit:hover {
+    background: var(--accent);
+    color: #ffffff;
+  }
   .btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-danger:hover {
     background: #ef4444;
     color: #ffffff;
-    border: none;
+  }
+
+  /* Bandeau Mode Modification */
+  .edit-banner {
+    display: none;
+    background: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #fbbf24;
+    font-size: 13px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-cancel-edit {
+    background: transparent;
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    color: #fbbf24;
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+  }
+  .btn-cancel-edit:hover {
+    background: rgba(234, 179, 8, 0.2);
+  }
+
+  /* ==================================================== */
+  /* ÉDITEUR WYSIWYG RICHE (STYLE TRUMBOWYG)              */
+  /* ==================================================== */
+  .trumbo-box {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .trumbo-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--line);
+    user-select: none;
+  }
+  .trumbo-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    border-right: 1px solid var(--line);
+    padding-right: 6px;
+    margin-right: 4px;
+  }
+  .trumbo-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    min-width: 28px;
+    height: 28px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .trumbo-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    border-color: var(--line);
+  }
+  .trumbo-btn.active {
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--accent);
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+  .trumbo-select {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .trumbo-editor {
+    min-height: 220px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    outline: none;
+  }
+  .trumbo-editor:focus {
+    background: rgba(255,255,255,0.01);
+  }
+  .trumbo-editor p {
+    margin-bottom: 12px;
+  }
+  .trumbo-editor h2, .trumbo-editor h3, .trumbo-editor h4 {
+    color: var(--text);
+    margin: 18px 0 8px;
+    font-weight: 700;
+  }
+  .trumbo-editor h2 { font-size: 1.3rem; color: var(--accent); }
+  .trumbo-editor h3 { font-size: 1.15rem; }
+  .trumbo-editor h4 { font-size: 1.05rem; }
+  .trumbo-editor blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+    margin: 12px 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .trumbo-editor ul, .trumbo-editor ol {
+    margin: 10px 0 10px 24px;
+  }
+  .trumbo-editor a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .trumbo-textarea-raw {
+    display: none;
+    width: 100%;
+    min-height: 220px;
+    padding: 14px 16px;
+    background: #000;
+    color: #a7f3d0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    border: none;
+    outline: none;
+    line-height: 1.5;
+    resize: vertical;
   }
 </style>
 </head>
@@ -202,11 +400,9 @@
               <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
               <a href="enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
               <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
-              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
               <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
               <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
               <a href="live.html" class="nav-dropdown-item">Horloge & Échéance 16 oct.</a>
-              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
             </div>
           </div>
         </div>
@@ -225,7 +421,6 @@
               <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
               <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
               <a href="presse.html" class="nav-dropdown-item">Espace Presse & Kit Média</a>
-              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
             </div>
           </div>
         </div>
@@ -248,6 +443,7 @@
           </div>
         </div>
       </div>
+    </nav>
   </div>
 </header>
 
@@ -266,20 +462,20 @@
 
   <!-- Carte Vérification au chargement -->
   <div id="auth-checking-card" class="token-box" style="text-align:center; padding:32px 20px; display:none;">
-    <div style="margin-bottom:10px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--accent);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+    <div style="margin-bottom:10px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:var(--accent);fill:none;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
     <div style="font-weight:700; font-size:16px; color:var(--text);">Vérification de sécurité auprès de GitHub...</div>
     <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Contrôle d'autorisation pour le compte @Bwillou1</div>
   </div>
 
   <!-- Carte Déverrouillage Passkey (Touch ID / Face ID) si actif -->
   <div id="passkey-card" class="token-box" style="display:none; text-align:center; padding:36px 24px;">
-    <div style="margin-bottom:12px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+    <div style="margin-bottom:12px; display:flex; justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--accent);fill:none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
     <h3 style="font-size:1.4rem; margin-bottom:8px;">Espace Verrouillé</h3>
     <p style="color:var(--text-muted); font-size:14px; max-width:440px; margin:0 auto 20px; line-height:1.5;">
       Protection biométrique Apple active. Authentifiez-vous avec Touch ID (Mac) ou Face ID (iPhone) pour accéder à votre espace de publication.
     </p>
     <button type="button" id="btn-passkey-unlock" class="btn btn-primary" style="padding:12px 28px; font-size:15px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-      <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
+      <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;width:18px;height:18px;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
     </button>
     <div style="margin-top:18px;">
       <button type="button" id="btn-use-token-fallback" class="btn btn-ghost" style="font-size:13px; color:var(--text-muted); border:none; background:transparent; cursor:pointer; text-decoration:underline;">
@@ -291,13 +487,13 @@
   <!-- Encart d'information Cloudflare Access -->
   <div class="cf-access-notice" style="margin-bottom:18px; padding:12px 16px; border-radius:8px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); font-size:14px; color:var(--text); display:flex; align-items:center; gap:10px;">
     <svg class="svg-icon" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-    <span><strong>Accès protégé par Cloudflare Access.</strong> L'ancien mot de passe maître est supprimé.</span>
+    <span><strong>Accès protégé par Cloudflare & GitHub PAT.</strong> Page privée non indexée.</span>
   </div>
 
   <!-- Carte Authentification (Token GitHub) -->
   <div id="token-card" class="token-box">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-      <svg class="svg-icon" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <svg class="svg-icon" viewBox="0 0 24 24" style="width:24px;height:24px;stroke:var(--accent);fill:none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
       <div>
         <h3 style="margin:0; font-size:1.3rem;">Authentification Administrateur</h3>
         <span style="font-size:13px; color:var(--accent); font-weight:600;">Accès strict réservé au titulaire @Bwillou1</span>
@@ -315,7 +511,7 @@
 
       <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px;">
         <button type="submit" id="btn-save-token" class="btn btn-primary" style="font-weight:700; padding:11px 24px; font-size:14px; display:inline-flex; align-items:center; gap:8px;">
-          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Vérifier & Déverrouiller
+          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;width:16px;height:16px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Vérifier & Déverrouiller
         </button>
         <span id="token-spinner" style="display:none; font-size:13px; color:var(--accent); font-weight:600;">
           Vérification et connexion à l'API GitHub...
@@ -332,11 +528,11 @@
 
   <div id="admin-root"></div>
 
-  <!-- Gabarit sécurisé injecté uniquement APRÈS authentification 2FA réussie -->
+  <!-- Gabarit sécurisé injecté uniquement APRÈS authentification réussie -->
   <template id="admin-workspace-tmpl">
     <div id="admin-workspace">
       <!-- Enrôlement Passkey Touch ID / Face ID Apple -->
-      <div id="passkey-setup-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div id="passkey-setup-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div style="max-width:550px;">
           <strong style="color:var(--text); font-size:14px;">Activer Touch ID / Face ID (Passkey Apple)</strong>
           <p style="margin:3px 0 0; font-size:13px; color:var(--text-muted); line-height:1.4;">
@@ -344,23 +540,40 @@
           </p>
         </div>
         <button type="button" id="btn-enroll-passkey" class="btn btn-primary" style="font-size:13px; font-weight:700; padding:8px 16px; display:inline-flex; align-items:center; gap:6px;">
-          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Activer sur ce Mac / iPhone
+          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;width:15px;height:15px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Activer sur ce Mac / iPhone
         </button>
       </div>
 
-      <div class="admin-tabs" style="align-items:center; flex-wrap:wrap; gap:8px;">
-        <button type="button" class="admin-tab active" data-tab="tab-blog"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Rédiger un Article (Blog)</button>
-        <button type="button" class="admin-tab" data-tab="tab-photo"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>Publier une Photo</button>
-        <button type="button" class="admin-tab" data-tab="tab-manage"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Gérer mes publications</button>
-        <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:13px; text-decoration:none; padding:7px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">Studio Éditeur ↗</a>
-        <a href="console-admin.html" class="btn" style="font-size:13px; text-decoration:none; padding:7px 12px; background:#0f1713; border:1px solid #1f2922; color:#ef4444; font-weight:700;">Console Secrète ↗</a>
+      <div class="admin-tabs">
+        <button type="button" class="admin-tab active" data-tab="tab-blog">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Rédiger Blog
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-photo">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>Publier Photo
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-communique">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Communiqué Officiel
+        </button>
+        <button type="button" class="admin-tab" data-tab="tab-manage">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Gérer &amp; Modifier
+        </button>
+        <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:12px; text-decoration:none; padding:6px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">Studio Éditeur ↗</a>
       </div>
 
       <!-- Onglet 1 : Article Blog -->
       <div class="admin-panel active" id="tab-blog">
-        <h2 style="font-size:1.3rem; margin-bottom:16px;">Nouvel Article de Blog</h2>
+        <div id="blog-edit-banner" class="edit-banner">
+          <div>
+            <strong>Mode modification :</strong> <span id="blog-edit-title-preview"></span>
+          </div>
+          <button type="button" id="btn-cancel-blog-edit" class="btn-cancel-edit">✕ Annuler la modification</button>
+        </div>
+
+        <h2 id="blog-panel-heading" style="font-size:1.3rem; margin-bottom:16px;">Rédiger un Article de Blog</h2>
         
         <form id="form-blog">
+          <input type="hidden" id="blog-edit-id" value="">
+          
           <div class="form-group">
             <label class="form-label" for="blog-title">Titre de l'article *</label>
             <input type="text" id="blog-title" class="form-control" placeholder="Ex: Point d'étape sur l'échéance du 16 octobre..." required>
@@ -374,6 +587,7 @@
                 <option value="Juridique">Juridique</option>
                 <option value="Terrain">Terrain</option>
                 <option value="Médias">Médias</option>
+                <option value="Spécial">Spécial</option>
                 <option value="Réflexion">Réflexion</option>
               </select>
             </div>
@@ -392,14 +606,46 @@
             <label class="form-label">Image de couverture</label>
             <div class="file-dropzone" id="blog-dropzone">
               <input type="file" id="blog-file" accept="image/*" style="display:none;">
-              <span>Cliquez ou glissez une photo ici depuis votre appareil</span>
-              <img id="blog-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation" width="300" height="200">
+              <span id="blog-drop-label">Cliquez ou glissez une photo ici depuis votre appareil</span>
+              <img id="blog-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
             </div>
+            <input type="hidden" id="blog-existing-image" value="">
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="blog-content">Contenu complet de l'article *</label>
-            <textarea id="blog-content" class="form-control" placeholder="Rédigez votre texte ici. Les sauts de ligne et paragraphes seront automatiquement respectés..." required></textarea>
+            <label class="form-label">Contenu complet de l'article (Éditeur Trumbowyg) *</label>
+            <div class="trumbo-box" id="blog-trumbo-box">
+              <div class="trumbo-toolbar">
+                <div class="trumbo-btn-group">
+                  <select class="trumbo-select" data-command="formatBlock">
+                    <option value="p">Paragraphe</option>
+                    <option value="h2">Titre 2 (H2)</option>
+                    <option value="h3">Titre 3 (H3)</option>
+                    <option value="h4">Titre 4 (H4)</option>
+                    <option value="blockquote">Citation</option>
+                  </select>
+                </div>
+                <div class="trumbo-btn-group">
+                  <button type="button" class="trumbo-btn" data-command="bold" title="Gras (Ctrl+B)"><b>B</b></button>
+                  <button type="button" class="trumbo-btn" data-command="italic" title="Italique (Ctrl+I)"><i>I</i></button>
+                  <button type="button" class="trumbo-btn" data-command="underline" title="Souligné"><u>U</u></button>
+                  <button type="button" class="trumbo-btn" data-command="strikeThrough" title="Barré"><s>S</s></button>
+                </div>
+                <div class="trumbo-btn-group">
+                  <button type="button" class="trumbo-btn" data-command="insertUnorderedList" title="Liste à puces">• Liste</button>
+                  <button type="button" class="trumbo-btn" data-command="insertOrderedList" title="Liste numérotée">1. Liste</button>
+                  <button type="button" class="trumbo-btn" data-command="createLink" title="Insérer un lien">🔗 Lien</button>
+                  <button type="button" class="trumbo-btn" data-command="insertHorizontalRule" title="Ligne horizontale">—</button>
+                </div>
+                <div class="trumbo-btn-group" style="border-right:none;">
+                  <button type="button" class="trumbo-btn" data-command="removeFormat" title="Effacer le style">🧹 Nettoyer</button>
+                  <button type="button" class="trumbo-btn btn-toggle-source" title="Voir/Modifier le code source HTML">&lt;/&gt; HTML</button>
+                </div>
+              </div>
+              <div class="trumbo-editor" id="blog-content-editor" contenteditable="true" spellcheck="true" placeholder="Rédigez ici le texte de votre article..."></div>
+              <textarea class="trumbo-textarea-raw" id="blog-content-raw"></textarea>
+            </div>
+            <textarea id="blog-content" style="display:none;"></textarea>
           </div>
 
           <div class="form-group">
@@ -413,9 +659,18 @@
 
       <!-- Onglet 2 : Photo Galerie -->
       <div class="admin-panel" id="tab-photo">
-        <h2 style="font-size:1.3rem; margin-bottom:16px;">Ajouter une Photo à la Galerie</h2>
+        <div id="photo-edit-banner" class="edit-banner">
+          <div>
+            <strong>Mode modification :</strong> <span id="photo-edit-title-preview"></span>
+          </div>
+          <button type="button" id="btn-cancel-photo-edit" class="btn-cancel-edit">✕ Annuler la modification</button>
+        </div>
+
+        <h2 id="photo-panel-heading" style="font-size:1.3rem; margin-bottom:16px;">Ajouter une Photo à la Galerie</h2>
         
         <form id="form-photo">
+          <input type="hidden" id="photo-edit-id" value="">
+          
           <div class="form-group">
             <label class="form-label" for="photo-title">Titre de la photo *</label>
             <input type="text" id="photo-title" class="form-control" placeholder="Ex: Sortie d'observation dans le secteur nord de la tourbière..." required>
@@ -428,6 +683,7 @@
                 <option value="Tourbière">Tourbière</option>
                 <option value="Biodiversité">Biodiversité</option>
                 <option value="Terrain">Terrain</option>
+                <option value="Parcours">Parcours</option>
                 <option value="Événements">Événements</option>
               </select>
             </div>
@@ -437,38 +693,158 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="photo-location">Lieu / Emplacement</label>
-            <input type="text" id="photo-location" class="form-control" placeholder="Ex: Grande Tourbière de Blainville, QC">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Sélectionner la photo *</label>
-            <div class="file-dropzone" id="photo-dropzone">
-              <input type="file" id="photo-file" accept="image/*" style="display:none;" required>
-              <span>Cliquez ou choisissez une photo haute définition</span>
-              <img id="photo-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation" width="300" height="200">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="photo-location">Lieu / Emplacement</label>
+              <input type="text" id="photo-location" class="form-control" placeholder="Ex: Grande Tourbière de Blainville, QC">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="photo-license">Licence d'utilisation *</label>
+              <select id="photo-license" class="form-control">
+                <option value="CC BY-NC-ND 4.0">Creative Commons CC BY-NC-ND 4.0 (Par défaut - Non-commercial, Sans dérivation)</option>
+                <option value="CC BY-SA 4.0">Creative Commons CC BY-SA 4.0 (Attribution, Partage identique)</option>
+                <option value="CC BY 4.0">Creative Commons CC BY 4.0 (Attribution libre)</option>
+                <option value="Domaine public">Domaine public / CC0</option>
+                <option value="Tous droits réservés">Tous droits réservés — William Guindon</option>
+              </select>
             </div>
           </div>
 
           <div class="form-group">
+            <label class="form-label">Sélectionner la photo <span id="photo-required-indicator">*</span></label>
+            <div class="file-dropzone" id="photo-dropzone">
+              <input type="file" id="photo-file" accept="image/*" style="display:none;">
+              <span id="photo-drop-label">Cliquez ou choisissez une photo haute définition (JPG, PNG, WebP)</span>
+              <img id="photo-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
+            </div>
+            <input type="hidden" id="photo-existing-image" value="">
+          </div>
+
+          <div class="form-group">
             <label class="form-label" for="photo-desc">Légende / Description</label>
-            <textarea id="photo-desc" class="form-control" style="min-height:90px;" placeholder="Détails, contexte scientifique ou observation..."></textarea>
+            <textarea id="photo-desc" class="form-control" style="min-height:90px;" placeholder="Détails, contexte scientifique, données géographiques ou observation..."></textarea>
           </div>
 
           <button type="submit" id="btn-publish-photo" class="btn-submit">Ajouter la photo à la Galerie</button>
         </form>
       </div>
 
-      <!-- Onglet 3 : Gestion & Suppression -->
-      <div class="admin-panel" id="tab-manage">
-        <h2 style="font-size:1.3rem; margin-bottom:16px;">Gestion des Contenus</h2>
+      <!-- Onglet 3 : Communiqué de Presse Officiel -->
+      <div class="admin-panel" id="tab-communique">
+        <div id="communique-edit-banner" class="edit-banner">
+          <div>
+            <strong>Mode modification :</strong> <span id="communique-edit-title-preview"></span>
+          </div>
+          <button type="button" id="btn-cancel-communique-edit" class="btn-cancel-edit">✕ Annuler la modification</button>
+        </div>
+
+        <h2 id="communique-panel-heading" style="font-size:1.3rem; margin-bottom:16px;">Rédiger un Communiqué de Presse Officiel</h2>
         
-        <h3 style="font-size:1.1rem; margin-top:20px; color:var(--accent);">Articles de Blog Actifs</h3>
-        <div id="manage-blog-list" style="margin-top:10px;">Chargement...</div>
+        <form id="form-communique">
+          <input type="hidden" id="communique-edit-id" value="">
+          
+          <div class="form-group">
+            <label class="form-label" for="communique-title">Titre principal du communiqué *</label>
+            <input type="text" id="communique-title" class="form-control" placeholder="Ex: Un adolescent de 15 ans force le Canada à s’expliquer..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communique-subtitle">Sous-titre / Chapô officiel</label>
+            <input type="text" id="communique-subtitle" class="form-control" placeholder="Ex: Victoire historique à la CCE : Ottawa a jusqu'au 16 octobre 2026 pour répondre...">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="communique-date">Date de publication</label>
+              <input type="date" id="communique-date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="communique-location">Lieu d'émission</label>
+              <input type="text" id="communique-location" class="form-control" value="Blainville (Québec)">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="communique-badge">Mention d'urgence / Diffusion</label>
+              <input type="text" id="communique-badge" class="form-control" value="POUR DIFFUSION IMMÉDIATE">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="communique-readingtime">Temps de lecture estimé</label>
+              <input type="text" id="communique-readingtime" class="form-control" value="~3 minutes">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communique-dossiertag">Ligne de dossier institutionnel</label>
+            <input type="text" id="communique-dossiertag" class="form-control" value="DOSSIER STABLEX · SEM-26-003 · COMMISSION DE COOPÉRATION ENVIRONNEMENTALE (ACEUM)">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communique-dateline">Ligne de date d'ouverture (Dateline)</label>
+            <input type="text" id="communique-dateline" class="form-control" placeholder="Ex: BLAINVILLE, le 20 août 2026">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Corps du communiqué (Éditeur Trumbowyg) *</label>
+            <div class="trumbo-box" id="communique-trumbo-box">
+              <div class="trumbo-toolbar">
+                <div class="trumbo-btn-group">
+                  <select class="trumbo-select" data-command="formatBlock">
+                    <option value="p">Paragraphe</option>
+                    <option value="h2">Titre 2 (H2)</option>
+                    <option value="h3">Titre 3 (H3)</option>
+                    <option value="h4">Titre 4 (H4)</option>
+                    <option value="blockquote">Citation</option>
+                  </select>
+                </div>
+                <div class="trumbo-btn-group">
+                  <button type="button" class="trumbo-btn" data-command="bold" title="Gras (Ctrl+B)"><b>B</b></button>
+                  <button type="button" class="trumbo-btn" data-command="italic" title="Italique (Ctrl+I)"><i>I</i></button>
+                  <button type="button" class="trumbo-btn" data-command="underline" title="Souligné"><u>U</u></button>
+                  <button type="button" class="trumbo-btn" data-command="strikeThrough" title="Barré"><s>S</s></button>
+                </div>
+                <div class="trumbo-btn-group">
+                  <button type="button" class="trumbo-btn" data-command="insertUnorderedList" title="Liste à puces">• Liste</button>
+                  <button type="button" class="trumbo-btn" data-command="insertOrderedList" title="Liste numérotée">1. Liste</button>
+                  <button type="button" class="trumbo-btn" data-command="createLink" title="Insérer un lien">🔗 Lien</button>
+                  <button type="button" class="trumbo-btn" data-command="insertHorizontalRule" title="Ligne horizontale">—</button>
+                </div>
+                <div class="trumbo-btn-group" style="border-right:none;">
+                  <button type="button" class="trumbo-btn" data-command="removeFormat" title="Effacer le style">🧹 Nettoyer</button>
+                  <button type="button" class="trumbo-btn btn-toggle-source" title="Voir/Modifier le code source HTML">&lt;/&gt; HTML</button>
+                </div>
+              </div>
+              <div class="trumbo-editor" id="communique-content-editor" contenteditable="true" spellcheck="true" placeholder="Rédigez le texte officiel du communiqué..."></div>
+              <textarea class="trumbo-textarea-raw" id="communique-content-raw"></textarea>
+            </div>
+            <textarea id="communique-content" style="display:none;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communique-tags">Mots-clés / Sujets (séparés par des virgules)</label>
+            <input type="text" id="communique-tags" class="form-control" placeholder="CCE, ACEUM, SEM-26-003, Stablex, Grande Tourbière">
+          </div>
+
+          <button type="submit" id="btn-publish-communique" class="btn-submit">Publier le Communiqué Officiel</button>
+        </form>
+      </div>
+
+      <!-- Onglet 4 : Gestion & Modification -->
+      <div class="admin-panel" id="tab-manage">
+        <h2 style="font-size:1.3rem; margin-bottom:16px;">Gestion &amp; Modification des Publications</h2>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">
+          Vous pouvez modifier ou supprimer directement n'importe quel article, photo ou communiqué déjà en ligne.
+        </p>
+
+        <h3 style="font-size:1.1rem; margin-top:20px; color:var(--accent);">Communiqués Officiels de Presse</h3>
+        <div id="manage-communique-list" style="margin-top:10px;">Chargement des communiqués...</div>
+        
+        <h3 style="font-size:1.1rem; margin-top:30px; color:var(--accent);">Articles de Blog Actifs</h3>
+        <div id="manage-blog-list" style="margin-top:10px;">Chargement des articles...</div>
 
         <h3 style="font-size:1.1rem; margin-top:30px; color:var(--accent);">Photos de la Galerie</h3>
-        <div id="manage-photo-list" style="margin-top:10px;">Chargement...</div>
+        <div id="manage-photo-list" style="margin-top:10px;">Chargement des photos...</div>
       </div>
     </div>
   </template>
@@ -511,6 +887,9 @@
   const GITHUB_API = "https://api.github.com";
 
   let currentAuthToken = "";
+  let cachedBlogPosts = [];
+  let cachedPhotos = [];
+  let cachedCommuniques = [];
 
   function getCookie(name) {
     const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
@@ -520,259 +899,274 @@
   function setCookie(name, value, days) {
     const d = new Date();
     d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
-    document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toUTCString() + ";SameSite=Strict";
-  }
-
-  function showTokenError(msg) {
-    const errorBanner = document.getElementById("token-error-banner");
-    if (errorBanner) {
-      errorBanner.innerHTML = msg;
-      errorBanner.style.display = "block";
-    }
+    document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toGMTString() + ";SameSite=Strict;Secure";
   }
 
   function getToken() {
-    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || "";
+    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || localStorage.getItem("wg_github_pat") || getCookie("wg_admin_auth");
   }
 
   function clearToken() {
     currentAuthToken = "";
-    localStorage.removeItem("wg_github_pat");
     sessionStorage.removeItem("wg_github_pat");
-    localStorage.removeItem("wg_passkey_enabled");
-    localStorage.removeItem("wg_passkey_id");
+    localStorage.removeItem("wg_github_pat");
+    document.cookie = "wg_admin_auth=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT;SameSite=Strict;Secure";
     updateAuthUI(false);
-  }
-
-  function bufToBase64(buffer) {
-    let binary = "";
-    const bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
-  }
-
-  function base64ToBuf(base64) {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes.buffer;
-  }
-
-  async function validateGitHubToken(token) {
-    const cleanToken = (token || "").trim();
-    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
-      throw new Error("Format de clé invalide. Un jeton GitHub valide commence par 'ghp_' ou 'github_pat_'.");
-    }
-
-    const userRes = await fetch(`${GITHUB_API}/user`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-
-    if (userRes.status === 401) {
-      throw new Error("Clé d'accès refusée par GitHub (401 Unauthorized) : clé inexistante, expirée ou révoquée.");
-    }
-    if (!userRes.ok) {
-      throw new Error(`Erreur de communication avec GitHub (HTTP ${userRes.status}).`);
-    }
-
-    const userData = await userRes.json();
-    const login = (userData.login || "").toLowerCase();
-
-    if (login !== "bwillou1") {
-      throw new Error(`Accès strictement bloqué : cette clé appartient à l'utilisateur @${userData.login}. Seul le compte titulaire @Bwillou1 est autorisé.`);
-    }
-
-    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-
-    if (!repoRes.ok) {
-      throw new Error(`Impossible de valider les droits sur le dépôt ${GITHUB_REPO}.`);
-    }
-
-    const repoData = await repoRes.json();
-    if (!repoData.permissions || !repoData.permissions.push) {
-      throw new Error("Ce jeton n'a pas les droits d'écriture ('push' / write) sur le dépôt.");
-    }
-
-    currentAuthToken = cleanToken;
-    return userData;
-  }
-
-  const isPasskeySupported = !!(window.PublicKeyCredential && window.crypto);
-
-  async function enrollPasskey() {
-    try {
-      const token = getToken();
-      if (!token) return;
-
-      const challenge = new Uint8Array(32);
-      window.crypto.getRandomValues(challenge);
-      const userId = new Uint8Array(16);
-      window.crypto.getRandomValues(userId);
-
-      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
-
-      const credential = await navigator.credentials.create({
-        publicKey: {
-          challenge: challenge,
-          rp: { name: "William Guindon Admin", ...(rpId ? { id: rpId } : {}) },
-          user: { id: userId, name: "Bwillou1", displayName: "William Guindon" },
-          pubKeyCredParams: [
-            { type: "public-key", alg: -7 },
-            { type: "public-key", alg: -257 }
-          ],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required"
-          },
-          timeout: 60000
-        }
-      });
-
-      if (credential) {
-        localStorage.setItem("wg_passkey_enabled", "true");
-        localStorage.setItem("wg_passkey_id", bufToBase64(credential.rawId));
-        const setupBanner = document.getElementById("passkey-setup-banner");
-        if (setupBanner) setupBanner.style.display = "none";
-        showStatus("Protection Touch ID / Face ID activée avec succès sur cet appareil !", "success");
-      }
-    } catch (err) {
-      console.warn("Échec Passkey:", err);
-      showStatus("Configuration biométrique annulée ou non supportée.", "error");
-    }
-  }
-
-  async function unlockWithPasskey() {
-    const credId = localStorage.getItem("wg_passkey_id");
-    if (!credId) {
-      showTokenForm();
-      return;
-    }
-
-    try {
-      const challenge = new Uint8Array(32);
-      window.crypto.getRandomValues(challenge);
-      const rpId = (window.location.hostname && window.location.hostname !== "localhost") ? window.location.hostname : undefined;
-
-      const assertion = await navigator.credentials.get({
-        publicKey: {
-          challenge: challenge,
-          ...(rpId ? { rpId: rpId } : {}),
-          allowCredentials: [{
-            type: "public-key",
-            id: base64ToBuf(credId)
-          }],
-          userVerification: "required",
-          timeout: 60000
-        }
-      });
-
-      if (assertion) {
-        updateAuthUI(true);
-        showStatus("Déverrouillé avec succès via Touch ID / Face ID !", "success");
-      }
-    } catch (err) {
-      console.warn("Échec Touch ID:", err);
-      showStatus("Authentification biométrique annulée ou refusée.", "error");
-    }
-  }
-
-  function showTokenForm() {
-    document.getElementById("passkey-card").style.display = "none";
-    document.getElementById("token-card").style.display = "block";
   }
 
   function showStatus(msg, type = "success") {
     const el = document.getElementById("status-message");
     if (!el) return;
-    el.className = "status-toast status-" + type;
     el.textContent = msg;
+    el.className = "status-toast " + (type === "success" ? "status-success" : "status-error");
     el.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(() => { el.style.display = "none"; }, 7000);
+    setTimeout(() => {
+      el.style.display = "none";
+    }, 6000);
+  }
+
+  function showTokenError(msg) {
+    const errBanner = document.getElementById("token-error-banner");
+    if (errBanner) {
+      errBanner.textContent = msg;
+      errBanner.style.display = "block";
+    }
+  }
+
+  async function githubRequest(endpoint, method = "GET", body = null) {
+    const token = getToken();
+    if (!token) throw new Error("Jeton d'authentification manquant.");
+
+    const headers = {
+      "Accept": "application/vnd.github.v3+json",
+      "Authorization": "token " + token
+    };
+    if (body) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/${endpoint}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `Erreur GitHub API (${res.status})`);
+    }
+
+    return res.json();
+  }
+
+  async function validateGitHubToken(token) {
+    const res = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Accept": "application/vnd.github.v3+json",
+        "Authorization": "token " + token
+      }
+    });
+    if (!res.ok) {
+      throw new Error("Jeton GitHub invalide ou expiré (Code " + res.status + ")");
+    }
+    const user = await res.json();
+    if (user.login !== "Bwillou1") {
+      throw new Error(`Accès refusé : Le jeton appartient à @${user.login}, seul @Bwillou1 est autorisé.`);
+    }
+    return user;
   }
 
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onload = () => {
+        const b64 = reader.result.split(",")[1];
+        resolve(b64);
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
-  async function githubRequest(path, method = "GET", body = null) {
-    const token = getToken();
-    const headers = {
-      "Authorization": "Bearer " + token,
-      "Accept": "application/vnd.github.v3+json",
-      "Content-Type": "application/json"
-    };
-    const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ message: res.statusText }));
-      throw new Error(err.message || "Erreur GitHub " + res.status);
+  // ====================================================
+  // ÉDITEUR WYSIWYG TRUMBOWYG-COMPATIBLE
+  // ====================================================
+  function initWysiwyg(boxId, hiddenTextareaId) {
+    const box = document.getElementById(boxId);
+    if (!box) return null;
+
+    const editor = box.querySelector(".trumbo-editor");
+    const rawTextarea = box.querySelector(".trumbo-textarea-raw");
+    const hiddenTextarea = document.getElementById(hiddenTextareaId);
+    const select = box.querySelector(".trumbo-select");
+    const toggleSourceBtn = box.querySelector(".btn-toggle-source");
+    let isSourceMode = false;
+
+    // Synchronisation vers le champ caché
+    function syncToHidden() {
+      const html = isSourceMode ? rawTextarea.value : editor.innerHTML;
+      if (hiddenTextarea) hiddenTextarea.value = html;
     }
-    return res.json();
+
+    editor.addEventListener("input", syncToHidden);
+    rawTextarea.addEventListener("input", syncToHidden);
+
+    // Boutons de commande de mise en forme
+    box.querySelectorAll(".trumbo-btn[data-command]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (isSourceMode) return;
+        const cmd = btn.getAttribute("data-command");
+        if (cmd === "createLink") {
+          const url = prompt("Entrez l'URL du lien (ex: https://...) :");
+          if (url) document.execCommand("createLink", false, url);
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+        editor.focus();
+        syncToHidden();
+      });
+    });
+
+    // Sélecteur de format (p, h2, h3, h4, blockquote)
+    if (select) {
+      select.addEventListener("change", (e) => {
+        if (isSourceMode) return;
+        const val = e.target.value;
+        document.execCommand("formatBlock", false, "<" + val + ">");
+        editor.focus();
+        syncToHidden();
+      });
+    }
+
+    // Bascule Source HTML
+    if (toggleSourceBtn) {
+      toggleSourceBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        isSourceMode = !isSourceMode;
+        if (isSourceMode) {
+          rawTextarea.value = editor.innerHTML;
+          editor.style.display = "none";
+          rawTextarea.style.display = "block";
+          toggleSourceBtn.classList.add("active");
+          toggleSourceBtn.textContent = "👁️ Rendu Visuel";
+          rawTextarea.focus();
+        } else {
+          editor.innerHTML = rawTextarea.value;
+          rawTextarea.style.display = "none";
+          editor.style.display = "block";
+          toggleSourceBtn.classList.remove("active");
+          toggleSourceBtn.textContent = "</> HTML";
+          editor.focus();
+        }
+        syncToHidden();
+      });
+    }
+
+    return {
+      setHtml(html) {
+        editor.innerHTML = html || "";
+        rawTextarea.value = html || "";
+        if (hiddenTextarea) hiddenTextarea.value = html || "";
+      },
+      getHtml() {
+        return isSourceMode ? rawTextarea.value : editor.innerHTML;
+      },
+      reset() {
+        editor.innerHTML = "";
+        rawTextarea.value = "";
+        if (hiddenTextarea) hiddenTextarea.value = "";
+        if (isSourceMode && toggleSourceBtn) toggleSourceBtn.click();
+      }
+    };
   }
 
+  // ====================================================
+  // GESTION DES LISTES & MODIFICATION
+  // ====================================================
   async function loadManageList() {
     const blogList = document.getElementById("manage-blog-list");
     const photoList = document.getElementById("manage-photo-list");
-    if (!blogList || !photoList) return;
+    const commList = document.getElementById("manage-communique-list");
+    if (!blogList || !photoList || !commList) return;
 
     try {
-      const blogRes = await fetch("data/blog.json?v=" + Date.now());
-      const blogData = await blogRes.json();
-      blogList.innerHTML = blogData.map(p => `
-        <div class="item-list-row">
-          <div>
-            <strong>${p.title}</strong>
-            <div style="font-size:12px; color:var(--text-muted);">${p.date} · ${p.category}</div>
-          </div>
-          <button class="btn-danger" data-del-type="blog" data-del-id="${p.id}">Supprimer</button>
-        </div>
-      `).join("") || "<p style='color:var(--text-muted);'>Aucun article.</p>";
-
-      const photoRes = await fetch("data/photos.json?v=" + Date.now());
-      const photoData = await photoRes.json();
-      photoList.innerHTML = photoData.map(ph => `
-        <div class="item-list-row">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${ph.imageUrl}" class="admin-photo-thumb" width="40" height="40" alt="${ph.title || 'Photo'}" loading="lazy">
+      // 1. Communiqués
+      const commRes = await fetch("data/communiques.json?v=" + Date.now());
+      if (commRes.ok) {
+        cachedCommuniques = await commRes.json();
+        commList.innerHTML = cachedCommuniques.map(cm => `
+          <div class="item-list-row">
             <div>
-              <strong>${ph.title}</strong>
-              <div style="font-size:12px; color:var(--text-muted);">${ph.date} · ${ph.location || ""}</div>
+              <strong style="color:var(--text); font-size:14px;">${cm.title}</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                ${cm.date} · ${cm.location || "Blainville"} · <span style="color:var(--accent);">${cm.badge || "Officiel"}</span>
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-edit" data-edit-type="communique" data-edit-id="${cm.id}">✏️ Modifier</button>
+              <button class="btn-danger" data-del-type="communique" data-del-id="${cm.id}">🗑️ Supprimer</button>
             </div>
           </div>
-          <button class="btn-danger" data-del-type="photo" data-del-id="${ph.id}">Supprimer</button>
-        </div>
-      `).join("") || "<p style='color:var(--text-muted);'>Aucune photo.</p>";
+        `).join("") || "<p style='color:var(--text-muted);'>Aucun communiqué.</p>";
+      }
+
+      // 2. Blog
+      const blogRes = await fetch("data/blog.json?v=" + Date.now());
+      if (blogRes.ok) {
+        cachedBlogPosts = await blogRes.json();
+        blogList.innerHTML = cachedBlogPosts.map(post => `
+          <div class="item-list-row">
+            <div>
+              <strong style="color:var(--text); font-size:14px;">${post.title}</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                ${post.date} · Catégorie: ${post.category} · ${(post.tags || []).join(", ")}
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-edit" data-edit-type="blog" data-edit-id="${post.id}">✏️ Modifier</button>
+              <button class="btn-danger" data-del-type="blog" data-del-id="${post.id}">🗑️ Supprimer</button>
+            </div>
+          </div>
+        `).join("") || "<p style='color:var(--text-muted);'>Aucun article.</p>";
+      }
+
+      // 3. Photos
+      const photoRes = await fetch("data/photos.json?v=" + Date.now());
+      if (photoRes.ok) {
+        cachedPhotos = await photoRes.json();
+        photoList.innerHTML = cachedPhotos.map(ph => `
+          <div class="item-list-row">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img src="${ph.imageUrl}" class="admin-photo-thumb" width="48" height="48" alt="${ph.title || 'Photo'}" loading="lazy">
+              <div>
+                <strong style="color:var(--text); font-size:14px;">${ph.title}</strong>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                  ${ph.date} · ${ph.location || ""} · <span style="color:#86efac; font-size:11px;">Licence : ${ph.license || "CC BY-NC-ND 4.0"}</span>
+                </div>
+              </div>
+            </div>
+            <div class="btn-action-group">
+              <button class="btn-edit" data-edit-type="photo" data-edit-id="${ph.id}">✏️ Modifier</button>
+              <button class="btn-danger" data-del-type="photo" data-del-id="${ph.id}">🗑️ Supprimer</button>
+            </div>
+          </div>
+        `).join("") || "<p style='color:var(--text-muted);'>Aucune photo.</p>";
+      }
     } catch (e) {
-      console.warn(e);
+      console.warn("Erreur chargement des listes de gestion :", e);
     }
   }
 
   async function deleteItem(type, id) {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) return;
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer cet élément (${type}) ?`)) return;
 
     try {
-      const filename = type === "blog" ? "data/blog.json" : "data/photos.json";
+      let filename = "data/blog.json";
+      if (type === "photo") filename = "data/photos.json";
+      if (type === "communique") filename = "data/communiques.json";
+
       const fileData = await githubRequest("contents/" + filename);
       let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
 
@@ -792,6 +1186,21 @@
     }
   }
 
+  function switchTab(tabId) {
+    const root = document.getElementById("admin-root");
+    if (!root) return;
+    root.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+    root.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+    
+    const activeTab = root.querySelector(`.admin-tab[data-tab="${tabId}"]`);
+    const targetPanel = root.querySelector("#" + tabId);
+    if (activeTab) activeTab.classList.add("active");
+    if (targetPanel) targetPanel.classList.add("active");
+  }
+
+  // ====================================================
+  // INITIALISATION DU WORKSPACE APRES AUTH
+  // ====================================================
   function mountAdminWorkspace() {
     const root = document.getElementById("admin-root");
     const tmpl = document.getElementById("admin-workspace-tmpl");
@@ -799,25 +1208,26 @@
 
     root.replaceChildren(tmpl.content.cloneNode(true));
 
-    // Dates par défaut
     const today = new Date().toISOString().split("T")[0];
     const blogDate = document.getElementById("blog-date");
     const photoDate = document.getElementById("photo-date");
+    const commDate = document.getElementById("communique-date");
     if (blogDate) blogDate.value = today;
     if (photoDate) photoDate.value = today;
+    if (commDate) commDate.value = today;
+
+    // Initialisation des éditeurs WYSIWYG Trumbowyg
+    const blogWysiwyg = initWysiwyg("blog-trumbo-box", "blog-content");
+    const commWysiwyg = initWysiwyg("communique-trumbo-box", "communique-content");
 
     // Gestion des onglets
     root.querySelectorAll(".admin-tab").forEach(tab => {
       tab.addEventListener("click", () => {
-        root.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
-        root.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
-        tab.classList.add("active");
-        const target = root.querySelector("#" + tab.getAttribute("data-tab"));
-        if (target) target.classList.add("active");
+        switchTab(tab.getAttribute("data-tab"));
       });
     });
 
-    // Dropzone & File inputs
+    // Dropzone Blog
     const blogDrop = document.getElementById("blog-dropzone");
     const blogFile = document.getElementById("blog-file");
     const blogPrev = document.getElementById("blog-file-preview");
@@ -830,7 +1240,7 @@
           reader.onload = (evt) => {
             if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
               blogPrev.src = evt.target.result;
-              blogPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation de l'image de couverture";
+              blogPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation";
               blogPrev.style.display = "inline-block";
             }
           };
@@ -839,6 +1249,7 @@
       });
     }
 
+    // Dropzone Photo
     const photoDrop = document.getElementById("photo-dropzone");
     const photoFile = document.getElementById("photo-file");
     const photoPrev = document.getElementById("photo-file-preview");
@@ -851,7 +1262,7 @@
           reader.onload = (evt) => {
             if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
               photoPrev.src = evt.target.result;
-              photoPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation de la photographie";
+              photoPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation";
               photoPrev.style.display = "inline-block";
             }
           };
@@ -860,26 +1271,83 @@
       });
     }
 
-    // Publication Blog
+    // Annulation mode édition Blog
+    function resetBlogForm() {
+      const form = document.getElementById("form-blog");
+      if (form) form.reset();
+      document.getElementById("blog-edit-id").value = "";
+      document.getElementById("blog-existing-image").value = "";
+      document.getElementById("blog-edit-banner").style.display = "none";
+      document.getElementById("blog-panel-heading").textContent = "Rédiger un Article de Blog";
+      document.getElementById("btn-publish-blog").textContent = "Publier l'article sur le Blog";
+      if (blogPrev) blogPrev.style.display = "none";
+      if (blogWysiwyg) blogWysiwyg.reset();
+      if (blogDate) blogDate.value = today;
+    }
+    document.getElementById("btn-cancel-blog-edit")?.addEventListener("click", resetBlogForm);
+
+    // Annulation mode édition Photo
+    function resetPhotoForm() {
+      const form = document.getElementById("form-photo");
+      if (form) form.reset();
+      document.getElementById("photo-edit-id").value = "";
+      document.getElementById("photo-existing-image").value = "";
+      document.getElementById("photo-edit-banner").style.display = "none";
+      document.getElementById("photo-panel-heading").textContent = "Ajouter une Photo à la Galerie";
+      document.getElementById("btn-publish-photo").textContent = "Ajouter la photo à la Galerie";
+      document.getElementById("photo-required-indicator").textContent = "*";
+      document.getElementById("photo-drop-label").textContent = "Cliquez ou choisissez une photo haute définition";
+      if (photoPrev) photoPrev.style.display = "none";
+      if (photoDate) photoDate.value = today;
+    }
+    document.getElementById("btn-cancel-photo-edit")?.addEventListener("click", resetPhotoForm);
+
+    // Annulation mode édition Communiqué
+    function resetCommuniqueForm() {
+      const form = document.getElementById("form-communique");
+      if (form) form.reset();
+      document.getElementById("communique-edit-id").value = "";
+      document.getElementById("communique-edit-banner").style.display = "none";
+      document.getElementById("communique-panel-heading").textContent = "Rédiger un Communiqué de Presse Officiel";
+      document.getElementById("btn-publish-communique").textContent = "Publier le Communiqué Officiel";
+      if (commWysiwyg) commWysiwyg.reset();
+      if (commDate) commDate.value = today;
+      document.getElementById("communique-location").value = "Blainville (Québec)";
+      document.getElementById("communique-badge").value = "POUR DIFFUSION IMMÉDIATE";
+      document.getElementById("communique-readingtime").value = "~3 minutes";
+      document.getElementById("communique-dossiertag").value = "DOSSIER STABLEX · SEM-26-003 · COMMISSION DE COOPÉRATION ENVIRONNEMENTALE (ACEUM)";
+    }
+    document.getElementById("btn-cancel-communique-edit")?.addEventListener("click", resetCommuniqueForm);
+
+    // ====================================================
+    // SOUMISSION BLOG (Création ou Mise à jour)
+    // ====================================================
     const formBlog = document.getElementById("form-blog");
     if (formBlog) {
       formBlog.addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btn-publish-blog");
         btn.disabled = true;
-        btn.textContent = "Publication en cours sur GitHub...";
+        const isEditing = !!document.getElementById("blog-edit-id").value;
+        btn.textContent = isEditing ? "Mise à jour de l'article en cours..." : "Publication en cours sur GitHub...";
 
         try {
+          const editId = document.getElementById("blog-edit-id").value;
           const title = document.getElementById("blog-title").value.trim();
           const category = document.getElementById("blog-category").value;
           const date = document.getElementById("blog-date").value || today;
           const summary = document.getElementById("blog-summary").value.trim();
-          const content = document.getElementById("blog-content").value.trim();
+          const content = blogWysiwyg ? blogWysiwyg.getHtml() : document.getElementById("blog-content").value;
           const rawTags = document.getElementById("blog-tags").value;
           const tags = rawTags.split(",").map(t => t.trim()).filter(Boolean);
           const file = document.getElementById("blog-file").files[0];
+          const existingCover = document.getElementById("blog-existing-image").value;
 
-          let coverImage = "tourbiere.jpg";
+          if (!content || content.trim() === "<p></p>" || content.trim() === "<p><br></p>") {
+            throw new Error("Veuillez rédiger le contenu de l'article.");
+          }
+
+          let coverImage = existingCover || "tourbiere.jpg";
 
           if (file) {
             const cleanName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -892,104 +1360,231 @@
           }
 
           const fileData = await githubRequest("contents/data/blog.json");
-          const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+          let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
 
-          const slug = title.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
-          const newPost = {
-            id: "post-" + Date.now(),
-            title,
-            slug,
-            date,
-            author: "William Guindon",
-            category,
-            summary,
-            content,
-            coverImage,
-            tags
-          };
-
-          currentJson.unshift(newPost);
+          if (isEditing) {
+            // Mise à jour de l'article existant
+            const idx = currentJson.findIndex(p => p.id === editId);
+            if (idx === -1) throw new Error("Article introuvable dans la base.");
+            currentJson[idx] = {
+              ...currentJson[idx],
+              title,
+              date,
+              category,
+              summary,
+              content,
+              coverImage,
+              tags
+            };
+          } else {
+            // Création d'un nouvel article
+            const slug = title.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+            const newPost = {
+              id: "post-" + Date.now(),
+              title,
+              slug,
+              date,
+              author: "William Guindon",
+              category,
+              summary,
+              content,
+              coverImage,
+              tags
+            };
+            currentJson.unshift(newPost);
+          }
 
           const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
           await githubRequest("contents/data/blog.json", "PUT", {
-            message: `feat(blog): ajouter article "${title}"`,
+            message: isEditing ? `fix(blog): mettre à jour article "${title}"` : `feat(blog): ajouter article "${title}"`,
             content: updatedB64,
             sha: fileData.sha
           });
 
-          showStatus("Article publié avec succès ! Il sera en ligne dans 30 secondes.", "success");
-          formBlog.reset();
-          if (blogPrev) blogPrev.style.display = "none";
+          showStatus(isEditing ? "Article mis à jour avec succès !" : "Article publié avec succès sur le Blog !", "success");
+          resetBlogForm();
           loadManageList();
         } catch (err) {
           console.error(err);
           showStatus("Erreur : " + err.message, "error");
         } finally {
           btn.disabled = false;
-          btn.textContent = "Publier l'article sur le Blog";
+          btn.textContent = isEditing ? "Mettre à jour l'article" : "Publier l'article sur le Blog";
         }
       });
     }
 
-    // Publication Photo
+    // ====================================================
+    // SOUMISSION PHOTO (Création ou Mise à jour)
+    // ====================================================
     const formPhoto = document.getElementById("form-photo");
     if (formPhoto) {
       formPhoto.addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btn-publish-photo");
         btn.disabled = true;
-        btn.textContent = "Téléversement de la photo...";
+        const isEditing = !!document.getElementById("photo-edit-id").value;
+        btn.textContent = isEditing ? "Mise à jour de la photo..." : "Téléversement de la photo...";
 
         try {
+          const editId = document.getElementById("photo-edit-id").value;
           const title = document.getElementById("photo-title").value.trim();
           const category = document.getElementById("photo-category").value;
           const date = document.getElementById("photo-date").value || today;
           const location = document.getElementById("photo-location").value.trim();
+          const license = document.getElementById("photo-license").value;
           const description = document.getElementById("photo-desc").value.trim();
           const file = document.getElementById("photo-file").files[0];
+          const existingUrl = document.getElementById("photo-existing-image").value;
 
-          if (!file) throw new Error("Veuillez sélectionner un fichier photo.");
+          if (!isEditing && !file) {
+            throw new Error("Veuillez sélectionner un fichier photo.");
+          }
 
-          const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-          const b64 = await fileToBase64(file);
-          await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
-            message: `upload(photo): ${cleanName}`,
-            content: b64
-          });
+          let photoUrl = existingUrl || "";
 
-          const photoUrl = "assets/uploads/" + cleanName;
+          if (file) {
+            const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+            const b64 = await fileToBase64(file);
+            await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
+              message: `upload(photo): ${cleanName}`,
+              content: b64
+            });
+            photoUrl = "assets/uploads/" + cleanName;
+          }
+
           const fileData = await githubRequest("contents/data/photos.json");
-          const currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+          let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
 
-          const newPhoto = {
-            id: "photo-" + Date.now(),
-            title,
-            date,
-            location,
-            category,
-            description,
-            imageUrl: photoUrl
-          };
-
-          currentJson.unshift(newPhoto);
+          if (isEditing) {
+            const idx = currentJson.findIndex(p => p.id === editId);
+            if (idx === -1) throw new Error("Photo introuvable dans la base.");
+            currentJson[idx] = {
+              ...currentJson[idx],
+              title,
+              date,
+              location,
+              category,
+              license,
+              description,
+              imageUrl: photoUrl || currentJson[idx].imageUrl
+            };
+          } else {
+            const newPhoto = {
+              id: "photo-" + Date.now(),
+              title,
+              date,
+              location,
+              category,
+              license,
+              description,
+              imageUrl: photoUrl
+            };
+            currentJson.unshift(newPhoto);
+          }
 
           const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
           await githubRequest("contents/data/photos.json", "PUT", {
-            message: `feat(photos): ajouter photo "${title}"`,
+            message: isEditing ? `fix(photos): mettre à jour photo "${title}"` : `feat(photos): ajouter photo "${title}"`,
             content: updatedB64,
             sha: fileData.sha
           });
 
-          showStatus("Photo ajoutée avec succès à la Galerie !", "success");
-          formPhoto.reset();
-          if (photoPrev) photoPrev.style.display = "none";
+          showStatus(isEditing ? "Photo mise à jour avec succès !" : "Photo ajoutée avec succès à la Galerie !", "success");
+          resetPhotoForm();
           loadManageList();
         } catch (err) {
           console.error(err);
           showStatus("Erreur : " + err.message, "error");
         } finally {
           btn.disabled = false;
-          btn.textContent = "Ajouter la photo à la Galerie";
+          btn.textContent = isEditing ? "Mettre à jour la photo" : "Ajouter la photo à la Galerie";
+        }
+      });
+    }
+
+    // ====================================================
+    // SOUMISSION COMMUNIQUÉ (Création ou Mise à jour)
+    // ====================================================
+    const formCommunique = document.getElementById("form-communique");
+    if (formCommunique) {
+      formCommunique.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-publish-communique");
+        btn.disabled = true;
+        const isEditing = !!document.getElementById("communique-edit-id").value;
+        btn.textContent = isEditing ? "Mise à jour du communiqué..." : "Publication du communiqué sur GitHub...";
+
+        try {
+          const editId = document.getElementById("communique-edit-id").value;
+          const title = document.getElementById("communique-title").value.trim();
+          const subtitle = document.getElementById("communique-subtitle").value.trim();
+          const date = document.getElementById("communique-date").value || today;
+          const location = document.getElementById("communique-location").value.trim();
+          const badge = document.getElementById("communique-badge").value.trim();
+          const readingTime = document.getElementById("communique-readingtime").value.trim();
+          const dossierTag = document.getElementById("communique-dossiertag").value.trim();
+          const dateline = document.getElementById("communique-dateline").value.trim() || `${location.toUpperCase().split("(")[0].trim()}, le ${date}`;
+          const content = commWysiwyg ? commWysiwyg.getHtml() : document.getElementById("communique-content").value;
+          const rawTags = document.getElementById("communique-tags").value;
+          const tags = rawTags.split(",").map(t => t.trim()).filter(Boolean);
+
+          if (!content || content.trim() === "<p></p>" || content.trim() === "<p><br></p>") {
+            throw new Error("Veuillez rédiger le corps du communiqué.");
+          }
+
+          const fileData = await githubRequest("contents/data/communiques.json");
+          let currentJson = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+          if (isEditing) {
+            const idx = currentJson.findIndex(c => c.id === editId);
+            if (idx === -1) throw new Error("Communiqué introuvable dans la base.");
+            currentJson[idx] = {
+              ...currentJson[idx],
+              title,
+              subtitle,
+              date,
+              location,
+              badge,
+              readingTime,
+              dossierTag,
+              dateline,
+              content,
+              tags
+            };
+          } else {
+            const newCommunique = {
+              id: "communique-" + Date.now(),
+              title,
+              subtitle,
+              date,
+              location,
+              badge,
+              readingTime,
+              dossierTag,
+              dateline,
+              content,
+              tags
+            };
+            currentJson.unshift(newCommunique);
+          }
+
+          const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentJson, null, 2))));
+          await githubRequest("contents/data/communiques.json", "PUT", {
+            message: isEditing ? `fix(communiques): mettre à jour communiqué "${title}"` : `feat(communiques): ajouter communiqué "${title}"`,
+            content: updatedB64,
+            sha: fileData.sha
+          });
+
+          showStatus(isEditing ? "Communiqué mis à jour avec succès !" : "Communiqué officiel publié avec succès !", "success");
+          resetCommuniqueForm();
+          loadManageList();
+        } catch (err) {
+          console.error(err);
+          showStatus("Erreur : " + err.message, "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = isEditing ? "Mettre à jour le communiqué" : "Publier le Communiqué Officiel";
         }
       });
     }
@@ -998,17 +1593,194 @@
     const enrollBtn = document.getElementById("btn-enroll-passkey");
     if (enrollBtn) enrollBtn.onclick = enrollPasskey;
 
-    // Délégation d'événement suppression
+    // Délégation d'événement Modification & Suppression
     root.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-del-type]");
-      if (btn) {
-        const type = btn.getAttribute("data-del-type");
-        const id = btn.getAttribute("data-del-id");
+      // Suppression
+      const delBtn = e.target.closest("button[data-del-type]");
+      if (delBtn) {
+        const type = delBtn.getAttribute("data-del-type");
+        const id = delBtn.getAttribute("data-del-id");
         if (type && id) deleteItem(type, id);
+        return;
+      }
+
+      // Modification
+      const editBtn = e.target.closest("button[data-edit-type]");
+      if (editBtn) {
+        const type = editBtn.getAttribute("data-edit-type");
+        const id = editBtn.getAttribute("data-edit-id");
+        if (type && id) {
+          if (type === "blog") {
+            const post = cachedBlogPosts.find(p => p.id === id);
+            if (post) {
+              switchTab("tab-blog");
+              document.getElementById("blog-edit-id").value = post.id;
+              document.getElementById("blog-title").value = post.title || "";
+              document.getElementById("blog-category").value = post.category || "Dossier CCE";
+              document.getElementById("blog-date").value = post.date || today;
+              document.getElementById("blog-summary").value = post.summary || "";
+              document.getElementById("blog-existing-image").value = post.coverImage || "";
+              document.getElementById("blog-tags").value = (post.tags || []).join(", ");
+              if (blogWysiwyg) blogWysiwyg.setHtml(post.content || "");
+              
+              if (post.coverImage) {
+                blogPrev.src = post.coverImage;
+                blogPrev.style.display = "inline-block";
+              }
+              document.getElementById("blog-edit-title-preview").textContent = post.title;
+              document.getElementById("blog-edit-banner").style.display = "flex";
+              document.getElementById("blog-panel-heading").textContent = "Modifier l'Article de Blog";
+              document.getElementById("btn-publish-blog").textContent = "Mettre à jour l'article";
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          } else if (type === "photo") {
+            const ph = cachedPhotos.find(p => p.id === id);
+            if (ph) {
+              switchTab("tab-photo");
+              document.getElementById("photo-edit-id").value = ph.id;
+              document.getElementById("photo-title").value = ph.title || "";
+              document.getElementById("photo-category").value = ph.category || "Terrain";
+              document.getElementById("photo-date").value = ph.date || today;
+              document.getElementById("photo-location").value = ph.location || "";
+              document.getElementById("photo-license").value = ph.license || "CC BY-NC-ND 4.0";
+              document.getElementById("photo-desc").value = ph.description || "";
+              document.getElementById("photo-existing-image").value = ph.imageUrl || "";
+              
+              if (ph.imageUrl) {
+                photoPrev.src = ph.imageUrl;
+                photoPrev.style.display = "inline-block";
+              }
+              document.getElementById("photo-required-indicator").textContent = "(Optionnel si conservée)";
+              document.getElementById("photo-drop-label").textContent = "Cliquez pour remplacer la photo existante";
+              document.getElementById("photo-edit-title-preview").textContent = ph.title;
+              document.getElementById("photo-edit-banner").style.display = "flex";
+              document.getElementById("photo-panel-heading").textContent = "Modifier la Photo";
+              document.getElementById("btn-publish-photo").textContent = "Mettre à jour la photo";
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          } else if (type === "communique") {
+            const cm = cachedCommuniques.find(c => c.id === id);
+            if (cm) {
+              switchTab("tab-communique");
+              document.getElementById("communique-edit-id").value = cm.id;
+              document.getElementById("communique-title").value = cm.title || "";
+              document.getElementById("communique-subtitle").value = cm.subtitle || "";
+              document.getElementById("communique-date").value = cm.date || today;
+              document.getElementById("communique-location").value = cm.location || "Blainville (Québec)";
+              document.getElementById("communique-badge").value = cm.badge || "POUR DIFFUSION IMMÉDIATE";
+              document.getElementById("communique-readingtime").value = cm.readingTime || "~3 minutes";
+              document.getElementById("communique-dossiertag").value = cm.dossierTag || "";
+              document.getElementById("communique-dateline").value = cm.dateline || "";
+              document.getElementById("communique-tags").value = (cm.tags || []).join(", ");
+              if (commWysiwyg) commWysiwyg.setHtml(cm.content || "");
+              
+              document.getElementById("communique-edit-title-preview").textContent = cm.title;
+              document.getElementById("communique-edit-banner").style.display = "flex";
+              document.getElementById("communique-panel-heading").textContent = "Modifier le Communiqué Officiel";
+              document.getElementById("btn-publish-communique").textContent = "Mettre à jour le communiqué";
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }
+        }
       }
     });
 
     loadManageList();
+  }
+
+  // ====================================================
+  // AUTHENTIFICATION & WEBAUTHN PASSKEY
+  // ====================================================
+  const isPasskeySupported = !!(window.PublicKeyCredential && window.crypto);
+
+  async function enrollPasskey() {
+    if (!isPasskeySupported) {
+      alert("Votre navigateur ne supporte pas l'authentification biométrique WebAuthn.");
+      return;
+    }
+    try {
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: { name: "William Guindon Espace Admin", id: window.location.hostname },
+          user: {
+            id: new TextEncoder().encode("Bwillou1"),
+            name: "william@williamguindon.me",
+            displayName: "William Guindon"
+          },
+          pubKeyCredParams: [
+            { type: "public-key", alg: -7 },
+            { type: "public-key", alg: -257 }
+          ],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            userVerification: "required"
+          },
+          timeout: 60000,
+          attestation: "none"
+        }
+      });
+
+      if (credential) {
+        const rawId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+        localStorage.setItem("wg_passkey_cred_id", rawId);
+        localStorage.setItem("wg_passkey_enabled", "true");
+        setCookie("wg_admin_auth", currentAuthToken, 30);
+        showStatus("Touch ID / Face ID configuré avec succès sur cet appareil !", "success");
+        const setupBanner = document.getElementById("passkey-setup-banner");
+        if (setupBanner) setupBanner.style.display = "none";
+      }
+    } catch (err) {
+      console.warn("Échec enrôlement passkey :", err);
+      showStatus("Impossible d'activer Touch ID : " + err.message, "error");
+    }
+  }
+
+  async function unlockWithPasskey() {
+    try {
+      const credIdStr = localStorage.getItem("wg_passkey_cred_id");
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+
+      const allowCredentials = credIdStr ? [{
+        id: Uint8Array.from(atob(credIdStr), c => c.charCodeAt(0)),
+        type: "public-key"
+      }] : [];
+
+      const assertion = await navigator.credentials.get({
+        publicKey: {
+          challenge,
+          allowCredentials,
+          userVerification: "required",
+          timeout: 60000
+        }
+      });
+
+      if (assertion) {
+        const savedToken = localStorage.getItem("wg_github_pat") || getCookie("wg_admin_auth");
+        if (savedToken) {
+          currentAuthToken = savedToken;
+          sessionStorage.setItem("wg_github_pat", savedToken);
+          updateAuthUI(true);
+          showStatus("Authentifié avec succès par biométrie Apple !", "success");
+        } else {
+          showTokenForm();
+        }
+      }
+    } catch (err) {
+      console.warn("Échec biométrie Apple :", err);
+      showTokenForm();
+    }
+  }
+
+  function showTokenForm() {
+    const passkeyCard = document.getElementById("passkey-card");
+    const tokenCard = document.getElementById("token-card");
+    if (passkeyCard) passkeyCard.style.display = "none";
+    if (tokenCard) tokenCard.style.display = "block";
   }
 
   function updateAuthUI(isAuthorized = false) {

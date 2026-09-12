@@ -287,6 +287,9 @@
         <p><strong>Contact Médias & Entrevues :</strong> <button class="btn-link js-secure-mail contact-button-clean" type="button">Contacter par courriel </button> · Kit complet & sources primaires : <a href="https://williamguindon.me/presse.html">williamguindon.me/presse.html</a></p>
       </div>
     </article>
+
+    <!-- Conteneur pour communiqués additionnels -->
+    <div id="communiques-extra-container" style="margin-top: 40px;"></div>
   </div>
 </main>
 
@@ -325,8 +328,63 @@
       window.performance.mark('app_init');
     }
   });
+
+  // Chargement et affichage dynamique des communiqués
+  async function loadAllCommuniques() {
+    try {
+      const res = await fetch("data/communiques.json?v=" + Date.now());
+      if (!res.ok) return;
+      const list = await res.json();
+      if (!Array.isArray(list) || list.length <= 1) return;
+
+      const container = document.getElementById("communiques-extra-container");
+      if (!container) return;
+
+      // Si plus d'un communiqué existe, on affiche les autres communiqués
+      container.innerHTML = `<h3 style="font-size:1.3rem; margin: 30px 0 16px; color: var(--accent);">Tous les communiqués officiels (${list.length})</h3>`;
+      
+      const listWrapper = document.createElement("div");
+      listWrapper.style.display = "flex";
+      listWrapper.style.flexDirection = "column";
+      listWrapper.style.gap = "20px";
+
+      list.slice(1).forEach(item => {
+        const art = document.createElement("article");
+        art.className = "communique-paper";
+        art.id = item.id;
+        art.innerHTML = `
+          <div class="pr-top-bar">
+            <span class="pr-badge-urgent">${item.badge || "COMMUNIQUÉ OFFICIEL"}</span>
+            <span class="pr-dossier-tag">${item.location ? item.location.toUpperCase() + " — " : ""}${item.date || ""}</span>
+          </div>
+          ${item.dossierTag ? `<div class="pr-dossier-subtag">${item.dossierTag}</div>` : ""}
+          <h2 class="pr-title" style="font-size:1.4rem; margin-top:8px;">${item.title}</h2>
+          ${item.subtitle ? `<div class="pr-subtitle">${item.subtitle}</div>` : ""}
+          <div class="pr-body-content" style="margin-top:14px; line-height:1.7;">${item.content}</div>
+        `;
+        listWrapper.appendChild(art);
+      });
+
+      container.appendChild(listWrapper);
+    } catch (e) {
+      console.warn("Info: mode statique actif pour les communiqués", e);
+    }
+  }
+
+  loadAllCommuniques();
+
+  document.getElementById("btn-print-pr")?.addEventListener("click", () => window.print());
+  
+  document.querySelectorAll(".js-copy-pr").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = document.querySelector(".communique-paper");
+      if (target) {
+        navigator.clipboard.writeText(target.innerText);
+        alert("Texte du communiqué copié dans le presse-papier !");
+      }
+    });
+  });
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
-<script>document.getElementById("btn-print-pr")?.addEventListener("click", () => window.print());</script>
 </body>
 </html>
