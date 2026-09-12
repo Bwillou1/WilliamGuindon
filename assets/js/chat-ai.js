@@ -75,19 +75,6 @@ DIRECTIVES DE RÉPONSE :
       return text;
     }
 
-    function isRefusal(text) {
-      if (!text) return true;
-      const lower = text.toLowerCase();
-      return (
-        lower.includes("je suis désolé") ||
-        lower.includes("je ne peux pas fournir") ||
-        lower.includes("je ne suis pas en mesure") ||
-        lower.includes("pas d'informations sur un dossier") ||
-        lower.includes("renseignements personnels") ||
-        lower.includes("comportement illégal")
-      );
-    }
-
     function generateLocalAnswer(query) {
       const q = query.toLowerCase();
       let res = '';
@@ -128,12 +115,8 @@ DIRECTIVES DE RÉPONSE :
       });
       if (!resp.ok) throw new Error(`API Error HTTP ${resp.status}`);
       const data = await resp.json();
-      if (data && data.answer) {
-        const reply = data.answer;
-        if (isRefusal(reply)) {
-          throw new Error('Safety refusal triggered fallback');
-        }
-        return reply;
+      if (data && data.answer && data.answer.trim()) {
+        return data.answer.trim();
       }
       throw new Error('Invalid API payload');
     }

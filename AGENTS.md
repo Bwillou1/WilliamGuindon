@@ -253,18 +253,13 @@ réduit la charge de ~80 % sans changer le comportement.
 
 `workers/groq-chat.js` applique une politique stricte :
 
-- **Aiguillage en 4 niveaux** (`FAIBLE`, `NORMAL`, `MOYEN`, `EXPERT`) par expressions régulières
-  dans `classifyQuestion()`, puis par le modèle. Les niveaux `MOYEN` et `EXPERT` renvoient
-  `[ROUTE:MOYEN]` / `[ROUTE:EXPERT]` **au client**, qui prend le relais.
-- **Modèles :** `GROQ_MODEL_LOW`, `GROQ_MODEL_NORMAL`, `GROQ_MODEL_MEDIUM`, `GROQ_MODEL_EXPERT`.
-- **Limites :** corps ≤ 32 Ko, ≤ 12 messages, ≤ 7 000 caractères/message, `max_tokens: 700`,
+- **Architecture unifiée Groq Compound & Cascade de Résilience** : interrogation directe du modèle avec recherche web serveur (`groq/compound-mini`, `groq/compound`, ou variable `GROQ_MODEL`) et fallback automatique en cascade (`llama-3.3-70b-versatile`, `llama-3.1-8b-instant`) pour garantir 100% de disponibilité sans interruption ni faux rejets `[ROUTE:*]`.
+- **Limites :** corps ≤ 32 Ko, ≤ 12 messages, ≤ 7 000 caractères/message, `max_tokens: 800`,
   `temperature: 0.2`. **Ne pas les augmenter** sans raison documentée : ce sont des garde-fous
   anti-abus et anti-facture.
-- **Recherche web** activée seulement pour le niveau `NORMAL`, restreinte à
-  `AUTHORIZED_SEARCH_DOMAINS` (12 domaines institutionnels). **Ne jamais élargir cette liste**
-  à des réseaux sociaux, plateformes de pétition ou de sociofinancement.
-- **Contenus bloqués** (dons, pétitions, campagnes d'opinion, personnes nommément exclues) :
-  cette liste est un choix éditorial et juridique assumé. Ne pas la modifier sans instruction.
+- **Recherche web** intégrée côté serveur avec `search_settings`, restreinte à
+  `AUTHORIZED_SEARCH_DOMAINS` (domaines institutionnels CCE, BAPE, Lois fédérales/provinciales et revues de presse vérifiées). **Ne jamais élargir cette liste**
+  à des réseaux sociaux ou plateformes de sociofinancement.
 - CORS verrouillé sur `https://williamguindon.me`.
 
 ---

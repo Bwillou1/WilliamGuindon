@@ -138,62 +138,73 @@ export default {
       });
     }
 
-    const modelName = getModel(env);
-    const isCompound = modelName.includes('compound');
+    const primaryModel = getModel(env);
+    const candidateModels = [
+      primaryModel,
+      'llama-3.3-70b-versatile',
+      'llama-3.1-8b-instant'
+    ].filter((m, idx, arr) => arr.indexOf(m) === idx);
 
-    try {
-      const requestBody = {
-        model: modelName,
-        temperature: 0.2,
-        max_tokens: 800,
-        messages: [
-          {
-            role: 'system',
-            content: SYSTEM_PROMPT.trim()
-          },
-          ...safeMessages
-        ]
-      };
+    let finalAnswer = null;
+    let finalTools = null;
+    let lastError = null;
 
-      if (isCompound) {
-        requestBody.search_settings = {
-          include_domains: AUTHORIZED_SEARCH_DOMAINS
+    for (const model of candidateModels) {
+      try {
+        const isCompound = model.includes('compound');
+        const requestBody = {
+          model: model,
+          temperature: 0.2,
+          max_tokens: 800,
+          messages: [
+            {
+              role: 'system',
+              content: SYSTEM_PROMPT.trim()
+            },
+            ...safeMessages
+          ]
         };
-      }
 
-      const groqResponse = await fetch(GROQ_ENDPOINT, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
+        if (isCompound) {
+          requestBody.search_settings = {
+            include_domains: AUTHORIZED_SEARCH_DOMAINS
+          };
+        }
 
-      const result = await groqResponse.json();
-      if (!groqResponse.ok) {
-        return new Response(JSON.stringify({ error: 'Le service IA n’a pas pu traiter la demande.' }), {
-          status: 502,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        const groqResponse = await fetch(GROQ_ENDPOINT, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
         });
-      }
 
-      const answer = result?.choices?.[0]?.message?.content;
-      const executedTools = result?.choices?.[0]?.message?.executed_tools || null;
-      if (!answer) {
-        return new Response(JSON.stringify({ error: 'Réponse IA vide.' }), {
-          status: 502,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
+        if (!groqResponse.ok) {
+          lastError = `HTTP ${groqResponse.status}`;
+          continue;
+        }
 
-      return new Response(JSON.stringify({ answer, executed_tools: executedTools }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: 'Service IA temporairement indisponible.' }), {
+        const result = await groqResponse.json();
+        const content = result?.choices?.[0]?.message?.content;
+        if (content && content.trim()) {
+          finalAnswer = content.trim();
+          finalTools = result?.choices?.[0]?.message?.executed_tools || null;
+          break;
+        }
+      } catch (err) {
+        lastError = err?.message || 'fetch error';
+      }
+    }
+
+    if (!finalAnswer) {
+      return new Response(JSON.stringify({ error: `Indisponible (${lastError || 'rejet'})` }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+
+    return new Response(JSON.stringify({ answer: finalAnswer, executed_tools: finalTools }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 };
 
