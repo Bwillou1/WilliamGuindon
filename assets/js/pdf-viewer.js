@@ -21,7 +21,8 @@
       pages: 28,
       type: "Décision officielle (Art. 24.27(2) et (3))",
       sha256: "33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c",
-      ipfsUrl: "https://dweb.link/ipfs/bafybeih4j6zlyg3w45omc7y522uyn47z6o6s47oxm2l67j6l2g3hvebwyq",
+      ipfsCid: "QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf",
+      ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf",
       author: "Secrétariat de la CCE · William Guindon (Auteur de la soumission)",
       citation: "Secrétariat de la CCE. (2026). Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM concernant la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville). Commission de coopération environnementale.",
       license: "Creative Commons CC BY-NC-ND 4.0 International"
@@ -34,7 +35,8 @@
       pages: 15,
       type: "Communication formelle (15 pages)",
       sha256: "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710",
-      ipfsUrl: "https://dweb.link/ipfs/bafybeifw6o26j7n5g5hkmvdqvyvd5u2w65qlyxvdgqom4c5qlyxd4vx2uq",
+      ipfsCid: "QmbB7oBxudna3cYDGr5XK2iUhDf3qcvzNHCwEqVAQ8zfaV",
+      ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmbB7oBxudna3cYDGr5XK2iUhDf3qcvzNHCwEqVAQ8zfaV",
       author: "William Guindon",
       citation: "Guindon, W. (2026). Soumission révisée SEM-26-003 : Protection de la Grande Tourbière de Blainville et conformité environnementale ACEUM (Art. 24.27). Commission de coopération environnementale.",
       license: "Creative Commons CC BY-NC-ND 4.0 International"
@@ -47,7 +49,8 @@
       pages: 17,
       type: "Décision d'examen initial",
       sha256: "8f8998becc91e8398852a048a5472d498dd888e79874265fe86aa387422aad5b",
-      ipfsUrl: "https://dweb.link/ipfs/bafybeih6q26j7n5g5hkmvdqvyvd5u2w65qlyxvdgqom4c5qlyxd4vx2uq",
+      ipfsCid: "QmTKmiUFHimaFx2n2KGqSY6L7ccknSazes6Zb2YkgK8Kug",
+      ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmTKmiUFHimaFx2n2KGqSY6L7ccknSazes6Zb2YkgK8Kug",
       author: "Secrétariat de la CCE",
       citation: "Secrétariat de la CCE. (2026). Détermination préliminaire SEM-26-003 en vertu de l'article 24.27(1). Commission de coopération environnementale.",
       license: "Creative Commons CC BY-NC-ND 4.0 International"
@@ -60,7 +63,8 @@
       pages: 14,
       type: "Mémoire au Rapporteur spécial",
       sha256: "db8818c7668e85efa4e977f5a7a3478f811933fbc20562b22c92fdc193b9767f",
-      ipfsUrl: "https://dweb.link/ipfs/bafybeie4l4p2d4hvg57s56d33g2vxomclyu5mvdgqom4c5qlyxd4vx2uq",
+      ipfsCid: "QmQ8dva4AQ98StCWdVZFK7jNGWGbX91PgmPbNyuFTyh3Dx",
+      ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmQ8dva4AQ98StCWdVZFK7jNGWGbX91PgmPbNyuFTyh3Dx",
       author: "William Guindon",
       citation: "Guindon, W. (2026). Formal Deposition and Urgent Appeal: Human Rights Violations and Denial of Justice – The Stablex Case and Bill 93 in Quebec. Mandate of the UN Special Rapporteur on Toxics and Human Rights.",
       license: "Creative Commons CC BY-NC-ND 4.0 International"
