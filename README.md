@@ -185,5 +185,6 @@ L'assistant IA documentaire repose sur un Cloudflare Worker autonome ([`workers/
 ---
 
 <div align="center">
-  <sub>© 2026 William Guindon. Contenu protégé sous licence <a href="LICENSE">CC BY-NC-ND 4.0</a>.</sub>
+  <sub>© 2026 William Guindon. Contenu et code original sous licence <a href="LICENSE">CC BY-NC-ND 4.0</a>.</sub><br>
+  <sub>Les logiciels et dépendances tiers demeurent régis par leurs licences libres respectives — voir <a href="THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES.md</a> et <a href="dependances-licences.html">politiques / licences tierces</a>.</sub>
 </div>

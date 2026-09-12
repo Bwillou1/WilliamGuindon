@@ -282,7 +282,8 @@
         url: safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
-        enableXfa: true
+        enableXfa: true,
+        isEvalSupported: false
       });
 
       state.pdfDoc = await loadingTask.promise;

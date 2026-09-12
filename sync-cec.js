@@ -30,7 +30,7 @@ async function syncDossierStatus() {
       date: "17 août 2026",
       description_fr: "Le Secrétariat a jugé que la communication satisfaisait aux critères énoncés à l'article 24.27(2) et a demandé une réponse au Canada en vertu de l'article 24.27(3) d'ici le 16 octobre 2026.",
       description_en: "The Secretariat determined that the submission satisfies the criteria set out in Article 24.27(2) and requested a response from Canada under Article 24.27(3) by October 16, 2026.",
-      document_fr: "https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_fr.pdf",
+      document_fr: "https://williamguindon.me/viewer.html?file=assets/docs/26-2-det2_fr.pdf",
       document_en: "https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_en.pdf"
     },
     progression: {
@@ -75,7 +75,8 @@ async function syncDossierStatus() {
   const hasChanged = !existingData ||
     existingData.wp_modified !== data.wp_modified ||
     existingData.etat_fr !== data.etat_fr ||
-    existingData.prochaine_echeance !== data.prochaine_echeance;
+    existingData.prochaine_echeance !== data.prochaine_echeance ||
+    existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr;
 
   if (hasChanged) {
     data.timestamp_sync = new Date().toISOString();

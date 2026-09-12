@@ -260,6 +260,7 @@
       <p>Le site n'installe <strong>aucun témoin de connexion (cookie) publicitaire, aucun traceur intersite, aucun pixel invisible et aucun script de reciblage commercial</strong>.</p>
       <ul>
         <li><strong>Préférences locales d'affichage :</strong> Le choix du mode d'affichage (thème sombre ou clair) est mémorisé exclusivement dans la mémoire locale de votre propre navigateur web (<code>localStorage</code>). Cette information purement technique est conservée sur votre appareil, n'est associée à aucune identité nominative et n'est jamais transmise à nos serveurs.</li>
+        <li><strong>Témoin technique de traduction (Google Traduction) :</strong> Si vous activez la traduction multilingue du site, le service tiers Google Traduction peut déposer un témoin technique nommé <code>googtrans</code> (ex. <code>/fr/en</code>) pour mémoriser votre choix de langue pendant votre navigation. Ce témoin est strictement fonctionnel et ne sert à aucun profilage commercial.</li>
         <li><strong>Mesure d'audience respectueuse de la vie privée (Umami Analytics) :</strong> Le site utilise la solution d'analyse statistique open-source <em>Umami Analytics</em>. Contrairement aux outils d'analyse invasifs, Umami fonctionne <strong>sans aucun témoin de connexion (cookieless)</strong>, ne recueille aucune donnée permettant d'identifier un individu (PII), anonymise totalement les adresses IP par hachage cryptographique journalier avec sel, et ne suit aucun utilisateur d'un site à un autre. Ce mécanisme est rigoureusement conforme aux directives de la CNIL, de la Loi 25 et du RGPD et ne nécessite aucun consentement intrusif par bannière.</li>
       </ul>
 
@@ -317,6 +318,10 @@
           </ul>
         </li>
         <li><strong>GitHub Pages / GitHub Inc. :</strong> Hébergement du code source et des fichiers statiques publics sous infrastructure certifiée SOC 1 / SOC 2.</li>
+        <li><strong>Google LLC (Google Traduction) :</strong> Service tiers optionnel de traduction automatique multilingue activé à la demande du visiteur. L'utilisation du sélecteur charge des scripts de traduction hébergés par Google et transmet le texte à traduire.</li>
+        <li><strong>Cal.com, Inc. :</strong> Plateforme de planification de rendez-vous intégrée de façon optionnelle (espace presse et contact médias). Lorsque le visiteur interagit avec le calendrier, Cal.com recueille les coordonnées saisies nécessaires à la réservation de l'entrevue.</li>
+        <li><strong>unpkg / jsDelivr / Cloudflare CDN (Réseaux de distribution de contenu) :</strong> Chargement ponctuel de bibliothèques logicielles open-source nécessaires aux fonctionnalités interactives (ex. lecteur PDF, cryptographie WebCrypto, éditeur visuel).</li>
+        <li><strong>Umami Analytics :</strong> Solution de statistiques d'audience open-source, sans traceur individuel ni témoin persistant, respectant la vie privée et les directives de la Loi 25 / RGPD.</li>
         <li><strong>Obligation légale :</strong> William Guindon ne divulguera des renseignements personnels que si une ordonnance judiciaire valide, une loi applicable ou un tribunal compétent l'y contraint expressément, dans le respect des privilèges légaux et des protections accordées aux sources citoyennes, aux lanceurs d'alerte et aux correspondants d'intérêt public.</li>
       </ul>
 
@@ -339,7 +344,7 @@
       <ul>
         <li>Protocole de chiffrement TLS 1.3 / HTTPS obligatoire de bout en bout avec politique de préchargement HSTS (<em>HTTP Strict Transport Security</em>) renforcée ;</li>
         <li>Distribution via le réseau périphérique sécurisé Cloudflare avec pare-feu applicatif (WAF) et protection anti-DDoS active ;</li>
-        <li>Politique de sécurité de contenu stricte (Content Security Policy - CSP) bloquant toute exécution de scripts ou ressources non autorisées ;</li>
+        <li>Politique de sécurité de contenu stricte (Content Security Policy - CSP) avec liste blanche de domaines et sources autorisés ;</li>
         <li>Protection contre le détournement de clics (*clickjacking*) via en-têtes HTTP <code>X-Frame-Options: DENY</code> et <code>frame-ancestors 'none'</code> servis à la périphérie ;</li>
         <li>Cloisonnement des permissions matérielles (désactivation par défaut de la caméra, microphone, géolocalisation et périphériques USB via <code>Permissions-Policy</code>) ;</li>
         <li>Protection Zero Trust isolant hermétiquement les interfaces d'administration sans stockage local de mots de passe maîtres.</li>
