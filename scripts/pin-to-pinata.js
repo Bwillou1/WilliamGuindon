@@ -45,36 +45,107 @@ function testAuth() {
   });
 }
 
-// 2. Épinglage d'un fichier PDF
-function pinFile(filePath, customName) {
-  return new Promise((resolve, reject) => {
-    const fileName = path.basename(filePath);
-    const fileBuffer = fs.readFileSync(filePath);
-    const boundary = '----PinataBoundary' + Math.random().toString(36).substring(2);
+// Helper pour scanner récursivement les fichiers du site
+function getAllFiles(dirPath, arrayOfFiles = []) {
+  const files = fs.readdirSync(dirPath);
 
+  files.forEach(file => {
+    const fullPath = path.join(dirPath, file);
+    const relPath = path.relative(ROOT_DIR, fullPath);
+
+    // Ignorer les dossiers et fichiers non pertinents / secrets
+    if (
+      file.startsWith('.git') ||
+      file.startsWith('.env') ||
+      file === 'node_modules' ||
+      file === 'tmp' ||
+      file === 'temp' ||
+      file === 'scratch' ||
+      file === '.agent' ||
+      file === '.claude' ||
+      file === 'dist' ||
+      file === 'build'
+    ) {
+      return;
+    }
+
+    if (fs.statSync(fullPath).isDirectory()) {
+      getAllFiles(fullPath, arrayOfFiles);
+    } else {
+      arrayOfFiles.push({
+        fullPath: fullPath,
+        relPath: relPath.replace(/\\/g, '/')
+      });
+    }
+  });
+
+  return arrayOfFiles;
+}
+
+// 2. Épinglage du site complet comme dossier IPFS
+function pinEntireWebsite() {
+  return new Promise((resolve, reject) => {
+    console.log('\n--- Préparation de l\'archive du site complet ---');
+    const allFiles = getAllFiles(ROOT_DIR);
+    console.log(`Nombre total de fichiers à épingler : ${allFiles.length}`);
+
+    const boundary = '----PinataWebsiteBoundary' + Math.random().toString(36).substring(2);
     const pinataMetadata = JSON.stringify({
-      name: customName || fileName,
+      name: 'williamguindon.me-complete-site',
       keyvalues: {
+        project: 'williamguindon.me',
         dossier: 'SEM-26-003',
-        author: 'William Guindon'
+        author: 'William Guindon',
+        type: 'full-website-mirror'
       }
     });
 
-    let headerPart = Buffer.from(
-      `--${boundary}\r\n` +
-      `Content-Disposition: form-data; name="file"; filename="${fileName}"\r\n` +
-      `Content-Type: application/pdf\r\n\r\n`
-    );
+    const pinataOptions = JSON.stringify({
+      cidVersion: 1,
+      wrapWithDirectory: false
+    });
 
-    let metaPart = Buffer.from(
-      `\r\n--${boundary}\r\n` +
+    const buffers = [];
+
+    // 1. Métadonnées
+    buffers.push(Buffer.from(
+      `--${boundary}\r\n` +
       `Content-Disposition: form-data; name="pinataMetadata"\r\n` +
       `Content-Type: application/json\r\n\r\n` +
       pinataMetadata +
-      `\r\n--${boundary}--\r\n`
-    );
+      `\r\n`
+    ));
 
-    const bodyBuffer = Buffer.concat([headerPart, fileBuffer, metaPart]);
+    // 2. Options
+    buffers.push(Buffer.from(
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="pinataOptions"\r\n` +
+      `Content-Type: application/json\r\n\r\n` +
+      pinataOptions +
+      `\r\n`
+    ));
+
+    // 3. Chaque fichier avec son chemin relatif sous le dossier "williamguindon"
+    let totalBytes = 0;
+    for (const f of allFiles) {
+      const fileBuffer = fs.readFileSync(f.fullPath);
+      totalBytes += fileBuffer.length;
+      const ipfsPath = `williamguindon/${f.relPath}`;
+
+      buffers.push(Buffer.from(
+        `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="file"; filename="${ipfsPath}"\r\n` +
+        `Content-Type: application/octet-stream\r\n\r\n`
+      ));
+      buffers.push(fileBuffer);
+      buffers.push(Buffer.from(`\r\n`));
+    }
+
+    buffers.push(Buffer.from(`--${boundary}--\r\n`));
+
+    const finalBody = Buffer.concat(buffers);
+    console.log(`Taille totale du payload : ${(finalBody.length / 1024 / 1024).toFixed(2)} Mo`);
+    console.log('Envoi vers les serveurs IPFS de Pinata en cours...');
 
     const req = https.request({
       hostname: 'api.pinata.cloud',
@@ -83,7 +154,7 @@ function pinFile(filePath, customName) {
       headers: {
         'Authorization': `Bearer ${jwt}`,
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        'Content-Length': bodyBuffer.length
+        'Content-Length': finalBody.length
       }
     }, res => {
       let data = '';
@@ -91,16 +162,22 @@ function pinFile(filePath, customName) {
       res.on('end', () => {
         if (res.statusCode === 200) {
           const json = JSON.parse(data);
-          console.log(`✔ [IPFS PINNÉ] ${fileName} -> CID: ${json.IpfsHash} (Taille: ${json.PinSize} octets)`);
+          console.log(`\n🎉 [SUCCÈS TOTAL] Site complet épinglé sur IPFS !`);
+          console.log(`✔ CID Racine du site : ${json.IpfsHash}`);
+          console.log(`✔ Taille épinglée : ${(json.PinSize / 1024 / 1024).toFixed(2)} Mo`);
+          console.log(`✔ URL d'accès direct Pinata : https://gateway.pinata.cloud/ipfs/${json.IpfsHash}/`);
+          console.log(`✔ URL d'accès direct dweb.link : https://dweb.link/ipfs/${json.IpfsHash}/`);
+          console.log(`✔ URL d'accès direct Cloudflare : https://cloudflare-ipfs.com/ipfs/${json.IpfsHash}/`);
+          console.log(`✔ URL d'accès direct ipfs.io : https://ipfs.io/ipfs/${json.IpfsHash}/`);
           resolve(json);
         } else {
-          reject(new Error(`Échec pin ${fileName} (${res.statusCode}): ${data}`));
+          reject(new Error(`Échec upload site complet (${res.statusCode}): ${data}`));
         }
       });
     });
 
     req.on('error', reject);
-    req.write(bodyBuffer);
+    req.write(finalBody);
     req.end();
   });
 }
@@ -108,26 +185,7 @@ function pinFile(filePath, customName) {
 async function run() {
   try {
     await testAuth();
-
-    const docs = [
-      { path: 'assets/docs/26-2-det2_fr.pdf', name: 'SEM-26-003_Determination_Positive_CCE_17_Aout_2026.pdf' },
-      { path: 'assets/docs/26-3-rsub_fr_redacted.pdf', name: 'SEM-26-003_Soumission_Citoyenne_16_Juillet_2026.pdf' },
-      { path: 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf', name: 'SEM-26-003_Deposition_Formelle_ONU_Mai_2026.pdf' },
-      { path: 'assets/docs/26-3-det_fr.pdf', name: 'SEM-26-003_Decision_Preliminaire_CCE_3_Juin_2026.pdf' }
-    ];
-
-    const results = {};
-    for (const doc of docs) {
-      const fullPath = path.join(ROOT_DIR, doc.path);
-      if (fs.existsSync(fullPath)) {
-        const res = await pinFile(fullPath, doc.name);
-        results[doc.path] = res.IpfsHash;
-      }
-    }
-
-    console.log('\n=== Résumé des CIDs IPFS réels générés ===');
-    console.log(JSON.stringify(results, null, 2));
-
+    await pinEntireWebsite();
   } catch (err) {
     console.error('Erreur :', err.message);
     process.exit(1);
