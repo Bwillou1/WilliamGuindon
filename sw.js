@@ -51,6 +51,7 @@ const ASSETS_TO_CACHE = [
   '/og-image.jpg',
   '/assets/media/william-guindon.jpg',
   '/assets/media/william-guindon.webp',
+  '/assets/media/signature.svg',
   '/feed.xml',
   '/status.json'
 ];
