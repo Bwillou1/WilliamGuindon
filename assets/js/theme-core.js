@@ -1246,7 +1246,7 @@
 
   function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
-    const signatures = document.querySelectorAll('.signature-svg-animated');
+    const signatures = document.querySelectorAll('.signature-draw-box');
 
     if ('IntersectionObserver' in window) {
       if (reveals.length) {
@@ -1273,8 +1273,8 @@
             }
           });
         }, {
-          threshold: 0.05,
-          rootMargin: '0px 0px 50px 0px'
+          threshold: 0.02,
+          rootMargin: '0px 0px 80px 0px'
         });
         signatures.forEach(el => sigObserver.observe(el));
       }
@@ -1320,11 +1320,11 @@
     // Protection anti-capture : floutage instantané si raccourci de capture détecté
     let blurTimeout;
     function triggerSignatureBlur() {
-      const sigSvgs = document.querySelectorAll('.signature-svg-animated');
-      sigSvgs.forEach(svg => svg.classList.add('signature-blur-shield'));
+      const sigBoxes = document.querySelectorAll('.signature-draw-box');
+      sigBoxes.forEach(box => box.classList.add('signature-blur-shield'));
       clearTimeout(blurTimeout);
       blurTimeout = setTimeout(() => {
-        sigSvgs.forEach(svg => svg.classList.remove('signature-blur-shield'));
+        sigBoxes.forEach(box => box.classList.remove('signature-blur-shield'));
       }, 1500);
     }
 

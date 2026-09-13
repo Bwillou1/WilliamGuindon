@@ -5420,7 +5420,7 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 20px;
+  margin-top: 24px;
   position: relative;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -5429,67 +5429,82 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   -webkit-touch-callout: none;
 }
 
-.signature-svg-animated {
-  width: 175px;
+.signature-draw-box {
+  position: relative;
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
   max-width: 100%;
-  height: auto;
-  display: block;
-  color: var(--text, #f1f5f9);
-  fill: currentColor;
-  opacity: 0;
-  transform: translateY(6px) scale(0.96);
+  width: 190px;
+  height: 96px;
+  overflow: hidden;
   clip-path: inset(0 100% 0 0);
+  opacity: 0;
+  transform: translateY(6px);
   pointer-events: none;
   -webkit-user-drag: none;
   user-drag: none;
   -webkit-user-select: none;
   user-select: none;
-  transition: clip-path 1.3s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.6s ease-out,
+  transition: clip-path 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.5s ease-out,
               transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-              filter 0.6s ease;
+              filter 0.5s ease;
 }
 
-.signature-svg-animated.is-signed {
-  opacity: 0.95;
-  transform: translateY(0) scale(1);
+.signature-draw-box.is-signed {
   clip-path: inset(0 0 0 0);
-  filter: drop-shadow(0 2px 6px rgba(34, 197, 94, 0.28));
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.signature-svg-animated.signature-blur-shield {
-  filter: blur(14px) !important;
-  opacity: 0.1 !important;
+.signature-svg-animated {
+  width: 190px;
+  height: 96px;
+  display: block;
+  flex-shrink: 0;
+  color: #10b981;
+  fill: currentColor;
+  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.35));
 }
 
 [data-theme="dark"] .signature-svg-animated {
-  color: #f1f5f9;
+  color: #34d399;
+  fill: #34d399;
+  filter: drop-shadow(0 2px 10px rgba(52, 211, 153, 0.45));
 }
 
 [data-theme="light"] .signature-svg-animated {
-  color: #0f172a;
+  color: #047857;
+  fill: #047857;
+  filter: drop-shadow(0 1px 3px rgba(4, 120, 87, 0.25));
+}
+
+.signature-draw-box.signature-blur-shield {
+  filter: blur(14px) !important;
+  opacity: 0.1 !important;
 }
 
 .signature-caption {
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 6px;
   letter-spacing: 0.02em;
   opacity: 0;
   transform: translateY(4px);
   -webkit-user-select: none;
   user-select: none;
-  transition: opacity 0.5s ease 0.7s, transform 0.5s ease 0.7s;
+  transition: opacity 0.5s ease 0.6s, transform 0.5s ease 0.6s;
 }
 
-.signature-svg-animated.is-signed + .signature-caption {
+.signature-draw-box.is-signed + .signature-caption {
   opacity: 1;
   transform: translateY(0);
 }
 
 @media print {
-  .signature-svg-animated {
+  .signature-block, .signature-draw-box, .signature-svg-animated {
     display: none !important;
   }
 }
