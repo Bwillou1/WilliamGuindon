@@ -1245,6 +1245,7 @@
 
   function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
+    const sigBoxes = document.querySelectorAll('.signature-draw-box');
 
     if ('IntersectionObserver' in window) {
       if (reveals.length) {
@@ -1261,8 +1262,24 @@
         });
         reveals.forEach(el => observer.observe(el));
       }
+
+      if (sigBoxes.length) {
+        const sigObserver = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-signed');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.05,
+          rootMargin: '0px 0px 50px 0px'
+        });
+        sigBoxes.forEach(el => sigObserver.observe(el));
+      }
     } else {
       reveals.forEach(el => el.classList.add('visible'));
+      sigBoxes.forEach(el => el.classList.add('is-signed'));
     }
   }
 
