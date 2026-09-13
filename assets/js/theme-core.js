@@ -1040,7 +1040,6 @@
 
     initQuickSearch();
     initScrollReveal();
-    initSignatureProtection();
     handleLowBandwidth();
   }
 
@@ -1246,7 +1245,6 @@
 
   function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
-    const signatures = document.querySelectorAll('.signature-draw-box');
 
     if ('IntersectionObserver' in window) {
       if (reveals.length) {
@@ -1263,86 +1261,9 @@
         });
         reveals.forEach(el => observer.observe(el));
       }
-
-      if (signatures.length) {
-        const sigObserver = new IntersectionObserver((entries, obs) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-signed');
-              obs.unobserve(entry.target);
-            }
-          });
-        }, {
-          threshold: 0.02,
-          rootMargin: '0px 0px 80px 0px'
-        });
-        signatures.forEach(el => sigObserver.observe(el));
-      }
     } else {
       reveals.forEach(el => el.classList.add('visible'));
-      signatures.forEach(el => el.classList.add('is-signed'));
     }
-  }
-
-  function initSignatureProtection() {
-    const sigBlocks = document.querySelectorAll('.signature-block');
-    if (!sigBlocks.length) return;
-
-    sigBlocks.forEach(block => {
-      // Bloquer le clic droit / menu contextuel sur la signature
-      block.addEventListener('contextmenu', e => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }, { passive: false });
-
-      // Bloquer le glisser-déposer / drag
-      block.addEventListener('dragstart', e => {
-        e.preventDefault();
-        return false;
-      }, { passive: false });
-
-      // Bloquer la sélection et la copie
-      block.addEventListener('copy', e => {
-        e.preventDefault();
-        return false;
-      }, { passive: false });
-      block.addEventListener('cut', e => {
-        e.preventDefault();
-        return false;
-      }, { passive: false });
-      block.addEventListener('selectstart', e => {
-        e.preventDefault();
-        return false;
-      }, { passive: false });
-    });
-
-    // Protection anti-capture : floutage instantané si raccourci de capture détecté
-    let blurTimeout;
-    function triggerSignatureBlur() {
-      const sigBoxes = document.querySelectorAll('.signature-draw-box');
-      sigBoxes.forEach(box => box.classList.add('signature-blur-shield'));
-      clearTimeout(blurTimeout);
-      blurTimeout = setTimeout(() => {
-        sigBoxes.forEach(box => box.classList.remove('signature-blur-shield'));
-      }, 1500);
-    }
-
-    window.addEventListener('keydown', e => {
-      // PrintScreen (Windows/Linux)
-      if (e.key === 'PrintScreen' || e.keyCode === 44) {
-        triggerSignatureBlur();
-      }
-      // Raccourcis Mac (Cmd+Shift+3/4/5) ou Windows (Win+Shift+S)
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5' || e.key === 's' || e.key === 'S')) {
-        triggerSignatureBlur();
-      }
-    }, { passive: true });
-
-    // Masquage lors de la perte de focus de la fenêtre (outils de capture tiers)
-    window.addEventListener('blur', () => {
-      triggerSignatureBlur();
-    }, { passive: true });
   }
 
   function routeAiCrawlers() {
