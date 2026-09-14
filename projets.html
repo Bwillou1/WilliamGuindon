@@ -649,6 +649,131 @@ header.site .mobile-nav-title {
   border-color: var(--cosmic-accent-light);
   box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(99, 102, 241, 0.2);
 }
+
+/* Overlay & Transition Grande Tourbière de Blainville */
+.tourbiere-overlay {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  max-width: 640px;
+  width: calc(100% - 40px);
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tourbiere-overlay.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.tourbiere-glass-card {
+  background: rgba(10, 25, 20, 0.82);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 20px;
+  padding: 24px 28px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(16, 185, 129, 0.2);
+  color: #e2e8f0;
+  text-align: center;
+}
+
+.tourbiere-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #6ee7b7;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.tourbiere-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 10px;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+}
+
+.tourbiere-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin: 0 0 18px;
+}
+
+.tourbiere-desc strong {
+  color: #fef08a;
+}
+
+.tourbiere-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.tourbiere-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tourbiere-btn-primary {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.tourbiere-btn-primary:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.tourbiere-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f1f5f9;
+}
+
+.tourbiere-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.tourbiere-btn-cosmos {
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  color: #c7d2fe;
+}
+
+.tourbiere-btn-cosmos:hover {
+  background: rgba(99, 102, 241, 0.35);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+}
 </style>
 </head>
 <body>
@@ -781,10 +906,29 @@ header.site .mobile-nav-title {
       <span class="theme-dot" data-theme="monolith" style="background: #94a3b8; color: #94a3b8;" title="Monolith"></span>
     </div>
 
+    <button type="button" class="dock-btn" id="btn-tourbiere-view" title="Grande Tourbière de Blainville (Dézoom)" aria-label="Explorer la Grande Tourbière de Blainville">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
+    </button>
     <button type="button" class="dock-btn" id="btn-fullscreen" title="Plein Écran" aria-label="Mode plein écran">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
     </button>
   </nav>
+
+  <!-- Overlay Grande Tourbière de Blainville (Visible en dézoom cosmique) -->
+  <div id="tourbiere-overlay" class="tourbiere-overlay" aria-hidden="true">
+    <div class="tourbiere-glass-card">
+      <div class="tourbiere-badge">🌿 Écosystème Boréal Protégé • Blainville, QC</div>
+      <h2 class="tourbiere-title">Grande Tourbière de Blainville</h2>
+      <p class="tourbiere-desc">
+        Vous avez pris du recul sur le cosmos pour atterrir au cœur de la tourbière. C'est ici que s'enracine la communication citoyenne <strong>SEM-26-003</strong> déposée auprès de la CCE pour préserver ce sanctuaire écologique face à l'enfouissement de déchets dangereux.
+      </p>
+      <div class="tourbiere-actions">
+        <a href="stablex.html" class="tourbiere-btn tourbiere-btn-primary">Dossier Stablex ↗</a>
+        <a href="registre.html" class="tourbiere-btn tourbiere-btn-secondary">Registre CCE ↗</a>
+        <button type="button" class="tourbiere-btn tourbiere-btn-cosmos" id="btn-return-cosmos">✨ Retour au Cosmos</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Vue Grille -->
   <div id="grid-view-modal" aria-label="Vue grille de tous les projets">
@@ -1123,6 +1267,12 @@ header.site .mobile-nav-title {
     targetZoom: 1.0
   };
 
+  // Image & Arrière-Plan de la Grande Tourbière de Blainville (Dézoom)
+  const tourbiereImg = new Image();
+  tourbiereImg.src = 'assets/media/grande-tourbiere-lever-soleil.webp';
+  let tourbiereLoaded = false;
+  tourbiereImg.onload = () => { tourbiereLoaded = true; };
+
   // Contrôle Temporel de la Révolution Orbitale
   let isOrbitPaused = false;
   let targetTimeDilation = 1.0;
@@ -1273,6 +1423,42 @@ header.site .mobile-nav-title {
       targetTimeDilation = 1.0;
     }
     currentTimeDilation += (targetTimeDilation - currentTimeDilation) * 0.08;
+
+    // 0. Transition de Dézoom vers la Grande Tourbière de Blainville
+    const tourbiereFactor = Math.min(1.0, Math.max(0, (0.95 - camera.zoom) / 0.45));
+    if (tourbiereFactor > 0.005 && tourbiereLoaded) {
+      starCtx.save();
+      starCtx.setTransform(1, 0, 0, 1, 0, 0);
+      starCtx.globalAlpha = tourbiereFactor * 0.94;
+
+      const imgRatio = (tourbiereImg.naturalWidth && tourbiereImg.naturalHeight) 
+        ? (tourbiereImg.naturalWidth / tourbiereImg.naturalHeight) 
+        : (1080 / 1920);
+      const screenRatio = width / height;
+      let dw, dh, dx, dy;
+      if (screenRatio > imgRatio) {
+        dw = width;
+        dh = width / imgRatio;
+        dx = 0;
+        dy = (height - dh) * 0.5;
+      } else {
+        dh = height;
+        dw = height * imgRatio;
+        dx = (width - dw) * 0.5;
+        dy = 0;
+      }
+      starCtx.drawImage(tourbiereImg, dx, dy, dw, dh);
+
+      // Brume dorée atmosphérique au lever du soleil sur la tourbière
+      const mistGrad = starCtx.createRadialGradient(width * 0.5, height * 0.42, 40, width * 0.5, height * 0.5, width * 0.78);
+      mistGrad.addColorStop(0, `rgba(251, 191, 36, ${0.32 * tourbiereFactor})`);
+      mistGrad.addColorStop(0.45, `rgba(16, 185, 129, ${0.20 * tourbiereFactor})`);
+      mistGrad.addColorStop(1, `rgba(2, 6, 23, ${0.72 * tourbiereFactor})`);
+      starCtx.fillStyle = mistGrad;
+      starCtx.fillRect(0, 0, width, height);
+
+      starCtx.restore();
+    }
 
     // Application de la Caméra Cosmique (Zoom & Pan fluide)
     starCtx.save();
@@ -1792,6 +1978,21 @@ header.site .mobile-nav-title {
     // Rendu Étoiles & Constellations 2D
     render2DStars(elapsed);
 
+    // Gestion d'apparition de l'overlay Grande Tourbière lors du dézoom
+    const tourbiereOverlay = document.getElementById('tourbiere-overlay');
+    const btnTourbiereView = document.getElementById('btn-tourbiere-view');
+    if (tourbiereOverlay) {
+      if (camera.zoom <= 0.78) {
+        tourbiereOverlay.classList.add('visible');
+        tourbiereOverlay.setAttribute('aria-hidden', 'false');
+        if (btnTourbiereView) btnTourbiereView.classList.add('active');
+      } else {
+        tourbiereOverlay.classList.remove('visible');
+        tourbiereOverlay.setAttribute('aria-hidden', 'true');
+        if (btnTourbiereView && camera.targetZoom > 0.78) btnTourbiereView.classList.remove('active');
+      }
+    }
+
     requestAnimationFrame(animate);
   }
 
@@ -1997,6 +2198,46 @@ header.site .mobile-nav-title {
       } else {
         document.exitFullscreen().catch(() => {});
       }
+    });
+  }
+
+  // Dézoom à la Molette & Trackpad (Navigation fluide Cosmos <-> Grande Tourbière)
+  window.addEventListener('wheel', (e) => {
+    if (e.target.closest('#project-inspector') || e.target.closest('#grid-view-modal')) return;
+    const zoomDelta = -e.deltaY * 0.0016;
+    camera.targetZoom = Math.max(0.46, Math.min(2.2, camera.targetZoom + zoomDelta));
+    if (camera.targetZoom < 0.85) {
+      camera.targetX += (0 - camera.targetX) * 0.15;
+      camera.targetY += (0 - camera.targetY) * 0.15;
+    }
+  }, { passive: true });
+
+  // Bouton Tourbière du Dock
+  const btnTourbiereView = document.getElementById('btn-tourbiere-view');
+  if (btnTourbiereView) {
+    btnTourbiereView.addEventListener('click', () => {
+      if (camera.targetZoom <= 0.65) {
+        camera.targetZoom = 1.0;
+        camera.targetX = 0;
+        camera.targetY = 0;
+        btnTourbiereView.classList.remove('active');
+      } else {
+        camera.targetZoom = 0.50;
+        camera.targetX = 0;
+        camera.targetY = 0;
+        btnTourbiereView.classList.add('active');
+      }
+    });
+  }
+
+  // Bouton Retour au Cosmos
+  const btnReturnCosmos = document.getElementById('btn-return-cosmos');
+  if (btnReturnCosmos) {
+    btnReturnCosmos.addEventListener('click', () => {
+      camera.targetZoom = 1.0;
+      camera.targetX = 0;
+      camera.targetY = 0;
+      if (btnTourbiereView) btnTourbiereView.classList.remove('active');
     });
   }
 
