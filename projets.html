@@ -617,6 +617,18 @@ header.site .mobile-nav-title {
   display: block;
 }
 
+body.grid-active #cosmic-webgl-canvas,
+body.grid-active #cosmic-star-canvas,
+body.grid-active .cosmic-dock,
+body.grid-active #project-inspector,
+body.grid-active .celestial-horizon-line,
+body.grid-active .tourbiere-descent-indicator,
+body.grid-active .tourbiere-overlay {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
 .grid-modal-header {
   max-width: 1100px;
   margin: 0 auto 30px;
@@ -890,9 +902,12 @@ header.site .mobile-nav-title {
   .cosmic-dock,
   .celestial-horizon-line,
   .tourbiere-descent-indicator,
+  .tourbiere-overlay,
   #project-inspector,
   #btn-toggle-grid {
     display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
 
   .cosmic-hud-top {
@@ -2141,7 +2156,17 @@ header.site .mobile-nav-title {
      ========================================================================== */
   let startTime = performance.now();
 
+  function isSimulationDisabled() {
+    return window.innerWidth <= 860 || (gridModal && gridModal.classList.contains('open')) || document.body.classList.contains('grid-active');
+  }
+
   function animate(now) {
+    if (isSimulationDisabled()) {
+      if (selectedStar) hideInspector();
+      requestAnimationFrame(animate);
+      return;
+    }
+
     const elapsed = (now - startTime) * 0.001;
 
     // Lissage souris
@@ -2261,7 +2286,7 @@ header.site .mobile-nav-title {
   let dragHistory = [];
 
   function showInspector(star) {
-    if (!star || !inspector) return;
+    if (!star || !inspector || isSimulationDisabled()) return;
     selectedStar = star;
     const r = star.repo;
 
@@ -2311,6 +2336,7 @@ header.site .mobile-nav-title {
   }
 
   function getStarAt(screenX, screenY) {
+    if (isSimulationDisabled()) return null;
     const worldX = (screenX - camera.x) / camera.zoom;
     const worldY = (screenY - camera.y) / camera.zoom;
     for (let i = projectStars.length - 1; i >= 0; i--) {
@@ -2328,6 +2354,7 @@ header.site .mobile-nav-title {
   if (starCanvas) {
     // 1. Début de prise (mousedown / pointerdown)
     starCanvas.addEventListener('pointerdown', (e) => {
+      if (isSimulationDisabled()) return;
       const s = getStarAt(e.clientX, e.clientY);
       if (s) {
         draggedStar = s;
@@ -2341,6 +2368,7 @@ header.site .mobile-nav-title {
 
     // 2. Déplacement et suivi du curseur
     window.addEventListener('pointermove', (e) => {
+      if (isSimulationDisabled()) return;
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
 
@@ -2446,7 +2474,7 @@ header.site .mobile-nav-title {
 
   // Dézoom à la Molette & Trackpad (Descente cinématique de >= 4 secondes vers la Grande Tourbière)
   window.addEventListener('wheel', (e) => {
-    if (e.target.closest('#project-inspector') || e.target.closest('#grid-view-modal')) return;
+    if (isSimulationDisabled() || e.target.closest('#project-inspector') || e.target.closest('#grid-view-modal')) return;
 
     // Détection d'impulsion de dézoom vers la tourbière (scroll arrière / pinch out)
     if (e.deltaY > 15 || (e.ctrlKey && e.deltaY < -8)) {
@@ -2575,14 +2603,17 @@ header.site .mobile-nav-title {
 
   if (btnToggleGrid && gridModal) {
     btnToggleGrid.addEventListener('click', () => {
+      hideInspector();
       renderGridView(rawRepos);
       gridModal.classList.add('open');
+      document.body.classList.add('grid-active');
     });
   }
 
   if (btnCloseGrid && gridModal) {
     btnCloseGrid.addEventListener('click', () => {
       gridModal.classList.remove('open');
+      document.body.classList.remove('grid-active');
     });
   }
 
@@ -2594,12 +2625,16 @@ header.site .mobile-nav-title {
   // Clavier : Raccourcis Espace (Warp) & Échap
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && document.activeElement !== searchInput) {
+      if (isSimulationDisabled()) return;
       e.preventDefault();
       warpSpeed = !warpSpeed;
       if (btnWarp) btnWarp.classList.toggle('active', warpSpeed);
     } else if (e.code === 'Escape') {
       hideInspector();
-      if (gridModal) gridModal.classList.remove('open');
+      if (gridModal) {
+        gridModal.classList.remove('open');
+        document.body.classList.remove('grid-active');
+      }
     }
   });
 
