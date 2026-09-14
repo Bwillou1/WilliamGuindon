@@ -268,6 +268,15 @@ header.site .mobile-nav-title {
   color: #fff;
 }
 
+/* Ligne d'horizon céleste séparatrice */
+.celestial-horizon-line {
+  max-width: 960px;
+  height: 1px;
+  margin: 22px auto 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(129, 140, 248, 0.35) 25%, rgba(255, 255, 255, 0.65) 50%, rgba(129, 140, 248, 0.35) 75%, transparent 100%);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+}
+
 /* HUD Détaillé d'Inspection Stellaire (Astra Modal / Panel) */
 #project-inspector {
   position: fixed;
@@ -609,6 +618,7 @@ header.site .mobile-nav-title {
       <input type="text" id="cosmic-search-input" class="cosmic-search" placeholder="Filtrer les étoiles..." aria-label="Rechercher une étoile projet">
       <button type="button" class="view-toggle-btn" id="btn-toggle-grid">Vue Grille</button>
     </div>
+    <div class="celestial-horizon-line" id="horizon-line" aria-hidden="true"></div>
   </section>
 
   <!-- Inspecteur de Projet (Astra HUD Modal) -->
@@ -995,17 +1005,28 @@ header.site .mobile-nav-title {
     }
   }
 
+  function getSafeZone() {
+    const horizon = document.getElementById('horizon-line');
+    let topLimit = 360;
+    if (horizon) {
+      const rect = horizon.getBoundingClientRect();
+      topLimit = rect.bottom + 35;
+    } else {
+      topLimit = Math.max(360, height * 0.44);
+    }
+    const bottomLimit = height - 90;
+    return { topLimit, bottomLimit };
+  }
+
   function setupProjectConstellation(repos) {
     projectStars = [];
     if (!repos || repos.length === 0) return;
 
-    // Zone de sécurité stricte : sous le texte du hero
-    const topSafeLimit = Math.max(340, height * 0.44);
-    const bottomLimit = height - 90;
+    const { topLimit: topSafeLimit, bottomLimit } = getSafeZone();
     const centerX = width * 0.5;
     const centerY = (topSafeLimit + bottomLimit) * 0.5;
     const radiusX = Math.min(width * 0.42, 520);
-    const radiusY = Math.min((bottomLimit - topSafeLimit) * 0.45, 170);
+    const radiusY = Math.min((bottomLimit - topSafeLimit) * 0.42, 160);
 
     // 1. Identification du projet WilliamGuindon comme le SOLEIL central
     let sunRepo = repos.find(r => r.name.toLowerCase() === 'williamguindon');
@@ -1081,8 +1102,7 @@ header.site .mobile-nav-title {
     starCtx.clearRect(0, 0, width, height);
 
     const theme = THEMES[currentThemeKey];
-    const topSafeLimit = Math.max(340, height * 0.44);
-    const bottomLimit = height - 90;
+    const { topLimit: topSafeLimit, bottomLimit } = getSafeZone();
     const centerX = width * 0.5;
     const centerY = (topSafeLimit + bottomLimit) * 0.5;
 
