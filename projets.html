@@ -651,6 +651,10 @@ header.site .mobile-nav-title {
     <button type="button" class="dock-btn" id="btn-pulse" title="Impulsion Cosmique" aria-label="Déclencher une onde de choc">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg>
     </button>
+    <button type="button" class="dock-btn" id="btn-pause-orbit" title="Pause / Révolution orbitale" aria-label="Mettre en pause ou reprendre la rotation orbitale">
+      <svg id="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+      <svg id="icon-play" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    </button>
 
     <!-- Sélecteur de Thème Cosmique -->
     <div class="theme-selector-bubble" id="theme-selector" title="Changer de nébuleuse">
@@ -988,8 +992,25 @@ header.site .mobile-nav-title {
   let rawRepos = [];
   let projectStars = [];
   let ambientStars = [];
+  let solarParticles = [];
+  let shootingStars = [];
   let hoveredStar = null;
   let selectedStar = null;
+
+  // Système de Caméra Cosmique (Zoom & Pan de Focalisation)
+  let camera = {
+    x: 0,
+    y: 0,
+    zoom: 1.0,
+    targetX: 0,
+    targetY: 0,
+    targetZoom: 1.0
+  };
+
+  // Contrôle Temporel de la Révolution Orbitale
+  let isOrbitPaused = false;
+  let targetTimeDilation = 1.0;
+  let currentTimeDilation = 1.0;
 
   function initAmbientStars() {
     ambientStars = [];
@@ -1055,12 +1076,14 @@ header.site .mobile-nav-title {
       baseX: centerX,
       baseY: centerY,
       size: 38,
+      scale: 1.0,
       color: '#fbbf24',
       pulsePhase: 0,
       orbitRadiusX: 0,
       orbitRadiusY: 0,
       orbitAngle: 0,
-      orbitSpeed: 0
+      orbitSpeed: 0,
+      trail: []
     });
 
     // 3. Répartition continue et espacée sur toute la largeur de l'espace cosmique
@@ -1083,6 +1106,9 @@ header.site .mobile-nav-title {
       const langColor = LANG_COLOR_MAP[repo.language] || '#818cf8';
       const baseSize = 22 + Math.min((repo.stargazers_count || 0) * 4, 14);
 
+      // Vitesse orbitale physique (képlérienne ralentie)
+      const keplerSpeed = (0.00022 / Math.sqrt(tierRatio)) * (i % 2 === 0 ? 1 : -1);
+
       projectStars.push({
         repo,
         isSun: false,
@@ -1091,12 +1117,14 @@ header.site .mobile-nav-title {
         baseX: px,
         baseY: py,
         size: baseSize,
+        scale: 1.0,
         color: langColor,
         pulsePhase: Math.random() * Math.PI * 2,
         orbitRadiusX: currentOrbitX,
         orbitRadiusY: currentOrbitY,
         orbitAngle: baseAngle,
-        orbitSpeed: (0.00014 + ((i % 4) * 0.00004)) * (i % 2 === 0 ? 1 : -1)
+        orbitSpeed: keplerSpeed,
+        trail: []
       });
     });
   }
@@ -1114,6 +1142,22 @@ header.site .mobile-nav-title {
     const centerX = width * 0.5;
     const centerY = topSafeLimit + (bottomLimit - topSafeLimit) * 0.54;
 
+    // Mise à jour temporelle de la révolution orbitale (Ralentissement au survol / Pause)
+    if (isOrbitPaused) {
+      targetTimeDilation = 0.0;
+    } else if (hoveredStar) {
+      targetTimeDilation = 0.08; // Ralenti fluide pour faciliter le clic
+    } else if (selectedStar) {
+      targetTimeDilation = 0.12;
+    } else {
+      targetTimeDilation = 1.0;
+    }
+    currentTimeDilation += (targetTimeDilation - currentTimeDilation) * 0.08;
+
+    // Application de la Caméra Cosmique (Zoom & Pan fluide)
+    starCtx.save();
+    starCtx.setTransform(camera.zoom, 0, 0, camera.zoom, camera.x, camera.y);
+
     // 1. Étoiles ambiantes de fond
     ambientStars.forEach(s => {
       s.twinkle += s.speed * (1.0 + warpFactor * 4.0);
@@ -1121,54 +1165,115 @@ header.site .mobile-nav-title {
       starCtx.beginPath();
       starCtx.arc(s.x, s.y, s.size * (1.0 + warpFactor * 0.8), 0, Math.PI * 2);
       starCtx.fillStyle = theme.starColors[0];
-      starCtx.globalAlpha = Math.max(0.1, alpha);
+      starCtx.globalAlpha = Math.max(0.08, alpha * (selectedStar ? 0.35 : 1.0));
       starCtx.fill();
     });
 
-    // 2. Trajectoires Orbitales Planétaires Cosmiques
-    const sunStar = projectStars.find(p => p.isSun);
-    if (sunStar) {
-      const sunX = sunStar.x;
-      const sunY = sunStar.y;
-
-      starCtx.save();
-      starCtx.setLineDash([4, 8]);
-      projectStars.filter(p => !p.isSun).forEach(p => {
-        starCtx.beginPath();
-        starCtx.ellipse(sunX, sunY, p.orbitRadiusX, p.orbitRadiusY, 0, 0, Math.PI * 2);
-        starCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        starCtx.lineWidth = 1;
-        starCtx.stroke();
+    // 2. Étoiles filantes intermittentes
+    if (Math.random() < 0.014 && shootingStars.length < 3) {
+      const startX = Math.random() * width;
+      const startY = Math.random() * (height * 0.65);
+      const len = 120 + Math.random() * 160;
+      const angle = Math.PI * 0.22 + (Math.random() - 0.5) * 0.3;
+      const spd = 12 + Math.random() * 8;
+      shootingStars.push({
+        x: startX,
+        y: startY,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd,
+        length: len,
+        life: 1.0,
+        decay: 0.02 + Math.random() * 0.02
       });
-      starCtx.restore();
     }
 
-    // 3. Calcul de position orbitale et gravitation souris
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const ss = shootingStars[i];
+      ss.x += ss.vx;
+      ss.y += ss.vy;
+      ss.life -= ss.decay;
+      if (ss.life <= 0) {
+        shootingStars.splice(i, 1);
+        continue;
+      }
+      const grad = starCtx.createLinearGradient(
+        ss.x, ss.y,
+        ss.x - (ss.vx / 14) * ss.length,
+        ss.y - (ss.vy / 14) * ss.length
+      );
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      grad.addColorStop(0.3, 'rgba(129, 140, 248, 0.65)');
+      grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      starCtx.beginPath();
+      starCtx.moveTo(ss.x, ss.y);
+      starCtx.lineTo(ss.x - (ss.vx / 14) * ss.length, ss.y - (ss.vy / 14) * ss.length);
+      starCtx.strokeStyle = grad;
+      starCtx.lineWidth = 1.8 * ss.life;
+      starCtx.globalAlpha = ss.life * (selectedStar ? 0.3 : 1.0);
+      starCtx.stroke();
+    }
+
+    // 3. Trajectoires Orbitales Planétaires Cosmiques
+    const sunStar = projectStars.find(p => p.isSun);
+    const sunX = sunStar ? sunStar.x : centerX;
+    const sunY = sunStar ? sunStar.y : centerY;
+
+    projectStars.filter(p => !p.isSun).forEach(p => {
+      const isTargeted = (hoveredStar === p || selectedStar === p);
+      starCtx.save();
+      starCtx.beginPath();
+      starCtx.ellipse(sunX, sunY, p.orbitRadiusX, p.orbitRadiusY, 0, 0, Math.PI * 2);
+
+      if (isTargeted) {
+        starCtx.setLineDash([]);
+        starCtx.strokeStyle = p.color;
+        starCtx.lineWidth = 2.4;
+        starCtx.shadowColor = p.color;
+        starCtx.shadowBlur = 14;
+        starCtx.globalAlpha = 0.9;
+      } else {
+        starCtx.setLineDash([4, 8]);
+        starCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        starCtx.lineWidth = 1;
+        starCtx.globalAlpha = selectedStar ? 0.04 : 0.45;
+      }
+      starCtx.stroke();
+      starCtx.restore();
+    });
+
+    // 4. Calcul de position orbitale et gravitation souris
+    let frameStep = Math.floor(time * 60);
     projectStars.forEach(p => {
       if (!p.isSun) {
-        p.orbitAngle += p.orbitSpeed * (1.0 + warpFactor * 5.0);
-        const sunX = sunStar ? sunStar.x : centerX;
-        const sunY = sunStar ? sunStar.y : centerY;
+        p.orbitAngle += p.orbitSpeed * (1.0 + warpFactor * 5.0) * currentTimeDilation;
 
         p.x = sunX + Math.cos(p.orbitAngle) * p.orbitRadiusX;
         p.y = sunY + Math.sin(p.orbitAngle) * p.orbitRadiusY;
 
-        // Gravitation souris
-        const toMouseX = mouse.x - p.x;
-        const toMouseY = mouse.y - p.y;
+        // Gravitation souris (dans le repère monde)
+        const mouseWorldX = (mouse.x - camera.x) / camera.zoom;
+        const mouseWorldY = (mouse.y - camera.y) / camera.zoom;
+        const toMouseX = mouseWorldX - p.x;
+        const toMouseY = mouseWorldY - p.y;
         const mouseDist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
         if (mouseDist < 180) {
-          const force = (1.0 - mouseDist / 180) * 14;
+          const force = (1.0 - mouseDist / 180) * 14 * currentTimeDilation;
           p.x += (toMouseX / mouseDist) * force;
           p.y += (toMouseY / mouseDist) * force;
         }
 
         // Clamping strict sous la ligne
         p.y = Math.max(topSafeLimit + 25, Math.min(bottomLimit - 15, p.y));
+
+        // Sillage / Traînée de poussière cosmique
+        if (currentTimeDilation > 0.02 && frameStep % 2 === 0) {
+          p.trail.unshift({ x: p.x, y: p.y });
+          if (p.trail.length > 14) p.trail.pop();
+        }
       }
     });
 
-    // 4. Physique de Répulsion Anti-Chevauchement (Garantit aucun empilement avec 3 passes)
+    // 5. Physique de Répulsion Anti-Chevauchement (3 passes)
     for (let it = 0; it < 3; it++) {
       for (let i = 0; i < projectStars.length; i++) {
         for (let j = i + 1; j < projectStars.length; j++) {
@@ -1189,7 +1294,27 @@ header.site .mobile-nav-title {
       }
     }
 
-    // 5. Lignes de Constellation entre projets orbitaux
+    // 6. Traînées de Poussière Cosmique des Planètes
+    projectStars.filter(p => !p.isSun).forEach(p => {
+      if (p.trail && p.trail.length > 1) {
+        const isTargeted = (hoveredStar === p || selectedStar === p);
+        const trailDim = (selectedStar && !isTargeted) ? 0.15 : 1.0;
+        for (let t = 0; t < p.trail.length - 1; t++) {
+          const pt1 = p.trail[t];
+          const pt2 = p.trail[t + 1];
+          const trailAlpha = (1.0 - (t / p.trail.length)) * (isTargeted ? 0.75 : 0.35) * trailDim;
+          starCtx.beginPath();
+          starCtx.moveTo(pt1.x, pt1.y);
+          starCtx.lineTo(pt2.x, pt2.y);
+          starCtx.strokeStyle = p.color;
+          starCtx.lineWidth = Math.max(0.6, (1.0 - t / p.trail.length) * (isTargeted ? 4.0 : 2.5));
+          starCtx.globalAlpha = trailAlpha;
+          starCtx.stroke();
+        }
+      }
+    });
+
+    // 7. Lignes de Constellation entre projets orbitaux
     starCtx.lineWidth = 1.2;
     for (let i = 0; i < projectStars.length; i++) {
       for (let j = i + 1; j < projectStars.length; j++) {
@@ -1205,7 +1330,7 @@ header.site .mobile-nav-title {
         const maxDist = sameLang ? 280 : 170;
 
         if (dist < maxDist) {
-          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.4 : 0.12);
+          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.4 : 0.12) * (selectedStar ? 0.1 : 1.0);
           starCtx.beginPath();
           starCtx.moveTo(p1.x, p1.y);
           starCtx.lineTo(p2.x, p2.y);
@@ -1216,34 +1341,75 @@ header.site .mobile-nav-title {
       }
     }
 
-    // 6. Rendu Visuel de Chaque Astre
+    // 8. Éruptions Solaires & Micro-Particules de Plasma
+    if (sunStar) {
+      if (solarParticles.length < 40) {
+        const ang = Math.random() * Math.PI * 2;
+        const r = sunStar.size * (0.8 + Math.random() * 0.4);
+        const spd = 0.35 + Math.random() * 0.65;
+        solarParticles.push({
+          x: sunStar.x + Math.cos(ang) * r,
+          y: sunStar.y + Math.sin(ang) * r,
+          vx: Math.cos(ang) * spd + (Math.random() - 0.5) * 0.2,
+          vy: Math.sin(ang) * spd + (Math.random() - 0.5) * 0.2,
+          size: 1.5 + Math.random() * 2.2,
+          life: 1.0,
+          decay: 0.015 + Math.random() * 0.02,
+          color: Math.random() > 0.4 ? '#fef08a' : (Math.random() > 0.5 ? '#f59e0b' : '#ef4444')
+        });
+      }
+
+      for (let i = solarParticles.length - 1; i >= 0; i--) {
+        const sp = solarParticles[i];
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.life -= sp.decay;
+        if (sp.life <= 0) {
+          solarParticles.splice(i, 1);
+          continue;
+        }
+        starCtx.beginPath();
+        starCtx.arc(sp.x, sp.y, sp.size * sp.life, 0, Math.PI * 2);
+        starCtx.fillStyle = sp.color;
+        starCtx.globalAlpha = sp.life * 0.85 * (selectedStar && !selectedStar.isSun ? 0.25 : 1.0);
+        starCtx.fill();
+      }
+    }
+
+    // 9. Rendu Visuel de Chaque Astre (avec effet de profondeur de champ)
     projectStars.forEach(p => {
       const isHovered = hoveredStar === p;
       const isSelected = selectedStar === p;
+      const isDimmed = selectedStar && !isSelected;
+      const alphaMultiplier = isDimmed ? 0.22 : 1.0;
+
+      // Animation de rebond spring fluide au survol
+      const targetScale = (isHovered || isSelected) ? 1.35 : 1.0;
+      p.scale = (p.scale || 1.0) + (targetScale - (p.scale || 1.0)) * 0.16;
 
       if (p.isSun) {
         // === LE SOLEIL (WilliamGuindon) ===
-        p.pulsePhase += 0.04;
-        const solarPulse = 1.0 + 0.1 * Math.sin(p.pulsePhase);
-        const sunRadius = (isHovered || isSelected ? p.size * 1.3 : p.size) * solarPulse;
+        p.pulsePhase += 0.035;
+        const breathingGlow = 1.0 + 0.12 * Math.sin(p.pulsePhase) + 0.04 * Math.sin(p.pulsePhase * 2.3);
+        const sunRadius = p.size * p.scale * breathingGlow;
 
-        // A. Couronne & Plasma Solaire Géant
+        // A. Couronne & Plasma Solaire Géant (Breathing Glow)
         const coronaGrad = starCtx.createRadialGradient(p.x, p.y, sunRadius * 0.3, p.x, p.y, sunRadius * 4.8);
         coronaGrad.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
-        coronaGrad.addColorStop(0.25, 'rgba(245, 158, 11, 0.65)');
-        coronaGrad.addColorStop(0.6, 'rgba(239, 68, 68, 0.25)');
+        coronaGrad.addColorStop(0.25, 'rgba(245, 158, 11, 0.68)');
+        coronaGrad.addColorStop(0.6, 'rgba(239, 68, 68, 0.28)');
         coronaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         starCtx.beginPath();
         starCtx.arc(p.x, p.y, sunRadius * 4.8, 0, Math.PI * 2);
         starCtx.fillStyle = coronaGrad;
-        starCtx.globalAlpha = 1.0;
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fill();
 
         // B. Rayons Solaires
         starCtx.save();
         starCtx.translate(p.x, p.y);
-        starCtx.rotate(p.pulsePhase * 0.2);
+        starCtx.rotate(p.pulsePhase * 0.18);
         for (let r = 0; r < 8; r++) {
           const rayAngle = (r / 8) * Math.PI * 2;
           const rayLength = sunRadius * (1.8 + 0.4 * Math.sin(p.pulsePhase + r));
@@ -1252,6 +1418,7 @@ header.site .mobile-nav-title {
           starCtx.lineTo(Math.cos(rayAngle) * rayLength, Math.sin(rayAngle) * rayLength);
           starCtx.strokeStyle = 'rgba(253, 224, 71, 0.45)';
           starCtx.lineWidth = 3;
+          starCtx.globalAlpha = alphaMultiplier;
           starCtx.stroke();
         }
         starCtx.restore();
@@ -1266,7 +1433,7 @@ header.site .mobile-nav-title {
         starCtx.beginPath();
         starCtx.arc(p.x, p.y, sunRadius, 0, Math.PI * 2);
         starCtx.fillStyle = sunCoreGrad;
-        starCtx.globalAlpha = 1.0;
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fill();
 
         // D. Étiquette Royale
@@ -1279,21 +1446,23 @@ header.site .mobile-nav-title {
         starCtx.beginPath();
         const padX = 14;
         starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 13, textWidth + padX * 2, 26, 13);
-        starCtx.fillStyle = 'rgba(24, 16, 8, 0.92)';
-        starCtx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+        starCtx.fillStyle = 'rgba(24, 16, 8, 0.94)';
+        starCtx.strokeStyle = 'rgba(245, 158, 11, 0.8)';
         starCtx.lineWidth = 1.5;
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fill();
         starCtx.stroke();
 
         starCtx.fillStyle = '#fef08a';
         starCtx.textAlign = 'center';
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fillText(sunLabel, p.x, labelY + 4);
 
       } else {
         // === PLANÈTES ORBITALES ===
         p.pulsePhase += 0.035;
-        const pulse = 1.0 + 0.15 * Math.sin(p.pulsePhase);
-        const currentRadius = (isHovered || isSelected ? p.size * 1.35 : p.size) * pulse;
+        const pulse = 1.0 + 0.12 * Math.sin(p.pulsePhase);
+        const currentRadius = p.size * p.scale * pulse;
 
         // Halo Nébulaire
         const outerGrad = starCtx.createRadialGradient(p.x, p.y, currentRadius * 0.3, p.x, p.y, currentRadius * 3.4);
@@ -1304,7 +1473,7 @@ header.site .mobile-nav-title {
         starCtx.beginPath();
         starCtx.arc(p.x, p.y, currentRadius * 3.4, 0, Math.PI * 2);
         starCtx.fillStyle = outerGrad;
-        starCtx.globalAlpha = isHovered || isSelected ? 0.95 : 0.6;
+        starCtx.globalAlpha = (isHovered || isSelected ? 0.95 : 0.6) * alphaMultiplier;
         starCtx.fill();
 
         // Anneau Orbital
@@ -1312,14 +1481,16 @@ header.site .mobile-nav-title {
         starCtx.translate(p.x, p.y);
         starCtx.rotate(p.pulsePhase * 0.35);
         starCtx.beginPath();
-        starCtx.ellipse(0, 0, currentRadius * 1.8, currentRadius * 0.7, Math.PI / 6, 0, Math.PI * 2);
+        starCtx.ellipse(0, 0, currentRadius * 1.9, currentRadius * 0.75, Math.PI / 6, 0, Math.PI * 2);
         starCtx.strokeStyle = p.color;
-        starCtx.lineWidth = isHovered || isSelected ? 2.2 : 1.3;
-        starCtx.globalAlpha = isHovered || isSelected ? 0.9 : 0.45;
+        starCtx.lineWidth = isHovered || isSelected ? 2.5 : 1.3;
+        starCtx.shadowColor = p.color;
+        starCtx.shadowBlur = isHovered || isSelected ? 12 : 0;
+        starCtx.globalAlpha = (isHovered || isSelected ? 0.95 : 0.45) * alphaMultiplier;
         starCtx.stroke();
         starCtx.restore();
 
-        // Cœur
+        // Cœur Planétaire
         const coreGrad = starCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentRadius);
         coreGrad.addColorStop(0, '#ffffff');
         coreGrad.addColorStop(0.55, p.color);
@@ -1328,7 +1499,7 @@ header.site .mobile-nav-title {
         starCtx.beginPath();
         starCtx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
         starCtx.fillStyle = coreGrad;
-        starCtx.globalAlpha = 1.0;
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fill();
 
         // Badge & Nom du projet
@@ -1340,22 +1511,22 @@ header.site .mobile-nav-title {
 
         starCtx.beginPath();
         const padX = 10;
-        const padY = 4;
         starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 11, textWidth + padX * 2, 22, 10);
-        starCtx.fillStyle = 'rgba(8, 10, 20, 0.9)';
+        starCtx.fillStyle = 'rgba(8, 10, 20, 0.92)';
         starCtx.strokeStyle = isHovered || isSelected ? p.color : 'rgba(255, 255, 255, 0.2)';
-        starCtx.lineWidth = 1;
-        starCtx.globalAlpha = 0.98;
+        starCtx.lineWidth = isHovered || isSelected ? 1.5 : 1;
+        starCtx.globalAlpha = 0.98 * alphaMultiplier;
         starCtx.fill();
         starCtx.stroke();
 
         starCtx.fillStyle = isHovered || isSelected ? '#ffffff' : '#f1f5f9';
         starCtx.textAlign = 'center';
-        starCtx.globalAlpha = 1.0;
+        starCtx.globalAlpha = alphaMultiplier;
         starCtx.fillText(labelText, p.x, labelY + 4);
       }
     });
 
+    starCtx.restore();
     starCtx.globalAlpha = 1.0;
   }
 
@@ -1374,6 +1545,11 @@ header.site .mobile-nav-title {
     mouse.x += dx * 0.06;
     mouse.y += dy * 0.06;
     mouse.speed = Math.sqrt(dx * dx + dy * dy) * 0.01;
+
+    // Lissage de la caméra cosmique
+    camera.zoom += (camera.targetZoom - camera.zoom) * 0.06;
+    camera.x += (camera.targetX - camera.x) * 0.06;
+    camera.y += (camera.targetY - camera.y) * 0.06;
 
     // Transition Warp Speed
     if (warpSpeed && warpFactor < 1.0) {
@@ -1433,6 +1609,11 @@ header.site .mobile-nav-title {
     selectedStar = star;
     const r = star.repo;
 
+    // Cadrage et zoom caméra sur l'astre sélectionné
+    camera.targetZoom = 1.45;
+    camera.targetX = (width * 0.5) - (star.x * camera.targetZoom);
+    camera.targetY = (height * 0.52) - (star.y * camera.targetZoom);
+
     if (star.isSun) {
       insTitle.innerHTML = `☀️ ${escapeHtml(r.name)} <span style="font-size:0.75rem; color:#fbbf24; border:1px solid #fbbf24; padding:2px 8px; border-radius:12px; margin-left:8px;">Astre Solaire Central</span>`;
     } else {
@@ -1463,6 +1644,9 @@ header.site .mobile-nav-title {
 
   function hideInspector() {
     selectedStar = null;
+    camera.targetZoom = 1.0;
+    camera.targetX = 0;
+    camera.targetY = 0;
     if (inspector) inspector.classList.remove('active');
   }
 
@@ -1470,12 +1654,15 @@ header.site .mobile-nav-title {
     insCloseBtn.addEventListener('click', hideInspector);
   }
 
-  function getStarAt(x, y) {
+  function getStarAt(screenX, screenY) {
+    const worldX = (screenX - camera.x) / camera.zoom;
+    const worldY = (screenY - camera.y) / camera.zoom;
     for (let i = projectStars.length - 1; i >= 0; i--) {
       const p = projectStars[i];
-      const dx = x - p.x;
-      const dy = y - p.y;
-      if (Math.sqrt(dx * dx + dy * dy) < p.size * 2.8 + 16) {
+      const dx = worldX - p.x;
+      const dy = worldY - p.y;
+      const hitRadius = (p.size * (p.scale || 1.0)) * 2.6 + 18;
+      if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
         return p;
       }
     }
@@ -1507,6 +1694,21 @@ header.site .mobile-nav-title {
   }
 
   // Contrôles du Dock
+  const btnPauseOrbit = document.getElementById('btn-pause-orbit');
+  const iconPause = document.getElementById('icon-pause');
+  const iconPlay = document.getElementById('icon-play');
+  if (btnPauseOrbit) {
+    btnPauseOrbit.addEventListener('click', () => {
+      isOrbitPaused = !isOrbitPaused;
+      btnPauseOrbit.classList.toggle('active', isOrbitPaused);
+      if (iconPause && iconPlay) {
+        iconPause.style.display = isOrbitPaused ? 'none' : 'block';
+        iconPlay.style.display = isOrbitPaused ? 'block' : 'none';
+      }
+      btnPauseOrbit.setAttribute('title', isOrbitPaused ? 'Reprendre la révolution orbitale' : 'Mettre en pause la révolution orbitale');
+    });
+  }
+
   const btnWarp = document.getElementById('btn-warp');
   if (btnWarp) {
     btnWarp.addEventListener('click', () => {
