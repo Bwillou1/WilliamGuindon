@@ -818,6 +818,108 @@ header.site .mobile-nav-title {
   0%, 100% { transform: scale(1); opacity: 0.6; }
   50% { transform: scale(1.6); opacity: 1; }
 }
+
+/* Bannière Notice pour Écran Étroit / Mobile / Connexion Bas Débit */
+.screen-notice-banner {
+  display: none;
+  background: rgba(15, 23, 42, 0.90);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  border-left: 4px solid var(--cosmic-accent-light, #38bdf8);
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin: 15px auto 25px;
+  max-width: 1100px;
+  color: #e2e8f0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+}
+
+.screen-notice-banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Section Directe des Cartes (Affichée sur mobile / petit écran / bas débit) */
+.direct-cards-section {
+  display: none;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 20;
+}
+
+/* Cartes Projets Évoluées */
+.grid-card.sun-card {
+  border-color: rgba(251, 191, 36, 0.55);
+  background: radial-gradient(circle at top left, rgba(251, 191, 36, 0.14), rgba(15, 18, 30, 0.92));
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.18);
+}
+
+.grid-card-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+
+.grid-card-tag {
+  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Règles Réactives Mobile / Écran Étroit / Bas Débit */
+@media (max-width: 860px) {
+  body {
+    overflow-y: auto !important;
+  }
+  
+  #cosmic-webgl-canvas,
+  #cosmic-star-canvas,
+  .cosmic-dock,
+  .celestial-horizon-line,
+  .tourbiere-descent-indicator,
+  #project-inspector,
+  #btn-toggle-grid {
+    display: none !important;
+  }
+
+  .cosmic-hud-top {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    padding: 30px 20px 10px;
+    max-width: 100%;
+  }
+
+  .cosmic-title {
+    font-size: 2rem;
+  }
+
+  .cosmic-subtitle {
+    font-size: 0.92rem;
+  }
+
+  .screen-notice-banner {
+    display: flex;
+  }
+
+  .direct-cards-section {
+    display: block;
+  }
+}
 </style>
 </head>
 <body>
@@ -904,6 +1006,19 @@ header.site .mobile-nav-title {
       <button type="button" class="view-toggle-btn" id="btn-toggle-grid">Vue Grille</button>
     </div>
     <div class="celestial-horizon-line" id="horizon-line" aria-hidden="true"></div>
+
+    <!-- Bannière Notice pour Écran Étroit / Mobile / Connexion Bas Débit -->
+    <aside id="screen-notice-banner" class="screen-notice-banner" role="note">
+      <div class="screen-notice-banner-icon" aria-hidden="true">🖥️</div>
+      <div>
+        <strong>Veuillez posséder un écran plus large</strong> (ordinateur de bureau) pour explorer la constellation cosmique 3D interactive, la physique orbitale et la descente vers la tourbière. Les cartes des projets sont affichées directement ci-dessous :
+      </div>
+    </aside>
+  </section>
+
+  <!-- Section Directe des Cartes (Affichée sur mobile / petit écran / bas débit) -->
+  <section id="direct-cards-section" class="direct-cards-section" aria-label="Liste complète des projets open source">
+    <div class="grid-cards" id="direct-cards-list"></div>
   </section>
 
   <!-- Inspecteur de Projet (Astra HUD Modal) -->
@@ -2389,44 +2504,73 @@ header.site .mobile-nav-title {
     });
   });
 
-  // Recherche d'étoiles
+  // Recherche d'étoiles et filtrage en direct
   const searchInput = document.getElementById('cosmic-search-input');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       const q = e.target.value.trim().toLowerCase();
       if (!q) {
         setupProjectConstellation(rawRepos);
+        renderGridView(rawRepos);
         return;
       }
       const filtered = rawRepos.filter(r => 
         r.name.toLowerCase().includes(q) ||
         (r.description || '').toLowerCase().includes(q) ||
-        (r.language || '').toLowerCase().includes(q)
+        (r.language || '').toLowerCase().includes(q) ||
+        (r.topics || []).some(t => t.toLowerCase().includes(q))
       );
       setupProjectConstellation(filtered);
+      renderGridView(filtered);
     });
   }
 
-  // Modal Vue Grille
+  // Modal Vue Grille & Section Directe Mobile
   const btnToggleGrid = document.getElementById('btn-toggle-grid');
   const btnCloseGrid = document.getElementById('btn-close-grid');
   const gridModal = document.getElementById('grid-view-modal');
   const gridCardsList = document.getElementById('grid-cards-list');
+  const directCardsList = document.getElementById('direct-cards-list');
 
   function renderGridView(repos) {
-    if (!gridCardsList) return;
-    gridCardsList.innerHTML = repos.map(r => `
-      <div class="grid-card">
-        <div>
-          <h3 style="margin: 0 0 8px; color: #fff;">${escapeHtml(r.name)}</h3>
-          <p style="font-size: 0.9rem; color: var(--cosmic-muted); margin: 0 0 14px; line-height: 1.5;">${escapeHtml(r.description || "Projet open source par William Guindon.")}</p>
+    if (!repos || repos.length === 0) {
+      const emptyMsg = '<p style="color: var(--cosmic-muted); text-align: center; grid-column: 1 / -1; padding: 40px 0;">Aucun projet ne correspond à votre recherche.</p>';
+      if (gridCardsList) gridCardsList.innerHTML = emptyMsg;
+      if (directCardsList) directCardsList.innerHTML = emptyMsg;
+      return;
+    }
+
+    const html = repos.map(r => {
+      const isSun = r.name.toLowerCase() === 'williamguindon';
+      const topics = r.topics || [];
+      const tagsHtml = topics.slice(0, 4).map(t => `<span class="grid-card-tag">#${escapeHtml(t)}</span>`).join('');
+      const starCount = r.stargazers_count || 0;
+
+      return `
+        <div class="grid-card ${isSun ? 'sun-card' : ''}">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+              <h3 style="margin: 0; color: #fff; font-size: 1.15rem; font-weight: 700;">
+                ${isSun ? '☀️ ' : ''}${escapeHtml(r.name)}
+              </h3>
+              ${isSun ? '<span style="font-size: 0.72rem; color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); padding: 2px 7px; border-radius: 10px; font-weight: 700; white-space: nowrap;">Astre Central</span>' : ''}
+            </div>
+            <p style="font-size: 0.88rem; color: var(--cosmic-muted, #94a3b8); margin: 0 0 10px; line-height: 1.5;">${escapeHtml(r.description || "Projet open source par William Guindon.")}</p>
+            ${tagsHtml ? `<div class="grid-card-tag-row">${tagsHtml}</div>` : ''}
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px; margin-top: 10px;">
+            <div style="display:flex; align-items:center; gap: 10px;">
+              <span style="font-size:0.8rem; color:${LANG_COLOR_MAP[r.language] || '#94a3b8'}; font-weight:600;">${escapeHtml(r.language || 'Général')}</span>
+              ${starCount > 0 ? `<span style="font-size:0.8rem; color:#fbbf24;">★ ${starCount}</span>` : ''}
+            </div>
+            <a href="${escapeHtml(r.html_url)}" target="_blank" rel="noopener noreferrer" class="btn-open-repo">Voir sur GitHub ↗</a>
+          </div>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
-          <span style="font-size:0.8rem; color:${LANG_COLOR_MAP[r.language] || '#94a3b8'}; font-weight:600;">${escapeHtml(r.language || 'Général')}</span>
-          <a href="${escapeHtml(r.html_url)}" target="_blank" rel="noopener noreferrer" class="btn-open-repo">Voir sur GitHub ↗</a>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    if (gridCardsList) gridCardsList.innerHTML = html;
+    if (directCardsList) directCardsList.innerHTML = html;
   }
 
   if (btnToggleGrid && gridModal) {
@@ -2515,6 +2659,7 @@ header.site .mobile-nav-title {
     }
 
     setupProjectConstellation(rawRepos);
+    renderGridView(rawRepos);
     requestAnimationFrame(animate);
   }
 
