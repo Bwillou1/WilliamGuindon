@@ -938,21 +938,32 @@ header.site {
     const count = repos.length;
     if (count === 0) return;
 
-    // Répartition spatiale en partie basse pour ne pas empiéter sur le texte du hero
-    const centerX = width * 0.5;
-    const centerY = Math.max(height * 0.72, 420);
-    const radiusX = Math.min(width * 0.44, 560);
-    const radiusY = Math.min(height * 0.22, 190);
+    // Zone de sécurité stricte : les étoiles sont STRICTEMENT positionnées sous le titre et la barre de recherche
+    const topSafeLimit = Math.max(340, height * 0.44);
+    const bottomLimit = height - 90;
+    const availableHeight = Math.max(bottomLimit - topSafeLimit, 180);
+    const availableWidth = Math.min(width * 0.88, 1100);
+    const startX = (width - availableWidth) / 2;
+
+    const cols = count > 5 ? Math.ceil(count / 2) : count;
 
     repos.forEach((repo, i) => {
-      const angle = (i / count) * Math.PI * 2 + (Math.sin(i * 1.5) * 0.25);
-      const distRatio = 0.4 + 0.6 * ((i * 1.618) % 1);
-      const px = centerX + Math.cos(angle) * (radiusX * distRatio);
-      const py = centerY + Math.sin(angle) * (radiusY * distRatio);
+      const colIndex = i % cols;
+      const rowIndex = Math.floor(i / cols);
+
+      const xSpacing = availableWidth / (cols + 0.4);
+      const ySpacing = availableHeight / (Math.ceil(count / cols) + 0.4);
+
+      // Variation organique douce
+      const jitterX = Math.sin(i * 2.1) * 0.22 * xSpacing;
+      const jitterY = Math.cos(i * 1.8) * 0.18 * ySpacing;
+
+      const px = startX + (colIndex + 0.7) * xSpacing + jitterX;
+      const py = topSafeLimit + (rowIndex + 0.55) * ySpacing + jitterY;
 
       const langColor = LANG_COLOR_MAP[repo.language] || '#818cf8';
-      // Étoiles nettement plus imposantes et lumineuses
-      const baseSize = 16 + Math.min((repo.stargazers_count || 0) * 4, 18);
+      // Grandes étoiles bien visibles et imposantes
+      const baseSize = 22 + Math.min((repo.stargazers_count || 0) * 5, 18);
 
       projectStars.push({
         repo,
@@ -965,8 +976,8 @@ header.site {
         size: baseSize,
         color: langColor,
         pulsePhase: Math.random() * Math.PI * 2,
-        orbitAngle: angle,
-        orbitSpeed: (0.0003 + (i % 3) * 0.00015) * (i % 2 === 0 ? 1 : -1)
+        orbitAngle: i * (Math.PI / 4),
+        orbitSpeed: (0.00025 + (i % 3) * 0.0001) * (i % 2 === 0 ? 1 : -1)
       });
     });
   }
@@ -1003,10 +1014,10 @@ header.site {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         const sameLang = p1.repo.language && p1.repo.language === p2.repo.language;
-        const maxDist = sameLang ? 300 : 180;
+        const maxDist = sameLang ? 320 : 200;
 
         if (dist < maxDist) {
-          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.45 : 0.15);
+          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.5 : 0.18);
           starCtx.beginPath();
           starCtx.moveTo(p1.x, p1.y);
           starCtx.lineTo(p2.x, p2.y);
@@ -1018,11 +1029,13 @@ header.site {
     }
 
     // 3. Rendu des Astres-Projets GitHub Majeurs
+    const topSafeLimit = Math.max(340, height * 0.44);
+
     projectStars.forEach(p => {
       // Orbite cosmique douce
       p.orbitAngle += p.orbitSpeed * (1.0 + warpFactor * 5.0);
-      const driftX = Math.cos(p.orbitAngle) * 10;
-      const driftY = Math.sin(p.orbitAngle) * 6;
+      const driftX = Math.cos(p.orbitAngle) * 8;
+      const driftY = Math.sin(p.orbitAngle) * 5;
       p.x = p.baseX + driftX;
       p.y = p.baseY + driftY;
 
@@ -1031,45 +1044,48 @@ header.site {
       const toMouseY = mouse.y - p.y;
       const mouseDist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
       if (mouseDist < 200) {
-        const force = (1.0 - mouseDist / 200) * 18;
+        const force = (1.0 - mouseDist / 200) * 16;
         p.x += (toMouseX / mouseDist) * force;
         p.y += (toMouseY / mouseDist) * force;
       }
 
+      // Clamping strict : JAMAIS au-dessus de la limite sécurisée
+      p.y = Math.max(topSafeLimit + 20, Math.min(height - 95, p.y));
+
       p.pulsePhase += 0.035;
       const isHovered = hoveredStar === p;
       const isSelected = selectedStar === p;
-      const pulse = 1.0 + 0.18 * Math.sin(p.pulsePhase);
-      const currentRadius = (isHovered || isSelected ? p.size * 1.4 : p.size) * pulse;
+      const pulse = 1.0 + 0.15 * Math.sin(p.pulsePhase);
+      const currentRadius = (isHovered || isSelected ? p.size * 1.35 : p.size) * pulse;
 
       // A. Halo Nébulaire Externe Étendu
-      const outerGrad = starCtx.createRadialGradient(p.x, p.y, currentRadius * 0.4, p.x, p.y, currentRadius * 3.8);
+      const outerGrad = starCtx.createRadialGradient(p.x, p.y, currentRadius * 0.3, p.x, p.y, currentRadius * 3.6);
       outerGrad.addColorStop(0, p.color);
-      outerGrad.addColorStop(0.5, p.color);
+      outerGrad.addColorStop(0.55, p.color);
       outerGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
       starCtx.beginPath();
-      starCtx.arc(p.x, p.y, currentRadius * 3.8, 0, Math.PI * 2);
+      starCtx.arc(p.x, p.y, currentRadius * 3.6, 0, Math.PI * 2);
       starCtx.fillStyle = outerGrad;
-      starCtx.globalAlpha = isHovered || isSelected ? 0.9 : 0.55;
+      starCtx.globalAlpha = isHovered || isSelected ? 0.95 : 0.6;
       starCtx.fill();
 
       // B. Anneau Orbital Stellaire Décoratif
       starCtx.save();
       starCtx.translate(p.x, p.y);
-      starCtx.rotate(p.pulsePhase * 0.4);
+      starCtx.rotate(p.pulsePhase * 0.35);
       starCtx.beginPath();
-      starCtx.ellipse(0, 0, currentRadius * 1.9, currentRadius * 0.75, Math.PI / 6, 0, Math.PI * 2);
+      starCtx.ellipse(0, 0, currentRadius * 1.85, currentRadius * 0.72, Math.PI / 6, 0, Math.PI * 2);
       starCtx.strokeStyle = p.color;
-      starCtx.lineWidth = isHovered || isSelected ? 2 : 1.2;
-      starCtx.globalAlpha = isHovered || isSelected ? 0.8 : 0.4;
+      starCtx.lineWidth = isHovered || isSelected ? 2.2 : 1.4;
+      starCtx.globalAlpha = isHovered || isSelected ? 0.9 : 0.5;
       starCtx.stroke();
       starCtx.restore();
 
       // C. Cœur d'étoile incandescent
       const coreGrad = starCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentRadius);
       coreGrad.addColorStop(0, '#ffffff');
-      coreGrad.addColorStop(0.65, p.color);
+      coreGrad.addColorStop(0.55, p.color);
       coreGrad.addColorStop(1, p.color);
 
       starCtx.beginPath();
@@ -1080,25 +1096,25 @@ header.site {
 
       // D. Badge & Nom du projet
       const labelText = p.repo.name;
-      starCtx.font = `${isHovered || isSelected ? '700 13px' : '600 12px'} -apple-system, sans-serif`;
+      starCtx.font = `${isHovered || isSelected ? '700 14px' : '600 13px'} -apple-system, sans-serif`;
       const textMetrics = starCtx.measureText(labelText);
       const textWidth = textMetrics.width;
       const labelY = p.y + currentRadius + 18;
 
       // Fond de pilule sombre translucide pour une lisibilité parfaite
       starCtx.beginPath();
-      const padX = 10;
+      const padX = 12;
       const padY = 5;
-      starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 11, textWidth + padX * 2, 20, 8);
-      starCtx.fillStyle = 'rgba(10, 12, 22, 0.85)';
-      starCtx.strokeStyle = isHovered || isSelected ? p.color : 'rgba(255, 255, 255, 0.15)';
+      starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 12, textWidth + padX * 2, 22, 10);
+      starCtx.fillStyle = 'rgba(8, 10, 20, 0.9)';
+      starCtx.strokeStyle = isHovered || isSelected ? p.color : 'rgba(255, 255, 255, 0.2)';
       starCtx.lineWidth = 1;
-      starCtx.globalAlpha = 0.95;
+      starCtx.globalAlpha = 0.98;
       starCtx.fill();
       starCtx.stroke();
 
       // Texte de l'astre
-      starCtx.fillStyle = isHovered || isSelected ? '#ffffff' : '#e2e8f0';
+      starCtx.fillStyle = isHovered || isSelected ? '#ffffff' : '#f1f5f9';
       starCtx.textAlign = 'center';
       starCtx.globalAlpha = 1.0;
       starCtx.fillText(labelText, p.x, labelY + 3);
