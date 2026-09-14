@@ -1007,14 +1007,14 @@ header.site .mobile-nav-title {
 
   function getSafeZone() {
     const horizon = document.getElementById('horizon-line');
-    let topLimit = 360;
+    let topLimit = 320;
     if (horizon) {
       const rect = horizon.getBoundingClientRect();
-      topLimit = rect.bottom + 35;
+      topLimit = rect.bottom + 25;
     } else {
-      topLimit = Math.max(360, height * 0.44);
+      topLimit = Math.max(320, height * 0.40);
     }
-    const bottomLimit = height - 90;
+    const bottomLimit = height - 60;
     return { topLimit, bottomLimit };
   }
 
@@ -1024,11 +1024,11 @@ header.site .mobile-nav-title {
 
     const { topLimit: topSafeLimit, bottomLimit } = getSafeZone();
     const centerX = width * 0.5;
-    const centerY = (topSafeLimit + bottomLimit) * 0.5;
+    const centerY = topSafeLimit + (bottomLimit - topSafeLimit) * 0.54;
 
-    // Utilisation maximale de la largeur de l'écran pour un espacement parfait
-    const maxRadiusX = Math.min(width * 0.46, 820);
-    const maxRadiusY = Math.min((bottomLimit - topSafeLimit) * 0.44, 210);
+    // Utilisation ultra-large de l'écran pour occuper tout l'espace disponible
+    const maxRadiusX = Math.max(width * 0.44, Math.min(width * 0.485, 1300));
+    const maxRadiusY = Math.min((bottomLimit - topSafeLimit) * 0.47, 280);
 
     // 1. Identification du projet WilliamGuindon comme le SOLEIL central
     let sunRepo = repos.find(r => r.name.toLowerCase() === 'williamguindon');
@@ -1054,7 +1054,7 @@ header.site .mobile-nav-title {
       y: centerY,
       baseX: centerX,
       baseY: centerY,
-      size: 34,
+      size: 38,
       color: '#fbbf24',
       pulsePhase: 0,
       orbitRadiusX: 0,
@@ -1063,23 +1063,25 @@ header.site .mobile-nav-title {
       orbitSpeed: 0
     });
 
-    // 3. Répartition espacée des autres projets sur 4 orbites concentriques étagées
-    const tiers = [0.38, 0.58, 0.78, 0.96];
+    // 3. Répartition continue et espacée sur toute la largeur de l'espace cosmique
+    const minRatio = 0.32;
+    const maxRatio = 0.98;
 
     planetRepos.forEach((repo, i) => {
-      const tierIndex = i % tiers.length;
-      const tierRatio = tiers[tierIndex];
+      const tierRatio = planetCount > 1 
+        ? minRatio + (i / (planetCount - 1)) * (maxRatio - minRatio)
+        : 0.65;
       const currentOrbitX = maxRadiusX * tierRatio;
       const currentOrbitY = maxRadiusY * tierRatio;
 
-      // Décalage angulaire harmonieux pour éviter les regroupements
-      const baseAngle = (i / planetCount) * Math.PI * 2 + (tierIndex * (Math.PI / 3.5));
+      // Décalage angulaire basé sur le ratio doré pour une dispersion maximale sans empilement
+      const baseAngle = i * (Math.PI * 0.72) + (i % 3) * (Math.PI / 4);
 
       const px = centerX + Math.cos(baseAngle) * currentOrbitX;
       const py = centerY + Math.sin(baseAngle) * currentOrbitY;
 
       const langColor = LANG_COLOR_MAP[repo.language] || '#818cf8';
-      const baseSize = 18 + Math.min((repo.stargazers_count || 0) * 4, 12);
+      const baseSize = 22 + Math.min((repo.stargazers_count || 0) * 4, 14);
 
       projectStars.push({
         repo,
@@ -1094,7 +1096,7 @@ header.site .mobile-nav-title {
         orbitRadiusX: currentOrbitX,
         orbitRadiusY: currentOrbitY,
         orbitAngle: baseAngle,
-        orbitSpeed: (0.00016 + (tierIndex * 0.00006)) * (i % 2 === 0 ? 1 : -1)
+        orbitSpeed: (0.00014 + ((i % 4) * 0.00004)) * (i % 2 === 0 ? 1 : -1)
       });
     });
   }
@@ -1110,7 +1112,7 @@ header.site .mobile-nav-title {
     const theme = THEMES[currentThemeKey];
     const { topLimit: topSafeLimit, bottomLimit } = getSafeZone();
     const centerX = width * 0.5;
-    const centerY = (topSafeLimit + bottomLimit) * 0.5;
+    const centerY = topSafeLimit + (bottomLimit - topSafeLimit) * 0.54;
 
     // 1. Étoiles ambiantes de fond
     ambientStars.forEach(s => {
@@ -1155,8 +1157,8 @@ header.site .mobile-nav-title {
         const toMouseX = mouse.x - p.x;
         const toMouseY = mouse.y - p.y;
         const mouseDist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
-        if (mouseDist < 160) {
-          const force = (1.0 - mouseDist / 160) * 12;
+        if (mouseDist < 180) {
+          const force = (1.0 - mouseDist / 180) * 14;
           p.x += (toMouseX / mouseDist) * force;
           p.y += (toMouseY / mouseDist) * force;
         }
@@ -1166,8 +1168,8 @@ header.site .mobile-nav-title {
       }
     });
 
-    // 4. Physique de Répulsion Anti-Chevauchement (Garantit aucun empilement)
-    for (let it = 0; it < 2; it++) {
+    // 4. Physique de Répulsion Anti-Chevauchement (Garantit aucun empilement avec 3 passes)
+    for (let it = 0; it < 3; it++) {
       for (let i = 0; i < projectStars.length; i++) {
         for (let j = i + 1; j < projectStars.length; j++) {
           const p1 = projectStars[i];
@@ -1175,7 +1177,7 @@ header.site .mobile-nav-title {
           const dx = p2.x - p1.x;
           const dy = p2.y - p1.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const minDist = (p1.isSun || p2.isSun ? 140 : 110);
+          const minDist = (p1.isSun || p2.isSun ? 165 : 135);
           if (dist < minDist && dist > 0.1) {
             const overlap = (minDist - dist) * 0.5;
             const nx = dx / dist;
