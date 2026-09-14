@@ -935,62 +935,94 @@ header.site {
 
   function setupProjectConstellation(repos) {
     projectStars = [];
-    const count = repos.length;
-    if (count === 0) return;
+    if (!repos || repos.length === 0) return;
 
-    // Zone de sécurité stricte : les étoiles sont STRICTEMENT positionnées sous le titre et la barre de recherche
+    // Zone de sécurité stricte : sous le texte du hero
     const topSafeLimit = Math.max(340, height * 0.44);
     const bottomLimit = height - 90;
-    const availableHeight = Math.max(bottomLimit - topSafeLimit, 180);
-    const availableWidth = Math.min(width * 0.88, 1100);
-    const startX = (width - availableWidth) / 2;
+    const centerX = width * 0.5;
+    const centerY = (topSafeLimit + bottomLimit) * 0.5;
+    const radiusX = Math.min(width * 0.42, 520);
+    const radiusY = Math.min((bottomLimit - topSafeLimit) * 0.45, 170);
 
-    const cols = count > 5 ? Math.ceil(count / 2) : count;
+    // 1. Identification du projet WilliamGuindon comme le SOLEIL central
+    let sunRepo = repos.find(r => r.name.toLowerCase() === 'williamguindon');
+    if (!sunRepo) {
+      sunRepo = {
+        name: "WilliamGuindon",
+        description: "Dépôt officiel du site web, registre documentaire international SEM-26-003 et hub central.",
+        language: "HTML",
+        html_url: "https://github.com/Bwillou1/WilliamGuindon",
+        stargazers_count: 5,
+        topics: ["soleil-central", "sem-26-003", "official-site"]
+      };
+    }
 
-    repos.forEach((repo, i) => {
-      const colIndex = i % cols;
-      const rowIndex = Math.floor(i / cols);
+    const planetRepos = repos.filter(r => r.name.toLowerCase() !== 'williamguindon');
+    const planetCount = planetRepos.length;
 
-      const xSpacing = availableWidth / (cols + 0.4);
-      const ySpacing = availableHeight / (Math.ceil(count / cols) + 0.4);
+    // 2. Création de l'Astre Solaire Central (WilliamGuindon)
+    projectStars.push({
+      repo: sunRepo,
+      isSun: true,
+      x: centerX,
+      y: centerY,
+      baseX: centerX,
+      baseY: centerY,
+      size: 34,
+      color: '#fbbf24',
+      pulsePhase: 0,
+      orbitRadiusX: 0,
+      orbitRadiusY: 0,
+      orbitAngle: 0,
+      orbitSpeed: 0
+    });
 
-      // Variation organique douce
-      const jitterX = Math.sin(i * 2.1) * 0.22 * xSpacing;
-      const jitterY = Math.cos(i * 1.8) * 0.18 * ySpacing;
+    // 3. Répartition des autres projets en orbite planétaire autour du Soleil
+    planetRepos.forEach((repo, i) => {
+      // Paliers d'orbites concentriques
+      const orbitTier = 0.38 + 0.62 * ((i + 1) / (planetCount + 0.5));
+      const currentOrbitX = radiusX * orbitTier;
+      const currentOrbitY = radiusY * orbitTier;
+      const baseAngle = (i / planetCount) * Math.PI * 2 + (i % 2 === 0 ? 0.2 : -0.2);
 
-      const px = startX + (colIndex + 0.7) * xSpacing + jitterX;
-      const py = topSafeLimit + (rowIndex + 0.55) * ySpacing + jitterY;
+      const px = centerX + Math.cos(baseAngle) * currentOrbitX;
+      const py = centerY + Math.sin(baseAngle) * currentOrbitY;
 
       const langColor = LANG_COLOR_MAP[repo.language] || '#818cf8';
-      // Grandes étoiles bien visibles et imposantes
-      const baseSize = 22 + Math.min((repo.stargazers_count || 0) * 5, 18);
+      const baseSize = 18 + Math.min((repo.stargazers_count || 0) * 4, 14);
 
       projectStars.push({
         repo,
+        isSun: false,
         x: px,
         y: py,
         baseX: px,
         baseY: py,
-        vx: 0,
-        vy: 0,
         size: baseSize,
         color: langColor,
         pulsePhase: Math.random() * Math.PI * 2,
-        orbitAngle: i * (Math.PI / 4),
-        orbitSpeed: (0.00025 + (i % 3) * 0.0001) * (i % 2 === 0 ? 1 : -1)
+        orbitRadiusX: currentOrbitX,
+        orbitRadiusY: currentOrbitY,
+        orbitAngle: baseAngle,
+        orbitSpeed: (0.0003 + (i % 3) * 0.00012) * (i % 2 === 0 ? 1 : -1)
       });
     });
   }
 
 
   /* ==========================================================================
-     3. Rendu Graphique 2D (Constellations, Astres Interactifs & Rayons)
+     3. Rendu Graphique 2D (Système Solaire Cosmique, Soleil & Planètes)
      ========================================================================== */
   function render2DStars(time) {
     if (!starCtx) return;
     starCtx.clearRect(0, 0, width, height);
 
     const theme = THEMES[currentThemeKey];
+    const topSafeLimit = Math.max(340, height * 0.44);
+    const bottomLimit = height - 90;
+    const centerX = width * 0.5;
+    const centerY = (topSafeLimit + bottomLimit) * 0.5;
 
     // 1. Étoiles ambiantes de fond
     ambientStars.forEach(s => {
@@ -1003,121 +1035,209 @@ header.site {
       starCtx.fill();
     });
 
-    // 2. Lignes de Constellation entre projets de même langage ou voisins
-    starCtx.lineWidth = 1.5;
+    // 2. Trajectoires Orbitales Planétaires Cosmiques
+    const sunStar = projectStars.find(p => p.isSun);
+    if (sunStar) {
+      const sunX = sunStar.x;
+      const sunY = sunStar.y;
+
+      starCtx.save();
+      starCtx.setLineDash([4, 8]);
+      projectStars.filter(p => !p.isSun).forEach(p => {
+        starCtx.beginPath();
+        starCtx.ellipse(sunX, sunY, p.orbitRadiusX, p.orbitRadiusY, 0, 0, Math.PI * 2);
+        starCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        starCtx.lineWidth = 1;
+        starCtx.stroke();
+      });
+      starCtx.restore();
+    }
+
+    // 3. Lignes de Constellation entre projets orbitaux de technologies proches
+    starCtx.lineWidth = 1.2;
     for (let i = 0; i < projectStars.length; i++) {
       for (let j = i + 1; j < projectStars.length; j++) {
         const p1 = projectStars[i];
         const p2 = projectStars[j];
+        if (p1.isSun || p2.isSun) continue; // Les liens de constellation relient les planètes
+
         const dx = p1.x - p2.x;
         const dy = p1.y - p2.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         const sameLang = p1.repo.language && p1.repo.language === p2.repo.language;
-        const maxDist = sameLang ? 320 : 200;
+        const maxDist = sameLang ? 280 : 180;
 
         if (dist < maxDist) {
-          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.5 : 0.18);
+          const lineAlpha = (1.0 - dist / maxDist) * (sameLang ? 0.45 : 0.14);
           starCtx.beginPath();
           starCtx.moveTo(p1.x, p1.y);
           starCtx.lineTo(p2.x, p2.y);
-          starCtx.strokeStyle = sameLang ? p1.color : 'rgba(255, 255, 255, 0.35)';
+          starCtx.strokeStyle = sameLang ? p1.color : 'rgba(255, 255, 255, 0.3)';
           starCtx.globalAlpha = lineAlpha;
           starCtx.stroke();
         }
       }
     }
 
-    // 3. Rendu des Astres-Projets GitHub Majeurs
-    const topSafeLimit = Math.max(340, height * 0.44);
-
+    // 4. Rendu de Chaque Astre (Soleil Central & Planètes Projets)
     projectStars.forEach(p => {
-      // Orbite cosmique douce
-      p.orbitAngle += p.orbitSpeed * (1.0 + warpFactor * 5.0);
-      const driftX = Math.cos(p.orbitAngle) * 8;
-      const driftY = Math.sin(p.orbitAngle) * 5;
-      p.x = p.baseX + driftX;
-      p.y = p.baseY + driftY;
-
-      // Gravitation souris
-      const toMouseX = mouse.x - p.x;
-      const toMouseY = mouse.y - p.y;
-      const mouseDist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
-      if (mouseDist < 200) {
-        const force = (1.0 - mouseDist / 200) * 16;
-        p.x += (toMouseX / mouseDist) * force;
-        p.y += (toMouseY / mouseDist) * force;
-      }
-
-      // Clamping strict : JAMAIS au-dessus de la limite sécurisée
-      p.y = Math.max(topSafeLimit + 20, Math.min(height - 95, p.y));
-
-      p.pulsePhase += 0.035;
       const isHovered = hoveredStar === p;
       const isSelected = selectedStar === p;
-      const pulse = 1.0 + 0.15 * Math.sin(p.pulsePhase);
-      const currentRadius = (isHovered || isSelected ? p.size * 1.35 : p.size) * pulse;
 
-      // A. Halo Nébulaire Externe Étendu
-      const outerGrad = starCtx.createRadialGradient(p.x, p.y, currentRadius * 0.3, p.x, p.y, currentRadius * 3.6);
-      outerGrad.addColorStop(0, p.color);
-      outerGrad.addColorStop(0.55, p.color);
-      outerGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      if (p.isSun) {
+        // === LE SOLEIL (WilliamGuindon) ===
+        p.pulsePhase += 0.04;
+        const solarPulse = 1.0 + 0.1 * Math.sin(p.pulsePhase);
+        const sunRadius = (isHovered || isSelected ? p.size * 1.3 : p.size) * solarPulse;
 
-      starCtx.beginPath();
-      starCtx.arc(p.x, p.y, currentRadius * 3.6, 0, Math.PI * 2);
-      starCtx.fillStyle = outerGrad;
-      starCtx.globalAlpha = isHovered || isSelected ? 0.95 : 0.6;
-      starCtx.fill();
+        // A. Couronne & Plasma Solaire Géant (Rayonnement externe jusqu'à 5x)
+        const coronaGrad = starCtx.createRadialGradient(p.x, p.y, sunRadius * 0.3, p.x, p.y, sunRadius * 4.8);
+        coronaGrad.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
+        coronaGrad.addColorStop(0.25, 'rgba(245, 158, 11, 0.65)');
+        coronaGrad.addColorStop(0.6, 'rgba(239, 68, 68, 0.25)');
+        coronaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-      // B. Anneau Orbital Stellaire Décoratif
-      starCtx.save();
-      starCtx.translate(p.x, p.y);
-      starCtx.rotate(p.pulsePhase * 0.35);
-      starCtx.beginPath();
-      starCtx.ellipse(0, 0, currentRadius * 1.85, currentRadius * 0.72, Math.PI / 6, 0, Math.PI * 2);
-      starCtx.strokeStyle = p.color;
-      starCtx.lineWidth = isHovered || isSelected ? 2.2 : 1.4;
-      starCtx.globalAlpha = isHovered || isSelected ? 0.9 : 0.5;
-      starCtx.stroke();
-      starCtx.restore();
+        starCtx.beginPath();
+        starCtx.arc(p.x, p.y, sunRadius * 4.8, 0, Math.PI * 2);
+        starCtx.fillStyle = coronaGrad;
+        starCtx.globalAlpha = 1.0;
+        starCtx.fill();
 
-      // C. Cœur d'étoile incandescent
-      const coreGrad = starCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentRadius);
-      coreGrad.addColorStop(0, '#ffffff');
-      coreGrad.addColorStop(0.55, p.color);
-      coreGrad.addColorStop(1, p.color);
+        // B. Rayons & Éruptions Solaires Tournantes
+        starCtx.save();
+        starCtx.translate(p.x, p.y);
+        starCtx.rotate(p.pulsePhase * 0.2);
+        for (let r = 0; r < 8; r++) {
+          const rayAngle = (r / 8) * Math.PI * 2;
+          const rayLength = sunRadius * (1.8 + 0.4 * Math.sin(p.pulsePhase + r));
+          starCtx.beginPath();
+          starCtx.moveTo(0, 0);
+          starCtx.lineTo(Math.cos(rayAngle) * rayLength, Math.sin(rayAngle) * rayLength);
+          starCtx.strokeStyle = 'rgba(253, 224, 71, 0.45)';
+          starCtx.lineWidth = 3;
+          starCtx.stroke();
+        }
+        starCtx.restore();
 
-      starCtx.beginPath();
-      starCtx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
-      starCtx.fillStyle = coreGrad;
-      starCtx.globalAlpha = 1.0;
-      starCtx.fill();
+        // C. Cœur Solaire Brillant Incandescent
+        const sunCoreGrad = starCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, sunRadius);
+        sunCoreGrad.addColorStop(0, '#ffffff');
+        sunCoreGrad.addColorStop(0.4, '#fef08a');
+        sunCoreGrad.addColorStop(0.8, '#f59e0b');
+        sunCoreGrad.addColorStop(1, '#ea580c');
 
-      // D. Badge & Nom du projet
-      const labelText = p.repo.name;
-      starCtx.font = `${isHovered || isSelected ? '700 14px' : '600 13px'} -apple-system, sans-serif`;
-      const textMetrics = starCtx.measureText(labelText);
-      const textWidth = textMetrics.width;
-      const labelY = p.y + currentRadius + 18;
+        starCtx.beginPath();
+        starCtx.arc(p.x, p.y, sunRadius, 0, Math.PI * 2);
+        starCtx.fillStyle = sunCoreGrad;
+        starCtx.globalAlpha = 1.0;
+        starCtx.fill();
 
-      // Fond de pilule sombre translucide pour une lisibilité parfaite
-      starCtx.beginPath();
-      const padX = 12;
-      const padY = 5;
-      starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 12, textWidth + padX * 2, 22, 10);
-      starCtx.fillStyle = 'rgba(8, 10, 20, 0.9)';
-      starCtx.strokeStyle = isHovered || isSelected ? p.color : 'rgba(255, 255, 255, 0.2)';
-      starCtx.lineWidth = 1;
-      starCtx.globalAlpha = 0.98;
-      starCtx.fill();
-      starCtx.stroke();
+        // D. Étiquette Royale du Soleil
+        const sunLabel = "☀️ WilliamGuindon (Soleil)";
+        starCtx.font = "700 14px -apple-system, sans-serif";
+        const textMetrics = starCtx.measureText(sunLabel);
+        const textWidth = textMetrics.width;
+        const labelY = p.y + sunRadius + 22;
 
-      // Texte de l'astre
-      starCtx.fillStyle = isHovered || isSelected ? '#ffffff' : '#f1f5f9';
-      starCtx.textAlign = 'center';
-      starCtx.globalAlpha = 1.0;
-      starCtx.fillText(labelText, p.x, labelY + 3);
+        starCtx.beginPath();
+        const padX = 14;
+        starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 13, textWidth + padX * 2, 26, 13);
+        starCtx.fillStyle = 'rgba(24, 16, 8, 0.92)';
+        starCtx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+        starCtx.lineWidth = 1.5;
+        starCtx.fill();
+        starCtx.stroke();
+
+        starCtx.fillStyle = '#fef08a';
+        starCtx.textAlign = 'center';
+        starCtx.fillText(sunLabel, p.x, labelY + 4);
+
+      } else {
+        // === LES PLANÈTES & PROJETS ORBITAUX ===
+        p.orbitAngle += p.orbitSpeed * (1.0 + warpFactor * 5.0);
+        const sunX = sunStar ? sunStar.x : centerX;
+        const sunY = sunStar ? sunStar.y : centerY;
+
+        p.x = sunX + Math.cos(p.orbitAngle) * p.orbitRadiusX;
+        p.y = sunY + Math.sin(p.orbitAngle) * p.orbitRadiusY;
+
+        // Gravitation souris
+        const toMouseX = mouse.x - p.x;
+        const toMouseY = mouse.y - p.y;
+        const mouseDist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
+        if (mouseDist < 180) {
+          const force = (1.0 - mouseDist / 180) * 14;
+          p.x += (toMouseX / mouseDist) * force;
+          p.y += (toMouseY / mouseDist) * force;
+        }
+
+        // Clamping strict sous le texte
+        p.y = Math.max(topSafeLimit + 20, Math.min(bottomLimit, p.y));
+
+        p.pulsePhase += 0.035;
+        const pulse = 1.0 + 0.15 * Math.sin(p.pulsePhase);
+        const currentRadius = (isHovered || isSelected ? p.size * 1.35 : p.size) * pulse;
+
+        // Halo Nébulaire Externe
+        const outerGrad = starCtx.createRadialGradient(p.x, p.y, currentRadius * 0.3, p.x, p.y, currentRadius * 3.4);
+        outerGrad.addColorStop(0, p.color);
+        outerGrad.addColorStop(0.55, p.color);
+        outerGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        starCtx.beginPath();
+        starCtx.arc(p.x, p.y, currentRadius * 3.4, 0, Math.PI * 2);
+        starCtx.fillStyle = outerGrad;
+        starCtx.globalAlpha = isHovered || isSelected ? 0.95 : 0.6;
+        starCtx.fill();
+
+        // Anneau Orbital
+        starCtx.save();
+        starCtx.translate(p.x, p.y);
+        starCtx.rotate(p.pulsePhase * 0.35);
+        starCtx.beginPath();
+        starCtx.ellipse(0, 0, currentRadius * 1.8, currentRadius * 0.7, Math.PI / 6, 0, Math.PI * 2);
+        starCtx.strokeStyle = p.color;
+        starCtx.lineWidth = isHovered || isSelected ? 2.2 : 1.3;
+        starCtx.globalAlpha = isHovered || isSelected ? 0.9 : 0.45;
+        starCtx.stroke();
+        starCtx.restore();
+
+        // Cœur
+        const coreGrad = starCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentRadius);
+        coreGrad.addColorStop(0, '#ffffff');
+        coreGrad.addColorStop(0.55, p.color);
+        coreGrad.addColorStop(1, p.color);
+
+        starCtx.beginPath();
+        starCtx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
+        starCtx.fillStyle = coreGrad;
+        starCtx.globalAlpha = 1.0;
+        starCtx.fill();
+
+        // Badge & Nom du projet
+        const labelText = p.repo.name;
+        starCtx.font = `${isHovered || isSelected ? '700 13px' : '600 12px'} -apple-system, sans-serif`;
+        const textMetrics = starCtx.measureText(labelText);
+        const textWidth = textMetrics.width;
+        const labelY = p.y + currentRadius + 18;
+
+        starCtx.beginPath();
+        const padX = 10;
+        const padY = 4;
+        starCtx.roundRect(p.x - textWidth / 2 - padX, labelY - 11, textWidth + padX * 2, 22, 10);
+        starCtx.fillStyle = 'rgba(8, 10, 20, 0.9)';
+        starCtx.strokeStyle = isHovered || isSelected ? p.color : 'rgba(255, 255, 255, 0.2)';
+        starCtx.lineWidth = 1;
+        starCtx.globalAlpha = 0.98;
+        starCtx.fill();
+        starCtx.stroke();
+
+        starCtx.fillStyle = isHovered || isSelected ? '#ffffff' : '#f1f5f9';
+        starCtx.textAlign = 'center';
+        starCtx.globalAlpha = 1.0;
+        starCtx.fillText(labelText, p.x, labelY + 4);
+      }
     });
 
     starCtx.globalAlpha = 1.0;
@@ -1197,7 +1317,12 @@ header.site {
     selectedStar = star;
     const r = star.repo;
 
-    insTitle.textContent = r.name;
+    if (star.isSun) {
+      insTitle.innerHTML = `☀️ ${escapeHtml(r.name)} <span style="font-size:0.75rem; color:#fbbf24; border:1px solid #fbbf24; padding:2px 8px; border-radius:12px; margin-left:8px;">Astre Solaire Central</span>`;
+    } else {
+      insTitle.textContent = r.name;
+    }
+
     insDesc.textContent = r.description || "Projet open source développé et maintenu par William Guindon.";
     insLang.textContent = r.language || "Général";
     insStars.textContent = `★ ${r.stargazers_count || 0}`;
