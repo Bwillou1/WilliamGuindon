@@ -1,24 +1,24 @@
 
 :root {
-  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: "Newsreader", "Times New Roman", Times, serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   
   --primary-h: 146;
   --primary-s: 48%;
 
-  --bg: #f7f9f7;
+  --bg: #fdfcf8; /* Natural paper tone */
   --bg-card: #ffffff;
-  --text: #131715;
-  --text-muted: #3c4940;
-  --text-faint: #6c7c72;
-  --accent: #22c55e;
+  --text: #1c1c1c;
+  --text-muted: #4a4a4a;
+  --text-faint: #737373;
+  --accent: #15803d; /* Deep forest green */
   --accent-deep: #166534;
   --accent-wash: #f0fdf4;
-  --earth: #a85507;
-  --earth-wash: #fef3c7;
-  --line: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --earth: #92400e;
+  --earth-wash: #fffbeb;
+  --line: #e5e5e5;
+  --shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 12px 20px -4px rgba(0, 0, 0, 0.08), 0 6px 8px -4px rgba(0, 0, 0, 0.06);
   --max-w: 800px;
   
   /* Z-Index Hierarchy */
@@ -32,19 +32,19 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0b0f0c;
-  --bg-card: #121814;
-  --text: #f0f4f1;
-  --text-muted: #9bb0a2;
-  --text-faint: #63776a;
+  --bg: #121212;
+  --bg-card: #1a1a1a;
+  --text: #e5e5e5;
+  --text-muted: #a3a3a3;
+  --text-faint: #737373;
   --accent: #22c55e;
   --accent-deep: #4ade80;
-  --accent-wash: rgba(34, 197, 94, 0.08);
+  --accent-wash: rgba(34, 197, 94, 0.1);
   --earth: #f59e0b;
-  --earth-wash: rgba(245, 158, 11, 0.08);
-  --line: #1c2620;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --earth-wash: rgba(245, 158, 11, 0.1);
+  --line: #2e2e2e;
+  --shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 12px 20px -4px rgba(0, 0, 0, 0.6), 0 6px 8px -4px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -122,17 +122,19 @@ a:hover {
   padding: 0 28px;
 }
 
-header.site { background: var(--bg); 
+header.site {
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
-  padding: 10px 0;
+  padding: 16px 0;
   position: sticky;
   top: 0;
-  
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   z-index: var(--z-max);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
  }
-[data-theme="dark"] header.site { background: var(--bg); 
-  
+[data-theme="dark"] header.site {
+  background: var(--bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
  }
 
 header.site .wrap {
@@ -142,15 +144,15 @@ header.site .wrap {
   flex-wrap: nowrap;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   gap: 16px;
 }
 
 .brand {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .02em;
-  font-size: 16px;
+  font-size: 18px;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--text);
@@ -212,48 +214,52 @@ section {
 
 h1 {
   font-family: var(--font-heading);
-  font-size: clamp(36px, 6vw, 56px);
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -.03em;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--text);
 }
 
 h2 {
-  font-family: var(--font-heading);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .18em;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 h3 {
   font-family: var(--font-heading);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -.01em;
-  margin-bottom: 22px;
-  line-height: 1.25;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+  line-height: 1.3;
   color: var(--text);
 }
 
 h4 {
   font-family: var(--font-heading);
-  font-size: 19px;
-  font-weight: 700;
-  margin: 36px 0 12px;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 40px 0 16px;
   color: var(--text);
 }
 
 p {
+  font-family: var(--font-body);
   color: var(--text-muted);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   max-width: 720px;
+  line-height: 1.8;
+  font-size: 17px;
 }
 p strong {
   color: var(--text);
+  font-weight: 600;
 }
 
 a.accent-link {
@@ -286,11 +292,12 @@ a.accent-link:hover {
   background-color: var(--accent-wash);
 }
 .hero p.lead {
-  margin-top: 24px;
-  font-size: 21px;
-  line-height: 1.55;
+  margin-top: 28px;
+  font-size: 22px;
+  line-height: 1.6;
   color: var(--text-muted);
   max-width: 680px;
+  font-weight: 400;
 }
 
 .factgrid {
@@ -1006,12 +1013,12 @@ footer a:hover {
 .hero-immersive h1 span,
 .hero-immersive .hero-title-main {
   font-family: var(--font-heading);
-  font-size: clamp(38px, 6.5vw, 68px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-size: clamp(44px, 7vw, 76px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   color: #ffffff;
-  line-height: 1.1;
-  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
+  line-height: 1.15;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .hero-immersive .kicker {
@@ -1025,12 +1032,14 @@ footer a:hover {
 }
 
 .hero-immersive p.lead {
-  font-size: clamp(17px, 2.2vw, 22px);
-  line-height: 1.55;
-  color: rgba(240, 244, 241, 0.95);
-  max-width: 700px;
+  font-family: var(--font-body);
+  font-size: clamp(18px, 2.5vw, 24px);
+  line-height: 1.65;
+  color: rgba(245, 245, 245, 0.95);
+  max-width: 720px;
   margin: 0 auto;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  font-weight: 400;
 }
 
 .citation-hero {
@@ -5907,3 +5916,34 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 }
 
 
+
+/* Custom Entry Animations for Modern Layout */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover effect for buttons and cards */
+.interactive-hover {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
