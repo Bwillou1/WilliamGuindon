@@ -78,9 +78,12 @@ DIRECTIVES DE RÉPONSE :
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-      // Liens Markdown [Titre](url) et URLs brutes
+      // Liens Markdown [Titre](url) et URLs brutes (sans lookbehind pour compatibilité Safari iOS < 16.4)
       text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">$1 ↗</a>');
-      text = text.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">$1 ↗</a>');
+      text = text.replace(/(href=")?(https?:\/\/[^\s<]+)/g, function (match, p1, p2) {
+        if (p1) return match;
+        return '<a href="' + p2 + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">' + p2 + ' ↗</a>';
+      });
 
       // Listes à puces
       text = text.replace(/^[-*•]\s+(.*)$/gm, '<li style="margin-bottom:4px;">$1</li>');
@@ -533,10 +536,6 @@ DIRECTIVES DE RÉPONSE :
           summaryBtns.forEach(b => { b.disabled = false; });
         }
       }
-
-      const btnBullets = document.getElementById('btn-sum-bullets');
-      const btnTldr = document.getElementById('btn-sum-tldr');
-      const btnLegal = document.getElementById('btn-sum-legal');
 
       if (btnBullets) btnBullets.addEventListener('click', () => runSummarizer('bullets'));
       if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));

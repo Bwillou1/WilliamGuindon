@@ -4111,8 +4111,8 @@ body.dark-theme .carousel-dot {
 
 .floating-ai-btn {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: calc(24px + env(safe-area-inset-right, 0px));
   z-index: var(--z-max);
   display: inline-flex;
   align-items: center;
@@ -4125,9 +4125,10 @@ body.dark-theme .carousel-dot {
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5), 0 8px 10px -6px rgba(16, 185, 129, 0.3);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  
   text-decoration: none;
 }
 .floating-ai-btn:hover {
@@ -4426,7 +4427,7 @@ body.ai-sidebar-active .floating-ai-btn,
   border: 2px solid var(--line);
   border-radius: 6px;
   padding: 10px 14px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   outline: none;
   font-family: inherit;
@@ -4724,9 +4725,9 @@ body.ai-sidebar-active .floating-ai-btn,
 }
 @media (max-width: 768px) {
   .floating-ai-btn {
-    bottom: 16px;
-    right: 16px;
-    padding: 8px 14px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    padding: 9px 15px;
     font-size: 13px;
   }
   .ai-modal-card {
@@ -4734,9 +4735,12 @@ body.ai-sidebar-active .floating-ai-btn,
     min-width: 100vw;
     max-width: 100vw;
     height: 100vh;
+    height: 100dvh;
     max-height: 100vh;
+    max-height: 100dvh;
+    max-height: -webkit-fill-available;
     border-left: none;
-    padding: 16px;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)) 16px;
   }
 }
 
