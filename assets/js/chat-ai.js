@@ -596,15 +596,50 @@ DIRECTIVES DE RÉPONSE :
       }
     }
 
-    floatingBtn.addEventListener('click', () => {
+    function openChat(query) {
       initAiModal();
-      const isActive = aiModal.classList.toggle('active');
-      if (isActive) {
+      if (!aiModal.classList.contains('active')) {
+        aiModal.classList.add('active');
         document.body.classList.add('ai-sidebar-active');
-        const userInput = document.getElementById('ai-user-input');
-        if (userInput) userInput.focus();
-      } else {
+      }
+      const userInput = document.getElementById('ai-user-input');
+      if (userInput) {
+        if (query && typeof query === 'string') {
+          userInput.value = query;
+        }
+        setTimeout(() => {
+          try { userInput.focus(); } catch (e) {}
+        }, 100);
+      }
+    }
+
+    function closeChat() {
+      if (aiModal && aiModal.classList.contains('active')) {
+        aiModal.classList.remove('active');
         document.body.classList.remove('ai-sidebar-active');
+      }
+    }
+
+    function toggleChat() {
+      if (aiModal && aiModal.classList.contains('active')) {
+        closeChat();
+      } else {
+        openChat();
+      }
+    }
+
+    window.openAiChat = openChat;
+    window.closeAiChat = closeChat;
+    window.toggleAiChat = toggleChat;
+
+    floatingBtn.addEventListener('click', toggleChat);
+
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-open-ai-chat], a[href="#ai-chat"], a[href="#chat-ai"], .js-trigger-ai-chat, .nav-ai-btn, .header-mobile-ai-btn');
+      if (trigger) {
+        e.preventDefault();
+        const q = trigger.getAttribute('data-ai-query') || '';
+        openChat(q);
       }
     });
   }

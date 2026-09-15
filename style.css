@@ -4113,13 +4113,13 @@ body.dark-theme .carousel-dot {
   position: fixed;
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   right: calc(24px + env(safe-area-inset-right, 0px));
-  z-index: var(--z-max);
-  display: inline-flex;
+  z-index: 99999 !important;
+  display: inline-flex !important;
   align-items: center;
   gap: 8px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 11px 20px;
   border-radius: 9999px;
   font-weight: 700;
@@ -4130,6 +4130,8 @@ body.dark-theme .carousel-dot {
   box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5), 0 8px 10px -6px rgba(16, 185, 129, 0.3);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
 }
 .floating-ai-btn:hover {
   transform: none;
@@ -4150,10 +4152,12 @@ body.ai-sidebar-active {
 }
 
 body.ai-sidebar-active .floating-ai-btn,
+body:has(.ai-modal-overlay.active) .floating-ai-btn,
 .ai-modal-overlay.active ~ .floating-ai-btn {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  display: none !important;
   transform: translateY(24px) scale(0.85);
 }
 
@@ -4729,6 +4733,8 @@ body.ai-sidebar-active .floating-ai-btn,
     right: calc(16px + env(safe-area-inset-right, 0px));
     padding: 9px 15px;
     font-size: 13px;
+    max-width: calc(100vw - 32px);
+    box-sizing: border-box;
   }
   .ai-modal-card {
     width: 100vw;
@@ -5553,6 +5559,125 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   padding: 1px 5px;
   color: var(--text-faint);
   line-height: 1.2;
+}
+
+/* --- Bouton Mode IA dans la barre de navigation (Desktop) --- */
+.nav-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  padding: 6px 13px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+.nav-ai-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+.nav-ai-btn svg {
+  color: var(--accent);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.nav-ai-btn:hover svg {
+  color: #ffffff;
+  transform: scale(1.15);
+}
+
+/* --- Bouton Mode IA Mobile (En-tête compacte <= 900px) --- */
+.header-mobile-ai-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
+  margin-right: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.header-mobile-ai-btn:active {
+  transform: scale(0.96);
+}
+@media (max-width: 900px) {
+  .header-mobile-ai-btn {
+    display: inline-flex;
+  }
+}
+
+/* --- Carte Mode IA dans le tiroir de navigation mobile (iPhone/iPad) --- */
+.mobile-drawer-ai-card {
+  padding: 10px 16px;
+  margin: 6px 0 10px;
+}
+@media (min-width: 901px) {
+  .mobile-drawer-ai-card {
+    display: none !important;
+  }
+}
+.mobile-drawer-ai-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(5, 150, 105, 0.08) 100%);
+  border: 1.5px solid var(--accent);
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  touch-action: manipulation;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
+  transition: all 0.2s ease;
+}
+.mobile-drawer-ai-btn:active {
+  transform: scale(0.98);
+}
+.mobile-drawer-ai-btn svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.mobile-drawer-ai-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.mobile-drawer-ai-content strong {
+  font-size: 13.5px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.mobile-drawer-ai-content span {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+.mobile-drawer-ai-arrow {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .quick-search-modal {

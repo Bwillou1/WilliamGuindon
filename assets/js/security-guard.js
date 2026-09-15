@@ -1150,6 +1150,11 @@
           (document.body || document.documentElement).appendChild(pdfNotice);
         }
       }
+    } else {
+      const pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
+      if (pdfNotice) pdfNotice.remove();
+    }
+
     // Verrouillage direct DOM de la messagerie
     const msgBanner = document.getElementById('messaging-disabled-banner');
     const msgArea = document.getElementById('msg-content');
