@@ -1103,9 +1103,9 @@ body.grid-active .tourbiere-overlay {
         Vous avez pris du recul sur le cosmos pour atterrir au cœur de la tourbière. C'est ici que s'enracine la communication citoyenne <strong>SEM-26-003</strong> déposée auprès de la CCE pour préserver ce sanctuaire écologique face à l'enfouissement de déchets dangereux.
       </p>
       <div class="tourbiere-actions">
-        <a href="stablex.html" class="tourbiere-btn tourbiere-btn-primary">Dossier Stablex ↗</a>
-        <a href="registre.html" class="tourbiere-btn tourbiere-btn-secondary">Registre CCE ↗</a>
-        <button type="button" class="tourbiere-btn tourbiere-btn-cosmos" id="btn-return-cosmos">✨ Retour au Cosmos</button>
+        <a href="stablex.html" class="tourbiere-btn tourbiere-btn-primary" tabindex="-1">Dossier Stablex ↗</a>
+        <a href="registre.html" class="tourbiere-btn tourbiere-btn-secondary" tabindex="-1">Registre CCE ↗</a>
+        <button type="button" class="tourbiere-btn tourbiere-btn-cosmos" id="btn-return-cosmos" tabindex="-1">✨ Retour au Cosmos</button>
       </div>
     </div>
   </div>
@@ -2250,13 +2250,16 @@ body.grid-active .tourbiere-overlay {
     const tourbiereOverlay = document.getElementById('tourbiere-overlay');
     const btnTourbiereView = document.getElementById('btn-tourbiere-view');
     if (tourbiereOverlay) {
+      const tourbiereFocusables = tourbiereOverlay.querySelectorAll('a, button');
       if (camera.zoom <= 0.78) {
         tourbiereOverlay.classList.add('visible');
         tourbiereOverlay.setAttribute('aria-hidden', 'false');
+        tourbiereFocusables.forEach(el => el.removeAttribute('tabindex'));
         if (btnTourbiereView) btnTourbiereView.classList.add('active');
       } else {
         tourbiereOverlay.classList.remove('visible');
         tourbiereOverlay.setAttribute('aria-hidden', 'true');
+        tourbiereFocusables.forEach(el => el.setAttribute('tabindex', '-1'));
         if (btnTourbiereView && camera.targetZoom > 0.78) btnTourbiereView.classList.remove('active');
       }
     }
