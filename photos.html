@@ -404,6 +404,11 @@
 <script>
   let allPhotos = [];
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   async function loadPhotos() {
     const grid = document.getElementById("photos-grid");
     try {
@@ -431,17 +436,17 @@
       card.className = "photo-card";
       card.onclick = () => openLightbox(item);
 
-      const licenseHtml = item.license ? `<span class="photo-license-badge" title="Licence d'utilisation">${item.license}</span>` : "";
+      const licenseHtml = item.license ? `<span class="photo-license-badge" title="Licence d'utilisation">${escapeHtml(item.license)}</span>` : "";
 
       card.innerHTML = `
         <div class="photo-img-wrap">
-          <img src="${item.imageUrl}" alt="${item.title || 'Photographie'}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
-          <span class="photo-badge">${item.category || "Terrain"}</span>
+          <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title || 'Photographie')}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
+          <span class="photo-badge">${escapeHtml(item.category || "Terrain")}</span>
           ${licenseHtml}
           <div class="photo-overlay">
-            <div class="photo-title">${item.title}</div>
+            <div class="photo-title">${escapeHtml(item.title)}</div>
             <div class="photo-meta">
-              <span>${item.location ? item.location + " · " : ""}${item.date || ""}</span>
+              <span>${item.location ? escapeHtml(item.location) + " · " : ""}${escapeHtml(item.date || "")}</span>
             </div>
           </div>
         </div>
@@ -457,11 +462,11 @@
 
     img.src = item.imageUrl;
     img.alt = item.title || "Photographie agrandie";
-    const licenseText = item.license ? `<span style="display:inline-block; padding:2px 8px; background:rgba(255,255,255,0.1); border-radius:4px; font-size:12px; margin-left:8px;">Licence : ${item.license}</span>` : "";
+    const licenseText = item.license ? `<span style="display:inline-block; padding:2px 8px; background:rgba(255,255,255,0.1); border-radius:4px; font-size:12px; margin-left:8px;">Licence : ${escapeHtml(item.license)}</span>` : "";
     caption.innerHTML = `
-      <h3>${item.title}</h3>
-      <p>${item.description || ""}</p>
-      <div class="photo-lightbox-meta">${item.location ? '<svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ' + item.location + ' · ' : ''}${item.date || ''}${licenseText}</div>
+      <h3>${escapeHtml(item.title)}</h3>
+      <p>${escapeHtml(item.description || "")}</p>
+      <div class="photo-lightbox-meta">${item.location ? '<svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ' + escapeHtml(item.location) + ' · ' : ''}${escapeHtml(item.date || '')}${licenseText}</div>
     `;
     modal.classList.add("open");
   }
