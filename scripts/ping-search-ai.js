@@ -13,7 +13,10 @@ const https = require('https');
 const http = require('http');
 
 const HOST = 'williamguindon.me';
-const KEY = '8781d75e5905f04a95157c0c264d928b';
+const KEY = process.env.INDEXNOW_KEY;
+if (!KEY) {
+  throw new Error("Erreur: La variable d'environnement INDEXNOW_KEY est requise.");
+}
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
 const ALL_URLS = [

@@ -241,7 +241,7 @@ export default {
         }
       } catch (err) {
         clearTimeout(timeoutId);
-        lastError = err?.name === 'AbortError' ? 'timeout' : (err?.message || 'fetch error');
+        lastError = err?.name === 'AbortError' ? 'timeout' : 'fetch error';
       }
     }
 

@@ -442,6 +442,11 @@
 <script>
   let allPosts = [];
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   async function loadBlogPosts() {
     const grid = document.getElementById("blog-posts-grid");
     const empty = document.getElementById("blog-empty-state");
@@ -491,13 +496,13 @@
 
       card.innerHTML = `
         <div class="blog-card-img-wrap">
-          <img src="${coverSrc}" alt="${post.title || 'Publication du carnet de bord'}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215">
-          <span class="blog-card-category ${isSpecial ? 'special' : ''}">${post.category || "Actualité"}</span>
+          <img src="${escapeHtml(coverSrc)}" alt="${escapeHtml(post.title || 'Publication du carnet de bord')}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215">
+          <span class="blog-card-category ${isSpecial ? 'special' : ''}">${escapeHtml(post.category || "Actualité")}</span>
         </div>
         <div class="blog-card-body">
-          <time class="blog-card-date">${post.date} · Par ${post.author || "William Guindon"}</time>
-          <h2 class="blog-card-title">${post.title}</h2>
-          <p class="blog-card-summary">${post.summary || post.content.substring(0, 140) + "..."}</p>
+          <time class="blog-card-date">${escapeHtml(post.date)} · Par ${escapeHtml(post.author || "William Guindon")}</time>
+          <h2 class="blog-card-title">${escapeHtml(post.title)}</h2>
+          <p class="blog-card-summary">${escapeHtml(post.summary || post.content.substring(0, 140) + "...")}</p>
           <div class="blog-card-tags">${tagsHtml}</div>
         </div>
       `;
@@ -516,9 +521,9 @@
       : "";
 
     body.innerHTML = `
-      <span class="blog-card-category blog-detail-category ${isSpecial ? 'special' : ''}">${post.category || "Actualité"}</span>
-      <h1 class="blog-detail-title">${post.title}</h1>
-      <time class="blog-detail-time">Publié le ${post.date} par ${post.author || "William Guindon"}</time>
+      <span class="blog-card-category blog-detail-category ${isSpecial ? 'special' : ''}">${escapeHtml(post.category || "Actualité")}</span>
+      <h1 class="blog-detail-title">${escapeHtml(post.title)}</h1>
+      <time class="blog-detail-time">Publié le ${escapeHtml(post.date)} par ${escapeHtml(post.author || "William Guindon")}</time>
       ${coverHtml}
       <div class="article-full-text">${post.content}</div>
       <div class="blog-detail-footer">
