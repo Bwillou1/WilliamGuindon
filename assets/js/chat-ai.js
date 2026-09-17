@@ -16,10 +16,9 @@
 
   function isChatBlockedByAdmin() {
     try {
+      localStorage.removeItem('wg_site_state');
       const radicalState = JSON.parse(localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state') || '{}');
-      if (radicalState.disableAI) return true;
-      const cachedState = JSON.parse(localStorage.getItem('wg_site_state') || '{}');
-      if (cachedState.disableAI) return true;
+      if (radicalState.disableAI === true) return true;
     } catch (_) {}
     return false;
   }
@@ -727,6 +726,22 @@ DIRECTIVES DE RÉPONSE :
 
     syncChatAvailability();
     setInterval(syncChatAvailability, 2500);
+
+    fetch('/data/site-state.json?_t=' + Date.now())
+      .then(r => r.json())
+      .then(s => {
+        if (s && s.disableAI === false) {
+          try {
+            const cur = JSON.parse(localStorage.getItem('wg_radical_site_state') || '{}');
+            if (cur.disableAI) {
+              cur.disableAI = false;
+              localStorage.setItem('wg_radical_site_state', JSON.stringify(cur));
+              syncChatAvailability();
+            }
+          } catch (_) {}
+        }
+      })
+      .catch(() => {});
 
     window.openAiChat = openChat;
     window.closeAiChat = closeChat;

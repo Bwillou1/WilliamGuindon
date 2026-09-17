@@ -153,7 +153,7 @@
     // Module IA documentaire global (accessible sur l'ensemble des pages)
     if (!document.querySelector('script[src*="chat-ai.js"]')) {
       const chatScript = document.createElement('script');
-      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js';
+      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260917-2';
       chatScript.defer = true;
       document.head.appendChild(chatScript);
     }
