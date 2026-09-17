@@ -42,7 +42,7 @@ async function syncDossierStatus() {
     registre_url_en: REGISTRY_URL_EN,
     reseaux_sociaux: {
       linkedin: "https://www.linkedin.com/in/william-guindon/",
-      facebook: "https://www.facebook.com/profile.php?id=61591437730054",
+      facebook: "https://www.facebook.com/williamguindon.officiel",
       youtube: "https://www.youtube.com/@william-guindon"
     },
     timestamp_sync: new Date().toISOString()
@@ -76,7 +76,8 @@ async function syncDossierStatus() {
     existingData.wp_modified !== data.wp_modified ||
     existingData.etat_fr !== data.etat_fr ||
     existingData.prochaine_echeance !== data.prochaine_echeance ||
-    existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr;
+    existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr ||
+    JSON.stringify(existingData.reseaux_sociaux) !== JSON.stringify(data.reseaux_sociaux);
 
   if (hasChanged) {
     data.timestamp_sync = new Date().toISOString();

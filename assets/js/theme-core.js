@@ -161,34 +161,6 @@
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 
-    // Bouton Mode IA direct dans le bandeau d'en-tête (visible en particulier sur mobile et iPad)
-    if (headerWrap && !headerWrap.querySelector('.header-mobile-ai-btn')) {
-      const mobileAiBtn = document.createElement('button');
-      mobileAiBtn.className = 'header-mobile-ai-btn';
-      mobileAiBtn.type = 'button';
-      mobileAiBtn.setAttribute('aria-label', 'Mode IA : Clavarder avec l\'assistant documentaire');
-      mobileAiBtn.setAttribute('title', 'Clavarder avec l\'IA documentaire');
-      mobileAiBtn.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        </svg>
-        <span class="mobile-ai-text">Mode IA</span>
-      `;
-      const menuToggle = headerWrap.querySelector('.menu-toggle');
-      if (menuToggle) {
-        headerWrap.insertBefore(mobileAiBtn, menuToggle);
-      } else {
-        headerWrap.appendChild(mobileAiBtn);
-      }
-      mobileAiBtn.addEventListener('click', () => {
-        if (typeof window.openAiChat === 'function') {
-          window.openAiChat();
-        } else {
-          const floatBtn = document.querySelector('.floating-ai-btn');
-          if (floatBtn) floatBtn.click();
-        }
-      });
-    }
 
     // Intégration du sélecteur de langue unique (FR / EN / ES)
     if (nav) {
@@ -270,67 +242,6 @@
         searchBtn.addEventListener('click', () => openQuickSearch());
       }
 
-      // Bouton Mode IA dans la barre de navigation principale (Desktop / Tablette)
-      let aiNavBtn = nav.querySelector('.nav-ai-btn');
-      if (!aiNavBtn) {
-        aiNavBtn = document.createElement('button');
-        aiNavBtn.className = 'nav-ai-btn';
-        aiNavBtn.type = 'button';
-        aiNavBtn.setAttribute('aria-label', 'Mode IA : Clavarder ou résumer avec l\'IA');
-        aiNavBtn.setAttribute('title', 'Clavarder avec l\'IA (Dossier CCE)');
-        aiNavBtn.innerHTML = `
-          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-          </svg>
-          <span class="nav-ai-text">Mode IA</span>
-        `;
-        if (searchBtn && searchBtn.nextSibling) {
-          nav.insertBefore(aiNavBtn, searchBtn.nextSibling);
-        } else {
-          nav.appendChild(aiNavBtn);
-        }
-        aiNavBtn.addEventListener('click', () => {
-          if (typeof window.openAiChat === 'function') {
-            window.openAiChat();
-          } else {
-            const floatBtn = document.querySelector('.floating-ai-btn');
-            if (floatBtn) floatBtn.click();
-          }
-        });
-      }
-
-      // Carte d'accès IA direct dans le tiroir du menu mobile (iPhone / iPad)
-      const mobileNavHeader = nav.querySelector('.mobile-nav-header');
-      if (mobileNavHeader && !nav.querySelector('.mobile-drawer-ai-card')) {
-        const drawerAiCard = document.createElement('div');
-        drawerAiCard.className = 'mobile-drawer-ai-card';
-        drawerAiCard.innerHTML = `
-          <button type="button" class="mobile-drawer-ai-btn" aria-label="Lancer le mode Clavardage IA">
-            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            </svg>
-            <div class="mobile-drawer-ai-content">
-              <strong>Clavarder avec l'IA</strong>
-              <span>Dossier SEM-26-003, BAPE 371, Loi 93</span>
-            </div>
-            <span class="mobile-drawer-ai-arrow">➔</span>
-          </button>
-        `;
-        mobileNavHeader.insertAdjacentElement('afterend', drawerAiCard);
-        const cardBtn = drawerAiCard.querySelector('.mobile-drawer-ai-btn');
-        if (cardBtn) {
-          cardBtn.addEventListener('click', () => {
-            const closeBtn = nav.querySelector('.mobile-menu-close-btn');
-            if (closeBtn) closeBtn.click();
-            if (typeof window.openAiChat === 'function') {
-              window.openAiChat();
-            } else {
-              const floatBtn = document.querySelector('.floating-ai-btn');
-              if (floatBtn) floatBtn.click();
-            }
-          });
-        }
-      }
 
       // Bouton Mode Sombre / Clair
       let toggleBtn = nav.querySelector('.theme-toggle-btn');

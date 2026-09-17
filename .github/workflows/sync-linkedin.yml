@@ -1,0 +1,109 @@
+name: Synchronisation Réseau Social (LinkedIn)
+
+on:
+  schedule:
+    # Exécution automatique toutes les 6 heures (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Déclenchement manuel à la demande depuis l'interface GitHub Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-linkedin-social
+  cancel-in-progress: true
+
+jobs:
+  sync-linkedin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: 🔍 Extraction de la dernière publication LinkedIn
+        id: fetch_li
+        run: |
+          # Cibles publiques LinkedIn (flux d'activité et profil)
+          PRIMARY_URL="https://www.linkedin.com/in/william-guindon/recent-activity/all/"
+          FALLBACK_PROFILE_URL="https://www.linkedin.com/in/william-guindon/"
+          
+          # URL d'intégration de secours par défaut si l'extraction dynamique échoue (authwall ou absence de nouveau post)
+          FALLBACK_EMBED_URL="https://www.linkedin.com/embed/feed/update/urn:li:activity:7200000000000000000"
+
+          # User-Agent réaliste de navigateur moderne (Chrome sous Windows 10)
+          USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+
+          echo "Tentative d'extraction de la dernière activité LinkedIn..."
+          HTML_DATA=$(curl -s -L --max-time 15 \
+            -A "$USER_AGENT" \
+            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
+            -H "Accept-Language: fr-CA,fr;q=0.9,en-US;q=0.8,en;q=0.7" \
+            -H "Sec-Fetch-Dest: document" \
+            -H "Sec-Fetch-Mode: navigate" \
+            -H "Sec-Fetch-Site: none" \
+            -H "Sec-Fetch-User: ?1" \
+            -H "Upgrade-Insecure-Requests: 1" \
+            "$PRIMARY_URL" || true)
+
+          # Recherche du format URN standard LinkedIn (activity, share ou ugcPost suivi de 18 à 20 chiffres)
+          ACTIVITY_URN=$(echo "$HTML_DATA" | grep -oE 'urn:li:(activity|share|ugcPost):[0-9]{18,20}' | head -n 1 || true)
+
+          # Si le format URN complet n'apparaît pas directement, recherche par motif d'ID numérique d'activité
+          if [ -z "$ACTIVITY_URN" ]; then
+            NUM_ID=$(echo "$HTML_DATA" | grep -oE 'activity-([0-9]{18,20})|activity:([0-9]{18,20})|feed/update/urn:li:[a-zA-Z]+:([0-9]{18,20})' | grep -oE '[0-9]{18,20}' | head -n 1 || true)
+            if [ -n "$NUM_ID" ]; then
+              ACTIVITY_URN="urn:li:activity:$NUM_ID"
+            fi
+          fi
+
+          # Deuxième tentative sur le profil principal si la page d'activité n'a rien renvoyé
+          if [ -z "$ACTIVITY_URN" ]; then
+            echo "Tentative secondaire sur le profil principal..."
+            HTML_PROFILE=$(curl -s -L --max-time 15 \
+              -A "$USER_AGENT" \
+              -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
+              -H "Accept-Language: fr-CA,fr;q=0.9,en;q=0.8" \
+              "$FALLBACK_PROFILE_URL" || true)
+            ACTIVITY_URN=$(echo "$HTML_PROFILE" | grep -oE 'urn:li:(activity|share|ugcPost):[0-9]{18,20}' | head -n 1 || true)
+          fi
+
+          # Construction de l'URL finale pour l'iframe ou application du fallback
+          if [ -n "$ACTIVITY_URN" ]; then
+            echo "✔ Activité LinkedIn identifiée : $ACTIVITY_URN"
+            FINAL_URL="https://www.linkedin.com/embed/feed/update/$ACTIVITY_URN"
+          else
+            echo "⚠ Aucune activité récente extraite (blocage anti-bot ou indisponibilité). Utilisation de l'URL de secours."
+            FINAL_URL="$FALLBACK_EMBED_URL"
+          fi
+
+          echo "embed_url=$FINAL_URL" >> $GITHUB_OUTPUT
+
+      - name: ✏️ Mise à jour du fichier index.html
+        run: |
+          NEW_URL="${{ steps.fetch_li.outputs.embed_url }}"
+          TARGET_FILE="index.html"
+
+          if [ ! -f "$TARGET_FILE" ]; then
+            echo "✖ Fichier $TARGET_FILE introuvable."
+            exit 1
+          fi
+
+          # Remplacement de la valeur src="..." sur la ligne contenant le marqueur #LI_LATEST
+          sed -i.bak -E "/#LI_LATEST/s|src=\"[^\"]*\"|src=\"$NEW_URL\"|" "$TARGET_FILE"
+          rm -f "${TARGET_FILE}.bak"
+
+          echo "✔ Ligne #LI_LATEST mise à jour avec src=\"$NEW_URL\""
+
+      - name: 🚀 Git Commit & Push automatique
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet index.html; then
+            echo "Aucune modification détectée dans index.html. Aucun commit nécessaire."
+          else
+            git add index.html
+            git commit -m "chore(social): synchronisation de la dernière publication LinkedIn [skip ci]"
+            git push
+            echo "✔ Mise à jour déployée avec succès sur la branche."
+          fi

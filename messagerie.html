@@ -1197,11 +1197,33 @@ document.addEventListener('DOMContentLoaded', () => {
     'wss://relay.nostr.band'
   ];
 
+  // Détection des copies du web, snapshots historiques et archives (Wayback Machine, etc.)
+  function isWebArchiveOrMirror() {
+    const host = (window.location.hostname || '').toLowerCase();
+    const allowed = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
+    const isArchiveDomain = host.includes('archive') || host.includes('wayback') || host.includes('webcache') || host.includes('ghostarchive') || host.includes('archive-it') || host.includes('replay') || host.includes('cachedview');
+    const isWaybackEnv = typeof window.__wm !== 'undefined' || typeof window._wb_js !== 'undefined' || typeof window.__wb_installed !== 'undefined' || window.location.pathname.includes('/web/19') || window.location.pathname.includes('/web/20');
+    return (!allowed.includes(host) && isArchiveDomain) || isWaybackEnv || isArchiveDomain;
+  }
+
   // Onglets Envoi vs Réception
   const tabSend = document.getElementById('tab-btn-send');
   const tabInbox = document.getElementById('tab-btn-inbox');
   const viewSend = document.getElementById('view-send-panel');
   const viewInbox = document.getElementById('view-inbox-panel');
+
+  function isCurrentMessagingDisabled() {
+    try {
+      const radicalState = JSON.parse(localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state') || '{}');
+      if (radicalState.disableMessaging) return true;
+      const cached = localStorage.getItem('wg_site_state');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.disableMessaging) return true;
+      }
+    } catch (_) {}
+    return false;
+  }
 
   tabSend.addEventListener('click', () => {
     tabSend.classList.add('active');
@@ -1210,7 +1232,12 @@ document.addEventListener('DOMContentLoaded', () => {
     viewInbox.style.display = 'none';
   });
 
-  tabInbox.addEventListener('click', () => {
+  tabInbox.addEventListener('click', (e) => {
+    if (isCurrentMessagingDisabled()) {
+      e.preventDefault();
+      alert("La messagerie et la lecture des anciens messages sont actuellement verrouillées par l'administration.");
+      return;
+    }
     tabInbox.classList.add('active');
     tabSend.classList.remove('active');
     viewInbox.style.display = 'block';
@@ -1227,15 +1254,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSendEl = document.getElementById('btn-send-message');
     const fileZone = document.getElementById('file-drop-area');
     const sendPanel = document.getElementById('view-send-panel');
+    const tabInboxEl = document.getElementById('tab-btn-inbox');
+    const tabSendEl = document.getElementById('tab-btn-send');
+    const viewInboxEl = document.getElementById('view-inbox-panel');
+    const btnFetchInboxEl = document.getElementById('btn-fetch-inbox');
+    const inboxKeyInputEl = document.getElementById('inbox-privkey');
+    const inboxListEl = document.getElementById('inbox-list-container');
+    const inboxStatusEl = document.getElementById('inbox-status');
+    const isArchive = isWebArchiveOrMirror();
 
     if (isDisabled) {
-      if (banner) banner.style.display = 'flex';
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.innerHTML = `<svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span><strong>Messagerie & Historique Verrouillés :</strong> L'envoi de messages et la lecture des anciens chats (boîte de réception) sont tous les deux désactivés par le créateur.</span>`;
+      }
       if (msgArea) {
         msgArea.disabled = true;
         msgArea.readOnly = true;
         msgArea.setAttribute('disabled', 'disabled');
         msgArea.setAttribute('readonly', 'readonly');
-        msgArea.placeholder = "Le créateur a préféré désactiver l'option temporairement.";
+        msgArea.placeholder = "Le créateur a désactivé l'envoi et la consultation des anciens messages.";
         msgArea.value = "";
         msgArea.style.opacity = '0.65';
         msgArea.style.cursor = 'not-allowed';
@@ -1245,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnSendEl) {
         btnSendEl.disabled = true;
         btnSendEl.setAttribute('disabled', 'disabled');
-        btnSendEl.textContent = "Messagerie désactivée temporairement";
+        btnSendEl.textContent = "Messagerie et historique verrouillés";
         btnSendEl.style.pointerEvents = 'none';
         btnSendEl.style.opacity = '0.4';
       }
@@ -1256,6 +1295,64 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sendPanel) {
         sendPanel.style.filter = 'grayscale(80%)';
         sendPanel.style.opacity = '0.6';
+      }
+      // VERROUILLAGE TOTAL DE L'INBOX / LECTURE DES ANCIENS MESSAGES
+      if (tabInboxEl) {
+        tabInboxEl.disabled = true;
+        tabInboxEl.style.pointerEvents = 'none';
+        tabInboxEl.style.opacity = '0.35';
+        tabInboxEl.setAttribute('title', 'Consultation des anciens messages verrouillée');
+        tabInboxEl.classList.remove('active');
+      }
+      if (tabSendEl) {
+        tabSendEl.classList.add('active');
+      }
+      if (viewInboxEl) {
+        viewInboxEl.style.display = 'none';
+      }
+      if (sendPanel) {
+        sendPanel.style.display = 'block';
+      }
+      if (btnFetchInboxEl) {
+        btnFetchInboxEl.disabled = true;
+        btnFetchInboxEl.style.pointerEvents = 'none';
+      }
+      if (inboxKeyInputEl) {
+        inboxKeyInputEl.disabled = true;
+        inboxKeyInputEl.value = '';
+      }
+      if (inboxListEl) {
+        inboxListEl.innerHTML = `<div style="text-align:center; padding:30px; color:#ef4444; border:1px dashed #ef4444; border-radius:8px; font-weight:600;">🔒 La consultation des anciens messages est actuellement verrouillée par le créateur.</div>`;
+      }
+      if (inboxStatusEl) {
+        inboxStatusEl.innerHTML = `<span style="color:#ef4444;">Boîte de réception verrouillée.</span>`;
+      }
+    } else if (isArchive) {
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.innerHTML = `<svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span><strong>Archive du Web Détectée :</strong> Vous consultez une capture historique ou un miroir du passé. Par mesure de sécurité et d'intégrité, l'envoi de nouveaux messages est strictement bloqué sur toutes les archives du web.</span>`;
+      }
+      if (msgArea) {
+        msgArea.disabled = true;
+        msgArea.readOnly = true;
+        msgArea.setAttribute('disabled', 'disabled');
+        msgArea.setAttribute('readonly', 'readonly');
+        msgArea.placeholder = "L'envoi de messages est strictement bloqué sur les archives et copies du passé.";
+        msgArea.value = "";
+        msgArea.style.opacity = '0.65';
+        msgArea.style.cursor = 'not-allowed';
+      }
+      if (btnSendEl) {
+        btnSendEl.disabled = true;
+        btnSendEl.setAttribute('disabled', 'disabled');
+        btnSendEl.textContent = "Envoi bloqué sur les archives du web";
+        btnSendEl.style.pointerEvents = 'none';
+        btnSendEl.style.opacity = '0.4';
+      }
+      if (fileZone) {
+        fileZone.style.pointerEvents = 'none';
+        fileZone.style.opacity = '0.35';
       }
     } else {
       if (banner) banner.style.display = 'none';
@@ -1285,6 +1382,19 @@ document.addEventListener('DOMContentLoaded', () => {
         sendPanel.style.filter = '';
         sendPanel.style.opacity = '';
       }
+      if (tabInboxEl) {
+        tabInboxEl.disabled = false;
+        tabInboxEl.style.pointerEvents = '';
+        tabInboxEl.style.opacity = '';
+        tabInboxEl.removeAttribute('title');
+      }
+      if (btnFetchInboxEl) {
+        btnFetchInboxEl.disabled = false;
+        btnFetchInboxEl.style.pointerEvents = '';
+      }
+      if (inboxKeyInputEl) {
+        inboxKeyInputEl.disabled = false;
+      }
     }
   }
 
@@ -1311,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(checkMessagingState, 2500);
 
   window.addEventListener('storage', (e) => {
-    if (e.key === 'wg_site_state') {
+    if (e.key === 'wg_site_state' || e.key === 'wg_radical_site_state') {
       try {
         const state = JSON.parse(e.newValue);
         applyMessagingDisabledState(!!state.disableMessaging);
@@ -1331,14 +1441,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const msgContentArea = document.getElementById('msg-content');
   if (msgContentArea) {
     msgContentArea.addEventListener('click', () => {
-      const cached = localStorage.getItem('wg_site_state');
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          if (parsed.disableMessaging) {
-            alert("La messagerie est actuellement désactivée.\n\nLe créateur a préféré désactiver l'option temporairement.");
-          }
-        } catch(_) {}
+      if (isWebArchiveOrMirror()) {
+        alert("L'envoi de messages est bloqué sur les copies d'archives du web.");
+        return;
+      }
+      if (isCurrentMessagingDisabled()) {
+        alert("La messagerie est actuellement désactivée.\n\nLe créateur a préféré désactiver l'envoi et la lecture des messages temporairement.");
       }
     });
   }
@@ -1646,6 +1754,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const logReceipt = document.getElementById('log-receipt');
 
   btnSend.addEventListener('click', async () => {
+    if (isWebArchiveOrMirror()) {
+      alert("L'envoi de messages est strictement interdit et bloqué depuis une copie ou archive du passé.");
+      return;
+    }
+    if (isCurrentMessagingDisabled()) {
+      alert("La messagerie est actuellement désactivée par le créateur.");
+      return;
+    }
     const text = document.getElementById('msg-content').value.trim();
     if (!text && !encryptedFileData) {
       alert("Veuillez saisir un message ou sélectionner un fichier à transmettre.");
@@ -1758,6 +1874,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnFetchInbox.addEventListener('click', async () => {
+    if (isCurrentMessagingDisabled()) {
+      alert("La consultation des anciens messages est actuellement verrouillée par le créateur.");
+      return;
+    }
     const rawKey = inboxKeyInput.value.trim();
     if (!rawKey) {
       alert("Veuillez saisir votre clé privée (nsec1... ou hex 64 car.) pour déchiffrer vos messages.");

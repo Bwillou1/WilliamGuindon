@@ -177,9 +177,9 @@ L'assistant IA documentaire repose sur un Cloudflare Worker autonome ([`workers/
 - **Site web officiel & Formulaire sécurisé** : [https://williamguindon.me/#contact](https://williamguindon.me/#contact)
 - **Session (Messagerie anonyme & chiffrée)** : `05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072`
 - **Réseaux officiels** :
-  - LinkedIn : [in/william-guindon](https://ca.linkedin.com/in/william-guindon)
+  - LinkedIn : [william-guindon](https://www.linkedin.com/in/william-guindon/)
   - YouTube : [@william-guindon](https://www.youtube.com/@william-guindon)
-  - Facebook : [williamguindon](https://www.facebook.com/profile.php?id=61591437730054)
+  - Facebook : [williamguindon.officiel](https://www.facebook.com/williamguindon.officiel)
   - GitHub : [@Bwillou1](https://github.com/Bwillou1)
 
 ---

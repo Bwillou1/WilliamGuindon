@@ -1039,11 +1039,12 @@
       css.push('#google_translate_element, .nav-translate-dropdown, .goog-te-banner-frame, .goog-te-combo { display: none !important; }');
     }
     if (state.disableAI) {
-      css.push('#leafMenuContainer, .leaf-menu, .ai-mega-dropdown, #ai-nav-item, a[href*="ai.html"], a[href*="llms.txt"] { display: none !important; }');
+      css.push('#leafMenuContainer, .leaf-menu, .ai-mega-dropdown, #ai-nav-item, a[href*="ai.html"], a[href*="llms.txt"], .floating-ai-btn, .ai-modal-overlay { display: none !important; }');
     }
     if (state.disableMessaging) {
       css.push('#messaging-disabled-banner, .messaging-disabled-notice { display: flex !important; }');
-      css.push('#chat-app, .messenger-container, .chat-panel, .message-input-area, .chat-input-wrapper, .reply-form-card, #form-compose, .simple-intro-card, #view-send-panel, #view-inbox-panel, .msg-box-container { opacity: 0.55 !important; filter: grayscale(90%) !important; }');
+      css.push('#chat-app, .messenger-container, .chat-panel, .message-input-area, .chat-input-wrapper, .reply-form-card, #form-compose, .simple-intro-card, #view-send-panel, .msg-box-container { opacity: 0.55 !important; filter: grayscale(90%) !important; }');
+      css.push('#view-inbox-panel, #tab-btn-inbox, #btn-fetch-inbox, #inbox-list-container, #inbox-privkey, .inbox-guide-box, .floating-ai-btn, .ai-modal-overlay { display: none !important; }');
       css.push('#msg-content, .msg-textarea { pointer-events: none !important; cursor: not-allowed !important; user-select: none !important; background: rgba(239,68,68,0.06) !important; border-color: #ef4444 !important; opacity: 0.7 !important; }');
       css.push('#btn-send-message, #file-drop-area, #btn-apply-restored-key, #btn-toggle-restore-box, #btn-inbox-login, #btn-reply-send { pointer-events: none !important; cursor: not-allowed !important; opacity: 0.3 !important; }');
     }

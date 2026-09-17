@@ -6,6 +6,24 @@
 (function () {
   'use strict';
 
+  function isWebArchiveOrMirror() {
+    const host = (window.location.hostname || '').toLowerCase();
+    const allowed = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
+    const isArchiveDomain = host.includes('archive') || host.includes('wayback') || host.includes('webcache') || host.includes('ghostarchive') || host.includes('archive-it') || host.includes('replay') || host.includes('cachedview');
+    const isWaybackEnv = typeof window.__wm !== 'undefined' || typeof window._wb_js !== 'undefined' || typeof window.__wb_installed !== 'undefined' || window.location.pathname.includes('/web/19') || window.location.pathname.includes('/web/20');
+    return (!allowed.includes(host) && isArchiveDomain) || isWaybackEnv || isArchiveDomain;
+  }
+
+  function isChatBlockedByAdmin() {
+    try {
+      const radicalState = JSON.parse(localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state') || '{}');
+      if (radicalState.disableAI || radicalState.disableMessaging) return true;
+      const cachedState = JSON.parse(localStorage.getItem('wg_site_state') || '{}');
+      if (cachedState.disableAI || cachedState.disableMessaging) return true;
+    } catch (_) {}
+    return false;
+  }
+
   function initFloatingAiHub() {
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
@@ -14,12 +32,15 @@
     if (!floatingBtn) {
       floatingBtn = document.createElement('button');
       floatingBtn.className = 'floating-ai-btn';
-      floatingBtn.setAttribute('aria-label', 'Clavarder ou résumer avec l\'IA');
+      floatingBtn.setAttribute('aria-label', 'Clavarder avec l\'assistant documentaire IA');
+      floatingBtn.setAttribute('title', 'Clavarder avec l\'IA documentaire');
       floatingBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        </svg>
-        <span>Clavarder / IA</span>
+        <div class="ai-bubble-inner">
+          <svg class="ai-bubble-chat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+          <span class="ai-bubble-pulse" aria-hidden="true"></span>
+        </div>
       `;
       document.body.appendChild(floatingBtn);
     }
@@ -425,6 +446,14 @@ DIRECTIVES DE RÉPONSE :
       }
 
       async function sendChatMessage(text) {
+        if (isChatBlockedByAdmin()) {
+          alert("Le clavardage est actuellement verrouillé par l'administration.");
+          return;
+        }
+        if (isWebArchiveOrMirror()) {
+          alert("L'envoi de requêtes est bloqué sur les copies et archives du web.");
+          return;
+        }
         if (isBusy || !text || !text.trim()) return;
         const question = text.trim().slice(0, 400);
         if (!question) return;
@@ -614,9 +643,27 @@ DIRECTIVES DE RÉPONSE :
           });
         });
       }
+      if (isWebArchiveOrMirror()) {
+        const sendBtnEl = document.getElementById('ai-send-btn');
+        if (sendBtnEl) {
+          sendBtnEl.disabled = true;
+          sendBtnEl.textContent = 'Désactivé sur archive';
+          sendBtnEl.style.pointerEvents = 'none';
+          sendBtnEl.style.opacity = '0.4';
+        }
+        const userInputEl = document.getElementById('ai-user-input');
+        if (userInputEl) {
+          userInputEl.disabled = true;
+          userInputEl.placeholder = "L'envoi de requêtes est bloqué sur les copies et archives du web.";
+        }
+      }
     }
 
     function openChat(query) {
+      if (isChatBlockedByAdmin()) {
+        alert("Le clavardage est actuellement verrouillé par l'administration.");
+        return;
+      }
       initAiModal();
       if (!aiModal.classList.contains('active')) {
         aiModal.classList.add('active');
@@ -648,6 +695,39 @@ DIRECTIVES DE RÉPONSE :
       }
     }
 
+    function syncChatAvailability() {
+      const blocked = isChatBlockedByAdmin();
+      if (blocked) {
+        if (floatingBtn) floatingBtn.style.display = 'none';
+        if (aiModal && aiModal.classList.contains('active')) {
+          aiModal.classList.remove('active');
+          document.body.classList.remove('ai-sidebar-active');
+        }
+        const chatBox = document.getElementById('ai-chat-box');
+        if (chatBox) chatBox.innerHTML = '';
+        const sumOutput = document.getElementById('ai-summary-output');
+        if (sumOutput) sumOutput.innerHTML = '';
+      } else {
+        if (floatingBtn) floatingBtn.style.display = '';
+      }
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'wg_site_state' || e.key === 'wg_radical_site_state') {
+        syncChatAvailability();
+      }
+    });
+
+    try {
+      const ch1 = new BroadcastChannel('wg_site_state_sync');
+      ch1.onmessage = () => syncChatAvailability();
+      const ch2 = new BroadcastChannel('wg_site_state_channel');
+      ch2.onmessage = () => syncChatAvailability();
+    } catch (_) {}
+
+    syncChatAvailability();
+    setInterval(syncChatAvailability, 2500);
+
     window.openAiChat = openChat;
     window.closeAiChat = closeChat;
     window.toggleAiChat = toggleChat;
@@ -655,7 +735,7 @@ DIRECTIVES DE RÉPONSE :
     floatingBtn.addEventListener('click', toggleChat);
 
     document.addEventListener('click', (e) => {
-      const trigger = e.target.closest('[data-open-ai-chat], a[href="#ai-chat"], a[href="#chat-ai"], .js-trigger-ai-chat, .nav-ai-btn, .header-mobile-ai-btn');
+      const trigger = e.target.closest('[data-open-ai-chat], a[href="#ai-chat"], a[href="#chat-ai"], .js-trigger-ai-chat');
       if (trigger) {
         e.preventDefault();
         const q = trigger.getAttribute('data-ai-query') || '';
