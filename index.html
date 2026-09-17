@@ -1037,33 +1037,104 @@
 
   <!-- Initialisation du SDK JavaScript officiel de Meta Facebook -->
   <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v21.0"></script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_CA/sdk.js#xfbml=1&version=v21.0"></script>
 
-  <!-- Section Réseaux Sociaux : Dernières publications synchronisées automatiquement -->
+  <!-- Section Réseaux Sociaux : Actualités et publications officielles en direct -->
   <section id="dernier-post" class="social-sync-section" aria-label="Dernières publications de William Guindon sur les réseaux sociaux">
     <div class="wrap">
-      <h2>Dernières publications</h2>
-      <h3>Actualités en direct de nos comptes officiels</h3>
-      <div class="social-sync-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; align-items: flex-start; margin: 1.5rem 0;">
+      <div class="social-sync-header">
+        <h2>Dernières publications</h2>
+        <p class="social-sync-subtitle">Actualités et déclarations publiques en direct de nos comptes officiels</p>
+      </div>
+
+      <div class="social-sync-grid">
         <!-- Colonne Facebook -->
-        <div class="social-sync-card" style="flex: 1 1 350px; max-width: 550px; display: flex; flex-direction: column; align-items: center; width: 100%;">
-          <div class="fb-post-container" style="display:flex; justify-content:center; align-items:center; width:100%; min-height:200px;">
-            <div class="fb-post" data-href="https://www.facebook.com/williamguindon.officiel" data-width="550" data-show-text="true"></div> <!-- #FB_LATEST -->
+        <article class="social-card social-card-facebook">
+          <div class="social-card-top">
+            <div class="social-card-brand">
+              <span class="social-icon-box facebook-bg" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </span>
+              <div>
+                <h4 class="social-card-name">William Guindon — Page Officielle</h4>
+                <span class="social-card-meta">Facebook • Fil d'actualité en direct</span>
+              </div>
+            </div>
+            <span class="social-card-badge">Vérifié</span>
           </div>
-          <p style="text-align:center; font-size:0.9rem; opacity:0.85; margin-top:0.75rem;">
-            <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me external" style="color:var(--accent,#10b981); text-decoration:underline;">Consulter la page officielle sur Facebook ↗</a>
-          </p>
-        </div>
+
+          <div class="social-card-body fb-body-container">
+            <!-- Widget officiel Page Plugin Facebook (timeline active) -->
+            <div class="fb-page" 
+                 data-href="https://www.facebook.com/williamguindon.officiel" 
+                 data-tabs="timeline" 
+                 data-width="480" 
+                 data-height="500" 
+                 data-small-header="false" 
+                 data-adapt-container-width="true" 
+                 data-hide-cover="false" 
+                 data-show-facepile="true"> <!-- #FB_LATEST -->
+              <blockquote cite="https://www.facebook.com/williamguindon.officiel" class="fb-xfbml-parse-ignore">
+                <div class="social-fallback-content">
+                  <p>Chargement du fil d'actualités de la page Facebook officielle...</p>
+                  <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me external noopener noreferrer" class="social-direct-btn">Consulter la page officielle sur Facebook ↗</a>
+                </div>
+              </blockquote>
+            </div>
+          </div>
+
+          <div class="social-card-footer">
+            <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me external noopener noreferrer" class="social-footer-link">
+              <span>Consulter la page officielle sur Facebook</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
 
         <!-- Colonne LinkedIn -->
-        <div class="social-sync-card" style="flex: 1 1 350px; max-width: 550px; display: flex; flex-direction: column; align-items: center; width: 100%;">
-          <div class="li-post-container" style="display:flex; justify-content:center; align-items:center; width:100%; min-height:200px;">
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7200000000000000000" height="600" width="550" allowfullscreen="" title="Post LinkedIn" style="max-width:100%; border:none; border-radius:8px;"></iframe> <!-- #LI_LATEST -->
+        <article class="social-card social-card-linkedin">
+          <div class="social-card-top">
+            <div class="social-card-brand">
+              <span class="social-icon-box linkedin-bg" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </span>
+              <div>
+                <h4 class="social-card-name">William Guindon</h4>
+                <span class="social-card-meta">LinkedIn • Profil Professionnel &amp; Publications</span>
+              </div>
+            </div>
+            <span class="social-card-badge">Vérifié</span>
           </div>
-          <p style="text-align:center; font-size:0.9rem; opacity:0.85; margin-top:0.75rem;">
-            <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me external" style="color:var(--accent,#10b981); text-decoration:underline;">Consulter le profil officiel sur LinkedIn ↗</a>
-          </p>
-        </div>
+
+          <div class="social-card-body linkedin-body-container">
+            <div class="linkedin-preview-card">
+              <div class="linkedin-cover-banner"></div>
+              <div class="linkedin-profile-info">
+                <img src="assets/media/william-guindon.webp" alt="William Guindon" class="linkedin-avatar" width="76" height="76" loading="lazy">
+                <div class="linkedin-text-group">
+                  <h5 class="linkedin-name">William Guindon</h5>
+                  <p class="linkedin-headline">Militant écologiste • Auteur de la communication citoyenne SEM-26-003 (CCE / ACEUM)</p>
+                  <p class="linkedin-location">Laurentides, Québec, Canada</p>
+                </div>
+              </div>
+              <div class="linkedin-actions">
+                <a href="https://www.linkedin.com/in/william-guindon/recent-activity/all/" target="_blank" rel="me external noopener noreferrer" class="social-direct-btn linkedin-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  <span>Voir les publications récentes ↗</span>
+                </a>
+              </div>
+            </div>
+            <!-- Conteneur réservé pour mise à jour automatique d'activité -->
+            <div id="li-embed-target" style="display:none;"><!-- #LI_LATEST --></div>
+          </div>
+
+          <div class="social-card-footer">
+            <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me external noopener noreferrer" class="social-footer-link">
+              <span>Consulter le profil officiel sur LinkedIn</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
