@@ -5,18 +5,24 @@
 <script src="assets/js/security-guard.js" defer></script>
 <script src="assets/js/theme-core.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
 
-<title>Studio Éditeur Visuel Sécurisé — William Guindon</title>
+<!-- CSP compatible GrapesJS et Cloudflare/GitHub Pages -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://unpkg.com; style-src-elem 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https://williamguindon.me https://unpkg.com; font-src 'self' data: https://unpkg.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://unpkg.com; frame-src 'self' blob:; object-src 'none';">
+
+<title>Studio Éditeur Visuel GrapesJS — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#064e3b">
+
+<!-- GrapesJS Stylesheets -->
+<link rel="stylesheet" href="https://unpkg.com/grapesjs@0.23.6/dist/css/grapes.min.css">
+<link rel="stylesheet" href="https://unpkg.com/grapesjs-preset-webpage@1.0.3/dist/grapesjs-preset-webpage.min.css">
 
 <style>
   :root {
     --bg-dark: #090d0a;
     --bg-panel: #111813;
+    --bg-subtle: #16201a;
     --border: #1f2922;
     --accent: #22c55e;
     --accent-hover: #16a34a;
@@ -24,11 +30,13 @@
     --text-muted: #9bb0a2;
     --danger: #ef4444;
   }
+
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
+
   body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg-dark);
@@ -41,7 +49,7 @@
 
   /* Barre d'outils supérieure */
   .editor-topbar {
-    height: 58px;
+    height: 56px;
     background: var(--bg-panel);
     border-bottom: 1px solid var(--border);
     display: flex;
@@ -49,252 +57,183 @@
     justify-content: space-between;
     padding: 0 16px;
     z-index: 100;
+    gap: 12px;
   }
+
   .topbar-left, .topbar-center, .topbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
+
   .brand-badge {
     font-weight: 800;
-    font-size: 15px;
+    font-size: 14px;
     color: #ffffff;
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
   }
+
   .brand-badge span {
     color: var(--accent);
   }
+
   .status-badge {
-    font-size: 12px;
+    font-size: 11px;
     padding: 3px 8px;
     border-radius: 9999px;
     background: rgba(34, 197, 94, 0.15);
     color: var(--accent);
     border: 1px solid rgba(34, 197, 94, 0.3);
+    white-space: nowrap;
   }
-  .status-badge.locked {
+
+  .status-badge.unauth {
     background: rgba(239, 68, 68, 0.15);
     color: #ef4444;
     border-color: rgba(239, 68, 68, 0.3);
   }
 
-  /* Sélecteur d'affichage (Desktop, Tablet, Mobile) */
-  .device-switcher {
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
-    display: flex;
-    gap: 2px;
-  }
-  .device-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
+  /* Sélecteur de page */
+  .page-select-wrapper {
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.2s;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px 8px;
   }
-  .device-btn.active, .device-btn:hover {
-    background: var(--border);
-    color: #ffffff;
+
+  .page-select-wrapper label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .page-select {
+    background: transparent;
+    color: var(--text);
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .page-select option {
+    background: var(--bg-panel);
+    color: var(--text);
   }
 
   /* Boutons d'action */
   .btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--bg-dark);
+    background: var(--bg-subtle);
     color: var(--text);
-    transition: all 0.2s;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    transition: all 0.15s ease;
     text-decoration: none;
   }
+
   .btn:hover {
     background: var(--border);
-  }
-  .btn-save {
-    background: var(--accent);
-    color: #042f2e;
     border-color: var(--accent);
+    color: #ffffff;
   }
-  .btn-save:hover {
-    background: #4ade80;
-    color: #042f2e;
+
+  .btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #059669;
+    color: #ffffff;
+    box-shadow: 0 1px 4px rgba(16, 185, 129, 0.25);
   }
-  .btn-save:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    border-color: #047857;
   }
+
   .btn-danger {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
     border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
   }
+
   .btn-danger:hover {
-    background: #ef4444;
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
     color: #ffffff;
   }
 
-  /* Zone de travail principale */
-  .editor-workspace {
-    flex: 1;
-    display: flex;
-    height: calc(100vh - 58px);
-    overflow: hidden;
-    position: relative;
+  .btn-icon-only {
+    padding: 6px 8px;
   }
 
-  /* Panneau latéral des sections */
-  .editor-sidebar {
-    width: 310px;
-    background: var(--bg-panel);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    transition: width 0.3s ease;
-  }
-  .sidebar-header {
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .section-list {
+  /* Zone GrapesJS */
+  #gjs-wrapper {
     flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .section-item {
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: border-color 0.2s;
-  }
-  .section-item:hover {
-    border-color: var(--accent);
-  }
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    max-width: 170px;
-    white-space: nowrap;
+    position: relative;
     overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .section-controls {
-    display: flex;
-    gap: 4px;
-  }
-  .control-btn {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    width: 26px;
-    height: 26px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: bold;
-    transition: all 0.15s;
-  }
-  .control-btn:hover {
-    background: var(--border);
-    color: #ffffff;
+    height: calc(100vh - 56px);
   }
 
-  /* Zone de prévisualisation Iframe */
-  .preview-wrapper {
-    flex: 1;
-    background: #000000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
-    overflow: hidden;
-    position: relative;
-  }
-  .preview-frame-container {
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    transition: width 0.3s ease, border-radius 0.3s ease;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: #ffffff;
-    position: relative;
-  }
-  .preview-frame-container.tablet {
-    width: 768px;
-    border: 8px solid var(--border);
-    border-radius: 16px;
-  }
-  .preview-frame-container.mobile {
-    width: 380px;
-    border: 10px solid var(--border);
-    border-radius: 24px;
-  }
-  #site-preview-iframe {
-    width: 100%;
-    height: 100%;
+  #gjs {
+    height: 100% !important;
     border: none;
-    display: block;
   }
 
-  /* Notifications */
-  .editor-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #042f2e;
-    border: 2px solid var(--accent);
-    color: #ffffff;
-    padding: 14px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-    display: none;
-    z-index: 1000;
-    animation: slideUp 0.25s ease;
+  /* Thème personnalisé pour l'interface GrapesJS */
+  .gjs-one-bg {
+    background-color: var(--bg-panel) !important;
   }
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  .gjs-two-color {
+    color: var(--text-muted) !important;
+  }
+  .gjs-three-bg {
+    background-color: var(--bg-dark) !important;
+    color: var(--accent) !important;
+  }
+  .gjs-four-color, .gjs-four-color-h:hover {
+    color: var(--accent) !important;
+  }
+  .gjs-cv-canvas {
+    background-color: #050705 !important;
+  }
+  .gjs-block {
+    background-color: var(--bg-subtle) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+  }
+  .gjs-block:hover {
+    border-color: var(--accent) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15) !important;
+  }
+  .gjs-pn-btn {
+    border-radius: 6px !important;
+    margin: 2px !important;
+  }
+  .gjs-pn-btn.gjs-pn-active {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
   }
 
-  /* ==================================================== */
-  /* ÉCRAN DE VERROUILLAGE TOTAL DU STUDIO                */
-  /* ==================================================== */
+  /* Écran de verrouillage / Authentification */
   .editor-lock-screen {
     position: fixed;
     top: 0;
@@ -302,266 +241,227 @@
     width: 100vw;
     height: 100vh;
     background: rgba(9, 13, 10, 0.96);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999999;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
   }
+
   .editor-lock-screen.unlocked {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    display: none;
   }
+
   .lock-card {
     background: var(--bg-panel);
-    border: 2px solid var(--border);
-    border-radius: 18px;
-    padding: 36px 32px;
-    max-width: 520px;
-    width: 90%;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border);
     text-align: center;
   }
-  .lock-icon-wrap {
-    width: 64px;
-    height: 64px;
+
+  .lock-icon {
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: rgba(34, 197, 94, 0.12);
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(34, 197, 94, 0.3);
     color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    margin: 0 auto 16px auto;
+    margin: 0 auto 16px;
+    font-size: 22px;
   }
-  .lock-title {
-    font-size: 1.45rem;
+
+  .lock-card h1 {
+    font-size: 19px;
     font-weight: 800;
     color: #ffffff;
     margin-bottom: 8px;
   }
-  .lock-subtitle {
+
+  .lock-card p {
+    font-size: 13px;
     color: var(--text-muted);
-    font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.5;
     margin-bottom: 24px;
   }
-  .lock-field-group {
-    text-align: left;
+
+  .lock-input-group {
     margin-bottom: 16px;
+    text-align: left;
   }
-  .lock-label {
+
+  .lock-input-group label {
     display: block;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
     margin-bottom: 6px;
-    letter-spacing: 0.2px;
   }
+
   .lock-input {
     width: 100%;
-    padding: 11px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
     background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
     color: var(--text);
-    font-size: 14px;
+    font-size: 13px;
+    font-family: monospace;
+    outline: none;
     transition: border-color 0.2s;
   }
+
   .lock-input:focus {
-    outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
   }
-  .lock-btn-submit {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    margin-top: 8px;
-    justify-content: center;
-  }
+
   .lock-error-box {
-    display: none;
-    margin-top: 14px;
-    padding: 10px 14px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    padding: 10px;
     border-radius: 8px;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid #ef4444;
-    color: #fca5a5;
-    font-size: 13px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    display: none;
     text-align: left;
-    line-height: 1.45;
   }
-  .lock-footer-links {
+
+  .lock-passkey-box {
     margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: none;
   }
-  .lock-footer-links a, .lock-footer-links button {
-    color: var(--text-muted);
-    text-decoration: underline;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-  }
-  .lock-footer-links a:hover, .lock-footer-links button:hover {
+
+  /* Toasts */
+  .editor-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--bg-panel);
+    border: 1px solid var(--accent);
     color: #ffffff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: none;
+    animation: toast-in 0.25s ease-out;
+  }
+
+  @keyframes toast-in {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 </style>
 </head>
+
 <body>
 
-<!-- ÉCRAN DE VERROUILLAGE TOTAL : Bloque toute visualisation et modification -->
+<!-- Barre d'outils supérieure -->
+<header class="editor-topbar">
+  <div class="topbar-left">
+    <div class="brand-badge">
+      <span>🌿</span> William Guindon · <strong>GrapesJS Studio</strong>
+    </div>
+    <span class="status-badge" id="auth-status-indicator">🔒 Accès Restreint</span>
+  </div>
+
+  <div class="topbar-center">
+    <!-- Sélecteur de page du site -->
+    <div class="page-select-wrapper">
+      <label for="page-select">Page :</label>
+      <select id="page-select" class="page-select">
+        <option value="index.html" selected>index.html (Accueil &amp; Déclaration)</option>
+        <option value="communiques.html">communiques.html (Communiqués Officiels)</option>
+        <option value="deontologie.html">deontologie.html (Charte de Déontologie)</option>
+        <option value="independance.html">independance.html (Déclaration d'Indépendance)</option>
+        <option value="registre-cce-sem26003.html">registre-cce-sem26003.html (Registre CCE)</option>
+        <option value="stablex.html">stablex.html (Dossier Stablex)</option>
+        <option value="enquete-partis.html">enquete-partis.html (Enquête Partis)</option>
+        <option value="politiques.html">politiques.html (Politiques Éditoriales)</option>
+        <option value="canevas-vierge">Page Vierge (Nouveau modèle)</option>
+      </select>
+    </div>
+    <button type="button" class="btn" id="btn-load-page" title="Charger cette page dans l'éditeur">↻ Charger</button>
+  </div>
+
+  <div class="topbar-right">
+    <button type="button" class="btn btn-icon-only" id="btn-undo" title="Annuler (Ctrl+Z)">↶</button>
+    <button type="button" class="btn btn-icon-only" id="btn-redo" title="Rétablir (Ctrl+Y)">↷</button>
+    <button type="button" class="btn" id="btn-toggle-preview" title="Basculer l'aperçu plein écran">👁️ Aperçu</button>
+    <button type="button" class="btn" id="btn-view-code" title="Consulter ou exporter le code HTML/CSS">💻 Code</button>
+    <button type="button" class="btn" id="btn-download-html" title="Télécharger le fichier HTML complet">📥 Exporter</button>
+    <button type="button" class="btn btn-primary" id="btn-save-github" title="Publier directement les modifications sur GitHub">
+      <span>💾</span> <span id="btn-save-text">Publier sur GitHub</span>
+    </button>
+    <button type="button" class="btn btn-danger btn-icon-only" id="btn-lock" title="Verrouiller la session">🔒</button>
+  </div>
+</header>
+
+<!-- Zone GrapesJS -->
+<main id="gjs-wrapper">
+  <div id="gjs"></div>
+</main>
+
+<!-- Écran de verrouillage / Authentification -->
 <div class="editor-lock-screen" id="editor-lock-screen">
   <div class="lock-card">
-    <!-- Encart d'information Cloudflare Access -->
-    <div class="cf-access-notice" style="margin-bottom:16px; padding:10px 14px; border-radius:8px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px; text-align:left;">
-      <svg class="svg-icon" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--accent);fill:none;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-      <span><strong>Accès protégé par Cloudflare Access.</strong> L'ancien mot de passe maître est supprimé.</span>
-    </div>
+    <div class="lock-icon">🔒</div>
+    <h1>Studio GrapesJS — William Guindon</h1>
+    <p>Éditeur visuel professionnel avec intégration directe au dépôt GitHub <strong>Bwillou1/WilliamGuindon</strong>. Authentification requise pour publier.</p>
 
-    <div class="lock-icon-wrap" id="lock-icon" style="display:flex;align-items:center;justify-content:center;"><svg class="svg-icon" viewBox="0 0 24 24" style="width:32px;height:32px;stroke:currentColor;fill:none;stroke-width:2;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-    <h1 class="lock-title">Studio Éditeur Visuel</h1>
-    <p class="lock-subtitle">
-      Veuillez entrer votre <strong>clé d'authentification GitHub</strong> (@Bwillou1) pour déverrouiller la visualisation et la publication.
-      <span style="display:block; font-size:12px; color:var(--text-muted); margin-top:8px; line-height:1.4;">Stockage sécurisé non-persistant : la clé est conservée en mémoire de session (sessionStorage) et purgée dès la fermeture de l'onglet.</span>
-    </p>
+    <div class="lock-error-box" id="lock-error-box"></div>
 
-    <!-- Formulaire d'authentification complète -->
-    <form id="lock-auth-form" onsubmit="handleLockAuthSubmit(event)">
-      <div class="lock-field-group">
-        <label class="lock-label" for="lock-token-input">Clé d'authentification GitHub (PAT avec droit "repo") :</label>
-        <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off" required>
+    <form id="lock-auth-form">
+      <div class="lock-input-group">
+        <label for="lock-token-input">Clé GitHub PAT (Personal Access Token) :</label>
+        <input type="password" id="lock-token-input" class="lock-input" placeholder="ghp_... ou github_pat_..." autocomplete="off">
       </div>
-
-      <button type="submit" class="btn btn-save lock-btn-submit" id="btn-lock-submit" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;">
-        <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg><span id="btn-lock-submit-txt">Déverrouiller l'Éditeur Visuel</span>
+      <button type="submit" class="btn btn-primary" id="btn-lock-submit" style="width:100%; justify-content:center; padding:10px;">
+        Déverrouiller le Studio GrapesJS
       </button>
-
-      <div id="lock-passkey-container" style="display:none; margin-top:12px;">
-        <button type="button" class="btn" style="width:100%; justify-content:center; padding:10px; background:rgba(34,197,94,0.1); border-color:var(--accent); color:var(--accent); display:inline-flex; align-items:center; gap:8px;" id="btn-unlock-passkey">
-          <svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4M5 19.5C6.5 21 9 22 12 22c3 0 5.5-1 7-2.5M12 6a6 6 0 0 0-6 6c0 3 1.5 5 3 6M12 10a2 2 0 0 0-2 2c0 2 1 3 2 3s2-1 2-3a2 2 0 0 0-2-2"></path></svg>Déverrouiller avec Touch ID / Face ID
-        </button>
-      </div>
-
-      <div class="lock-error-box" id="lock-error-box"></div>
     </form>
 
-    <div class="lock-footer-links">
-      <a href="index.html">← Retour au site public</a>
-      <a href="admin.html">Espace Admin Rédaction →</a>
+    <div class="lock-passkey-box" id="lock-passkey-container">
+      <button type="button" class="btn" id="btn-unlock-passkey" style="width:100%; justify-content:center;">
+        🔑 Déverrouiller via Touch ID / Face ID
+      </button>
     </div>
   </div>
 </div>
 
-<div id="editor-root"></div>
-
-<!-- Gabarit de l'éditeur : Injecté uniquement APRÈS authentification 2FA réussie -->
-<template id="editor-workspace-tmpl">
-  <header class="editor-topbar">
-    <div class="topbar-left">
-      <div class="brand-badge">
-        <span>Studio Wix-Style</span> · William Guindon
-      </div>
-      <span class="status-badge" id="live-indicator">● Mode Visuel Actif</span>
-    </div>
-
-    <div class="topbar-center">
-      <div class="device-switcher">
-        <button type="button" class="device-btn active" data-mode="desktop"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>PC</button>
-        <button type="button" class="device-btn" data-mode="tablet"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Tablette</button>
-        <button type="button" class="device-btn" data-mode="mobile"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>Mobile</button>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <a href="admin.html" class="btn" title="Aller à la rédaction Blog & Photos">Retour Admin</a>
-      <button type="button" class="btn" id="btn-toggle-edit" title="Activer/Désactiver l'édition directe"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span id="btn-toggle-edit-txt">Édition : Activée</span></button>
-      <button type="button" class="btn btn-save" id="btn-save-site"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span id="btn-save-txt">Sauvegarder & Publier en direct</span></button>
-      <button type="button" class="btn btn-danger" id="btn-lock-studio" title="Verrouiller le studio et effacer le token"><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Déconnexion / Effacer le token</button>
-    </div>
-  </header>
-
-  <div class="editor-workspace">
-    <!-- Panneau latéral des sections -->
-    <aside class="editor-sidebar">
-      <div class="sidebar-header">
-        <span><svg class="svg-icon" viewBox="0 0 24 24" style="margin-right:5px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>Sections de la page d'accueil</span>
-        <span style="font-size:11px; color:var(--text-muted);">Réorganiser</span>
-      </div>
-      <div class="section-list" id="sidebar-sections-list">
-        <!-- Rempli dynamiquement -->
-      </div>
-      <div style="padding:14px; border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
-        <strong>Astuce :</strong> Vous pouvez cliquer directement sur n'importe quel texte dans la page à droite pour le modifier en direct !
-      </div>
-    </aside>
-
-    <!-- Prévisualisation interactive -->
-    <main class="preview-wrapper">
-      <div class="preview-frame-container" id="frame-container">
-        <iframe id="site-preview-iframe" title="Aperçu du site"></iframe>
-      </div>
-    </main>
-  </div>
-</template>
-
+<!-- Notification Toast -->
 <div class="editor-toast" id="editor-toast"></div>
+
+<!-- Scripts GrapesJS et Preset Webpage -->
+<script src="https://unpkg.com/grapesjs@0.23.6/dist/grapes.min.js"></script>
+<script src="https://unpkg.com/grapesjs-preset-webpage@1.0.3/dist/index.js"></script>
 
 <script>
 (() => {
+  'use strict';
+
   const GITHUB_REPO = "Bwillou1/WilliamGuindon";
   const GITHUB_API = "https://api.github.com";
 
-  let isEditModeActive = true;
+  let editorInstance = null;
   let isAuthenticated = false;
   let currentAuthToken = "";
+  let currentPageSha = null;
 
   function getToken() {
-    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || "";
-  }
-
-  // Validation stricte du jeton GitHub
-  async function validateGitHubToken(token) {
-    const cleanToken = (token || "").trim();
-    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
-      throw new Error("Format de clé GitHub invalide (doit commencer par ghp_ ou github_pat_)");
-    }
-    const userRes = await fetch(`${GITHUB_API}/user`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide, expirée ou révoquée.");
-    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
-    const userData = await userRes.json();
-    if ((userData.login || "").toLowerCase() !== "bwillou1") {
-      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
-    }
-
-    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
-      headers: {
-        "Authorization": "Bearer " + cleanToken,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    if (repoRes.ok) {
-      const repoData = await repoRes.json();
-      if (!repoData.permissions || !repoData.permissions.push) {
-        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
-      }
-    }
-
-    currentAuthToken = cleanToken;
-    return userData;
+    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || localStorage.getItem("wg_github_pat") || "";
   }
 
   function showToast(msg, isSuccess = true) {
@@ -573,165 +473,234 @@
     setTimeout(() => { toast.style.display = "none"; }, 5000);
   }
 
-  function setDeviceMode(mode) {
-    document.querySelectorAll(".device-btn").forEach(b => b.classList.remove("active"));
-    const activeBtn = document.querySelector(`.device-btn[data-mode="${mode}"]`);
-    if (activeBtn) activeBtn.classList.add("active");
-    const container = document.getElementById("frame-container");
-    if (container) {
-      container.className = "preview-frame-container " + (mode === "desktop" ? "" : mode);
+  // Validation stricte du jeton GitHub
+  async function validateGitHubToken(token) {
+    const cleanToken = (token || "").trim();
+    if (!cleanToken || (!cleanToken.startsWith("ghp_") && !cleanToken.startsWith("github_pat_"))) {
+      throw new Error("Format de clé GitHub invalide (doit commencer par ghp_ ou github_pat_)");
     }
-  }
 
-  function enableContentEditing(doc) {
-    if (!isAuthenticated || !doc) return;
-    const editables = doc.querySelectorAll("h1, h2, h3, h4, h5, p, .lead, blockquote, .btn, .kicker, .fact-val, time");
-    editables.forEach(el => {
-      el.setAttribute("contenteditable", isEditModeActive ? "true" : "false");
-      el.setAttribute("spellcheck", "false");
+    const userRes = await fetch(`${GITHUB_API}/user`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
     });
-  }
 
-  function moveSection(secId, direction) {
-    if (!isAuthenticated || !secId) return;
-    const iframe = document.getElementById("site-preview-iframe");
-    if (!iframe) return;
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const target = doc.getElementById(secId);
-    if (!target) return;
+    if (userRes.status === 401) throw new Error("Clé refusée par GitHub : invalide ou révoquée.");
+    if (!userRes.ok) throw new Error("Erreur de connexion à GitHub (" + userRes.status + ")");
 
-    if (direction === -1 && target.previousElementSibling && target.previousElementSibling.tagName === "SECTION") {
-      target.parentNode.insertBefore(target, target.previousElementSibling);
-    } else if (direction === 1 && target.nextElementSibling && target.nextElementSibling.tagName === "SECTION") {
-      target.parentNode.insertBefore(target.nextElementSibling, target);
+    const userData = await userRes.json();
+    if ((userData.login || "").toLowerCase() !== "bwillou1") {
+      throw new Error(`Accès refusé : la clé appartient à @${userData.login}. Seul @Bwillou1 est autorisé.`);
     }
-    buildSidebarSections(doc);
-    showToast("Ordre de la section mis à jour !");
-  }
 
-  function toggleSectionVisibility(secId) {
-    if (!isAuthenticated || !secId) return;
-    const iframe = document.getElementById("site-preview-iframe");
-    if (!iframe) return;
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    const target = doc.getElementById(secId);
-    if (!target) return;
-
-    if (target.style.display === "none") {
-      target.style.display = "";
-      showToast("Section réaffichée !");
-    } else {
-      target.style.display = "none";
-      showToast("Section masquée !");
-    }
-    buildSidebarSections(doc);
-  }
-
-  function buildSidebarSections(doc) {
-    const container = document.getElementById("sidebar-sections-list");
-    if (!container) return;
-    container.replaceChildren();
-
-    const sections = doc.querySelectorAll("main section, header.site");
-    sections.forEach((sec, index) => {
-      const id = sec.id || (sec.tagName.toLowerCase() === "header" ? "En-tête Navigation" : "Section " + (index + 1));
-      let title = id;
-      const h2 = sec.querySelector("h1, h2, h3");
-      if (h2) title = h2.textContent.trim().substring(0, 22) + "...";
-
-      const item = document.createElement("div");
-      item.className = "section-item";
-
-      const titleDiv = document.createElement("div");
-      titleDiv.className = "section-title";
-      titleDiv.title = id;
-      titleDiv.textContent = title;
-
-      const controlsDiv = document.createElement("div");
-      controlsDiv.className = "section-controls";
-
-      const btnUp = document.createElement("button");
-      btnUp.className = "control-btn";
-      btnUp.title = "Monter";
-      btnUp.textContent = "▲";
-      btnUp.addEventListener("click", () => moveSection(sec.id, -1));
-
-      const btnDown = document.createElement("button");
-      btnDown.className = "control-btn";
-      btnDown.title = "Descendre";
-      btnDown.textContent = "▼";
-      btnDown.addEventListener("click", () => moveSection(sec.id, 1));
-
-      const btnVis = document.createElement("button");
-      btnVis.className = "control-btn";
-      btnVis.title = "Afficher/Masquer";
-      btnVis.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-      btnVis.addEventListener("click", () => toggleSectionVisibility(sec.id));
-
-      controlsDiv.append(btnUp, btnDown, btnVis);
-      item.append(titleDiv, controlsDiv);
-      container.appendChild(item);
+    const repoRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}`, {
+      headers: {
+        "Authorization": "Bearer " + cleanToken,
+        "Accept": "application/vnd.github.v3+json"
+      }
     });
+
+    if (repoRes.ok) {
+      const repoData = await repoRes.json();
+      if (!repoData.permissions || !repoData.permissions.push) {
+        throw new Error("Ce jeton n'a pas les droits d'écriture sur le dépôt.");
+      }
+    }
+
+    currentAuthToken = cleanToken;
+    return userData;
   }
 
-  function toggleEditMode() {
-    if (!isAuthenticated) return;
-    isEditModeActive = !isEditModeActive;
-    const btnTxt = document.getElementById("btn-toggle-edit-txt");
-    const btn = document.getElementById("btn-toggle-edit");
-    if (btnTxt) {
-      btnTxt.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
-    } else if (btn) {
-      btn.textContent = isEditModeActive ? "Édition : Activée" : "Aperçu seul";
-    }
-    if (btn) btn.style.color = isEditModeActive ? "var(--accent)" : "var(--text-muted)";
+  // Initialisation du constructeur GrapesJS
+  function initGrapesEditor() {
+    if (editorInstance) return editorInstance;
 
-    const iframe = document.getElementById("site-preview-iframe");
-    if (iframe) {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      enableContentEditing(doc);
+    // Enregistrement du plugin webpage s'il est exposé globalement
+    const webpagePlugin = window['grapesjs-preset-webpage'];
+    if (typeof webpagePlugin === 'function' && grapesjs.plugins) {
+      try {
+        grapesjs.plugins.add('grapesjs-preset-webpage', webpagePlugin);
+      } catch (_) {}
     }
-    showToast(isEditModeActive ? "Mode édition activé : cliquez sur les textes pour éditer" : "Mode aperçu activé");
+
+    editorInstance = grapesjs.init({
+      container: '#gjs',
+      height: 'calc(100vh - 56px)',
+      width: 'auto',
+      storageManager: false,
+      panels: { defaults: [] },
+      plugins: ['grapesjs-preset-webpage'],
+      pluginsOpts: {
+        'grapesjs-preset-webpage': {
+          modalImportTitle: 'Importer du code HTML/CSS',
+          modalImportButtonText: 'Importer dans le canevas',
+          modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Collez votre code HTML/CSS ci-dessous :</div>',
+          importViewerOptions: {
+            theme: 'hopscotch',
+            readOnly: false
+          },
+          textCleanCanvas: 'Êtes-vous certain de vouloir vider tout le canevas ?',
+          blocks: ['link-block', 'quote', 'text-basic'],
+          customStyleManager: []
+        }
+      },
+      canvas: {
+        styles: [
+          'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap',
+          'style.css'
+        ]
+      }
+    });
+
+    // Enregistrement des Blocs Signature & Éléments Officiels de William Guindon
+    const bm = editorInstance.BlockManager;
+
+    bm.add('wg-signature-official', {
+      label: `<div><span style="font-size:18px;">✍️</span><br><strong>Signature Officielle</strong></div>`,
+      category: 'William Guindon Officiel',
+      attributes: { class: 'gjs-fonts gjs-f-b1' },
+      content: `
+        <div class="signature-block" style="display:flex; flex-direction:column; align-items:flex-end; margin:32px 0;">
+          <div class="signature-draw-box is-signed" style="position:relative; width:190px; height:107px;">
+            <svg class="signature-svg-animated is-signed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 338" width="190" height="107" preserveAspectRatio="xMidYMid meet" aria-hidden="true" role="img" style="display:block; color:#10b981; fill:currentColor;">
+              <g transform="translate(0,338) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                <path d="M2804 3359 c-16 -26 34 -75 186 -184 150 -107 400 -298 396 -303 -3 -2 -61 1 -128 7 -68 7 -211 18 -319 25 l-196 12 -154 86 c-315 176 -514 249 -557 206 -35 -35 1 -72 188 -194 l135 -89 -210 -6 c-312 -10 -753 -57 -1215 -130 -500 -79 -828 -199 -895 -330 -68 -131 63 -272 585 -630 107 -73 278 -191 380 -261 102 -70 277 -190 390 -267 113 -77 273 -187 355 -245 83 -58 315 -217 516 -355 201 -137 434 -299 517 -360 304 -223 478 -331 535 -331 83 0 66 76 -59 271 -247 384 -323 487 -457 621 -48 48 -82 88 -74 88 29 0 404 -249 602 -400 111 -85 297 -212 382 -264 18 -10 53 11 53 32 0 9 -102 118 -227 240 -146 143 -214 216 -188 201 49 -28 371 -243 560 -375 266 -185 383 -247 424 -225 38 21 21 86 -50 185 -26 35 -185 210 -401 441 -31 33 -55 62 -52 64 6 6 274 -158 399 -244 554 -383 748 -505 798 -505 84 1 64 93 -57 253 -73 98 -347 376 -466 474 -140 114 -192 156 -246 195 -28 21 -90 78 -137 129 -47 50 -91 88 -96 84 -18 -10 -13 -37 12 -63 21 -23 18 -23 -41 7 -72 36 -210 91 -229 91 -21 0 -27 -48 -9 -75 42 -64 163 -172 526 -471 379 -312 402 -328 438 -292 25 25 9 54 -90 162 -56 61 -120 131 -142 155 l-41 45 60 -51 c187 -159 488 -504 462 -529 -5 -5 -397 254 -575 380 -235 167 -486 314 -607 356 -57 20 -95 12 -95 -18 0 -29 23 -57 241 -292 236 -254 332 -371 317 -385 -5 -5 -198 122 -393 259 -309 217 -578 387 -673 423 -51 19 -75 11 -80 -29 -2 -19 16 -41 95 -113 54 -49 130 -121 168 -159 l70 -70 -80 61 c-249 188 -651 424 -747 439 -31 5 -38 3 -48 -17 -12 -21 -3 -32 158 -188 207 -202 296 -310 419 -511 22 -36 64 -105 95 -155 57 -94 84 -155 68 -155 -15 0 -269 167 -430 283 -142 101 -372 257 -695 470 -88 58 -236 159 -330 224 -266 186 -539 379 -670 473 -66 47 -248 173 -405 280 -157 106 -331 227 -388 267 -126 91 -267 223 -293 275 l-20 39 22 39 c64 114 375 223 854 300 532 85 896 125 1267 136 l218 7 62 -39 c116 -71 452 -306 578 -404 218 -169 311 -248 480 -405 227 -211 246 -233 130 -151 -484 341 -679 437 -680 335 0 -21 82 -104 255 -259 77 -68 169 -152 205 -186 161 -152 233 -212 248 -207 11 5 5 15 -26 42 -22 20 -166 152 -320 294 -245 225 -307 287 -286 287 14 0 118 -59 189 -108 323 -224 604 -431 795 -586 103 -83 105 -84 124 -66 14 14 17 24 10 38 -12 25 -546 545 -709 691 -258 231 -534 445 -866 673 l-54 38 55 0 c30 0 72 -4 93 -9 68 -16 485 -274 997 -617 368 -245 506 -324 571 -324 64 0 76 45 33 126 -70 131 -356 437 -612 653 -171 145 -148 148 51 8 56 -40 174 -120 262 -177 281 -183 396 -229 445 -180 19 19 21 30 17 68 -5 50 -54 126 -184 289 -40 51 -73 94 -73 97 0 5 34 11 112 20 46 5 47 5 165 -86 657 -510 697 -538 769 -538 44 0 57 20 52 80 l-5 49 87 -92 c189 -200 501 -564 572 -667 l17 -25 0 42 c1 39 -7 52 -86 150 -117 146 -324 381 -522 593 -90 96 -183 198 -207 225 -23 28 -96 113 -162 190 -197 231 -545 552 -590 543 -8 -2 -20 -11 -26 -21 -9 -15 4 -33 99 -124 400 -388 509 -500 584 -599 76 -103 141 -209 141 -233 0 -9 -5 -9 -21 0 -22 11 -609 451 -664 497 l-30 25 68 -7 c56 -6 68 -5 73 8 13 35 -14 46 -115 46 l-97 0 -109 81 c-245 182 -489 331 -571 349 -44 10 -72 -9 -59 -38 6 -11 95 -107 198 -214 l189 -193 -128 -3 c-70 -1 -171 1 -223 6 l-96 9 -280 185 c-154 101 -320 210 -370 241 -88 55 -169 84 -181 66z m1176 -252 c144 -96 329 -230 330 -239 0 -5 -35 -8 -78 -8 l-77 0 -175 176 c-188 189 -188 196 0 71z m-1739 2 c41 -17 139 -65 219 -108 l144 -76 -63 -3 -64 -3 -154 102 c-138 92 -174 119 -160 119 3 0 38 -14 78 -31z m1258 -235 c14 -12 -19 -1 -35 12 -18 14 -18 14 6 3 14 -6 27 -13 29 -15z m-414 -43 c61 -6 172 -13 249 -17 l138 -7 121 -101 c156 -130 385 -352 499 -485 88 -101 158 -199 158 -221 0 -25 -149 63 -545 325 -240 158 -620 396 -757 474 -32 18 -58 34 -58 37 0 7 76 5 195 -5z m1155 -172 c106 -141 175 -252 160 -257 -16 -6 -117 44 -225 110 -102 63 -392 253 -410 269 -5 6 70 8 185 7 l195 -3 95 -126z m-108 -1583 c68 -44 206 -191 263 -280 19 -28 -389 286 -490 379 l-50 46 112 -56 c62 -30 136 -70 165 -89z"/>
+                <path d="M4324 2742 c-6 -4 -13 -15 -17 -24 -7 -21 12 -37 313 -258 229 -168 574 -439 845 -665 262 -218 501 -405 519 -405 4 0 6 19 4 42 -3 41 -7 46 -114 133 -61 49 -192 158 -290 241 -347 292 -687 559 -1007 792 -198 145 -228 161 -253 144z"/>
+              </g>
+            </svg>
+          </div>
+          <span class="signature-caption" style="font-size:0.8rem; color:#9bb0a2; margin-top:6px; letter-spacing:0.02em;">William Guindon · Auteur de la communication SEM-26-003</span>
+        </div>
+      `
+    });
+
+    bm.add('wg-cce-card', {
+      label: `<div><span style="font-size:18px;">⚖️</span><br><strong>Dossier CCE SEM-26-003</strong></div>`,
+      category: 'William Guindon Officiel',
+      content: `
+        <div style="background:#111813; border:1px solid #1f2922; border-left:4px solid #22c55e; border-radius:12px; padding:24px; margin:24px 0;">
+          <div style="font-size:12px; font-weight:700; color:#22c55e; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Procédure Internationale en Cours</div>
+          <h3 style="color:#ffffff; font-size:1.3rem; margin-bottom:12px;">Dossier CCE SEM-26-003 · Enfouissement Stablex Blainville</h3>
+          <p style="color:#9bb0a2; font-size:0.95rem; line-height:1.6; margin-bottom:16px;">Communication citoyenne déposée auprès du Secrétariat de la Commission de coopération environnementale (CCE / ACEUM) visant la préservation de la Grande Tourbière de Blainville et l'application stricte des lois environnementales canadiennes.</p>
+          <div style="display:inline-block; background:rgba(34,197,94,0.12); color:#22c55e; border:1px solid rgba(34,197,94,0.3); padding:6px 14px; border-radius:9999px; font-size:12px; font-weight:700;">Échéance réponse Canada : 16 octobre 2026</div>
+        </div>
+      `
+    });
+
+    bm.add('wg-alert-box', {
+      label: `<div><span style="font-size:18px;">⚠️</span><br><strong>Alerte Écologique</strong></div>`,
+      category: 'William Guindon Officiel',
+      content: `
+        <div style="background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239, 68, 68, 0.3); border-radius:10px; padding:18px 20px; margin:20px 0; color:#f0f4f1;">
+          <h4 style="color:#f87171; margin-bottom:8px; font-size:1.1rem; display:flex; align-items:center; gap:8px;">⚠️ Alerte d'Intérêt Public</h4>
+          <p style="font-size:0.92rem; line-height:1.55; color:#cbd5e1;">Description des enjeux prioritaires ou des révélations documentées relatives au dossier de la Grande Tourbière de Blainville.</p>
+        </div>
+      `
+    });
+
+    bm.add('wg-quote-official', {
+      label: `<div><span style="font-size:18px;">💬</span><br><strong>Citation Officielle</strong></div>`,
+      category: 'William Guindon Officiel',
+      content: `
+        <blockquote style="border-left:4px solid #22c55e; padding:16px 24px; margin:28px 0; background:rgba(17, 24, 19, 0.6); border-radius:0 12px 12px 0;">
+          <p style="font-size:1.15rem; font-style:italic; color:#f0f4f1; line-height:1.6; margin-bottom:12px;">« La protection de la Grande Tourbière de Blainville n'est pas négociable : les faits scientifiques et le respect des traités internationaux doivent primer. »</p>
+          <cite style="display:block; font-size:0.85rem; font-weight:700; color:#22c55e; font-style:normal;">— William Guindon, Auteur de la soumission SEM-26-003</cite>
+        </blockquote>
+      `
+    });
+
+    bm.add('wg-btn-action', {
+      label: `<div><span style="font-size:18px;">🔘</span><br><strong>Bouton Émeraude</strong></div>`,
+      category: 'William Guindon Officiel',
+      content: `
+        <a href="#contact" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700; text-decoration:none; border-radius:8px; box-shadow:0 4px 14px rgba(16, 185, 129, 0.35);">
+          Consulter le dossier officiel ↗
+        </a>
+      `
+    });
+
+    bm.add('wg-columns-2', {
+      label: `<div><span style="font-size:18px;">⬛⬛</span><br><strong>Grille 2 Colonnes</strong></div>`,
+      category: 'Mise en page',
+      content: `
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; margin:24px 0;">
+          <div style="background:#111813; border:1px solid #1f2922; border-radius:12px; padding:20px;">
+            <h4 style="color:#ffffff; margin-bottom:8px;">Colonne 1</h4>
+            <p style="color:#9bb0a2; font-size:0.9rem; line-height:1.6;">Contenu ou arguments de la première section.</p>
+          </div>
+          <div style="background:#111813; border:1px solid #1f2922; border-radius:12px; padding:20px;">
+            <h4 style="color:#ffffff; margin-bottom:8px;">Colonne 2</h4>
+            <p style="color:#9bb0a2; font-size:0.9rem; line-height:1.6;">Contenu ou arguments de la seconde section.</p>
+          </div>
+        </div>
+      `
+    });
+
+    return editorInstance;
   }
 
-  function initializeIframeEditing() {
-    if (!isAuthenticated) return;
-    const iframe = document.getElementById("site-preview-iframe");
-    if (!iframe) return;
+  // Chargement d'une page existante du site dans GrapesJS
+  async function loadPageIntoEditor(pageName) {
+    if (!editorInstance) return;
+
+    if (pageName === "canevas-vierge") {
+      editorInstance.setComponents(`
+        <section style="padding: 60px 20px; max-width: 900px; margin: 0 auto; font-family: system-ui, sans-serif;">
+          <h1 style="color: #ffffff; font-size: 2.5rem; margin-bottom: 16px;">Nouveau Document</h1>
+          <p style="color: #9bb0a2; font-size: 1.1rem; line-height: 1.6;">Glissez des blocs depuis la palette de droite pour composer votre page.</p>
+        </section>
+      `);
+      editorInstance.setStyle(`
+        body { background: #090d0a; color: #f0f4f1; }
+      `);
+      currentPageSha = null;
+      showToast("Canevas vierge prêt");
+      return;
+    }
 
     try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (!doc) return;
+      showToast("Chargement de " + pageName + "...");
+      const res = await fetch(pageName + "?_t=" + Date.now());
+      if (!res.ok) throw new Error("Impossible de lire " + pageName);
+      const fullHtml = await res.text();
 
-      let style = doc.getElementById("editor-injected-style");
-      if (!style) {
-        style = doc.createElement("style");
-        style.id = "editor-injected-style";
-        style.innerHTML = `
-          [contenteditable="true"]:hover {
-            outline: 2px dashed #22c55e !important;
-            outline-offset: 4px;
-            cursor: text !important;
+      // Extraction du corps de la page
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(fullHtml, "text/html");
+
+      // On cible le conteneur principal ou le body
+      const mainContent = doc.querySelector("main") || doc.body;
+      const cleanHtml = mainContent ? mainContent.innerHTML : fullHtml;
+
+      editorInstance.setComponents(cleanHtml);
+
+      // On récupère également le SHA GitHub actuel si connecté
+      const token = getToken();
+      if (token) {
+        try {
+          const ghRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${pageName}`, {
+            headers: {
+              "Authorization": "Bearer " + token,
+              "Accept": "application/vnd.github.v3+json"
+            }
+          });
+          if (ghRes.ok) {
+            const data = await ghRes.json();
+            currentPageSha = data.sha;
           }
-          [contenteditable="true"]:focus {
-            outline: 2px solid #22c55e !important;
-            outline-offset: 4px;
-            background: rgba(34, 197, 94, 0.08) !important;
-          }
-          .section-highlight {
-            outline: 3px solid #22c55e !important;
-          }
-        `;
-        doc.head.appendChild(style);
+        } catch (_) {}
       }
 
-      enableContentEditing(doc);
-      buildSidebarSections(doc);
-    } catch (e) {
-      console.warn("Erreur accès iframe:", e);
+      showToast(`Page ${pageName} chargée avec succès !`);
+    } catch (err) {
+      console.error(err);
+      showToast("Erreur de chargement : " + err.message, false);
     }
   }
 
+  // Publication directe sur GitHub via l'API REST
   async function saveSiteToGitHub() {
     const token = getToken();
     if (!token || !isAuthenticated) {
@@ -739,38 +708,51 @@
       return;
     }
 
-    const saveBtn = document.getElementById("btn-save-site");
-    const saveTxt = document.getElementById("btn-save-txt");
+    const pageSelect = document.getElementById("page-select");
+    const targetPage = (pageSelect ? pageSelect.value : "index.html");
+    if (targetPage === "canevas-vierge") {
+      showToast("Veuillez sélectionner une page cible avant de publier.", false);
+      return;
+    }
+
+    const saveBtn = document.getElementById("btn-save-github");
+    const saveTxt = document.getElementById("btn-save-text");
     if (saveBtn) saveBtn.disabled = true;
     if (saveTxt) saveTxt.textContent = "Publication sur GitHub...";
 
     try {
-      const iframe = document.getElementById("site-preview-iframe");
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-
-      const cleanDoc = doc.cloneNode(true);
-      const injectedStyle = cleanDoc.getElementById("editor-injected-style");
-      if (injectedStyle) injectedStyle.remove();
-
-      cleanDoc.querySelectorAll("[contenteditable]").forEach(el => {
-        el.removeAttribute("contenteditable");
-        el.removeAttribute("spellcheck");
-      });
-
-      const htmlContent = "<!DOCTYPE html>\n" + cleanDoc.documentElement.outerHTML;
-
-      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+      // 1. Récupération du SHA le plus récent du fichier sur GitHub
+      const fileRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${targetPage}`, {
         headers: {
           "Authorization": "Bearer " + token,
           "Accept": "application/vnd.github.v3+json"
         }
       });
-      if (!fileRes.ok) throw new Error("Impossible d'accéder à index.html sur GitHub");
+
+      if (!fileRes.ok) throw new Error(`Impossible d'accéder à ${targetPage} sur GitHub (${fileRes.status})`);
       const fileData = await fileRes.json();
+      const latestSha = fileData.sha;
 
-      const b64 = btoa(unescape(encodeURIComponent(htmlContent)));
+      // 2. Récupération du fichier d'origine pour en préserver l'en-tête, les balises de sécurité et les scripts globaux
+      const originalContent = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+      const parser = new DOMParser();
+      const origDoc = parser.parseFromString(originalContent, "text/html");
 
-      const updateRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/index.html`, {
+      // 3. Extraction du nouveau HTML généré par GrapesJS
+      const newInnerHtml = editorInstance.getHtml();
+
+      const mainEl = origDoc.querySelector("main");
+      if (mainEl) {
+        mainEl.innerHTML = newInnerHtml;
+      } else {
+        origDoc.body.innerHTML = newInnerHtml;
+      }
+
+      const finalFullHtml = "<!DOCTYPE html>\n" + origDoc.documentElement.outerHTML;
+      const b64 = btoa(unescape(encodeURIComponent(finalFullHtml)));
+
+      // 4. Commit sur GitHub
+      const updateRes = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${targetPage}`, {
         method: "PUT",
         headers: {
           "Authorization": "Bearer " + token,
@@ -778,68 +760,88 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: "chore(studio): mise à jour visuelle du site via l'éditeur en direct",
+          message: `feat(editeur): mise à jour de ${targetPage} via Studio GrapesJS`,
           content: b64,
-          sha: fileData.sha
+          sha: latestSha
         })
       });
 
       if (!updateRes.ok) {
         const err = await updateRes.json().catch(() => ({}));
-        throw new Error(err.message || "Échec de l'enregistrement");
+        throw new Error(err.message || "Échec de l'enregistrement sur GitHub");
       }
 
-      showToast("Félicitations ! Votre site est mis à jour et en ligne !");
+      showToast(`Félicitations ! ${targetPage} a été publié avec succès sur GitHub !`);
     } catch (err) {
       console.error(err);
       if (err.message && err.message.includes("401")) {
         lockStudio();
       }
-      showToast("Erreur : " + err.message, false);
+      showToast("Erreur lors de la sauvegarde : " + err.message, false);
     } finally {
       if (saveBtn) saveBtn.disabled = false;
-      if (saveTxt) saveTxt.textContent = "Sauvegarder & Publier en direct";
+      if (saveTxt) saveTxt.textContent = "Publier sur GitHub";
     }
   }
 
+  // Téléchargement du code complet au format HTML autonome
+  function downloadHtmlFile() {
+    if (!editorInstance) return;
+    const pageSelect = document.getElementById("page-select");
+    const targetName = pageSelect ? pageSelect.value.replace('.html', '') : 'page';
+
+    const html = editorInstance.getHtml();
+    const css = editorInstance.getCss();
+
+    const fullDoc = `<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Export GrapesJS — ${targetName}</title>
+<style>
+${css}
+</style>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+
+    const blob = new Blob([fullDoc], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${targetName}-export-${Date.now()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Fichier HTML exporté et téléchargé !");
+  }
+
+  // Déverrouillage du studio
   function unlockStudio() {
     isAuthenticated = true;
     const lockScreen = document.getElementById("editor-lock-screen");
     if (lockScreen) lockScreen.classList.add("unlocked");
 
-    const root = document.getElementById("editor-root");
-    const tmpl = document.getElementById("editor-workspace-tmpl");
-    if (root && tmpl) {
-      root.replaceChildren(tmpl.content.cloneNode(true));
-
-      // Device switchers
-      root.querySelectorAll(".device-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          setDeviceMode(btn.getAttribute("data-mode"));
-        });
-      });
-
-      // Actions topbar
-      const toggleBtn = document.getElementById("btn-toggle-edit");
-      if (toggleBtn) toggleBtn.onclick = toggleEditMode;
-
-      const saveBtn = document.getElementById("btn-save-site");
-      if (saveBtn) saveBtn.onclick = saveSiteToGitHub;
-
-      const lockBtn = document.getElementById("btn-lock-studio");
-      if (lockBtn) lockBtn.onclick = lockStudio;
-
-      // Iframe setup
-      const iframe = document.getElementById("site-preview-iframe");
-      if (iframe) {
-        iframe.onload = () => {
-          if (isAuthenticated) initializeIframeEditing();
-        };
-        iframe.src = "index.html";
-      }
+    const statusBadge = document.getElementById("auth-status-indicator");
+    if (statusBadge) {
+      statusBadge.textContent = "🟢 Session active (@Bwillou1)";
+      statusBadge.classList.remove("unauth");
     }
+
+    // Initialisation de GrapesJS
+    const ed = initGrapesEditor();
+
+    // Chargement de la page par défaut
+    const pageSelect = document.getElementById("page-select");
+    const initPage = pageSelect ? pageSelect.value : "index.html";
+    loadPageIntoEditor(initPage);
   }
 
+  // Verrouillage du studio
   function lockStudio() {
     isAuthenticated = false;
     currentAuthToken = "";
@@ -847,17 +849,21 @@
     sessionStorage.removeItem("wg_github_pat");
     localStorage.removeItem("wg_github_pat");
 
-    const root = document.getElementById("editor-root");
-    if (root) root.replaceChildren();
-
     const lockScreen = document.getElementById("editor-lock-screen");
     if (lockScreen) lockScreen.classList.remove("unlocked");
 
+    const statusBadge = document.getElementById("auth-status-indicator");
+    if (statusBadge) {
+      statusBadge.textContent = "🔒 Accès Restreint";
+      statusBadge.classList.add("unauth");
+    }
+
     const errBox = document.getElementById("lock-error-box");
     if (errBox) errBox.style.display = "none";
-    showToast("Studio verrouillé.");
+    showToast("Studio GrapesJS verrouillé.");
   }
 
+  // Soumission du formulaire d'authentification
   async function handleLockAuthSubmit(e) {
     e.preventDefault();
     const tokenInput = document.getElementById("lock-token-input");
@@ -877,16 +883,15 @@
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = "Vérification de la clé GitHub...";
+      submitBtn.textContent = "Vérification en cours auprès de GitHub...";
     }
 
     try {
       await validateGitHubToken(tokenVal);
-
       sessionStorage.setItem("wg_github_pat", tokenVal);
       sessionStorage.setItem("wg_editor_auth", "true");
       unlockStudio();
-      showToast("Studio déverrouillé avec succès pour @Bwillou1 !");
+      showToast("Studio GrapesJS déverrouillé avec succès pour @Bwillou1 !");
     } catch (err) {
       if (errBox) {
         errBox.textContent = err.message;
@@ -895,11 +900,12 @@
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Déverrouiller l'Éditeur Visuel";
+        submitBtn.textContent = "Déverrouiller le Studio GrapesJS";
       }
     }
   }
 
+  // Support Passkey / Touch ID
   function base64ToBuf(base64) {
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
@@ -942,39 +948,93 @@
     }
   }
 
-  const authForm = document.getElementById("lock-auth-form");
-  if (authForm) {
-    authForm.addEventListener("submit", handleLockAuthSubmit);
-  }
-
-  // Initialisation à l'ouverture de la page
+  // Événements d'interface
   window.addEventListener("DOMContentLoaded", async () => {
+    // Boutons de la barre supérieure
+    const pageSelect = document.getElementById("page-select");
+    const loadBtn = document.getElementById("btn-load-page");
+    if (loadBtn && pageSelect) {
+      loadBtn.addEventListener("click", () => loadPageIntoEditor(pageSelect.value));
+      pageSelect.addEventListener("change", () => loadPageIntoEditor(pageSelect.value));
+    }
+
+    const undoBtn = document.getElementById("btn-undo");
+    if (undoBtn) {
+      undoBtn.addEventListener("click", () => {
+        if (editorInstance && editorInstance.UndoManager) editorInstance.UndoManager.undo();
+      });
+    }
+
+    const redoBtn = document.getElementById("btn-redo");
+    if (redoBtn) {
+      redoBtn.addEventListener("click", () => {
+        if (editorInstance && editorInstance.UndoManager) editorInstance.UndoManager.redo();
+      });
+    }
+
+    const previewBtn = document.getElementById("btn-toggle-preview");
+    if (previewBtn) {
+      previewBtn.addEventListener("click", () => {
+        if (!editorInstance) return;
+        const isPreview = editorInstance.Commands.isActive('preview');
+        if (isPreview) {
+          editorInstance.stopCommand('preview');
+          previewBtn.style.color = "var(--text)";
+        } else {
+          editorInstance.runCommand('preview');
+          previewBtn.style.color = "var(--accent)";
+        }
+      });
+    }
+
+    const codeBtn = document.getElementById("btn-view-code");
+    if (codeBtn) {
+      codeBtn.addEventListener("click", () => {
+        if (!editorInstance) return;
+        editorInstance.runCommand('export-template');
+      });
+    }
+
+    const downloadBtn = document.getElementById("btn-download-html");
+    if (downloadBtn) downloadBtn.addEventListener("click", downloadHtmlFile);
+
+    const saveBtn = document.getElementById("btn-save-github");
+    if (saveBtn) saveBtn.addEventListener("click", saveSiteToGitHub);
+
+    const lockBtn = document.getElementById("btn-lock");
+    if (lockBtn) lockBtn.addEventListener("click", lockStudio);
+
+    // Formulaire d'authentification
+    const authForm = document.getElementById("lock-auth-form");
+    if (authForm) authForm.addEventListener("submit", handleLockAuthSubmit);
+
+    // Passkey
     const isPasskey = localStorage.getItem("wg_passkey_enabled") === "true";
     if (isPasskey) {
       const pbox = document.getElementById("lock-passkey-container");
       if (pbox) {
         pbox.style.display = "block";
-        const pkBtn = pbox.querySelector("button");
+        const pkBtn = document.getElementById("btn-unlock-passkey");
         if (pkBtn) pkBtn.onclick = unlockWithPasskey;
       }
     }
 
+    // Détection d'une session PAT déjà active (ex. depuis console-admin.html)
     const savedToken = getToken();
     const isSessionAuth = sessionStorage.getItem("wg_editor_auth") === "true";
 
-    if (savedToken && isSessionAuth) {
+    if (savedToken) {
       try {
         await validateGitHubToken(savedToken);
         unlockStudio();
       } catch (err) {
-        console.warn("Jeton sauvegardé non valide ou expiré:", err);
-        lockStudio();
+        console.warn("Session expirée ou invalide:", err);
+        const tokenInput = document.getElementById("lock-token-input");
+        if (tokenInput) tokenInput.value = savedToken;
       }
-    } else if (savedToken) {
-      const tokenInput = document.getElementById("lock-token-input");
-      if (tokenInput) tokenInput.value = savedToken;
     }
   });
+
 })();
 </script>
 </body>
