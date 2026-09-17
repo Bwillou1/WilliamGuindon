@@ -859,7 +859,7 @@
 
     <div class="footer-social-row">
       <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
-      <a href="https://www.facebook.com/profile.php?id=61591437730054" target="_blank" rel="noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="noopener noreferrer" class="footer-social-link">Facebook ↗</a>
       <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="noopener noreferrer" class="footer-social-link">YouTube ↗</a>
       <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
     </div>
@@ -1054,7 +1054,21 @@
           toggleSourceBtn.textContent = "👁️ Rendu Visuel";
           rawTextarea.focus();
         } else {
-          editor.innerHTML = rawTextarea.value;
+          // Assainissement de sécurité anti-XSS avant réinjection dans l'éditeur visuel (CodeQL Alert #35)
+          const parser = new DOMParser();
+          const cleanDoc = parser.parseFromString(rawTextarea.value || "", "text/html");
+          cleanDoc.querySelectorAll("script, iframe, object, embed, style, base, link, meta").forEach(el => el.remove());
+          cleanDoc.body.querySelectorAll("*").forEach(el => {
+            for (let i = el.attributes.length - 1; i >= 0; i--) {
+              const attr = el.attributes[i];
+              const attrName = attr.name.toLowerCase();
+              const attrVal = attr.value.trim().toLowerCase();
+              if (attrName.startsWith("on") || attrVal.startsWith("javascript:") || attrVal.startsWith("data:text/html")) {
+                el.removeAttribute(attr.name);
+              }
+            }
+          });
+          editor.replaceChildren(...cleanDoc.body.childNodes);
           rawTextarea.style.display = "none";
           editor.style.display = "block";
           toggleSourceBtn.classList.remove("active");
@@ -1067,7 +1081,10 @@
 
     return {
       setHtml(html) {
-        editor.innerHTML = html || "";
+        const parser = new DOMParser();
+        const cleanDoc = parser.parseFromString(html || "", "text/html");
+        cleanDoc.querySelectorAll("script, iframe, object, embed, style, base, link, meta").forEach(el => el.remove());
+        editor.replaceChildren(...cleanDoc.body.childNodes);
         rawTextarea.value = html || "";
         if (hiddenTextarea) hiddenTextarea.value = html || "";
       },
@@ -1075,7 +1092,7 @@
         return isSourceMode ? rawTextarea.value : editor.innerHTML;
       },
       reset() {
-        editor.innerHTML = "";
+        editor.replaceChildren();
         rawTextarea.value = "";
         if (hiddenTextarea) hiddenTextarea.value = "";
         if (isSourceMode && toggleSourceBtn) toggleSourceBtn.click();

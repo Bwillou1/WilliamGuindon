@@ -153,7 +153,7 @@ if (fs.existsSync(pdfViewerJsPath)) {
 // 2f. Vérification d'absence de liens non chiffrés vers www.cec.org
 console.log('\nVérification de l\'absence de liens non chiffrés vers www.cec.org :');
 const scanExts = ['.html', '.json', '.js', '.xml'];
-const forbiddenPrefix = 'http://' + 'www.cec.org';
+const forbiddenCecPattern = /http:\/\/www\.cec\.org(?=[/?#\s"'>]|$)/i;
 
 function scanDirForHttpCec(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -165,9 +165,9 @@ function scanDirForHttpCec(dir) {
       }
     } else if (scanExts.some(ext => entry.name.endsWith(ext))) {
       const content = fs.readFileSync(full, 'utf8');
-      if (content.includes(forbiddenPrefix)) {
+      if (forbiddenCecPattern.test(content)) {
         const rel = path.relative(path.join(__dirname, '..'), full);
-        errors.push(`[HTTP CEC] Lien non chiffré "${forbiddenPrefix}" trouvé dans : ${rel}`);
+        errors.push(`[HTTP CEC] Lien non chiffré "http://www.cec.org" trouvé dans : ${rel}`);
       }
     }
   }
@@ -190,7 +190,16 @@ function stripHtml(input) {
       out += ch;
     }
   }
-  return out.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  // Décodage d'entités en une seule passe pour éviter le double-unescaping (CodeQL alert #33)
+  const entityMap = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&apos;': "'"
+  };
+  return out.replace(/&(?:amp|lt|gt|quot|#39|apos);/g, match => entityMap[match] || match);
 }
 
 // 3. Validation de cohérence FAQ (HTML visible vs JSON-LD Schema.org FAQPage)

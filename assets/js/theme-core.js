@@ -1221,35 +1221,73 @@
       });
 
       activeSearchIdx = 0;
+      resultsContainer.textContent = '';
+
       if (filtered.length === 0) {
-        resultsContainer.innerHTML = `
-          <div class="quick-search-empty">
-            <p>Aucun résultat pour « <strong>${query}</strong> »</p>
-            <p class="quick-search-empty-sub">Essayez un mot-clé comme <em>BAPE 371</em>, <em>Loi 93</em>, <em>Cadmium</em>, <em>CCE</em> ou <em>Contact</em>.</p>
-          </div>
-        `;
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'quick-search-empty';
+
+        const p1 = document.createElement('p');
+        p1.appendChild(document.createTextNode('Aucun résultat pour « '));
+        const strong = document.createElement('strong');
+        strong.textContent = query;
+        p1.appendChild(strong);
+        p1.appendChild(document.createTextNode(' »'));
+
+        const p2 = document.createElement('p');
+        p2.className = 'quick-search-empty-sub';
+        p2.textContent = 'Essayez un mot-clé comme BAPE 371, Loi 93, Cadmium, CCE ou Contact.';
+
+        emptyDiv.appendChild(p1);
+        emptyDiv.appendChild(p2);
+        resultsContainer.appendChild(emptyDiv);
         return;
       }
 
-      resultsContainer.innerHTML = filtered.map((item, idx) => `
-        <a href="${item.url}" class="quick-search-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
-          <div class="qs-item-left">
-            <span class="qs-item-tag">${item.tag}</span>
-            <div class="qs-item-content">
-              <div class="qs-item-title">${item.title}</div>
-              <div class="qs-item-desc">${item.desc}</div>
-            </div>
-          </div>
-          <span class="qs-item-arrow">↵</span>
-        </a>
-      `).join('');
+      filtered.forEach((item, idx) => {
+        const a = document.createElement('a');
+        a.href = item.url;
+        a.className = `quick-search-item ${idx === 0 ? 'selected' : ''}`;
+        a.setAttribute('data-idx', String(idx));
 
-      resultsContainer.querySelectorAll('.quick-search-item').forEach(el => {
-        el.addEventListener('mouseenter', () => {
+        const leftDiv = document.createElement('div');
+        leftDiv.className = 'qs-item-left';
+
+        const tagSpan = document.createElement('span');
+        tagSpan.className = 'qs-item-tag';
+        tagSpan.textContent = item.tag;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'qs-item-content';
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'qs-item-title';
+        titleDiv.textContent = item.title;
+
+        const descDiv = document.createElement('div');
+        descDiv.className = 'qs-item-desc';
+        descDiv.textContent = item.desc;
+
+        contentDiv.appendChild(titleDiv);
+        contentDiv.appendChild(descDiv);
+
+        leftDiv.appendChild(tagSpan);
+        leftDiv.appendChild(contentDiv);
+
+        const arrowSpan = document.createElement('span');
+        arrowSpan.className = 'qs-item-arrow';
+        arrowSpan.textContent = '↵';
+
+        a.appendChild(leftDiv);
+        a.appendChild(arrowSpan);
+
+        a.addEventListener('mouseenter', () => {
           resultsContainer.querySelectorAll('.quick-search-item').forEach(i => i.classList.remove('selected'));
-          el.classList.add('selected');
-          activeSearchIdx = parseInt(el.getAttribute('data-idx') || '0', 10);
+          a.classList.add('selected');
+          activeSearchIdx = idx;
         });
+
+        resultsContainer.appendChild(a);
       });
     }
 
