@@ -17,9 +17,9 @@
   function isChatBlockedByAdmin() {
     try {
       const radicalState = JSON.parse(localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state') || '{}');
-      if (radicalState.disableAI || radicalState.disableMessaging) return true;
+      if (radicalState.disableAI) return true;
       const cachedState = JSON.parse(localStorage.getItem('wg_site_state') || '{}');
-      if (cachedState.disableAI || cachedState.disableMessaging) return true;
+      if (cachedState.disableAI) return true;
     } catch (_) {}
     return false;
   }
