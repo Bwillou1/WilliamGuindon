@@ -101,7 +101,11 @@ DIRECTIVES DE RÉPONSE :
       
       if (q.includes('bio') || q.includes('biographie') || q.includes('parcours') || q.includes('qui')) {
         res = "<strong>Biographie officielle de William Guindon :</strong><br>Né en 2011 au Québec (15 ans), William Guindon est un citoyen et militant écologiste québécois, étudiant dans les Laurentides.<br><br>À 14 ans, il dépose en toute indépendance citoyenne la soumission <strong>SEM-26-003</strong> devant la Commission de coopération environnementale (CCE / ACEUM) et un mémoire à l'ONU pour protéger la Grande Tourbière de Blainville.<br><br>Le 17 août 2026, à 15 ans, il obtient une détermination positive de recevabilité du Secrétariat de la CCE demandant au Canada de répondre formellement d'ici le 16 octobre 2026. Sa démarche est appuyée ponctuellement par 16 experts scientifiques consultatifs.";
-      } else if (q.includes('93') || q.includes('loi')) {
+      } else if (q.includes('mineur') || q.includes('âge') || q.includes('15 ans') || q.includes('14 ans') || q.includes('statut')) {
+        res = "<strong>Statut de mineur & Capacité juridique :</strong> William Guindon (15 ans) agit en pleine capacité citoyenne autonome. L'article 24.27 de l'ACEUM accorde à « toute personne ou organisation » sans condition d'âge le droit de déposer une communication. Sa démarche est 100 % bénévole, autofinancée et indépendante de tout parti politique.";
+      } else if (q.includes('stablex') || q.includes('cellule 6') || q.includes('déchet') || q.includes('toxique')) {
+        res = "<strong>Le projet Stablex (Cellule n° 6) :</strong> Stablex (propriété de la multinationale américaine Republic Services) exploite un site d'enfouissement de déchets dangereux stabilisés à Blainville. Le projet de cellule n° 6 vise à empiéter sur 278 000 m² de milieux humides au cœur de la Grande Tourbière de Blainville, malgré le refus catégorique recommandé par le BAPE dans son Rapport 371.";
+      } else if (q.includes('93') || q.includes('loi') || q.includes('bâillon')) {
         res = "<strong>La Loi 93 :</strong> Adoptée sous bâillon le 28 mars 2025 (61 contre 31 voix) par l'Assemblée nationale du Québec. Elle a forcé l'expropriation des terrains municipaux de la Grande Tourbière pour permettre l'expansion de la cellule n° 6 de Stablex et a imposé des clauses privatives restreignant tout recours judiciaire sur le fond.";
       } else if (q.includes('bape') || q.includes('371') || q.includes('rapport')) {
         res = "<strong>Le Rapport 371 du BAPE (septembre 2023) :</strong> La commission d'enquête du BAPE a conclu que le projet d'expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville était <em>« prématuré »</em> et a recommandé le refus environnemental.";
@@ -115,6 +119,8 @@ DIRECTIVES DE RÉPONSE :
         res = "<strong>Déposition à l'ONU :</strong> En mai 2026, William Guindon a transmis un mémoire formel et un appel urgent au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme (Genève), pour dénoncer l'enfouissement de matières dangereuses en milieux humides.";
       } else if (q.includes('cce') || q.includes('aceum') || q.includes('sem-26-003') || q.includes('traité') || q.includes('cusma')) {
         res = "<strong>La procédure SEM-26-003 :</strong> Portée en vertu des articles 24.27 et 24.28 de l'ACEUM (CUSMA). Le Secrétariat de la CCE (Montréal) a validé l'admissibilité du dossier le 17 août 2026 et instruit le Canada de s'expliquer d'ici le 16 octobre 2026 sur l'application de la Loi sur la convention concernant les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP).";
+      } else if (q.includes('bonjour') || q.includes('salut') || q.includes('hello') || q.includes('aide')) {
+        res = "Bonjour ! Je suis l'assistant documentaire officiel du site de William Guindon. Je peux vous renseigner avec précision sur la communication CCE SEM-26-003, la Grande Tourbière de Blainville, le dossier Stablex (Cellule 6), le rapport BAPE 371 ou l'échéance fédérale du 16 octobre 2026. Quelle est votre question ?";
       } else {
         res = "<strong>Synthèse SEM-26-003 :</strong> Le dossier porte sur l'enfouissement de résidus toxiques industriels dans la Grande Tourbière de Blainville, malgré l'avis défavorable du BAPE (Rapport 371) et l'adoption sous bâillon de la Loi 93. La CCE (Montréal) a formellement sommé le Canada de répondre d'ici le 16 octobre 2026.";
       }
@@ -133,7 +139,14 @@ DIRECTIVES DE RÉPONSE :
           }))
         })
       });
-      if (!resp.ok) throw new Error(`API Error HTTP ${resp.status}`);
+      if (!resp.ok) {
+        let errMsg = `HTTP ${resp.status}`;
+        try {
+          const errBody = await resp.json();
+          if (errBody && errBody.error) errMsg = errBody.error;
+        } catch (_) {}
+        throw new Error(errMsg);
+      }
       const data = await resp.json();
       if (data && data.answer && data.answer.trim()) {
         return data.answer.trim();
@@ -151,6 +164,11 @@ DIRECTIVES DE RÉPONSE :
         const tabChat = aiModal.querySelector('#ai-tab-chat');
         if (tabChat) tabChat.insertBefore(banner, tabChat.firstChild);
       }
+    }
+
+    function hideOfflineBanner() {
+      const banner = document.getElementById('ai-offline-banner');
+      if (banner) banner.remove();
     }
 
     function initAiModal() {
@@ -442,6 +460,7 @@ DIRECTIVES DE RÉPONSE :
           let reply = '';
           try {
             reply = await callGroq(messages);
+            hideOfflineBanner();
           } catch (errPrimary) {
             showOfflineBanner();
             reply = generateLocalAnswer(question);
@@ -504,6 +523,7 @@ DIRECTIVES DE RÉPONSE :
           let res = '';
           try {
             res = await callGroq(messages);
+            hideOfflineBanner();
           } catch (_) {
             throw _;
           }

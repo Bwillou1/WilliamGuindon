@@ -64,8 +64,14 @@ RÈGLES DE RÉDACTION :
 - Reste courtois, neutre et précis sans inventer de faits non documentés.
 `;
 
-const PRIMARY_MODEL = 'llama-3.3-70b-versatile';
-const FALLBACK_MODEL = 'llama-3.1-8b-instant';
+const PRIMARY_MODEL = 'openai/gpt-oss-120b';
+const FALLBACK_MODELS = [
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.8-27b',
+  'groq/compound-mini',
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant'
+];
 
 function isPromptInjection(text) {
   if (!text) return false;
@@ -195,21 +201,27 @@ export default {
       });
     }
 
-    const primaryModel = env?.GROQ_MODEL || PRIMARY_MODEL;
-    const candidateModels = [primaryModel, FALLBACK_MODEL].filter((m, idx, arr) => arr.indexOf(m) === idx);
+    const primaryModel = env?.GROQ_MODEL || env?.GROQ_MODEL_EXPERT || PRIMARY_MODEL;
+    const candidateModels = [
+      primaryModel,
+      env?.GROQ_MODEL_LOW,
+      env?.GROQ_MODEL_NORMAL,
+      env?.GROQ_MODEL_MEDIUM,
+      ...FALLBACK_MODELS
+    ].filter(Boolean).filter((m, idx, arr) => arr.indexOf(m) === idx);
 
     let finalAnswer = null;
     let lastError = null;
 
     for (const model of candidateModels) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
 
       try {
         const requestBody = {
           model: model,
           temperature: 0.2,
-          max_tokens: 350,
+          max_tokens: 500,
           messages: [
             {
               role: 'system',
@@ -218,6 +230,11 @@ export default {
             ...safeMessages
           ]
         };
+
+        if (model.includes('gpt-oss')) {
+          requestBody.reasoning_effort = 'low';
+          requestBody.reasoning_format = 'hidden';
+        }
 
         const groqResponse = await fetch(GROQ_ENDPOINT, {
           method: 'POST',
@@ -229,12 +246,18 @@ export default {
         clearTimeout(timeoutId);
 
         if (!groqResponse.ok) {
-          lastError = `HTTP ${groqResponse.status}`;
-          continue; // Bascule immédiate vers le fallback (ex. 429 rate limit)
+          let errDetail = '';
+          try {
+            const errJson = await groqResponse.json();
+            errDetail = errJson?.error?.message ? ` (${errJson.error.message})` : '';
+          } catch (_) {}
+          lastError = `HTTP ${groqResponse.status}${errDetail}`;
+          continue; // Bascule immédiate vers le fallback (ex. modèle indisponible ou 429)
         }
 
         const result = await groqResponse.json();
-        const content = cleanModelOutput(result?.choices?.[0]?.message?.content);
+        const rawContent = result?.choices?.[0]?.message?.content || result?.choices?.[0]?.message?.reasoning || '';
+        const content = cleanModelOutput(rawContent);
         if (content && content.length > 0) {
           finalAnswer = content;
           break;
