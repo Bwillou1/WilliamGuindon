@@ -1014,6 +1014,30 @@ footer a:hover {
   text-shadow: 0 3px 18px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
+.hero-portrait-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -6px;
+}
+
+.hero-portrait-avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent, #22c55e);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(34, 197, 94, 0.25);
+  background: var(--bg-card, #131d16);
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-portrait-avatar:hover {
+  transform: scale(1.06);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
 .hero-immersive .kicker {
   background-color: rgba(34, 197, 94, 0.25);
   color: #4ade80;
@@ -2845,21 +2869,99 @@ body.dark-theme .notif-link-ghost {
 }
 
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .tracker-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .tracker-grid .tracker-card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
   .tracker-card {
-    padding: 20px 14px;
+    padding: 16px 12px;
+  }
+  .tracker-icon {
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 8px;
+  }
+  .tracker-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .tracker-card .counter-num {
+    font-size: clamp(20px, 5vw, 26px);
+    margin-bottom: 4px;
+  }
+  .tracker-card .counter-lbl {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .tracker-card .counter-desc {
+    font-size: 11.5px;
+    line-height: 1.35;
+    margin-top: 4px;
   }
   .precision-countdown-grid {
-    gap: 5px;
+    gap: 6px;
+    margin: 10px 0 8px 0;
   }
   .precision-time-unit {
-    padding: 6px 2px;
+    padding: 6px 4px;
   }
   .precision-time-val {
-    font-size: 18px;
+    font-size: clamp(18px, 4.8vw, 24px);
   }
   .precision-time-lbl {
     font-size: 10px;
+  }
+  .btn-add-cce-calendar {
+    padding: 8px 14px;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+  .steps-timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .notice-box-important {
+    margin: 24px 0 0 0;
+    padding: 16px 14px;
+  }
+  .signature-draw-box svg {
+    width: 150px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .tracker-card {
+    padding: 14px 8px;
+  }
+  .tracker-card .counter-num {
+    font-size: 19px;
+  }
+  .tracker-card .counter-lbl {
+    font-size: 10px;
+  }
+  .tracker-card .counter-desc {
+    font-size: 11px;
+  }
+  .precision-countdown-grid {
+    gap: 4px;
+  }
+  .precision-time-unit {
+    padding: 5px 2px;
+  }
+  .precision-time-val {
+    font-size: 17px;
+  }
+  .precision-time-lbl {
+    font-size: 9px;
   }
 }
 
@@ -5351,10 +5453,18 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 .viewer-ai-chat-title { font-weight: 600; font-size: 12px; margin-bottom: 6px; color: var(--text); }
 
 /* Portrait Officiel Biographie */
+.apropos-header-layout {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 36px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
 .bio-portrait-wrapper {
-  margin: 32px 0 40px;
+  margin: 0;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .bio-portrait-card {
@@ -5364,8 +5474,25 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   border: 1px solid var(--line);
   border-radius: 12px;
   box-shadow: var(--shadow);
-  max-width: 320px;
+  max-width: 310px;
+  width: 100%;
+  box-sizing: border-box;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+@media (max-width: 860px) {
+  .apropos-header-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .bio-portrait-wrapper {
+    justify-content: center;
+    margin: 10px auto 20px;
+  }
+  .bio-portrait-card {
+    max-width: 280px;
+    margin: 0 auto;
+  }
 }
 
 .bio-portrait-card:hover {
@@ -5897,241 +6024,4 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 .mini-mirror-link:hover {
   color: var(--accent);
 }
-
-/* ==========================================================================
-   Section Réseaux Sociaux : Flux & Publications Officielles (Facebook & LinkedIn)
-   ========================================================================== */
-.social-sync-section {
-  padding: 48px 0 36px;
-  background: var(--bg);
-  border-top: 1px solid var(--line);
-}
-.social-sync-header {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 28px;
-}
-.social-sync-header h2 {
-  font-size: 1.85rem;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-.social-sync-subtitle {
-  font-size: 1rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-.social-sync-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-  max-width: 1040px;
-  margin: 0 auto;
-  align-items: stretch;
-}
-.social-card {
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-.social-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-  border-color: rgba(16, 185, 129, 0.4);
-}
-.social-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.02);
-}
-[data-theme="dark"] .social-card-top {
-  background: rgba(255, 255, 255, 0.02);
-}
-.social-card-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.social-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.facebook-bg {
-  background: #1877f2;
-}
-.linkedin-bg {
-  background: #0a66c2;
-}
-.social-card-name {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0;
-  line-height: 1.25;
-}
-.social-card-meta {
-  font-size: 0.78rem;
-  color: var(--text-faint);
-  display: block;
-}
-.social-card-badge {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 3px 8px;
-  border-radius: 9999px;
-  background: rgba(34, 197, 94, 0.12);
-  color: #16a34a;
-  border: 1px solid rgba(34, 197, 94, 0.25);
-}
-[data-theme="dark"] .social-card-badge {
-  background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
-}
-.social-card-body {
-  flex: 1;
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 480px;
-  overflow: hidden;
-  background: var(--bg-card);
-}
-.fb-body-container {
-  overflow-y: auto;
-  align-items: flex-start;
-  padding: 10px;
-}
-.fb-body-container .fb-page {
-  max-width: 100%;
-}
-.social-fallback-content {
-  text-align: center;
-  padding: 24px;
-}
-.social-fallback-content p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-}
-.social-direct-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #ffffff !important;
-  font-weight: 700;
-  font-size: 0.88rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-}
-.social-direct-btn:hover {
-  background: var(--accent-deep);
-  transform: translateY(-1px);
-}
-.social-direct-btn.linkedin-btn {
-  background: #0a66c2;
-  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.3);
-}
-.social-direct-btn.linkedin-btn:hover {
-  background: #004182;
-}
-.social-card-footer {
-  padding: 12px 18px;
-  border-top: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.015);
-  text-align: center;
-}
-.social-footer-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-.social-footer-link:hover {
-  color: var(--accent-deep);
-}
-
-/* Carte de prévisualisation LinkedIn */
-.linkedin-preview-card {
-  width: 100%;
-  max-width: 440px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--bg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-.linkedin-cover-banner {
-  height: 90px;
-  background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
-}
-.linkedin-profile-info {
-  padding: 0 20px 16px;
-  position: relative;
-  text-align: left;
-}
-.linkedin-avatar {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  border: 3px solid var(--bg-card);
-  margin-top: -38px;
-  object-fit: cover;
-  display: block;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  background: var(--bg-card);
-}
-.linkedin-text-group {
-  margin-top: 12px;
-}
-.linkedin-name {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 4px;
-}
-.linkedin-headline {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-  margin-bottom: 6px;
-}
-.linkedin-location {
-  font-size: 0.8rem;
-  color: var(--text-faint);
-  margin: 0;
-}
-.linkedin-actions {
-  padding: 14px 20px 20px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: center;
-}
-
-
 
