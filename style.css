@@ -1018,7 +1018,7 @@ footer a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: -6px;
+  margin-bottom: 14px;
 }
 
 .hero-portrait-avatar {
@@ -1167,18 +1167,19 @@ footer a:hover {
   margin: 0;
 }
 
-.tracker-grid {
+.tracker-grid,
+.tracker-row-wide {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  margin-top: 18px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .tracker-card {
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 20px 18px;
+  padding: 16px 14px;
   text-align: center;
   box-shadow: var(--shadow);
 }
@@ -1187,15 +1188,15 @@ footer a:hover {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 18px 16px;
+  padding: 14px 12px;
 }
 
 .tracker-card-head {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .tracker-icon-sm {
@@ -1205,52 +1206,52 @@ footer a:hover {
 
 .tracker-card-compact .counter-num {
   font-family: var(--font-heading);
-  font-size: clamp(24px, 3.2vw, 30px);
+  font-size: clamp(20px, 2.8vw, 26px);
   font-weight: 800;
   color: var(--accent);
   line-height: 1.15;
-  margin: 4px 0 6px;
+  margin: 2px 0 4px;
 }
 
 .tracker-card-compact .counter-lbl {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text);
   margin: 0;
 }
 
 .tracker-card-compact .counter-desc {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.35;
   margin: 0;
 }
 
 .precision-countdown-compact {
-  margin: 6px 0 8px;
-  gap: 4px;
+  margin: 4px 0 6px;
+  gap: 3px;
 }
 
 .precision-countdown-compact .precision-time-unit {
-  padding: 4px 2px;
+  padding: 3px 2px;
 }
 
 .precision-countdown-compact .precision-time-val {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .precision-countdown-compact .precision-time-lbl {
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .btn-full-compact {
   width: 100%;
   justify-content: center;
-  padding: 6px 12px;
-  font-size: 12px;
-  margin-top: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  margin-top: 4px;
 }
 
 .cce-sync-badge {
@@ -1278,6 +1279,82 @@ footer a:hover {
 .next-steps-compact {
   padding: 16px 18px !important;
   margin-top: 18px !important;
+}
+
+/* Ruban horizontal compact des prochaines étapes CCE */
+.cce-steps-strip {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 14px;
+}
+
+.steps-strip-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-wrap: wrap;
+}
+
+.steps-strip-title {
+  flex: 1;
+}
+
+.steps-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.step-strip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.step-strip-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-wash);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-strip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.step-strip-date {
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.step-strip-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .next-steps-header-compact {
@@ -3015,6 +3092,59 @@ body.dark-theme .notif-link-ghost {
 
 
 @media (max-width: 768px) {
+  .tracker-row-wide {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+  .tracker-row-wide .tracker-card-compact {
+    padding: 10px 6px !important;
+  }
+  .tracker-row-wide .tracker-card-head {
+    gap: 4px !important;
+    margin-bottom: 2px !important;
+  }
+  .tracker-row-wide .tracker-icon-sm {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .tracker-row-wide .counter-lbl {
+    font-size: 10px !important;
+    letter-spacing: 0.02em !important;
+  }
+  .tracker-row-wide .counter-num {
+    font-size: clamp(14px, 3.8vw, 18px) !important;
+    margin: 2px 0 !important;
+  }
+  .tracker-row-wide .counter-desc {
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+  }
+  .tracker-row-wide .precision-countdown-compact {
+    gap: 2px !important;
+    margin: 2px 0 4px !important;
+  }
+  .tracker-row-wide .precision-time-unit {
+    padding: 2px 1px !important;
+  }
+  .tracker-row-wide .precision-time-val {
+    font-size: 12px !important;
+  }
+  .tracker-row-wide .precision-time-lbl {
+    font-size: 8px !important;
+  }
+  .tracker-row-wide .btn-full-compact {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+    margin-top: 2px !important;
+  }
+  .steps-strip-grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  .step-strip-item {
+    padding: 6px 8px !important;
+  }
   .tracker-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -3097,6 +3227,32 @@ body.dark-theme .notif-link-ghost {
 }
 
 @media (max-width: 480px) {
+  .tracker-row-wide {
+    gap: 4px !important;
+  }
+  .tracker-row-wide .tracker-card-compact {
+    padding: 8px 4px !important;
+  }
+  .tracker-row-wide .counter-lbl {
+    font-size: 8.5px !important;
+  }
+  .tracker-row-wide .counter-num {
+    font-size: 13px !important;
+  }
+  .tracker-row-wide .counter-desc {
+    font-size: 8.5px !important;
+    line-height: 1.2 !important;
+  }
+  .tracker-row-wide .precision-time-val {
+    font-size: 11px !important;
+  }
+  .tracker-row-wide .precision-time-lbl {
+    font-size: 7.5px !important;
+  }
+  .tracker-row-wide .btn-full-compact {
+    font-size: 8.5px !important;
+    padding: 3px 2px !important;
+  }
   .tracker-card {
     padding: 14px 8px;
   }
