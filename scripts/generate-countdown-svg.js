@@ -165,7 +165,7 @@ function generateCountdownSvg() {
   </g>
 </svg>`;
 
-  fs.writeFileSync(path.join(__dirname, 'countdown-live.svg'), svgContent, 'utf8');
+  fs.writeFileSync(path.join(__dirname, '..', 'countdown-live.svg'), svgContent, 'utf8');
   console.log('Successfully generated countdown-live.svg with ' + days + ' days, ' + hours + ' hours, ' + mins + ' mins, ' + secs + ' secs (' + totalMinsFormatted + ' mins total).');
 }
 

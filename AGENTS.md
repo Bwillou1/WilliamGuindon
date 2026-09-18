@@ -64,12 +64,12 @@ de documents sources dans `assets/docs/` — jamais d'une déduction.
 ### Backend (il n'y en a qu'un)
 - `workers/groq-chat.js` (Cloudflare Worker) — **unique fonction serveur**. Proxy vers Groq.
   Exposé sur `/api/groq-chat` via Cloudflare Workers.
-- `sync-cec.js` — script Node exécuté par GitHub Actions, réécrit `status.json`.
-- `generate-countdown-svg.js` — régénère `countdown-live.svg`.
-- `kg-monitor.py` — script manuel de vérification du Google Knowledge Graph (nécessite une clé API).
+- `scripts/sync-cec.js` — script Node exécuté par GitHub Actions, réécrit `status.json`.
+- `scripts/generate-countdown-svg.js` — régénère `countdown-live.svg`.
+- `scripts/kg-monitor.py` — script manuel de vérification du Google Knowledge Graph (nécessite une clé API).
 
 ### Données (source de vérité des contenus)
-- `status.json` — statut du dossier CCE, **généré automatiquement par `sync-cec.js`, ne pas éditer à la main**
+- `status.json` — statut du dossier CCE, **généré automatiquement par `scripts/sync-cec.js`, ne pas éditer à la main**
 - `data/site-state.json` — **~60 interrupteurs de sécurité / mode panique** (voir §5)
 - `data/blog.json`, `data/photos.json`, `data/biographie-audio-cues.json` — contenus
 - `sitemap.xml`, `feed.xml`, `manifest.json`, `robots.txt`

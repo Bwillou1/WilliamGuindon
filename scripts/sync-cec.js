@@ -6,7 +6,7 @@ const path = require('path');
 const REGISTRY_URL_FR = "https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/";
 const REGISTRY_URL_EN = "https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
 const WP_API_ENDPOINT = "https://www.cec.org/fr/wp-json/wp/v2/submissions/62535";
-const STATUS_FILE_PATH = path.join(__dirname, 'status.json');
+const STATUS_FILE_PATH = path.join(__dirname, '..', 'status.json');
 
 async function syncDossierStatus() {
   console.log(`[${new Date().toISOString()}] Lancement de la synchronisation CCE SEM-26-003...`);
