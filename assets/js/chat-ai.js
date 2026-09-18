@@ -307,36 +307,6 @@ DIRECTIVES DE RÉPONSE :
                     </div>
                   </div>
                 </a>
-
-                <a href="https://www.perplexity.ai/search?q=William+Guindon+SEM-26-003+Grande+Tourbiere+Blainville" class="ai-model-card" target="_blank" rel="noopener">
-                  <div class="ai-model-header">
-                    <div class="ai-model-icon">🔍</div>
-                    <div class="ai-model-info">
-                      <div class="ai-model-name">Perplexity AI ↗</div>
-                      <div class="ai-model-desc">Recherche assistée par IA avec citations directes des sources officielles.</div>
-                    </div>
-                  </div>
-                </a>
-
-                <a href="https://chatgpt.com/" class="ai-model-card" target="_blank" rel="noopener">
-                  <div class="ai-model-header">
-                    <div class="ai-model-icon">💬</div>
-                    <div class="ai-model-info">
-                      <div class="ai-model-name">ChatGPT (OpenAI) ↗</div>
-                      <div class="ai-model-desc">Ouvrez ChatGPT pour analyser le dossier avec le prompt ai.txt.</div>
-                    </div>
-                  </div>
-                </a>
-
-                <a href="https://claude.ai/new" class="ai-model-card" target="_blank" rel="noopener">
-                  <div class="ai-model-header">
-                    <div class="ai-model-icon">🧠</div>
-                    <div class="ai-model-info">
-                      <div class="ai-model-name">Claude (Anthropic) ↗</div>
-                      <div class="ai-model-desc">Analysez les documents juridiques et la décision CCE avec Claude.</div>
-                    </div>
-                  </div>
-                </a>
               </div>
 
               <!-- Section 2 : Registres & Exports pour LLM -->
