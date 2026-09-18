@@ -1,0 +1,39 @@
+name: Synchronisation automatique Wikimedia Commons
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/photos.json'
+      - 'assets/uploads/**'
+  workflow_dispatch:
+
+jobs:
+  sync-commons:
+    name: Publication vers Wikimedia Commons
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Exécution du script de téléversement Commons
+        env:
+          WIKIMEDIA_USERNAME: ${{ secrets.WIKIMEDIA_USERNAME }}
+          WIKIMEDIA_BOT_PASSWORD: ${{ secrets.WIKIMEDIA_BOT_PASSWORD }}
+        run: node scripts/sync-wikimedia-commons.js
+
+      - name: Commit et push du registre de synchronisation
+        run: |
+          git config --global user.name "Wikimedia Sync Bot"
+          git config --global user.email "bot@williamguindon.me"
+          git add data/wikimedia-sync-log.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(sync): mise à jour du registre de synchronisation Wikimedia Commons [skip ci]" && git push)
