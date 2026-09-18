@@ -45,11 +45,21 @@ async function main() {
     process.exit(0);
   }
 
+  function resolveLocalPath(url) {
+    if (!url || typeof url !== 'string') return null;
+    const clean = url.split('?')[0].trim().replace(/^\//, '');
+    const candidate = path.join(__dirname, '..', clean);
+    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+      return candidate;
+    }
+    return null;
+  }
+
   const photos = JSON.parse(fs.readFileSync(PHOTOS_FILE, 'utf8'));
   const toUpload = photos.filter(p => {
     const isSynced = syncLog.synced.some(s => s.id === p.id);
-    const hasLocalFile = p.imageUrl && fs.existsSync(path.join(__dirname, '..', p.imageUrl.split('?')[0]));
-    return !isSynced && hasLocalFile;
+    const localPath = resolveLocalPath(p.imageUrl);
+    return !isSynced && Boolean(localPath);
   });
 
   if (toUpload.length === 0) {
@@ -127,7 +137,8 @@ async function main() {
   const authorAccount = USERNAME.includes('@') ? USERNAME.split('@')[0] : USERNAME;
 
   for (const item of toUpload) {
-    const filePath = path.join(__dirname, '..', item.imageUrl.split('?')[0]);
+    const filePath = resolveLocalPath(item.imageUrl);
+    if (!filePath) continue;
     const ext = path.extname(filePath).toLowerCase();
     
     // Nettoyage du titre pour respecter les conventions Wikimedia Commons

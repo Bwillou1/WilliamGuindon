@@ -517,6 +517,40 @@
         startOrToggleAudio();
       });
     }
+
+    // 5. Gestionnaire d'onglets pour les flux officiels (Facebook / YouTube)
+    const tabFb = document.getElementById('tab-facebook');
+    const tabYt = document.getElementById('tab-youtube');
+    const panelFb = document.getElementById('social-panel-facebook');
+    const panelYt = document.getElementById('social-panel-youtube');
+
+    function selectSocialTab(target) {
+      if (!tabFb || !tabYt || !panelFb || !panelYt) return;
+      if (target === 'facebook') {
+        tabFb.classList.add('active');
+        tabFb.setAttribute('aria-selected', 'true');
+        tabYt.classList.remove('active');
+        tabYt.setAttribute('aria-selected', 'false');
+        panelFb.removeAttribute('hidden');
+        panelFb.classList.add('active');
+        panelYt.setAttribute('hidden', '');
+        panelYt.classList.remove('active');
+      } else {
+        tabYt.classList.add('active');
+        tabYt.setAttribute('aria-selected', 'true');
+        tabFb.classList.remove('active');
+        tabFb.setAttribute('aria-selected', 'false');
+        panelYt.removeAttribute('hidden');
+        panelYt.classList.add('active');
+        panelFb.setAttribute('hidden', '');
+        panelFb.classList.remove('active');
+      }
+    }
+
+    if (tabFb && tabYt) {
+      tabFb.addEventListener('click', () => selectSocialTab('facebook'));
+      tabYt.addEventListener('click', () => selectSocialTab('youtube'));
+    }
   }
 
   if (document.readyState === 'loading') {
