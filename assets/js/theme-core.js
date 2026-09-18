@@ -1084,6 +1084,25 @@
 
   let searchModalEl = null;
   let activeSearchIdx = 0;
+  let pagefindInstance = null;
+  let pagefindLoading = false;
+
+  async function getPagefind() {
+    if (pagefindInstance) return pagefindInstance;
+    if (pagefindLoading) return null;
+    pagefindLoading = true;
+    try {
+      const pf = await import('/pagefind/pagefind.js');
+      await pf.init();
+      pagefindInstance = pf;
+      return pagefindInstance;
+    } catch (e) {
+      console.warn('[Pagefind] API non accessible, repli sur recherche intégrée:', e);
+      return null;
+    } finally {
+      pagefindLoading = false;
+    }
+  }
 
   function createQuickSearchModal() {
     if (searchModalEl) return searchModalEl;
@@ -1102,52 +1121,110 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" class="quick-search-input" id="quick-search-input" placeholder="Rechercher une page, loi, date, rapport BAPE, fait clé..." autocomplete="off" spellcheck="false" aria-label="Champ de recherche">
+          <input type="text" class="quick-search-input" id="quick-search-input" placeholder="Rechercher sur tout le site (lois, BAPE, CCE, faits, articles)..." autocomplete="off" spellcheck="false" aria-label="Champ de recherche">
           <button type="button" class="quick-search-close-btn" aria-label="Fermer la recherche"><kbd>ESC</kbd></button>
         </div>
         <div class="quick-search-body">
           <div class="quick-search-results" id="quick-search-results"></div>
         </div>
         <div class="quick-search-footer">
-          <span><kbd class="qs-kbd">↑</kbd><kbd class="qs-kbd">↓</kbd> Naviguer</span>
-          <span><kbd class="qs-kbd">↵</kbd> Ouvrir</span>
-          <span><kbd class="qs-kbd">ESC</kbd> Fermer</span>
+          <div class="pagefind-badge" title="Recherche plein-texte statique ultra-rapide">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Propulsé par Pagefind</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span><kbd class="qs-kbd">↑</kbd><kbd class="qs-kbd">↓</kbd> Naviguer</span>
+            <span><kbd class="qs-kbd">↵</kbd> Ouvrir</span>
+            <span><kbd class="qs-kbd">ESC</kbd> Fermer</span>
+          </div>
         </div>
       </div>
     `;
     document.body.appendChild(searchModalEl);
+
+    // Préchargement de Pagefind en tâche de fond dès la création du modal
+    getPagefind();
 
     const input = searchModalEl.querySelector('#quick-search-input');
     const resultsContainer = searchModalEl.querySelector('#quick-search-results');
     const backdrop = searchModalEl.querySelector('.quick-search-backdrop');
     const closeBtn = searchModalEl.querySelector('.quick-search-close-btn');
 
-    function renderResults(query) {
-      const q = (query || '').trim().toLowerCase();
-      const filtered = q === '' ? SEARCH_INDEX.slice(0, 7) : SEARCH_INDEX.filter(item => {
-        return item.title.toLowerCase().includes(q) ||
-               item.desc.toLowerCase().includes(q) ||
-               item.tag.toLowerCase().includes(q) ||
-               item.url.toLowerCase().includes(q);
-      });
+    let debounceTimer = null;
 
+    async function renderResults(query) {
+      const q = (query || '').trim();
       activeSearchIdx = 0;
       resultsContainer.textContent = '';
+
+      if (q === '') {
+        // Affichage des suggestions de démarrage
+        SEARCH_INDEX.slice(0, 6).forEach((item, idx) => {
+          appendResultItem({
+            url: item.url,
+            title: item.title,
+            desc: item.desc,
+            tag: item.tag,
+            isHtml: false
+          }, idx);
+        });
+        return;
+      }
+
+      // Tentative via Pagefind
+      const pf = await getPagefind();
+      if (pf) {
+        try {
+          const searchRes = await pf.search(q);
+          if (searchRes && searchRes.results && searchRes.results.length > 0) {
+            const rawData = await Promise.all(searchRes.results.slice(0, 8).map(r => r.data()));
+            rawData.forEach((item, idx) => {
+              const cleanTitle = item.meta?.title || item.url.split('/').pop().replace('.html', '') || 'Document';
+              let pageTag = 'Page';
+              if (item.url.includes('docs/')) pageTag = 'Preuve';
+              else if (item.url.includes('stablex') || item.url.includes('registre')) pageTag = 'Dossier';
+              else if (item.url.includes('blog')) pageTag = 'Blog';
+              else if (item.url.includes('presse') || item.url.includes('communique')) pageTag = 'Presse';
+              else if (item.url.includes('loi') || item.url.includes('politique')) pageTag = 'Droit';
+
+              appendResultItem({
+                url: item.url,
+                title: cleanTitle,
+                desc: item.excerpt || 'Résultat documentaire indexé',
+                tag: pageTag,
+                isHtml: true
+              }, idx);
+            });
+            return;
+          }
+        } catch (pfErr) {
+          console.warn('[Pagefind] Erreur requête:', pfErr);
+        }
+      }
+
+      // Repli sur l'index de secours
+      const qLower = q.toLowerCase();
+      const filtered = SEARCH_INDEX.filter(item => {
+        return item.title.toLowerCase().includes(qLower) ||
+               item.desc.toLowerCase().includes(qLower) ||
+               item.tag.toLowerCase().includes(qLower) ||
+               item.url.toLowerCase().includes(qLower);
+      });
 
       if (filtered.length === 0) {
         const emptyDiv = document.createElement('div');
         emptyDiv.className = 'quick-search-empty';
 
         const p1 = document.createElement('p');
-        p1.appendChild(document.createTextNode('Aucun résultat pour « '));
+        p1.appendChild(document.createTextNode('Aucun résultat trouvé pour « '));
         const strong = document.createElement('strong');
-        strong.textContent = query;
+        strong.textContent = q;
         p1.appendChild(strong);
         p1.appendChild(document.createTextNode(' »'));
 
         const p2 = document.createElement('p');
         p2.className = 'quick-search-empty-sub';
-        p2.textContent = 'Essayez un mot-clé comme BAPE 371, Loi 93, Cadmium, CCE ou Contact.';
+        p2.textContent = 'Essayez un mot-clé comme BAPE 371, Cadmium, Loi 93, Tourbière, CCE ou 16 octobre.';
 
         emptyDiv.appendChild(p1);
         emptyDiv.appendChild(p2);
@@ -1156,54 +1233,73 @@
       }
 
       filtered.forEach((item, idx) => {
-        const a = document.createElement('a');
-        a.href = item.url;
-        a.className = `quick-search-item ${idx === 0 ? 'selected' : ''}`;
-        a.setAttribute('data-idx', String(idx));
-
-        const leftDiv = document.createElement('div');
-        leftDiv.className = 'qs-item-left';
-
-        const tagSpan = document.createElement('span');
-        tagSpan.className = 'qs-item-tag';
-        tagSpan.textContent = item.tag;
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'qs-item-content';
-
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'qs-item-title';
-        titleDiv.textContent = item.title;
-
-        const descDiv = document.createElement('div');
-        descDiv.className = 'qs-item-desc';
-        descDiv.textContent = item.desc;
-
-        contentDiv.appendChild(titleDiv);
-        contentDiv.appendChild(descDiv);
-
-        leftDiv.appendChild(tagSpan);
-        leftDiv.appendChild(contentDiv);
-
-        const arrowSpan = document.createElement('span');
-        arrowSpan.className = 'qs-item-arrow';
-        arrowSpan.textContent = '↵';
-
-        a.appendChild(leftDiv);
-        a.appendChild(arrowSpan);
-
-        a.addEventListener('mouseenter', () => {
-          resultsContainer.querySelectorAll('.quick-search-item').forEach(i => i.classList.remove('selected'));
-          a.classList.add('selected');
-          activeSearchIdx = idx;
-        });
-
-        resultsContainer.appendChild(a);
+        appendResultItem({
+          url: item.url,
+          title: item.title,
+          desc: item.desc,
+          tag: item.tag,
+          isHtml: false
+        }, idx);
       });
     }
 
+    function appendResultItem(item, idx) {
+      const a = document.createElement('a');
+      a.href = item.url;
+      a.className = `quick-search-item ${idx === 0 ? 'selected' : ''}`;
+      a.setAttribute('data-idx', String(idx));
+
+      const leftDiv = document.createElement('div');
+      leftDiv.className = 'qs-item-left';
+
+      const tagSpan = document.createElement('span');
+      tagSpan.className = 'qs-item-tag';
+      tagSpan.textContent = item.tag;
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'qs-item-content';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'qs-item-title';
+      titleDiv.textContent = item.title;
+
+      const descDiv = document.createElement('div');
+      descDiv.className = 'qs-item-desc';
+      if (item.isHtml) {
+        // Nettoyage strict : seuls les tags <mark> de Pagefind sont conservés
+        const sanitized = item.desc.replace(/<(?!\/?mark\b)[^>]*>/gi, '');
+        descDiv.innerHTML = sanitized;
+      } else {
+        descDiv.textContent = item.desc;
+      }
+
+      contentDiv.appendChild(titleDiv);
+      contentDiv.appendChild(descDiv);
+
+      leftDiv.appendChild(tagSpan);
+      leftDiv.appendChild(contentDiv);
+
+      const arrowSpan = document.createElement('span');
+      arrowSpan.className = 'qs-item-arrow';
+      arrowSpan.textContent = '↵';
+
+      a.appendChild(leftDiv);
+      a.appendChild(arrowSpan);
+
+      a.addEventListener('mouseenter', () => {
+        resultsContainer.querySelectorAll('.quick-search-item').forEach(i => i.classList.remove('selected'));
+        a.classList.add('selected');
+        activeSearchIdx = idx;
+      });
+
+      resultsContainer.appendChild(a);
+    }
+
     input.addEventListener('input', () => {
-      renderResults(input.value);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        renderResults(input.value);
+      }, 150);
     });
 
     input.addEventListener('keydown', (e) => {
@@ -1235,6 +1331,22 @@
 
     backdrop.addEventListener('click', closeQuickSearch);
     closeBtn.addEventListener('click', closeQuickSearch);
+
+    // Initialisation du comportement accordéon sur les sous-menus hiérarchiques
+    document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+      const submenus = dropdown.querySelectorAll('.nav-submenu');
+      submenus.forEach(submenu => {
+        submenu.addEventListener('toggle', () => {
+          if (submenu.open) {
+            submenus.forEach(other => {
+              if (other !== submenu && other.open) {
+                other.removeAttribute('open');
+              }
+            });
+          }
+        });
+      });
+    });
 
     return searchModalEl;
   }
