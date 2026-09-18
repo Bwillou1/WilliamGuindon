@@ -92,9 +92,9 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 3. Filtrer par en-tête Content-Type (HTML, CSS, JS, Images, Fonts, JSON, PDF, XML, Text)
+  // 3. Filtrer par en-tête Content-Type (HTML, CSS, JS, Images, Fonts, JSON, PDF, XML, Text, WASM/Binaires statiques)
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
-  const eligibleContentType = /^(text\/(html|css|javascript|plain|xml)|application\/(javascript|json|pdf|xml)|image\/|font\/)/i.test(contentType);
+  const eligibleContentType = /^(text\/(html|css|javascript|plain|xml)|application\/(javascript|json|pdf|xml|wasm|octet-stream)|image\/|font\/)/i.test(contentType);
 
   return eligibleContentType;
 }

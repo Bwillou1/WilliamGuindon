@@ -1084,24 +1084,27 @@
 
   let searchModalEl = null;
   let activeSearchIdx = 0;
-  let pagefindInstance = null;
-  let pagefindLoading = false;
+  let pagefindPromise = null;
 
   async function getPagefind() {
-    if (pagefindInstance) return pagefindInstance;
-    if (pagefindLoading) return null;
-    pagefindLoading = true;
-    try {
-      const pf = await import('/pagefind/pagefind.js');
-      await pf.init();
-      pagefindInstance = pf;
-      return pagefindInstance;
-    } catch (e) {
-      console.warn('[Pagefind] API non accessible, repli sur recherche intégrée:', e);
-      return null;
-    } finally {
-      pagefindLoading = false;
+    if (!pagefindPromise) {
+      pagefindPromise = (async () => {
+        try {
+          const pf = await import('/pagefind/pagefind.js');
+          if (pf.options) {
+            await pf.options({ basePath: '/pagefind/' });
+          }
+          if (pf.init) {
+            await pf.init();
+          }
+          return pf;
+        } catch (e) {
+          console.warn('[Pagefind] API non accessible, repli sur recherche intégrée:', e);
+          return null;
+        }
+      })();
     }
+    return pagefindPromise;
   }
 
   function createQuickSearchModal() {
@@ -1373,6 +1376,13 @@
   function initQuickSearch() {
     window.openQuickSearch = openQuickSearch;
     window.closeQuickSearch = closeQuickSearch;
+
+    // Préchargement asynchrone non-bloquant de Pagefind pour réponse instantanée
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => getPagefind(), { timeout: 2000 });
+    } else {
+      setTimeout(() => getPagefind(), 800);
+    }
 
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
