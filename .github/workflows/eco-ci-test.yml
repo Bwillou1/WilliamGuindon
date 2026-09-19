@@ -3,9 +3,14 @@ name: Eco-CI Test
 on:
   workflow_dispatch: # Permet de lancer le test manuellement d'un clic
 
+permissions:
+  contents: read
+
 jobs:
   energy-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

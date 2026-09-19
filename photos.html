@@ -432,10 +432,13 @@
 
   function getOptimizedImageUrl(url, width = 600) {
     if (!url || typeof url !== 'string') return url;
-    if (url.includes('ik.imagekit.io')) {
-      const sep = url.includes('?') ? '&' : '?';
-      return `${url}${sep}tr=w-${width},f-auto,q-85`;
-    }
+    try {
+      const parsed = new URL(url, window.location.origin);
+      if (parsed.hostname === 'ik.imagekit.io' || parsed.hostname.endsWith('.imagekit.io')) {
+        parsed.searchParams.set('tr', `w-${width},f-auto,q-85`);
+        return parsed.toString();
+      }
+    } catch (_) {}
     return url;
   }
 

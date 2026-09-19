@@ -1035,6 +1035,53 @@
   }
 
   // ====================================================
+  // SÉCURITÉ : ASSAINISSEMENT ANTI-XSS DE L'ÉDITEUR
+  // ====================================================
+  function isSafeUrlScheme(rawUrl) {
+    if (!rawUrl || typeof rawUrl !== 'string') return true;
+    const trimmed = rawUrl.trim();
+    if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./') || trimmed.startsWith('../')) {
+      return true;
+    }
+    try {
+      const parsed = new URL(trimmed, 'https://williamguindon.me');
+      const safeProtocols = ['http:', 'https:', 'mailto:', 'tel:'];
+      return safeProtocols.includes(parsed.protocol);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function sanitizeEditorHtml(rawInput) {
+    if (!rawInput || typeof rawInput !== 'string') return document.createDocumentFragment();
+    const parser = new DOMParser();
+    const cleanDoc = parser.parseFromString(rawInput, "text/html");
+    cleanDoc.querySelectorAll("script, iframe, object, embed, style, base, link, meta, applet, form").forEach(el => el.remove());
+    
+    cleanDoc.body.querySelectorAll("*").forEach(el => {
+      for (let i = el.attributes.length - 1; i >= 0; i--) {
+        const attr = el.attributes[i];
+        const attrName = attr.name.toLowerCase();
+        if (attrName.startsWith("on")) {
+          el.removeAttribute(attr.name);
+          continue;
+        }
+        if (['href', 'src', 'action', 'formaction', 'xlink:href', 'data'].includes(attrName)) {
+          if (!isSafeUrlScheme(attr.value)) {
+            el.removeAttribute(attr.name);
+          }
+        }
+      }
+    });
+
+    const frag = document.createDocumentFragment();
+    while (cleanDoc.body.firstChild) {
+      frag.appendChild(cleanDoc.body.firstChild);
+    }
+    return frag;
+  }
+
+  // ====================================================
   // ÉDITEUR WYSIWYG INTÉGRÉ
   // ====================================================
   function initWysiwyg(boxId, hiddenTextareaId) {
@@ -1098,21 +1145,8 @@
           toggleSourceBtn.textContent = "👁️ Rendu Visuel";
           rawTextarea.focus();
         } else {
-          // Assainissement de sécurité anti-XSS avant réinjection dans l'éditeur visuel (CodeQL Alert #35)
-          const parser = new DOMParser();
-          const cleanDoc = parser.parseFromString(rawTextarea.value || "", "text/html");
-          cleanDoc.querySelectorAll("script, iframe, object, embed, style, base, link, meta").forEach(el => el.remove());
-          cleanDoc.body.querySelectorAll("*").forEach(el => {
-            for (let i = el.attributes.length - 1; i >= 0; i--) {
-              const attr = el.attributes[i];
-              const attrName = attr.name.toLowerCase();
-              const attrVal = attr.value.trim().toLowerCase();
-              if (attrName.startsWith("on") || attrVal.startsWith("javascript:") || attrVal.startsWith("data:text/html")) {
-                el.removeAttribute(attr.name);
-              }
-            }
-          });
-          editor.replaceChildren(...cleanDoc.body.childNodes);
+          // Assainissement de sécurité anti-XSS avant réinjection dans l'éditeur visuel (CodeQL Alerts #37, #38)
+          editor.replaceChildren(sanitizeEditorHtml(rawTextarea.value || ""));
           rawTextarea.style.display = "none";
           editor.style.display = "block";
           toggleSourceBtn.classList.remove("active");
@@ -1125,10 +1159,7 @@
 
     return {
       setHtml(html) {
-        const parser = new DOMParser();
-        const cleanDoc = parser.parseFromString(html || "", "text/html");
-        cleanDoc.querySelectorAll("script, iframe, object, embed, style, base, link, meta").forEach(el => el.remove());
-        editor.replaceChildren(...cleanDoc.body.childNodes);
+        editor.replaceChildren(sanitizeEditorHtml(html || ""));
         rawTextarea.value = html || "";
         if (hiddenTextarea) hiddenTextarea.value = html || "";
       },

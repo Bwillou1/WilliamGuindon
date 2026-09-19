@@ -1268,12 +1268,29 @@
 
       const descDiv = document.createElement('div');
       descDiv.className = 'qs-item-desc';
-      if (item.isHtml) {
-        // Nettoyage strict : seuls les tags <mark> de Pagefind sont conservés
-        const sanitized = item.desc.replace(/<(?!\/?mark\b)[^>]*>/gi, '');
-        descDiv.innerHTML = sanitized;
+      if (item.isHtml && typeof item.desc === 'string') {
+        // Rendu DOM sécurisé : conversion contrôlée préservant uniquement les balises <mark>
+        try {
+          const parsedDoc = new DOMParser().parseFromString(item.desc, 'text/html');
+          const appendSafeNodes = (source, target) => {
+            for (const node of Array.from(source.childNodes)) {
+              if (node.nodeType === Node.TEXT_NODE) {
+                target.appendChild(document.createTextNode(node.textContent || ''));
+              } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === 'mark') {
+                const mark = document.createElement('mark');
+                appendSafeNodes(node, mark);
+                target.appendChild(mark);
+              } else if (node.nodeType === Node.ELEMENT_NODE) {
+                appendSafeNodes(node, target);
+              }
+            }
+          };
+          appendSafeNodes(parsedDoc.body, descDiv);
+        } catch (_) {
+          descDiv.textContent = item.desc;
+        }
       } else {
-        descDiv.textContent = item.desc;
+        descDiv.textContent = item.desc || '';
       }
 
       contentDiv.appendChild(titleDiv);
@@ -1455,7 +1472,7 @@
   }
   routeAiCrawlers();
 
-  async function forcePurgeAndReload() {
+  async function forcePurgeAndReload(targetUrl) {
     try {
       // 1. Vider le sessionStorage
       try { sessionStorage.clear(); } catch (_) {}
@@ -1476,10 +1493,29 @@
     }
 
     // 4. Forcer le rechargement immédiat sans cache avec horodatage anti-cache
-    const url = new URL(window.location.href);
-    url.searchParams.set('_reload', Date.now().toString());
-    window.location.href = url.toString();
+    if (targetUrl) {
+      window.location.replace(targetUrl);
+    } else {
+      const url = new URL(window.location.href);
+      url.searchParams.set('_reload', Date.now().toString());
+      window.location.href = url.toString();
+    }
   }
+
+  // Détection du paramètre d'URL spécial (?reload, ?purge, ?reset, ?nuke)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('reload') || urlParams.has('purge') || urlParams.has('nuke') || urlParams.has('reset')) {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('reload');
+      cleanUrl.searchParams.delete('purge');
+      cleanUrl.searchParams.delete('nuke');
+      cleanUrl.searchParams.delete('reset');
+      cleanUrl.searchParams.set('_v', Date.now().toString());
+
+      forcePurgeAndReload(cleanUrl.toString());
+    }
+  } catch (_) {}
 
   // Écouteur global délégué pour le bouton de rechargement/purge complet
   document.addEventListener('click', (e) => {

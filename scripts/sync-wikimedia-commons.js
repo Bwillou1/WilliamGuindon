@@ -90,7 +90,7 @@ async function main() {
   }
 
   // 2. Connexion avec mot de passe de robot
-  console.log(`2. Authentification sous le compte ${USERNAME}...`);
+  console.log('2. Authentification du robot Wikimedia Commons...');
   const loginBody = new URLSearchParams({
     action: 'login',
     lgname: USERNAME,
@@ -116,7 +116,7 @@ async function main() {
 
   const loginResult = await loginAttemptRes.json();
   if (loginResult.login?.result !== 'Success') {
-    throw new Error(`Échec d'authentification Wikimedia Commons: ${loginResult.login?.reason || JSON.stringify(loginResult)}`);
+    throw new Error(`Échec d'authentification Wikimedia Commons: ${loginResult.login?.reason || 'Identifiants rejetés'}`);
   }
   console.log('✔ Authentification Wikimedia réussie.');
 
