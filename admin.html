@@ -5,7 +5,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'self'; object-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://ik.imagekit.io https://*.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self'; object-src 'none';">
 
 <title>Espace Rédaction & Administration — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
@@ -603,10 +603,11 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Image de couverture</label>
+            <label class="form-label">Image de couverture (Fichier ou URL ImageKit)</label>
+            <input type="url" id="blog-url-input" class="form-control" placeholder="https://ik.imagekit.io/williamguindon/... (optionnel)" style="margin-bottom:8px;">
             <div class="file-dropzone" id="blog-dropzone">
               <input type="file" id="blog-file" accept="image/*" style="display:none;">
-              <span id="blog-drop-label">Cliquez ou glissez une photo ici depuis votre appareil</span>
+              <span id="blog-drop-label">Ou cliquez / glissez une photo locale depuis votre appareil</span>
               <img id="blog-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
             </div>
             <input type="hidden" id="blog-existing-image" value="">
@@ -711,10 +712,11 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Sélectionner la photo <span id="photo-required-indicator">*</span></label>
+            <label class="form-label">Photo (Fichier HD ou URL ImageKit) <span id="photo-required-indicator">*</span></label>
+            <input type="url" id="photo-url-input" class="form-control" placeholder="https://ik.imagekit.io/williamguindon/... (optionnel)" style="margin-bottom:8px;">
             <div class="file-dropzone" id="photo-dropzone">
               <input type="file" id="photo-file" accept="image/*" style="display:none;">
-              <span id="photo-drop-label">Cliquez ou choisissez une photo haute définition (JPG, PNG, WebP)</span>
+              <span id="photo-drop-label">Ou cliquez / choisissez une photo locale (JPG, PNG, WebP)</span>
               <img id="photo-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
             </div>
             <input type="hidden" id="photo-existing-image" value="">
@@ -1295,6 +1297,7 @@
       if (form) form.reset();
       document.getElementById("blog-edit-id").value = "";
       document.getElementById("blog-existing-image").value = "";
+      if (document.getElementById("blog-url-input")) document.getElementById("blog-url-input").value = "";
       document.getElementById("blog-edit-banner").style.display = "none";
       document.getElementById("blog-panel-heading").textContent = "Rédiger un Article de Blog";
       document.getElementById("btn-publish-blog").textContent = "Publier l'article sur le Blog";
@@ -1310,6 +1313,7 @@
       if (form) form.reset();
       document.getElementById("photo-edit-id").value = "";
       document.getElementById("photo-existing-image").value = "";
+      if (document.getElementById("photo-url-input")) document.getElementById("photo-url-input").value = "";
       document.getElementById("photo-edit-banner").style.display = "none";
       document.getElementById("photo-panel-heading").textContent = "Ajouter une Photo à la Galerie";
       document.getElementById("btn-publish-photo").textContent = "Ajouter la photo à la Galerie";
@@ -1360,12 +1364,13 @@
           const tags = rawTags.split(",").map(t => t.trim()).filter(Boolean);
           const file = document.getElementById("blog-file").files[0];
           const existingCover = document.getElementById("blog-existing-image").value;
+          const urlInput = document.getElementById("blog-url-input") ? document.getElementById("blog-url-input").value.trim() : "";
 
           if (!content || content.trim() === "<p></p>" || content.trim() === "<p><br></p>") {
             throw new Error("Veuillez rédiger le contenu de l'article.");
           }
 
-          let coverImage = existingCover || "tourbiere.jpg";
+          let coverImage = urlInput || existingCover || "tourbiere.jpg";
 
           if (file) {
             const cleanName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -1454,12 +1459,13 @@
           const description = document.getElementById("photo-desc").value.trim();
           const file = document.getElementById("photo-file").files[0];
           const existingUrl = document.getElementById("photo-existing-image").value;
+          const urlInput = document.getElementById("photo-url-input") ? document.getElementById("photo-url-input").value.trim() : "";
 
-          if (!isEditing && !file) {
-            throw new Error("Veuillez sélectionner un fichier photo.");
+          if (!isEditing && !file && !urlInput && !existingUrl) {
+            throw new Error("Veuillez sélectionner un fichier photo ou saisir une URL ImageKit.");
           }
 
-          let photoUrl = existingUrl || "";
+          let photoUrl = urlInput || existingUrl || "";
 
           if (file) {
             const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -1638,6 +1644,9 @@
               document.getElementById("blog-date").value = post.date || today;
               document.getElementById("blog-summary").value = post.summary || "";
               document.getElementById("blog-existing-image").value = post.coverImage || "";
+              if (document.getElementById("blog-url-input")) {
+                document.getElementById("blog-url-input").value = (post.coverImage && (post.coverImage.startsWith("http://") || post.coverImage.startsWith("https://"))) ? post.coverImage : "";
+              }
               document.getElementById("blog-tags").value = (post.tags || []).join(", ");
               if (blogWysiwyg) blogWysiwyg.setHtml(post.content || "");
               
@@ -1663,6 +1672,9 @@
               document.getElementById("photo-license").value = ph.license || "CC BY-NC-ND 4.0";
               document.getElementById("photo-desc").value = ph.description || "";
               document.getElementById("photo-existing-image").value = ph.imageUrl || "";
+              if (document.getElementById("photo-url-input")) {
+                document.getElementById("photo-url-input").value = (ph.imageUrl && (ph.imageUrl.startsWith("http://") || ph.imageUrl.startsWith("https://"))) ? ph.imageUrl : "";
+              }
               
               if (ph.imageUrl) {
                 photoPrev.src = ph.imageUrl;

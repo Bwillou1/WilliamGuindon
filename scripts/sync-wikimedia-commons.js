@@ -58,8 +58,9 @@ async function main() {
   const photos = JSON.parse(fs.readFileSync(PHOTOS_FILE, 'utf8'));
   const toUpload = photos.filter(p => {
     const isSynced = syncLog.synced.some(s => s.id === p.id);
+    const isRemote = p.imageUrl && (p.imageUrl.startsWith('http://') || p.imageUrl.startsWith('https://'));
     const localPath = resolveLocalPath(p.imageUrl);
-    return !isSynced && Boolean(localPath);
+    return !isSynced && (isRemote || Boolean(localPath));
   });
 
   if (toUpload.length === 0) {
@@ -137,9 +138,38 @@ async function main() {
   const authorAccount = USERNAME.includes('@') ? USERNAME.split('@')[0] : USERNAME;
 
   for (const item of toUpload) {
-    const filePath = resolveLocalPath(item.imageUrl);
-    if (!filePath) continue;
-    const ext = path.extname(filePath).toLowerCase();
+    let fileBuffer;
+    let ext = '.jpg';
+    const isRemote = item.imageUrl && (item.imageUrl.startsWith('http://') || item.imageUrl.startsWith('https://'));
+
+    if (isRemote) {
+      console.log(`\nTéléchargement de l'image distante (${item.imageUrl})...`);
+      try {
+        const imgFetch = await fetch(item.imageUrl, {
+          headers: { 'User-Agent': USER_AGENT }
+        });
+        if (!imgFetch.ok) {
+          console.error(`❌ Impossible de récupérer l'image distante: ${item.imageUrl} (HTTP ${imgFetch.status})`);
+          continue;
+        }
+        const arrayBuf = await imgFetch.arrayBuffer();
+        fileBuffer = Buffer.from(arrayBuf);
+        try {
+          const urlPath = new URL(item.imageUrl).pathname;
+          ext = path.extname(urlPath).toLowerCase() || '.jpg';
+        } catch {
+          ext = '.jpg';
+        }
+      } catch (fErr) {
+        console.error(`❌ Erreur réseau lors du téléchargement de l'image distante: ${fErr.message}`);
+        continue;
+      }
+    } else {
+      const filePath = resolveLocalPath(item.imageUrl);
+      if (!filePath) continue;
+      ext = path.extname(filePath).toLowerCase() || '.jpg';
+      fileBuffer = fs.readFileSync(filePath);
+    }
     
     // Nettoyage du titre pour respecter les conventions Wikimedia Commons
     const cleanTitle = (item.title || 'Document photographique')
@@ -148,9 +178,8 @@ async function main() {
       .trim();
 
     const commonsFilename = `William_Guindon_-_${cleanTitle}${ext}`;
-    console.log(`\nTéléversement de : ${commonsFilename}...`);
+    console.log(`Téléversement de : ${commonsFilename}...`);
 
-    const fileBuffer = fs.readFileSync(filePath);
     const blob = new Blob([fileBuffer]);
 
     const wikitext = `== {{int:filedesc}} ==
