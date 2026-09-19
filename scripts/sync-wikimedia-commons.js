@@ -182,6 +182,12 @@ async function main() {
 
     const blob = new Blob([fileBuffer]);
 
+    // Détermination du modèle de licence pour Wikimedia Commons (CC BY ou CC BY-SA)
+    let licenseTemplate = '{{self|cc-by-sa-4.0}}';
+    if (item.license && item.license.toUpperCase().includes('CC BY 4.0') && !item.license.toUpperCase().includes('SA')) {
+      licenseTemplate = '{{self|cc-by-4.0}}';
+    }
+
     const wikitext = `== {{int:filedesc}} ==
 {{Information
 |description={{fr|1=${item.description || item.title || 'Photographie de terrain par William Guindon'}}}
@@ -193,7 +199,7 @@ async function main() {
 }}
 
 == {{int:license-header}} ==
-{{self|cc-by-sa-4.0}}
+${licenseTemplate}
 
 [[Category:William Guindon]]
 [[Category:Grande Tourbière de Blainville]]
