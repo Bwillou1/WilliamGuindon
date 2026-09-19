@@ -1455,6 +1455,46 @@
   }
   routeAiCrawlers();
 
+  async function forcePurgeAndReload() {
+    try {
+      // 1. Vider le sessionStorage
+      try { sessionStorage.clear(); } catch (_) {}
+
+      // 2. Supprimer tous les caches d'assets du CacheStorage (PWA / SW)
+      if ('caches' in window) {
+        const cacheKeys = await caches.keys();
+        await Promise.all(cacheKeys.map(k => caches.delete(k)));
+      }
+
+      // 3. Désenregistrer tous les Service Workers actifs
+      if (navigator.serviceWorker) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(r => r.unregister()));
+      }
+    } catch (err) {
+      console.warn('Purge du cache partielle :', err);
+    }
+
+    // 4. Forcer le rechargement immédiat sans cache avec horodatage anti-cache
+    const url = new URL(window.location.href);
+    url.searchParams.set('_reload', Date.now().toString());
+    window.location.href = url.toString();
+  }
+
+  // Écouteur global délégué pour le bouton de rechargement/purge complet
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('#btn-force-reload, .js-force-reload, [data-action="force-reload"]');
+    if (trigger) {
+      e.preventDefault();
+      trigger.style.opacity = '0.6';
+      trigger.style.pointerEvents = 'none';
+      if (trigger.tagName === 'BUTTON' || trigger.tagName === 'A') {
+        trigger.textContent = '🔄 Rechargement...';
+      }
+      forcePurgeAndReload();
+    }
+  });
+
   function handleLowBandwidth() {
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (!conn) return;
