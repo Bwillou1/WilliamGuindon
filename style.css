@@ -6502,9 +6502,16 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 .social-tabs-nav {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 26px;
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 6px 10px;
+}
+.social-tabs-nav::-webkit-scrollbar {
+  display: none;
 }
 .social-tab-btn {
   display: inline-flex;
@@ -6520,6 +6527,25 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 640px) {
+  .social-tabs-nav {
+    justify-content: flex-start;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: -16px;
+    margin-right: -16px;
+    scroll-snap-type: x mandatory;
+  }
+  .social-tab-btn {
+    scroll-snap-align: center;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+  }
 }
 .social-tab-btn:hover {
   border-color: var(--text-muted);
