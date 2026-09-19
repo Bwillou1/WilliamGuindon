@@ -120,10 +120,17 @@
     text-align: center;
     background: var(--bg);
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
   }
-  .file-dropzone:hover {
+  .file-dropzone:hover, .file-dropzone.dragover {
     border-color: var(--accent);
+    background: rgba(34, 197, 94, 0.08);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.2);
+    transform: scale(1.005);
+  }
+  .file-dropzone.dragover * {
+    pointer-events: none;
   }
   .file-preview {
     max-height: 180px;
@@ -606,11 +613,11 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Image de couverture (Fichier ou URL ImageKit)</label>
+            <label class="form-label">Image de couverture (Fichier depuis l'appareil ou URL ImageKit)</label>
             <input type="url" id="blog-url-input" class="form-control" placeholder="https://ik.imagekit.io/williamguindon/... (optionnel)" style="margin-bottom:8px;">
             <div class="file-dropzone" id="blog-dropzone">
               <input type="file" id="blog-file" accept="image/*" style="display:none;">
-              <span id="blog-drop-label">Ou cliquez / glissez une photo locale depuis votre appareil</span>
+              <span id="blog-drop-label">📸 <strong>Glissez-déposez une photo locale ici</strong> ou cliquez pour parcourir</span>
               <img id="blog-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
             </div>
             <input type="hidden" id="blog-existing-image" value="">
@@ -715,11 +722,11 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Photo (Fichier HD ou URL ImageKit) <span id="photo-required-indicator">*</span></label>
+            <label class="form-label">Photo (Fichier HD depuis l'appareil ou URL ImageKit) <span id="photo-required-indicator">*</span></label>
             <input type="url" id="photo-url-input" class="form-control" placeholder="https://ik.imagekit.io/williamguindon/... (optionnel)" style="margin-bottom:8px;">
             <div class="file-dropzone" id="photo-dropzone">
               <input type="file" id="photo-file" accept="image/*" style="display:none;">
-              <span id="photo-drop-label">Ou cliquez / choisissez une photo locale (JPG, PNG, WebP)</span>
+              <span id="photo-drop-label">📸 <strong>Glissez-déposez une photo locale ici</strong> ou cliquez pour parcourir</span>
               <img id="photo-file-preview" class="file-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Prévisualisation">
             </div>
             <input type="hidden" id="photo-existing-image" value="">
@@ -1320,49 +1327,104 @@
       });
     });
 
-    // Dropzone Blog
-    const blogDrop = document.getElementById("blog-dropzone");
-    const blogFile = document.getElementById("blog-file");
-    const blogPrev = document.getElementById("blog-file-preview");
-    if (blogDrop && blogFile) {
-      blogDrop.addEventListener("click", () => blogFile.click());
-      blogFile.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file && file.type && file.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = (evt) => {
-            if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
-              blogPrev.src = evt.target.result;
-              blogPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation";
-              blogPrev.style.display = "inline-block";
+    // Configuration Dropzone Réutilisable (Drag & Drop + Clic + Presse-papier)
+    const blogDropLabelDefault = '📸 <strong>Glissez-déposez une photo locale ici</strong> ou cliquez pour parcourir';
+    const photoDropLabelDefault = '📸 <strong>Glissez-déposez une photo locale ici</strong> ou cliquez pour parcourir';
+
+    function setupDropzone(dropzoneId, fileInputId, previewId, labelId, defaultLabel) {
+      const dropzone = document.getElementById(dropzoneId);
+      const fileInput = document.getElementById(fileInputId);
+      const preview = document.getElementById(previewId);
+      const label = document.getElementById(labelId);
+      if (!dropzone || !fileInput) return;
+
+      function handleFile(file) {
+        if (!file || !file.type || !file.type.startsWith("image/")) {
+          alert("Veuillez sélectionner un fichier image valide (JPG, PNG, WebP, GIF, SVG).");
+          return;
+        }
+
+        try {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+        } catch (e) {
+          // Navigateurs sans DataTransfer constructible
+        }
+
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+        if (label) {
+          label.innerHTML = `📸 <strong>Image prête :</strong> ${file.name} (${sizeMb} Mo) <br><small style="color:var(--accent); font-size:12px;">Cliquez ou glissez une autre photo pour remplacer</small>`;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
+            preview.src = evt.target.result;
+            preview.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation";
+            preview.style.display = "inline-block";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Clic pour ouvrir le sélecteur
+      dropzone.addEventListener("click", (e) => {
+        if (e.target !== fileInput) fileInput.click();
+      });
+
+      // Changement via sélecteur standard
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      // Événements Glisser-Déposer (Drag & Drop)
+      ["dragenter", "dragover"].forEach(evtName => {
+        dropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add("dragover");
+        }, false);
+      });
+
+      ["dragleave", "dragend"].forEach(evtName => {
+        dropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove("dragover");
+        }, false);
+      });
+
+      dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      }, false);
+
+      // Support du collage depuis le presse-papier (Ctrl+V / Cmd+V)
+      window.addEventListener("paste", (e) => {
+        const isCurrentTab = dropzone.offsetParent !== null;
+        if (!isCurrentTab) return;
+        const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+        if (items) {
+          for (const item of items) {
+            if (item.kind === "file" && item.type.startsWith("image/")) {
+              const blob = item.getAsFile();
+              if (blob) handleFile(blob);
+              break;
             }
-          };
-          reader.readAsDataURL(file);
+          }
         }
       });
     }
 
-    // Dropzone Photo
-    const photoDrop = document.getElementById("photo-dropzone");
-    const photoFile = document.getElementById("photo-file");
-    const photoPrev = document.getElementById("photo-file-preview");
-    if (photoDrop && photoFile) {
-      photoDrop.addEventListener("click", () => photoFile.click());
-      photoFile.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file && file.type && file.type.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = (evt) => {
-            if (typeof evt.target?.result === "string" && evt.target.result.startsWith("data:image/")) {
-              photoPrev.src = evt.target.result;
-              photoPrev.alt = file.name ? `Prévisualisation de ${file.name}` : "Prévisualisation";
-              photoPrev.style.display = "inline-block";
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
+    setupDropzone("blog-dropzone", "blog-file", "blog-file-preview", "blog-drop-label", blogDropLabelDefault);
+    setupDropzone("photo-dropzone", "photo-file", "photo-file-preview", "photo-drop-label", photoDropLabelDefault);
 
     // Annulation mode édition Blog
     function resetBlogForm() {
@@ -1371,9 +1433,11 @@
       document.getElementById("blog-edit-id").value = "";
       document.getElementById("blog-existing-image").value = "";
       if (document.getElementById("blog-url-input")) document.getElementById("blog-url-input").value = "";
+      if (document.getElementById("blog-drop-label")) document.getElementById("blog-drop-label").innerHTML = blogDropLabelDefault;
       document.getElementById("blog-edit-banner").style.display = "none";
       document.getElementById("blog-panel-heading").textContent = "Rédiger un Article de Blog";
       document.getElementById("btn-publish-blog").textContent = "Publier l'article sur le Blog";
+      const blogPrev = document.getElementById("blog-file-preview");
       if (blogPrev) blogPrev.style.display = "none";
       if (blogWysiwyg) blogWysiwyg.reset();
       if (blogDate) blogDate.value = today;
@@ -1387,11 +1451,12 @@
       document.getElementById("photo-edit-id").value = "";
       document.getElementById("photo-existing-image").value = "";
       if (document.getElementById("photo-url-input")) document.getElementById("photo-url-input").value = "";
+      if (document.getElementById("photo-drop-label")) document.getElementById("photo-drop-label").innerHTML = photoDropLabelDefault;
       document.getElementById("photo-edit-banner").style.display = "none";
       document.getElementById("photo-panel-heading").textContent = "Ajouter une Photo à la Galerie";
       document.getElementById("btn-publish-photo").textContent = "Ajouter la photo à la Galerie";
       document.getElementById("photo-required-indicator").textContent = "*";
-      document.getElementById("photo-drop-label").textContent = "Cliquez ou choisissez une photo haute définition";
+      const photoPrev = document.getElementById("photo-file-preview");
       if (photoPrev) photoPrev.style.display = "none";
       if (photoDate) photoDate.value = today;
     }
@@ -1474,6 +1539,34 @@
       return result.url;
     }
 
+    // Téléversement universel d'image (ImageKit si configuré, sinon GitHub direct sans aucun délai/blocage)
+    async function uploadImageMedia(file, folder = "/photos") {
+      const config = getImageKitConfig();
+      if (config.publicKey && config.privateKey) {
+        return await uploadToImageKit(file, folder);
+      }
+
+      // Mode dépôt direct via API GitHub
+      const cleanName = (file.name || `photo-${Date.now()}.jpg`).replace(/[^a-zA-Z0-9._-]/g, "_");
+      const subFolder = folder.replace(/^\/+/, "");
+      const targetPath = `assets/media/${subFolder}/${Date.now()}_${cleanName}`;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = "";
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      const b64 = btoa(binary);
+
+      await githubRequest("contents/" + targetPath, "PUT", {
+        message: `media: téléverser ${cleanName}`,
+        content: b64
+      });
+
+      return targetPath;
+    }
+
     // Initialisation onglet ImageKit
     const saveIkBtn = document.getElementById("btn-save-ik-config");
     if (saveIkBtn) {
@@ -1539,8 +1632,8 @@
           let coverImage = urlInput || existingCover || "tourbiere.jpg";
 
           if (file) {
-            btn.textContent = "Téléversement de l'image sur ImageKit...";
-            coverImage = await uploadToImageKit(file, "/blog");
+            btn.textContent = "Téléversement de la photo...";
+            coverImage = await uploadImageMedia(file, "/blog");
           }
 
           const fileData = await githubRequest("contents/data/blog.json");
@@ -1629,8 +1722,8 @@
           let photoUrl = urlInput || existingUrl || "";
 
           if (file) {
-            btn.textContent = "Téléversement direct sur ImageKit...";
-            photoUrl = await uploadToImageKit(file, "/photos");
+            btn.textContent = "Téléversement de la photo...";
+            photoUrl = await uploadImageMedia(file, "/photos");
           }
 
           const fileData = await githubRequest("contents/data/photos.json");
