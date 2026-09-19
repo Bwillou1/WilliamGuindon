@@ -487,7 +487,7 @@
   <!-- Encart d'information Cloudflare Access -->
   <div class="cf-access-notice" style="margin-bottom:18px; padding:12px 16px; border-radius:8px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); font-size:14px; color:var(--text); display:flex; align-items:center; gap:10px;">
     <svg class="svg-icon" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--accent);fill:none;flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-    <span><strong>Accès protégé par Cloudflare & GitHub PAT.</strong> Page privée non indexée.</span>
+    <span><strong>Accès protégé par Cloudflare Access.</strong> L'ancien mot de passe maître est supprimé.</span>
   </div>
 
   <!-- Carte Authentification (Token GitHub) -->
@@ -974,7 +974,7 @@
       throw new Error("Jeton GitHub invalide ou expiré (Code " + res.status + ")");
     }
     const user = await res.json();
-    if (user.login !== "Bwillou1") {
+    if ((user.login || "").toLowerCase() !== "bwillou1") {
       throw new Error(`Accès refusé : Le jeton appartient à @${user.login}, seul @Bwillou1 est autorisé.`);
     }
     return user;

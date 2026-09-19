@@ -87,8 +87,8 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 2. Exclure les requêtes dynamiques d'API
-  if (url.pathname.startsWith('/api/')) {
+  // 2. Exclure les requêtes dynamiques d'API et les pages privées protégées par Zero Trust
+  if (url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
     return false;
   }
 
