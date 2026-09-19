@@ -1,0 +1,31 @@
+name: Eco-CI Test
+
+on:
+  workflow_dispatch: # Permet de lancer le test manuellement d'un clic
+
+jobs:
+  energy-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 1. Démarrage de la mesure
+      - name: Eco CI - Start Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5.3.0
+        with:
+          task: start-measurement
+
+      # Tâche de test (génère un peu d'activité CPU)
+      - name: Run Sample Workload
+        run: |
+          echo "Démarrage du test de charge..."
+          python3 -c "sum(i*i for i in range(10_000_000))"
+          echo "Test terminé."
+
+      # 2. Affichage des résultats
+      - name: Eco CI - Display Results
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5.3.0
+        with:
+          task: display-results
