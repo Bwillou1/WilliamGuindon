@@ -1,9 +1,10 @@
-const CACHE_NAME = 'wg-pwa-v36';
-const MAX_CACHE_ENTRIES = 75;
+const CACHE_NAME = 'wg-pwa-v37';
+const MAX_CACHE_ENTRIES = 80;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/interventions.html',
   '/registre.html',
   '/enquete-partis.html',
   '/presse.html',
@@ -54,7 +55,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/william-guindon.webp',
   '/assets/media/signature.svg',
   '/feed.xml',
-  '/status.json'
+  '/status.json',
+  '/data/interventions.json'
 ];
 
 /**
