@@ -5,7 +5,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://ik.imagekit.io https://*.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self'; object-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self'; object-src 'none';">
 
 <title>Espace Rédaction & Administration — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
@@ -557,6 +557,9 @@
         <button type="button" class="admin-tab" data-tab="tab-manage">
           <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Gérer &amp; Modifier
         </button>
+        <button type="button" class="admin-tab" data-tab="tab-imagekit">
+          <svg class="svg-icon" viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>ImageKit (Médiathèque)
+        </button>
         <a href="editeur.html" class="btn btn-primary" style="margin-left:auto; font-size:12px; text-decoration:none; padding:6px 12px; background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; font-weight:700;">Studio Éditeur ↗</a>
       </div>
 
@@ -847,6 +850,45 @@
 
         <h3 style="font-size:1.1rem; margin-top:30px; color:var(--accent);">Photos de la Galerie</h3>
         <div id="manage-photo-list" style="margin-top:10px;">Chargement des photos...</div>
+      </div>
+
+      <!-- Onglet 5 : ImageKit & Médiathèque Directe (Mode 2) -->
+      <div class="admin-panel" id="tab-imagekit">
+        <h2 style="font-size:1.3rem; margin-bottom:16px;">Configuration ImageKit (Médiathèque Directe — Mode 2)</h2>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px; line-height:1.5;">
+          En renseignant vos clés API ImageKit ici, toutes les photos que vous glissez dans l'espace d'administration seront téléversées <strong>directement dans votre Media Library ImageKit</strong> sans passer par GitHub.
+        </p>
+
+        <form id="form-imagekit-config" onsubmit="return false;" style="max-width:680px;">
+          <div class="form-group">
+            <label class="form-label" for="ik-public-key">Clé publique ImageKit (Public Key) :</label>
+            <input type="text" id="ik-public-key" class="form-control" placeholder="public_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ik-private-key">Clé privée ImageKit (Private Key) :</label>
+            <input type="password" id="ik-private-key" class="form-control" placeholder="private_xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+            <small style="color:var(--text-muted); font-size:12px; display:block; margin-top:4px;">Sécurisée : stockée uniquement en mémoire locale dans votre navigateur (localStorage), jamais écrite sur Git.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ik-url-endpoint">URL Endpoint ImageKit :</label>
+            <input type="url" id="ik-url-endpoint" class="form-control" value="https://ik.imagekit.io/williamguindon/" placeholder="https://ik.imagekit.io/williamguindon/">
+          </div>
+
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px;">
+            <button type="button" id="btn-save-ik-config" class="btn btn-primary" style="font-weight:700; padding:10px 22px;">
+              Enregistrer la configuration ImageKit
+            </button>
+            <a href="https://imagekit.io/dashboard/developer/api-keys" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="font-size:13px; text-decoration:none;">
+              Obtenir mes clés API ↗
+            </a>
+            <a href="https://imagekit.io/dashboard/media-library" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="font-size:13px; text-decoration:none;">
+              Ouvrir Media Library ↗
+            </a>
+          </div>
+          <div id="ik-status-banner" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; font-size:13px; font-weight:600; line-height:1.4;"></div>
+        </form>
       </div>
     </div>
   </template>
@@ -1342,6 +1384,99 @@
     document.getElementById("btn-cancel-communique-edit")?.addEventListener("click", resetCommuniqueForm);
 
     // ====================================================
+    // GESTION IMAGEKIT (Mode 2 : Médiathèque Directe)
+    // ====================================================
+    function getImageKitConfig() {
+      return {
+        publicKey: (localStorage.getItem("wg_ik_public_key") || "").trim(),
+        privateKey: (localStorage.getItem("wg_ik_private_key") || "").trim(),
+        urlEndpoint: (localStorage.getItem("wg_ik_url_endpoint") || "https://ik.imagekit.io/williamguindon/").trim()
+      };
+    }
+
+    async function generateImageKitAuth(privateKey) {
+      const token = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : ("ik_" + Date.now() + "_" + Math.random().toString(36).substring(2, 10));
+      const expire = (Math.floor(Date.now() / 1000) + 1800).toString();
+      const encoder = new TextEncoder();
+      const keyData = encoder.encode(privateKey);
+      const cryptoKey = await crypto.subtle.importKey(
+        "raw",
+        keyData,
+        { name: "HMAC", hash: { name: "SHA-1" } },
+        false,
+        ["sign"]
+      );
+      const msgData = encoder.encode(token + expire);
+      const sigBuffer = await crypto.subtle.sign("HMAC", cryptoKey, msgData);
+      const sigArray = Array.from(new Uint8Array(sigBuffer));
+      const signature = sigArray.map(b => b.toString(16).padStart(2, "0")).join("");
+      return { token, expire, signature };
+    }
+
+    async function uploadToImageKit(file, folder = "/photos") {
+      const config = getImageKitConfig();
+      if (!config.publicKey || !config.privateKey) {
+        throw new Error("Clés ImageKit non configurées. Veuillez vous rendre dans l'onglet 'ImageKit' pour renseigner votre Public Key et Private Key.");
+      }
+      const auth = await generateImageKitAuth(config.privateKey);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fileName", file.name.replace(/[^a-zA-Z0-9.-]/g, "_"));
+      formData.append("publicKey", config.publicKey);
+      formData.append("signature", auth.signature);
+      formData.append("expire", auth.expire);
+      formData.append("token", auth.token);
+      formData.append("folder", folder);
+      formData.append("useUniqueFileName", "true");
+
+      const res = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error("Échec du téléversement ImageKit (" + res.status + ") : " + (errJson.message || res.statusText));
+      }
+
+      const result = await res.json();
+      return result.url;
+    }
+
+    // Initialisation onglet ImageKit
+    const saveIkBtn = document.getElementById("btn-save-ik-config");
+    if (saveIkBtn) {
+      const pubInput = document.getElementById("ik-public-key");
+      const privInput = document.getElementById("ik-private-key");
+      const urlInput = document.getElementById("ik-url-endpoint");
+      const ikBanner = document.getElementById("ik-status-banner");
+
+      const cfg = getImageKitConfig();
+      if (pubInput) pubInput.value = cfg.publicKey;
+      if (privInput) privInput.value = cfg.privateKey;
+      if (urlInput) urlInput.value = cfg.urlEndpoint;
+
+      saveIkBtn.addEventListener("click", () => {
+        const pub = (pubInput?.value || "").trim();
+        const priv = (privInput?.value || "").trim();
+        const ep = (urlInput?.value || "https://ik.imagekit.io/williamguindon/").trim();
+
+        localStorage.setItem("wg_ik_public_key", pub);
+        localStorage.setItem("wg_ik_private_key", priv);
+        localStorage.setItem("wg_ik_url_endpoint", ep);
+
+        if (ikBanner) {
+          ikBanner.style.display = "block";
+          ikBanner.style.background = "rgba(34, 197, 94, 0.15)";
+          ikBanner.style.border = "1px solid rgba(34, 197, 94, 0.4)";
+          ikBanner.style.color = "#86efac";
+          ikBanner.textContent = "✓ Configuration ImageKit enregistrée avec succès dans votre navigateur (localStorage).";
+          setTimeout(() => { if (ikBanner) ikBanner.style.display = "none"; }, 5000);
+        }
+      });
+    }
+
+    // ====================================================
     // SOUMISSION BLOG (Création ou Mise à jour)
     // ====================================================
     const formBlog = document.getElementById("form-blog");
@@ -1351,7 +1486,7 @@
         const btn = document.getElementById("btn-publish-blog");
         btn.disabled = true;
         const isEditing = !!document.getElementById("blog-edit-id").value;
-        btn.textContent = isEditing ? "Mise à jour de l'article en cours..." : "Publication en cours sur GitHub...";
+        btn.textContent = isEditing ? "Mise à jour de l'article en cours..." : "Publication en cours...";
 
         try {
           const editId = document.getElementById("blog-edit-id").value;
@@ -1373,13 +1508,8 @@
           let coverImage = urlInput || existingCover || "tourbiere.jpg";
 
           if (file) {
-            const cleanName = Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-            const b64 = await fileToBase64(file);
-            await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
-              message: `upload(image): ${cleanName}`,
-              content: b64
-            });
-            coverImage = "assets/uploads/" + cleanName;
+            btn.textContent = "Téléversement de l'image sur ImageKit...";
+            coverImage = await uploadToImageKit(file, "/blog");
           }
 
           const fileData = await githubRequest("contents/data/blog.json");
@@ -1468,13 +1598,8 @@
           let photoUrl = urlInput || existingUrl || "";
 
           if (file) {
-            const cleanName = "photo-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-            const b64 = await fileToBase64(file);
-            await githubRequest(`contents/assets/uploads/${cleanName}`, "PUT", {
-              message: `upload(photo): ${cleanName}`,
-              content: b64
-            });
-            photoUrl = "assets/uploads/" + cleanName;
+            btn.textContent = "Téléversement direct sur ImageKit...";
+            photoUrl = await uploadToImageKit(file, "/photos");
           }
 
           const fileData = await githubRequest("contents/data/photos.json");
