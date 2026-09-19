@@ -660,7 +660,7 @@
     grid.innerHTML = "";
 
     if (!items || items.length === 0) {
-      grid.innerHTML = "<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">Aucune intervention trouvée correspondant à vos critères.</p>";
+      grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">Aucune intervention trouvée correspondant à vos critères.</p>';
       return;
     }
 
@@ -670,7 +670,7 @@
       card.onclick = () => openIntervModal(item);
 
       const isUpcoming = item.status === "upcoming";
-      const statusHtml = isUpcoming ? "<span class="interv-badge-status upcoming">À venir</span>" : "<span class="interv-badge-status">Réalisé</span>";
+      const statusHtml = isUpcoming ? '<span class="interv-badge-status upcoming">À venir</span>' : '<span class="interv-badge-status">Réalisé</span>';
       const thumbUrl = getOptimizedImageUrl(item.coverImage, 600);
 
       card.innerHTML = `
@@ -802,7 +802,7 @@
       renderInterventions(allInterventions);
     } catch (e) {
       console.error(e);
-      document.getElementById("interv-grid").innerHTML = "<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">Impossible de charger les interventions pour le moment.</p>";
+      document.getElementById("interv-grid").innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">Impossible de charger les interventions pour le moment.</p>';
     }
   }
 
