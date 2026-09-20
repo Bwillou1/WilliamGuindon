@@ -551,6 +551,28 @@
       tabFb.addEventListener('click', () => selectSocialTab('facebook'));
       tabYt.addEventListener('click', () => selectSocialTab('youtube'));
     }
+
+    // 6. Gestionnaire de consentement 2-clics pour le fil Facebook (zéro requête ni cookie en arrière-plan)
+    const btnLoadFb = document.getElementById('btn-load-fb-embed');
+    const fbContainer = document.getElementById('fb-embed-container');
+
+    if (btnLoadFb && fbContainer) {
+      btnLoadFb.addEventListener('click', () => {
+        fbContainer.innerHTML = `
+          <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fwilliamguindon.officiel&amp;tabs=timeline&amp;width=500&amp;height=580&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true" 
+                  width="500" 
+                  height="580" 
+                  style="border:none;overflow:hidden;width:100%;max-width:500px;min-height:580px;border-radius:8px;display:block;" 
+                  scrolling="yes" 
+                  frameborder="0" 
+                  allowfullscreen="true" 
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  loading="eager"
+                  title="Fil d'actualité Facebook officiel de William Guindon">
+          </iframe>
+        `;
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
