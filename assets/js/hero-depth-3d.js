@@ -100,44 +100,20 @@
         vec2 coverUv = getCoverUv(vUv, uResolution, uImageResolution);
         coverUv = clamp(coverUv, 0.001, 0.999);
 
-        // Calibrated stereoscopic parallax vector (solid physical camera shift)
-        vec2 parallax = -uMouse * vec2(0.045, 0.032);
+        // Sample depth map (1.0 = foreground trees & moss, 0.0 = distant sunrise sky)
+        float depth = texture2D(uDepth, coverUv).r;
 
-        // Parallax Occlusion Raymarching (8 depth slices for crisp solid geometry)
-        const int NUM_STEPS = 8;
-        vec2 stepOffset = parallax / float(NUM_STEPS);
-        vec2 currentUv = coverUv;
-        float currentDepthValue = texture2D(uDepth, currentUv).r;
-        float layerDepth = 0.0;
-        float stepSize = 1.0 / float(NUM_STEPS);
+        // Centered focal depth: 0.35 (horizon stays stable, foreground separates smoothly in 3D)
+        float depthFactor = depth - 0.35;
 
-        vec2 prevUv = currentUv;
-        float prevDepthValue = currentDepthValue;
-        float prevLayerDepth = 0.0;
+        // Smooth physical stereoscopic parallax (crisp solid geometry, zero staircasing or tearing)
+        vec2 parallax = -uMouse * vec2(0.042, 0.028) * depthFactor;
+        vec2 finalUv = clamp(coverUv + parallax, 0.001, 0.999);
 
-        for (int i = 0; i < NUM_STEPS; i++) {
-          if (layerDepth < currentDepthValue) {
-            prevUv = currentUv;
-            prevDepthValue = currentDepthValue;
-            prevLayerDepth = layerDepth;
-
-            currentUv += stepOffset;
-            currentDepthValue = texture2D(uDepth, clamp(currentUv, 0.001, 0.999)).r;
-            layerDepth += stepSize;
-          }
-        }
-
-        // Linear interpolation between last two ray steps for ultra-smooth edge transitions
-        float afterDepth = currentDepthValue - layerDepth;
-        float beforeDepth = prevDepthValue - prevLayerDepth;
-        float weight = clamp(beforeDepth / (beforeDepth - afterDepth + 0.0001), 0.0, 1.0);
-        vec2 finalUv = clamp(mix(prevUv, currentUv, weight), 0.001, 0.999);
-
-        // Crisp, sharp photo sample (no blurring, no smearing)
+        // Sample photo with full native sharpness
         vec4 color = texture2D(uPhoto, finalUv);
 
         // Enhance vivid morning sunlight and warm golden horizon
-        float depth = texture2D(uDepth, finalUv).r;
         color.rgb = pow(color.rgb, vec3(0.94));
         color.rgb += vec3(0.04, 0.025, 0.008) * (1.0 - depth);
 
