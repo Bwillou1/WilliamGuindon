@@ -68,7 +68,7 @@
       }
     `;
 
-    // Fragment Shader: High-impact 3D Stereoscopic Parallax Displacement
+    // Fragment Shader: Solid 3D Parallax Occlusion Mapping (True Spatial Depth, Zero Liquid Distortion)
     const fsSource = `
       precision mediump float;
 
@@ -80,9 +80,8 @@
       uniform vec2 uMouse;
       uniform vec2 uResolution;
       uniform vec2 uImageResolution;
-      uniform float uTime;
 
-      // CSS cover aspect ratio fit (preserves natural proportions without stretching)
+      // CSS cover aspect ratio fit (preserves crisp natural proportions)
       vec2 getCoverUv(vec2 uv, vec2 screenRes, vec2 imgRes) {
         float screenAspect = screenRes.x / screenRes.y;
         float imgAspect = imgRes.x / imgRes.y;
@@ -101,30 +100,46 @@
         vec2 coverUv = getCoverUv(vUv, uResolution, uImageResolution);
         coverUv = clamp(coverUv, 0.001, 0.999);
 
-        // Sample depth map (1.0 = near trees & foreground, 0.0 = distant sunrise sky)
-        float depth = texture2D(uDepth, coverUv).r;
+        // Calibrated stereoscopic parallax vector (solid physical camera shift)
+        vec2 parallax = -uMouse * vec2(0.045, 0.032);
 
-        // Subtle ambient atmospheric drift (gentle peatland morning mist)
-        float driftX = sin(uTime * 0.02) * 0.005;
-        float driftY = cos(uTime * 0.015) * 0.003;
+        // Parallax Occlusion Raymarching (8 depth slices for crisp solid geometry)
+        const int NUM_STEPS = 8;
+        vec2 stepOffset = parallax / float(NUM_STEPS);
+        vec2 currentUv = coverUv;
+        float currentDepthValue = texture2D(uDepth, currentUv).r;
+        float layerDepth = 0.0;
+        float stepSize = 1.0 / float(NUM_STEPS);
 
-        // Pronounced 3D parallax vector with focal plane centered on horizon (depth 0.30)
-        vec2 mouseVector = (uMouse + vec2(driftX, driftY)) * vec2(0.18, 0.12);
-        vec2 displacement = -mouseVector * (depth - 0.30);
+        vec2 prevUv = currentUv;
+        float prevDepthValue = currentDepthValue;
+        float prevLayerDepth = 0.0;
 
-        // 3-tap smooth depth interpolation for anti-aliased stereoscopic edges
-        vec2 uv1 = clamp(coverUv + displacement, 0.001, 0.999);
-        vec2 uv2 = clamp(coverUv + displacement * 0.75, 0.001, 0.999);
-        vec2 uv3 = clamp(coverUv + displacement * 1.25, 0.001, 0.999);
+        for (int i = 0; i < NUM_STEPS; i++) {
+          if (layerDepth < currentDepthValue) {
+            prevUv = currentUv;
+            prevDepthValue = currentDepthValue;
+            prevLayerDepth = layerDepth;
 
-        vec4 col1 = texture2D(uPhoto, uv1);
-        vec4 col2 = texture2D(uPhoto, uv2);
-        vec4 col3 = texture2D(uPhoto, uv3);
-        vec4 color = mix(col1, (col2 + col3) * 0.5, 0.35);
+            currentUv += stepOffset;
+            currentDepthValue = texture2D(uDepth, clamp(currentUv, 0.001, 0.999)).r;
+            layerDepth += stepSize;
+          }
+        }
 
-        // Radiant sunlight & vibrant natural hues
-        color.rgb = pow(color.rgb, vec3(0.92));
-        color.rgb += vec3(0.05, 0.035, 0.01) * (1.0 - depth);
+        // Linear interpolation between last two ray steps for ultra-smooth edge transitions
+        float afterDepth = currentDepthValue - layerDepth;
+        float beforeDepth = prevDepthValue - prevLayerDepth;
+        float weight = clamp(beforeDepth / (beforeDepth - afterDepth + 0.0001), 0.0, 1.0);
+        vec2 finalUv = clamp(mix(prevUv, currentUv, weight), 0.001, 0.999);
+
+        // Crisp, sharp photo sample (no blurring, no smearing)
+        vec4 color = texture2D(uPhoto, finalUv);
+
+        // Enhance vivid morning sunlight and warm golden horizon
+        float depth = texture2D(uDepth, finalUv).r;
+        color.rgb = pow(color.rgb, vec3(0.94));
+        color.rgb += vec3(0.04, 0.025, 0.008) * (1.0 - depth);
 
         gl_FragColor = color;
       }
@@ -185,7 +200,6 @@
     const uMouseLoc = gl.getUniformLocation(program, 'uMouse');
     const uResolutionLoc = gl.getUniformLocation(program, 'uResolution');
     const uImageResolutionLoc = gl.getUniformLocation(program, 'uImageResolution');
-    const uTimeLoc = gl.getUniformLocation(program, 'uTime');
 
     gl.uniform1i(uPhotoLoc, 0);
     gl.uniform1i(uDepthLoc, 1);
@@ -257,10 +271,9 @@
       targetY: 0,
       currentX: 0,
       currentY: 0,
-      lerp: 0.085
+      lerp: 0.065
     };
 
-    let time = 0;
     let isRendering = true;
 
     function resizeCanvas() {
@@ -289,11 +302,7 @@
       mouse.currentX += (mouse.targetX - mouse.currentX) * mouse.lerp;
       mouse.currentY += (mouse.targetY - mouse.currentY) * mouse.lerp;
 
-      time += 1;
-
       gl.uniform2f(uMouseLoc, mouse.currentX, mouse.currentY);
-      gl.uniform1f(uTimeLoc, time);
-
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
       requestAnimationFrame(render);
