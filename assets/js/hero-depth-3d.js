@@ -1,6 +1,6 @@
 /**
  * Hero Depth 3D Parallax & Spatial Displacement Engine
- * Powered by Curtains.js (Martin Laxenaire, MIT License)
+ * Inspired by Martin Laxenaire's Curtains.js shaders (MIT License)
  * Renders high-fidelity 3D stereoscopic depth displacement reacting to mouse & device gyro.
  */
 (() => {
@@ -11,273 +11,326 @@
     return;
   }
 
-  // Check WebGL availability
-  function isWebGLAvailable() {
-    try {
-      const canvas = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-    } catch (_) {
-      return false;
-    }
-  }
-
-  if (!isWebGLAvailable()) {
-    return;
-  }
-
-  let initialized = false;
-
   function initHero3D() {
-    if (initialized) return;
-
     const heroSection = document.getElementById('accueil');
     const curtainsContainer = document.getElementById('hero-curtains-canvas');
-    const planeElement = document.getElementById('hero-curtains-plane');
 
-    const CurtainsConstructor = window.Curtains || (window.curtains && window.curtains.Curtains);
-    const Vec3Constructor = (window.Curtains && window.Curtains.Vec3) || (window.curtains && window.curtains.Vec3);
-
-    if (!heroSection || !curtainsContainer || !planeElement || !CurtainsConstructor) {
+    if (!heroSection || !curtainsContainer) {
       return;
     }
 
-    initialized = true;
+    // Prevent double initialization
+    if (heroSection.dataset.webgl3dInit === 'true') {
+      return;
+    }
+    heroSection.dataset.webgl3dInit = 'true';
 
-    // Vertex Shader with 3D mesh perspective
-    const vs = `
-      #ifdef GL_ES
-      precision mediump float;
-      #endif
+    // Create dedicated WebGL canvas
+    const canvas = document.createElement('canvas');
+    canvas.id = 'hero-webgl-3d-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.display = 'block';
 
-      attribute vec3 aVertexPosition;
-      attribute vec2 aTextureCoord;
+    curtainsContainer.innerHTML = '';
+    curtainsContainer.appendChild(canvas);
 
-      uniform mat4 uMVMatrix;
-      uniform mat4 uPMatrix;
+    const glOptions = {
+      alpha: true,
+      antialias: true,
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: false
+    };
 
-      uniform mat4 uPhotoMatrix;
-      uniform mat4 uDepthMapMatrix;
+    let gl = canvas.getContext('webgl2', glOptions) ||
+             canvas.getContext('webgl', glOptions) ||
+             canvas.getContext('experimental-webgl', glOptions);
 
-      varying vec3 vVertexPosition;
-      varying vec2 vPhotoCoord;
-      varying vec2 vDepthCoord;
+    if (!gl) {
+      console.warn('WebGL not supported on this device/browser');
+      return;
+    }
 
+    // Vertex Shader: Fullscreen quad
+    const vsSource = `
+      attribute vec2 aPosition;
+      varying vec2 vUv;
       void main() {
-        vec3 pos = aVertexPosition;
-        gl_Position = uPMatrix * uMVMatrix * vec4(pos, 1.0);
-        vPhotoCoord = (uPhotoMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
-        vDepthCoord = (uDepthMapMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
-        vVertexPosition = pos;
+        vUv = aPosition * 0.5 + 0.5;
+        gl_Position = vec4(aPosition, 0.0, 1.0);
       }
     `;
 
-    // Fragment Shader: Striking 3D Parallax Displacement + Luminous Morning Radiance
-    const fs = `
-      #ifdef GL_ES
+    // Fragment Shader: High-impact 3D Stereoscopic Parallax Displacement
+    const fsSource = `
       precision mediump float;
-      #endif
 
-      varying vec3 vVertexPosition;
-      varying vec2 vPhotoCoord;
-      varying vec2 vDepthCoord;
+      varying vec2 vUv;
 
       uniform sampler2D uPhoto;
-      uniform sampler2D uDepthMap;
+      uniform sampler2D uDepth;
 
       uniform vec2 uMouse;
-      uniform vec2 uMouseStrength;
+      uniform vec2 uResolution;
+      uniform vec2 uImageResolution;
       uniform float uTime;
 
+      // CSS cover aspect ratio fit (preserves natural proportions without stretching)
+      vec2 getCoverUv(vec2 uv, vec2 screenRes, vec2 imgRes) {
+        float screenAspect = screenRes.x / screenRes.y;
+        float imgAspect = imgRes.x / imgRes.y;
+        vec2 newUv = uv;
+        if (screenAspect > imgAspect) {
+          float scale = imgAspect / screenAspect;
+          newUv.y = (uv.y - 0.5) * scale + 0.5;
+        } else {
+          float scale = screenAspect / imgAspect;
+          newUv.x = (uv.x - 0.5) * scale + 0.5;
+        }
+        return newUv;
+      }
+
       void main() {
-        vec2 depthUv = clamp(vDepthCoord, 0.0, 1.0);
-        float depth = texture2D(uDepthMap, depthUv).r;
+        vec2 coverUv = getCoverUv(vUv, uResolution, uImageResolution);
+        coverUv = clamp(coverUv, 0.001, 0.999);
 
-        // Ambient natural atmospheric drift (breathing mist over the peatland)
-        float driftX = sin(uTime * 0.02) * 0.006;
-        float driftY = cos(uTime * 0.015) * 0.004;
+        // Sample depth map (1.0 = near trees & foreground, 0.0 = distant sunrise sky)
+        float depth = texture2D(uDepth, coverUv).r;
 
-        // Bold 3D parallax vector with focal plane centered at midground horizon (0.30)
-        vec2 totalOffset = (uMouse + vec2(driftX, driftY)) * uMouseStrength;
-        vec2 displacement = totalOffset * (depth - 0.30);
+        // Subtle ambient atmospheric drift (gentle peatland morning mist)
+        float driftX = sin(uTime * 0.02) * 0.005;
+        float driftY = cos(uTime * 0.015) * 0.003;
 
-        // 3-tap smooth depth interpolation to avoid pixelation on silhouette edges
-        vec2 uv1 = clamp(vPhotoCoord + displacement, 0.0, 1.0);
-        vec2 uv2 = clamp(vPhotoCoord + displacement * 0.82, 0.0, 1.0);
-        vec2 uv3 = clamp(vPhotoCoord + displacement * 1.18, 0.0, 1.0);
+        // Pronounced 3D parallax vector with focal plane centered on horizon (depth 0.28)
+        vec2 mouseVector = (uMouse + vec2(driftX, driftY)) * vec2(0.09, 0.06);
+        vec2 displacement = -mouseVector * (depth - 0.28);
 
-        vec4 color1 = texture2D(uPhoto, uv1);
-        vec4 color2 = texture2D(uPhoto, uv2);
-        vec4 color3 = texture2D(uPhoto, uv3);
-        vec4 color = mix(color1, (color2 + color3) * 0.5, 0.35);
+        // 3-tap smooth depth interpolation for anti-aliased stereoscopic edges
+        vec2 uv1 = clamp(coverUv + displacement, 0.001, 0.999);
+        vec2 uv2 = clamp(coverUv + displacement * 0.75, 0.001, 0.999);
+        vec2 uv3 = clamp(coverUv + displacement * 1.25, 0.001, 0.999);
+
+        vec4 col1 = texture2D(uPhoto, uv1);
+        vec4 col2 = texture2D(uPhoto, uv2);
+        vec4 col3 = texture2D(uPhoto, uv3);
+        vec4 color = mix(col1, (col2 + col3) * 0.5, 0.35);
 
         // Radiant sunlight & vibrant natural hues
         color.rgb = pow(color.rgb, vec3(0.92));
-        color.rgb += vec3(0.05, 0.035, 0.01) * (1.0 - depth); // Warm sunbeam halo on horizon
+        color.rgb += vec3(0.05, 0.035, 0.01) * (1.0 - depth);
 
         gl_FragColor = color;
       }
     `;
 
-    let curtains;
-    try {
-      curtains = new CurtainsConstructor({
-        container: 'hero-curtains-canvas',
-        pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
-        autoRender: true,
-        production: true
-      });
-    } catch (err) {
-      console.warn('WebGL Curtains init error:', err);
+    function createShader(glCtx, type, source) {
+      const shader = glCtx.createShader(type);
+      glCtx.shaderSource(shader, source);
+      glCtx.compileShader(shader);
+      if (!glCtx.getShaderParameter(shader, glCtx.COMPILE_STATUS)) {
+        console.error('Shader compile error:', glCtx.getShaderInfoLog(shader));
+        glCtx.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+    if (!vertexShader || !fragmentShader) return;
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Program link error:', gl.getProgramInfoLog(program));
       return;
     }
 
-    curtains.onError(() => {
-      heroSection.classList.remove('has-webgl-3d');
-    });
+    gl.useProgram(program);
 
-    curtains.onContextLost(() => {
-      curtains.restoreContext();
-    });
+    // Quad geometry covering [-1, 1]
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1, -1,
+         1, -1,
+        -1,  1,
+        -1,  1,
+         1, -1,
+         1,  1
+      ]),
+      gl.STATIC_DRAW
+    );
 
-    // Mouse coordinates tracking with smooth physics interpolation
+    const aPosition = gl.getAttribLocation(program, 'aPosition');
+    gl.enableVertexAttribArray(aPosition);
+    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+
+    // Shader Uniform Locations
+    const uPhotoLoc = gl.getUniformLocation(program, 'uPhoto');
+    const uDepthLoc = gl.getUniformLocation(program, 'uDepth');
+    const uMouseLoc = gl.getUniformLocation(program, 'uMouse');
+    const uResolutionLoc = gl.getUniformLocation(program, 'uResolution');
+    const uImageResolutionLoc = gl.getUniformLocation(program, 'uImageResolution');
+    const uTimeLoc = gl.getUniformLocation(program, 'uTime');
+
+    gl.uniform1i(uPhotoLoc, 0);
+    gl.uniform1i(uDepthLoc, 1);
+
+    function createTexture(glCtx, unit) {
+      const tex = glCtx.createTexture();
+      glCtx.activeTexture(glCtx.TEXTURE0 + unit);
+      glCtx.bindTexture(glCtx.TEXTURE_2D, tex);
+      glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE);
+      glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE);
+      glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR);
+      glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR);
+      return tex;
+    }
+
+    const photoTexture = createTexture(gl, 0);
+    const depthTexture = createTexture(gl, 1);
+
+    let imgWidth = 1920;
+    let imgHeight = 1080;
+    let imagesLoaded = 0;
+
+    function uploadImageTexture(img, unit, tex) {
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      imagesLoaded++;
+
+      if (imagesLoaded >= 2) {
+        heroSection.classList.add('has-webgl-3d');
+        resizeCanvas();
+      }
+    }
+
+    const imgPhoto = new Image();
+    imgPhoto.crossOrigin = 'anonymous';
+    imgPhoto.onload = () => {
+      imgWidth = imgPhoto.naturalWidth || 1920;
+      imgHeight = imgPhoto.naturalHeight || 1080;
+      uploadImageTexture(imgPhoto, 0, photoTexture);
+    };
+    imgPhoto.src = 'assets/media/tourbiere-hero-3d.webp';
+
+    const imgDepth = new Image();
+    imgDepth.crossOrigin = 'anonymous';
+    imgDepth.onload = () => {
+      uploadImageTexture(imgDepth, 1, depthTexture);
+    };
+    imgDepth.src = 'assets/media/tourbiere-hero-depth.webp';
+
+    // Physics mouse tracking
     const mouse = {
       targetX: 0,
       targetY: 0,
       currentX: 0,
       currentY: 0,
-      lerpFactor: 0.085
+      lerp: 0.085
     };
 
-    const params = {
-      vertexShader: vs,
-      fragmentShader: fs,
-      widthSegments: 32,
-      heightSegments: 32,
-      autoloadSources: false,
-      uniforms: {
-        mouse: {
-          name: 'uMouse',
-          type: '2f',
-          value: [0, 0]
-        },
-        mouseStrength: {
-          name: 'uMouseStrength',
-          type: '2f',
-          value: [0.22, 0.16] // Strong, striking 3D stereoscopic depth
-        },
-        time: {
-          name: 'uTime',
-          type: '1f',
-          value: 0
-        }
-      },
-      texturesOptions: {
-        minFilter: curtains.gl.LINEAR,
-        magFilter: curtains.gl.LINEAR
+    let time = 0;
+    let isRendering = true;
+
+    function resizeCanvas() {
+      const rect = heroSection.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const displayWidth = Math.max(1, Math.round(rect.width * dpr));
+      const displayHeight = Math.max(1, Math.round(rect.height * dpr));
+
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
       }
-    };
 
-    const plane = curtains.addPlane(planeElement, params);
-    if (!plane) return;
-
-    let isVisible = true;
-    let loadedCount = 0;
-
-    function onTextureReady() {
-      loadedCount++;
-      if (loadedCount >= 2) {
-        heroSection.classList.add('has-webgl-3d');
-        curtains.resize();
-      }
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+      gl.uniform2f(uImageResolutionLoc, imgWidth, imgHeight);
     }
 
-    plane.loadImage('assets/media/tourbiere-hero-3d.webp', { sampler: 'uPhoto' }, onTextureReady);
-    plane.loadImage('assets/media/tourbiere-hero-depth.webp', { sampler: 'uDepthMap' }, onTextureReady);
-
-    plane.onReady(() => {
-      heroSection.classList.add('has-webgl-3d');
-      curtains.resize();
-    }).onRender(() => {
-      if (!isVisible) return;
-
-      // Smooth spring interpolation
-      mouse.currentX += (mouse.targetX - mouse.currentX) * mouse.lerpFactor;
-      mouse.currentY += (mouse.targetY - mouse.currentY) * mouse.lerpFactor;
-
-      plane.uniforms.mouse.value = [mouse.currentX, mouse.currentY];
-      plane.uniforms.time.value += 1;
-
-      // 3D Spatial rotational perspective in WebGL space
-      if (plane.setRotation && Vec3Constructor) {
-        plane.setRotation(new Vec3Constructor(-mouse.currentY * 0.14, mouse.currentX * 0.16, 0));
+    function render() {
+      if (!isRendering) {
+        requestAnimationFrame(render);
+        return;
       }
-    });
 
-    // 1. Mouse movement tracking across entire viewport
-    function handlePointerMove(clientX, clientY) {
+      // Smooth damping interpolation
+      mouse.currentX += (mouse.targetX - mouse.currentX) * mouse.lerp;
+      mouse.currentY += (mouse.targetY - mouse.currentY) * mouse.lerp;
+
+      time += 1;
+
+      gl.uniform2f(uMouseLoc, mouse.currentX, mouse.currentY);
+      gl.uniform1f(uTimeLoc, time);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      requestAnimationFrame(render);
+    }
+
+    // Pointer events across screen
+    function onPointerMove(clientX, clientY) {
       const rect = heroSection.getBoundingClientRect();
       const x = ((clientX - rect.left) / (rect.width || window.innerWidth)) * 2 - 1;
       const y = ((clientY - rect.top) / (rect.height || window.innerHeight)) * 2 - 1;
-      mouse.targetX = Math.max(-1.3, Math.min(1.3, x));
-      mouse.targetY = Math.max(-1.3, Math.min(1.3, y));
+      mouse.targetX = Math.max(-1.4, Math.min(1.4, x));
+      mouse.targetY = Math.max(-1.4, Math.min(1.4, -y)); // Invert Y for WebGL UV orientation
     }
 
-    window.addEventListener('mousemove', (e) => {
-      handlePointerMove(e.clientX, e.clientY);
-    }, { passive: true });
-
-    window.addEventListener('pointermove', (e) => {
-      handlePointerMove(e.clientX, e.clientY);
-    }, { passive: true });
+    window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
+    window.addEventListener('pointermove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
 
     document.addEventListener('mouseleave', () => {
       mouse.targetX = 0;
       mouse.targetY = 0;
     });
 
-    // 2. Mobile Gyroscope / Device Orientation
-    function handleOrientation(e) {
-      if (e.gamma === null || e.beta === null) return;
-      const tiltX = Math.max(-1.4, Math.min(1.4, e.gamma / 18));
-      const tiltY = Math.max(-1.4, Math.min(1.4, (e.beta - 40) / 18));
-      mouse.targetX = tiltX;
-      mouse.targetY = tiltY;
-    }
-
+    // Mobile Gyroscope / Tilt
     if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma === null || e.beta === null) return;
+        mouse.targetX = Math.max(-1.5, Math.min(1.5, e.gamma / 18));
+        mouse.targetY = Math.max(-1.5, Math.min(1.5, (e.beta - 40) / 18));
+      }, { passive: true });
     }
 
-    // 3. Performance: Pause WebGL when hero is scrolled out of viewport
+    // Viewport IntersectionObserver
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          isVisible = entry.isIntersecting;
-          if (isVisible) {
-            curtains.play();
-          } else {
-            curtains.stop();
-          }
+          isRendering = entry.isIntersecting;
         });
       }, { threshold: 0.05 });
       observer.observe(heroSection);
     }
 
-    // 4. Responsive window resize
-    window.addEventListener('resize', () => {
-      curtains.resize();
-    }, { passive: true });
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    resizeCanvas();
+    requestAnimationFrame(render);
   }
 
-  // Double check initialization timing
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initHero3D();
-      // Retry in 100ms if script tags loaded out of order
-      setTimeout(initHero3D, 100);
-    });
+    document.addEventListener('DOMContentLoaded', initHero3D);
   } else {
     initHero3D();
-    setTimeout(initHero3D, 100);
   }
 })();
+
