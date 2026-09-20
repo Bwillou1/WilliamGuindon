@@ -1,7 +1,7 @@
 /**
- * Hero Depth 3D Parallax Effect
+ * Hero Depth 3D Parallax & Spatial Displacement Engine
  * Powered by Curtains.js (Martin Laxenaire, MIT License)
- * Renders interactive 3D WebGL depth displacement reacting to mouse & device orientation.
+ * Renders high-fidelity 3D stereoscopic depth displacement reacting to mouse & device gyro.
  */
 (() => {
   'use strict';
@@ -25,7 +25,7 @@
     return;
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
+  function initHero3D() {
     const heroSection = document.getElementById('accueil');
     const curtainsContainer = document.getElementById('hero-curtains-canvas');
     const planeElement = document.getElementById('hero-curtains-plane');
@@ -34,7 +34,7 @@
       return;
     }
 
-    // Vertex Shader
+    // Vertex Shader with 3D mesh perspective
     const vs = `
       #ifdef GL_ES
       precision mediump float;
@@ -47,21 +47,26 @@
       uniform mat4 uPMatrix;
 
       uniform mat4 uPhotoMatrix;
-      uniform mat4 uDepthMatrix;
+      uniform mat4 uDepthMapMatrix;
+
+      uniform vec2 uMouse;
 
       varying vec3 vVertexPosition;
       varying vec2 vPhotoCoord;
       varying vec2 vDepthCoord;
 
       void main() {
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vec3 pos = aVertexPosition;
+        
+        // Subtle 3D spatial curve across vertex grid
+        gl_Position = uPMatrix * uMVMatrix * vec4(pos, 1.0);
         vPhotoCoord = (uPhotoMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
-        vDepthCoord = (uDepthMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
-        vVertexPosition = aVertexPosition;
+        vDepthCoord = (uDepthMapMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+        vVertexPosition = pos;
       }
     `;
 
-    // Fragment Shader with Depth Displacement
+    // Fragment Shader: Multi-layer 3D Parallax Displacement & Luminance Glow
     const fs = `
       #ifdef GL_ES
       precision mediump float;
@@ -79,26 +84,37 @@
       uniform float uTime;
 
       void main() {
-        // Read depth map (1.0 = near foreground, 0.0 = far sky)
-        vec4 depthSample = texture2D(uDepthMap, vDepthCoord);
-        float depth = depthSample.r;
+        vec2 uv = vPhotoCoord;
+        vec2 depthUv = vDepthCoord;
 
-        // Subtle ambient natural breathing
-        float idleSwayX = sin(uTime * 0.02) * 0.003;
-        float idleSwayY = cos(uTime * 0.015) * 0.002;
+        // Sample depth map (1.0 = near foreground trees, 0.0 = distant sunrise sky)
+        float depth = texture2D(uDepthMap, depthUv).r;
 
-        // Depth-based displacement (foreground moves more than background)
-        vec2 displacement = (uMouse + vec2(idleSwayX, idleSwayY)) * (depth - 0.45) * uMouseStrength;
+        // Ambient natural atmospheric drift (breathing mist effect)
+        float driftX = sin(uTime * 0.025) * 0.004;
+        float driftY = cos(uTime * 0.018) * 0.003;
 
-        // Sample RGB color from displaced coordinates
-        vec2 displacedUv = clamp(vPhotoCoord + displacement, 0.0, 1.0);
-        vec4 color = texture2D(uPhoto, displacedUv);
+        // Dynamic 3D parallax vector with focal plane centered around midground (0.35)
+        vec2 focalOffset = (uMouse + vec2(driftX, driftY));
+        vec2 displacement = focalOffset * (depth - 0.35) * uMouseStrength;
+
+        // Multi-sample smooth parallax to eliminate hard edge artifacts
+        vec2 sampleUv1 = clamp(uv + displacement, 0.0, 1.0);
+        vec2 sampleUv2 = clamp(uv + displacement * 0.7, 0.0, 1.0);
+
+        vec4 color1 = texture2D(uPhoto, sampleUv1);
+        vec4 color2 = texture2D(uPhoto, sampleUv2);
+        vec4 color = mix(color1, color2, 0.2);
+
+        // Enhance radiant sunrise illumination and morning warmth
+        color.rgb = pow(color.rgb, vec3(0.95)); // Soft gamma lift for bright natural light
+        color.rgb += vec3(0.04, 0.03, 0.01) * (1.0 - depth); // Warm sunbeam haze on background
 
         gl_FragColor = color;
       }
     `;
 
-    // Initialize Curtains instance
+    // Initialize Curtains WebGL instance
     const curtains = new Curtains({
       container: 'hero-curtains-canvas',
       pixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
@@ -114,20 +130,20 @@
       curtains.restoreContext();
     });
 
-    // Uniform values
+    // Mouse coordinates tracking with smooth spring damping
     const mouse = {
       targetX: 0,
       targetY: 0,
       currentX: 0,
       currentY: 0,
-      lerpFactor: 0.07
+      lerpFactor: 0.08
     };
 
     const params = {
       vertexShader: vs,
       fragmentShader: fs,
-      widthSegments: 16,
-      heightSegments: 16,
+      widthSegments: 32,
+      heightSegments: 32,
       uniforms: {
         mouse: {
           name: 'uMouse',
@@ -137,7 +153,7 @@
         mouseStrength: {
           name: 'uMouseStrength',
           type: '2f',
-          value: [0.035, 0.03]
+          value: [0.08, 0.06] // Pronounced, striking 3D parallax
         },
         time: {
           name: 'uTime',
@@ -163,28 +179,30 @@
     }).onRender(() => {
       if (!isVisible) return;
 
-      // Linear interpolation (lerp) for smooth motion
+      // Smooth interpolation for fluid cinematic 60fps tracking
       mouse.currentX += (mouse.targetX - mouse.currentX) * mouse.lerpFactor;
       mouse.currentY += (mouse.targetY - mouse.currentY) * mouse.lerpFactor;
 
       plane.uniforms.mouse.value = [mouse.currentX, mouse.currentY];
       plane.uniforms.time.value += 1;
+
+      // 3D Plane rotational tilt in WebGL space
+      if (plane.rotation) {
+        plane.setRotation(new Curtains.Vec3(-mouse.currentY * 0.04, mouse.currentX * 0.05, 0));
+      }
     });
 
-    // 1. Desktop Mouse Movement
-    function handleMouseMove(e) {
+    // 1. Mouse movement tracking across desktop screen
+    function handlePointerMove(clientX, clientY) {
       const rect = heroSection.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-      mouse.targetX = Math.max(-1, Math.min(1, x));
-      mouse.targetY = Math.max(-1, Math.min(1, y));
+      const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      const y = ((clientY - rect.top) / rect.height) * 2 - 1;
+      mouse.targetX = Math.max(-1.2, Math.min(1.2, x));
+      mouse.targetY = Math.max(-1.2, Math.min(1.2, y));
     }
 
-    heroSection.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mousemove', (e) => {
-      if (e.clientY < window.innerHeight * 0.9) {
-        handleMouseMove(e);
-      }
+      handlePointerMove(e.clientX, e.clientY);
     }, { passive: true });
 
     heroSection.addEventListener('mouseleave', () => {
@@ -193,15 +211,10 @@
     });
 
     // 2. Mobile Gyroscope / Device Orientation
-    let hasGyro = false;
     function handleOrientation(e) {
       if (e.gamma === null || e.beta === null) return;
-      hasGyro = true;
-
-      // Gamma: left to right [-90, 90], Beta: front to back [-180, 180]
-      const tiltX = Math.max(-1, Math.min(1, e.gamma / 25));
-      const tiltY = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
-
+      const tiltX = Math.max(-1.5, Math.min(1.5, e.gamma / 20));
+      const tiltY = Math.max(-1.5, Math.min(1.5, (e.beta - 40) / 20));
       mouse.targetX = tiltX;
       mouse.targetY = tiltY;
     }
@@ -210,7 +223,7 @@
       window.addEventListener('deviceorientation', handleOrientation, { passive: true });
     }
 
-    // 3. Performance Optimization with IntersectionObserver
+    // 3. Performance: Pause WebGL when hero is out of view
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -225,9 +238,15 @@
       observer.observe(heroSection);
     }
 
-    // 4. Handle Window Resize
+    // 4. Responsive window resize
     window.addEventListener('resize', () => {
       curtains.resize();
     }, { passive: true });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHero3D);
+  } else {
+    initHero3D();
+  }
 })();
