@@ -153,6 +153,7 @@
       fragmentShader: fs,
       widthSegments: 32,
       heightSegments: 32,
+      autoloadSources: false,
       uniforms: {
         mouse: {
           name: 'uMouse',
@@ -180,6 +181,18 @@
     if (!plane) return;
 
     let isVisible = true;
+    let loadedCount = 0;
+
+    function onTextureReady() {
+      loadedCount++;
+      if (loadedCount >= 2) {
+        heroSection.classList.add('has-webgl-3d');
+        curtains.resize();
+      }
+    }
+
+    plane.loadImage('assets/media/tourbiere-hero-3d.webp', { sampler: 'uPhoto' }, onTextureReady);
+    plane.loadImage('assets/media/tourbiere-hero-depth.webp', { sampler: 'uDepthMap' }, onTextureReady);
 
     plane.onReady(() => {
       heroSection.classList.add('has-webgl-3d');

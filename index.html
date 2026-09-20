@@ -346,10 +346,10 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20260904-ai">
+<link rel="stylesheet" href="style.css?v=20260920-3d">
 <script src="assets/js/theme-core.js" defer></script>
-<script src="assets/vendor/curtains/curtains.umd.min.js" defer></script>
-<script src="assets/js/hero-depth-3d.js" defer></script>
+<script src="assets/vendor/curtains/curtains.umd.min.js?v=20260920-3d" defer></script>
+<script src="assets/js/hero-depth-3d.js?v=20260920-3d" defer></script>
 <script src="assets/js/page-home.js" defer></script>
 <script src="assets/js/chat-ai.js?v=20260917-2" defer></script>
 </head>
@@ -558,11 +558,8 @@
   <article itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Person" itemid="https://williamguindon.me/#person">
 
   <section class="hero-immersive" id="accueil">
-    <div id="hero-curtains-canvas" class="hero-curtains-container" aria-hidden="true">
-      <div id="hero-curtains-plane" class="hero-curtains-plane">
-        <img src="assets/media/tourbiere-hero-3d.webp" data-sampler="uPhoto" alt="" loading="eager" crossorigin="anonymous">
-        <img src="assets/media/tourbiere-hero-depth.webp" data-sampler="uDepthMap" alt="" loading="eager" crossorigin="anonymous">
-      </div>
+    <div id="hero-curtains-canvas" class="hero-curtains-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;pointer-events:none;" aria-hidden="true">
+      <div id="hero-curtains-plane" class="hero-curtains-plane" style="position:absolute;top:-10%;left:-10%;width:120%;height:120%;pointer-events:none;"></div>
       <div class="hero-curtains-overlay"></div>
     </div>
     <div class="wrap">
