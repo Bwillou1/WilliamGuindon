@@ -108,9 +108,9 @@
         float driftX = sin(uTime * 0.02) * 0.005;
         float driftY = cos(uTime * 0.015) * 0.003;
 
-        // Pronounced 3D parallax vector with focal plane centered on horizon (depth 0.28)
-        vec2 mouseVector = (uMouse + vec2(driftX, driftY)) * vec2(0.09, 0.06);
-        vec2 displacement = -mouseVector * (depth - 0.28);
+        // Pronounced 3D parallax vector with focal plane centered on horizon (depth 0.30)
+        vec2 mouseVector = (uMouse + vec2(driftX, driftY)) * vec2(0.18, 0.12);
+        vec2 displacement = -mouseVector * (depth - 0.30);
 
         // 3-tap smooth depth interpolation for anti-aliased stereoscopic edges
         vec2 uv1 = clamp(coverUv + displacement, 0.001, 0.999);
@@ -209,33 +209,47 @@
     let imagesLoaded = 0;
 
     function uploadImageTexture(img, unit, tex) {
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      imagesLoaded++;
+      try {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        imagesLoaded++;
 
-      if (imagesLoaded >= 2) {
-        heroSection.classList.add('has-webgl-3d');
-        resizeCanvas();
+        if (imagesLoaded >= 2) {
+          heroSection.classList.add('has-webgl-3d');
+          resizeCanvas();
+        }
+      } catch (err) {
+        console.warn('Texture upload error:', err);
       }
     }
 
     const imgPhoto = new Image();
-    imgPhoto.crossOrigin = 'anonymous';
     imgPhoto.onload = () => {
       imgWidth = imgPhoto.naturalWidth || 1920;
       imgHeight = imgPhoto.naturalHeight || 1080;
       uploadImageTexture(imgPhoto, 0, photoTexture);
     };
+    imgPhoto.onerror = () => {
+      imgPhoto.src = 'assets/media/tourbiere-hero-3d.jpg';
+    };
     imgPhoto.src = 'assets/media/tourbiere-hero-3d.webp';
+    if (imgPhoto.complete && imgPhoto.naturalWidth) {
+      imgPhoto.onload();
+    }
 
     const imgDepth = new Image();
-    imgDepth.crossOrigin = 'anonymous';
     imgDepth.onload = () => {
       uploadImageTexture(imgDepth, 1, depthTexture);
     };
+    imgDepth.onerror = () => {
+      imgDepth.src = 'assets/media/tourbiere-hero-depth.png';
+    };
     imgDepth.src = 'assets/media/tourbiere-hero-depth.webp';
+    if (imgDepth.complete && imgDepth.naturalWidth) {
+      imgDepth.onload();
+    }
 
     // Physics mouse tracking
     const mouse = {
@@ -285,13 +299,13 @@
       requestAnimationFrame(render);
     }
 
-    // Pointer events across screen
+    // Pointer events across entire screen window
     function onPointerMove(clientX, clientY) {
-      const rect = heroSection.getBoundingClientRect();
-      const x = ((clientX - rect.left) / (rect.width || window.innerWidth)) * 2 - 1;
-      const y = ((clientY - rect.top) / (rect.height || window.innerHeight)) * 2 - 1;
-      mouse.targetX = Math.max(-1.4, Math.min(1.4, x));
-      mouse.targetY = Math.max(-1.4, Math.min(1.4, -y)); // Invert Y for WebGL UV orientation
+      if (!window.innerWidth || !window.innerHeight) return;
+      const x = (clientX / window.innerWidth) * 2 - 1;
+      const y = (clientY / window.innerHeight) * 2 - 1;
+      mouse.targetX = Math.max(-1.5, Math.min(1.5, x));
+      mouse.targetY = Math.max(-1.5, Math.min(1.5, -y)); // Invert Y for WebGL UV coordinate space
     }
 
     window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
