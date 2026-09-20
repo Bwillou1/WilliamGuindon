@@ -15,7 +15,7 @@
   }
 
   loadScript('assets/js/theme-core.js');
-  loadScript('assets/js/chat-ai.js?v=20260917-2');
+  loadScript('assets/js/chat-ai.js?v=20260920-v1');
 
   const path = window.location.pathname;
   const isHome = path === '/' || path.endsWith('index.html') || path === '';

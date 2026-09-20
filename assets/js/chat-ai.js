@@ -82,36 +82,80 @@ DIRECTIVES DE RÉPONSE :
 
     function formatAiResponse(raw) {
       if (!raw) return '';
-      // Échappement HTML préventif
-      let text = raw.trim().replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
-      
-      // Blocs de code
-      text = text.replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.15); padding:10px; border-radius:6px; overflow-x:auto; font-family:monospace; font-size:12px; margin:8px 0; border:1px solid var(--border-color, rgba(255,255,255,0.1));">$1</pre>');
-      text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.12); padding:2px 5px; border-radius:4px; font-family:monospace; font-size:12px;">$1</code>');
+      // 1. Normalisation des balises HTML de saut de ligne / paragraphe renvoyées par le modèle
+      let text = raw.trim()
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/p>/gi, '\n\n')
+        .replace(/<p>/gi, '\n');
 
-      // Titres Markdown
-      text = text.replace(/^### (.*?)$/gm, '<h4 style="margin:10px 0 4px; color:var(--accent,#10b981); font-size:1.02rem; font-weight:700;">$1</h4>');
-      text = text.replace(/^## (.*?)$/gm, '<h3 style="margin:12px 0 6px; color:var(--accent,#10b981); font-size:1.1rem; font-weight:700;">$1</h3>');
-      text = text.replace(/^# (.*?)$/gm, '<h2 style="margin:14px 0 8px; color:var(--accent,#10b981); font-size:1.2rem; font-weight:700;">$1</h2>');
+      // 2. Échappement HTML sécuritaire des caractères restants
+      text = text.replace(/[&<>'"]/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      })[char]);
 
-      // Gras et Italique
+      // 3. Blocs de code (triples backticks)
+      text = text.replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.25); padding:10px; border-radius:6px; overflow-x:auto; font-family:monospace; font-size:12px; margin:8px 0; border:1px solid var(--border-color, rgba(255,255,255,0.1));">$1</pre>');
+      // Code inline
+      text = text.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.2); padding:2px 5px; border-radius:4px; font-family:monospace; font-size:12px;">$1</code>');
+
+      // 4. Titres Markdown
+      text = text.replace(/^### (.*?)$/gm, '<h4 style="margin:12px 0 4px; color:var(--accent,#10b981); font-size:1.02rem; font-weight:700;">$1</h4>');
+      text = text.replace(/^## (.*?)$/gm, '<h3 style="margin:14px 0 6px; color:var(--accent,#10b981); font-size:1.1rem; font-weight:700;">$1</h3>');
+      text = text.replace(/^# (.*?)$/gm, '<h2 style="margin:16px 0 8px; color:var(--accent,#10b981); font-size:1.2rem; font-weight:700;">$1</h2>');
+
+      // 5. Gras et Italique
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-      // Liens Markdown [Titre](url) et URLs brutes (sans lookbehind pour compatibilité Safari iOS < 16.4)
+      // 6. Liens Markdown [Titre](url) et URLs brutes (compatibilité Safari iOS)
       text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">$1 ↗</a>');
       text = text.replace(/(href=")?(https?:\/\/[^\s<]+)/g, function (match, p1, p2) {
         if (p1) return match;
         return '<a href="' + p2 + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent,#10b981); text-decoration:underline;">' + p2 + ' ↗</a>';
       });
 
-      // Listes à puces
-      text = text.replace(/^[-*•]\s+(.*)$/gm, '<li style="margin-bottom:4px;">$1</li>');
-      text = text.replace(/(<li.*<\/li>(\n<li.*<\/li>)*)/g, '<ul style="padding-left:18px; margin:8px 0;">$1</ul>');
+      // 7. Tableaux Markdown (| col1 | col2 |)
+      text = text.replace(/((?:^\|[^\n]+\|\r?\n?)+)/gm, function (tableBlock) {
+        const lines = tableBlock.trim().split(/\r?\n/).filter(l => l.trim().startsWith('|') && l.trim().endsWith('|'));
+        if (lines.length < 2) return tableBlock;
+        
+        let headerHtml = '';
+        let bodyHtml = '';
+        let isHeader = true;
 
-      // Sauts de ligne
-      text = text.replace(/\n\n/g, '<br><br>');
+        lines.forEach((line) => {
+          // Détection ligne de séparation markdown (|---|---|)
+          if (/^\|[\s\-:|]+\|$/.test(line)) {
+            isHeader = false;
+            return;
+          }
+          const cells = line.split('|').slice(1, -1).map(c => c.trim());
+          if (isHeader) {
+            headerHtml += '<tr>' + cells.map(c => '<th style="padding:6px 10px; border:1px solid var(--border-color, rgba(255,255,255,0.15)); background:rgba(255,255,255,0.06); font-weight:600; text-align:left;">' + c + '</th>').join('') + '</tr>';
+          } else {
+            bodyHtml += '<tr>' + cells.map(c => '<td style="padding:6px 10px; border:1px solid var(--border-color, rgba(255,255,255,0.15));">' + c + '</td>').join('') + '</tr>';
+          }
+        });
+
+        return '<div style="overflow-x:auto; margin:10px 0; border-radius:6px;"><table style="border-collapse:collapse; width:100%; font-size:12px; border:1px solid var(--border-color, rgba(255,255,255,0.15)); line-height:1.4;">' + (headerHtml ? '<thead>' + headerHtml + '</thead>' : '') + (bodyHtml ? '<tbody>' + bodyHtml + '</tbody>' : '') + '</table></div>';
+      });
+
+      // 8. Listes à puces & listes ordonnées
+      text = text.replace(/^[-*•]\s+(.*)$/gm, '<li style="margin-bottom:4px;">$1</li>');
+      text = text.replace(/(<li.*<\/li>(?:\n<li.*<\/li>)*)/g, '<ul style="padding-left:18px; margin:8px 0;">$1</ul>');
+
+      // 9. Sauts de ligne (ne pas doubler autour des blocs)
+      text = text.replace(/\n\n+/g, '<br><br>');
       text = text.replace(/\n/g, '<br>');
+      
+      // Nettoyage des <br> superflus adjacents aux éléments de bloc
+      text = text.replace(/<br>\s*(<\/?(?:h[1-6]|ul|ol|li|div|table|thead|tbody|tr|th|td|pre|blockquote)[^>]*>)/gi, '$1');
+      text = text.replace(/(<\/(?:h[1-6]|ul|ol|li|div|table|thead|tbody|tr|th|td|pre|blockquote)>)\s*<br>/gi, '$1');
+
       return text;
     }
 

@@ -197,6 +197,7 @@ SOFTWARE.
 - **Commission de Coopération Environnementale (CCE / cec.org) :** Consultation en direct des données et pièces officielles du registre public SEM-26-003 ([cec.org](https://www.cec.org)).
 - **Felt :** Cartographie interactive externe (conditions d'utilisation : [felt.com/terms](https://felt.com/terms)).
 - **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (ODbL).
+- **ntfy (Philipp C. Heckel) :** Service et protocole de notifications push HTTP pub-sub décentralisées respectueux de la vie privée — Licence Apache 2.0 / GNU GPLv2 ([github.com/binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) / [ntfy.sh](https://ntfy.sh)). Utilisé pour la diffusion en temps réel des alertes citoyennes et notifications du registre CCE sans traceurs.
 
 ---
 
