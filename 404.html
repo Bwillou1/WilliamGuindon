@@ -40,6 +40,8 @@
 
 <link rel="stylesheet" href="style.css?v=20260904-slider">
 <script src="assets/js/theme-core.js" defer></script>
+<script src="assets/vendor/curtains/curtains.umd.min.js?v=20260920-v7" defer></script>
+<script src="assets/js/hero-depth-3d.js?v=20260920-v8" defer></script>
 </head>
 <body class="dark-theme">
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -93,7 +95,6 @@
             <span class="nav-dropdown-group-title">Publications &amp; Presse</span>
             <div class="nav-dropdown-grid single-col">
               <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
-              <a href="interventions.html" class="nav-dropdown-item">Médias, Événements &amp; Agenda</a>
               <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
               <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
               <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
@@ -176,6 +177,14 @@
               </div>
             </article>
           </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 5px 10px; cursor: pointer;" aria-label="M'alerter le 16 octobre 2026">
+              <span aria-hidden="true">🔔</span> M'alerter le 16 oct.
+            </button>
+            <a href="https://ntfy.sh/williamguindon-sem26003" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost" style="font-size: 11px; padding: 5px 8px;" title="Push sans traceur via ntfy">
+              <span>📱 Push ntfy ↗</span>
+            </a>
+          </div>
         </div>
       </div>
     </nav>
@@ -183,35 +192,44 @@
 </header>
 
 <main id="main-content">
-  <div class="card-404">
-    <div class="leaf leaf-404">
-      <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-      </svg>
-    </div>
-    <div class="code code-404">Erreur 404 — Page introuvable</div>
-    <h1 class="title-404">Ce sentier ne mène nulle part.</h1>
-    <p class="lead lead-404">
-      La page que vous cherchez n'existe pas ou est en cours d'actualisation. Comme dans une tourbière, mieux vaut rester sur les chemins balisés :
-    </p>
-    
-    <div class="actions-404">
-      <a class="btn btn-primary" href="/">← Retour à l'accueil</a>
-      <a class="btn btn-ghost" href="presse.html">Espace Presse</a>
-      <a class="btn btn-ghost" href="live.html">Horloge Live CCE</a>
+  <section class="hero-immersive" id="section-404" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 60px 16px;">
+    <div id="hero-curtains-canvas" class="hero-curtains-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;pointer-events:none;" aria-hidden="true">
+      <div id="hero-curtains-plane" class="hero-curtains-plane" style="position:absolute;top:-10%;left:-10%;width:120%;height:120%;pointer-events:none;"></div>
+      <div class="hero-curtains-overlay" style="background: radial-gradient(circle at center, rgba(6,78,59,0.3) 0%, rgba(5,20,15,0.82) 100%);"></div>
     </div>
 
-    <nav class="shortcuts shortcuts-404" aria-label="Raccourcis">
-      <a href="/#apropos">Biographie</a>
-      <a href="communiques.html">Communiqués</a>
-      <a href="stablex.html">Dossier Stablex</a>
-      <a href="/#tracker">Tableau CCE</a>
-      <a href="terms.html">Conditions d'utilisation</a>
-      <a href="privacy.html">Politique de confidentialité</a>
-      <a href="/#contact">Contact</a>
-    </nav>
-  </div>
+    <div class="wrap" style="position: relative; z-index: 3; max-width: 680px; width: 100%;">
+      <div class="card-404" style="background: rgba(6, 78, 59, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 2px solid var(--accent, #10b981); border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); margin: 0 auto;">
+        <div class="leaf leaf-404">
+          <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 12"/>
+          </svg>
+        </div>
+        <div class="code code-404">Erreur 404 — Page introuvable</div>
+        <h1 class="title-404">Ce sentier ne mène nulle part.</h1>
+        <p class="lead lead-404">
+          La page que vous cherchez n'existe pas ou a été déplacée. Comme dans la Grande Tourbière de Blainville, mieux vaut rester sur les chemins balisés :
+        </p>
+        
+        <div class="actions-404">
+          <a class="btn btn-primary" href="/">← Retour à l'accueil</a>
+          <a class="btn btn-ghost" href="presse.html">Espace Presse</a>
+          <a class="btn btn-ghost" href="live.html">Horloge Live CCE</a>
+        </div>
+
+        <nav class="shortcuts shortcuts-404" aria-label="Raccourcis">
+          <a href="/#apropos">Biographie</a>
+          <a href="communiques.html">Communiqués</a>
+          <a href="stablex.html">Dossier Stablex</a>
+          <a href="/#tracker">Tableau CCE</a>
+          <a href="terms.html">Conditions d'utilisation</a>
+          <a href="privacy.html">Politique de confidentialité</a>
+          <a href="/#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>

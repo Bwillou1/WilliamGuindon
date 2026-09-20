@@ -1,10 +1,9 @@
-const CACHE_NAME = 'wg-pwa-v44';
+const CACHE_NAME = 'wg-pwa-v45';
 const MAX_CACHE_ENTRIES = 85;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/interventions.html',
   '/registre.html',
   '/enquete-partis.html',
   '/presse.html',
@@ -59,8 +58,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/tourbiere-hero-3d.webp',
   '/assets/media/tourbiere-hero-depth.webp',
   '/feed.xml',
-  '/status.json',
-  '/data/interventions.json'
+  '/status.json'
 ];
 
 /**

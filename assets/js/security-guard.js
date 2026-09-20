@@ -9,8 +9,8 @@
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
   const STORAGE_KEY = 'wg_radical_site_state';
 
-  // Ne pas bloquer la console admin, l'espace d'administration, l'espace média ni l'éditeur
-  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('media-admin.html') || window.location.pathname.includes('editeur.html');
+  // Ne pas bloquer la console admin, l'espace d'administration ni l'éditeur
+  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
   if (isConsolePage) return;
 
   // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)

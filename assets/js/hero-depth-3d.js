@@ -12,8 +12,8 @@
   }
 
   function initHero3D() {
-    const heroSection = document.getElementById('accueil');
-    const curtainsContainer = document.getElementById('hero-curtains-canvas');
+    const heroSection = document.getElementById('accueil') || document.getElementById('section-404') || document.querySelector('.hero-immersive') || document.querySelector('.hero-3d-wrap');
+    const curtainsContainer = document.getElementById('hero-curtains-canvas') || document.querySelector('.hero-curtains-container');
 
     if (!heroSection || !curtainsContainer) {
       return;
