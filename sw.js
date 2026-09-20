@@ -168,7 +168,32 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Gestionnaire de messages (Skip Waiting & Purge immédiate)
+// Échéance CCE du 16 octobre 2026 (00:00:00 EDT)
+const TARGET_CCE_DEADLINE = new Date("2026-10-16T00:00:00-04:00").getTime();
+
+async function checkDeadlineNotification() {
+  if (Date.now() < TARGET_CCE_DEADLINE) return;
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const notifFlagKey = new Request('/__cce_notif_16oct_sent');
+    const alreadySent = await cache.match(notifFlagKey);
+    if (!alreadySent) {
+      await cache.put(notifFlagKey, new Response('sent', { headers: { 'Content-Type': 'text/plain' } }));
+      if (self.registration && self.registration.showNotification) {
+        await self.registration.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+          body: "Le délai officiel de 60 jours imposé au gouvernement du Canada pour répondre dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu. Consultez les documents officiels.",
+          icon: "/icon-192.png",
+          badge: "/favicon.svg",
+          tag: "cce-deadline-16oct2026",
+          requireInteraction: true,
+          data: { url: "/live.html" }
+        });
+      }
+    }
+  } catch (_) {}
+}
+
+// Gestionnaire de messages (Skip Waiting & Purge immédiate & Programmation notif)
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING' || event.data?.action === 'skipWaiting') {
     self.skipWaiting();
@@ -176,12 +201,42 @@ self.addEventListener('message', (event) => {
   if (event.data === 'PURGE_CACHE' || event.data?.action === 'purgeCache') {
     caches.keys().then((keys) => Promise.all(keys.map(k => caches.delete(k))));
   }
+  if (event.data === 'CHECK_DEADLINE' || event.data?.action === 'checkDeadline') {
+    event.waitUntil(checkDeadlineNotification());
+  }
 });
 
-// Notifications Web & Alertes d'échéance CCE
+// Réception des notifications push (Web Push / Relais ntfy)
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (_) {
+    payload = { body: event.data ? event.data.text() : '' };
+  }
+  const title = payload.title || "🚨 Dossier CCE SEM-26-003 — 16 Octobre 2026";
+  const options = {
+    body: payload.body || "Le délai de réponse du Canada concernant la Grande Tourbière de Blainville est échu.",
+    icon: "/icon-192.png",
+    badge: "/favicon.svg",
+    tag: "cce-push-alert",
+    requireInteraction: true,
+    data: { url: payload.url || "/live.html" }
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Synchronisation périodique en arrière-plan
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'check-cce-feed' || event.tag === 'check-cce-deadline') {
+    event.waitUntil(checkDeadlineNotification());
+  }
+});
+
+// Notifications Web & Alertes d'échéance CCE (clic utilisateur)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const urlToOpen = event.notification.data?.url || '/';
+  const urlToOpen = event.notification.data?.url || '/live.html';
   
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {

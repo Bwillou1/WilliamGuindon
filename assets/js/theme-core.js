@@ -901,55 +901,98 @@
       }
     });
 
-    // Web Push / Notifications
-    const notifBtn = document.getElementById('btn-enable-push');
-    if (notifBtn) {
-      function updateNotifBtnState() {
-        if (!('Notification' in window)) {
-          notifBtn.disabled = true;
-          notifBtn.textContent = 'Non supporté';
+    // Web Push / Notifications de l'échéance CCE du 16 octobre 2026
+    const notifButtons = document.querySelectorAll('#btn-enable-push, .btn-enable-push, [data-action="enable-cce-push"]');
+    const TARGET_16_OCT = new Date("2026-10-16T00:00:00-04:00").getTime();
+
+    function updateNotifButtonsState() {
+      const supported = 'Notification' in window;
+      notifButtons.forEach(btn => {
+        if (!supported) {
+          btn.disabled = true;
+          btn.textContent = 'Push non supporté';
           return;
         }
         if (Notification.permission === 'granted') {
-          notifBtn.classList.add('subscribed');
-          notifBtn.textContent = 'Notifications activées ✓';
+          btn.classList.add('subscribed');
+          btn.innerHTML = '<span aria-hidden="true">✓</span> Alerte 16 oct. activée';
         } else if (Notification.permission === 'denied') {
-          notifBtn.disabled = true;
-          notifBtn.textContent = 'Bloquées dans le navigateur';
+          btn.disabled = true;
+          btn.innerHTML = 'Bloqué par le navigateur';
         } else {
-          notifBtn.classList.remove('subscribed');
-          notifBtn.textContent = 'M\'alerter des développements';
-        }
-      }
-
-      updateNotifBtnState();
-
-      notifBtn.addEventListener('click', async () => {
-        if (!('Notification' in window)) return;
-        try {
-          const perm = await Notification.requestPermission();
-          updateNotifBtnState();
-          if (perm === 'granted') {
-            const reg = await navigator.serviceWorker.ready;
-            if (reg.showNotification) {
-              reg.showNotification("Dossier SEM-26-003", {
-                body: "Vous recevrez les alertes officielles concernant l'échéance fédérale du 16 octobre 2026.",
-                icon: "/icon-192.png",
-                badge: "/favicon.svg"
-              });
-            }
-          }
-        } catch (err) {
-          if (DEBUG) console.warn('Erreur notification push:', err);
+          btn.classList.remove('subscribed');
+          btn.innerHTML = '<span aria-hidden="true">🔔</span> M\'alerter le 16 octobre 2026';
         }
       });
+    }
+
+    if (notifButtons.length > 0) {
+      updateNotifButtonsState();
+
+      notifButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!('Notification' in window)) return;
+          try {
+            const perm = await Notification.requestPermission();
+            updateNotifButtonsState();
+            if (perm === 'granted') {
+              // Notification de confirmation immédiate
+              if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+                const reg = await navigator.serviceWorker.ready;
+                if (reg.showNotification) {
+                  reg.showNotification("Dossier SEM-26-003 · CCE / ACEUM", {
+                    body: "Alerte programmée avec succès : vous recevrez une notification le 16 octobre 2026 dès l'échéance officielle imposée au Canada.",
+                    icon: "/icon-192.png",
+                    badge: "/favicon.svg",
+                    tag: "cce-confirm-subscription"
+                  });
+                }
+                if (navigator.serviceWorker.controller) {
+                  navigator.serviceWorker.controller.postMessage('CHECK_DEADLINE');
+                }
+              }
+              // Si déjà le 16 octobre ou après
+              if (Date.now() >= TARGET_16_OCT && !localStorage.getItem('wg_deadline_notif_fired')) {
+                localStorage.setItem('wg_deadline_notif_fired', 'true');
+                new Notification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+                  body: "Le délai légal de 60 jours imposé au Canada pour répondre sur la Grande Tourbière de Blainville (SEM-26-003) est échu.",
+                  icon: "/icon-192.png"
+                });
+              }
+            }
+          } catch (err) {
+            if (DEBUG) console.warn('Erreur permission notification:', err);
+          }
+        });
+      });
+    }
+
+    // Vérification automatique au chargement si l'échéance du 16 octobre 2026 est atteinte
+    if ('Notification' in window && Notification.permission === 'granted' && Date.now() >= TARGET_16_OCT) {
+      if (!localStorage.getItem('wg_deadline_notif_fired')) {
+        localStorage.setItem('wg_deadline_notif_fired', 'true');
+        if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(reg => {
+            if (reg.showNotification) {
+              reg.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+                body: "Le délai officiel de 60 jours accordé au Canada dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu.",
+                icon: "/icon-192.png",
+                badge: "/favicon.svg",
+                tag: "cce-deadline-16oct2026",
+                requireInteraction: true,
+                data: { url: "/live.html" }
+              });
+            }
+          });
+        }
+      }
     }
 
     function checkBackgroundFeedUpdates(reg) {
       if (!('periodicSync' in reg)) return;
       try {
-        reg.periodicSync.register('check-cce-feed', {
-          minInterval: 24 * 60 * 60 * 1000
+        reg.periodicSync.register('check-cce-deadline', {
+          minInterval: 12 * 60 * 60 * 1000
         });
       } catch (_) {}
     }
