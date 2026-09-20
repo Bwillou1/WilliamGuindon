@@ -151,6 +151,38 @@ SOFTWARE.
 
 ---
 
+### Curtains.js (v8.1.6)
+- **Auteur :** Copyright (c) 2019-2026 Martin Laxenaire
+- **Licence :** MIT License
+- **URL :** https://github.com/martinlaxenaire/curtainsjs
+- **Description :** Moteur d'animation et de rendu WebGL interactif haute performance utilisé pour le déplacement 3D par carte de profondeur (depth map displacement) de l'image de la Grande Tourbière au lever du soleil sur la page d'accueil (`index.html`), réagissant dynamiquement au curseur de souris sur ordinateur et à l'orientation / gyroscope sur mobile.
+
+```text
+MIT License
+
+Copyright (c) 2019-2026 Martin Laxenaire
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).

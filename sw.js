@@ -1,5 +1,5 @@
-const CACHE_NAME = 'wg-pwa-v37';
-const MAX_CACHE_ENTRIES = 80;
+const CACHE_NAME = 'wg-pwa-v38';
+const MAX_CACHE_ENTRIES = 85;
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -36,11 +36,13 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/page-home.js',
   '/assets/js/chat-ai.js',
+  '/assets/js/hero-depth-3d.js',
   '/assets/css/pdf-viewer.css',
   '/assets/js/pdf-viewer.js',
   '/assets/vendor/pdfjs/pdf.min.js',
   '/assets/vendor/pdfjs/pdf.worker.min.js',
   '/assets/vendor/pdfjs/pdf_viewer.css',
+  '/assets/vendor/curtains/curtains.umd.min.js',
   '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
@@ -54,6 +56,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/william-guindon.jpg',
   '/assets/media/william-guindon.webp',
   '/assets/media/signature.svg',
+  '/assets/media/tourbiere-hero-3d.webp',
+  '/assets/media/tourbiere-hero-depth.webp',
   '/feed.xml',
   '/status.json',
   '/data/interventions.json'
