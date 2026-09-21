@@ -215,6 +215,38 @@ SOFTWARE.
 
 ---
 
+### x-frame-bypass
+- **Auteurs :** Copyright (c) Jerzy Głowacki (niutech)
+- **Licence :** MIT License
+- **URL :** https://github.com/niutech/x-frame-bypass
+- **Description :** Web Component étendant les éléments iframe (`HTMLIFrameElement`) permettant l'intégration et la consultation transparente de ressources documentaires, cartographiques et de plateformes citoyennes sans blocage d'en-têtes de cadrage (X-Frame-Options / CSP frame-ancestors) via des proxys CORS sécurisés.
+
+```text
+MIT License
+
+Copyright (c) Jerzy Głowacki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).
