@@ -259,8 +259,8 @@ SOFTWARE.
 - **Google LLC (YouTube No-Cookie) :** Diffusion vidéo et archives citoyennes via le domaine à confidentialité renforcée `youtube-nocookie.com` (politique : [policies.google.com/privacy](https://policies.google.com/privacy)).
 - **ImageKit (ik.imagekit.io) :** Réseau de diffusion de contenu média (CDN) et moteur d'optimisation en temps réel pour photographies de terrain et médias ([imagekit.io](https://imagekit.io)).
 - **Commission de Coopération Environnementale (CCE / cec.org) :** Consultation en direct des données et pièces officielles du registre public SEM-26-003 ([cec.org](https://www.cec.org)).
-- **Felt :** Cartographie interactive externe (conditions d'utilisation : [felt.com/terms](https://felt.com/terms)).
-- **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (ODbL).
+- **uMap / OpenStreetMap Suisse (umap.osm.ch) :** Service libre de cartographie vectorielle et interactive basé sur les données ouvertes OpenStreetMap.
+- **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (données sous licence Open Database License - ODbL).
 - **ntfy (Philipp C. Heckel) :** Service et protocole de notifications push HTTP pub-sub décentralisées respectueux de la vie privée — Licence Apache 2.0 / GNU GPLv2 ([github.com/binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) / [ntfy.sh](https://ntfy.sh)). Utilisé pour la diffusion en temps réel des alertes citoyennes et notifications du registre CCE sans traceurs.
 
 ---
