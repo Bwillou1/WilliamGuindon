@@ -268,7 +268,7 @@
             <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 5px 10px; cursor: pointer;" aria-label="M'alerter le 16 octobre 2026">
               <span aria-hidden="true">🔔</span> M'alerter le 16 oct.
             </button>
-            <a href="https://ntfy.sh/williamguindon-sem26003" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost" style="font-size: 11px; padding: 5px 8px;" title="Push sans traceur via ntfy">
+            <a href="https://ntfy.sh/williamguindon-sem26003" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost" style="font-size: 11px; padding: 5px 8px;" title="Push mobile instantané via ntfy">
               <span>📱 Push ntfy ↗</span>
             </a>
           </div>
@@ -329,7 +329,7 @@
         </div>
 
         <!-- Encadré officiel Google Journalist Studio / Pinpoint -->
-        <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 22px; margin-bottom: 24px;">
+        <div id="pinpoint-card" style="background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 22px; margin-bottom: 24px; transition: border-color 0.3s ease, box-shadow 0.3s ease;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 14px;">
             <div>
               <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(59, 130, 246, 0.12); color: #2563eb; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 8px; border: 1px solid rgba(59, 130, 246, 0.25);">
@@ -342,9 +342,14 @@
                 Organisation certifiée : <strong>Biographie de William</strong> · Collection ID : <code>73bb813da3c5c4b0</code>
               </p>
             </div>
-            <a href="https://journaliststudio.google.com/pinpoint/search?collection=73bb813da3c5c4b0" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; text-decoration: none;">
-              <span>🔍 Ouvrir sur Google Journalist Studio ↗</span>
-            </a>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" id="btn-pinpoint-fullscreen" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 8px 14px; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--line);">
+                <span id="fs-icon">⛶</span> <span id="fs-text">Plein écran</span>
+              </button>
+              <a href="https://journaliststudio.google.com/pinpoint/search?collection=73bb813da3c5c4b0" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 8px 16px; font-size: 0.9rem; text-decoration: none;">
+                <span>🔍 Ouvrir dans Pinpoint ↗</span>
+              </a>
+            </div>
           </div>
 
           <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin: 0 0 16px;">
@@ -352,13 +357,14 @@
           </p>
 
           <!-- Intégration interactive directe Google Journalist Studio Pinpoint (via Proxy Cloudflare) -->
-          <div id="pinpoint-embed-box" style="background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line, rgba(255,255,255,0.15)); box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 8px;">
+          <div id="pinpoint-embed-box" style="background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line, rgba(255,255,255,0.15)); box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 8px; position: relative; transition: all 0.3s ease;">
             <iframe 
+              id="pinpoint-iframe"
               src="/api/pinpoint-proxy" 
               title="Moteur de recherche des pièces justificatives Google Journalist Studio Pinpoint — Collection SEM-26-003"
-              style="width: 100%; height: 720px; border: 0; display: block; background: #ffffff;"
+              style="width: 100%; height: 740px; border: 0; display: block; background: #ffffff;"
               loading="lazy"
-              allow="clipboard-write">
+              allow="clipboard-write; fullscreen">
             </iframe>
           </div>
         </div>
@@ -547,6 +553,111 @@
   </div>
 </footer>
 
+<style>
+  #pinpoint-embed-box:fullscreen,
+  #pinpoint-embed-box:-webkit-full-screen {
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  #pinpoint-embed-box:fullscreen iframe,
+  #pinpoint-embed-box:-webkit-full-screen iframe {
+    height: 100vh !important;
+    border-radius: 0 !important;
+  }
+  #pinpoint-embed-box.is-fullscreen-fallback {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  #pinpoint-embed-box.is-fullscreen-fallback iframe {
+    height: 100vh !important;
+  }
+</style>
+
+<script>
+  (function() {
+    var card = document.getElementById('pinpoint-card');
+    var embedBox = document.getElementById('pinpoint-embed-box');
+    var btnFs = document.getElementById('btn-pinpoint-fullscreen');
+    var fsIcon = document.getElementById('fs-icon');
+    var fsText = document.getElementById('fs-text');
+
+    // 1. Défilement doux vers le studio au survol
+    if (card && embedBox) {
+      var lastScrollTime = 0;
+      card.addEventListener('mouseenter', function() {
+        var now = Date.now();
+        if (now - lastScrollTime > 3000) {
+          lastScrollTime = now;
+          var rect = embedBox.getBoundingClientRect();
+          // Défile seulement si l'iframe n'est pas déjà bien visible au centre
+          if (rect.top < 60 || rect.top > window.innerHeight * 0.4) {
+            embedBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      });
+    }
+
+    // 2. Gestion du mode Plein écran
+    if (btnFs && embedBox) {
+      function updateFsUI(isFullscreen) {
+        if (isFullscreen) {
+          if (fsIcon) fsIcon.textContent = '✕';
+          if (fsText) fsText.textContent = 'Quitter le plein écran';
+          btnFs.style.background = 'rgba(239, 68, 68, 0.15)';
+          btnFs.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+        } else {
+          if (fsIcon) fsIcon.textContent = '⛶';
+          if (fsText) fsText.textContent = 'Plein écran';
+          btnFs.style.background = '';
+          btnFs.style.borderColor = '';
+        }
+      }
+
+      function toggleFullscreen() {
+        var isFs = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!isFs) {
+          if (embedBox.requestFullscreen) {
+            embedBox.requestFullscreen().catch(function() {
+              embedBox.classList.toggle('is-fullscreen-fallback');
+              updateFsUI(embedBox.classList.contains('is-fullscreen-fallback'));
+            });
+          } else if (embedBox.webkitRequestFullscreen) {
+            embedBox.webkitRequestFullscreen();
+          } else {
+            embedBox.classList.toggle('is-fullscreen-fallback');
+            updateFsUI(embedBox.classList.contains('is-fullscreen-fallback'));
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        }
+      }
+
+      btnFs.addEventListener('click', toggleFullscreen);
+
+      document.addEventListener('fullscreenchange', function() {
+        var isFs = document.fullscreenElement === embedBox;
+        updateFsUI(isFs);
+      });
+      document.addEventListener('webkitfullscreenchange', function() {
+        var isFs = document.webkitFullscreenElement === embedBox;
+        updateFsUI(isFs);
+      });
+    }
+  })();
+</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
 </html>
