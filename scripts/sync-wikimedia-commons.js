@@ -55,8 +55,17 @@ async function main() {
     return null;
   }
 
+  const FORBIDDEN_KEYWORDS = ['logo', 'banner', 'banniere', 'lapresse', 'ledevoir', 'cbc', 'tvbl', 'rover', 'asdelinfo', 'curium', 'areq', 'csq', 'badge'];
+
   const photos = JSON.parse(fs.readFileSync(PHOTOS_FILE, 'utf8'));
   const toUpload = photos.filter(p => {
+    // Sécurité stricte : exclusion totale de tout logo, bannière ou marque tierce
+    const checkStr = `${p.id} ${p.title || ''} ${p.imageUrl || ''} ${p.category || ''}`.toLowerCase();
+    const isForbidden = FORBIDDEN_KEYWORDS.some(k => checkStr.includes(k));
+    if (isForbidden) {
+      return false;
+    }
+
     const isSynced = syncLog.synced.some(s => s.id === p.id);
     const isRemote = p.imageUrl && (p.imageUrl.startsWith('http://') || p.imageUrl.startsWith('https://'));
     const localPath = resolveLocalPath(p.imageUrl);
