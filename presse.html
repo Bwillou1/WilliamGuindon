@@ -326,18 +326,25 @@
           </div>
         </div>
 
-        <!-- Cadre d'intégration / Emplacement conteneur pour l'iframe future -->
-        <div id="pieces-search-engine-frame-container" style="background: #090d16; border: 1px dashed var(--accent, #10b981); border-radius: 10px; padding: 20px; text-align: center; position: relative; overflow: hidden; margin-bottom: 20px;">
-          <div style="position: absolute; top: 12px; right: 14px; background: rgba(16,185,129,0.15); border: 1px solid #10b981; border-radius: 6px; padding: 3px 8px; font-size: 11px; font-family: monospace; color: #10b981;">
-            Emplacement d'intégration prêt (Iframe / Moteur interne)
+        <!-- Cadre d'intégration interactif connecté au Proxy Cloudflare -->
+        <div id="pieces-search-engine-frame-container" style="background: #090d16; border: 1px solid var(--accent, #10b981); border-radius: 10px; padding: 12px; text-align: center; position: relative; overflow: hidden; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 4px; flex-wrap: wrap; gap: 8px;">
+            <span style="font-size: 12px; color: #10b981; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+              <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+              Collection interactive intégrée (Google Pinpoint via Proxy Cloudflare)
+            </span>
+            <a href="https://journaliststudio.google.com/pinpoint/search?collection=73bb813da3c5c4b0" target="_blank" rel="noopener noreferrer" style="font-size: 11px; color: #38bdf8; text-decoration: underline;">
+              Ouvrir directement sur Google Pinpoint ↗
+            </a>
           </div>
-          <picture>
-            <source srcset="assets/media/moteur-recherche-pieces.webp" type="image/webp">
-            <img src="assets/media/moteur-recherche-pieces.jpg" alt="Aperçu du futur moteur de recherche interne des pièces justificatives et de l'archive ZIP" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); margin: 15px auto 10px; display: block; max-height: 420px; object-fit: contain;">
-          </picture>
-          <p style="font-size: 0.88rem; color: #94a3b8; margin: 8px 0 0;">
-            <em>Aperçu de l'interface en cours de finalisation · Déploiement actif avant le 1ᵉʳ octobre 2026</em>
-          </p>
+
+          <iframe 
+            src="/api/pinpoint-proxy" 
+            title="Moteur de recherche des pièces justificatives Google Pinpoint — Collection SEM-26-003"
+            style="width: 100%; height: 680px; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius: 8px; background: #ffffff; display: block;"
+            loading="lazy"
+            allow="clipboard-write">
+          </iframe>
         </div>
 
         <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">

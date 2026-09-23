@@ -25,15 +25,17 @@ export default {
     }
 
     // 2. Construction de l'URL cible vers Google Pinpoint
-    let targetPath = url.pathname;
-    if (targetPath === "/" || targetPath === "") {
-      targetPath = `/pinpoint/search`;
-      if (!url.searchParams.has("collection")) {
-        url.searchParams.set("collection", DEFAULT_COLLECTION);
-      }
+    let relativePath = url.pathname.replace(/^\/api\/pinpoint-proxy\/?/, "/");
+    if (!relativePath || relativePath === "/" || relativePath === "") {
+      relativePath = "/pinpoint/search";
+    } else if (!relativePath.startsWith("/pinpoint/")) {
+      relativePath = "/pinpoint" + (relativePath.startsWith("/") ? relativePath : "/" + relativePath);
     }
 
-    const targetUrl = new URL(targetPath + url.search, TARGET_ORIGIN);
+    const targetUrl = new URL(relativePath + url.search, TARGET_ORIGIN);
+    if (targetUrl.pathname === "/pinpoint/search" && !targetUrl.searchParams.has("collection")) {
+      targetUrl.searchParams.set("collection", DEFAULT_COLLECTION);
+    }
 
     // 3. Préparation des en-têtes de requête
     const forwardHeaders = new Headers(request.headers);

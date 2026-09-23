@@ -284,6 +284,9 @@ function getInternalPath(rawUrl) {
     }
 
     const clean = trimmed.split('?')[0].split('#')[0];
+    if (clean.startsWith('/api/') || clean.startsWith('api/')) {
+      return null;
+    }
     return clean === '' || clean === '/' ? 'index.html' : clean;
   } catch {
     return null;
