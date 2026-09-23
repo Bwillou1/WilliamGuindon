@@ -1,9 +1,10 @@
-const CACHE_NAME = 'wg-pwa-v51';
+const CACHE_NAME = 'wg-pwa-v52';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/edition-speciale-reconciliation.html',
   '/registre.html',
   '/enquete-partis.html',
   '/presse.html',
@@ -61,6 +62,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/moteur-recherche-pieces.webp',
   '/assets/media/autonomie-juridique-adolescents.jpg',
   '/assets/media/autonomie-juridique-adolescents.webp',
+  '/assets/media/ndtr-banner-rcaanc.jpg',
+  '/assets/media/ndtr-banner-rcaanc.webp',
   '/assets/media/umap-preview.webp',
   '/assets/media/lapresse-logo.png',
   '/assets/media/ledevoir-logo.png',
