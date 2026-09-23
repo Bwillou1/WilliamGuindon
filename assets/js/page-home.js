@@ -568,10 +568,86 @@
                   allowfullscreen="true" 
                   allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                   loading="eager"
-                  title="Fil d'actualité Facebook officiel de William Guindon">
-          </iframe>
-        `;
+    // 7. Façade Click-to-Load interactive pour la carte SIG uMap
+    const mapFacade = document.getElementById('map-facade');
+    const mapPlaceholder = document.getElementById('map-placeholder');
+    const btnLoadMap = document.getElementById('btn-load-map');
+
+    if (mapFacade && mapPlaceholder) {
+      const uMapSrc = "https://umap.osm.ch/fr/map/soumission-sem-26-003-grande-tourbiere-de-blainvil_15672?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true&locateControl=null#13/45.6872/-73.8545";
+
+      function loadMapIframe() {
+        if (mapFacade.querySelector('iframe')) return;
+
+        mapPlaceholder.style.opacity = '0.6';
+        mapPlaceholder.style.pointerEvents = 'none';
+        if (btnLoadMap) {
+          btnLoadMap.innerHTML = '<span>Chargement de la carte SIG en cours...</span>';
+          btnLoadMap.style.opacity = '0.8';
+        }
+
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'width:100%;height:100%;min-height:480px;border:0;display:block;';
+        iframe.allowFullscreen = true;
+        iframe.setAttribute('allow', 'geolocation');
+        iframe.title = "Carte interactive SIG uMap OpenStreetMap — Grande Tourbière de Blainville et Lacs Fauvel (SEM-26-003)";
+        iframe.loading = 'eager';
+        iframe.src = uMapSrc;
+
+        iframe.onload = () => {
+          if (mapPlaceholder) mapPlaceholder.remove();
+        };
+
+        mapFacade.appendChild(iframe);
+      }
+
+      mapPlaceholder.addEventListener('click', loadMapIframe);
+      if (btnLoadMap) {
+        btnLoadMap.addEventListener('click', (e) => {
+          e.stopPropagation();
+          loadMapIframe();
+        });
+      }
+      mapPlaceholder.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          loadMapIframe();
+        }
       });
+    }
+
+    // 8. Chargement différé et éco-conçu du badge Website Carbon (non bloquant)
+    const carbonContainer = document.getElementById('wcb');
+    if (carbonContainer) {
+      let carbonLoaded = false;
+      function loadCarbonBadge() {
+        if (carbonLoaded) return;
+        carbonLoaded = true;
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/website-carbon-badges@1.1.3/b.min.js';
+        s.integrity = 'sha384-5Sivu2UajgUNg6Sxu3UHsZKjZlq9v6/slTAhA0/s21XcfNcrkSZRRO9K/0Cg14iP';
+        s.crossOrigin = 'anonymous';
+        s.defer = true;
+        document.body.appendChild(s);
+      }
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              loadCarbonBadge();
+              observer.disconnect();
+            }
+          });
+        }, { rootMargin: '200px' });
+        observer.observe(carbonContainer);
+      } else {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadCarbonBadge, { timeout: 4000 });
+        } else {
+          window.addEventListener('load', () => setTimeout(loadCarbonBadge, 2000), { once: true });
+        }
+      }
     }
   }
 

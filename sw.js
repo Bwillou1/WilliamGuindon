@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v46';
+const CACHE_NAME = 'wg-pwa-v47';
 const MAX_CACHE_ENTRIES = 88;
 
 const ASSETS_TO_CACHE = [
@@ -59,6 +59,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/tourbiere-hero-depth.webp',
   '/assets/media/moteur-recherche-pieces.jpg',
   '/assets/media/moteur-recherche-pieces.webp',
+  '/assets/media/umap-preview.webp',
   '/feed.xml',
   '/status.json'
 ];
