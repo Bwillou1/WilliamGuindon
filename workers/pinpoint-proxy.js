@@ -58,7 +58,7 @@ export default {
         redirect: "follow",
       });
     } catch (err) {
-      return new Response(`Erreur de connexion au serveur source : ${err.message}`, { status: 502 });
+      return new Response(`Erreur de connexion au serveur source.`, { status: 502 });
     }
 
     // 5. Modification des en-têtes de réponse (Suppression des blocages iframe)
