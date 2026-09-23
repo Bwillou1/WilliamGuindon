@@ -1,25 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr-CA" data-theme="light"><head>
 <meta charset="UTF-8">
-<script>
-  (function() {
-    try {
-      var now = new Date();
-      // Actif du 23 septembre 2026 au 1er octobre 2026 23:59:59 (heure de l'Est)
-      var start = new Date("2026-09-23T00:00:00-04:00");
-      var end = new Date("2026-10-01T23:59:59-04:00");
-      var params = new URLSearchParams(window.location.search);
-      var forceStandard = params.get("standard") === "true";
-      if (forceStandard) {
-        sessionStorage.setItem("wg_prefer_standard", "true");
-      }
-      var hasPref = sessionStorage.getItem("wg_prefer_standard") === "true";
-      if (!forceStandard && !hasPref && now >= start && now <= end) {
-        window.location.replace("edition-speciale-reconciliation.html" + window.location.hash);
-      }
-    } catch(e) {}
-  })();
-</script>
 <script src="assets/js/security-guard.js" defer></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -366,6 +347,83 @@
 </script>
 
 <link rel="stylesheet" href="style.css?v=20260923-v8">
+<style>
+  /* Édition Spéciale — Semaine de la Vérité et de la Réconciliation */
+  .special-edition-banner {
+    background: #9a3412;
+    color: #ffffff;
+    padding: 8px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1000;
+  }
+  .special-edition-banner-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .special-edition-badge {
+    font-weight: 800;
+    font-size: 11.5px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+  .special-edition-text {
+    flex: 1;
+    font-size: 12.5px;
+    color: #ffedd5;
+  }
+  .hero-reconciliation {
+    background-image: linear-gradient(135deg, rgba(124, 45, 18, 0.94) 0%, rgba(194, 65, 12, 0.88) 50%, rgba(67, 20, 7, 0.96) 100%), url('assets/media/ndtr-banner-rcaanc.webp') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    border-bottom: 3px solid #ea580c !important;
+  }
+  [data-theme="dark"] .hero-reconciliation {
+    background-image: linear-gradient(135deg, rgba(67, 20, 7, 0.96) 0%, rgba(124, 45, 18, 0.92) 50%, rgba(26, 8, 3, 0.98) 100%), url('assets/media/ndtr-banner-rcaanc.webp') !important;
+  }
+  .hero-reconciliation .kicker {
+    background: rgba(45, 15, 6, 0.92) !important;
+    border-color: #ea580c !important;
+    color: #ffedd5 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(234, 88, 12, 0.4) !important;
+  }
+  .hero-reconciliation .hero-portrait-avatar {
+    border-color: #ea580c !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(234, 88, 12, 0.35) !important;
+  }
+  .hero-reconciliation .citation-hero {
+    background: rgba(234, 88, 12, 0.15) !important;
+    border-color: rgba(234, 88, 12, 0.35) !important;
+  }
+  .btn-purple-land-defenders {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #7c3aed !important;
+    color: #ffffff !important;
+    padding: 14px 26px !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    border: 1px solid #6d28d9 !important;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35) !important;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  .btn-purple-land-defenders:hover {
+    background: #6d28d9 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45) !important;
+  }
+</style>
 <script src="assets/js/theme-core.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2" async defer></script>
 <script src="assets/vendor/curtains/curtains.umd.min.js?v=20260920-v7" defer></script>
@@ -374,6 +432,15 @@
 <script src="assets/js/chat-ai.js?v=20260920-v1" defer></script>
 </head>
 <body><a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<aside class="special-edition-banner" role="banner" aria-label="Bandeau édition spéciale">
+  <div class="wrap special-edition-banner-wrap">
+    <div class="special-edition-badge">🧡 Semaine de la Vérité et de la Réconciliation</div>
+    <div class="special-edition-text">
+      Édition spéciale (23 sept. – 1<sup>er</sup> oct. 2026) · Reconnaissance territoriale et engagement civique.
+    </div>
+  </div>
+</aside>
 
 <div class="scroll-progress-bar"></div>
 
@@ -590,11 +657,7 @@
 <main id="main-content" itemscope="" itemtype="https://schema.org/ProfilePage">
   <article itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Person" itemid="https://williamguindon.me/#person">
 
-  <section class="hero-immersive" id="accueil">
-    <div id="hero-curtains-canvas" class="hero-curtains-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;pointer-events:none;" aria-hidden="true">
-      <div id="hero-curtains-plane" class="hero-curtains-plane" style="position:absolute;top:-10%;left:-10%;width:120%;height:120%;pointer-events:none;"></div>
-      <div class="hero-curtains-overlay"></div>
-    </div>
+  <section class="hero-immersive hero-reconciliation" id="accueil">
     <div class="wrap">
       <div class="hero-portrait-badge">
         <picture>
@@ -602,7 +665,7 @@
           <img src="assets/media/william-guindon.jpg" alt="Portrait de William Guindon" class="hero-portrait-avatar" width="104" height="104" loading="eager" decoding="async">
         </picture>
       </div>
-      <span class="kicker">Militant écologiste · Étudiant · Québec, Canada</span>
+      <span class="kicker">🧡 Semaine Nationale de la Vérité et de la Réconciliation · 23 sept. – 1<sup>er</sup> oct.</span>
       <h1><span itemprop="name" class="hero-title-main">William Guindon</span></h1>
       <p class="lead" itemprop="description">Militant écologiste québécois reconnu pour son engagement en faveur de la protection des écosystèmes et des droits des générations futures. À 15 ans, il porte le dossier de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (ACEUM) et les Nations unies.</p>
       
@@ -619,9 +682,100 @@
         <cite>— William Guindon, Le Devoir, 8 avril 2025</cite>
       </blockquote>
     </div>
-    <a href="#tracker" class="scroll-indicator" aria-label="Défiler vers le bas">
-      <span>Découvrir</span>
+    <a href="#reconnaissance-territoriale" class="scroll-indicator" aria-label="Défiler vers la reconnaissance territoriale">
+      <span>Reconnaissance Territoriale ▾</span>
     </a>
+  </section>
+
+  <!-- Section Édition Spéciale : Reconnaissance Territoriale, Intention & Solidarité -->
+  <section id="reconnaissance-territoriale" class="territorial-section" style="padding: 50px 0 60px; background: var(--bg-card); border-bottom: 2px solid var(--line);" role="region" aria-label="Reconnaissance territoriale et déclaration d'intention">
+    <div class="wrap" style="max-width: 880px; margin: 0 auto; padding: 0 20px;">
+      
+      <div class="territorial-header" style="text-align: center; margin-bottom: 32px;">
+        <span style="background: rgba(234, 88, 12, 0.12); color: #ea580c; border: 1px solid rgba(234, 88, 12, 0.35); font-size: 11.5px; padding: 4px 14px; border-radius: 9999px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 12px;">30 Septembre · Journée Nationale de la Vérité et de la Réconciliation</span>
+        <h2 style="font-size: clamp(22px, 3.2vw, 32px); font-weight: 800; margin-bottom: 10px; color: var(--text);">Reconnaissance Territoriale &amp; Intention Civique</h2>
+        <p style="color: var(--text-muted); font-size: 15px; max-width: 720px; margin: 0 auto; line-height: 1.6;">À l'occasion de la Semaine nationale de la vérité et de la réconciliation, William Guindon souligne l'importance fondamentale de l'intendance autochtone et de la justice environnementale dans la protection des terres et de la Grande Tourbière de Blainville.</p>
+      </div>
+
+      <!-- Bannière officielle RCAANC -->
+      <div class="territorial-banner-wrap" style="margin-bottom: 28px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow);">
+        <picture>
+          <source srcset="assets/media/ndtr-banner-rcaanc.webp" type="image/webp">
+          <img src="assets/media/ndtr-banner-rcaanc.jpg" alt="Bannière officielle de la Journée nationale de la vérité et de la réconciliation - Relations Couronne-Autochtones et Affaires du Nord Canada" width="1170" height="374" style="width: 100%; height: auto; display: block;" loading="eager">
+        </picture>
+      </div>
+
+      <!-- Bloc Reconnaissance Territoriale Vérifiée -->
+      <div class="territorial-box" style="background: var(--bg); border: 1px solid var(--line); border-left: 5px solid #ea580c; border-radius: 8px; padding: 22px 26px; margin-bottom: 26px;">
+        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 10px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+          <span>Reconnaissance du territoire traditionnel</span>
+        </h3>
+        <p style="font-size: 14.5px; line-height: 1.7; color: var(--text); margin: 0;">
+          Nous reconnaissons avec profond respect que la <strong>Grande Tourbière de Blainville</strong> et les terres des Basses-Laurentides sur lesquelles se déploient nos démarches d'alerte et de recherche font partie intégrante du <strong>territoire traditionnel non cédé de la nation Kanien'kehá:ka (Mohawk)</strong>, gardienne millénaire des terres et des eaux de Tiohtià:ke et du bassin de la rivière des Mille-Îles. Cet espace naturel constitue également un lieu historique d'échanges et de passage partagé avec les nations <strong>Anishinaabeg</strong> et l'ensemble de la confédération <strong>Haudenosaunee</strong>. Nous saluons leur intendance ininterrompue de la Terre mère.
+        </p>
+      </div>
+
+      <!-- Photo du territoire : Grande Tourbière de Blainville -->
+      <div class="territorial-landscape-wrap" style="margin-bottom: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: var(--bg);">
+        <picture>
+          <source srcset="assets/media/tourbiere-hero-3d.webp" type="image/webp">
+          <img src="tourbiere.jpg" alt="Paysage naturel protégé de la Grande Tourbière de Blainville" width="800" height="400" style="width: 100%; height: 260px; object-fit: cover; display: block;" loading="lazy">
+        </picture>
+        <div style="padding: 8px 14px; font-size: 11.5px; color: var(--text-muted); background: var(--bg-card); border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+          <span>Écosystème de la Grande Tourbière de Blainville · Milieu humide d'intérêt écologique et territorial</span>
+          <span>Photographie : William Guindon</span>
+        </div>
+      </div>
+
+      <!-- Bloc Intention de William Guindon -->
+      <div class="territorial-intention" style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 22px 26px; margin-bottom: 28px;">
+        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 12px; color: var(--text);">Déclaration d'intention &amp; Solidarité civique</h3>
+        <p style="font-size: 14px; line-height: 1.65; color: var(--text-muted); margin-bottom: 12px;">
+          « En portant la sauvegarde de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (dossier SEM-26-003) et en déposant devant le Rapporteur spécial de l'ONU, mon action s'inscrit dans une solidarité indissociable avec la défense des territoires et le respect des droits ancestraux. »
+        </p>
+        <p style="font-size: 14px; line-height: 1.65; color: var(--text-muted); margin: 0;">
+          « Les milieux humides ne sont pas de simples terrains industriels à sacrifier. La vérité et la réconciliation exigent d'honorer la mémoire, de respecter les traités et de protéger rigoureusement les écosystèmes pour les générations présentes et futures. »
+        </p>
+        <div style="margin-top: 12px; font-size: 12.5px; font-weight: 700; color: #ea580c;">— William Guindon, militant écologiste et chercheur citoyen</div>
+      </div>
+
+      <!-- Ressources Autochtones Officielles & Soutien -->
+      <div class="territorial-resources" style="background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 20px 24px; margin-bottom: 28px;">
+        <h4 style="font-size: 14.5px; font-weight: 800; margin-bottom: 14px; color: var(--text); text-transform: uppercase; letter-spacing: 0.04em;">Ressources Officielles &amp; Éducation</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+          <a href="https://nctr.ca/fr/" target="_blank" rel="noopener noreferrer" style="display: block; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--text); transition: border-color 0.2s;">
+            <strong style="font-size: 13px; color: #ea580c; display: block; margin-bottom: 3px;">Centre national pour la vérité et la réconciliation (CNVR) ↗</strong>
+            <span style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: block;">Archives et appels à l'action de la Commission de vérité et réconciliation.</span>
+          </a>
+          <a href="https://www.canada.ca/fr/patrimoine-canadien/campagnes/journee-nationale-verite-reconciliation.html" target="_blank" rel="noopener noreferrer" style="display: block; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--text); transition: border-color 0.2s;">
+            <strong style="font-size: 13px; color: #ea580c; display: block; margin-bottom: 3px;">Gouvernement du Canada (RCAANC) ↗</strong>
+            <span style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: block;">Sensibilisation, histoire des pensionnats et ressources éducatives.</span>
+          </a>
+          <a href="https://apnql.com/" target="_blank" rel="noopener noreferrer" style="display: block; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--text); transition: border-color 0.2s;">
+            <strong style="font-size: 13px; color: #ea580c; display: block; margin-bottom: 3px;">Assemblée des Premières Nations Québec-Labrador (APNQL) ↗</strong>
+            <span style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: block;">Organisation politique regroupant les chefs des 43 communautés des Premières Nations.</span>
+          </a>
+          <a href="https://faq-qnw.org/" target="_blank" rel="noopener noreferrer" style="display: block; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--text); transition: border-color 0.2s;">
+            <strong style="font-size: 13px; color: #ea580c; display: block; margin-bottom: 3px;">Femmes Autochtones du Québec (FAQ) ↗</strong>
+            <span style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4; display: block;">Défense des droits, justice sociale, égalité et autonomie des femmes autochtones.</span>
+          </a>
+        </div>
+
+        <!-- Ligne d'écoute nationale -->
+        <div style="margin-top: 14px; padding: 12px 16px; background: rgba(234, 88, 12, 0.08); border: 1px solid rgba(234, 88, 12, 0.25); border-radius: 6px; font-size: 12px; color: var(--text); line-height: 1.5;">
+          <strong>Ligne d'écoute nationale pour les pensionnats autochtones :</strong> Soutien psychologique et d'urgence accessible 24h/24, 7j/7 au <a href="tel:18669254419" style="color: #ea580c; font-weight: 700; text-decoration: underline;">1-866-925-4419</a>.
+        </div>
+      </div>
+
+      <!-- Bouton Mauve : Alliance avec les Land Defenders -->
+      <div style="text-align: center; margin-top: 20px;">
+        <a href="#reconnaissance-territoriale" class="btn-purple-land-defenders" id="btn-land-defenders">
+          <span>Alliance &amp; Solidarité avec les Land Defenders</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+    </div>
   </section>
 
   <section class="tracker-section" id="tracker">
