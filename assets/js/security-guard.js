@@ -13,6 +13,104 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
   if (isConsolePage) return;
 
+  // 1. CONTRÔLE D'ENCADREMENT IFRAME & AVERTISSEMENT D'AUTHENTICITÉ (ANTI-CLICKJACKING / ANTI-FRAMING)
+  function enforceFrameSecurity() {
+    let isFramed = false;
+    let isSameOrigin = false;
+
+    try {
+      isFramed = (window.self !== window.top);
+      if (isFramed) {
+        const topHost = window.top.location.hostname;
+        if (ALLOWED_HOSTS.includes(topHost)) {
+          isSameOrigin = true;
+        }
+      }
+    } catch (_) {
+      // DOMException = Le document parent est sur une origine différente (site tiers/iframe externe)
+      isFramed = true;
+      isSameOrigin = false;
+    }
+
+    if (!isFramed || isSameOrigin) return;
+
+    // Exceptions autorisées : visionneuse de documents / PDF et horloge live / retransmission
+    const path = window.location.pathname.toLowerCase();
+    const isAllowedEmbed = path.endsWith('viewer.html') || 
+                           path.endsWith('live.html') || 
+                           path.endsWith('lecteur.html');
+
+    if (isAllowedEmbed) return;
+
+    // Rendu immédiat de l'écran d'avertissement d'authenticité
+    renderFrameWarningScreen();
+  }
+
+  function renderFrameWarningScreen() {
+    const rawPath = window.location.pathname;
+    const cleanPath = (rawPath === '/' || rawPath === '') ? '' : rawPath;
+    const officialUrl = 'https://williamguindon.me' + cleanPath + window.location.search + window.location.hash;
+
+    const render = () => {
+      let overlay = document.getElementById('wg-frame-warning-wrapper');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'wg-frame-warning-wrapper';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#f7f9f7;color:#111827;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;z-index:2147483647;padding:20px;box-sizing:border-box;overflow:auto;';
+
+        overlay.innerHTML = `
+          <div style="background:#ffffff;border:2px solid #059669;border-radius:18px;padding:32px 28px;max-width:620px;width:100%;box-shadow:0 20px 45px rgba(6,78,59,0.12);text-align:center;box-sizing:border-box;">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.1);color:#065f46;border:1px solid rgba(5,150,105,0.25);padding:6px 16px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:16px;">
+              <span>🛡️ Protection d'Intégrité &amp; Anti-Framing</span>
+            </div>
+
+            <h1 style="font-size:1.3rem;font-weight:900;color:#064e3b;margin:0 0 12px 0;line-height:1.35;">
+              Consultation non certifiée dans un cadre externe (iFrame)
+            </h1>
+
+            <div style="background:#fffbeb;border:1px solid #fef3c7;border-left:4px solid #f59e0b;border-radius:8px;padding:14px 16px;text-align:left;margin-bottom:18px;font-size:13.5px;color:#92400e;line-height:1.5;">
+              <strong>⚠️ Avertissement d'authenticité :</strong><br>
+              Cette page est actuellement affichée à l'intérieur d'un cadre ou site tiers. Cette version est <u>potentiellement altérée, fausse ou trompeuse et ne constitue pas l'original vérifié</u>.
+            </div>
+
+            <p style="font-size:13.5px;color:#4b5563;line-height:1.6;margin:0 0 20px 0;text-align:left;">
+              Afin de garantir l'intégrité probatoire du dossier public <strong>SEM-26-003</strong> (Commission de coopération environnementale / ACEUM) et certifier les citations factuelles, veuillez toujours accéder directement au document source sur le domaine officiel sécurisé.
+            </p>
+
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;text-align:left;margin-bottom:22px;font-size:12.5px;color:#166534;">
+              <div style="font-weight:700;margin-bottom:4px;color:#065f46;">Emplacement officiel authentique :</div>
+              <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;word-break:break-all;color:#047857;font-weight:600;">
+                ${officialUrl}
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;align-items:stretch;">
+              <a href="${officialUrl}" target="_top" style="display:inline-block;background:#059669;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,0.3);text-align:center;">
+                Accéder à la version officielle originale (Plein écran) ↗
+              </a>
+              <a href="https://williamguindon.me" target="_top" style="display:inline-block;background:transparent;color:#047857;text-decoration:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;text-align:center;">
+                Aller à la page d'accueil de williamguindon.me →
+              </a>
+            </div>
+
+            <div style="margin-top:18px;font-size:11.5px;color:#9ca3af;border-top:1px solid #f3f4f6;padding-top:12px;">
+              Licence probatoire : Creative Commons CC BY-NC-ND 4.0 · Registre CCE SEM-26-003
+            </div>
+          </div>
+        `;
+        (document.body || document.documentElement).appendChild(overlay);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', render, { once: true });
+    } else {
+      render();
+    }
+  }
+
+  enforceFrameSecurity();
+
   // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)
   let lastAppliedStateJson = null;
 
