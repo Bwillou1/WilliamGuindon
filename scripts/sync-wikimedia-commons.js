@@ -55,7 +55,7 @@ async function main() {
     return null;
   }
 
-  const FORBIDDEN_KEYWORDS = ['logo', 'banner', 'banniere', 'lapresse', 'ledevoir', 'cbc', 'tvbl', 'rover', 'asdelinfo', 'curium', 'areq', 'csq', 'badge'];
+  const FORBIDDEN_KEYWORDS = ['logo', 'banner', 'banniere', 'lapresse', 'ledevoir', 'cbc', 'tvbl', 'rover', 'asdelinfo', 'curium', 'areq', 'csq', 'badge', 'blog', 'autonomie'];
 
   const photos = JSON.parse(fs.readFileSync(PHOTOS_FILE, 'utf8'));
   const toUpload = photos.filter(p => {

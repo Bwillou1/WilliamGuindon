@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v50';
+const CACHE_NAME = 'wg-pwa-v51';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -59,6 +59,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/tourbiere-hero-depth.webp',
   '/assets/media/moteur-recherche-pieces.jpg',
   '/assets/media/moteur-recherche-pieces.webp',
+  '/assets/media/autonomie-juridique-adolescents.jpg',
+  '/assets/media/autonomie-juridique-adolescents.webp',
   '/assets/media/umap-preview.webp',
   '/assets/media/lapresse-logo.png',
   '/assets/media/ledevoir-logo.png',
