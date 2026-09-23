@@ -2187,15 +2187,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function escapeHtml(text) {
     if (!text) return "";
-    return String(text).replace(/[&<>"']/g, function(m) {
-      return {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      }[m];
-    });
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   // 6. Bouton Panique 1-Clic
