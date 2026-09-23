@@ -842,6 +842,21 @@
           btn.focus();
         }
       });
+
+      // Gestion et fermeture par défaut de tous les sous-menus (onglets accordéons)
+      const submenus = dropdown.querySelectorAll('.nav-submenu');
+      submenus.forEach(submenu => {
+        submenu.removeAttribute('open');
+        submenu.addEventListener('toggle', () => {
+          if (submenu.open) {
+            submenus.forEach(other => {
+              if (other !== submenu && other.open) {
+                other.removeAttribute('open');
+              }
+            });
+          }
+        });
+      });
     });
 
     notifDropdowns.forEach((dropdown) => {

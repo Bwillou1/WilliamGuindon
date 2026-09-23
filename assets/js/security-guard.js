@@ -295,9 +295,9 @@
       removeWatermark();
     }
 
-    // 7. Émission d'Alerte Flash en Direct (Broadcast Toast)
-    if (state.broadcastActive && state.broadcastMessage) {
-      renderBroadcastToast(state.broadcastMessage, state.broadcastTimestamp);
+    // 7. Émission d'Alerte Flash en Direct (Broadcast Toast & Push Mobile)
+    if (state.broadcastActive && (state.broadcastTitle || state.broadcastMessage || state.broadcastSubtitle)) {
+      renderBroadcastToast(state);
     } else {
       removeBroadcastToast();
     }
@@ -1047,20 +1047,97 @@
     if (el) el.remove();
   }
 
-  // --- ÉMISSION D'ALERTE FLASH EN DIRECT (BROADCAST TOAST) ---
-  function renderBroadcastToast(msg, ts) {
+  // --- ÉMISSION D'ALERTE FLASH EN DIRECT (BROADCAST TOAST & PUSH MOBILE) ---
+  function renderBroadcastToast(stateOrMsg, legacyTs) {
+    const isObj = (typeof stateOrMsg === 'object' && stateOrMsg !== null);
+    const title = isObj ? (stateOrMsg.broadcastTitle || '🚨 Alerte en direct — Dossier CCE') : (stateOrMsg || 'Alerte');
+    const subtitle = isObj ? (stateOrMsg.broadcastSubtitle || stateOrMsg.broadcastMessage || '') : (stateOrMsg || '');
+    const image = isObj ? (stateOrMsg.broadcastImage || '') : '';
+    const link = isObj ? (stateOrMsg.broadcastLink || '') : '';
+    const ts = isObj ? (stateOrMsg.broadcastTimestamp || 0) : (legacyTs || 0);
+
+    // Vérifier si l'utilisateur a fermé cette notification spécifique dans la session
+    const dismissKey = 'wg_dismissed_broadcast_' + ts;
+    if (ts && sessionStorage.getItem(dismissKey) === '1') {
+      return;
+    }
+
     let el = document.getElementById('wg-broadcast-toast');
     if (!el) {
-      el = document.createElement('div');
+      el = document.createElement('aside');
       el.id = 'wg-broadcast-toast';
-      el.style.cssText = 'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999999999;background:linear-gradient(90deg,#0284c7,#2563eb);color:#ffffff;padding:14px 24px;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,0.6),0 0 25px rgba(37,99,235,0.6);font-family:system-ui,sans-serif;font-weight:800;font-size:14px;display:flex;align-items:center;gap:12px;border:1.5px solid #60a5fa;max-width:90vw;';
+      el.setAttribute('role', 'alert');
+      el.setAttribute('aria-live', 'assertive');
+      el.style.cssText = 'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999999999;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#f8fafc;padding:12px 16px;border-radius:14px;box-shadow:0 20px 45px rgba(0,0,0,0.65),0 0 30px rgba(59,130,246,0.35);font-family:system-ui,-apple-system,sans-serif;font-size:13.5px;display:flex;align-items:center;gap:14px;border:1.5px solid #3b82f6;max-width:92vw;width:auto;min-width:300px;box-sizing:border-box;animation:wgSlideInDown 0.35s cubic-bezier(0.16,1,0.3,1);';
       (document.body || document.documentElement).appendChild(el);
     }
-    el.innerHTML = `
-      <svg class="svg-icon" viewBox="0 0 24 24" style="width:1.4em;height:1.4em;stroke:currentColor;fill:none;stroke-width:2;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-      <span>${msg}</span>
-      <button onclick="document.getElementById('wg-broadcast-toast').remove()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-weight:900;margin-left:8px;display:inline-flex;align-items:center;justify-content:center;" aria-label="Fermer"><svg class="svg-icon" viewBox="0 0 24 24" style="width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+
+    const imageHtml = image ? `
+      <div style="flex-shrink:0;width:48px;height:48px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.2);background:#020617;display:flex;align-items:center;justify-content:center;">
+        <img src="${escapeHtml(image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display='none';">
+      </div>
+    ` : `
+      <div style="flex-shrink:0;width:38px;height:38px;border-radius:10px;background:rgba(59,130,246,0.2);color:#60a5fa;display:flex;align-items:center;justify-content:center;border:1px solid rgba(96,165,250,0.3);">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+      </div>
     `;
+
+    const linkHtml = link ? `
+      <a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;color:#60a5fa;font-weight:700;font-size:12px;text-decoration:none;margin-top:4px;padding:3px 8px;background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.3);border-radius:6px;width:fit-content;transition:all 0.15s ease;">
+        <span>Ouvrir ↗</span>
+      </a>
+    ` : '';
+
+    el.innerHTML = `
+      ${imageHtml}
+      <div style="flex:1;min-width:0;line-height:1.35;">
+        <div style="font-weight:800;font-size:14px;color:#ffffff;display:flex;align-items:center;gap:6px;">
+          <span>${escapeHtml(title)}</span>
+        </div>
+        ${subtitle ? `<div style="font-size:12.5px;color:#cbd5e1;margin-top:2px;word-break:break-word;">${escapeHtml(subtitle)}</div>` : ''}
+        ${linkHtml}
+      </div>
+      <button type="button" id="wg-btn-close-broadcast" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#94a3b8;border-radius:8px;width:28px;height:28px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s ease;" aria-label="Fermer la notification">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    `;
+
+    const closeBtn = el.querySelector('#wg-btn-close-broadcast');
+    if (closeBtn) {
+      closeBtn.onclick = function() {
+        if (ts) {
+          try { sessionStorage.setItem(dismissKey, '1'); } catch (_) {}
+        }
+        removeBroadcastToast();
+      };
+    }
+
+    // Déclenchement facultatif de la notification Web / Push native si permission accordée
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted' && ts) {
+      const lastNativeKey = 'wg_last_native_push_ts';
+      const lastNativeTs = parseInt(localStorage.getItem(lastNativeKey) || '0', 10);
+      if (ts > lastNativeTs) {
+        try {
+          localStorage.setItem(lastNativeKey, String(ts));
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              action: 'showLocalNotification',
+              title: title,
+              subtitle: subtitle,
+              image: image,
+              url: link
+            });
+          } else {
+            new Notification(title, {
+              body: subtitle,
+              icon: image || '/icon-192.png',
+              badge: '/favicon.svg',
+              data: { url: link || '/live.html' }
+            });
+          }
+        } catch (_) {}
+      }
+    }
   }
 
   function removeBroadcastToast() {

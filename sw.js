@@ -205,9 +205,23 @@ self.addEventListener('message', (event) => {
   if (event.data === 'CHECK_DEADLINE' || event.data?.action === 'checkDeadline') {
     event.waitUntil(checkDeadlineNotification());
   }
+  if (event.data?.action === 'showLocalNotification') {
+    const d = event.data;
+    const title = d.title || "🚨 Dossier CCE SEM-26-003 — Alerte Officielle";
+    const options = {
+      body: d.subtitle || d.body || "Mise à jour importante concernant le dossier de la Grande Tourbière de Blainville.",
+      icon: d.image || "/icon-192.png",
+      image: d.image || undefined,
+      badge: "/favicon.svg",
+      tag: "cce-broadcast-alert",
+      requireInteraction: true,
+      data: { url: d.url || "/live.html" }
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+  }
 });
 
-// Réception des notifications push (Web Push / Relais ntfy)
+// Réception des notifications push (Web Push)
 self.addEventListener('push', (event) => {
   let payload = {};
   try {
@@ -215,14 +229,15 @@ self.addEventListener('push', (event) => {
   } catch (_) {
     payload = { body: event.data ? event.data.text() : '' };
   }
-  const title = payload.title || "🚨 Dossier CCE SEM-26-003 — 16 Octobre 2026";
+  const title = payload.title || "🚨 Dossier CCE SEM-26-003 — Alerte Officielle";
   const options = {
-    body: payload.body || "Le délai de réponse du Canada concernant la Grande Tourbière de Blainville est échu.",
-    icon: "/icon-192.png",
+    body: payload.body || payload.subtitle || "Mise à jour importante concernant le dossier de la Grande Tourbière de Blainville.",
+    icon: payload.icon || "/icon-192.png",
+    image: payload.image || undefined,
     badge: "/favicon.svg",
-    tag: "cce-push-alert",
+    tag: payload.tag || "cce-push-alert",
     requireInteraction: true,
-    data: { url: payload.url || "/live.html" }
+    data: { url: payload.url || payload.link || "/live.html" }
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
