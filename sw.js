@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v49';
+const CACHE_NAME = 'wg-pwa-v50';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -66,6 +66,10 @@ const ASSETS_TO_CACHE = [
   '/assets/media/tvbl-logo.png',
   '/assets/media/lesasdelinfo-logo.png',
   '/assets/media/the-rover-logo.jpg',
+  '/assets/media/logo-areq-csq.png',
+  '/assets/media/logo-areq-csq.webp',
+  '/assets/media/logo-mouvement-actes-csq.png',
+  '/assets/media/logo-mouvement-actes-csq.webp',
   '/feed.xml',
   '/status.json'
 ];
