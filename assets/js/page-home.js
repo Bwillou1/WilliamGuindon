@@ -525,27 +525,33 @@
     const panelYt = document.getElementById('social-panel-youtube');
 
     function selectSocialTab(target) {
-      if (!tabFb || !tabYt || !panelFb || !panelYt) return;
+      const elTabFb = document.getElementById('tab-facebook');
+      const elTabYt = document.getElementById('tab-youtube');
+      const elPanelFb = document.getElementById('social-panel-facebook');
+      const elPanelYt = document.getElementById('social-panel-youtube');
+      if (!elTabFb || !elTabYt || !elPanelFb || !elPanelYt) return;
+
       if (target === 'facebook') {
-        tabFb.classList.add('active');
-        tabFb.setAttribute('aria-selected', 'true');
-        tabYt.classList.remove('active');
-        tabYt.setAttribute('aria-selected', 'false');
-        panelFb.removeAttribute('hidden');
-        panelFb.classList.add('active');
-        panelYt.setAttribute('hidden', '');
-        panelYt.classList.remove('active');
+        elTabFb.classList.add('active');
+        elTabFb.setAttribute('aria-selected', 'true');
+        elTabYt.classList.remove('active');
+        elTabYt.setAttribute('aria-selected', 'false');
+        elPanelFb.removeAttribute('hidden');
+        elPanelFb.classList.add('active');
+        elPanelYt.setAttribute('hidden', '');
+        elPanelYt.classList.remove('active');
       } else {
-        tabYt.classList.add('active');
-        tabYt.setAttribute('aria-selected', 'true');
-        tabFb.classList.remove('active');
-        tabFb.setAttribute('aria-selected', 'false');
-        panelYt.removeAttribute('hidden');
-        panelYt.classList.add('active');
-        panelFb.setAttribute('hidden', '');
-        panelFb.classList.remove('active');
+        elTabYt.classList.add('active');
+        elTabYt.setAttribute('aria-selected', 'true');
+        elTabFb.classList.remove('active');
+        elTabFb.setAttribute('aria-selected', 'false');
+        elPanelYt.removeAttribute('hidden');
+        elPanelYt.classList.add('active');
+        elPanelFb.setAttribute('hidden', '');
+        elPanelFb.classList.remove('active');
       }
     }
+    window.selectSocialTab = selectSocialTab;
 
     if (tabFb && tabYt) {
       tabFb.addEventListener('click', () => selectSocialTab('facebook'));
@@ -556,18 +562,27 @@
     const btnLoadFb = document.getElementById('btn-load-fb-embed');
     const fbContainer = document.getElementById('fb-embed-container');
 
-    if (btnLoadFb && fbContainer) {
-      btnLoadFb.addEventListener('click', () => {
-        fbContainer.innerHTML = `
-          <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fwilliamguindon.officiel&amp;tabs=timeline&amp;width=500&amp;height=580&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true" 
-                  width="500" 
-                  height="580" 
-                  style="border:none;overflow:hidden;width:100%;max-width:500px;min-height:580px;border-radius:8px;display:block;" 
-                  scrolling="yes" 
-                  frameborder="0" 
-                  allowfullscreen="true" 
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                  loading="eager"
+    function loadFacebookEmbed() {
+      const container = document.getElementById('fb-embed-container');
+      if (!container) return;
+      container.innerHTML = `
+        <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fwilliamguindon.officiel&amp;tabs=timeline&amp;width=500&amp;height=580&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true" 
+                width="500" 
+                height="580" 
+                style="border:none;overflow:hidden;width:100%;max-width:500px;min-height:580px;border-radius:8px;display:block;" 
+                scrolling="yes" 
+                allowfullscreen="true" 
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                loading="eager"
+                title="Fil d'actualité officiel de William Guindon sur Facebook">
+        </iframe>`;
+    }
+    window.loadFacebookEmbed = loadFacebookEmbed;
+
+    if (btnLoadFb) {
+      btnLoadFb.addEventListener('click', loadFacebookEmbed);
+    }
+
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');
     const mapPlaceholder = document.getElementById('map-placeholder');
@@ -616,12 +631,13 @@
       });
     }
 
+
     // 8. Chargement différé et éco-conçu du badge Website Carbon (non bloquant)
     const carbonContainer = document.getElementById('wcb');
     if (carbonContainer) {
       let carbonLoaded = false;
       function loadCarbonBadge() {
-        if (carbonLoaded) return;
+        if (carbonLoaded || document.querySelector('script[src*="website-carbon-badges"]')) return;
         carbonLoaded = true;
         const s = document.createElement('script');
         s.src = 'https://unpkg.com/website-carbon-badges@1.1.3/b.min.js';

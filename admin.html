@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io https://ntfy.sh; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self'; object-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ''; script-src-elem 'self' 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' data: blob: https://williamguindon.me https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self'; object-src 'none';">
 
 <title>Espace Rédaction & Administration — William Guindon</title>
 <meta name="robots" content="noindex, nofollow">
@@ -1143,26 +1143,6 @@
               <div class="form-group">
                 <label class="form-label" for="notif-link">Lien de redirection au clic :</label>
                 <input type="url" id="notif-link" class="form-control" placeholder="https://williamguindon.me/live.html" value="https://williamguindon.me/live.html">
-              </div>
-
-              <!-- Relais de notification mobile ntfy -->
-              <div class="form-group" style="background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:10px; padding:14px 16px;">
-                <div style="font-weight:700; font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-                  <span>📡 Diffusion Push Mobile (ntfy.sh)</span>
-                </div>
-                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px; line-height:1.4;">
-                  Lors de la diffusion, l'alerte est automatiquement envoyée aux smartphones des abonnés du canal public <a href="https://ntfy.sh/williamguindon-sem26003" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:600;">ntfy.sh/williamguindon-sem26003</a>.
-                </p>
-                <div class="form-row">
-                  <div>
-                    <label class="form-label" for="notif-ntfy-topic" style="font-size:12px;">Sujet / Topic ntfy :</label>
-                    <input type="text" id="notif-ntfy-topic" class="form-control" style="font-size:13px; padding:8px 10px;" value="williamguindon-sem26003">
-                  </div>
-                  <div>
-                    <label class="form-label" for="notif-ntfy-token" style="font-size:12px;">Jeton d'autorisation ntfy :</label>
-                    <input type="password" id="notif-ntfy-token" class="form-control" style="font-size:13px; padding:8px 10px;" placeholder="tk_..." autocomplete="off">
-                  </div>
-                </div>
               </div>
 
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:24px;">
@@ -2437,15 +2417,6 @@
         console.warn("Impossible de pré-remplir l'état des notifications :", err);
       }
 
-      // Pré-remplissage du jeton ntfy sauvegardé
-      try {
-        const savedNtfyToken = localStorage.getItem("wg_ntfy_token");
-        const ntfyTokenInput = document.getElementById("notif-ntfy-token");
-        if (savedNtfyToken && ntfyTokenInput) {
-          ntfyTokenInput.value = savedNtfyToken;
-        }
-      } catch (_) {}
-
       // Gestion du Dropzone pour image de notification
       if (notifImageDropzone && notifImageFile) {
         notifImageDropzone.addEventListener("click", () => notifImageFile.click());
@@ -2601,52 +2572,7 @@
             sha: fileData.sha
           });
 
-          // Émission Push Instantanée vers ntfy.sh sur les téléphones mobiles
-          let ntfySuccess = false;
-          if (isActive) {
-            const ntfyTopic = (document.getElementById("notif-ntfy-topic")?.value.trim()) || "williamguindon-sem26003";
-            const ntfyToken = (document.getElementById("notif-ntfy-token")?.value.trim()) || localStorage.getItem("wg_ntfy_token") || "";
-            if (document.getElementById("notif-ntfy-token")?.value.trim()) {
-              try { localStorage.setItem("wg_ntfy_token", document.getElementById("notif-ntfy-token").value.trim()); } catch (_) {}
-            }
-
-            try {
-              const ntfyHeaders = {
-                "Title": titleVal,
-                "Priority": "high",
-                "Tags": "warning,loudspeaker,blainville"
-              };
-              if (linkVal) ntfyHeaders["Click"] = linkVal;
-              if (imageVal) {
-                ntfyHeaders["Attach"] = imageVal;
-                ntfyHeaders["Icon"] = imageVal;
-              } else {
-                ntfyHeaders["Icon"] = "https://williamguindon.me/icon-192.png";
-              }
-              if (ntfyToken) {
-                ntfyHeaders["Authorization"] = `Bearer ${ntfyToken}`;
-              }
-
-              const ntfyRes = await fetch(`https://ntfy.sh/${encodeURIComponent(ntfyTopic)}`, {
-                method: "POST",
-                headers: ntfyHeaders,
-                body: subtitleVal
-              });
-              if (ntfyRes.ok) {
-                ntfySuccess = true;
-              }
-            } catch (ntfyErr) {
-              console.warn("Échec relais ntfy (CORS/Réseau) :", ntfyErr);
-            }
-          }
-
-          const successMsg = isActive 
-            ? (ntfySuccess 
-                ? "Alerte diffusée en direct sur le site ET envoyée sur tous les mobiles abonnés via ntfy.sh/williamguindon-sem26003 !" 
-                : "Alerte diffusée en direct sur le site et transmise au canal ntfy !") 
-            : "Alerte désactivée avec succès !";
-
-          showStatus(successMsg, "success");
+          showStatus(isActive ? "Alerte diffusée en direct sur tous les appareils avec succès !" : "Alerte désactivée avec succès !", "success");
           updateLivePreview();
         } catch (err) {
           console.error(err);

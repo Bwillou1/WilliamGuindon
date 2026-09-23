@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v48';
+const CACHE_NAME = 'wg-pwa-v49';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -60,12 +60,12 @@ const ASSETS_TO_CACHE = [
   '/assets/media/moteur-recherche-pieces.jpg',
   '/assets/media/moteur-recherche-pieces.webp',
   '/assets/media/umap-preview.webp',
-  '/assets/media/lapresse-logo.svg',
-  '/assets/media/ledevoir-logo.svg',
-  '/assets/media/cbc-logo.svg',
-  '/assets/media/tvbl-logo.svg',
-  '/assets/media/lesasdelinfo-logo.svg',
-  '/assets/media/the-rover-logo.svg',
+  '/assets/media/lapresse-logo.png',
+  '/assets/media/ledevoir-logo.png',
+  '/assets/media/cbc-logo.jpg',
+  '/assets/media/tvbl-logo.png',
+  '/assets/media/lesasdelinfo-logo.png',
+  '/assets/media/the-rover-logo.jpg',
   '/feed.xml',
   '/status.json'
 ];
