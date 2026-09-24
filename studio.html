@@ -1118,6 +1118,16 @@
               <div class="tpl-desc">Clarification juridique A.5, rigueur et indépendance totale.</div>
             </div>
 
+            
+            <div class="tpl-card" data-tpl="reconciliation">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🧡</span>
+                <span class="tpl-badge-mini" style="color:#ea580c; background:rgba(234,88,12,0.15); border:1px solid rgba(234,88,12,0.35);">30 Sept.</span>
+              </div>
+              <div class="tpl-title">Vérité &amp; Réconciliation</div>
+              <div class="tpl-desc">Semaine de la réconciliation, intendance millénaire et respect des terres.</div>
+            </div>
+
             <div class="tpl-card" data-tpl="nature">
               <div class="tpl-header">
                 <span class="tpl-emoji">🌿</span>
@@ -1269,6 +1279,11 @@
               <span class="theme-name-tag">🌌 Cyber Nuit</span>
             </div>
 
+            
+            <div class="theme-card" data-theme="terracotta" style="background: linear-gradient(135deg, #2b1102, #451a03); border-bottom: 3px solid #ea580c;">
+              <span class="theme-name-tag">🧡 Terre Cuite</span>
+            </div>
+
             <div class="theme-card" data-theme="parchment" style="background: linear-gradient(135deg, #fdfbf7, #e2e8f0); border-bottom: 3px solid #1e293b;">
               <span class="theme-name-tag" style="color:#0f172a; text-shadow:none;">🗞️ Journal</span>
             </div>
@@ -1322,6 +1337,11 @@
             <div class="photo-chip-card" data-photo="assets/media/moteur-recherche-pieces.jpg" style="background-image:url('assets/media/moteur-recherche-pieces.jpg');">
               <span>Pièces CCE</span>
             </div>
+            
+            <div class="photo-chip-card" data-photo="assets/media/ndtr-banner-rcaanc.jpg" style="background-image:url('assets/media/ndtr-banner-rcaanc.jpg');">
+              <span>🧡 Réconciliation</span>
+            </div>
+
             <div class="photo-chip-card" data-photo="assets/media/tourbiere-hero-3d.webp" style="background-image:url('assets/media/tourbiere-hero-3d.webp');">
               <span>Relief 3D</span>
             </div>
@@ -1775,6 +1795,21 @@
         boxBorder: 'rgba(56, 189, 248, 0.45)',
         sigFilter: 'invert(75%) sepia(80%) saturate(1200%) hue-rotate(170deg)'
       },
+            terracotta: {
+        bg: 'linear-gradient(135deg, #1c0a02 0%, #381403 45%, #0f0501 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.35) 0%, transparent 60%)',
+        accent: '#ea580c',
+        accentSecondary: '#fb923c',
+        accentPillBg: 'rgba(234, 88, 12, 0.22)',
+        accentPillBorder: 'rgba(234, 88, 12, 0.55)',
+        textMain: '#ffffff',
+        textMuted: '#fed7aa',
+        cardBorder: 'rgba(234, 88, 12, 0.4)',
+        cardGlow: 'rgba(234, 88, 12, 0.45)',
+        boxBg: 'rgba(67, 20, 7, 0.85)',
+        boxBorder: 'rgba(234, 88, 12, 0.5)',
+        sigFilter: 'invert(60%) sepia(90%) saturate(1200%) hue-rotate(360deg)'
+      },
       parchment: {
         bg: 'linear-gradient(135deg, #fdfbf7 0%, #f4f0e6 50%, #e9e2d1 100%)',
         overlay: 'radial-gradient(circle at 80% 20%, rgba(15, 23, 42, 0.06) 0%, transparent 60%)',
@@ -1884,6 +1919,21 @@
         font: 'serif',
         img: 'assets/media/clarification-independance.jpg',
         stamp: true,
+        live: false
+      },
+            reconciliation: {
+        kicker: '🧡 30 SEPTEMBRE · JOURNÉE NATIONALE DE LA VÉRITÉ ET DE LA RÉCONCILIATION',
+        title: 'Shé:kon · Honorer la Terre-Mère et la mémoire des générations',
+        body: 'À l\'occasion de la Semaine nationale de la vérité et de la réconciliation, nous reconnaissons l\'intendance millénaire des nations Kanien\'kehá:ka et Anishinaabeg sur les terres et les eaux de la Grande Tourbière de Blainville. Chaque enfant compte.',
+        highlight: 'CHAQUE ENFANT COMPTE · EVERY CHILD MATTERS',
+        author: 'William Guindon',
+        role: 'Militant écologiste · Dossier SEM-26-003 CCE',
+        date: '30 septembre · Tiohtià:ke / Blainville',
+        theme: 'terracotta',
+        layout: 'editorial',
+        font: 'serif',
+        img: 'assets/media/ndtr-banner-rcaanc.jpg',
+        stamp: false,
         live: false
       },
       nature: {
@@ -2105,7 +2155,17 @@
       const author = inputAuthor.value.trim();
       let text = '';
 
-      if (currentPlatform === 'x') {
+            if (currentTemplate === 'reconciliation') {
+        if (currentPlatform === 'x') {
+          text = '🧡 Shé:kon. En cette Semaine nationale de la vérité et de la réconciliation (30 septembre), rappelons que la défense de la Grande Tourbière de Blainville s\'inscrit sur le territoire traditionnel non cédé Kanien\'kehá:ka et Anishinaabeg.\n\nChaque enfant compte.\n\n🔗 williamguindon.me/edition-speciale-reconciliation.html\n#NDTR #OrangeShirtDay #ChaqueEnfantCompte #SEM26003 #GrandeTourbière';
+        } else if (currentPlatform === 'insta') {
+          text = '🧡 Shé:kon — 30 Septembre : Journée Nationale de la Vérité et de la Réconciliation\n\nÀ l\'occasion de la Semaine nationale de la vérité et de la réconciliation, je tiens à réitérer mon profond respect pour l\'intendance millénaire de la Terre-Mère (Iethi\'nihsténha Ohwentsia) exercée par les nations Kanien\'kehá:ka, Anishinaabeg et la confédération Haudenosaunee sur les terres et les eaux de Tiohtià:ke et des Basses-Laurentides.\n\nProtéger la Grande Tourbière de Blainville face aux projets d\'enfouissement de matières dangereuses, c\'est aussi respecter les terres ancestrales et les droits des générations futures.\n\nChaque enfant compte. Every Child Matters. 🧡\n\nÉdition spéciale commémorative sur williamguindon.me (lien dans la bio).\n\n.\n.\n#JourneeNationaleDeLaVeriteEtDeLaReconciliation #NDTR #OrangeShirtDay #ChaqueEnfantCompte #EveryChildMatters #Kanienkehaka #Haudenosaunee #Anishinaabeg #GrandeTourbière #Blainville #JusticeEnvironnementale #SEM26003';
+        } else if (currentPlatform === 'linkedin') {
+          text = 'Journée Nationale de la Vérité et de la Réconciliation (30 septembre) & Intendance des Terres\n\nEn cette Semaine de la réconciliation, nous rappelons que la Grande Tourbière de Blainville fait partie intégrante du territoire traditionnel non cédé de la nation Kanien\'kehá:ka, gardienne millénaire des terres et des bassins fluviaux de Tiohtià:ke, partagé avec les nations Anishinaabeg et la confédération Haudenosaunee.\n\nLa justice environnementale et le droit des générations futures ne peuvent s\'écrire sans l\'écoute et le respect de la souveraineté écologique autochtone.\n\nChaque enfant compte.\n\nRetrouvez notre déclaration d\'intention civique et le registre complet : https://williamguindon.me/edition-speciale-reconciliation.html\n\n#Reconciliation #NDTR #OrangeShirtDay #DroitEnvironnemental #Gouvernance #SEM26003 #GrandeTourbière #Canada';
+        } else if (currentPlatform === 'fb') {
+          text = '🧡 30 Septembre · Journée Nationale de la Vérité et de la Réconciliation\n\nÀ l\'occasion de la Semaine de la réconciliation, nous honorons la mémoire des enfants disparus et saluons l\'intendance ancestrale des nations Kanien\'kehá:ka et Anishinaabeg sur les terres de la Grande Tourbière de Blainville.\n\nChaque enfant compte.\n\n👉 Retrouvez l\'édition spéciale commémorative : https://williamguindon.me/edition-speciale-reconciliation.html\n\n#ChaqueEnfantCompte #NDTR #OrangeShirtDay #GrandeTourbière #SEM26003';
+        }
+      } else if (currentPlatform === 'x') {
         text = `📢 ${title}\n\n${body.substring(0, 150)}...\n\n🔗 Registre officiel : williamguindon.me\n#SEM26003 #GrandeTourbière #Stablex #CCE #ACEUM #Blainville`;
       } else if (currentPlatform === 'insta') {
         text = `🌿 ${title}\n\n${body}\n\n📌 ${highlight}\n\n✍️ ${author} — Auteur du dossier SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).\n\nConsultez l'ensemble du registre documentaire, les études hydrogéologiques et le décompte officiel sur williamguindon.me (lien dans la bio).\n\n.\n.\n#GrandeTourbière #Blainville #SEM26003 #Stablex #Environnement #JusticeEnvironnementale #Québec #Biodiversité #Écologie #ACEUM #CCE`;
