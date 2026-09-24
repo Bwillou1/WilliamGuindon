@@ -8,1272 +8,2216 @@
 <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="bingbot" content="noindex, nofollow">
 
-<title>Studio Réseaux Sociaux &amp; Moteur de Rendu Satori/Flexbox — William Guindon</title>
+<title>Studio Créatif Haute Définition — William Guindon</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<!-- Typographies Haute Couture & Impact Web -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --bg-dark: #090d0b;
-    --bg-panel: #111714;
-    --bg-input: #18221d;
-    --border: #23332a;
-    --border-focus: #22c55e;
-    --text: #f0fdf4;
-    --text-muted: #8ba295;
-    --accent: #22c55e;
-    --accent-hover: #16a34a;
-    --accent-amber: #f59e0b;
-    --accent-red: #ef4444;
-    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bg-base: #07090e;
+    --bg-surface: #0d1118;
+    --bg-elevated: #131924;
+    --bg-input: #171f2d;
+    --border-subtle: rgba(255, 255, 255, 0.07);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --border-accent: #10b981;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    --accent-emerald: #10b981;
+    --accent-gold: #f59e0b;
+    --accent-crimson: #ef4444;
+    --accent-cyan: #38bdf8;
+    --accent-violet: #a855f7;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: var(--font);
-    background-color: var(--bg-dark);
-    color: var(--text);
+    font-family: var(--font-ui);
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Header */
-  .studio-header {
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
+  /* BARRE SUPÉRIEURE LUXE */
+  .studio-navbar {
+    background: rgba(13, 17, 24, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  .studio-title-group {
+  .nav-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
-  .studio-logo {
-    width: 36px;
-    height: 36px;
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
+  .nav-logo-emblem {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 78, 59, 0.4));
+    border: 1px solid rgba(16, 185, 129, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent);
-    font-size: 19px;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
   }
-  .studio-title {
-    font-size: 1.15rem;
+  .nav-title-wrap h1 {
+    font-size: 1.05rem;
     font-weight: 800;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .badge-engine {
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    font-size: 10.5px;
-    padding: 2px 8px;
-    border-radius: 9999px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .header-actions {
+    letter-spacing: -0.01em;
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
   }
-
-  /* Layout */
-  .studio-layout {
-    display: grid;
-    grid-template-columns: 410px 1fr 370px;
-    flex: 1;
-    min-height: calc(100vh - 62px);
-  }
-
-  @media (max-width: 1320px) {
-    .studio-layout {
-      grid-template-columns: 370px 1fr;
-    }
-    .col-post-generator {
-      grid-column: 1 / -1;
-      border-top: 1px solid var(--border);
-    }
-  }
-
-  @media (max-width: 900px) {
-    .studio-layout {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Panneau Contrôles (Gauche) */
-  .col-controls {
-    background: var(--bg-panel);
-    border-right: 1px solid var(--border);
-    padding: 20px;
-    overflow-y: auto;
-    max-height: calc(100vh - 62px);
-  }
-
-  .section-title {
-    font-size: 0.8rem;
+  .badge-studio-status {
+    font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-  .form-label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .form-control {
-    width: 100%;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: #ffffff;
-    font-size: 0.88rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
-  }
-  .form-control:focus {
-    outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-  }
-  textarea.form-control {
-    resize: vertical;
-    min-height: 65px;
-  }
-
-  /* Grille des gabarits */
-  .template-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .template-btn {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px 8px;
-    text-align: center;
-    cursor: pointer;
-    color: var(--text);
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .template-btn:hover {
-    border-color: var(--accent);
-    background: rgba(34, 197, 94, 0.1);
-  }
-  .template-btn.active {
-    border-color: var(--accent);
-    background: rgba(34, 197, 94, 0.2);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  .template-icon { font-size: 18px; }
-  .template-name { font-size: 0.75rem; font-weight: 700; }
-
-  /* Sélecteur de format */
-  .format-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 18px;
-  }
-  .format-btn {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 7px 4px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .format-btn:hover { border-color: var(--accent); }
-  .format-btn.active {
-    background: var(--accent);
-    color: #064e3b;
-    border-color: var(--accent);
-  }
-
-  /* Thèmes */
-  .theme-swatches {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .theme-swatch {
-    flex: 1;
-    height: 32px;
-    border-radius: 6px;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .theme-swatch:hover { transform: scale(1.05); }
-  .theme-swatch.active { border-color: #ffffff; box-shadow: 0 0 8px rgba(255,255,255,0.4); }
-
-  /* Chips d'images */
-  .image-preset-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-  }
-  .preset-chip {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 9999px;
-    padding: 4px 10px;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .preset-chip:hover {
-    color: var(--text);
-    border-color: var(--accent);
-  }
-
-  /* File upload */
-  .file-upload-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: var(--bg-input);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 0.82rem;
-    color: var(--text);
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .file-upload-btn:hover {
-    border-color: var(--accent);
-    background: rgba(34, 197, 94, 0.05);
-  }
-  .file-upload-btn input { display: none; }
-
-  /* Sliders */
-  .range-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-  .range-row input[type="range"] {
-    flex: 1;
-    accent-color: var(--accent);
-  }
-  .range-val {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    min-width: 40px;
-    text-align: right;
-  }
-
-  /* Toggles */
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 0;
-    font-size: 0.82rem;
-  }
-  .toggle-row input[type="checkbox"] {
-    accent-color: var(--accent);
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
-
-  /* Viewport de Prévisualisation WYSIWYG */
-  .col-preview {
-    background: #050806;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    overflow: auto;
-    position: relative;
-  }
-
-  /* Le conteneur Flexbox WYSIWYG Satori-Style */
-  .satori-stage {
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    transform-origin: center center;
-    transition: transform 0.2s ease;
-    user-select: text;
-  }
-
-  /* Carte Flexbox intérieure */
-  .card-flexbox-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 56px;
-    position: relative;
-    box-sizing: border-box;
-    font-family: var(--font);
-    overflow: hidden;
-  }
-
-  .card-bg-layer {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-size: cover;
-    background-position: center;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .card-inner-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-  }
-
-  .card-top-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .card-kicker-badge {
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    font-size: 15px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border: 1.5px solid currentColor;
-    line-height: 1.2;
+    gap: 5px;
   }
-
-  .card-title-text {
-    font-size: 42px;
-    font-weight: 900;
-    line-height: 1.25;
-    margin: 6px 0;
-    letter-spacing: -0.02em;
-    word-break: break-word;
-  }
-
-  .card-accent-bar {
-    width: 90px;
-    height: 5px;
-    border-radius: 3px;
-    margin: 4px 0;
-  }
-
-  .card-body-text {
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 1.55;
-    margin: 12px 0;
-    word-break: break-word;
-  }
-
-  .card-highlight-box {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    border-radius: 8px;
-    border: 1.5px solid;
-    font-size: 19px;
-    font-weight: 800;
-    margin-top: 10px;
-  }
-
-  .card-bottom-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    margin-top: auto;
-  }
-
-  .card-author-group {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .card-author-avatar {
-    width: 72px;
-    height: 72px;
+  .badge-studio-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    border: 3px solid;
-    background-size: cover;
-    background-position: center;
-    flex-shrink: 0;
+    background: #34d399;
+    box-shadow: 0 0 8px #34d399;
   }
-
-  .card-author-details {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .card-author-name {
-    font-size: 21px;
-    font-weight: 800;
-  }
-  .card-author-subtitle {
-    font-size: 15px;
-    font-weight: 500;
-    opacity: 0.85;
-  }
-
-  .card-signature-wrap {
-    height: 65px;
-    display: flex;
-    align-items: center;
-  }
-  .card-signature-img {
-    height: 100%;
-    width: auto;
-    object-fit: contain;
-    opacity: 0.9;
-  }
-
-  .card-footer-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: 700;
-    opacity: 0.8;
-    margin-top: 14px;
-  }
-
-  /* Barre d'outils de prévisualisation */
-  .preview-bar {
-    margin-top: 20px;
+  .nav-actions {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    padding: 10px 18px;
-    border-radius: 30px;
-    flex-wrap: wrap;
   }
 
-  /* Colonne droite : Post Generator */
-  .col-post-generator {
-    background: var(--bg-panel);
-    border-left: 1px solid var(--border);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    max-height: calc(100vh - 62px);
-  }
-
-  .platform-tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    padding: 4px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-  .platform-tab {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-weight: 700;
-    font-size: 0.78rem;
-    padding: 7px 4px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .platform-tab.active {
-    background: var(--bg-panel);
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  }
-
-  .post-output-box {
-    flex: 1;
-    min-height: 200px;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    font-size: 0.86rem;
-    line-height: 1.55;
-    color: #ffffff;
-    font-family: inherit;
-    margin-bottom: 12px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-  }
-
-  .char-count {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    text-align: right;
-    margin-bottom: 12px;
-  }
-  .char-count.warning { color: var(--accent-amber); }
-  .char-count.danger { color: var(--accent-red); font-weight: 700; }
-
-  /* Boutons */
+  /* BOUTONS D'ACTION */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 9px 16px;
-    border-radius: 6px;
-    font-size: 0.86rem;
+    padding: 8px 16px;
+    font-size: 0.82rem;
     font-weight: 700;
+    font-family: inherit;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border-subtle);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary:hover {
+    background: #1b2332;
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-svg {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(2, 132, 199, 0.3);
+  }
+  .btn-svg:hover {
+    background: linear-gradient(135deg, #38bdf8, #0284c7);
+    transform: translateY(-1px);
+  }
+
+  /* DISPOSITION TRIPTYQUE */
+  .studio-workspace {
+    display: grid;
+    grid-template-columns: 430px 1fr 390px;
+    flex: 1;
+    min-height: calc(100vh - 63px);
+  }
+  @media (max-width: 1400px) {
+    .studio-workspace {
+      grid-template-columns: 390px 1fr;
+    }
+    .panel-post-copy {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--border-subtle);
+    }
+  }
+  @media (max-width: 990px) {
+    .studio-workspace {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* PANNEAU DE CONFIGURATION GAUCHE */
+  .panel-sidebar {
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-subtle);
+    overflow-y: auto;
+    max-height: calc(100vh - 63px);
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-tabs-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(13, 17, 24, 0.95);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .tab-nav-btn {
+    flex: 1;
+    padding: 12px 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    background: transparent;
     border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .tab-nav-btn:hover { color: var(--text-secondary); }
+  .tab-nav-btn.active {
+    color: #ffffff;
+    border-bottom-color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.04);
+  }
+  .tab-pane {
+    display: none;
+    padding: 24px;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .tab-pane.active { display: flex; }
+
+  /* COMPOSANTS DE FORMULAIRE HAUTE COUTURE */
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .group-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-emerald);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .field-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+  }
+  .field-input, .field-textarea, .field-select {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 0.86rem;
+    color: #ffffff;
     transition: all 0.2s;
   }
-  .btn-primary { background: var(--accent); color: #064e3b; }
-  .btn-primary:hover { background: var(--accent-hover); color: #ffffff; transform: translateY(-1px); }
-  .btn-secondary { background: var(--bg-input); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--text); }
-  .btn-info { background: #0284c7; color: #ffffff; }
+  .field-input:focus, .field-textarea:focus, .field-select:focus {
+    outline: none;
+    border-color: var(--accent-emerald);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    background: #1c2636;
+  }
+  .field-textarea { resize: vertical; min-height: 70px; line-height: 1.45; }
 
-  .toast-notification {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #166534;
-    color: #ffffff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 700;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    display: none;
+  /* GRILLE DES GABARITS VISUELS */
+  .templates-deck {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .tpl-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 12px 10px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .tpl-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    background: #192231;
+  }
+  .tpl-card.active {
+    border-color: var(--accent-emerald);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(13, 17, 24, 0.8));
+    box-shadow: 0 0 0 1px var(--accent-emerald), 0 4px 20px rgba(16, 185, 129, 0.2);
+  }
+  .tpl-header {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    z-index: 1000;
-    border: 1px solid #22c55e;
+    justify-content: space-between;
+  }
+  .tpl-emoji { font-size: 1.25rem; }
+  .tpl-badge-mini {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+  }
+  .tpl-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+  .tpl-desc {
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    line-height: 1.35;
   }
 
-  /* Hidden render canvas */
-  #render-canvas { display: none; }
+  /* SÉLECTEUR DE DISPOSITION ARCHITECTURALE */
+  .layout-modes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .layout-mode-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .layout-mode-btn:hover { border-color: rgba(255,255,255,0.25); color: #fff; }
+  .layout-mode-btn.active {
+    border-color: var(--accent-emerald);
+    color: #ffffff;
+    background: rgba(16, 185, 129, 0.12);
+    box-shadow: 0 0 0 1px var(--accent-emerald);
+  }
+
+  /* FORMAT DE RATIO */
+  .format-pills {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .format-pill {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .format-pill:hover { border-color: rgba(255,255,255,0.2); }
+  .format-pill.active {
+    border-color: var(--accent-emerald);
+    background: var(--accent-emerald);
+    color: #04291e;
+    font-weight: 800;
+  }
+  .format-pill-ratio { font-size: 0.8rem; font-weight: 800; display: block; }
+  .format-pill-tag { font-size: 0.62rem; opacity: 0.8; display: block; }
+
+  /* THÈMES DE COULEURS ROYAUX */
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .theme-card {
+    height: 44px;
+    border-radius: var(--radius-md);
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 6px 8px;
+    transition: all 0.2s;
+  }
+  .theme-card:hover { transform: scale(1.04); }
+  .theme-card.active {
+    border-color: #ffffff;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
+  }
+  .theme-name-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* SÉLECTEUR DE TYPOGRAPHIE */
+  .font-selector-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .font-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 9px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .font-btn:hover { border-color: rgba(255,255,255,0.25); color: #fff; }
+  .font-btn.active {
+    border-color: var(--accent-emerald);
+    color: #fff;
+    background: rgba(16, 185, 129, 0.1);
+  }
+  .font-btn-name { font-size: 0.8rem; font-weight: 700; display: block; }
+  .font-btn-preview { font-size: 0.68rem; opacity: 0.7; }
+
+  /* CHIPS PHOTO PRESETS */
+  .photo-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .photo-chip-card {
+    height: 52px;
+    border-radius: var(--radius-sm);
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--border-subtle);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .photo-chip-card:hover {
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-1px);
+  }
+  .photo-chip-card.active {
+    border-color: var(--accent-emerald);
+    box-shadow: 0 0 0 2px var(--accent-emerald);
+  }
+  .photo-chip-card span {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 3px 4px;
+    background: rgba(0,0,0,0.75);
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* SLIDERS MODERNES */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent-emerald);
+    height: 4px;
+    border-radius: 2px;
+    background: #232d3f;
+    outline: none;
+  }
+  .slider-val {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* TOGGLE SWITCHES */
+  .switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider-round {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #232d3f;
+    transition: 0.25s;
+    border-radius: 34px;
+  }
+  .slider-round:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s;
+    border-radius: 50%;
+  }
+  input:checked + .slider-round { background-color: var(--accent-emerald); }
+  input:checked + .slider-round:before { transform: translateX(16px); }
+
+  /* SCÈNE CENTRALE DE PRÉVISUALISATION HAUTE VOLTIGE */
+  .panel-viewport {
+    background: radial-gradient(circle at center, #111722 0%, #06080d 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    overflow: auto;
+    position: relative;
+  }
+  .viewport-ambient-glow {
+    position: absolute;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(40px);
+    transition: all 0.5s ease;
+  }
+
+  /* LE CONTENEUR STAGE DE LA CARTE */
+  .satori-stage-wrapper {
+    position: relative;
+    z-index: 2;
+    transform-origin: center center;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .satori-card-node {
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s;
+    user-select: text;
+  }
+
+  /* COUCHES DE FOND DE LA CARTE */
+  .card-layer-bg-photo {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .card-layer-gradient-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .card-layer-noise {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* ÉLÉMENTS ORNEMENTAUX HAUT DE GAMME */
+  .card-ornament-quote-mark {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 160px;
+    line-height: 0.8;
+    color: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    z-index: 4;
+    user-select: none;
+  }
+  .card-crosshair {
+    position: absolute;
+    font-family: monospace;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.25);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .card-crosshair.tl { top: 18px; left: 20px; }
+  .card-crosshair.tr { top: 18px; right: 20px; }
+  .card-crosshair.bl { bottom: 18px; left: 20px; }
+  .card-crosshair.br { bottom: 18px; right: 20px; }
+
+  /* TAMPON OFFICIEL GRUNGE / WAX SEAL */
+  .card-official-stamp {
+    position: absolute;
+    bottom: 95px;
+    right: 40px;
+    border: 2px dashed rgba(239, 68, 68, 0.8);
+    color: #ef4444;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transform: rotate(-8deg);
+    z-index: 5;
+    pointer-events: none;
+    background: rgba(239, 68, 68, 0.08);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  }
+
+  /* CONTENEUR FLEXBOX PRINCIPAL DU CONTENU */
+  .card-content-wrap {
+    position: relative;
+    z-index: 6;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* SECTIONS CARD */
+  .card-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-kicker-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  }
+  .card-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+    animation: livePulse 1.5s infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  .card-header-metadata {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  /* TITRE PRINCIPAL & BODY */
+  .card-main-narrative {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card-hero-stat-box {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .card-hero-stat-number {
+    font-family: "Syne", "Plus Jakarta Sans", sans-serif;
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-emerald) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .card-hero-stat-label {
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+  }
+
+  .card-display-title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    outline: none;
+    word-break: break-word;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-accent-separator {
+    width: 70px;
+    height: 4px;
+    border-radius: 2px;
+    margin: 4px 0;
+  }
+
+  .card-display-body {
+    font-size: 21px;
+    font-weight: 450;
+    line-height: 1.55;
+    opacity: 0.9;
+    outline: none;
+    word-break: break-word;
+  }
+
+  /* CALLOUT BADGE / HIGHLIGHT BOX */
+  .card-highlight-capsule {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(12px);
+    width: fit-content;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* BAS DE CARTE (AUTEUR / SIGNATURE / FOOOTER) */
+  .card-footer-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .card-author-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-author-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .card-avatar-halo {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, var(--accent-emerald), transparent);
+    flex-shrink: 0;
+  }
+  .card-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #000;
+  }
+  .card-author-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .card-author-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .card-verified-badge {
+    width: 18px;
+    height: 18px;
+    background: #10b981;
+    color: #000;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+  }
+  .card-author-role {
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  .card-signature-container {
+    height: 62px;
+    display: flex;
+    align-items: center;
+  }
+  .card-signature-svg {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    filter: invert(1) brightness(1.2) drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  }
+
+  .card-bottom-submeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.75;
+    letter-spacing: 0.04em;
+  }
+  .card-seal-cce {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* BARRE DE CONTRÔLE DE ZOOM PRÉVISUALISATION */
+  .preview-control-toolbar {
+    margin-top: 24px;
+    background: rgba(13, 17, 24, 0.9);
+    border: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+  .zoom-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+  }
+  .zoom-btn:hover { color: #ffffff; background: rgba(255,255,255,0.06); }
+  .zoom-btn.active { color: #ffffff; background: rgba(16, 185, 129, 0.15); }
+  .dim-pill {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+  }
+
+  /* PANNEAU DE DROITE : GÉNÉRATEUR DE POSTS */
+  .panel-post-copy {
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+    max-height: calc(100vh - 63px);
+  }
+  .social-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 3px;
+    gap: 3px;
+  }
+  .social-tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 4px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .social-tab-btn:hover { color: var(--text-secondary); }
+  .social-tab-btn.active {
+    background: var(--bg-elevated);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  .post-editor-box {
+    flex: 1;
+    min-height: 230px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #f1f5f9;
+    font-family: inherit;
+    outline: none;
+    white-space: pre-wrap;
+    overflow-y: auto;
+  }
+  .post-editor-box:focus {
+    border-color: var(--accent-emerald);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+  }
+  .char-meter-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: var(--text-tertiary);
+  }
+  .char-meter-wrap.alert { color: var(--accent-gold); font-weight: 700; }
+  .char-meter-wrap.danger { color: var(--accent-crimson); font-weight: 800; }
+
+  /* NOTIFICATION TOAST LUXE */
+  .toast-banner {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: rgba(16, 185, 129, 0.95);
+    color: #032015;
+    padding: 12px 22px;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 800;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    animation: toastPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes toastPop {
+    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  /* CANVAS CACHÉ */
+  #export-canvas { display: none; }
 </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="studio-header">
-    <div class="studio-title-group">
-      <div class="studio-logo">🎨</div>
-      <div>
-        <h1 class="studio-title">
-          Studio Visuels &amp; Réseaux Sociaux
-          <span class="badge-engine">Moteur Flexbox / Satori</span>
+  <!-- BARRE SUPÉRIEURE DE COMMANDE -->
+  <header class="studio-navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-emblem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          <path d="M2 12h20"></path>
+        </svg>
+      </div>
+      <div class="nav-title-wrap">
+        <h1>
+          Studio Réseaux Sociaux &amp; Visuels
+          <span class="badge-studio-status">Moteur 2K Haute Fidélité</span>
         </h1>
       </div>
     </div>
-    <div class="header-actions">
-      <button type="button" class="btn btn-secondary" id="btn-reset">🔄 Réinitialiser</button>
-      <button type="button" class="btn btn-info" id="btn-download-svg">🎨 Exporter SVG</button>
-      <button type="button" class="btn btn-primary" id="btn-download-png">📥 Télécharger PNG HD</button>
-      <button type="button" class="btn btn-secondary" id="btn-copy-img">📋 Copier l'image</button>
+
+    <div class="nav-actions">
+      <button type="button" class="btn btn-ghost" id="btn-reset">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 21v-5h5"></path></svg>
+        Réinitialiser
+      </button>
+      <button type="button" class="btn btn-svg" id="btn-download-svg">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        Exporter SVG
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-copy-img">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copier l'image
+      </button>
+      <button type="button" class="btn btn-primary" id="btn-download-png">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Télécharger PNG 2K
+      </button>
     </div>
   </header>
 
-  <div class="studio-layout">
+  <!-- ESPACE DE TRAVAIL -->
+  <div class="studio-workspace">
 
-    <!-- COLONNE GAUCHE : CONTRÔLES -->
-    <aside class="col-controls">
+    <!-- COLONNE GAUCHE : PANNEAU DE CONFIGURATION -->
+    <aside class="panel-sidebar">
       
-      <!-- 1. Modèles -->
-      <div class="form-group">
-        <label class="section-title">1. Gabarit / Modèle IA</label>
-        <div class="template-grid">
-          <button type="button" class="template-btn active" data-tpl="quote">
-            <span class="template-icon">💬</span>
-            <span class="template-name">Déclaration / Citation</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="alert">
-            <span class="template-icon">🚨</span>
-            <span class="template-name">Alerte Échéance CCE</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="investigation">
-            <span class="template-icon">🔍</span>
-            <span class="template-name">Preuve d'Enquête</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="clarification">
-            <span class="template-icon">⚖️</span>
-            <span class="template-name">Clarification &amp; Droit</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="nature">
-            <span class="template-icon">🌿</span>
-            <span class="template-name">Grande Tourbière</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="stat">
-            <span class="template-icon">📊</span>
-            <span class="template-name">Chiffre Choc / Impact</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="press">
-            <span class="template-icon">📰</span>
-            <span class="template-name">Revue de Presse</span>
-          </button>
-          <button type="button" class="template-btn" data-tpl="live">
-            <span class="template-icon">🎙️</span>
-            <span class="template-name">Direct &amp; Média</span>
-          </button>
-        </div>
-      </div>
+      <!-- Onglets du panneau -->
+      <nav class="panel-tabs-nav">
+        <button type="button" class="tab-nav-btn active" data-tab="tab-templates">✨ Modèles</button>
+        <button type="button" class="tab-nav-btn" data-tab="tab-content">✍️ Textes</button>
+        <button type="button" class="tab-nav-btn" data-tab="tab-visuals">🎨 Style &amp; Photo</button>
+        <button type="button" class="tab-nav-btn" data-tab="tab-details">⚙️ Ornements</button>
+      </nav>
 
-      <!-- 2. Format -->
-      <div class="form-group">
-        <label class="section-title">2. Format de diffusion</label>
-        <div class="format-grid">
-          <button type="button" class="format-btn active" data-format="square">1:1 Carré<br><span style="font-size: 10px; opacity:0.7;">Insta / LinkedIn</span></button>
-          <button type="button" class="format-btn" data-format="story">9:16 Story<br><span style="font-size: 10px; opacity:0.7;">Reels / TikTok</span></button>
-          <button type="button" class="format-btn" data-format="portrait">4:5 Portrait<br><span style="font-size: 10px; opacity:0.7;">Insta Feed</span></button>
-          <button type="button" class="format-btn" data-format="landscape">16:9 X / Web<br><span style="font-size: 10px; opacity:0.7;">Facebook / X</span></button>
-        </div>
-      </div>
-
-      <!-- 3. Couleurs & Thème -->
-      <div class="form-group">
-        <label class="section-title">3. Style &amp; Thème</label>
-        <div class="theme-swatches">
-          <div class="theme-swatch active" data-theme="emerald" style="background: linear-gradient(135deg, #064e3b, #022c22); border-bottom: 3px solid #22c55e;" title="Émeraude Officiel"></div>
-          <div class="theme-swatch" data-theme="darkgold" style="background: linear-gradient(135deg, #18181b, #09090b); border-bottom: 3px solid #f59e0b;" title="Noir & Or Enquête"></div>
-          <div class="theme-swatch" data-theme="crimson" style="background: linear-gradient(135deg, #7f1d1d, #450a0a); border-bottom: 3px solid #ef4444;" title="Alerte Rouge"></div>
-          <div class="theme-swatch" data-theme="light" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border-bottom: 3px solid #0f172a;" title="Journal / Clair"></div>
-          <div class="theme-swatch" data-theme="cyber" style="background: linear-gradient(135deg, #1e1b4b, #0f172a); border-bottom: 3px solid #38bdf8;" title="Néon Cyber"></div>
-        </div>
-      </div>
-
-      <!-- 4. Photo / Visuel -->
-      <div class="form-group">
-        <label class="section-title">4. Image / Photo d'arrière-plan</label>
-        <label class="file-upload-btn">
-          📁 Téléverser une photo locale (JPG, PNG, WebP)
-          <input type="file" id="input-file-image" accept="image/*">
-        </label>
+      <!-- ONGLET 1 : MODÈLES ET DISPOSITIONS -->
+      <div class="tab-pane active" id="tab-templates">
         
-        <div class="image-preset-chips">
-          <button type="button" class="preset-chip" data-img="assets/media/william-guindon.jpg">👤 Portrait William</button>
-          <button type="button" class="preset-chip" data-img="tourbiere.jpg">🌿 Grande Tourbière</button>
-          <button type="button" class="preset-chip" data-img="assets/media/clarification-independance.jpg">🔍 Enquête Clavier</button>
-          <button type="button" class="preset-chip" data-img="assets/media/moteur-recherche-pieces.jpg">📁 Pièces CCE</button>
-          <button type="button" class="preset-chip" data-img="assets/media/ndtr-banner-rcaanc.jpg">🧡 Réconciliation</button>
-          <button type="button" class="preset-chip" data-img="none">🚫 Fond Uni</button>
-        </div>
+        <div class="control-group">
+          <label class="group-title">1. Gabarit Thématique Pro</label>
+          <div class="templates-deck">
+            
+            <div class="tpl-card active" data-tpl="quote">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🏛️</span>
+                <span class="tpl-badge-mini">Éditorial</span>
+              </div>
+              <div class="tpl-title">Déclaration &amp; Citation</div>
+              <div class="tpl-desc">Haute-couture, grande citation, signature officielle et portrait doré.</div>
+            </div>
 
-        <div style="margin-top: 14px;">
-          <div class="range-row">
-            <span style="font-size: 0.76rem; width: 85px;">Opacité image :</span>
-            <input type="range" id="range-img-opacity" min="0" max="1" step="0.05" value="0.3">
-            <span class="range-val" id="val-img-opacity">30%</span>
-          </div>
-          <div class="range-row">
-            <span style="font-size: 0.76rem; width: 85px;">Filtre image :</span>
-            <select class="form-control" id="select-img-filter" style="padding: 4px 8px; font-size: 0.8rem;">
-              <option value="none">Normal</option>
-              <option value="grayscale(100%) contrast(120%)">Noir &amp; Blanc contrasté</option>
-              <option value="sepia(60%) hue-rotate(80deg)">Teinte Émeraude sombre</option>
-              <option value="blur(8px)">Flou artistique</option>
-            </select>
+            <div class="tpl-card" data-tpl="alert">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🚨</span>
+                <span class="tpl-badge-mini" style="color:#ef4444;">Urgent</span>
+              </div>
+              <div class="tpl-title">Alerte Échéance CCE</div>
+              <div class="tpl-desc">Brutaliste breaking news, compte à rebours 16 octobre 2026.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="investigation">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🔍</span>
+                <span class="tpl-badge-mini" style="color:#f59e0b;">Preuves</span>
+              </div>
+              <div class="tpl-title">Dossier d'Enquête</div>
+              <div class="tpl-desc">Style déclassifié, tampon officiel CCE, coordonnées et réticules.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="stat">
+              <div class="tpl-header">
+                <span class="tpl-emoji">📊</span>
+                <span class="tpl-badge-mini" style="color:#38bdf8;">Data Choc</span>
+              </div>
+              <div class="tpl-title">Chiffre Héroïque</div>
+              <div class="tpl-desc">278 000 m² ou statistique géante en dégradé ultra-moderne.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="clarification">
+              <div class="tpl-header">
+                <span class="tpl-emoji">⚖️</span>
+                <span class="tpl-badge-mini">Droit A.5</span>
+              </div>
+              <div class="tpl-title">Avis Indépendance</div>
+              <div class="tpl-desc">Clarification juridique A.5, rigueur et indépendance totale.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="nature">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🌿</span>
+                <span class="tpl-badge-mini" style="color:#10b981;">Écologie</span>
+              </div>
+              <div class="tpl-title">Grande Tourbière</div>
+              <div class="tpl-desc">Atmosphère cinématique, sanctuaire et puits de carbone.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="press">
+              <div class="tpl-header">
+                <span class="tpl-emoji">📰</span>
+                <span class="tpl-badge-mini">Revue</span>
+              </div>
+              <div class="tpl-title">Couverture Presse</div>
+              <div class="tpl-desc">Revue de presse nationale Le Devoir, La Presse, CBC News.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="live">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🎙️</span>
+                <span class="tpl-badge-mini" style="color:#ef4444;">Direct</span>
+              </div>
+              <div class="tpl-title">Direct &amp; Mobilisation</div>
+              <div class="tpl-desc">Pastille live clignotante, interpellation citoyenne claire.</div>
+            </div>
+
           </div>
         </div>
+
+        <div class="control-group">
+          <label class="group-title">2. Style de Disposition (Layout)</label>
+          <div class="layout-modes-grid">
+            <button type="button" class="layout-mode-btn active" data-layout="editorial">
+              <span>🏛️</span>
+              <span>Éditorial Luxe</span>
+            </button>
+            <button type="button" class="layout-mode-btn" data-layout="brutalist">
+              <span>⚡</span>
+              <span>Brutaliste Impact</span>
+            </button>
+            <button type="button" class="layout-mode-btn" data-layout="dossier">
+              <span>📂</span>
+              <span>Dossier Secret</span>
+            </button>
+            <button type="button" class="layout-mode-btn" data-layout="stat">
+              <span>📈</span>
+              <span>Chiffre Géant</span>
+            </button>
+            <button type="button" class="layout-mode-btn" data-layout="split">
+              <span>🌗</span>
+              <span>Split Photo</span>
+            </button>
+            <button type="button" class="layout-mode-btn" data-layout="glass">
+              <span>💎</span>
+              <span>Carte Verre</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="group-title">3. Format de Diffusion Réseaux</label>
+          <div class="format-pills">
+            <div class="format-pill active" data-format="square">
+              <span class="format-pill-ratio">1:1 Carré</span>
+              <span class="format-pill-tag">Insta / LinkedIn</span>
+            </div>
+            <div class="format-pill" data-format="story">
+              <span class="format-pill-ratio">9:16 Story</span>
+              <span class="format-pill-tag">Reels / TikTok</span>
+            </div>
+            <div class="format-pill" data-format="portrait">
+              <span class="format-pill-ratio">4:5 Portrait</span>
+              <span class="format-pill-tag">Insta Feed</span>
+            </div>
+            <div class="format-pill" data-format="landscape">
+              <span class="format-pill-ratio">16:9 X / Web</span>
+              <span class="format-pill-tag">X / Facebook</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- 5. Contenus -->
-      <div class="form-group">
-        <label class="section-title">5. Textes &amp; Contenu</label>
+      <!-- ONGLET 2 : TEXTES ET CONTENUS -->
+      <div class="tab-pane" id="tab-content">
         
-        <div class="form-group">
-          <label class="form-label" for="txt-kicker">Surtitre / Badge</label>
-          <input type="text" class="form-control" id="txt-kicker" value="DOSSIER INTERNATIONAL SEM-26-003 · CCE / ACEUM">
+        <div class="control-group">
+          <label class="group-title">Surtitre / Kicker Badge</label>
+          <input type="text" class="field-input" id="input-kicker" value="DOSSIER INTERNATIONAL SEM-26-003 · CCE / ACEUM">
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="txt-title">Titre principal (Accroche)</label>
-          <textarea class="form-control" id="txt-title" rows="2">Vous ne ferez pas taire la jeunesse qui défend son avenir.</textarea>
+        <div class="control-group" id="group-hero-stat" style="display: none;">
+          <label class="group-title" style="color:var(--accent-cyan);">Statistique Héroïque Géante</label>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+            <input type="text" class="field-input" id="input-stat-num" value="278 000 m²">
+            <input type="text" class="field-input" id="input-stat-lbl" value="DE MILIEUX HUMIDES">
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="txt-body">Citation / Argumentaire</label>
-          <textarea class="form-control" id="txt-body" rows="4">« La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons l'application intégrale des lois fédérales pour protéger les milieux humides et les générations futures. »</textarea>
+        <div class="control-group">
+          <label class="group-title">Titre Principal (Accroche Percutante)</label>
+          <textarea class="field-textarea" id="input-title" rows="2">Vous ne ferez pas taire la jeunesse qui défend son avenir.</textarea>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="txt-highlight">Chiffre clé / Mention spéciale</label>
-          <input type="text" class="form-control" id="txt-highlight" value="ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026">
+        <div class="control-group">
+          <label class="group-title">Citation / Argumentaire Développé</label>
+          <textarea class="field-textarea" id="input-body" rows="4">« La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons l'application intégrale des lois fédérales pour protéger les milieux humides et les générations futures. »</textarea>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="txt-author">Auteur &amp; Qualité</label>
-          <input type="text" class="form-control" id="txt-author" value="William Guindon · Auteur de la soumission SEM-26-003">
+        <div class="control-group">
+          <label class="group-title">Bandeau Clé / Capsule Choc</label>
+          <input type="text" class="field-input" id="input-highlight" value="ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026">
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="txt-date">Date &amp; Lieu</label>
-          <input type="text" class="form-control" id="txt-date" value="Septembre 2026 · Blainville, Québec">
+        <div class="control-group">
+          <label class="group-title">Auteur &amp; Titre Officiel</label>
+          <input type="text" class="field-input" id="input-author" value="William Guindon">
+          <input type="text" class="field-input" id="input-role" value="Auteur de la soumission CCE SEM-26-003 · Chercheur citoyen">
         </div>
+
+        <div class="control-group">
+          <label class="group-title">Datation &amp; Localisation</label>
+          <input type="text" class="field-input" id="input-date" value="Septembre 2026 · Blainville, Québec">
+        </div>
+
       </div>
 
-      <!-- 6. Options d'habillage -->
-      <div class="form-group">
-        <label class="section-title">6. Éléments graphiques</label>
-        <div class="toggle-row">
-          <span>Afficher la signature officielle</span>
-          <input type="checkbox" id="chk-signature" checked>
+      <!-- ONGLET 3 : STYLE, COULEURS & PHOTO -->
+      <div class="tab-pane" id="tab-visuals">
+        
+        <div class="control-group">
+          <label class="group-title">Palette de Prestige</label>
+          <div class="themes-grid">
+            
+            <div class="theme-card active" data-theme="emerald" style="background: linear-gradient(135deg, #064e3b, #022c22); border-bottom: 3px solid #10b981;">
+              <span class="theme-name-tag">🌿 Émeraude</span>
+            </div>
+
+            <div class="theme-card" data-theme="gold" style="background: linear-gradient(135deg, #1c1917, #0c0a09); border-bottom: 3px solid #f59e0b;">
+              <span class="theme-name-tag">⚜️ Or Royale</span>
+            </div>
+
+            <div class="theme-card" data-theme="crimson" style="background: linear-gradient(135deg, #450a0a, #1c0404); border-bottom: 3px solid #ef4444;">
+              <span class="theme-name-tag">🚨 Crimson</span>
+            </div>
+
+            <div class="theme-card" data-theme="cyber" style="background: linear-gradient(135deg, #0f172a, #030712); border-bottom: 3px solid #38bdf8;">
+              <span class="theme-name-tag">🌌 Cyber Nuit</span>
+            </div>
+
+            <div class="theme-card" data-theme="parchment" style="background: linear-gradient(135deg, #fdfbf7, #e2e8f0); border-bottom: 3px solid #1e293b;">
+              <span class="theme-name-tag" style="color:#0f172a; text-shadow:none;">🗞️ Journal</span>
+            </div>
+
+            <div class="theme-card" data-theme="twilight" style="background: linear-gradient(135deg, #1e112a, #090514); border-bottom: 3px solid #a855f7;">
+              <span class="theme-name-tag">🟣 Crépuscule</span>
+            </div>
+
+          </div>
         </div>
-        <div class="toggle-row">
-          <span>Afficher l'URL williamguindon.me</span>
-          <input type="checkbox" id="chk-url" checked>
+
+        <div class="control-group">
+          <label class="group-title">Typographie du Titre</label>
+          <div class="font-selector-row">
+            <button type="button" class="font-btn active" data-font="serif">
+              <span class="font-btn-name" style="font-family:'Playfair Display', serif;">Playfair Display</span>
+              <span class="font-btn-preview">Éditorial Haute Couture</span>
+            </button>
+            <button type="button" class="font-btn" data-font="syne">
+              <span class="font-btn-name" style="font-family:'Syne', sans-serif;">Syne Extra</span>
+              <span class="font-btn-preview">Brutaliste &amp; Moderne</span>
+            </button>
+            <button type="button" class="font-btn" data-font="sans">
+              <span class="font-btn-name" style="font-family:'Plus Jakarta Sans', sans-serif;">Jakarta Sans</span>
+              <span class="font-btn-preview">Ultra-Clean Tech</span>
+            </button>
+            <button type="button" class="font-btn" data-font="mono">
+              <span class="font-btn-name" style="font-family:'Space Grotesk', monospace;">Space Grotesk</span>
+              <span class="font-btn-preview">Dossier Scientifique</span>
+            </button>
+          </div>
         </div>
-        <div class="toggle-row">
-          <span>Afficher le logo balance CCE</span>
-          <input type="checkbox" id="chk-badge-cce" checked>
+
+        <div class="control-group">
+          <label class="group-title">Photographie d'Arrière-Plan</label>
+          <label class="btn btn-secondary" style="width:100%; cursor:pointer;">
+            📷 Importer une photo personnalisée
+            <input type="file" id="file-photo-upload" accept="image/*" style="display:none;">
+          </label>
+          
+          <div class="photo-presets-grid" style="margin-top: 8px;">
+            <div class="photo-chip-card active" data-photo="assets/media/william-guindon.jpg" style="background-image:url('assets/media/william-guindon.jpg');">
+              <span>Portrait William</span>
+            </div>
+            <div class="photo-chip-card" data-photo="tourbiere.jpg" style="background-image:url('tourbiere.jpg');">
+              <span>Tourbière</span>
+            </div>
+            <div class="photo-chip-card" data-photo="assets/media/clarification-independance.jpg" style="background-image:url('assets/media/clarification-independance.jpg');">
+              <span>Enquête Clavier</span>
+            </div>
+            <div class="photo-chip-card" data-photo="assets/media/moteur-recherche-pieces.jpg" style="background-image:url('assets/media/moteur-recherche-pieces.jpg');">
+              <span>Pièces CCE</span>
+            </div>
+            <div class="photo-chip-card" data-photo="assets/media/tourbiere-hero-3d.webp" style="background-image:url('assets/media/tourbiere-hero-3d.webp');">
+              <span>Relief 3D</span>
+            </div>
+            <div class="photo-chip-card" data-photo="none">
+              <span style="text-align:center; padding-top:16px;">🚫 Fond Dégradé Pur</span>
+            </div>
+          </div>
         </div>
-        <div class="toggle-row">
-          <span>Avatar rond de l'auteur</span>
-          <input type="checkbox" id="chk-avatar-circle" checked>
+
+        <div class="control-group">
+          <div class="field-label">
+            <span>Opacité de la photo</span>
+            <span class="slider-val" id="val-photo-opacity">35%</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="range-photo-opacity" min="0" max="1" step="0.05" value="0.35">
+          </div>
         </div>
+
+        <div class="control-group">
+          <div class="field-label">
+            <span>Filtre d'ambiance photo</span>
+          </div>
+          <select class="field-select" id="select-photo-filter">
+            <option value="none">Normal (Couleur naturelle)</option>
+            <option value="grayscale(100%) contrast(135%) brightness(0.9)">Cinéma Noir &amp; Blanc contrasté</option>
+            <option value="sepia(60%) hue-rotate(85deg) contrast(120%)">Teinte Émeraude Mystique</option>
+            <option value="contrast(140%) saturate(150%)">Haute Saturation Végétale</option>
+            <option value="blur(10px) brightness(0.8)">Flou Artistique Profond</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- ONGLET 4 : ORNEMENTS ET ACCESSOIRES -->
+      <div class="tab-pane" id="tab-details">
+        
+        <div class="control-group">
+          <label class="group-title">Éléments Visuels Haute Couture</label>
+          
+          <div class="switch-row">
+            <span>Guillemet d'ornement géant en filigrane</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-quote-mark" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Réticules d'angles de visée (+)</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-crosshairs" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Tampon officiel rouge « Dossier CCE »</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-stamp">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Pastille clignotante « EN DIRECT »</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-live-dot">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Avatar portrait avec anneau lumineux</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-avatar-profile" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Badge vérifié (✓) à côté du nom</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-verified-badge" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Signature manuscrite officielle SVG</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-signature-svg" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Sceau CCE &amp; URL williamguindon.me</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-footer-meta" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+        </div>
+
       </div>
 
     </aside>
 
-    <!-- COLONNE CENTRALE : SCÈNE WYSIWYG FLEXBOX -->
-    <main class="col-preview">
+    <!-- COLONNE CENTRALE : SCÈNE DE PRÉVISUALISATION ROYALE -->
+    <main class="panel-viewport">
       
-      <!-- Carte Flexbox Satori-Style (Rendu vectoriel pur) -->
-      <div class="satori-stage" id="satori-stage" style="width: 540px; height: 540px;">
-        <div class="card-flexbox-container" id="card-node">
-          
-          <!-- Couche de fond photo -->
-          <div class="card-bg-layer" id="card-bg-layer"></div>
+      <div class="viewport-ambient-glow" id="viewport-glow"></div>
 
-          <!-- Contenu Flexbox interne -->
-          <div class="card-inner-content">
+      <!-- Scène Carte Satori / Flexbox -->
+      <div class="satori-stage-wrapper" id="stage-wrapper">
+        
+        <div class="satori-card-node" id="card-render-node" style="width: 560px; height: 560px; padding: 48px;">
+          
+          <!-- Couche photo arrière-plan -->
+          <div class="card-layer-bg-photo" id="card-bg-photo"></div>
+
+          <!-- Couche dégradé dynamique -->
+          <div class="card-layer-gradient-overlay" id="card-bg-gradient"></div>
+
+          <!-- Couche micro-texture -->
+          <div class="card-layer-noise" id="card-bg-noise"></div>
+
+          <!-- Ornements vectoriels -->
+          <div class="card-ornament-quote-mark" id="card-quote-glyph">“</div>
+          <div class="card-crosshair tl" id="crosshair-tl">+</div>
+          <div class="card-crosshair tr" id="crosshair-tr">+</div>
+          <div class="card-crosshair bl" id="crosshair-bl">+</div>
+          <div class="card-crosshair br" id="crosshair-br">+</div>
+
+          <!-- Tampon officiel CCE -->
+          <div class="card-official-stamp" id="card-stamp-badge">
+            DOSSIER CCE SEM-26-003 · PUBLIC
+          </div>
+
+          <!-- Conteneur Flexbox structuré -->
+          <div class="card-content-wrap">
             
-            <div class="card-top-section">
-              <div class="card-kicker-badge" id="view-kicker">DOSSIER SEM-26-003</div>
-              <h2 class="card-title-text" id="view-title" contenteditable="true" spellcheck="false">Vous ne ferez pas taire la jeunesse qui défend son avenir.</h2>
-              <div class="card-accent-bar" id="view-accent-bar"></div>
-              <p class="card-body-text" id="view-body" contenteditable="true" spellcheck="false">« La Grande Tourbière de Blainville est un écosystème irremplaçable... »</p>
-              <div class="card-highlight-box" id="view-highlight">ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026</div>
+            <!-- Haut de carte -->
+            <div class="card-header-bar">
+              <div class="card-kicker-pill" id="view-kicker-pill">
+                <span class="card-live-dot" id="view-live-dot" style="display:none;"></span>
+                <span id="view-kicker-text">DOSSIER INTERNATIONAL SEM-26-003</span>
+              </div>
+              <div class="card-header-metadata" id="view-top-metadata">ACEUM · CCE</div>
             </div>
 
-            <div>
-              <div class="card-bottom-section">
-                <div class="card-author-group">
-                  <div class="card-author-avatar" id="view-avatar"></div>
-                  <div class="card-author-details">
-                    <div class="card-author-name" id="view-author">William Guindon</div>
-                    <div class="card-author-subtitle" id="view-date">Septembre 2026 · Blainville, Québec</div>
+            <!-- Centre narratif -->
+            <div class="card-main-narrative">
+              
+              <!-- Statistique Héroïque (Masquée par défaut) -->
+              <div class="card-hero-stat-box" id="view-hero-stat-box">
+                <div class="card-hero-stat-number" id="view-stat-number">278 000 m²</div>
+                <div class="card-hero-stat-label" id="view-stat-label">DE MILIEUX HUMIDES MENACÉS</div>
+              </div>
+
+              <!-- Titre -->
+              <h2 class="card-display-title" id="view-card-title" contenteditable="true" spellcheck="false">
+                Vous ne ferez pas taire la jeunesse qui défend son avenir.
+              </h2>
+
+              <!-- Ligne accent -->
+              <div class="card-accent-separator" id="view-accent-sep"></div>
+
+              <!-- Corps de citation -->
+              <p class="card-display-body" id="view-card-body" contenteditable="true" spellcheck="false">
+                « La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons l'application intégrale des lois fédérales pour protéger les milieux humides et les générations futures. »
+              </p>
+
+              <!-- Capsule choc -->
+              <div class="card-highlight-capsule" id="view-highlight-capsule">
+                <span id="view-highlight-icon">⚖️</span>
+                <span id="view-highlight-text">ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026</span>
+              </div>
+
+            </div>
+
+            <!-- Bas de carte -->
+            <div class="card-footer-block" id="view-footer-block">
+              
+              <div class="card-author-row">
+                
+                <div class="card-author-profile">
+                  <div class="card-avatar-halo" id="view-avatar-halo">
+                    <div class="card-avatar-img" id="view-avatar-img"></div>
+                  </div>
+                  <div class="card-author-text">
+                    <div class="card-author-name-wrap">
+                      <span id="view-author-name">William Guindon</span>
+                      <span class="card-verified-badge" id="view-verified-badge">✓</span>
+                    </div>
+                    <div class="card-author-role" id="view-author-role">Auteur de la soumission SEM-26-003</div>
                   </div>
                 </div>
 
-                <div class="card-signature-wrap" id="view-signature-wrap">
-                  <img src="assets/media/signature.svg" alt="Signature officielle" class="card-signature-img" id="view-signature-img">
+                <div class="card-signature-container" id="view-signature-box">
+                  <img src="assets/media/signature.svg" alt="Signature officielle" class="card-signature-svg" id="view-sig-img">
                 </div>
+
               </div>
 
-              <div class="card-footer-meta">
-                <span id="view-footer-cce">⚖️ Dossier CCE SEM-26-003</span>
-                <span id="view-footer-url">williamguindon.me</span>
+              <div class="card-bottom-submeta" id="view-bottom-submeta">
+                <div class="card-seal-cce" id="view-cce-tag">
+                  <span>🏛️ Commission de coopération environnementale</span>
+                </div>
+                <div id="view-date-tag">Septembre 2026 · williamguindon.me</div>
               </div>
+
             </div>
 
           </div>
 
         </div>
+
       </div>
 
       <!-- Barre d'outils de prévisualisation -->
-      <div class="preview-bar">
-        <span style="font-size: 0.8rem; color: var(--text-muted);" id="format-dim-label">1080 × 1080 px (1:1)</span>
-        <span style="color: var(--border);">|</span>
-        <span style="font-size: 0.78rem; color: #38bdf8;">✨ Vous pouvez éditer les textes directement sur le visuel !</span>
+      <div class="preview-control-toolbar">
+        <span class="dim-pill" id="toolbar-dim-pill">1080 × 1080 px (1:1)</span>
+        <button type="button" class="zoom-btn active" data-zoom="1">100%</button>
+        <button type="button" class="zoom-btn" data-zoom="0.8">80%</button>
+        <button type="button" class="zoom-btn" data-zoom="0.6">60%</button>
+        <span style="font-size:0.75rem; color:var(--text-tertiary);">✨ Tapez directement sur le titre ou texte de la carte pour éditer !</span>
       </div>
 
-      <!-- Canvas invisible pour la conversion SVG/Flexbox -> PNG HD -->
-      <canvas id="render-canvas"></canvas>
+      <!-- Canvas invisible haute résolution 2K -->
+      <canvas id="export-canvas"></canvas>
+
     </main>
 
-    <!-- COLONNE DROITE : GÉNÉRATEUR DE POSTS -->
-    <aside class="col-post-generator">
-      <label class="section-title">7. Texte du post réseaux sociaux</label>
+    <!-- COLONNE DROITE : GÉNÉRATEUR DE POSTS INTELLIGENT -->
+    <aside class="panel-post-copy">
       
-      <div class="platform-tabs">
-        <button type="button" class="platform-tab active" data-platform="x">X / Twitter</button>
-        <button type="button" class="platform-tab" data-platform="insta">Instagram</button>
-        <button type="button" class="platform-tab" data-platform="linkedin">LinkedIn</button>
-        <button type="button" class="platform-tab" data-platform="fb">Facebook</button>
+      <label class="group-title">Texte de publication optimisé</label>
+      
+      <div class="social-tabs">
+        <button type="button" class="social-tab-btn active" data-platform="x">X / Twitter</button>
+        <button type="button" class="social-tab-btn" data-platform="insta">Instagram</button>
+        <button type="button" class="social-tab-btn" data-platform="linkedin">LinkedIn</button>
+        <button type="button" class="social-tab-btn" data-platform="fb">Facebook</button>
       </div>
 
-      <div class="post-output-box" id="post-text-content" contenteditable="true"></div>
-      
-      <div class="char-count" id="post-char-count">0 / 280 caractères</div>
+      <div class="post-editor-box" id="post-text-box" contenteditable="true" spellcheck="false"></div>
 
-      <button type="button" class="btn btn-primary" id="btn-copy-post-text" style="width: 100%; margin-bottom: 12px;">
-        📋 Copier le texte du post
+      <div class="char-meter-wrap" id="char-meter">
+        <span id="char-count-text">0 / 280 caractères</span>
+        <span id="char-indicator-bar">●</span>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="btn-copy-post">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copier le texte du post
       </button>
 
-      <div style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: auto;">
-        <span style="font-size: 0.75rem; font-weight: 800; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 6px;">💡 Atout du moteur Satori / Flexbox</span>
-        <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45;">
-          • Le texte s'adapte automatiquement sans coupure arbitraire.<br>
-          • Exportation en SVG vectoriel infiniment net.<br>
-          • Rendu PNG haute définition 2K pour un rendu parfait sur mobile.
-        </p>
+      <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:16px; margin-top:auto;">
+        <span style="font-size:0.72rem; font-weight:800; color:var(--accent-emerald); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:8px;">
+          💎 Atouts du Moteur Graphique
+        </span>
+        <ul style="font-size:0.78rem; color:var(--text-secondary); line-height:1.6; list-style:none; display:flex; flex-direction:column; gap:6px;">
+          <li>• <strong>Rendu vectoriel Satori</strong> : mise en page intelligente sans coupure de texte.</li>
+          <li>• <strong>Double Export</strong> : SVG pur ou PNG Haute Définition 2K (2160×2160 px).</li>
+          <li>• <strong>Zéro fuite d'indexation</strong> : protégé et exclu de tous les robots IA.</li>
+        </ul>
       </div>
+
     </aside>
 
   </div>
 
-  <div class="toast-notification" id="toast">
-    <span>✔</span> <span id="toast-msg">Image copiée dans le presse-papiers !</span>
+  <!-- BANNIÈRE DE NOTIFICATION TOAST -->
+  <div class="toast-banner" id="toast-banner">
+    <span>✔</span>
+    <span id="toast-message">Image haute résolution copiée !</span>
   </div>
 
+  <!-- SCRIPT LOGIQUE & MOTEUR GRAPHIQUE 2K -->
   <script>
   (function() {
     'use strict';
 
-    // Références DOM
-    const stage = document.getElementById('satori-stage');
-    const cardNode = document.getElementById('card-node');
-    const cardBgLayer = document.getElementById('card-bg-layer');
-    
-    const viewKicker = document.getElementById('view-kicker');
-    const viewTitle = document.getElementById('view-title');
-    const viewAccentBar = document.getElementById('view-accent-bar');
-    const viewBody = document.getElementById('view-body');
-    const viewHighlight = document.getElementById('view-highlight');
-    const viewAvatar = document.getElementById('view-avatar');
-    const viewAuthor = document.getElementById('view-author');
-    const viewDate = document.getElementById('view-date');
-    const viewSignatureWrap = document.getElementById('view-signature-wrap');
-    const viewFooterCce = document.getElementById('view-footer-cce');
-    const viewFooterUrl = document.getElementById('view-footer-url');
+    // Sélecteurs d'onglets
+    document.querySelectorAll('.tab-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.tab);
+        if (target) target.classList.add('active');
+      });
+    });
 
-    const formatDimLabel = document.getElementById('format-dim-label');
-    const toast = document.getElementById('toast');
-    const toastMsg = document.getElementById('toast-msg');
+    // Éléments du DOM de la Scène
+    const stageWrapper = document.getElementById('stage-wrapper');
+    const cardNode = document.getElementById('card-render-node');
+    const cardBgPhoto = document.getElementById('card-bg-photo');
+    const cardBgGradient = document.getElementById('card-bg-gradient');
+    const viewportGlow = document.getElementById('viewport-glow');
+    const toolbarDimPill = document.getElementById('toolbar-dim-pill');
+    const exportCanvas = document.getElementById('export-canvas');
+
+    const viewKickerPill = document.getElementById('view-kicker-pill');
+    const viewKickerText = document.getElementById('view-kicker-text');
+    const viewLiveDot = document.getElementById('view-live-dot');
+    const viewTopMetadata = document.getElementById('view-top-metadata');
+    const viewHeroStatBox = document.getElementById('view-hero-stat-box');
+    const viewStatNumber = document.getElementById('view-stat-number');
+    const viewStatLabel = document.getElementById('view-stat-label');
+    const viewCardTitle = document.getElementById('view-card-title');
+    const viewAccentSep = document.getElementById('view-accent-sep');
+    const viewCardBody = document.getElementById('view-card-body');
+    const viewHighlightCapsule = document.getElementById('view-highlight-capsule');
+    const viewHighlightIcon = document.getElementById('view-highlight-icon');
+    const viewHighlightText = document.getElementById('view-highlight-text');
+
+    const viewAvatarHalo = document.getElementById('view-avatar-halo');
+    const viewAvatarImg = document.getElementById('view-avatar-img');
+    const viewAuthorName = document.getElementById('view-author-name');
+    const viewAuthorRole = document.getElementById('view-author-role');
+    const viewVerifiedBadge = document.getElementById('view-verified-badge');
+    const viewSignatureBox = document.getElementById('view-signature-box');
+    const viewSigImg = document.getElementById('view-sig-img');
+    const viewFooterBlock = document.getElementById('view-footer-block');
+    const viewBottomSubmeta = document.getElementById('view-bottom-submeta');
+    const viewCceTag = document.getElementById('view-cce-tag');
+    const viewDateTag = document.getElementById('view-date-tag');
+
+    const cardQuoteGlyph = document.getElementById('card-quote-glyph');
+    const crosshairTL = document.getElementById('crosshair-tl');
+    const crosshairTR = document.getElementById('crosshair-tr');
+    const crosshairBL = document.getElementById('crosshair-bl');
+    const crosshairBR = document.getElementById('crosshair-br');
+    const cardStampBadge = document.getElementById('card-stamp-badge');
 
     // Form inputs
-    const txtKicker = document.getElementById('txt-kicker');
-    const txtTitle = document.getElementById('txt-title');
-    const txtBody = document.getElementById('txt-body');
-    const txtHighlight = document.getElementById('txt-highlight');
-    const txtAuthor = document.getElementById('txt-author');
-    const txtDate = document.getElementById('txt-date');
+    const inputKicker = document.getElementById('input-kicker');
+    const inputStatNum = document.getElementById('input-stat-num');
+    const inputStatLbl = document.getElementById('input-stat-lbl');
+    const inputTitle = document.getElementById('input-title');
+    const inputBody = document.getElementById('input-body');
+    const inputHighlight = document.getElementById('input-highlight');
+    const inputAuthor = document.getElementById('input-author');
+    const inputRole = document.getElementById('input-role');
+    const inputDate = document.getElementById('input-date');
+    const groupHeroStat = document.getElementById('group-hero-stat');
 
-    const rangeImgOpacity = document.getElementById('range-img-opacity');
-    const valImgOpacity = document.getElementById('val-img-opacity');
-    const selectImgFilter = document.getElementById('select-img-filter');
-    const inputFileImage = document.getElementById('input-file-image');
+    const rangePhotoOpacity = document.getElementById('range-photo-opacity');
+    const valPhotoOpacity = document.getElementById('val-photo-opacity');
+    const selectPhotoFilter = document.getElementById('select-photo-filter');
+    const filePhotoUpload = document.getElementById('file-photo-upload');
 
-    const chkSignature = document.getElementById('chk-signature');
-    const chkUrl = document.getElementById('chk-url');
-    const chkBadgeCce = document.getElementById('chk-badge-cce');
-    const chkAvatarCircle = document.getElementById('chk-avatar-circle');
+    // Toggles
+    const chkQuoteMark = document.getElementById('chk-quote-mark');
+    const chkCrosshairs = document.getElementById('chk-crosshairs');
+    const chkStamp = document.getElementById('chk-stamp');
+    const chkLiveDot = document.getElementById('chk-live-dot');
+    const chkAvatarProfile = document.getElementById('chk-avatar-profile');
+    const chkVerifiedBadge = document.getElementById('chk-verified-badge');
+    const chkSignatureSvg = document.getElementById('chk-signature-svg');
+    const chkFooterMeta = document.getElementById('chk-footer-meta');
 
-    const postTextBox = document.getElementById('post-text-content');
-    const postCharCount = document.getElementById('post-char-count');
-    const renderCanvas = document.getElementById('render-canvas');
+    // Post box
+    const postTextBox = document.getElementById('post-text-box');
+    const charMeter = document.getElementById('char-meter');
+    const charCountText = document.getElementById('char-count-text');
+    const toastBanner = document.getElementById('toast-banner');
+    const toastMessage = document.getElementById('toast-message');
 
-    // État
+    // État actif
     let currentTemplate = 'quote';
+    let currentLayout = 'editorial';
     let currentFormat = 'square';
     let currentTheme = 'emerald';
+    let currentFont = 'serif';
     let currentPlatform = 'x';
-    let currentImageSrc = 'assets/media/william-guindon.jpg';
+    let currentPhotoSrc = 'assets/media/william-guindon.jpg';
+    let currentZoom = 1;
 
     // Dimensions
     const FORMATS = {
-      square: { width: 1080, height: 1080, stageW: 540, stageH: 540, label: '1080 × 1080 px (1:1)' },
-      story: { width: 1080, height: 1920, stageW: 360, stageH: 640, label: '1080 × 1920 px (9:16)' },
-      portrait: { width: 1080, height: 1350, stageW: 432, stageH: 540, label: '1080 × 1350 px (4:5)' },
-      landscape: { width: 1200, height: 675, stageW: 640, stageH: 360, label: '1200 × 675 px (16:9)' }
+      square: { w: 1080, h: 1080, stageW: 560, stageH: 560, label: '1080 × 1080 px (1:1 Carré)' },
+      story: { w: 1080, h: 1920, stageW: 360, stageH: 640, label: '1080 × 1920 px (9:16 Story)' },
+      portrait: { w: 1080, h: 1350, stageW: 448, stageH: 560, label: '1080 × 1350 px (4:5 Portrait)' },
+      landscape: { w: 1200, h: 675, stageW: 640, stageH: 360, label: '1200 × 675 px (16:9 X / Web)' }
     };
 
-    // Thèmes CSS
-    const THEMES = {
+    // Palettes de couleurs royales
+    const PALETTES = {
       emerald: {
-        bg: 'linear-gradient(135deg, #064e3b 0%, #022c22 50%, #011c15 100%)',
-        accent: '#22c55e',
-        accentBg: 'rgba(34, 197, 94, 0.15)',
+        bg: 'linear-gradient(135deg, #021a12 0%, #032b1f 40%, #01150e 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.25) 0%, transparent 60%)',
+        accent: '#10b981',
+        accentSecondary: '#34d399',
+        accentPillBg: 'rgba(16, 185, 129, 0.18)',
+        accentPillBorder: 'rgba(16, 185, 129, 0.5)',
         textMain: '#ffffff',
         textMuted: '#a7f3d0',
-        boxBg: 'rgba(6, 78, 59, 0.55)',
-        boxBorder: 'rgba(52, 211, 153, 0.4)'
+        cardBorder: 'rgba(16, 185, 129, 0.3)',
+        cardGlow: 'rgba(16, 185, 129, 0.35)',
+        boxBg: 'rgba(4, 41, 30, 0.75)',
+        boxBorder: 'rgba(52, 211, 153, 0.45)',
+        sigFilter: 'invert(1) brightness(1.2)'
       },
-      darkgold: {
-        bg: 'linear-gradient(135deg, #18181b 0%, #09090b 50%, #000000 100%)',
+      gold: {
+        bg: 'linear-gradient(135deg, #141109 0%, #201a0d 45%, #090703 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.25) 0%, transparent 60%)',
         accent: '#f59e0b',
-        accentBg: 'rgba(245, 158, 11, 0.15)',
+        accentSecondary: '#fbbf24',
+        accentPillBg: 'rgba(245, 158, 11, 0.18)',
+        accentPillBorder: 'rgba(245, 158, 11, 0.5)',
         textMain: '#ffffff',
         textMuted: '#fde68a',
-        boxBg: 'rgba(24, 24, 27, 0.75)',
-        boxBorder: 'rgba(245, 158, 11, 0.35)'
+        cardBorder: 'rgba(245, 158, 11, 0.35)',
+        cardGlow: 'rgba(245, 158, 11, 0.35)',
+        boxBg: 'rgba(38, 29, 10, 0.8)',
+        boxBorder: 'rgba(245, 158, 11, 0.45)',
+        sigFilter: 'invert(66%) sepia(85%) saturate(850%) hue-rotate(360deg) brightness(105%)'
       },
       crimson: {
-        bg: 'linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #1c0404 100%)',
+        bg: 'linear-gradient(135deg, #1e0505 0%, #360a0a 45%, #0f0202 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.28) 0%, transparent 60%)',
         accent: '#ef4444',
-        accentBg: 'rgba(239, 68, 68, 0.18)',
+        accentSecondary: '#f87171',
+        accentPillBg: 'rgba(239, 68, 68, 0.2)',
+        accentPillBorder: 'rgba(239, 68, 68, 0.55)',
         textMain: '#ffffff',
         textMuted: '#fecaca',
-        boxBg: 'rgba(69, 10, 10, 0.75)',
-        boxBorder: 'rgba(239, 68, 68, 0.35)'
-      },
-      light: {
-        bg: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%)',
-        accent: '#0f172a',
-        accentBg: 'rgba(15, 23, 42, 0.08)',
-        textMain: '#0f172a',
-        textMuted: '#334155',
-        boxBg: 'rgba(255, 255, 255, 0.92)',
-        boxBorder: 'rgba(15, 23, 42, 0.2)'
+        cardBorder: 'rgba(239, 68, 68, 0.35)',
+        cardGlow: 'rgba(239, 68, 68, 0.4)',
+        boxBg: 'rgba(56, 10, 10, 0.85)',
+        boxBorder: 'rgba(239, 68, 68, 0.5)',
+        sigFilter: 'invert(1) brightness(1.2)'
       },
       cyber: {
-        bg: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #030712 100%)',
+        bg: 'linear-gradient(135deg, #050b14 0%, #0a1728 45%, #020409 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25) 0%, transparent 60%)',
         accent: '#38bdf8',
-        accentBg: 'rgba(56, 189, 248, 0.15)',
+        accentSecondary: '#7dd3fc',
+        accentPillBg: 'rgba(56, 189, 248, 0.18)',
+        accentPillBorder: 'rgba(56, 189, 248, 0.5)',
         textMain: '#ffffff',
         textMuted: '#bae6fd',
-        boxBg: 'rgba(15, 23, 42, 0.8)',
-        boxBorder: 'rgba(56, 189, 248, 0.35)'
+        cardBorder: 'rgba(56, 189, 248, 0.35)',
+        cardGlow: 'rgba(56, 189, 248, 0.35)',
+        boxBg: 'rgba(10, 28, 48, 0.85)',
+        boxBorder: 'rgba(56, 189, 248, 0.45)',
+        sigFilter: 'invert(75%) sepia(80%) saturate(1200%) hue-rotate(170deg)'
+      },
+      parchment: {
+        bg: 'linear-gradient(135deg, #fdfbf7 0%, #f4f0e6 50%, #e9e2d1 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(15, 23, 42, 0.06) 0%, transparent 60%)',
+        accent: '#0f172a',
+        accentSecondary: '#334155',
+        accentPillBg: 'rgba(15, 23, 42, 0.08)',
+        accentPillBorder: 'rgba(15, 23, 42, 0.3)',
+        textMain: '#0f172a',
+        textMuted: '#334155',
+        cardBorder: 'rgba(15, 23, 42, 0.15)',
+        cardGlow: 'rgba(15, 23, 42, 0.15)',
+        boxBg: 'rgba(255, 255, 255, 0.95)',
+        boxBorder: 'rgba(15, 23, 42, 0.25)',
+        sigFilter: 'none'
+      },
+      twilight: {
+        bg: 'linear-gradient(135deg, #130a22 0%, #23123d 45%, #0a0414 100%)',
+        overlay: 'radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.28) 0%, transparent 60%)',
+        accent: '#c084fc',
+        accentSecondary: '#e879f9',
+        accentPillBg: 'rgba(168, 85, 247, 0.2)',
+        accentPillBorder: 'rgba(168, 85, 247, 0.5)',
+        textMain: '#ffffff',
+        textMuted: '#e9d5ff',
+        cardBorder: 'rgba(168, 85, 247, 0.35)',
+        cardGlow: 'rgba(168, 85, 247, 0.4)',
+        boxBg: 'rgba(38, 18, 66, 0.85)',
+        boxBorder: 'rgba(192, 132, 252, 0.45)',
+        sigFilter: 'invert(70%) sepia(60%) saturate(1500%) hue-rotate(240deg)'
       }
     };
 
-    // Gabarits
+    // Gabarits thématiques riches
     const TEMPLATES = {
       quote: {
         kicker: 'DÉCLARATION OFFICIELLE · DOSSIER SEM-26-003',
         title: '« Vous ne ferez pas taire la jeunesse qui défend son avenir. »',
-        body: 'La Grande Tourbière de Blainville est un milieu humide irremplaçable. Devant la Commission de coopération environnementale, nous exigeons le strict respect des lois environnementales.',
+        body: 'La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons le respect intégral des lois environnementales.',
         highlight: 'ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026',
-        author: 'William Guindon · Auteur de la soumission CCE',
+        author: 'William Guindon',
+        role: 'Auteur de la soumission CCE SEM-26-003 · Chercheur citoyen',
         date: 'Septembre 2026 · Blainville, Québec',
         theme: 'emerald',
+        layout: 'editorial',
+        font: 'serif',
         img: 'assets/media/william-guindon.jpg',
-        avatarCircle: true
+        stamp: false,
+        live: false
       },
       alert: {
-        kicker: '🚨 ALERTE JURIDIQUE & ENVIRONNEMENTALE',
+        kicker: '🚨 ALERTE JURIDIQUE & ENVIRONNEMENTALE INTERNATIONALE',
         title: 'Le Canada sommé de répondre avant le 16 octobre 2026',
-        body: 'Détermination positive historique de la Commission de coopération environnementale (CCE / ACEUM) concernant l\'enfouissement de matières dangereuses de Stablex dans la Grande Tourbière de Blainville.',
-        highlight: 'ARTICLE 24.27 ACEUM · DÉTERMINATION POSITIVE',
-        author: 'William Guindon · Registre officiel SEM-26-003',
-        date: 'Compte à rebours officiel en direct',
+        body: 'Détermination positive historique rendue par la Commission de coopération environnementale (CCE / ACEUM). Examen approfondi de l'omission d'application des lois environnementales fédérales à Blainville.',
+        highlight: 'ARTICLE 24.27 ACEUM · DÉCISION DU SECRÉTARIAT',
+        author: 'William Guindon',
+        role: 'Auteur de la communication citoyenne SEM-26-003',
+        date: 'Procédure internationale en cours',
         theme: 'crimson',
+        layout: 'brutalist',
+        font: 'syne',
         img: 'tourbiere.jpg',
-        avatarCircle: false
+        stamp: true,
+        live: true
       },
       investigation: {
-        kicker: '🔍 DOSSIER D\'ENQUÊTE & ANALYSES PROBATOIRES',
+        kicker: '🔍 DOSSIER D'ENQUÊTE & ANALYSES PROBATOIRES',
         title: '278 000 m² de milieux humides menacés par la Cellule 6',
-        body: 'Étude détaillée des modélisations hydrogéologiques et du transfert du cadmium dans la nappe phréatique sous la Loi 93 québécoise et les normes de la CCE.',
-        highlight: 'PIÈCE JUSTIFICATIVE · BAPE 371 & CCE',
-        author: 'William Guindon · Chercheur citoyen indépendant',
+        body: 'Étude d'impact hydrogéologique, modélisation de migration des métaux lourds (cadmium) et analyse probatoire transmise au registre international de la CCE.',
+        highlight: 'PIÈCE JUSTIFICATIVE · BAPE 371 & CCE SEM-26-003',
+        author: 'William Guindon',
+        role: 'Enquêteur citoyen indépendant · Registre public',
         date: 'Septembre 2026 · williamguindon.me',
-        theme: 'darkgold',
+        theme: 'gold',
+        layout: 'dossier',
+        font: 'mono',
         img: 'assets/media/clarification-independance.jpg',
-        avatarCircle: false
+        stamp: true,
+        live: false
+      },
+      stat: {
+        kicker: '📊 IMPACT HYDROLOGIQUE & PÉRIL ÉCOLOGIQUE',
+        statNum: '278 000 m²',
+        statLbl: 'DE MILIEUX HUMIDES MENACÉS',
+        title: 'La plus grande expansion de déchets dangereux du Québec',
+        body: '43 ans d'enfouissement industriel à Blainville, 22 000 tonnes de cadmium sous haute surveillance et un puits de carbone millénaire directement ciblé.',
+        highlight: 'ART. 24.28 ACEUM · REGISTRE TRANSPARENT',
+        author: 'William Guindon',
+        role: 'Auteur du dossier SEM-26-003',
+        date: 'Dossier public CCE · Blainville',
+        theme: 'cyber',
+        layout: 'stat',
+        font: 'syne',
+        img: 'assets/media/moteur-recherche-pieces.jpg',
+        stamp: false,
+        live: false
       },
       clarification: {
-        kicker: '⚖️ AVIS OFFICIEL DE CLARIFICATION PUBLIQUE',
-        title: 'Absence de collaboration & Stricte Indépendance',
-        body: 'La communication citoyenne SEM-26-003 est le fruit exclusif d\'un travail personnel, individuel et autofinancé. Aucune affiliation ni aide politique ou corporative.',
-        highlight: 'DÉCLARATION D\'INDÉPENDANCE · ARTICLE A.5',
-        author: 'William Guindon · Déclarant & auteur exclusif',
+        kicker: '⚖️ DÉCLARATION FORMELLE D'INDÉPENDANCE (ARTICLE A.5)',
+        title: 'Absence de collaboration politique & Stricte Indépendance',
+        body: 'La soumission SEM-26-003 a été conçue, rédigée et déposée de manière rigoureusement autonome et autofinancée. Aucune affiliation ni financement d'aucune organisation politique ou corporative.',
+        highlight: 'CHARTE D'INTÉGRITÉ & ÉTHIQUE PUBLIQUE',
+        author: 'William Guindon',
+        role: 'Déclarant & auteur exclusif du dossier',
         date: '24 septembre 2026 · Registre des politiques',
-        theme: 'darkgold',
+        theme: 'gold',
+        layout: 'editorial',
+        font: 'serif',
         img: 'assets/media/clarification-independance.jpg',
-        avatarCircle: true
+        stamp: true,
+        live: false
       },
       nature: {
         kicker: '🌿 PATRIMOINE NATUREL DES BASSES-LAURENTIDES',
-        title: 'Sauvegarde de la Grande Tourbière de Blainville',
-        body: 'Puits de carbone millénaire, régulateur hydrologique et sanctuaire écologique abritant des espèces vulnérables menacées par les déchets industriels.',
-        highlight: 'PUITS DE CARBONE & BIODIVERSITÉ VULNÉRABLE',
-        author: 'William Guindon · Enquêteur citoyen',
+        title: 'Sauvegarde intégrale de la Grande Tourbière de Blainville',
+        body: 'Véritable poumon écologique et réservoir de biodiversité abritant des espèces vulnérables menacées par les projets d'enfouissement de matières dangereuses.',
+        highlight: 'SANCTUAIRE ÉCOLOGIQUE & PUITS DE CARBONE',
+        author: 'William Guindon',
+        role: 'Militant écologiste · Dossier SEM-26-003',
         date: 'Blainville · Québec, Canada',
         theme: 'emerald',
+        layout: 'editorial',
+        font: 'serif',
         img: 'tourbiere.jpg',
-        avatarCircle: false
-      },
-      stat: {
-        kicker: '📊 CHIFFRES CLÉS DU DOSSIER STABLEX',
-        title: '16 OCTOBRE 2026 : Échéance internationale imposée au Canada',
-        body: '43 ans d\'enfouissement industriel (1983-2026), 278 000 m² de tourbière ciblés et une décision sans précédent rendue par la CCE sous l\'accord commercial ACEUM/CUSMA.',
-        highlight: '100% AUTOFINANCÉ · REGISTRE TRANSPARENT',
-        author: 'William Guindon · williamguindon.me',
-        date: 'Dossier CCE SEM-26-003',
-        theme: 'cyber',
-        img: 'assets/media/moteur-recherche-pieces.jpg',
-        avatarCircle: false
+        stamp: false,
+        live: false
       },
       press: {
-        kicker: '📰 ESPACE PRESSE & COUVERTURE NATIONALE',
-        title: '« Vous ne ferez pas taire la jeunesse qui défend son avenir »',
-        body: 'Revue de presse nationale : Le Devoir, La Presse, CBC News, The Rover. Consultation directe des pièces probatoires, études d\'impact et kit média complet.',
-        highlight: 'KIT MÉDIA & RECHERCHE PLEIN TEXTE OCR',
-        author: 'William Guindon · Contact presse : contact@williamguindon.me',
-        date: 'Presse & Médias · williamguindon.me/presse.html',
-        theme: 'light',
+        kicker: '📰 COUVERTURE MÉDIATIQUE & REVUE DE PRESSE',
+        title: '« L'adolescent qui défie les géants de l'enfouissement »',
+        body: 'Couverture nationale dans Le Devoir, La Presse, CBC News, The Rover. Accès libre à toutes les pièces probatoires, études hydrogéologiques et dossier de presse officiel.',
+        highlight: 'KIT MÉDIA COMPLET & RECHERCHE PLEIN TEXTE OCR',
+        author: 'William Guindon',
+        role: 'Contact presse : contact@williamguindon.me',
+        date: 'williamguindon.me/presse.html',
+        theme: 'parchment',
+        layout: 'editorial',
+        font: 'serif',
         img: 'assets/media/william-guindon.jpg',
-        avatarCircle: true
+        stamp: false,
+        live: false
       },
       live: {
-        kicker: '🎙️ INTERVENTION & DÉCLARATION PUBLIQUE',
-        title: 'Point de situation sur la décision de la CCE',
-        body: 'Analyse en direct des développements juridiques, des réponses parlementaires et des prochaines étapes de l\'enquête environnementale internationale.',
-        highlight: 'DIRECT CITOYEN & CLAVARDAGE IA',
-        author: 'William Guindon · Militant écologiste',
-        date: 'En direct sur williamguindon.me',
+        kicker: '🎙️ INTERVENTION PUBLIQUE & DIRECT CITOYEN',
+        title: 'Le pouvoir d'agir : la jeunesse et le droit environnemental',
+        body: 'Analyse en direct des développements juridiques de la soumission CCE, des réponses des gouvernements et des prochaines étapes de mobilisation pour la Grande Tourbière.',
+        highlight: 'CLAVARDAGE IA DOCUMENTÉ SUR LE DOSSIER',
+        author: 'William Guindon',
+        role: 'Militant écologiste au Québec',
+        date: 'Direct sur williamguindon.me',
         theme: 'crimson',
+        layout: 'brutalist',
+        font: 'syne',
         img: 'assets/media/william-guindon.jpg',
-        avatarCircle: true
+        stamp: false,
+        live: true
       }
     };
 
-    // Actualisation du rendu WYSIWYG
+    // MISE À JOUR VISUELLE TOTALE
     function updateStage() {
       const fmt = FORMATS[currentFormat];
-      const theme = THEMES[currentTheme];
+      const pal = PALETTES[currentTheme];
 
-      // Dimensions du conteneur de prévisualisation
-      stage.style.width = `${fmt.stageW}px`;
-      stage.style.height = `${fmt.stageH}px`;
-      formatDimLabel.textContent = fmt.label;
+      // Redimensionnement de la scène
+      cardNode.style.width = `${fmt.stageW}px`;
+      cardNode.style.height = `${fmt.stageH}px`;
+      toolbarDimPill.textContent = fmt.label;
+      stageWrapper.style.transform = `scale(${currentZoom})`;
 
-      // Échelle des polices selon le format
-      const isStory = currentFormat === 'story';
-      const isLandscape = currentFormat === 'landscape';
+      // Typographie choisie
+      let fontTitle = '"Playfair Display", serif';
+      if (currentFont === 'syne') fontTitle = '"Syne", sans-serif';
+      else if (currentFont === 'sans') fontTitle = '"Plus Jakarta Sans", sans-serif';
+      else if (currentFont === 'mono') fontTitle = '"Space Grotesk", monospace';
 
-      viewTitle.style.fontSize = isStory ? '34px' : isLandscape ? '30px' : '38px';
-      viewBody.style.fontSize = isStory ? '20px' : isLandscape ? '17px' : '21px';
-      cardNode.style.padding = isStory ? '44px 34px' : isLandscape ? '32px 42px' : '44px 44px';
+      viewCardTitle.style.fontFamily = fontTitle;
 
-      // Styles de thème
-      cardNode.style.background = theme.bg;
-      cardNode.style.color = theme.textMain;
+      // Couleurs et fonds
+      cardNode.style.background = pal.bg;
+      cardNode.style.color = pal.textMain;
+      cardNode.style.boxShadow = `0 40px 100px rgba(0, 0, 0, 0.85), 0 0 0 1px ${pal.cardBorder}`;
+      cardBgGradient.style.background = pal.overlay;
+      viewportGlow.style.background = `radial-gradient(circle, ${pal.cardGlow} 0%, transparent 70%)`;
 
-      // Fond photo
-      if (currentImageSrc && currentImageSrc !== 'none') {
-        cardBgLayer.style.backgroundImage = `url("${currentImageSrc}")`;
-        cardBgLayer.style.opacity = rangeImgOpacity.value;
-        cardBgLayer.style.filter = selectImgFilter.value;
+      // Photo de fond
+      if (currentPhotoSrc && currentPhotoSrc !== 'none') {
+        cardBgPhoto.style.backgroundImage = `url("${currentPhotoSrc}")`;
+        cardBgPhoto.style.opacity = rangePhotoOpacity.value;
+        cardBgPhoto.style.filter = selectPhotoFilter.value;
       } else {
-        cardBgLayer.style.backgroundImage = 'none';
+        cardBgPhoto.style.backgroundImage = 'none';
       }
 
       // Kicker
-      const kickerVal = txtKicker.value.trim();
-      if (kickerVal) {
-        viewKicker.style.display = 'inline-flex';
-        viewKicker.textContent = kickerVal;
-        viewKicker.style.color = theme.accent;
-        viewKicker.style.backgroundColor = theme.accentBg;
-        viewKicker.style.borderColor = theme.accent;
+      const kicker = inputKicker.value.trim();
+      if (kicker) {
+        viewKickerPill.style.display = 'inline-flex';
+        viewKickerText.textContent = kicker;
+        viewKickerPill.style.color = pal.accent;
+        viewKickerPill.style.backgroundColor = pal.accentPillBg;
+        viewKickerPill.style.border = `1.5px solid ${pal.accentPillBorder}`;
       } else {
-        viewKicker.style.display = 'none';
+        viewKickerPill.style.display = 'none';
+      }
+
+      // Live Dot
+      viewLiveDot.style.display = chkLiveDot.checked ? 'inline-block' : 'none';
+
+      // Chiffre héroïque (selon layout ou template)
+      if (currentLayout === 'stat') {
+        viewHeroStatBox.style.display = 'flex';
+        groupHeroStat.style.display = 'block';
+        viewStatNumber.textContent = inputStatNum.value.trim() || '278 000 m²';
+        viewStatLabel.textContent = inputStatLbl.value.trim() || 'DE MILIEUX HUMIDES';
+        viewStatNumber.style.background = `linear-gradient(135deg, ${pal.textMain} 30%, ${pal.accent} 100%)`;
+        viewStatNumber.style.webkitBackgroundClip = 'text';
+      } else {
+        viewHeroStatBox.style.display = 'none';
+        groupHeroStat.style.display = 'none';
       }
 
       // Titre
-      viewTitle.textContent = txtTitle.value.trim();
-      viewTitle.style.color = theme.textMain;
+      viewCardTitle.textContent = inputTitle.value.trim();
+      viewCardTitle.style.color = pal.textMain;
 
-      // Accent bar
-      viewAccentBar.style.backgroundColor = theme.accent;
+      // Ligne d'accent
+      viewAccentSep.style.backgroundColor = pal.accent;
 
       // Corps
-      const bodyVal = txtBody.value.trim();
-      if (bodyVal) {
-        viewBody.style.display = 'block';
-        viewBody.textContent = bodyVal;
-        viewBody.style.color = theme.textMuted;
+      const body = inputBody.value.trim();
+      if (body) {
+        viewCardBody.style.display = 'block';
+        viewCardBody.textContent = body;
+        viewCardBody.style.color = pal.textMuted;
       } else {
-        viewBody.style.display = 'none';
+        viewCardBody.style.display = 'none';
       }
 
-      // Highlight box
-      const hlVal = txtHighlight.value.trim();
-      if (hlVal) {
-        viewHighlight.style.display = 'flex';
-        viewHighlight.textContent = hlVal;
-        viewHighlight.style.color = theme.accent;
-        viewHighlight.style.backgroundColor = theme.boxBg;
-        viewHighlight.style.borderColor = theme.boxBorder;
+      // Capsule Highlight
+      const highlight = inputHighlight.value.trim();
+      if (highlight) {
+        viewHighlightCapsule.style.display = 'inline-flex';
+        viewHighlightText.textContent = highlight;
+        viewHighlightCapsule.style.color = pal.accent;
+        viewHighlightCapsule.style.backgroundColor = pal.boxBg;
+        viewHighlightCapsule.style.border = `1.5px solid ${pal.boxBorder}`;
       } else {
-        viewHighlight.style.display = 'none';
+        viewHighlightCapsule.style.display = 'none';
       }
+
+      // Ornements
+      cardQuoteGlyph.style.display = chkQuoteMark.checked && currentLayout !== 'stat' ? 'block' : 'none';
+      const crosshairsShow = chkCrosshairs.checked ? 'block' : 'none';
+      crosshairTL.style.display = crosshairsShow;
+      crosshairTR.style.display = crosshairsShow;
+      crosshairBL.style.display = crosshairsShow;
+      crosshairBR.style.display = crosshairsShow;
+
+      // Tampon officiel
+      cardStampBadge.style.display = chkStamp.checked ? 'block' : 'none';
 
       // Avatar
-      if (chkAvatarCircle.checked && currentImageSrc && currentImageSrc !== 'none') {
-        viewAvatar.style.display = 'block';
-        viewAvatar.style.backgroundImage = `url("${currentImageSrc}")`;
-        viewAvatar.style.borderColor = theme.accent;
+      if (chkAvatarProfile.checked && currentPhotoSrc && currentPhotoSrc !== 'none') {
+        viewAvatarHalo.style.display = 'block';
+        viewAvatarImg.style.backgroundImage = `url("${currentPhotoSrc}")`;
+        viewAvatarHalo.style.background = `linear-gradient(135deg, ${pal.accent}, transparent)`;
       } else {
-        viewAvatar.style.display = 'none';
+        viewAvatarHalo.style.display = 'none';
       }
 
-      // Auteur & Date
-      viewAuthor.textContent = txtAuthor.value.trim();
-      viewAuthor.style.color = theme.textMain;
-      viewDate.textContent = txtDate.value.trim();
-      viewDate.style.color = theme.textMuted;
+      // Auteur, vérification et rôle
+      viewAuthorName.textContent = inputAuthor.value.trim();
+      viewAuthorName.style.color = pal.textMain;
+      viewAuthorRole.textContent = inputRole.value.trim();
+      viewAuthorRole.style.color = pal.textMuted;
+      viewVerifiedBadge.style.display = chkVerifiedBadge.checked ? 'inline-flex' : 'none';
+      viewVerifiedBadge.style.backgroundColor = pal.accent;
+      viewVerifiedBadge.style.color = currentTheme === 'parchment' ? '#fff' : '#000';
 
-      // Signature
-      viewSignatureWrap.style.display = chkSignature.checked ? 'flex' : 'none';
+      // Signature officielle
+      viewSignatureBox.style.display = chkSignatureSvg.checked ? 'flex' : 'none';
+      viewSigImg.style.filter = pal.sigFilter;
 
-      // Footer
-      viewFooterCce.style.display = chkBadgeCce.checked ? 'inline' : 'none';
-      viewFooterCce.style.color = theme.accent;
-      viewFooterUrl.style.display = chkUrl.checked ? 'inline' : 'none';
-      viewFooterUrl.style.color = theme.textMuted;
+      // Bas de page
+      viewFooterBlock.style.display = (chkSignatureSvg.checked || chkAvatarProfile.checked || chkFooterMeta.checked) ? 'flex' : 'none';
+      viewBottomSubmeta.style.display = chkFooterMeta.checked ? 'flex' : 'none';
+      viewCceTag.style.color = pal.accent;
+      viewDateTag.textContent = inputDate.value.trim();
+      viewDateTag.style.color = pal.textMuted;
 
-      updatePostGenerator();
+      // Échelles de taille typographiques selon le format
+      applyFormatScale(fmt);
+
+      updatePostComposer();
     }
 
-    // Mise à jour du texte réseaux sociaux
-    function updatePostGenerator() {
-      const title = txtTitle.value.trim().replace(/^«|»$/g, '').trim();
-      const body = txtBody.value.trim().replace(/^«|»$/g, '').trim();
-      const highlight = txtHighlight.value.trim();
+    // Gestion du dimensionnement selon le format
+    function applyFormatScale(fmt) {
+      const isStory = currentFormat === 'story';
+      const isLandscape = currentFormat === 'landscape';
+
+      if (isStory) {
+        cardNode.style.padding = '46px 32px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '30px' : '34px';
+        viewCardBody.style.fontSize = '18px';
+        viewStatNumber.style.fontSize = '72px';
+        cardQuoteGlyph.style.fontSize = '120px';
+      } else if (isLandscape) {
+        cardNode.style.padding = '36px 48px';
+        viewCardTitle.style.fontSize = '30px';
+        viewCardBody.style.fontSize = '17px';
+        viewStatNumber.style.fontSize = '70px';
+        cardQuoteGlyph.style.fontSize = '120px';
+      } else {
+        cardNode.style.padding = '48px 48px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '38px' : '42px';
+        viewCardBody.style.fontSize = '20px';
+        viewStatNumber.style.fontSize = '92px';
+        cardQuoteGlyph.style.fontSize = '160px';
+      }
+    }
+
+    // Mise à jour du texte de publication pour chaque réseau
+    function updatePostComposer() {
+      const title = inputTitle.value.trim().replace(/^«|»$/g, '').trim();
+      const body = inputBody.value.trim().replace(/^«|»$/g, '').trim();
+      const highlight = inputHighlight.value.trim();
+      const author = inputAuthor.value.trim();
       let text = '';
 
       if (currentPlatform === 'x') {
-        text = `📢 ${title}\n\n${body.substring(0, 140)}...\n\n🔗 williamguindon.me\n#SEM26003 #GrandeTourbière #Stablex #CCE #ACEUM #Blainville`;
+        text = `📢 ${title}\n\n${body.substring(0, 150)}...\n\n🔗 Registre officiel : williamguindon.me\n#SEM26003 #GrandeTourbière #Stablex #CCE #ACEUM #Blainville`;
       } else if (currentPlatform === 'insta') {
-        text = `🌿 ${title}\n\n${body}\n\n📌 ${highlight}\n\n✍️ William Guindon — Militant écologiste et chercheur citoyen\n🌐 Dossier complet, pièces justificatives et registre public sur williamguindon.me (lien en bio)\n\n.\n.\n#GrandeTourbière #Blainville #SEM26003 #Stablex #Environnement #JusticeClimatique #ProtectionDesTerres #MilieuxHumides #BAPE371 #CCE #ACEUM #Québec #Biodiversité #Écologie`;
+        text = `🌿 ${title}\n\n${body}\n\n📌 ${highlight}\n\n✍️ ${author} — Auteur du dossier SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).\n\nConsultez l'ensemble du registre documentaire, les études hydrogéologiques et le décompte officiel sur williamguindon.me (lien dans la bio).\n\n.\n.\n#GrandeTourbière #Blainville #SEM26003 #Stablex #Environnement #JusticeEnvironnementale #Québec #Biodiversité #Écologie #ACEUM #CCE`;
       } else if (currentPlatform === 'linkedin') {
-        text = `Démarche citoyenne & Surveillance environnementale internationale\n\n📌 ${title}\n\n${body}\n\nEn portant la sauvegarde de la Grande Tourbière de Blainville devant le Secrétariat de la Commission de coopération environnementale (dossier SEM-26-003 / ACEUM), nous rappelons l'exigence de rigueur scientifique et de respect intégral des lois environnementales.\n\nRetrouvez l'ensemble du registre documentaire et les pièces probatoires en accès libre sur le site officiel : https://williamguindon.me\n\n#DroitEnvironnemental #Gouvernance #SEM26003 #ACEUM #Environnement #Québec #Transparence`;
+        text = `Surveillance environnementale internationale & Droit d'accès citoyen\n\n📌 ${title}\n\n${body}\n\nLa protection de la Grande Tourbière de Blainville et l'examen de la conformité des lois fédérales font l'objet d'un examen approfondi devant le Secrétariat de la Commission de coopération environnementale (CCE / ACEUM).\n\nRetrouvez le registre probatoire intégral et les modélisations scientifiques en libre accès : https://williamguindon.me\n\n#DroitEnvironnemental #Gouvernance #SEM26003 #ACEUM #Environnement #Québec #TransparencePublique`;
       } else if (currentPlatform === 'fb') {
-        text = `📢 ${title}\n\n${body}\n\n${highlight ? '👉 ' + highlight + '\n\n' : ''}Pour consulter l'ensemble des documents officiels, les analyses hydrogéologiques et suivre le décompte vers l'échéance internationale : https://williamguindon.me\n\n#GrandeTourbière #Blainville #SEM26003 #Stablex #Environnement`;
+        text = `📢 ${title}\n\n${body}\n\n${highlight ? '👉 ' + highlight + '\n\n' : ''}Pour consulter les pièces justificatives, les analyses hydrogéologiques et suivre l'échéance du 16 octobre 2026 : https://williamguindon.me\n\n#GrandeTourbière #Blainville #SEM26003 #Stablex #Environnement #Québec`;
       }
 
       postTextBox.innerText = text;
-      const len = text.length;
+      const count = text.length;
+
       if (currentPlatform === 'x') {
-        postCharCount.textContent = `${len} / 280 caractères`;
-        postCharCount.className = len > 280 ? 'char-count danger' : len > 240 ? 'char-count warning' : 'char-count';
+        charCountText.textContent = `${count} / 280 caractères`;
+        charMeter.className = count > 280 ? 'char-meter-wrap danger' : count > 240 ? 'char-meter-wrap alert' : 'char-meter-wrap';
       } else {
-        postCharCount.textContent = `${len} caractères`;
-        postCharCount.className = 'char-count';
+        charCountText.textContent = `${count} caractères`;
+        charMeter.className = 'char-meter-wrap';
       }
     }
 
-    // Affichage Toast
+    // Toast
     function showToast(msg) {
-      toastMsg.textContent = msg;
-      toast.style.display = 'flex';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+      toastMessage.textContent = msg;
+      toastBanner.style.display = 'flex';
+      setTimeout(() => { toastBanner.style.display = 'none'; }, 3200);
     }
 
-    // Génération SVG vectoriel (Satori-like)
-    function generateSvgString(targetWidth, targetHeight) {
-      const theme = THEMES[currentTheme];
+    // GÉNÉRATION DU SVG VECTORIEL PUR
+    function generateVectorSvg(w, h) {
+      const pal = PALETTES[currentTheme];
       const isStory = currentFormat === 'story';
       const isLandscape = currentFormat === 'landscape';
 
       const pad = isStory ? 80 : isLandscape ? 60 : 90;
-      const titleSize = isStory ? 64 : isLandscape ? 56 : 72;
-      const bodySize = isStory ? 38 : isLandscape ? 32 : 40;
+      const titleSize = isStory ? 60 : isLandscape ? 52 : 68;
+      const bodySize = isStory ? 36 : isLandscape ? 30 : 38;
 
-      // Échappement XML
       const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
       return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${targetWidth}" height="${targetHeight}" viewBox="0 0 ${targetWidth} ${targetHeight}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${theme.bg.match(/#[0-9a-f]{6}/gi)?.[0] || '#064e3b'}"/>
-      <stop offset="50%" stop-color="${theme.bg.match(/#[0-9a-f]{6}/gi)?.[1] || '#022c22'}"/>
-      <stop offset="100%" stop-color="${theme.bg.match(/#[0-9a-f]{6}/gi)?.[2] || '#011c15'}"/>
+      <stop offset="0%" stop-color="${pal.bg.match(/#[0-9a-f]{6}/gi)?.[0] || '#021a12'}"/>
+      <stop offset="50%" stop-color="${pal.bg.match(/#[0-9a-f]{6}/gi)?.[1] || '#032b1f'}"/>
+      <stop offset="100%" stop-color="${pal.bg.match(/#[0-9a-f]{6}/gi)?.[2] || '#01150e'}"/>
     </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
   </defs>
 
-  <!-- Fond -->
+  <!-- Fond Dégradé Royal -->
   <rect width="100%" height="100%" fill="url(#bg-grad)"/>
 
-  <!-- Bordure intérieure -->
-  <rect x="30" y="30" width="${targetWidth - 60}" height="${targetHeight - 60}" fill="none" stroke="${theme.boxBorder}" stroke-width="6" rx="20"/>
+  <!-- Cadre et coins d'orfèvrerie -->
+  <rect x="36" y="36" width="${w - 72}" height="${h - 72}" fill="none" stroke="${pal.boxBorder}" stroke-width="4" rx="24"/>
+  <text x="56" y="70" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="${w - 74}" y="70" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="56" y="${h - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="${w - 74}" y="${h - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
 
-  <!-- Satori / Flexbox ForeignObject pour rendu texte parfait -->
-  <foreignObject x="${pad}" y="${pad}" width="${targetWidth - pad * 2}" height="${targetHeight - pad * 2}">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-family: system-ui, -apple-system, sans-serif; box-sizing: border-box;">
+  <!-- ForeignObject Satori-style pour flexbox parfait -->
+  <foreignObject x="${pad}" y="${pad}" width="${w - pad * 2}" height="${h - pad * 2}">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; box-sizing: border-box;">
       
       <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 24px;">
-        ${txtKicker.value.trim() ? `<div style="display: inline-flex; align-items: center; padding: 10px 24px; border-radius: 9999px; font-size: 24px; font-weight: 800; text-transform: uppercase; color: ${theme.accent}; background: ${theme.accentBg}; border: 2.5px solid ${theme.accent};">${esc(txtKicker.value)}</div>` : ''}
-        <div style="font-size: ${titleSize}px; font-weight: 900; line-height: 1.25; color: ${theme.textMain}; margin: 8px 0;">${esc(txtTitle.value)}</div>
-        <div style="width: 140px; height: 8px; border-radius: 4px; background: ${theme.accent};"></div>
-        ${txtBody.value.trim() ? `<div style="font-size: ${bodySize}px; font-weight: 500; line-height: 1.55; color: ${theme.textMuted}; margin-top: 10px;">${esc(txtBody.value)}</div>` : ''}
-        ${txtHighlight.value.trim() ? `<div style="display: flex; align-items: center; padding: 18px 28px; border-radius: 12px; font-size: 28px; font-weight: 800; color: ${theme.accent}; background: ${theme.boxBg}; border: 2px solid ${theme.boxBorder}; margin-top: 16px;">${esc(txtHighlight.value)}</div>` : ''}
+        <div style="display: inline-flex; align-items: center; padding: 12px 28px; border-radius: 9999px; font-size: 24px; font-weight: 800; text-transform: uppercase; color: ${pal.accent}; background: ${pal.accentPillBg}; border: 2px solid ${pal.accentPillBorder};">
+          ${esc(inputKicker.value)}
+        </div>
+        
+        ${currentLayout === 'stat' ? `
+          <div style="font-size: 110px; font-weight: 900; line-height: 0.95; color: ${pal.accent};">${esc(inputStatNum.value)}</div>
+          <div style="font-size: 28px; font-weight: 800; color: ${pal.textMuted}; text-transform: uppercase;">${esc(inputStatLbl.value)}</div>
+        ` : ''}
+
+        <div style="font-size: ${titleSize}px; font-weight: 900; line-height: 1.22; color: ${pal.textMain}; margin: 8px 0;">
+          ${esc(inputTitle.value)}
+        </div>
+        
+        <div style="width: 120px; height: 8px; border-radius: 4px; background: ${pal.accent};"></div>
+
+        ${inputBody.value.trim() ? `
+          <div style="font-size: ${bodySize}px; font-weight: 450; line-height: 1.55; color: ${pal.textMuted}; margin-top: 8px;">
+            ${esc(inputBody.value)}
+          </div>
+        ` : ''}
+
+        ${inputHighlight.value.trim() ? `
+          <div style="display: inline-flex; align-items: center; padding: 18px 30px; border-radius: 14px; font-size: 26px; font-weight: 800; color: ${pal.accent}; background: ${pal.boxBg}; border: 2px solid ${pal.boxBorder}; margin-top: 14px;">
+            ⚖️ ${esc(inputHighlight.value)}
+          </div>
+        ` : ''}
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 18px; border-top: 2px solid rgba(255,255,255,0.15); padding-top: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 20px; border-top: 2px solid rgba(255,255,255,0.15); padding-top: 28px;">
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; flex-direction: column;">
-            <div style="font-size: 32px; font-weight: 800; color: ${theme.textMain};">${esc(txtAuthor.value)}</div>
-            <div style="font-size: 24px; font-weight: 500; color: ${theme.textMuted};">${esc(txtDate.value)}</div>
+          <div>
+            <div style="font-size: 34px; font-weight: 800; color: ${pal.textMain};">${esc(inputAuthor.value)} ✓</div>
+            <div style="font-size: 24px; font-weight: 500; color: ${pal.textMuted};">${esc(inputRole.value)}</div>
           </div>
-          ${chkSignature.checked ? `<div style="font-size: 28px; font-weight: 800; color: ${theme.accent}; font-style: italic;">William Guindon ✍️</div>` : ''}
+          ${chkSignatureSvg.checked ? `
+            <div style="font-size: 32px; font-weight: 800; color: ${pal.accent}; font-style: italic;">
+              William Guindon ✍️
+            </div>
+          ` : ''}
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; color: ${theme.textMuted};">
-          ${chkBadgeCce.checked ? `<span style="color: ${theme.accent};">⚖️ Dossier CCE SEM-26-003</span>` : '<span></span>'}
-          ${chkUrl.checked ? `<span>williamguindon.me</span>` : '<span></span>'}
+
+        <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; color: ${pal.textMuted};">
+          <span style="color: ${pal.accent};">🏛️ Dossier CCE SEM-26-003</span>
+          <span>${esc(inputDate.value)}</span>
         </div>
       </div>
 
@@ -1282,203 +2226,250 @@
 </svg>`;
     }
 
-    // Export SVG
+    // EXPORTATION VECTORIELLE SVG
     document.getElementById('btn-download-svg').addEventListener('click', () => {
       const fmt = FORMATS[currentFormat];
-      const svgCode = generateSvgString(fmt.width, fmt.height);
+      const svgCode = generateVectorSvg(fmt.w, fmt.h);
       const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      const cleanTitle = txtTitle.value.substring(0, 30).toLowerCase().replace(/[^a-z0-9]/g, '-');
-      link.download = `william-guindon-${currentFormat}-${cleanTitle || 'visuel'}.svg`;
-      link.href = url;
-      link.click();
+      const a = document.createElement('a');
+      const cleanName = inputTitle.value.substring(0, 30).toLowerCase().replace(/[^a-z0-9]/g, '-');
+      a.download = `william-guindon-${currentFormat}-${cleanName || 'visuel'}.svg`;
+      a.href = url;
+      a.click();
       URL.revokeObjectURL(url);
       showToast('✔ Fichier vectoriel SVG téléchargé !');
     });
 
-    // Rendu Canvas vers PNG HD
-    function renderToCanvasBlob(callback) {
+    // RENDU CANAS 2K VERS PNG HAUTE DÉFINITION
+    function render2KCanvas(callback) {
       const fmt = FORMATS[currentFormat];
-      renderCanvas.width = fmt.width;
-      renderCanvas.height = fmt.height;
-      const ctx = renderCanvas.getContext('2d');
+      const scale = 2; // Rendu Retina 2K (ex: 2160x2160 pour 1:1)
+      exportCanvas.width = fmt.w * scale;
+      exportCanvas.height = fmt.h * scale;
+      const ctx = exportCanvas.getContext('2d');
 
-      const svgString = generateSvgString(fmt.width, fmt.height);
-      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const svgCode = generateVectorSvg(fmt.w * scale, fmt.h * scale);
+      const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const img = new Image();
 
       img.onload = () => {
-        ctx.clearRect(0, 0, fmt.width, fmt.height);
-        ctx.drawImage(img, 0, 0, fmt.width, fmt.height);
+        ctx.clearRect(0, 0, exportCanvas.width, exportCanvas.height);
+        ctx.drawImage(img, 0, 0);
         URL.revokeObjectURL(url);
-        renderCanvas.toBlob((b) => {
-          callback(b);
+        exportCanvas.toBlob(blobResult => {
+          callback(blobResult);
         }, 'image/png');
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        showToast('Erreur lors du rendu PNG.');
+        showToast('Erreur lors de la rasterisation 2K.');
       };
       img.src = url;
     }
 
-    // Télécharger PNG HD
+    // TÉLÉCHARGEMENT PNG 2K
     document.getElementById('btn-download-png').addEventListener('click', () => {
-      renderToCanvasBlob((blob) => {
+      render2KCanvas(blob => {
         if (!blob) return;
-        const link = document.createElement('a');
-        const cleanTitle = txtTitle.value.substring(0, 30).toLowerCase().replace(/[^a-z0-9]/g, '-');
-        link.download = `william-guindon-${currentFormat}-${cleanTitle || 'visuel'}.png`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        showToast('✔ Image PNG HD 2K téléchargée !');
+        const a = document.createElement('a');
+        const cleanName = inputTitle.value.substring(0, 30).toLowerCase().replace(/[^a-z0-9]/g, '-');
+        a.download = `william-guindon-${currentFormat}-${cleanName || 'visuel'}-2K.png`;
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        showToast('✔ Image PNG 2K téléchargée !');
       });
     });
 
-    // Copier image
+    // COPIER DANS LE PRESSE-PAPIERS
     document.getElementById('btn-copy-img').addEventListener('click', () => {
-      renderToCanvasBlob(async (blob) => {
+      render2KCanvas(async blob => {
         if (!blob) return;
         try {
           if (navigator.clipboard && navigator.clipboard.write) {
             await navigator.clipboard.write([
               new ClipboardItem({ 'image/png': blob })
             ]);
-            showToast('✔ Image copiée dans le presse-papiers !');
+            showToast('✔ Image 2K copiée dans le presse-papiers !');
           } else {
-            showToast('Copie directe non supportée, téléchargement lancé...');
+            showToast('Téléchargement direct lancé...');
             document.getElementById('btn-download-png').click();
           }
         } catch (err) {
-          showToast('Téléchargement lancé...');
           document.getElementById('btn-download-png').click();
         }
       });
     });
 
-    // Copier post text
-    document.getElementById('btn-copy-post-text').addEventListener('click', () => {
+    // COPIER LE TEXTE DU POST
+    document.getElementById('btn-copy-post').addEventListener('click', () => {
       navigator.clipboard.writeText(postTextBox.innerText).then(() => {
-        showToast('✔ Texte du post copié avec succès !');
+        showToast('✔ Texte du post copié !');
       });
     });
 
-    // Événements boutons modèles
-    document.querySelectorAll('.template-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTemplate = btn.dataset.tpl;
+    // GESTION DES CLICS SUR GABARITS
+    document.querySelectorAll('.tpl-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentTemplate = card.dataset.tpl;
         const tpl = TEMPLATES[currentTemplate];
         if (tpl) {
-          txtKicker.value = tpl.kicker;
-          txtTitle.value = tpl.title;
-          txtBody.value = tpl.body;
-          txtHighlight.value = tpl.highlight;
-          txtAuthor.value = tpl.author;
-          txtDate.value = tpl.date;
-          currentTheme = tpl.theme;
-          currentImageSrc = tpl.img;
-          chkAvatarCircle.checked = tpl.avatarCircle;
+          inputKicker.value = tpl.kicker;
+          inputTitle.value = tpl.title;
+          inputBody.value = tpl.body;
+          inputHighlight.value = tpl.highlight;
+          inputAuthor.value = tpl.author;
+          inputRole.value = tpl.role;
+          inputDate.value = tpl.date;
+          if (tpl.statNum) inputStatNum.value = tpl.statNum;
+          if (tpl.statLbl) inputStatLbl.value = tpl.statLbl;
 
-          document.querySelectorAll('.theme-swatch').forEach(s => {
-            s.classList.toggle('active', s.dataset.theme === currentTheme);
-          });
+          currentTheme = tpl.theme;
+          currentLayout = tpl.layout;
+          currentFont = tpl.font;
+          currentPhotoSrc = tpl.img;
+          chkStamp.checked = tpl.stamp;
+          chkLiveDot.checked = tpl.live;
+
+          // Sync boutons d'interface
+          document.querySelectorAll('.theme-card').forEach(tc => tc.classList.toggle('active', tc.dataset.theme === currentTheme));
+          document.querySelectorAll('.layout-mode-btn').forEach(lb => lb.classList.toggle('active', lb.dataset.layout === currentLayout));
+          document.querySelectorAll('.font-btn').forEach(fb => fb.classList.toggle('active', fb.dataset.font === currentFont));
+          document.querySelectorAll('.photo-chip-card').forEach(pc => pc.classList.toggle('active', pc.dataset.photo === currentPhotoSrc));
 
           updateStage();
         }
       });
     });
 
-    // Événements formats
-    document.querySelectorAll('.format-btn').forEach(btn => {
+    // GESTION DES DISPOSITIONS
+    document.querySelectorAll('.layout-mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.layout-mode-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentFormat = btn.dataset.format;
+        currentLayout = btn.dataset.layout;
         updateStage();
       });
     });
 
-    // Événements thèmes
-    document.querySelectorAll('.theme-swatch').forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-        currentTheme = swatch.dataset.theme;
+    // GESTION DES FORMATS
+    document.querySelectorAll('.format-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.format-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFormat = pill.dataset.format;
         updateStage();
       });
     });
 
-    // Preset images
-    document.querySelectorAll('.preset-chip').forEach(chip => {
+    // GESTION DES THÈMES
+    document.querySelectorAll('.theme-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentTheme = card.dataset.theme;
+        updateStage();
+      });
+    });
+
+    // GESTION DES TYPOGRAPHIES
+    document.querySelectorAll('.font-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFont = btn.dataset.font;
+        updateStage();
+      });
+    });
+
+    // GESTION DES PRÉSETS PHOTO
+    document.querySelectorAll('.photo-chip-card').forEach(chip => {
       chip.addEventListener('click', () => {
-        currentImageSrc = chip.dataset.img;
+        document.querySelectorAll('.photo-chip-card').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentPhotoSrc = chip.dataset.photo;
         updateStage();
       });
     });
 
-    // Upload image
-    inputFileImage.addEventListener('change', (e) => {
+    // UPLOAD PHOTO
+    filePhotoUpload.addEventListener('change', e => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (evt) => {
-          currentImageSrc = evt.target.result;
+        reader.onload = evt => {
+          currentPhotoSrc = evt.target.result;
+          document.querySelectorAll('.photo-chip-card').forEach(c => c.classList.remove('active'));
           updateStage();
         };
         reader.readAsDataURL(file);
       }
     });
 
-    // Sliders & Toggles
-    rangeImgOpacity.addEventListener('input', () => {
-      valImgOpacity.textContent = `${Math.round(rangeImgOpacity.value * 100)}%`;
+    // SLIDERS & FILTRES
+    rangePhotoOpacity.addEventListener('input', () => {
+      valPhotoOpacity.textContent = `${Math.round(rangePhotoOpacity.value * 100)}%`;
       updateStage();
     });
-    selectImgFilter.addEventListener('change', updateStage);
+    selectPhotoFilter.addEventListener('change', updateStage);
 
-    [txtKicker, txtTitle, txtBody, txtHighlight, txtAuthor, txtDate].forEach(el => {
+    // ÉCOUTEURS DES CHAMPS TEXTE
+    [inputKicker, inputTitle, inputBody, inputHighlight, inputAuthor, inputRole, inputDate, inputStatNum, inputStatLbl].forEach(el => {
       el.addEventListener('input', updateStage);
     });
 
-    [chkSignature, chkUrl, chkBadgeCce, chkAvatarCircle].forEach(chk => {
+    // ÉCOUTEURS DES COMMUTATEURS
+    [chkQuoteMark, chkCrosshairs, chkStamp, chkLiveDot, chkAvatarProfile, chkVerifiedBadge, chkSignatureSvg, chkFooterMeta].forEach(chk => {
       chk.addEventListener('change', updateStage);
     });
 
-    // Édition directe WYSIWYG sur la scène
-    viewTitle.addEventListener('input', () => {
-      txtTitle.value = viewTitle.innerText;
-      updatePostGenerator();
+    // ÉDITION DIRECTE WYSIWYG SUR LA CARTE
+    viewCardTitle.addEventListener('input', () => {
+      inputTitle.value = viewCardTitle.innerText;
+      updatePostComposer();
     });
-    viewBody.addEventListener('input', () => {
-      txtBody.value = viewBody.innerText;
-      updatePostGenerator();
+    viewCardBody.addEventListener('input', () => {
+      inputBody.value = viewCardBody.innerText;
+      updatePostComposer();
     });
 
-    // Plateformes post
-    document.querySelectorAll('.platform-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentPlatform = tab.dataset.platform;
-        updatePostGenerator();
+    // PLATEFORMES RÉSEAUX SOCIAUX
+    document.querySelectorAll('.social-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.social-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPlatform = btn.dataset.platform;
+        updatePostComposer();
       });
     });
 
-    // Reset
-    document.getElementById('btn-reset').addEventListener('click', () => {
-      document.querySelector('.template-btn[data-tpl="quote"]').click();
-      document.querySelector('.format-btn[data-format="square"]').click();
-      rangeImgOpacity.value = 0.3;
-      valImgOpacity.textContent = '30%';
-      selectImgFilter.value = 'none';
-      showToast('Gabarit réinitialisé.');
+    // ZOOM DE PRÉVISUALISATION
+    document.querySelectorAll('.zoom-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentZoom = parseFloat(btn.dataset.zoom);
+        stageWrapper.style.transform = `scale(${currentZoom})`;
+      });
     });
 
-    // Initialisation
+    // RÉINITIALISATION
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      document.querySelector('.tpl-card[data-tpl="quote"]').click();
+      document.querySelector('.format-pill[data-format="square"]').click();
+      rangePhotoOpacity.value = 0.35;
+      valPhotoOpacity.textContent = '35%';
+      selectPhotoFilter.value = 'none';
+      currentZoom = 1;
+      stageWrapper.style.transform = 'scale(1)';
+      document.querySelectorAll('.zoom-btn').forEach(b => b.classList.toggle('active', b.dataset.zoom === '1'));
+      showToast('Configuration réinitialisée.');
+    });
+
+    // INITIALISATION
     updateStage();
 
   })();
