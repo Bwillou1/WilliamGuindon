@@ -831,11 +831,11 @@
                 </div>
                 <div class="trumbo-btn-group" style="border-right:none;">
                   <button type="button" class="trumbo-btn" data-command="removeFormat" title="Effacer le style">🧹 Nettoyer</button>
-                  <button type="button" class="trumbo-btn btn-toggle-source" title="Voir/Modifier le code source HTML">&lt;/&gt; HTML</button>
+                  <button type="button" class="trumbo-btn btn-toggle-source" title="Consulter le code source HTML">&lt;/&gt; HTML</button>
                 </div>
               </div>
               <div class="trumbo-editor" id="blog-content-editor" contenteditable="true" spellcheck="true" placeholder="Rédigez ici le texte de votre article..."></div>
-              <textarea class="trumbo-textarea-raw" id="blog-content-raw"></textarea>
+              <textarea class="trumbo-textarea-raw" id="blog-content-raw" readonly aria-label="Code source HTML du blog"></textarea>
             </div>
             <textarea id="blog-content" style="display:none;"></textarea>
           </div>
@@ -1005,11 +1005,11 @@
                 </div>
                 <div class="trumbo-btn-group" style="border-right:none;">
                   <button type="button" class="trumbo-btn" data-command="removeFormat" title="Effacer le style">🧹 Nettoyer</button>
-                  <button type="button" class="trumbo-btn btn-toggle-source" title="Voir/Modifier le code source HTML">&lt;/&gt; HTML</button>
+                  <button type="button" class="trumbo-btn btn-toggle-source" title="Consulter le code source HTML">&lt;/&gt; HTML</button>
                 </div>
               </div>
               <div class="trumbo-editor" id="communique-content-editor" contenteditable="true" spellcheck="true" placeholder="Rédigez le texte officiel du communiqué..."></div>
-              <textarea class="trumbo-textarea-raw" id="communique-content-raw"></textarea>
+              <textarea class="trumbo-textarea-raw" id="communique-content-raw" readonly aria-label="Code source HTML du communiqué"></textarea>
             </div>
             <textarea id="communique-content" style="display:none;"></textarea>
           </div>
@@ -1454,22 +1454,22 @@
       });
     }
 
-    // Bascule Source HTML
+    // Bascule Source HTML (mode consultation sécurisé du code source)
     if (toggleSourceBtn) {
       toggleSourceBtn.addEventListener("click", (e) => {
         e.preventDefault();
         isSourceMode = !isSourceMode;
         if (isSourceMode) {
-          rawTextarea.value = editor.innerHTML;
+          if (rawTextarea) {
+            rawTextarea.value = editor.innerHTML;
+            rawTextarea.style.display = "block";
+          }
           editor.style.display = "none";
-          rawTextarea.style.display = "block";
           toggleSourceBtn.classList.add("active");
           toggleSourceBtn.textContent = "👁️ Rendu Visuel";
-          rawTextarea.focus();
+          if (rawTextarea) rawTextarea.focus();
         } else {
-          // Assainissement de sécurité anti-XSS avant réinjection dans l'éditeur visuel (CodeQL Alerts #37, #38)
-          editor.replaceChildren(sanitizeEditorHtml(rawTextarea.value || ""));
-          rawTextarea.style.display = "none";
+          if (rawTextarea) rawTextarea.style.display = "none";
           editor.style.display = "block";
           toggleSourceBtn.classList.remove("active");
           toggleSourceBtn.textContent = "</> HTML";
@@ -1482,15 +1482,15 @@
     return {
       setHtml(html) {
         editor.replaceChildren(sanitizeEditorHtml(html || ""));
-        rawTextarea.value = html || "";
-        if (hiddenTextarea) hiddenTextarea.value = html || "";
+        if (rawTextarea) rawTextarea.value = editor.innerHTML;
+        if (hiddenTextarea) hiddenTextarea.value = editor.innerHTML;
       },
       getHtml() {
-        return isSourceMode ? rawTextarea.value : editor.innerHTML;
+        return editor.innerHTML;
       },
       reset() {
         editor.replaceChildren();
-        rawTextarea.value = "";
+        if (rawTextarea) rawTextarea.value = "";
         if (hiddenTextarea) hiddenTextarea.value = "";
         if (isSourceMode && toggleSourceBtn) toggleSourceBtn.click();
       }
@@ -1672,7 +1672,17 @@
 
         const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
         if (label) {
-          label.innerHTML = `📸 <strong>Image prête :</strong> ${file.name} (${sizeMb} Mo) <br><small style="color:var(--accent); font-size:12px;">Cliquez ou glissez une autre photo pour remplacer</small>`;
+          label.replaceChildren();
+          label.appendChild(document.createTextNode('📸 '));
+          const strong = document.createElement('strong');
+          strong.textContent = 'Image prête :';
+          label.appendChild(strong);
+          label.appendChild(document.createTextNode(` ${file.name} (${sizeMb} Mo) `));
+          label.appendChild(document.createElement('br'));
+          const small = document.createElement('small');
+          small.style.cssText = 'color:var(--accent); font-size:12px;';
+          small.textContent = 'Cliquez ou glissez une autre photo pour remplacer';
+          label.appendChild(small);
         }
 
         const reader = new FileReader();
@@ -2353,6 +2363,20 @@
           notifStatusText.style.color = isActive ? "#22c55e" : "#ef4444";
         }
 
+        // Fonction de validation stricte d'URL d'image pour prévenir l'injection dans le DOM (CodeQL Alerts #55, #56)
+        function isSafeImageSrc(val) {
+          if (!val || typeof val !== 'string') return false;
+          const trimmed = val.trim();
+          if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.startsWith('/\\') && !trimmed.startsWith('\\')) return true;
+          if (trimmed.startsWith('data:image/')) return true;
+          try {
+            const parsed = new URL(trimmed, window.location.origin);
+            return (parsed.protocol === 'http:' || parsed.protocol === 'https:');
+          } catch (_) {
+            return false;
+          }
+        }
+
         // Smartphone Push Card
         if (simPushTitle) {
           simPushTitle.textContent = titleVal || "🚨 Titre de l'alerte...";
@@ -2361,7 +2385,7 @@
           simPushSubtitle.textContent = subtitleVal || "Sous-texte ou description de la notification...";
         }
         if (simPushThumb) {
-          simPushThumb.src = imageVal || "/icon-192.png";
+          simPushThumb.src = (imageVal && isSafeImageSrc(imageVal)) ? imageVal : "/icon-192.png";
         }
         if (simPushAction) {
           simPushAction.style.display = linkVal ? "inline-flex" : "none";
@@ -2381,11 +2405,13 @@
       if (notifSubtitle) notifSubtitle.addEventListener("input", updateLivePreview);
       if (notifImage) notifImage.addEventListener("input", () => {
         if (notifPreviewThumb) {
-          if (notifImage.value.trim()) {
-            notifPreviewThumb.src = notifImage.value.trim();
+          const trimmed = notifImage.value.trim();
+          if (trimmed && isSafeImageSrc(trimmed)) {
+            notifPreviewThumb.src = trimmed;
             notifPreviewThumb.style.display = "block";
             if (notifDropzonePrompt) notifDropzonePrompt.style.display = "none";
           } else {
+            notifPreviewThumb.removeAttribute("src");
             notifPreviewThumb.style.display = "none";
             if (notifDropzonePrompt) notifDropzonePrompt.style.display = "block";
           }
@@ -2406,7 +2432,7 @@
           if (notifImage) notifImage.value = state.broadcastImage || "";
           if (notifLink) notifLink.value = state.broadcastLink || "https://williamguindon.me/live.html";
 
-          if (state.broadcastImage && notifPreviewThumb) {
+          if (state.broadcastImage && isSafeImageSrc(state.broadcastImage) && notifPreviewThumb) {
             notifPreviewThumb.src = state.broadcastImage;
             notifPreviewThumb.style.display = "block";
             if (notifDropzonePrompt) notifDropzonePrompt.style.display = "none";

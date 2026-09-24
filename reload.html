@@ -90,20 +90,48 @@
   const fillEl = document.getElementById('progress-fill');
   const btnNow = document.getElementById('btn-force-now');
 
-  // Déterminer la page de destination (paramètre ?to=... ou racine)
-  const params = new URLSearchParams(window.location.search);
-  let targetUrl = params.get('to') || '/';
-  if (targetUrl.startsWith('http://') || targetUrl.startsWith('https://')) {
+  // Déterminer la page de destination de manière strictement sécurisée (anti-open-redirect et anti-XSS)
+  function getSafeDestination() {
     try {
-      const parsed = new URL(targetUrl);
-      if (parsed.hostname !== window.location.hostname) targetUrl = '/';
+      const params = new URLSearchParams(window.location.search);
+      const rawTo = params.get('to');
+      if (!rawTo || typeof rawTo !== 'string') return '/';
+      
+      const trimmed = rawTo.trim();
+      // Rejeter formellement tout schéma dangereux (javascript:, data:, vbscript:) ou URL relative au protocole (//)
+      if (trimmed.includes(':') || trimmed.startsWith('//') || trimmed.startsWith('/\\') || trimmed.startsWith('\\')) {
+        return '/';
+      }
+      
+      // Valider via constructeur URL relatif à l'origine locale
+      const resolved = new URL(trimmed, window.location.origin);
+      if (resolved.origin !== window.location.origin) {
+        return '/';
+      }
+      if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') {
+        return '/';
+      }
+      
+      return resolved.pathname + resolved.search;
     } catch (_) {
-      targetUrl = '/';
+      return '/';
+    }
+  }
+
+  const safePath = getSafeDestination();
+
+  function triggerRedirect() {
+    try {
+      const destUrl = new URL(safePath, window.location.origin);
+      destUrl.searchParams.set('_v', Date.now().toString());
+      window.location.replace(destUrl.href);
+    } catch (_) {
+      window.location.replace('/');
     }
   }
 
   if (btnNow) {
-    btnNow.onclick = () => { window.location.replace(targetUrl + (targetUrl.includes('?') ? '&' : '?') + '_v=' + Date.now()); };
+    btnNow.onclick = triggerRedirect;
   }
 
   async function purgeAll() {
@@ -129,18 +157,13 @@
       if (fillEl) fillEl.style.width = '100%';
       if (statusEl) statusEl.textContent = '✓ Cache purgé avec succès. Redirection...';
 
-      setTimeout(() => {
-        const sep = targetUrl.includes('?') ? '&' : '?';
-        window.location.replace(targetUrl + sep + '_v=' + Date.now());
-      }, 500);
+      setTimeout(triggerRedirect, 500);
 
     } catch (err) {
       console.warn('Erreur purge:', err);
       if (statusEl) statusEl.textContent = 'Rechargement immédiat...';
       if (btnNow) btnNow.style.display = 'inline-block';
-      setTimeout(() => {
-        window.location.replace(targetUrl + (targetUrl.includes('?') ? '&' : '?') + '_v=' + Date.now());
-      }, 800);
+      setTimeout(triggerRedirect, 800);
     }
   }
 

@@ -47,9 +47,15 @@
   }
 
   function renderFrameWarningScreen() {
-    const rawPath = window.location.pathname;
-    const cleanPath = (rawPath === '/' || rawPath === '') ? '' : rawPath;
-    const officialUrl = 'https://williamguindon.me' + cleanPath + window.location.search + window.location.hash;
+    let safeUrl = 'https://williamguindon.me/';
+    try {
+      const rawPath = window.location.pathname;
+      const cleanPath = (rawPath === '/' || rawPath === '') ? '' : rawPath;
+      const u = new URL(cleanPath + window.location.search + window.location.hash, 'https://williamguindon.me');
+      safeUrl = u.href;
+    } catch (_) {
+      safeUrl = 'https://williamguindon.me/';
+    }
 
     const render = () => {
       let overlay = document.getElementById('wg-frame-warning-wrapper');
@@ -79,13 +85,11 @@
 
             <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;text-align:left;margin-bottom:22px;font-size:12.5px;color:#166534;">
               <div style="font-weight:700;margin-bottom:4px;color:#065f46;">Emplacement officiel authentique :</div>
-              <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;word-break:break-all;color:#047857;font-weight:600;">
-                ${officialUrl}
-              </div>
+              <div id="wg-frame-warning-url" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;word-break:break-all;color:#047857;font-weight:600;"></div>
             </div>
 
             <div style="display:flex;flex-direction:column;gap:10px;align-items:stretch;">
-              <a href="${officialUrl}" target="_top" style="display:inline-block;background:#059669;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,0.3);text-align:center;">
+              <a id="wg-frame-warning-top-link" target="_top" style="display:inline-block;background:#059669;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,0.3);text-align:center;">
                 Accéder à la version officielle originale (Plein écran) ↗
               </a>
               <a href="https://williamguindon.me" target="_top" style="display:inline-block;background:transparent;color:#047857;text-decoration:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;text-align:center;">
@@ -98,6 +102,12 @@
             </div>
           </div>
         `;
+
+        const urlDiv = overlay.querySelector('#wg-frame-warning-url');
+        if (urlDiv) urlDiv.textContent = safeUrl;
+        const topLink = overlay.querySelector('#wg-frame-warning-top-link');
+        if (topLink) topLink.href = safeUrl;
+
         (document.body || document.documentElement).appendChild(overlay);
       }
     };
