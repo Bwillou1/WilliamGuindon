@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v52';
+const CACHE_NAME = 'wg-pwa-v53';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -62,6 +62,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/moteur-recherche-pieces.webp',
   '/assets/media/autonomie-juridique-adolescents.jpg',
   '/assets/media/autonomie-juridique-adolescents.webp',
+  '/assets/media/clarification-independance.jpg',
+  '/assets/media/clarification-independance.webp',
   '/assets/media/ndtr-banner-rcaanc.jpg',
   '/assets/media/ndtr-banner-rcaanc.webp',
   '/assets/media/umap-preview.webp',
