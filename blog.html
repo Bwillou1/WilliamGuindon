@@ -369,6 +369,58 @@
     color: var(--text-muted);
   }
 
+  .btn-copied {
+    border-color: var(--accent, #10b981) !important;
+    color: var(--accent, #10b981) !important;
+    background: var(--accent-wash, rgba(16, 185, 129, 0.12)) !important;
+  }
+  .blog-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #f8fafc;
+    border: 1px solid var(--accent, #10b981);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 99999;
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .blog-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  [data-theme="light"] .blog-toast {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: var(--accent, #059669);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  .btn-copy-card-link {
+    background: transparent;
+    border: 1px solid var(--line, rgba(255,255,255,0.15));
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 11.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-copy-card-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   @media (max-width: 768px) {
     .article-modal {
       padding: 0;
@@ -732,6 +784,79 @@
     }
   }
 
+  function showToast(msg) {
+    let toast = document.getElementById("blog-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "blog-toast";
+      toast.className = "blog-toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  async function copyTextToClipboard(text, btnElement, successMsg = "Lien copié !") {
+    let success = false;
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        success = true;
+      } catch (err) {
+        console.warn("navigator.clipboard a échoué, essai du fallback execCommand", err);
+      }
+    }
+    if (!success) {
+      try {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.top = "-9999px";
+        textarea.style.left = "-9999px";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        success = document.execCommand("copy");
+        document.body.removeChild(textarea);
+      } catch (err2) {
+        console.error("Échec du fallback de copie:", err2);
+      }
+    }
+
+    if (btnElement) {
+      const origHtml = btnElement.innerHTML;
+      if (success) {
+        btnElement.innerHTML = `<svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${successMsg}</span>`;
+        btnElement.classList.add("btn-copied");
+        showToast(`✔ ${successMsg}`);
+      } else {
+        btnElement.innerHTML = `<span>Échec de la copie</span>`;
+      }
+      setTimeout(() => {
+        btnElement.innerHTML = origHtml;
+        btnElement.classList.remove("btn-copied");
+      }, 2500);
+    } else if (success) {
+      showToast(`✔ ${successMsg}`);
+    }
+    return success;
+  }
+
+  function getArticleUrl(post) {
+    if (!post) return window.location.href;
+    if (post.externalUrl) {
+      return new URL(post.externalUrl, window.location.origin).href;
+    }
+    const slug = post.slug || post.id || "";
+    return `${window.location.origin}${window.location.pathname}#${slug}`;
+  }
+
   function renderPosts(posts) {
     const grid = document.getElementById("blog-posts-grid");
     const empty = document.getElementById("blog-empty-state");
@@ -776,8 +901,25 @@
           <h2 class="blog-card-title">${post.title}</h2>
           <p class="blog-card-summary">${cleanSummary}</p>
           <div class="blog-card-tags">${tagsHtml}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:10px;border-top:1px solid var(--line, rgba(255,255,255,0.08));">
+            <span style="font-size:12.5px;font-weight:700;color:var(--accent);">Lire l'article ↗</span>
+            <button type="button" class="btn-copy-card-link" aria-label="Copier le lien direct de cet article" title="Copier le lien direct vers cet article">
+              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copier le lien</span>
+            </button>
+          </div>
         </div>
       `;
+
+      const copyBtn = card.querySelector(".btn-copy-card-link");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const linkToCopy = getArticleUrl(post);
+          await copyTextToClipboard(linkToCopy, copyBtn, "Lien copié !");
+        });
+      }
+
       grid.appendChild(card);
     });
   }
@@ -806,6 +948,13 @@
       formattedContent = formattedContent.split("\n\n").map(para => `<p>${para.replace(/\n/g, "<br>")}</p>`).join("");
     }
 
+    // Mise à jour de l'URL hash
+    const postSlug = post.slug || post.id || "";
+    if (postSlug) {
+      window.location.hash = postSlug;
+    }
+    const articleLink = getArticleUrl(post);
+
     body.innerHTML = `
       <div class="article-modal-hero">
         <img src="${coverSrc}" alt="${post.title || 'Illustration article'}" class="article-modal-banner-img" onerror="this.onerror=null; this.src='tourbiere.jpg';">
@@ -820,22 +969,22 @@
           <div class="blog-detail-tags">${tagsHtml}</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
             ${actionBtn}
-            <button type="button" class="btn btn-ghost" id="btn-share-post">Partager cet article</button>
+            <button type="button" class="btn btn-ghost" id="btn-share-post" aria-label="Copier le lien direct vers cet article">
+              <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copier le lien de l'article</span>
+            </button>
           </div>
         </div>
       </div>
     `;
 
-    document.getElementById("btn-share-post")?.addEventListener("click", () => {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Lien de l'article copié dans le presse-papier !");
-      }
+    const shareBtn = document.getElementById("btn-share-post");
+    shareBtn?.addEventListener("click", async () => {
+      await copyTextToClipboard(articleLink, shareBtn, "Lien de l'article copié !");
     });
 
     modal.classList.add("open");
     document.body.classList.add("modal-open");
-    window.location.hash = post.slug || post.id;
   }
 
   document.getElementById("modal-close").onclick = closeModal;
@@ -881,6 +1030,5 @@
   loadBlogPosts();
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
-<script>document.getElementById("btn-share-post")?.addEventListener("click", () => { navigator.clipboard.writeText(window.location.href); alert("Lien copié !"); });</script>
 </body>
 </html>
