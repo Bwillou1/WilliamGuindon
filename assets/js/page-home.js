@@ -282,7 +282,7 @@
       });
     }
 
-    // 3. Chargement asynchrone des aperçus du blog et des photos
+    // 3. Chargement asynchrone des aperçus du blog et des photos avec tri chronologique & contrôles
     const blogTrack = document.getElementById('home-blog-track');
     const photosTrack = document.getElementById('home-photos-track');
     if (blogTrack || photosTrack) {
@@ -292,7 +292,9 @@
             .then(res => res.json())
             .then(photos => {
               if (!photos || photos.length === 0) return;
-              photosTrack.innerHTML = photos.slice(0, 6).map(ph => `
+              // Trier par date la plus récente en premier
+              photos.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+              photosTrack.innerHTML = photos.map(ph => `
                 <article class="blog-preview-card">
                   <div class="blog-preview-thumb">
                     <img src="${ph.imageUrl}" alt="${ph.title || 'Photographie de la Grande Tourbière'}" loading="lazy" decoding="async" width="380" height="215">
@@ -312,6 +314,37 @@
             .catch(err => { if (DEBUG) console.warn('Photos preview load:', err); });
         }
       }
+
+      function loadBlogFeed() {
+        if (blogTrack) {
+          fetch('data/blog.json')
+            .then(res => res.json())
+            .then(posts => {
+              if (!posts || posts.length === 0) return;
+              // Trier par date la plus récente en tête
+              posts.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+              blogTrack.innerHTML = posts.map(p => `
+                <article class="blog-preview-card ${p.category === 'Preuve CCE' || p.category === 'Spécial' ? 'special-card' : ''}">
+                  <div class="blog-preview-thumb">
+                    <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title || 'Article du carnet de bord'}" loading="lazy" decoding="async" width="380" height="215">
+                    <span class="blog-preview-category ${p.category === 'Preuve CCE' || p.category === 'Spécial' ? 'special' : ''}">${p.category || 'Actualité'}</span>
+                  </div>
+                  <div class="blog-preview-body">
+                    <time class="blog-preview-date">${p.date} · Par ${p.author || 'William Guindon'}</time>
+                    <h3 class="blog-preview-title">${p.title}</h3>
+                    <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
+                    <div class="blog-preview-footer">
+                      <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link">Lire l'article complet ↗</a>
+                    </div>
+                  </div>
+                </article>
+              `).join('');
+            })
+            .catch(err => { if (DEBUG) console.warn('Blog preview load:', err); });
+        }
+      }
+
+      loadBlogFeed();
 
       const btnBlogTab = document.getElementById('btn-tab-blog-posts');
       const btnPhotosTab = document.getElementById('btn-tab-blog-photos');
@@ -338,29 +371,36 @@
         }
       };
 
-      if (blogTrack && blogTrack.children.length === 0) {
-        fetch('data/blog.json')
-          .then(res => res.json())
-          .then(posts => {
-            if (!posts || posts.length === 0) return;
-            blogTrack.innerHTML = posts.slice(0, 6).map(p => `
-              <article class="blog-preview-card ${p.category === 'Spécial' ? 'special-card' : ''}">
-                <div class="blog-preview-thumb">
-                  <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title || 'Article du carnet de bord'}" loading="lazy" decoding="async" width="380" height="215">
-                  <span class="blog-preview-category ${p.category === 'Spécial' ? 'special' : ''}">${p.category || 'Actualité'}</span>
-                </div>
-                <div class="blog-preview-body">
-                  <time class="blog-preview-date">${p.date} · Par ${p.author || 'William Guindon'}</time>
-                  <h3 class="blog-preview-title">${p.title}</h3>
-                  <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
-                  <div class="blog-preview-footer">
-                    <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link">Lire l'article complet ↗</a>
-                  </div>
-                </div>
-              </article>
-            `).join('');
-          })
-          .catch(err => { if (DEBUG) console.warn('Blog preview load:', err); });
+      // Contrôles de navigation fléchés
+      const btnPrevFeed = document.querySelector('.js-home-feed-prev');
+      const btnNextFeed = document.querySelector('.js-home-feed-next');
+
+      function getActiveTrack() {
+        const carouselPhotos = document.getElementById('home-photos-carousel');
+        if (carouselPhotos && carouselPhotos.style.display !== 'none') {
+          return photosTrack;
+        }
+        return blogTrack;
+      }
+
+      if (btnPrevFeed) {
+        btnPrevFeed.addEventListener('click', () => {
+          const track = getActiveTrack();
+          if (track) {
+            const scrollAmount = track.clientWidth * 0.9;
+            track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          }
+        });
+      }
+
+      if (btnNextFeed) {
+        btnNextFeed.addEventListener('click', () => {
+          const track = getActiveTrack();
+          if (track) {
+            const scrollAmount = track.clientWidth * 0.9;
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          }
+        });
       }
     }
 

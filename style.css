@@ -5859,17 +5859,29 @@ body:has(.ai-modal-overlay.active) .floating-ai-btn,
 .blog-carousel-wrapper {
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 .blog-carousel-track {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 2px 12px;
+}
+
+.blog-carousel-track::-webkit-scrollbar {
+  display: none;
 }
 
 .blog-preview-card {
+  flex: 0 0 calc((100% - 40px) / 3);
   min-width: 0;
-  width: 100%;
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -5878,19 +5890,22 @@ body:has(.ai-modal-overlay.active) .floating-ai-btn,
   flex-direction: column;
   box-shadow: var(--shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  scroll-snap-align: start;
+  box-sizing: border-box;
 }
 
 @media (max-width: 992px) {
   .blog-carousel-track {
-    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+  }
+  .blog-preview-card {
+    flex: 0 0 calc((100% - 16px) / 2);
   }
 }
 
 @media (max-width: 640px) {
-  .blog-carousel-track {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .blog-preview-card {
+    flex: 0 0 100%;
   }
 }
 
