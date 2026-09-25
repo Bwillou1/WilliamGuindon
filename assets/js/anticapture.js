@@ -2,8 +2,9 @@
  * assets/js/anticapture.js — William Guindon (williamguindon.me)
  * Module de protection et dissuasion contre la capture d'écran, la copie sauvage et l'usurpation visuelle.
  * 
- * Conception inspirée et adaptée du projet open source react-anticapture :
- * © 2023 Dima Vyshniakov — Licence MIT (https://github.com/dimsp4/react-anticapture)
+ * Conception inspirée et adaptée des projets open source :
+ * 1. react-anticapture : © 2023 Dima Vyshniakov — Licence MIT (https://github.com/dimsp4/react-anticapture)
+ * 2. secure-web : © 2024 bmiit145 — Licence MIT (https://github.com/bmiit145/secure-web)
  * 
  * Périmètres protégés :
  * 1. Messagerie chiffrée & échanges confidentiels (messagerie.html)

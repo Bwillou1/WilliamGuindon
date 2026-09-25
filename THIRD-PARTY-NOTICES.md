@@ -330,6 +330,38 @@ SOFTWARE.
 
 ---
 
+### secure-web (Web Content & Screenshot Protection Utility)
+- **Auteur :** Copyright (c) 2024 bmiit145
+- **Licence :** MIT License
+- **URL :** https://github.com/bmiit145/secure-web
+- **Description :** Dispositifs et patrons de sécurité pour la prévention de capture d'écran, blocage d'inspection de code (DevTools, raccourcis clavier F12/Ctrl+Shift+I/Cmd+Opt+I), désactivation du clic droit contextuel et masquage visuel par overlay de sécurité sur les éléments sensibles (module IA, messagerie chiffrée, signatures et logos partenaires).
+
+```text
+MIT License
+
+Copyright (c) 2024 bmiit145
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
 ### Fusion (Lightweight RSS Reader & Feed Aggregator)
 - **Auteur :** Copyright (c) 2024 0x2E
 - **Licence :** MIT License
