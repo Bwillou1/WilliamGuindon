@@ -7,6 +7,68 @@
 (function () {
   'use strict';
 
+  // 0. SÉCURITÉ EN PROFONDEUR : CONTRÔLE D'INTÉGRITÉ HÔTE & ANTI-FRAMING RADICAL (REDONDANCE NIVEAU 1)
+  const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
+  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
+
+  if (!isConsolePage) {
+    // A. Validation de l'hôte d'exécution
+    const currentHost = window.location.hostname.toLowerCase();
+    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io');
+
+    if (!isHostAllowed) {
+      try { window.location.replace('https://williamguindon.me/'); } catch (_) {}
+      document.documentElement.style.display = 'none';
+      return;
+    }
+
+    // B. Détection d'encadrement multi-vectorielle
+    let isFramed = false;
+    try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
+    try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
+    try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
+    try {
+      if (window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0) {
+        for (let i = 0; i < window.location.ancestorOrigins.length; i++) {
+          const orig = window.location.ancestorOrigins[i];
+          try {
+            const h = new URL(orig).hostname.toLowerCase();
+            if (!ALLOWED_HOSTS.includes(h) && !h.endsWith('.williamguindon.me') && !h.endsWith('.github.io')) {
+              isFramed = true;
+              break;
+            }
+          } catch (_) { isFramed = true; }
+        }
+      }
+    } catch (_) { isFramed = true; }
+
+    if (isFramed) {
+      let isSameOrigin = false;
+      try {
+        const topHost = window.top.location.hostname.toLowerCase();
+        if (ALLOWED_HOSTS.includes(topHost) || topHost.endsWith('.williamguindon.me') || topHost.endsWith('.github.io')) {
+          isSameOrigin = true;
+        }
+      } catch (_) { isSameOrigin = false; }
+
+      const path = window.location.pathname.toLowerCase();
+      const isAllowedEmbed = path.endsWith('viewer.html') || path.endsWith('live.html') || path.endsWith('lecteur.html');
+
+      if (!isSameOrigin && !isAllowedEmbed) {
+        try { if (window.top && window.top.location) window.top.location.href = 'https://williamguindon.me/'; } catch (_) {}
+        document.documentElement.style.display = 'none';
+        return;
+      }
+    }
+
+    // Déverrouillage de la sentinelle pré-rendu si présente
+    try {
+      document.documentElement.setAttribute('data-frame-allowed', 'true');
+      const earlyStyle = document.getElementById('wg-anti-frame-early');
+      if (earlyStyle) earlyStyle.remove();
+    } catch (_) {}
+  }
+
   const DEBUG = false;
   const themeStorageKey = 'william-guindon-theme';
 
@@ -153,13 +215,13 @@
     // Module IA documentaire global (accessible sur l'ensemble des pages)
     if (!document.querySelector('script[src*="chat-ai.js"]')) {
       const chatScript = document.createElement('script');
-      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260920-v1';
+      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260925-v2';
       chatScript.defer = true;
       document.head.appendChild(chatScript);
     }
     if (!document.querySelector('script[src*="anticapture.js"]')) {
       const acScript = document.createElement('script');
-      acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260924';
+      acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260925-v2';
       acScript.defer = true;
       document.head.appendChild(acScript);
     }
