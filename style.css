@@ -1847,6 +1847,27 @@ footer a:hover {
   color: #ffffff;
 }
 
+.doc-proof-strip {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.doc-proof-strip:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+@media (max-width: 768px) {
+  .doc-proof-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .doc-proof-strip > div:last-child {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 dialog.doc-dialog {
   border: none;
   border-radius: 6px;
