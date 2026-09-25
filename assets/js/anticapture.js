@@ -19,8 +19,8 @@
   'use strict';
 
   const CONFIG = {
-    blurAmount: '24px',
-    unblurDuration: 2500,
+    blurAmount: '26px',
+    unblurDuration: 3000,
     toastDuration: 3000
   };
 
@@ -82,9 +82,9 @@
     protectedElements.forEach(el => {
       if (el && el.isConnected) {
         el.style.filter = `blur(${CONFIG.blurAmount})`;
-        el.style.opacity = '0.12';
+        el.style.opacity = '0.08';
         el.style.pointerEvents = 'none';
-        el.style.transition = 'filter 0.1s ease-in-out, opacity 0.1s ease-in-out';
+        el.style.transition = 'filter 0.08s ease-in-out, opacity 0.08s ease-in-out';
       }
     });
 
@@ -94,9 +94,9 @@
       } catch (_) {}
     }
 
-    showToast(reason === 'screenshot'
-      ? "Protection anti-capture active · Écran masqué temporairement"
-      : "Contenu confidentiel protégé");
+    if (reason === 'screenshot' || reason === 'devtools') {
+      showToast("Protection anti-capture active · Éléments sensibles masqués");
+    }
 
     if (activeBlurTimer) clearTimeout(activeBlurTimer);
     activeBlurTimer = setTimeout(() => {
@@ -139,6 +139,13 @@
       return false;
     }, true);
 
+    el.addEventListener('selectstart', e => {
+      if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        return false;
+      }
+    }, true);
+
     el.addEventListener('copy', e => {
       e.preventDefault();
       if (isStrictConfidential) {
@@ -166,7 +173,7 @@
       '#view-sig-img'
     ];
     document.querySelectorAll(signatureSelectors.join(', ')).forEach(el => {
-      applyDeterrenceToElement(el, false);
+      applyDeterrenceToElement(el, true);
     });
 
     // 2. Logos des médias partenaires & diffuseurs et logos d'événements
@@ -268,12 +275,9 @@
   }
 
   function setupFocusAndVisibilityListeners() {
-    const isMessageriePage = window.location.pathname.includes('messagerie.html');
-
+    // Déclenchement sur toutes les pages pour les éléments protégés
     document.documentElement.addEventListener('mouseleave', () => {
-      if (isMessageriePage) {
-        triggerBlurProtection('window_blur');
-      }
+      triggerBlurProtection('window_blur');
     });
 
     document.documentElement.addEventListener('mouseenter', () => {
@@ -281,9 +285,7 @@
     });
 
     window.addEventListener('blur', () => {
-      if (isMessageriePage) {
-        triggerBlurProtection('window_blur');
-      }
+      triggerBlurProtection('window_blur');
     });
 
     window.addEventListener('focus', () => {
@@ -292,9 +294,7 @@
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        if (isMessageriePage) {
-          triggerBlurProtection('visibility_hidden');
-        }
+        triggerBlurProtection('visibility_hidden');
       } else {
         clearBlurProtection();
       }
@@ -313,13 +313,13 @@
     style.id = styleId;
     style.textContent = `
       .anticapture-protected {
-        transition: filter 0.12s ease-in-out, opacity 0.12s ease-in-out !important;
+        transition: filter 0.08s ease-in-out, opacity 0.08s ease-in-out !important;
         -webkit-user-select: none !important;
         user-select: none !important;
       }
       .anticapture-blurred {
-        filter: blur(24px) !important;
-        opacity: 0.15 !important;
+        filter: blur(26px) !important;
+        opacity: 0.08 !important;
         pointer-events: none !important;
       }
       @media print {
