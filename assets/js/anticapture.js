@@ -196,8 +196,12 @@
     // 2. Logos des médias partenaires & diffuseurs et logos d'événements
     const logoSelectors = [
       '.media-logos-ticker-wrapper img',
+      '.media-logos-ticker-track img',
       '.media-logo-item img',
+      '.media-logo-item',
       '.press-logo-img',
+      '.press-logo-link img',
+      '.press-logo-link',
       '.event-card-logo-wrap img',
       'img[src*="lapresse-logo"]',
       'img[src*="ledevoir-logo"]',
@@ -209,7 +213,7 @@
       'img[src*="logo-mouvement-actes-csq"]'
     ];
     document.querySelectorAll(logoSelectors.join(', ')).forEach(el => {
-      applyDeterrenceToElement(el, false);
+      applyDeterrenceToElement(el, true);
     });
 
     // 3. Messagerie sécurisée Nostr (messagerie.html)
@@ -217,10 +221,18 @@
     if (isMessageriePage) {
       const msgSelectors = [
         '#msg-content',
+        '#view-send-panel',
         '#view-send-panel .msg-box-container',
+        '#view-inbox-panel',
+        '#view-inbox-panel .msg-box-container',
         '#inbox-list-container',
+        '.inbox-msg-card',
+        '.msg-box-container',
         '#burner-nsec-plain',
-        '#log-receipt'
+        '#burner-npub-plain',
+        '#log-receipt',
+        '#msg-receipt',
+        '.key-display-box'
       ];
       document.querySelectorAll(msgSelectors.join(', ')).forEach(el => {
         applyDeterrenceToElement(el, true);
@@ -230,11 +242,17 @@
     // 4. Réponses, synthèses et interface du Chat IA (chat-ai.js / ai.html)
     const aiSelectors = [
       '.ai-chat-bubble.bot',
+      '.ai-chat-bubble.bot *',
       '#ai-chat-box',
       '.ai-chat-messages',
+      '#ai-summary-output',
+      '.ai-summary-result',
+      '.ai-summary-card',
+      '.ai-summary-box',
       '#ai-preset-prompt-text',
       '.ai-modal-card',
       '#ai-tab-chat',
+      '#ai-tab-summary',
       '#ai-tab-models'
     ];
     document.querySelectorAll(aiSelectors.join(', ')).forEach(el => {
@@ -396,10 +414,24 @@
         .signature-block,
         #view-sig-img,
         #view-inbox-panel,
+        #view-send-panel,
         #msg-content,
         .msg-box-container,
         #inbox-list-container,
+        .inbox-msg-card,
         .key-highlight-card,
+        .media-logos-ticker-wrapper,
+        .press-carousel-wrapper,
+        .press-logo-img,
+        .media-logo-item,
+        img[src*="lapresse-logo"],
+        img[src*="ledevoir-logo"],
+        img[src*="cbc-logo"],
+        img[src*="tvbl-logo"],
+        img[src*="the-rover-logo"],
+        img[src*="lesasdelinfo-logo"],
+        img[src*="logo-areq-csq"],
+        img[src*="logo-mouvement-actes-csq"],
         .ai-modal-overlay,
         .ai-modal-card,
         #ai-chat-box,
