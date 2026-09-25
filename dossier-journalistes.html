@@ -1,150 +1,378 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-CA">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
-  <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces justificatives, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' https://archive.org https://*.archive.org; connect-src 'self' https://archive.org https://*.archive.org; object-src 'none';">
+  <title>Dossier pour Journalistes · Archive Probatoire SEM-26-003 · William Guindon</title>
+  <meta name="description" content="Explorateur documentaire officiel pour journalistes, juristes et chercheurs : pièces probatoires, analyses d'impact et démarches juridiques de la communication citoyenne SEM-26-003.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://williamguindon.me/dossier-journalistes.html">
+
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#064e3b">
+
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      margin: 15px;
-      background: #f8f9fa;
-      color: #202124;
+    :root {
+      --bg-page: #f1f3f4;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #f8f9fa;
+      --border-color: #dadce0;
+      --border-subtle: #e8eaed;
+      --text-main: #202124;
+      --text-muted: #5f6368;
+      --text-subtle: #80868b;
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --primary-bg: #e8f0fe;
+      --primary-active: #d2e3fc;
+      --accent-green: #0d652d;
+      --accent-green-bg: #e6f4ea;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
-    .drive-container {
-      background: #ffffff;
-      border: 1px solid #dadce0;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-stack);
+      background: var(--bg-page);
+      color: var(--text-main);
+      padding: 12px;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 92vh;
       overflow: hidden;
     }
+
+    /* Conteneur principal style Google Drive */
+    .drive-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(60,64,67, 0.08);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* En-tête principal */
     .drive-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
-      border-bottom: 1px solid #e0e0e0;
-      background: #fff;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: #ffffff;
+      z-index: 10;
     }
-    .drive-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #202124;
+
+    .header-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
+      flex-shrink: 0;
     }
-    .drive-btn-download {
-      background: #1a73e8;
-      color: white;
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
       text-decoration: none;
-      padding: 8px 16px;
+      transition: all 0.15s ease;
+    }
+    .btn-back:hover {
+      background: var(--bg-sidebar);
+      border-color: #bdc1c6;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-icon {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-title-block h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .header-title-block .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-download-all {
+      background: var(--primary);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 15px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      cursor: pointer;
+      gap: 8px;
+      box-shadow: 0 1px 2px rgba(26,115,232,0.3);
+      transition: background 0.15s ease, box-shadow 0.15s ease;
     }
-    .drive-btn-download:hover { background: #1557b0; }
+    .btn-download-all:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 2px 4px rgba(26,115,232,0.4);
+    }
+
+    /* Corps : Double volet */
     .drive-body {
       display: flex;
       flex: 1;
+      height: calc(100% - 57px);
       overflow: hidden;
     }
-    /* Colonne gauche : Arborescence récursive */
-    .drive-tree-pane {
-      width: 44%;
+
+    /* Volet gauche : Explorateur de dossiers */
+    .drive-sidebar {
+      width: 38%;
       min-width: 320px;
-      border-right: 1px solid #e0e0e0;
-      overflow-y: auto;
-      background: #fafafa;
-      padding: 8px 6px;
+      max-width: 520px;
+      border-right: 1px solid var(--border-color);
+      background: var(--bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
+
+    .sidebar-controls {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-sidebar);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 7px 30px 7px 30px;
+      font-size: 12.5px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 9px;
+      font-size: 12px;
+      color: var(--text-subtle);
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-subtle);
+      display: none;
+      padding: 2px;
+    }
+
+    .tree-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .btn-tree-toggle {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 11.5px;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .btn-tree-toggle:hover {
+      background: var(--primary-bg);
+    }
+
+    .drive-tree-pane {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 8px 6px 30px 6px;
+    }
+
+    /* Noeuds arborescents récursifs */
     .tree-node {
       user-select: none;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
+
     .tree-folder-header {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 10px;
+      padding: 6px 8px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       color: #3c4043;
-      transition: background 0.1s;
-      border-radius: 4px;
+      border-radius: 5px;
+      transition: background 0.12s ease;
     }
     .tree-folder-header:hover {
-      background: #f1f3f4;
+      background: #ebeef0;
     }
+
     .folder-chevron {
-      font-size: 10px;
-      transition: transform 0.2s ease;
-      color: #5f6368;
+      font-size: 9px;
       width: 14px;
-      display: inline-block;
       text-align: center;
+      color: var(--text-subtle);
+      display: inline-block;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .tree-node.open > .tree-folder-header > .folder-chevron {
       transform: rotate(90deg);
     }
+
+    .folder-icon {
+      font-size: 14px;
+      color: #fbbc04;
+    }
+
     .folder-name {
       flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .folder-count {
-      font-size: 11px;
-      color: #80868b;
+      font-size: 10.5px;
+      color: var(--text-subtle);
       font-weight: normal;
+      background: #e8eaed;
+      padding: 1px 6px;
+      border-radius: 10px;
     }
+
     .tree-children {
       display: none;
-      padding-left: 14px;
-      border-left: 1px dashed #dadce0;
-      margin-left: 12px;
+      padding-left: 12px;
+      border-left: 1px dashed var(--border-color);
+      margin-left: 10px;
+      margin-top: 1px;
+      margin-bottom: 2px;
     }
     .tree-node.open > .tree-children {
       display: block;
     }
+
+    /* Fichiers */
     .drive-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
+      gap: 7px;
+      padding: 5px 8px;
       cursor: pointer;
       color: #3c4043;
-      font-size: 12.5px;
-      transition: background 0.1s;
-      border-radius: 4px;
+      font-size: 12px;
+      border-radius: 5px;
       margin: 1px 0;
+      transition: background 0.12s ease, color 0.12s ease;
     }
     .drive-item:hover {
-      background: #e8f0fe;
+      background: var(--primary-bg);
+      color: var(--primary-hover);
     }
     .drive-item.active {
-      background: #d2e3fc;
+      background: var(--primary-active);
       color: #1967d2;
-      font-weight: 500;
+      font-weight: 600;
     }
+
+    .drive-item-icon {
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
     .drive-item-name {
+      flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* Colonne droite : Visualiseur */
+
+    .drive-item-ext {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(0,0,0,0.05);
+    }
+
+    /* Volet droit : Visualiseur multi-formats */
     .drive-preview-pane {
       flex: 1;
       display: flex;
@@ -153,465 +381,1258 @@
       position: relative;
       overflow: hidden;
     }
+
     .preview-header {
-      padding: 10px 16px;
-      font-size: 13px;
-      background: #ffffff;
-      border-bottom: 1px solid #e0e0e0;
-      color: #5f6368;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      z-index: 2;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: #ffffff;
+      min-height: 48px;
     }
+
+    .preview-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .preview-file-icon {
+      font-size: 18px;
+    }
+
+    .preview-title-wrap {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-filename {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+
+    .preview-filemeta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .preview-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-action-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-action-tool:hover {
+      background: var(--bg-sidebar);
+      border-color: #bdc1c6;
+    }
+    .btn-action-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-action-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+      color: #ffffff;
+    }
+
+    /* Zone d'affichage */
     .preview-stage {
       flex: 1;
+      height: calc(100% - 48px);
+      position: relative;
+      background: #f8f9fa;
       overflow: auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f8f9fa;
-      position: relative;
     }
+
+    /* Rendu PDF (Iframe vers viewer.html) */
     .preview-iframe {
       width: 100%;
       height: 100%;
       border: none;
       background: #525659;
     }
+
+    /* Rendu Image */
+    .image-stage-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: auto;
+      padding: 20px;
+    }
+
     .preview-image {
-      max-width: 95%;
-      max-height: 95%;
+      max-width: 96%;
+      max-height: 94%;
       object-fit: contain;
       border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
       background: #ffffff;
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
     }
+
+    .image-toolbar {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(32,33,36, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px 12px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      z-index: 5;
+    }
+    .image-toolbar button {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 12px;
+      transition: background 0.15s ease;
+    }
+    .image-toolbar button:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Rendu Vidéo */
     .preview-video {
       max-width: 95%;
       max-height: 90%;
-      border-radius: 6px;
+      border-radius: 8px;
       outline: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      background: #000000;
     }
+
+    /* Rendu Données / CSV */
+    .table-stage-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: #f1f3f4;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 12px;
+    }
+
+    .table-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 0;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: var(--font-stack);
+      white-space: nowrap;
+    }
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: #e8eaed;
+      color: var(--text-main);
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border-color);
+      z-index: 1;
+    }
+    .data-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: #3c4043;
+    }
+    .data-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+    .data-table tr:hover td {
+      background: #f1f3f4;
+    }
+
+    /* Rendu Texte / Code / SHA256 */
+    .code-stage-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+
+    .code-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      background: #252526;
+      border-bottom: 1px solid #333333;
+      font-size: 11.5px;
+      color: #858585;
+    }
+
+    .code-content {
+      flex: 1;
+      margin: 0;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Écran vide / Non prévisualisable */
     .no-preview {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 30px;
-      color: #5f6368;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      max-width: 460px;
     }
-    .no-preview span { font-size: 48px; margin-bottom: 12px; }
-    .btn-download-single {
-      background: #1a73e8;
-      color: white;
-      text-decoration: none;
+    .no-preview-icon {
+      font-size: 54px;
+      margin-bottom: 16px;
+      opacity: 0.85;
+    }
+    .no-preview h3 {
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .no-preview p {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Barre de toast pour retour utilisateur */
+    .toast-msg {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: #202124;
+      color: #ffffff;
       padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 13px;
-      margin-top: 15px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 99;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: all 0.2s ease;
+      pointer-events: none;
     }
-    .drive-loading {
-      padding: 20px;
-      text-align: center;
-      color: #5f6368;
-      font-size: 13px;
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
     }
-    @media (max-width: 768px) {
-      .drive-container { height: auto; min-height: 90vh; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      body { padding: 6px; }
+      .drive-container { height: 100vh; }
       .drive-body { flex-direction: column; }
-      .drive-tree-pane { width: 100%; min-width: 100%; max-height: 45vh; }
-      .drive-preview-pane { min-height: 50vh; }
+      .drive-sidebar { width: 100%; min-width: 100%; max-height: 40vh; }
+      .drive-preview-pane { min-height: 60vh; }
+      .header-title-block .subtitle { display: none; }
     }
   </style>
 </head>
 <body>
 
 <div class="drive-container">
-  <div class="drive-header">
-    <div class="drive-title">
-      <span>📁</span>
-      <span id="title-count">Dossier SEM-26-003</span>
-    </div>
-    
-    <a id="btn-download-all" 
-       href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex" 
-       class="drive-btn-download"
-       target="_blank"
-       rel="noopener">
-      <span>⬇</span>
-      <span>Télécharger tout (ZIP)</span>
-    </a>
-  </div>
 
-  <div class="drive-body">
-    <div id="drive-tree" class="drive-tree-pane">
-      <div class="drive-loading">Chargement de l'ensemble des fichiers...</div>
-    </div>
+  <!-- En-tête officiel avec décompte et action de téléchargement global -->
+  <header class="drive-header">
+    <div class="header-left">
+      <a href="index.html#dossier-cce" class="btn-back" title="Retour au portail officiel">
+        <span>←</span>
+        <span>Accueil</span>
+      </a>
 
-    <div class="drive-preview-pane">
-      <div class="preview-header">
-        <span id="current-filename">Sélectionnez un document</span>
-        <a id="direct-file-link" href="#" target="_blank" rel="noopener" style="color: #1a73e8; text-decoration: none; font-size: 12px; display: none;">Ouvrir / Télécharger l'original ↗</a>
-      </div>
-      
-      <div id="preview-stage" class="preview-stage">
-        <div class="no-preview">
-          <span>📄</span>
-          <p>Choisissez un fichier dans l'arborescence pour afficher son aperçu.</p>
+      <div class="header-brand">
+        <span class="header-icon">📂</span>
+        <div class="header-title-block">
+          <h1 id="main-header-title">Archive Probatoire · Dossier SEM-26-003</h1>
+          <span class="subtitle">Ensemble documentaire déposé à la CCE / ACEUM &amp; Pièces journalistiques</span>
         </div>
       </div>
+
+      <span id="badge-total" class="badge-status">Chargement...</span>
     </div>
+
+    <div class="header-actions">
+      <a id="btn-download-all" 
+         href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex/formats=ORIGINAL" 
+         class="btn-download-all"
+         target="_blank"
+         rel="noopener"
+         title="Télécharger l'ensemble des pièces probatoires originales compressées en archive ZIP">
+        <span>⬇</span>
+        <span>Télécharger tout (ZIP complet)</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Corps double panneau -->
+  <div class="drive-body">
+
+    <!-- Volet gauche : Arborescence récursive -->
+    <aside class="drive-sidebar">
+      <div class="sidebar-controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="tree-search-input" placeholder="Filtrer parmi les documents..." aria-label="Recherche de fichiers">
+          <button type="button" id="tree-search-clear" class="search-clear" title="Effacer la recherche">✕</button>
+        </div>
+        <div class="tree-actions-row">
+          <span id="tree-files-count">Explorateur documentaire</span>
+          <div>
+            <button type="button" id="btn-expand-all" class="btn-tree-toggle">Tout déplier</button>
+            <span>·</span>
+            <button type="button" id="btn-collapse-all" class="btn-tree-toggle">Tout replier</button>
+          </div>
+        </div>
+      </div>
+
+      <nav id="drive-tree" class="drive-tree-pane" aria-label="Arborescence des dossiers">
+        <div style="padding: 20px; text-align: center; color: var(--text-subtle); font-size: 13px;">
+          Chargement de l'arborescence documentaire...
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Volet droit : Rendu multi-formats -->
+    <main class="drive-preview-pane">
+      <div class="preview-header">
+        <div class="preview-header-left">
+          <span id="preview-icon" class="preview-file-icon">📄</span>
+          <div class="preview-title-wrap">
+            <span id="current-filename" class="preview-filename">Sélectionnez un document</span>
+            <span id="current-filemeta" class="preview-filemeta">Aucune sélection</span>
+          </div>
+        </div>
+
+        <div class="preview-header-actions">
+          <button type="button" id="btn-copy-content" class="btn-action-tool" style="display: none;" title="Copier le contenu dans le presse-papiers">
+            <span>📋</span>
+            <span>Copier</span>
+          </button>
+          <button type="button" id="btn-toggle-table-raw" class="btn-action-tool" style="display: none;" title="Basculer entre tableau et texte brut">
+            <span>🔀</span>
+            <span id="lbl-toggle-view">Vue brute</span>
+          </button>
+          <a id="btn-open-external" href="#" target="_blank" rel="noopener" class="btn-action-tool" style="display: none;" title="Ouvrir dans un nouvel onglet">
+            <span>↗</span>
+            <span>Plein écran</span>
+          </a>
+          <a id="btn-download-file" href="#" download class="btn-action-tool btn-action-primary" style="display: none;" title="Télécharger le fichier original">
+            <span>⬇</span>
+            <span>Télécharger</span>
+          </a>
+        </div>
+      </div>
+
+      <div id="preview-stage" class="preview-stage">
+        <div class="no-preview">
+          <div class="no-preview-icon">📂</div>
+          <h3>Aucun document sélectionné</h3>
+          <p>Choisissez un document dans l'arborescence de gauche pour afficher son contenu en haute fidélité.</p>
+        </div>
+      </div>
+
+      <div id="toast-notify" class="toast-msg">Copié dans le presse-papiers</div>
+    </main>
+
   </div>
 </div>
 
 <script>
-  (function() {
-    'use strict';
-    const identifier = "dossier-journalistes-tourbiere-blainville-stablex";
-    const apiUrl = `https://archive.org/metadata/${identifier}/files`;
+(function() {
+  'use strict';
 
-    // Répertoire de secours complet incluant tous les formats (images, vidéos, CSV, KML, rapports)
-    const fallbackList = [
-      "01_Especes_Menacees_Biodiversite/G01_Grand_corbeau_BIFFE_AUDIT.csv",
-      "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
-      "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv",
-      "01_Especes_Menacees_Biodiversite/G04_Petit_blongios_BIFFE_AUDIT.csv",
-      "01_Especes_Menacees_Biodiversite/G05_Fiche_Statut_Espece_LEP_BIFFE_AUDIT.png",
-      "01_Especes_Menacees_Biodiversite/G06_Cartographie_Habitats_Critiques_BIFFE_AUDIT.png",
-      "01_Especes_Menacees_Biodiversite/G07_515-2025-rae_BIFFE_AUDIT.pdf",
-      "01_Especes_Menacees_Biodiversite/G08_2025-03-18_Memoire_PL93-2_BIFFE_AUDIT.pdf",
-      "01_Especes_Menacees_Biodiversite/G09_Article_LeDevoir_Especes_Menacees_BIFFE_AUDIT.pdf",
-      "01_Especes_Menacees_Biodiversite/G10_Tableau_Especes_Menacees_Federal_2026-07-06_BIFFE_AUDIT.pdf",
-      "01_Especes_Menacees_Biodiversite/G11_Rapport_371_BAPE_2026-07-06_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/Dossier_Stablex_financement_republicains_TVA_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H01_Blainville_Groupes_Plainte_Stablex_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H02_Debordement_Eau_Coloree_Stablex_JDM_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H03_Plainte_Groupes_Environnementaux_CityNews_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H04_Metaux_Toxiques_Echantillonnages_Radio_Canada_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H05_Des_poissons_proteges_LeDevoir_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H06_Evacuation_Trois_Entreprises_JDM_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H07_Explosion_Blainville_6_Blesses_TVA_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H08_Metaux_Lourds_Contamination_Inquietante_TVA_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H09_Metaux_Lourds_Eaux_Blainville_Nord_Info_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H10_Photo_Fuite_Toxique_Lacs_Fauvel.jpg",
-      "02_Contaminations_Fuites_Stablex_Medias/H11_Video_Inspection_Drainage.mp4",
-      "02_Contaminations_Fuites_Stablex_Medias/H12_Releve_Terrain_Photos_Pollution.png",
-      "02_Contaminations_Fuites_Stablex_Medias/H13_Communique_Fuite_Toxique_Climat_Quebec_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H14_Stablex_Repond_Allegations_CIME_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H15_Metaux_Toxiques_Detectes_Climat_Quebec_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H16_Projet_Loi_Aide_Stablex_Radio_Canada_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H17_Gestion_Dechets_Dangereux_Radio_Canada_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H18_Benoit_Charette_Accuse_Blainville_LeDevoir_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H19_Contamination_Inquietante_Stablex_TVA_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H20_Examen_Impacts_Poisson_LeDevoir_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H21_Campagne_Echantillonnage_Presse_Toi_A_Gauche_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H22_Bunkers_Plan_Bouchard_Guerre_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/H23_Site_Camp_Bouchard_Decontamination(x)_Munitions_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/Martine_Oullet_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/Protection_dune_tourbiere_a_Blainville_Le_combat_dun_adolescent_a_lONU_BIFFE_AUDIT.pdf",
-      "02_Contaminations_Fuites_Stablex_Medias/Stablex_ecoblanchiment_Presse_toi_a_gauche_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I01_Fiche_Technique_Suivi_2026-07-06_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I02_Etude_UQAM_COBAMIL_Esker_Ste_Therese_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I03_Memoire_UQAM_Geomorphologie_Laurentides_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I04_Rapport_Final_Caracterisation_Milieux_Naturels_2014_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I05_Carte_Hydrogeologique_Tourbiere_BIFFE_AUDIT.png",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I06_Carte_Valeur_Ecologique_Tourbiere_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I07_Orthophoto_Haute_Resolution_Tourbiere.jpg",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I08_Carte_Obsers_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I09_Memoire_Collectif_Projet_Loi_93_Mars2025_BIFFE_AUDIT.pdf",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I10_SIG_Zones_Humides_Blainville.geojson",
-      "03_Etudes_Ecologiques_Cartes_Tourbiere/I11_Traces_GPS_Perimetre_Tourbiere.kml",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/62-DET2_fr_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/DM30_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/Des groupes portent plainte contre Stablex et dénoncent le désengagement du ministère de l’Environnement - Eau Secours_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/EauSecours_Groupes_portent_plainte_Stablex_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/F01_2026-06-10_Stablex_Rapport-WaterShed-1_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/F02_Resultats_Laboratoire_Cadmium_Eaux_Surface.csv",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/F03_Releve_Terrain_Echantillons_Lac_Fauvel.csv",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/F04_Donnees_Echantillonnage_Metaux_Lourds.csv",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/Firme_externe_embauchee_par_la_ville_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/La science citoyenne expose la pollution causée par une entreprise de Blainville - Pivot_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/Rencontre_expert_2026-07-07_version_longue_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/Ressource_visuelle_BIFFE_AUDIT.pdf",
-      "04_Preuves_Citoyennes_Tests_Eau_Rapports/reddit_BIFFE_AUDIT.pdf",
-      "05_Images_Satellites_Sentinel2_NDVI/Complement_information_SEM-26-003_BIFFE_AUDIT.pdf",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_NDVI_2021_Tourbiere.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_NDVI_2022_Tourbiere.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_NDVI_2023_Tourbiere.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_NDVI_2024_Tourbiere.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_NDVI_2025_Tourbiere.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_SWIR_Humidite_Sols_2024.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_SWIR_Humidite_Sols_2025.png",
-      "05_Images_Satellites_Sentinel2_NDVI/Sentinel2_Evolution_Couvert_Vegetal.gif",
-      "05_Images_Satellites_Sentinel2_NDVI/Analyse_Multispectrale_Tourbiere.png",
-      "06_Demarches_Juridiques_ONU_ECCC/2026-06-30_Lettre_reponse_M_Guindon_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D0_Formulaire_Demande_Acces_Redacted_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D0_Reponse_Acces_Blainville_30Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D01_Accuse_Reception_Enquete_Stablex_03Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D02_Demande_Enquete_Autorites_03Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D03_Suivi_Demande_Enquete_10Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D04_Demande_Clarification_STB_16Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D05_Notification_Ecrite_Prealable_CCE_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D06_Accuse_Notification_ECCC_19Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D07_Accuse_Automatique_MERN_19Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D08_Accuse_Automatique_MELCCFP_19Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D09_Accuse_Automatique_PMO_19Juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D10_minister_19juin2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D11_Demande_Rencontre_ECCC_2026-06-28_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D12_Accuse_Reception_ECCC_2026-06-28_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D13_Rapport_Soumission_ONU_2026-06-28_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/D14_Resume_Soumission_Environnementale_2026-06-28_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/E02_Demande_Precisions_Ville_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Formulaire_accesV2026_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Gmail_Demande_acces_Lacs_Fauvel_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Gmail_RE_Soumission_petition_environnementale_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Lettre_CEDD_au_petitionnaire_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Petition_environnementale_Stablex_Blainville_BIFFE.pdf",
-      "06_Demarches_Juridiques_ONU_ECCC/Reponse_partielle_ministere_BIFFE.pdf",
-      "07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf",
-      "07_Lettres_Appui_Communications_CCE/26-3-det2_fr (2).pdf",
-      "07_Lettres_Appui_Communications_CCE/26-3-rsub_fr_redacted (5).pdf",
-      "08_Audit_Tracabilite_Registres/00_REGISTRE_DES_BIFFURES.pdf",
-      "08_Audit_Tracabilite_Registres/checksums_sha256.txt",
-      "A - B - C/00_CHAIN_OF_CUSTODY.pdf",
-      "A - B - C/00_REGISTRE_DES_BIFFURES.pdf",
-      "A - B - C/3026512.pdf",
-      "A - B - C/A01_Etude_Impact_Cellule6_Nov2020.pdf",
-      "A - B - C/A02_Analyse_Air_Ambiant_Stablex_Dec2024.pdf",
-      "A - B - C/A03_Rapport_Inspection_Stablex.pdf",
-      "A - B - C/A04_Mise_Jour_Description_Impacts_Juin2022.pdf",
-      "A - B - C/B01_Caracterisation_Sols_Dec2025.pdf",
-      "A - B - C/B02_Caracterisation_Eaux_Surface_Dec2025.pdf",
-      "A - B - C/B03_Caracterisation_Milieu_Naturel_Oct2023.pdf",
-      "A - B - C/C01_Courriel_Suivi_57.pdf",
-      "A - B - C/C02_Demande_Engagements_DGEES_45.pdf",
-      "A - B - C/C03_Complements_Information_MELCCFP_44.pdf",
-      "A - B - C/C04_Projet_Reechantillonnage_Urgence_42.pdf",
-      "A - B - C/C05_Requetes_Consultation_Publique_31.pdf",
-      "A - B - C/C06_Document_Officiel_Suivi_22.pdf",
-      "A - B - C/C07_Document_Officiel_Suivi_16.pdf",
-      "A - B - C/C08_Directive_Ministerielle_MELCCFP.pdf",
-      "A - B - C/CCE - À l’heure des comptes - Résultats de la requête.pdf",
-      "A - B - C/DB14_Rapport d_enquête 7122-02-89-0000022.pdf",
-      "A - B - C/Dossier Stablex_ du financement à des républicains controversés _ TVA Nouvelles.pdf",
-      "A - B - C/Profil de lobbying de Republic Services • OpenSecrets.pdf",
-      "A - B - C/Recensement 2021 Blainvillois.pdf",
-      "A - B - C/compte-rendu-rencontre-2-stablex.pdf",
-      "A - B - C/Rejets polluants/Analyse de conformité LCPE – Cas Stablex.pdf",
-      "A - B - C/Rejets polluants/INRP_2012_5491.pdf",
-      "A - B - C/Rejets polluants/INRP_2024_5491 (Tableau).pdf",
-      "A - B - C/Rejets polluants/INRP_2024_5491.pdf",
-      "A - B - C/Rejets polluants/INRP_2025_5491.pdf",
-      "A - B - C/Rejets polluants/Journal des débats de l_Assemblée nationale - Assemblée nationale du Québec.pdf",
-      "A - B - C/Rejets polluants/rejet.pdf",
-      "A - B - C/Rejets polluants/Rejets_INRP_Historique_1995_2025.csv",
-      "A - B - C/Rejets polluants/Concentrations_Polluants_Atmospheriques.csv",
-      "A - B - C/Rejets polluants/Plan Bouchard/Site 06875001 - Camp Bouchard, ancien dépôt de munitions.pdf",
-      "A - B - C/Rejets polluants/Plan Bouchard/Historique_Militaire_Depot_Munitions_Bouchard.pdf",
-      "A - B - C/Rejets polluants/Plan Bouchard/Caracterisation_Pyrotechnique_Sols_Plan_Bouchard.pdf",
-      "A - B - C/Rejets polluants/Plan Bouchard/Photos_Bunkers_Vestiges_Guerre.png",
-      "A - B - C/Rejets polluants/Plan Bouchard/Carte_Localisation_Bunkers_Bouchard.jpg",
-      "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Etats_Financiers_Historiques_Bouchard.pdf",
-      "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Rapport_Annuel_Gestion_Sites_Contamines.pdf",
-      "A - B - C/Sealosafe/pr84.pdf",
-      "A - B - C/Sealosafe/rapport371.pdf",
-      "A - B - C/Sealosafe/Fiche_Technique_Procede_Sealosafe_Inertisation.pdf",
-      "A - B - C/Sealosafe/Diagramme_Fixation_Matrice_Sealosafe.png",
-      "A - B - C/RC/RC-1.pdf",
-      "A - B - C/RC/RC-2.pdf",
-      "A - B - C/RC/RC-3.pdf",
-      "A - B - C/RC/RC-4.pdf",
-      "A - B - C/RC/RC_Recherche_Documentaire_Radio_Canada.docx",
-      "A - B - C/RC/RC_Transcription_Entrevues.txt"
-    ];
+  var IDENTIFIER = "dossier-journalistes-tourbiere-blainville-stablex";
+  var METADATA_API = "https://archive.org/metadata/" + IDENTIFIER + "/files";
+  var DOWNLOAD_BASE = "https://archive.org/download/" + IDENTIFIER + "/";
 
-    function processFiles(filesData) {
-      const treeContainer = document.getElementById("drive-tree");
-      if (!treeContainer) return;
-      treeContainer.innerHTML = "";
+  // Répertoire complet et vérifié des 222 pièces probatoires
+  var FALLBACK_FILES = [
+  "01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png",
+  "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
+  "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv",
+  "01_Especes_Menacees_Biodiversite/G04_Tortue_serpentine_BIFFE_AUDIT.csv",
+  "01_Especes_Menacees_Biodiversite/G05_Fiche_Statut_Espece_LEP_BIFFE_AUDIT.png",
+  "01_Especes_Menacees_Biodiversite/G06_observations-752640_BIFFE_AUDIT.csv",
+  "01_Especes_Menacees_Biodiversite/G07_515-2025-rae_BIFFE_AUDIT.pdf",
+  "01_Especes_Menacees_Biodiversite/G08_2025-03-18_Memoire_PL93-2_BIFFE_AUDIT.pdf",
+  "01_Especes_Menacees_Biodiversite/G09_Article_LeDevoir_Especes_Menacees_BIFFE_AUDIT.pdf",
+  "01_Especes_Menacees_Biodiversite/G10_Tableau_Especes_Menacees_Federal_2026-07-06_BIFFE_AUDIT.pdf",
+  "01_Especes_Menacees_Biodiversite/G11_Rapport_371_BAPE_2026-07-06_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_11h49.00_BIFFE_AUDIT.png",
+  "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_12h14.48_BIFFE_AUDIT.png",
+  "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_12h32.50_BIFFE_AUDIT.png",
+  "02_Contaminations_Fuites_Stablex_Medias/Dossier_Stablex_financement_republicains_TVA_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H01_Blainville_Groupes_Plainte_Stablex_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H02_Debordement_Eau_Coloree_Stablex_JDM_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H03_Plainte_Groupes_Environnementaux_CityNews_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H04_Metaux_Toxiques_Echantillonnages_Radio_Canada_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H05_Des_poissons_proteges_LeDevoir_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H06_Evacuation_Trois_Entreprises_JDM_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H07_Explosion_Blainville_6_Blesses_TVA_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H08_Metaux_Lourds_Contamination_Inquietante_TVA_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H09_Metaux_Lourds_Eaux_Blainville_Nord_Info_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H13_Communique_Fuite_Toxique_Climat_Quebec_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H14_Stablex_Repond_Allegations_CIME_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H15_Metaux_Toxiques_Detectes_Climat_Quebec_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H16_Projet_Loi_Aide_Stablex_Radio_Canada_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H17_Gestion_Dechets_Dangereux_Radio_Canada_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H18_Benoit_Charette_Accuse_Blainville_LeDevoir_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H19_Contamination_Inquietante_Stablex_TVA_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H20_Examen_Impacts_Poisson_LeDevoir_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H21_Campagne_Echantillonnage_Presse_Toi_A_Gauche_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H22_Bunkers_Plan_Bouchard_Guerre_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/H23_Site_Camp_Bouchard_Decontamination(x)_Munitions_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/Martine_Oullet_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/Protection_dune_tourbiere_a_Blainville_Le_combat_dun_adolescent_a_lONU_BIFFE_AUDIT.pdf",
+  "02_Contaminations_Fuites_Stablex_Medias/Stablex_ecoblanchiment_Presse_toi_a_gauche_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I01_Fiche_Technique_Suivi_2026-07-06_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I02_Etude_UQAM_COBAMIL_Esker_Ste_Therese_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I03_Memoire_UQAM_Geomorphologie_Laurentides_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I04_Rapport_Final_Caracterisation_Milieux_Naturels_2014_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I05_Carte_Especes_Susceptibles_Menacees_BIFFE_AUDIT.jpg",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I06_Carte_Valeur_Ecologique_Tourbiere_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I07_Carte_Localisation_Milieux_Naturels_Blainville_BIFFE_AUDIT.png",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I08_Carte_Obsers_BIFFE_AUDIT.pdf",
+  "03_Etudes_Ecologiques_Cartes_Tourbiere/I09_Memoire_Collectif_Projet_Loi_93_Mars2025_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/2flush_BIFFE_AUDIT.mp4",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/62-DET2_fr_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Capture d’écran, le 2026-07-16 à 12.14.48_BIFFE_AUDIT.png",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Capture d’écran, le 2026-07-16 à 12.32.50_BIFFE_AUDIT.png",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/DM30_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Des groupes portent plainte contre Stablex et dénoncent le désengagement du ministère de l’Environnement - Eau Secours_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/EauSecours_Groupes_portent_plainte_Stablex_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/F01_2026-06-10_Stablex_Rapport-WaterShed-1_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/F02_Resultats_Tests_Citoyens_Blainville_Stable_BIFFE_AUDIT.kml",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Firme_externe_embauchee_par_la_ville_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/La science citoyenne expose la pollution causée par une entreprise de Blainville - Pivot_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/PHOTO_PATRICK_SANFAÇON_LA_PRESSE_BIFFE_AUDIT.png",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Rencontre_expert_2026-07-07_version_longue_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/Ressource_visuelle_BIFFE_AUDIT.pdf",
+  "04_Preuves_Citoyennes_Tests_Eau_Rapports/reddit_BIFFE_AUDIT.pdf",
+  "05_Images_Satellites_Sentinel2_NDVI/Annexe_Pieces_Justificatives_Complement_SEM-26-003_BIFFE_AUDIT.csv",
+  "05_Images_Satellites_Sentinel2_NDVI/Complement_information_SEM-26-003_BIFFE_AUDIT.pdf",
+  "05_Images_Satellites_Sentinel2_NDVI/J01_2026-04-24_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J02_2026-04-24_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J03_2026-06-13_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J04_2026-06-13_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J05_2026-06-13_Sentinel-2_L2A_SWIR_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J06_2026-07-23_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J07_2026-07-23_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J08_2026-09-11_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J09_2026-09-11_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J10_2026-09-11_Sentinel-2_L2A_SWIR_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J11_2026-04-24_au_2026-09-11_Sentinel-2_L2A_Timelapse_BIFFE_AUDIT.gif",
+  "05_Images_Satellites_Sentinel2_NDVI/J12_2026-04-24_au_2026-09-11_Sentinel-2_L2A_Timelapse_BIFFE_AUDIT.mp4",
+  "05_Images_Satellites_Sentinel2_NDVI/J13_2026-09-13_Vecteur_Emprise_Etude_Stablex_Cellule6_BIFFE_AUDIT.geojson",
+  "05_Images_Satellites_Sentinel2_NDVI/J14_2026-09-13_Capture_Serie_Spectrale_NDVI_6M_Mars-Sept2026_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J15_2026-09-13_Capture_Serie_Spectrale_NDVI_3M_Juin-Sept2026_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J16_2026-09-13_Capture_Serie_Spectrale_NDVI_3M_Mars-Juin2026_BIFFE_AUDIT.png",
+  "05_Images_Satellites_Sentinel2_NDVI/J17_2026-03-11_au_2026-09-11_Sentinel-2_L2A_NDVI_Donnees_Brutes_6M_BIFFE_AUDIT.csv",
+  "05_Images_Satellites_Sentinel2_NDVI/J18_2026-06-11_au_2026-09-11_Sentinel-2_L2A_NDVI_Donnees_Brutes_3M_Ete_BIFFE_AUDIT.csv",
+  "05_Images_Satellites_Sentinel2_NDVI/J19_2026-03-13_au_2026-06-13_Sentinel-2_L2A_NDVI_Donnees_Brutes_3M_Printemps_BIFFE_AUDIT.csv",
+  "06_Demarches_Juridiques_ONU_ECCC/2026-06-30_Lettre_reponse_M_Guindon_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Capture_2026-07-16_CanLII_BIFFE_AUDIT.png",
+  "06_Demarches_Juridiques_ONU_ECCC/D01_Accuse_Reception_Enquete_Stablex_03Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D02_Demande_Enquete_Autorites_03Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D03_Suivi_Demande_Enquete_10Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D04_Demande_Clarification_STB_16Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D05_Notification_Ecrite_Prealable_CCE_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D06_Accuse_Notification_ECCC_19Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D07_Accuse_Automatique_MERN_19Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D08_Accuse_Automatique_MELCCFP_19Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D09_Accuse_Automatique_PMO_19Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D0_Formulaire_Demande_Acces_Redacted_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D0_Reponse_Acces_Blainville_30Juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D10_minister_19juin2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D11_Demande_Rencontre_ECCC_2026-06-28_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D11_Demande_Rencontre_ECCC_2026-06-28_BIFFE.png",
+  "06_Demarches_Juridiques_ONU_ECCC/D12_Accuse_Reception_ECCC_2026-06-28_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D13_Rapport_Soumission_ONU_2026-06-28_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D14_Resume_Soumission_Environnementale_2026-06-28_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/D14_Resume_Soumission_Environnementale_2026-06-28_BIFFE.png",
+  "06_Demarches_Juridiques_ONU_ECCC/E02_Demande_Precisions_Ville_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Formulaire_accesV2026_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Gmail_Demande_acces_Lacs_Fauvel_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Gmail_RE_Soumission_petition_environnementale_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Lettre_CEDD_au_petitionnaire_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Petition_environnementale_Stablex_Blainville_BIFFE.pdf",
+  "06_Demarches_Juridiques_ONU_ECCC/Reponse_partielle_ministere_BIFFE.pdf",
+  "07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf",
+  "07_Lettres_Appui_Communications_CCE/26-3-det2_fr (2).pdf",
+  "07_Lettres_Appui_Communications_CCE/26-3-rsub_fr_redacted (5).pdf",
+  "08_Audit_Tracabilite_Registres/00_CHAIN_OF_CUSTODY.sha256",
+  "08_Audit_Tracabilite_Registres/00_RAPPORT_AUDIT_GFIH_COMPL.md",
+  "08_Audit_Tracabilite_Registres/00_REGISTRE_DES_BIFFURES.pdf",
+  "08_Audit_Tracabilite_Registres/00_REGISTRE_DES_BIFFURES.txt",
+  "A - B - C/00_CHAIN_OF_CUSTODY.pdf",
+  "A - B - C/00_CHAIN_OF_CUSTODY.sha256",
+  "A - B - C/00_RAPPORT_AUDIT_ABC.md",
+  "A - B - C/00_REGISTRE_DES_BIFFURES.pdf",
+  "A - B - C/00_REGISTRE_DES_BIFFURES.txt",
+  "A - B - C/3026512.pdf",
+  "A - B - C/A01_Etude_Impact_Cellule6_Nov2020.pdf",
+  "A - B - C/A02_Analyse_Air_Ambiant_Stablex_Dec2024.pdf",
+  "A - B - C/A03_Rapport_Inspection_Stablex.pdf",
+  "A - B - C/A04_Mise_Jour_Description_Impacts_Juin2022.pdf",
+  "A - B - C/B01_Caracterisation_Sols_Dec2025.pdf",
+  "A - B - C/B02_Caracterisation_Eaux_Surface_Dec2025.pdf",
+  "A - B - C/B03_Caracterisation_Milieu_Naturel_Oct2023.pdf",
+  "A - B - C/C01_Courriel_Suivi_57.pdf",
+  "A - B - C/C02_Demande_Engagements_DGEES_45.pdf",
+  "A - B - C/C03_Complements_Information_MELCCFP_44.pdf",
+  "A - B - C/C04_Projet_Reechantillonnage_Urgence_42.pdf",
+  "A - B - C/C05_Requetes_Consultation_Publique_31.pdf",
+  "A - B - C/C06_Document_Officiel_Suivi_22.pdf",
+  "A - B - C/C07_Document_Officiel_Suivi_16.pdf",
+  "A - B - C/C08_Directive_Ministerielle_MELCCFP.pdf",
+  "A - B - C/CCE - À l’heure des comptes - Résultats de la requête.pdf",
+  "A - B - C/Capture d’écran, le 2026-07-06 à 13.29.47.png",
+  "A - B - C/Capture d’écran, le 2026-07-16 à 12.17.05.png",
+  "A - B - C/DB14_Rapport d_enquête 7122-02-89-0000022.pdf",
+  "A - B - C/Dossier Stablex_ du financement à des républicains controversés _ TVA Nouvelles.pdf",
+  "A - B - C/Profil de lobbying de Republic Services • OpenSecrets.pdf",
+  "A - B - C/Recensement 2021 Blainvillois.pdf",
+  "A - B - C/Rejets polluants/Analyse de conformité LCPE – Cas Stablex.pdf",
+  "A - B - C/Rejets polluants/INRP_2012_5491.pdf",
+  "A - B - C/Rejets polluants/INRP_2024_5491 (Tableau).pdf",
+  "A - B - C/Rejets polluants/INRP_2024_5491.pdf",
+  "A - B - C/Rejets polluants/INRP_2025_5491.pdf",
+  "A - B - C/Rejets polluants/Journal des débats de l_Assemblée nationale - Assemblée nationale du Québec.pdf",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.50.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.57.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.04.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.12.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.18.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.25.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.32.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.38.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.45.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.53.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.04.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.22.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.29.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.35.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.42.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.48.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.53.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.59.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.05.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.12.png",
+  "A - B - C/Rejets polluants/Plan Bouchard/Site 06875001 - Camp Bouchard, ancien dépôt de munitions.pdf",
+  "A - B - C/Rejets polluants/rejet.pdf",
+  "A - B - C/Sealosafe/https_www.britishnewspaperarchive.co.uk_search_results_1989-06-20_NewspaperTitle=Birmingham_2BNews&IssueId=BL_2F0003661_2F19890620_2F&County=Warwickshire_2C_20England.png",
+  "A - B - C/Sealosafe/pr84.pdf",
+  "A - B - C/Sealosafe/rapport371.pdf",
+  "A - B - C/Sealosafe/seal12.png",
+  "A - B - C/Sealosafe/seal13.png",
+  "A - B - C/Sealosafe/seal14.png",
+  "A - B - C/Sealosafe/seal15.png",
+  "A - B - C/Sealosafe/seal16.png",
+  "A - B - C/Sealosafe/seal18.png",
+  "A - B - C/Sealosafe/seal20.png",
+  "A - B - C/compte-rendu-rencontre-2-stablex.pdf",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S_2.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_2.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_3.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_4.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/471362605_557192947288793_7552720520798828378_n.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/486693577_628236726851081_4669035421769396090_n.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488581095_634855336189220_7127364322750908112_n.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488595555_635345709473516_6276673584910527341_n.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/498641043_668527152822038_5242990835995525266_n.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/8_oct_fuite_CCBC6S.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_10.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_11.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_12.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_13.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_14.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_15.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_16.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_17.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_18.JPG",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_19.JPG",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_20.JPG",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_21.JPG.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_6.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_7.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_9.jpg",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.14.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.25.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.32.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.40.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.58.55.png",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/PHOTO PATRICK SANFAÇON, LA PRESSE.webp",
+  "RC/RC _ Enquête.docx",
+  "RC/RC-1.pdf",
+  "RC/RC-2.pdf",
+  "RC/RC-3.pdf",
+  "RC/RC-4.pdf"
+];
 
-      // Filtrer les fichiers systèmes et métadonnées
-      const validFiles = filesData.filter(item => {
-        const name = typeof item === "string" ? item : item.name;
-        return !name.endsWith('_meta.sqlite') && 
-               !name.endsWith('_meta.xml') && 
-               !name.endsWith('_files.xml') && 
-               !name.startsWith('__ia_thumb') &&
-               !name.includes('00_GUIDE_JOURNALISTES_BIFFE');
-      });
+  var allFiles = [];
+  var fileMetadataMap = {};
+  var currentActiveItem = null;
+  var currentFileObj = null;
+  var currentRawText = "";
+  var isRawTableView = false;
 
-      const titleCount = document.getElementById("title-count");
-      if (titleCount) {
-        titleCount.textContent = `Dossier SEM-26-003 (${validFiles.length} fichiers)`;
-      }
+  function showToast(text) {
+    var toast = document.getElementById("toast-notify");
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.add("show");
+    setTimeout(function() { toast.classList.remove("show"); }, 2200);
+  }
 
-      // Construction de l'arbre multi-niveaux récursif
-      const root = { subfolders: {}, files: [] };
+  function getFileExtension(name) {
+    var dot = name.lastIndexOf(".");
+    return dot !== -1 ? name.slice(dot + 1).toLowerCase() : "";
+  }
 
-      validFiles.forEach(item => {
-        const fullPath = typeof item === "string" ? item : item.name;
-        let clean = fullPath;
-        if (clean.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")) {
-          clean = clean.replace("00_DOSSIER_POUR_JOURNALISTES_BIFFE/", "");
+  function getFileType(ext) {
+    if (ext === "pdf") return "pdf";
+    if (["png", "jpg", "jpeg", "webp", "gif"].indexOf(ext) !== -1) return "image";
+    if (["mp4", "mov", "webm"].indexOf(ext) !== -1) return "video";
+    if (ext === "csv") return "csv";
+    if (["txt", "sha256", "geojson", "kml", "md"].indexOf(ext) !== -1) return "text";
+    if (["zip", "tar", "gz", "7z"].indexOf(ext) !== -1) return "archive";
+    return "other";
+  }
+
+  function getFileIcon(ext) {
+    var type = getFileType(ext);
+    switch (type) {
+      case "pdf": return "📕";
+      case "image": return "🖼️";
+      case "video": return "🎥";
+      case "csv": return "📊";
+      case "text": return "📝";
+      case "archive": return "📦";
+      default: return "📄";
+    }
+  }
+
+  function formatBytes(bytes) {
+    if (!bytes || isNaN(bytes)) return "";
+    var b = parseInt(bytes, 10);
+    if (b < 1024) return b + " octets";
+    if (b < 1048576) return (b / 1024).toFixed(1) + " Ko";
+    return (b / 1048576).toFixed(1) + " Mo";
+  }
+
+  function buildTree(fileList) {
+    var root = { subfolders: {}, files: [] };
+
+    fileList.forEach(function(fileObj) {
+      var fullRelative = fileObj.relativePath;
+      var parts = fullRelative.split("/");
+      var fileName = parts.pop();
+      var current = root;
+
+      parts.forEach(function(folderName) {
+        if (!current.subfolders[folderName]) {
+          current.subfolders[folderName] = { subfolders: {}, files: [] };
         }
-
-        const parts = clean.split('/');
-        const fileName = parts.pop();
-        let current = root;
-
-        parts.forEach(folderName => {
-          if (!current.subfolders[folderName]) {
-            current.subfolders[folderName] = { subfolders: {}, files: [] };
-          }
-          current = current.subfolders[folderName];
-        });
-
-        current.files.push({
-          name: fileName,
-          fullPath: fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? fullPath : "00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath
-        });
+        current = current.subfolders[folderName];
       });
 
-      const stage = document.getElementById("preview-stage");
-      let firstSelected = false;
+      var ext = getFileExtension(fileName);
+      current.files.push({
+        originalArchiveName: fileObj.originalArchiveName,
+        relativePath: fileObj.relativePath,
+        name: fileName,
+        ext: ext
+      });
+    });
 
-      function renderTree(node, container, isRoot = false) {
-        // 1. Dossiers et sous-dossiers
-        const folderNames = Object.keys(node.subfolders).sort();
-        folderNames.forEach((folderName, idx) => {
-          const subNode = node.subfolders[folderName];
-          const nodeDiv = document.createElement("div");
-          nodeDiv.className = "tree-node" + (isRoot && idx === 0 ? " open" : "");
+    return root;
+  }
 
-          function countTotal(n) {
-            let total = n.files.length;
-            for (let k in n.subfolders) total += countTotal(n.subfolders[k]);
-            return total;
-          }
+  function countRecursive(node) {
+    var count = node.files.length;
+    for (var k in node.subfolders) {
+      count += countRecursive(node.subfolders[k]);
+    }
+    return count;
+  }
 
-          const header = document.createElement("div");
-          header.className = "tree-folder-header";
-          header.innerHTML = `
-            <span class="folder-chevron">▶</span>
-            <span>📁</span>
-            <span class="folder-name" title="${folderName}">${folderName}</span>
-            <span class="folder-count">(${countTotal(subNode)})</span>
-          `;
+  function renderTreeDOM(node, container, isRoot) {
+    if (typeof isRoot === "undefined") isRoot = false;
 
-          header.addEventListener("click", (e) => {
-            e.stopPropagation();
-            nodeDiv.classList.toggle("open");
-          });
+    // 1. Sous-dossiers alphabétiques
+    var folderKeys = Object.keys(node.subfolders).sort(function(a, b) {
+      return a.localeCompare(b, "fr", { numeric: true });
+    });
 
-          const childrenContainer = document.createElement("div");
-          childrenContainer.className = "tree-children";
+    folderKeys.forEach(function(folderName, idx) {
+      var subNode = node.subfolders[folderName];
+      var totalCount = countRecursive(subNode);
 
-          renderTree(subNode, childrenContainer, false);
+      var nodeDiv = document.createElement("div");
+      nodeDiv.className = "tree-node" + (isRoot && idx === 0 ? " open" : "");
+      nodeDiv.dataset.folderName = folderName.toLowerCase();
 
-          nodeDiv.appendChild(header);
-          nodeDiv.appendChild(childrenContainer);
-          container.appendChild(nodeDiv);
-        });
+      var header = document.createElement("div");
+      header.className = "tree-folder-header";
+      header.innerHTML = '<span class="folder-chevron">▶</span>' +
+        '<span class="folder-icon">📁</span>' +
+        '<span class="folder-name" title="' + folderName + '">' + folderName + '</span>' +
+        '<span class="folder-count">' + totalCount + '</span>';
 
-        // 2. Fichiers du niveau courant
-        node.files.sort((a, b) => a.name.localeCompare(b.name)).forEach(fileObj => {
-          const item = document.createElement("div");
-          item.className = "drive-item";
+      header.addEventListener("click", function(e) {
+        e.stopPropagation();
+        nodeDiv.classList.toggle("open");
+      });
 
-          const lower = fileObj.name.toLowerCase();
-          let icon = "📄";
-          if (lower.endsWith(".pdf")) icon = "📕";
-          else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) icon = "🎥";
-          else if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) icon = "🖼️";
-          else if (lower.endsWith(".csv")) icon = "📊";
-          else if (lower.endsWith(".zip") || lower.endsWith(".tar") || lower.endsWith(".torrent")) icon = "📦";
-          else if (lower.endsWith(".docx") || lower.endsWith(".doc")) icon = "📘";
-          else if (lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".sha256") || lower.endsWith(".geojson") || lower.endsWith(".kml") || lower.endsWith(".ots")) icon = "📝";
+      var childrenContainer = document.createElement("div");
+      childrenContainer.className = "tree-children";
 
-          item.innerHTML = `
-            <span>${icon}</span>
-            <span class="drive-item-name" title="${fileObj.name}">${fileObj.name}</span>
-          `;
+      renderTreeDOM(subNode, childrenContainer, false);
 
-          const fileUrl = `https://archive.org/download/${identifier}/${encodeURI(fileObj.fullPath)}`;
+      nodeDiv.appendChild(header);
+      nodeDiv.appendChild(childrenContainer);
+      container.appendChild(nodeDiv);
+    });
 
-          item.addEventListener("click", (e) => {
-            e.stopPropagation();
-            document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
-            item.classList.add("active");
+    // 2. Fichiers du dossier courant
+    var sortedFiles = node.files.slice().sort(function(a, b) {
+      return a.name.localeCompare(b.name, "fr", { numeric: true });
+    });
 
-            const curFile = document.getElementById("current-filename");
-            if (curFile) curFile.textContent = fileObj.name;
-            const directLink = document.getElementById("direct-file-link");
-            if (directLink) {
-              directLink.href = fileUrl;
-              directLink.style.display = "inline";
-            }
+    sortedFiles.forEach(function(fileObj) {
+      var item = document.createElement("div");
+      item.className = "drive-item";
+      item.dataset.fileName = fileObj.name.toLowerCase();
+      item.dataset.fullPath = fileObj.originalArchiveName;
 
-            if (stage) {
-              stage.innerHTML = "";
+      var icon = getFileIcon(fileObj.ext);
 
-              if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
-                const img = document.createElement("img");
-                img.src = fileUrl;
-                img.className = "preview-image";
-                img.alt = fileObj.name;
-                stage.appendChild(img);
-              } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
-                const video = document.createElement("video");
-                video.src = fileUrl;
-                video.controls = true;
-                video.autoplay = true;
-                video.className = "preview-video";
-                stage.appendChild(video);
-              } else if (lower.endsWith(".pdf")) {
-                const iframe = document.createElement("iframe");
-                iframe.className = "preview-iframe";
-                iframe.src = fileUrl;
-                stage.appendChild(iframe);
-              } else {
-                const box = document.createElement("div");
-                box.className = "no-preview";
-                box.innerHTML = `
-                  <span>${icon}</span>
-                  <h4 style="margin: 0 0 8px 0; color: #202124;">${fileObj.name}</h4>
-                  <p>Ce document est disponible en téléchargement direct.</p>
-                  <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le document</a>
-                `;
-                stage.appendChild(box);
-              }
-            }
-          });
+      item.innerHTML = '<span class="drive-item-icon">' + icon + '</span>' +
+        '<span class="drive-item-name" title="' + fileObj.name + '">' + fileObj.name + '</span>' +
+        '<span class="drive-item-ext">' + fileObj.ext + '</span>';
 
-          container.appendChild(item);
+      item.addEventListener("click", function(e) {
+        e.stopPropagation();
+        selectFile(fileObj, item);
+      });
 
-          if (!firstSelected && lower.endsWith(".pdf")) {
-            setTimeout(() => item.click(), 60);
-            firstSelected = true;
-          }
-        });
-      }
+      container.appendChild(item);
+    });
+  }
 
-      renderTree(root, treeContainer, true);
+  function selectFile(fileObj, itemEl) {
+    if (currentActiveItem) {
+      currentActiveItem.classList.remove("active");
+    }
+    currentActiveItem = itemEl;
+    if (itemEl) itemEl.classList.add("active");
+
+    currentFileObj = fileObj;
+    currentRawText = "";
+    isRawTableView = false;
+
+    var fileUrl = DOWNLOAD_BASE + encodeURI(fileObj.originalArchiveName);
+    var meta = fileMetadataMap[fileObj.originalArchiveName] || {};
+    var sizeStr = formatBytes(meta.size);
+
+    // Mettre à jour la barre d'en-tête de prévisualisation
+    var lblName = document.getElementById("current-filename");
+    var lblMeta = document.getElementById("current-filemeta");
+    var iconEl = document.getElementById("preview-icon");
+    var btnOpen = document.getElementById("btn-open-external");
+    var btnDownload = document.getElementById("btn-download-file");
+    var btnCopy = document.getElementById("btn-copy-content");
+    var btnToggleTable = document.getElementById("btn-toggle-table-raw");
+
+    if (lblName) lblName.textContent = fileObj.name;
+    if (lblMeta) {
+      var parts = [];
+      if (sizeStr) parts.push(sizeStr);
+      if (fileObj.ext) parts.push(fileObj.ext.toUpperCase());
+      lblMeta.textContent = parts.join(" · ") || "Document Probatoire";
+    }
+    if (iconEl) iconEl.textContent = getFileIcon(fileObj.ext);
+
+    if (btnDownload) {
+      btnDownload.href = fileUrl;
+      btnDownload.download = fileObj.name;
+      btnDownload.style.display = "inline-flex";
     }
 
-    // Tente d'interroger l'API pour récupérer les 230 fichiers en direct ; bascule instantanément sur la liste complète en cas de blocage réseau
-    fetch(apiUrl)
-      .then(r => r.json())
-      .then(data => {
-        if (data && data.result && data.result.length > 50) {
-          processFiles(data.result);
-        } else {
-          processFiles(fallbackList);
-        }
-      })
-      .catch(() => {
-        processFiles(fallbackList);
+    if (btnCopy) btnCopy.style.display = "none";
+    if (btnToggleTable) btnToggleTable.style.display = "none";
+
+    var stage = document.getElementById("preview-stage");
+    if (!stage) return;
+    stage.innerHTML = "";
+
+    var type = getFileType(fileObj.ext);
+
+    // 1. PDF : Intégration dans viewer.html officiel via iframe
+    if (type === "pdf") {
+      var viewerUrl = "viewer.html?file=" + encodeURIComponent(fileUrl);
+      if (btnOpen) {
+        btnOpen.href = viewerUrl;
+        btnOpen.style.display = "inline-flex";
+      }
+
+      var iframe = document.createElement("iframe");
+      iframe.className = "preview-iframe";
+      iframe.src = viewerUrl;
+      iframe.title = fileObj.name;
+      stage.appendChild(iframe);
+    }
+    // 2. Images : Centrage + zoom
+    else if (type === "image") {
+      if (btnOpen) {
+        btnOpen.href = fileUrl;
+        btnOpen.style.display = "inline-flex";
+      }
+
+      var wrap = document.createElement("div");
+      wrap.className = "image-stage-wrap";
+
+      var img = document.createElement("img");
+      img.className = "preview-image";
+      img.src = fileUrl;
+      img.alt = fileObj.name;
+
+      var zoom = 1.0;
+      var toolbar = document.createElement("div");
+      toolbar.className = "image-toolbar";
+      toolbar.innerHTML = '<button type="button" id="img-zoom-out" title="Zoom arrière">－</button>' +
+        '<span id="img-zoom-val" style="font-size:11.5px; min-width:40px; text-align:center;">100%</span>' +
+        '<button type="button" id="img-zoom-in" title="Zoom avant">＋</button>' +
+        '<button type="button" id="img-zoom-reset" title="Taille normale">1:1</button>';
+
+      wrap.appendChild(img);
+      wrap.appendChild(toolbar);
+      stage.appendChild(wrap);
+
+      toolbar.querySelector("#img-zoom-in").addEventListener("click", function() {
+        zoom = Math.min(3.5, zoom + 0.25);
+        img.style.transform = "scale(" + zoom + ")";
+        toolbar.querySelector("#img-zoom-val").textContent = Math.round(zoom * 100) + "%";
       });
-  })();
+      toolbar.querySelector("#img-zoom-out").addEventListener("click", function() {
+        zoom = Math.max(0.4, zoom - 0.25);
+        img.style.transform = "scale(" + zoom + ")";
+        toolbar.querySelector("#img-zoom-val").textContent = Math.round(zoom * 100) + "%";
+      });
+      toolbar.querySelector("#img-zoom-reset").addEventListener("click", function() {
+        zoom = 1.0;
+        img.style.transform = "scale(1)";
+        toolbar.querySelector("#img-zoom-val").textContent = "100%";
+      });
+    }
+    // 3. Vidéos : Balise HTML5 avec contrôles
+    else if (type === "video") {
+      if (btnOpen) {
+        btnOpen.href = fileUrl;
+        btnOpen.style.display = "inline-flex";
+      }
+
+      var video = document.createElement("video");
+      video.className = "preview-video";
+      video.src = fileUrl;
+      video.controls = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      stage.appendChild(video);
+    }
+    // 4. Données tabulaires (CSV)
+    else if (type === "csv") {
+      if (btnOpen) {
+        btnOpen.href = fileUrl;
+        btnOpen.style.display = "inline-flex";
+      }
+      if (btnCopy) btnCopy.style.display = "inline-flex";
+      if (btnToggleTable) {
+        btnToggleTable.style.display = "inline-flex";
+        document.getElementById("lbl-toggle-view").textContent = "Vue brute";
+      }
+
+      stage.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">Chargement du tableau probatoire...</div>';
+
+      fetch(fileUrl)
+        .then(function(r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.text();
+        })
+        .then(function(csvText) {
+          currentRawText = csvText;
+          renderCsvData(csvText, stage);
+        })
+        .catch(function(err) {
+          stage.innerHTML = '<div class="no-preview">' +
+            '<div class="no-preview-icon">📊</div>' +
+            '<h3>Visualisation directe indisponible</h3>' +
+            '<p>Le fichier CSV peut être téléchargé directement : ' + err.message + '</p>' +
+            '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>Télécharger le CSV</a>' +
+            '</div>';
+        });
+    }
+    // 5. Texte brut, GeoJSON, KML, SHA-256, Markdown
+    else if (type === "text") {
+      if (btnOpen) {
+        btnOpen.href = fileUrl;
+        btnOpen.style.display = "inline-flex";
+      }
+      if (btnCopy) btnCopy.style.display = "inline-flex";
+
+      stage.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">Chargement du texte probatoire...</div>';
+
+      fetch(fileUrl)
+        .then(function(r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.text();
+        })
+        .then(function(rawText) {
+          currentRawText = rawText;
+          renderTextData(rawText, stage);
+        })
+        .catch(function(err) {
+          stage.innerHTML = '<div class="no-preview">' +
+            '<div class="no-preview-icon">📝</div>' +
+            '<h3>Visualisation directe indisponible</h3>' +
+            '<p>Le document est accessible en téléchargement direct.</p>' +
+            '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>Télécharger le fichier</a>' +
+            '</div>';
+        });
+    }
+    // 6. Archives & autres formats
+    else {
+      if (btnOpen) btnOpen.style.display = "none";
+
+      stage.innerHTML = '<div class="no-preview">' +
+        '<div class="no-preview-icon">' + getFileIcon(fileObj.ext) + '</div>' +
+        '<h3>' + fileObj.name + '</h3>' +
+        '<p>Ce format (' + fileObj.ext.toUpperCase() + ') est disponible en téléchargement original pour analyse locale.</p>' +
+        '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>' +
+        '<span>⬇ Télécharger l'original (' + (sizeStr || fileObj.ext.toUpperCase()) + ')</span>' +
+        '</a>' +
+        '</div>';
+    }
+  }
+
+  function parseCsvRows(text) {
+    var lines = text.split(/\r?\n/).filter(function(line) { return line.trim().length > 0; });
+    if (!lines.length) return [];
+    
+    var first = lines[0];
+    var sep = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ";" : ",";
+
+    return lines.map(function(line) {
+      var row = [];
+      var inQuote = false;
+      var cur = "";
+      for (var i = 0; i < line.length; i++) {
+        var c = line[i];
+        if (c === '"') {
+          inQuote = !inQuote;
+        } else if (c === sep && !inQuote) {
+          row.push(cur.trim());
+          cur = "";
+        } else {
+          cur += c;
+        }
+      }
+      row.push(cur.trim());
+      return row;
+    });
+  }
+
+  function renderCsvData(text, container) {
+    var rows = parseCsvRows(text);
+    if (!rows.length) {
+      container.innerHTML = '<div class="no-preview"><p>Fichier CSV vide.</p></div>';
+      return;
+    }
+
+    var wrap = document.createElement("div");
+    wrap.className = "table-stage-wrap";
+
+    var toolbar = document.createElement("div");
+    toolbar.className = "table-toolbar";
+    toolbar.innerHTML = '<span>' + (rows.length - 1) + ' entrées détectées · ' + rows[0].length + ' colonnes</span>' +
+      '<span style="color:var(--text-subtle);">Défilement horizontal et vertical actif</span>';
+
+    var scrollBox = document.createElement("div");
+    scrollBox.className = "table-scroll";
+
+    var table = document.createElement("table");
+    table.className = "data-table";
+
+    // En-tête
+    var headerRow = rows[0];
+    var thead = document.createElement("thead");
+    var trHead = document.createElement("tr");
+    headerRow.forEach(function(col) {
+      var th = document.createElement("th");
+      th.textContent = col.replace(/^["']+|["']+$/g, "");
+      trHead.appendChild(th);
+    });
+    thead.appendChild(trHead);
+    table.appendChild(thead);
+
+    // Corps de la table
+    var tbody = document.createElement("tbody");
+    for (var r = 1; r < rows.length; r++) {
+      var tr = document.createElement("tr");
+      rows[r].forEach(function(val) {
+        var td = document.createElement("td");
+        td.textContent = val.replace(/^["']+|["']+$/g, "");
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+
+    scrollBox.appendChild(table);
+    wrap.appendChild(toolbar);
+    wrap.appendChild(scrollBox);
+    container.innerHTML = "";
+    container.appendChild(wrap);
+  }
+
+  function renderTextData(text, container) {
+    var wrap = document.createElement("div");
+    wrap.className = "code-stage-wrap";
+
+    var toolbar = document.createElement("div");
+    toolbar.className = "code-toolbar";
+    var lineCount = text.split("\n").length;
+    toolbar.innerHTML = '<span>' + lineCount + ' lignes · Format UTF-8 brut</span>' +
+      '<span>Encodage standard</span>';
+
+    var pre = document.createElement("pre");
+    pre.className = "code-content";
+    pre.textContent = text;
+
+    wrap.appendChild(toolbar);
+    wrap.appendChild(pre);
+    container.innerHTML = "";
+    container.appendChild(wrap);
+  }
+
+  // Initialisation et traitement des données de fichiers
+  function initExplorer(rawList) {
+    // Filtrage des métadonnées internes et fichiers parasites
+    var filtered = rawList.filter(function(item) {
+      var name = typeof item === "string" ? item : item.name;
+      return !name.endsWith("_meta.sqlite") &&
+             !name.endsWith("_meta.xml") &&
+             !name.endsWith("_files.xml") &&
+             !name.endsWith("_archive.torrent") &&
+             !name.startsWith("__ia_thumb") &&
+             !name.includes(".thumbs/") &&
+             !name.includes("00_GUIDE_JOURNALISTES_BIFFE");
+    });
+
+    fileMetadataMap = {};
+    allFiles = filtered.map(function(item) {
+      var orig = typeof item === "string" ? item : item.name;
+      if (typeof item === "object") {
+        fileMetadataMap[orig] = item;
+      }
+      var clean = orig;
+      if (clean.indexOf("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") === 0) {
+        clean = clean.replace("00_DOSSIER_POUR_JOURNALISTES_BIFFE/", "");
+      }
+      return {
+        originalArchiveName: orig,
+        relativePath: clean
+      };
+    });
+
+    // Mettre à jour les compteurs
+    var countBadge = document.getElementById("badge-total");
+    if (countBadge) countBadge.textContent = allFiles.length + " pièces probatoires";
+    var treeCount = document.getElementById("tree-files-count");
+    if (treeCount) treeCount.textContent = allFiles.length + " documents classés";
+
+    // Construction et affichage de l'arborescence
+    var tree = buildTree(allFiles);
+    var treeContainer = document.getElementById("drive-tree");
+    if (treeContainer) {
+      treeContainer.innerHTML = "";
+      renderTreeDOM(tree, treeContainer, true);
+    }
+
+    // Sélection automatique du premier PDF probatoire
+    var firstPdf = allFiles.find(function(f) {
+      return f.relativePath.toLowerCase().endsWith(".pdf");
+    });
+    if (firstPdf) {
+      var el = document.querySelector('.drive-item[data-full-path="' + CSS.escape(firstPdf.originalArchiveName) + '"]');
+      if (el) {
+        setTimeout(function() { el.click(); }, 60);
+      }
+    }
+  }
+
+  // Configuration des événements globaux
+  function setupEventListeners() {
+    // Boutons Tout déplier / Tout replier
+    document.getElementById("btn-expand-all")?.addEventListener("click", function() {
+      document.querySelectorAll(".tree-node").forEach(function(node) { node.classList.add("open"); });
+    });
+    document.getElementById("btn-collapse-all")?.addEventListener("click", function() {
+      document.querySelectorAll(".tree-node").forEach(function(node) { node.classList.remove("open"); });
+    });
+
+    // Recherche / Filtre en temps réel
+    var searchInput = document.getElementById("tree-search-input");
+    var searchClear = document.getElementById("tree-search-clear");
+
+    if (searchInput) {
+      searchInput.addEventListener("input", function() {
+        var query = searchInput.value.trim().toLowerCase();
+        if (searchClear) searchClear.style.display = query ? "block" : "none";
+
+        var items = document.querySelectorAll(".drive-item");
+        items.forEach(function(item) {
+          var name = item.dataset.fileName || "";
+          var isMatch = !query || name.indexOf(query) !== -1;
+          item.style.display = isMatch ? "flex" : "none";
+          if (isMatch && query) {
+            // Ouvrir récursivement tous les dossiers parents
+            var parent = item.parentElement;
+            while (parent && parent.id !== "drive-tree") {
+              if (parent.classList.contains("tree-node")) {
+                parent.classList.add("open");
+              }
+              parent = parent.parentElement;
+            }
+          }
+        });
+      });
+    }
+
+    if (searchClear && searchInput) {
+      searchClear.addEventListener("click", function() {
+        searchInput.value = "";
+        searchClear.style.display = "none";
+        searchInput.dispatchEvent(new Event("input"));
+        searchInput.focus();
+      });
+    }
+
+    // Copie du contenu texte ou CSV
+    document.getElementById("btn-copy-content")?.addEventListener("click", function() {
+      if (!currentRawText) return;
+      navigator.clipboard.writeText(currentRawText).then(function() {
+        showToast("Contenu copié dans le presse-papiers !");
+      }).catch(function() {
+        showToast("Impossible d'accéder au presse-papiers");
+      });
+    });
+
+    // Basculer affichage CSV Table / Brut
+    document.getElementById("btn-toggle-table-raw")?.addEventListener("click", function() {
+      if (!currentRawText || !currentFileObj || getFileType(currentFileObj.ext) !== "csv") return;
+      var stage = document.getElementById("preview-stage");
+      var lbl = document.getElementById("lbl-toggle-view");
+      if (!stage || !lbl) return;
+
+      isRawTableView = !isRawTableView;
+      if (isRawTableView) {
+        lbl.textContent = "Vue tableau";
+        renderTextData(currentRawText, stage);
+      } else {
+        lbl.textContent = "Vue brute";
+        renderCsvData(currentRawText, stage);
+      }
+    });
+  }
+
+  setupEventListeners();
+
+  // Interrogation de l'API avec fallback immédiat garanti
+  fetch(METADATA_API)
+    .then(function(r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      if (data && data.result && data.result.length > 50) {
+        initExplorer(data.result);
+      } else {
+        initExplorer(FALLBACK_FILES);
+      }
+    })
+    .catch(function() {
+      initExplorer(FALLBACK_FILES);
+    });
+
+})();
 </script>
 
 </body>

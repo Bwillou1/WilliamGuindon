@@ -100,6 +100,19 @@
     if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) {
       return clean;
     }
+    // Validation sécurisée des URLs distantes d'archive probatoire
+    try {
+      if (clean.startsWith('http://') || clean.startsWith('https://')) {
+        const parsed = new URL(clean);
+        if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+          if (parsed.pathname.toLowerCase().endsWith('.pdf') || parsed.pathname.includes('.pdf')) {
+            return clean;
+          }
+        }
+      }
+    } catch (e) {
+      // Ignorer URL invalide
+    }
     return DOCS_CATALOG['decision-17-aout-2026'].file;
   }
 
@@ -222,11 +235,14 @@
       if (dom.selectReadingMode) dom.selectReadingMode.value = 'dark';
     }
 
-    // 2. Extraire et assainir les paramètres de l'URL
+    // 2. Extraire et assainir les paramètres de l'URL (query string et hash)
     const urlParams = new URLSearchParams(window.location.search);
-    let rawFile = urlParams.get('file') || urlParams.get('doc') || '';
-    let targetPage = parseInt(urlParams.get('page') || window.location.hash.replace('#page=', ''), 10) || 1;
-    let targetDocKey = urlParams.get('id');
+    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+    const hashParams = new URLSearchParams(hashStr);
+
+    let rawFile = urlParams.get('file') || urlParams.get('doc') || hashParams.get('file') || hashParams.get('doc') || '';
+    let targetPage = parseInt(urlParams.get('page') || hashParams.get('page') || (window.location.hash.match(/#page=(\d+)/)?.[1]), 10) || 1;
+    let targetDocKey = urlParams.get('id') || hashParams.get('id');
 
     // Résolution sécurisée du document
     if (!rawFile && targetDocKey && DOCS_CATALOG[targetDocKey]) {
@@ -259,6 +275,10 @@
         return;
       }
     }
+    // Document externe ou archive probatoire
+    if (dom.badge) dom.badge.textContent = "Archive Probatoire";
+    const filename = decodeURIComponent(safePath.split('/').pop() || 'Document PDF');
+    document.title = `${filename} — Lecteur Officiel · William Guindon`;
   }
 
   /**
