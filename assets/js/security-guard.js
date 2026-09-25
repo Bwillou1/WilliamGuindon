@@ -215,8 +215,120 @@
     setInterval(applyLockdown, 100);
   }
 
+  // CONTRÔLE D'HÔTE / ANTI-FORK / ANTI-REVERSE-PROXY
+  function isAllowedHost(host) {
+    if (!host) return true;
+    const lower = host.toLowerCase();
+    if (ALLOWED_HOSTS.includes(lower)) return true;
+    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io')) return true;
+    return false;
+  }
+
+  function renderHostLockdownScreen(unauthorizedHost) {
+    let safeUrl = 'https://williamguindon.me/';
+    try {
+      const rawPath = window.location.pathname;
+      const cleanPath = (rawPath === '/' || rawPath === '') ? '' : rawPath;
+      const u = new URL(cleanPath + window.location.search + window.location.hash, 'https://williamguindon.me');
+      safeUrl = u.href;
+    } catch (_) {
+      safeUrl = 'https://williamguindon.me/';
+    }
+
+    try {
+      window.location.replace(safeUrl);
+    } catch (_) {}
+
+    let lockStyle = document.getElementById('wg-host-lock-style');
+    if (!lockStyle) {
+      lockStyle = document.createElement('style');
+      lockStyle.id = 'wg-host-lock-style';
+      lockStyle.textContent = `
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          overflow: hidden !important;
+          background: #1e1b4b !important;
+        }
+        body > *:not(#wg-host-warning-wrapper) {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `;
+      (document.head || document.documentElement).appendChild(lockStyle);
+    }
+
+    const applyHostLockdown = () => {
+      if (document.body) {
+        const children = Array.from(document.body.children);
+        for (const child of children) {
+          if (child.id !== 'wg-host-warning-wrapper' && child.id !== 'wg-host-lock-style') {
+            try { child.remove(); } catch (_) { child.style.display = 'none'; }
+          }
+        }
+      }
+
+      let overlay = document.getElementById('wg-host-warning-wrapper');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'wg-host-warning-wrapper';
+        overlay.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;background:#1e1b4b !important;color:#111827 !important;display:flex !important;align-items:center !important;justify-content:center !important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;z-index:2147483647 !important;padding:20px !important;box-sizing:border-box !important;overflow:auto !important;opacity:1 !important;visibility:visible !important;';
+
+        overlay.innerHTML = `
+          <div style="background:#ffffff;border:2px solid #6366f1;border-radius:18px;padding:32px 28px;max-width:620px;width:100%;box-shadow:0 20px 45px rgba(0,0,0,0.5);text-align:center;box-sizing:border-box;">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.1);color:#4338ca;border:1px solid rgba(99,102,241,0.25);padding:6px 16px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:16px;">
+              <span>🌐 Domaine ou Proxy Non Certifié</span>
+            </div>
+
+            <h1 style="font-size:1.3rem;font-weight:900;color:#1e1b4b;margin:0 0 12px 0;line-height:1.35;">
+              Hébergement / Proxy Non Autorisé Détecté
+            </h1>
+
+            <div style="background:#fffbeb;border:1px solid #fef3c7;border-left:4px solid #f59e0b;border-radius:8px;padding:14px 16px;text-align:left;margin-bottom:18px;font-size:13.5px;color:#92400e;line-height:1.5;">
+              <strong>⚠️ Avertissement d'intégrité :</strong><br>
+              Ce site est consulté depuis un nom d'hôte ou proxy non certifié (<code>${String(unauthorizedHost || 'inconnu').replace(/</g, '&lt;')}</code>). L'accès direct est requis pour prévenir toute interception de données ou altération documentaire.
+            </div>
+
+            <p style="font-size:13.5px;color:#4b5563;line-height:1.6;margin:0 0 20px 0;text-align:left;">
+              Le registre public <strong>SEM-26-003</strong> (CCE / ACEUM) et les contenus de William Guindon sont protégés sous licence <strong>CC BY-NC-ND 4.0</strong>. Toute redistribution commerciale ou altération par mandataire tiers est prohibée.
+            </p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;align-items:stretch;">
+              <a href="${safeUrl}" style="display:inline-block;background:#4f46e5;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(79,70,229,0.3);text-align:center;">
+                Basculer vers le domaine officiel williamguindon.me ↗
+              </a>
+            </div>
+          </div>
+        `;
+        (document.body || document.documentElement).appendChild(overlay);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyHostLockdown, { once: true });
+    } else {
+      applyHostLockdown();
+    }
+
+    setInterval(applyHostLockdown, 100);
+  }
+
+  function enforceHostSecurity() {
+    const currentHost = window.location.hostname;
+    if (isAllowedHost(currentHost)) return false;
+    renderHostLockdownScreen(currentHost);
+    return true;
+  }
+
   const isFramedAndBlocked = enforceFrameSecurity();
   if (isFramedAndBlocked) return;
+
+  const isHostBlocked = enforceHostSecurity();
+  if (isHostBlocked) return;
 
   // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)
   let lastAppliedStateJson = null;

@@ -19,6 +19,43 @@
 (function () {
   'use strict';
 
+  // CONTRÔLE D'INTÉGRITÉ HÔTE & ANTI-FRAMING RADICAL (REDONDANCE NIVEAU 2)
+  const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
+  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
+
+  if (!isConsolePage) {
+    const currentHost = window.location.hostname.toLowerCase();
+    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io');
+    if (!isHostAllowed) {
+      try { window.location.replace('https://williamguindon.me/'); } catch (_) {}
+      document.documentElement.style.display = 'none';
+      return;
+    }
+
+    let isFramed = false;
+    try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
+    try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
+    try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
+    if (isFramed) {
+      let isSameOrigin = false;
+      try {
+        const topHost = window.top.location.hostname.toLowerCase();
+        if (ALLOWED_HOSTS.includes(topHost) || topHost.endsWith('.williamguindon.me') || topHost.endsWith('.github.io')) {
+          isSameOrigin = true;
+        }
+      } catch (_) { isSameOrigin = false; }
+
+      const path = window.location.pathname.toLowerCase();
+      const isAllowedEmbed = path.endsWith('viewer.html') || path.endsWith('live.html') || path.endsWith('lecteur.html');
+
+      if (!isSameOrigin && !isAllowedEmbed) {
+        try { if (window.top && window.top.location) window.top.location.href = 'https://williamguindon.me/'; } catch (_) {}
+        document.documentElement.style.display = 'none';
+        return;
+      }
+    }
+  }
+
   const CONFIG = {
     blurAmount: '28px',
     unblurDuration: 3000,
