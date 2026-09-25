@@ -556,9 +556,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    overflow: auto;
+    padding: 24px;
+    overflow: hidden;
     position: relative;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
   .viewport-ambient-glow {
     position: absolute;
@@ -577,7 +580,13 @@
     position: relative;
     z-index: 2;
     transform-origin: center center;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+    user-select: none;
   }
   .satori-card-node {
     border-radius: 20px;
@@ -588,8 +597,9 @@
     flex-direction: column;
     justify-content: space-between;
     box-sizing: border-box;
-    transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s, padding 0.2s;
     user-select: text;
+    flex-shrink: 0;
   }
 
   /* COUCHES DE FOND DE LA CARTE */
@@ -670,9 +680,12 @@
     position: relative;
     z-index: 6;
     height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   /* SECTIONS CARD */
@@ -681,7 +694,32 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-shrink: 0;
   }
+  
+  .tpl-filter-btn.active {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--accent-emerald) !important;
+  }
+  .card-supporter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border-radius: var(--radius-full);
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1.5px solid #10b981;
+    color: #34d399;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    white-space: nowrap;
+  }
+
   .card-kicker-pill {
     display: inline-flex;
     align-items: center;
@@ -694,6 +732,7 @@
     letter-spacing: 0.08em;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
   }
   .card-live-dot {
     width: 8px;
@@ -714,6 +753,7 @@
     letter-spacing: 0.05em;
     opacity: 0.7;
     text-transform: uppercase;
+    flex-shrink: 0;
   }
 
   /* TITRE PRINCIPAL & BODY */
@@ -721,14 +761,19 @@
     margin: auto 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: center;
+    overflow: hidden;
   }
 
   .card-hero-stat-box {
     display: none;
     flex-direction: column;
     gap: 4px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
   }
   .card-hero-stat-number {
     font-family: "Syne", "Plus Jakarta Sans", sans-serif;
@@ -741,10 +786,10 @@
     -webkit-text-fill-color: transparent;
   }
   .card-hero-stat-label {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     opacity: 0.85;
   }
 
@@ -755,7 +800,12 @@
     letter-spacing: -0.02em;
     outline: none;
     word-break: break-word;
+    overflow-wrap: break-word;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .card-accent-separator {
@@ -763,15 +813,21 @@
     height: 3px;
     border-radius: 2px;
     margin: 2px 0;
+    flex-shrink: 0;
   }
 
   .card-display-body {
     font-size: 14.5px;
     font-weight: 450;
-    line-height: 1.5;
+    line-height: 1.45;
     opacity: 0.9;
     outline: none;
     word-break: break-word;
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* CALLOUT BADGE / HIGHLIGHT BOX */
@@ -779,23 +835,29 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 7px 14px;
     border-radius: var(--radius-md);
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.04em;
     backdrop-filter: blur(12px);
     width: fit-content;
+    max-width: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  /* BAS DE CARTE (AUTEUR / SIGNATURE / FOOOTER) */
+  /* BAS DE CARTE (AUTEUR / SIGNATURE / FOOTER) */
   .card-footer-block {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-top: 14px;
+    padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
+    flex-shrink: 0;
   }
 
   .card-author-row {
@@ -1070,10 +1132,54 @@
       <div class="tab-pane active" id="tab-templates">
         
         <div class="control-group">
-          <label class="group-title">1. Gabarit Thématique Pro</label>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label class="group-title" style="margin-bottom:0;">1. Gabarits Graphiques</label>
+            <span style="font-size:0.68rem; font-weight:800; color:var(--accent-emerald); text-transform:uppercase; letter-spacing:0.06em;">13 Modèles Clés en Main</span>
+          </div>
+          <div class="filter-pills-row" style="display:flex; gap:6px; margin-bottom:12px;">
+            <button type="button" class="btn btn-secondary tpl-filter-btn active" data-filter="all" style="padding:4px 10px; font-size:0.75rem;">Tous</button>
+            <button type="button" class="btn btn-ghost tpl-filter-btn" data-filter="support" style="padding:4px 10px; font-size:0.75rem; color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.08);">✊ Kit Soutien Citoyen</button>
+            <button type="button" class="btn btn-ghost tpl-filter-btn" data-filter="official" style="padding:4px 10px; font-size:0.75rem;">🏛️ Procédure CCE</button>
+          </div>
           <div class="templates-deck">
+            <!-- GABARITS CLÉS EN MAIN SOUTIEN CITOYEN -->
+            <div class="tpl-card" data-tpl="support_citizen" data-category="support">
+              <div class="tpl-header">
+                <span class="tpl-emoji">✊</span>
+                <span class="tpl-badge-mini" style="color:#10b981; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.35);">Soutien Public</span>
+              </div>
+              <div class="tpl-title">J'appuie SEM-26-003</div>
+              <div class="tpl-desc">Déclaration de solidarité citoyenne personnalisable (nom, ville, région).</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="support_tourbiere" data-category="support">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🌿</span>
+                <span class="tpl-badge-mini" style="color:#ea580c; background:rgba(234,88,12,0.15); border:1px solid rgba(234,88,12,0.35);">Affiche Choc</span>
+              </div>
+              <div class="tpl-title">Touche pas à ma tourbière</div>
+              <div class="tpl-desc">Slogan d'impact, 278 000 m² de milieux humides et puits de carbone.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="support_youth" data-category="support">
+              <div class="tpl-header">
+                <span class="tpl-emoji">📢</span>
+                <span class="tpl-badge-mini" style="color:#fbbf24; background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.35);">Jeunesse</span>
+              </div>
+              <div class="tpl-title">Solidarité avec la Jeunesse</div>
+              <div class="tpl-desc">Appui intergénérationnel à William Guindon face aux géants de l'enfouissement.</div>
+            </div>
+
+            <div class="tpl-card" data-tpl="support_badge" data-category="support">
+              <div class="tpl-header">
+                <span class="tpl-emoji">🛡️</span>
+                <span class="tpl-badge-mini" style="color:#38bdf8; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.35);">Avatar / Profil</span>
+              </div>
+              <div class="tpl-title">Badge Gardien Tourbière</div>
+              <div class="tpl-desc">Macaron officiel de soutien pour photo de profil et bannières sociales.</div>
+            </div>
             
-            <div class="tpl-card active" data-tpl="quote">
+            <div class="tpl-card active" data-tpl="quote" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🏛️</span>
                 <span class="tpl-badge-mini">Éditorial</span>
@@ -1082,7 +1188,7 @@
               <div class="tpl-desc">Haute-couture, grande citation, signature officielle et portrait doré.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="alert">
+            <div class="tpl-card" data-tpl="alert" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🚨</span>
                 <span class="tpl-badge-mini" style="color:#ef4444;">Urgent</span>
@@ -1091,7 +1197,7 @@
               <div class="tpl-desc">Brutaliste breaking news, compte à rebours 16 octobre 2026.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="investigation">
+            <div class="tpl-card" data-tpl="investigation" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🔍</span>
                 <span class="tpl-badge-mini" style="color:#f59e0b;">Preuves</span>
@@ -1100,7 +1206,7 @@
               <div class="tpl-desc">Style déclassifié, tampon officiel CCE, coordonnées et réticules.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="stat">
+            <div class="tpl-card" data-tpl="stat" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">📊</span>
                 <span class="tpl-badge-mini" style="color:#38bdf8;">Data Choc</span>
@@ -1109,7 +1215,7 @@
               <div class="tpl-desc">278 000 m² ou statistique géante en dégradé ultra-moderne.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="clarification">
+            <div class="tpl-card" data-tpl="clarification" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">⚖️</span>
                 <span class="tpl-badge-mini">Droit A.5</span>
@@ -1119,7 +1225,7 @@
             </div>
 
             
-            <div class="tpl-card" data-tpl="reconciliation">
+            <div class="tpl-card" data-tpl="reconciliation" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🧡</span>
                 <span class="tpl-badge-mini" style="color:#ea580c; background:rgba(234,88,12,0.15); border:1px solid rgba(234,88,12,0.35);">30 Sept.</span>
@@ -1128,7 +1234,7 @@
               <div class="tpl-desc">Semaine de la réconciliation, intendance millénaire et respect des terres.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="nature">
+            <div class="tpl-card" data-tpl="nature" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🌿</span>
                 <span class="tpl-badge-mini" style="color:#10b981;">Écologie</span>
@@ -1137,7 +1243,7 @@
               <div class="tpl-desc">Atmosphère cinématique, sanctuaire et puits de carbone.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="press">
+            <div class="tpl-card" data-tpl="press" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">📰</span>
                 <span class="tpl-badge-mini">Revue</span>
@@ -1146,7 +1252,7 @@
               <div class="tpl-desc">Revue de presse nationale Le Devoir, La Presse, CBC News.</div>
             </div>
 
-            <div class="tpl-card" data-tpl="live">
+            <div class="tpl-card" data-tpl="live" data-category="official">
               <div class="tpl-header">
                 <span class="tpl-emoji">🎙️</span>
                 <span class="tpl-badge-mini" style="color:#ef4444;">Direct</span>
@@ -1407,6 +1513,14 @@
           </div>
 
           <div class="switch-row">
+            <span>Macaron « ✊ CITOYEN SOLIDAIRE »</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-supporter-badge">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
             <span>Pastille clignotante « EN DIRECT »</span>
             <label class="switch">
               <input type="checkbox" id="chk-live-dot">
@@ -1491,6 +1605,7 @@
                 <span id="view-kicker-text">DOSSIER INTERNATIONAL SEM-26-003</span>
               </div>
               <div class="card-header-metadata" id="view-top-metadata">ACEUM · CCE</div>
+              <div class="card-supporter-badge" id="view-supporter-badge" style="display:none;">✊ CITOYEN SOLIDAIRE</div>
             </div>
 
             <!-- Centre narratif -->
@@ -1565,10 +1680,11 @@
       <!-- Barre d'outils de prévisualisation -->
       <div class="preview-control-toolbar">
         <span class="dim-pill" id="toolbar-dim-pill">1080 × 1080 px (1:1)</span>
-        <button type="button" class="zoom-btn active" data-zoom="1">100%</button>
+        <button type="button" class="zoom-btn active" data-zoom="fit" id="btn-zoom-fit">Ajuster (Auto)</button>
+        <button type="button" class="zoom-btn" data-zoom="1">100%</button>
         <button type="button" class="zoom-btn" data-zoom="0.8">80%</button>
         <button type="button" class="zoom-btn" data-zoom="0.6">60%</button>
-        <span style="font-size:0.75rem; color:var(--text-tertiary);">✨ Tapez directement sur le titre ou texte de la carte pour éditer !</span>
+        <span style="font-size:0.75rem; color:var(--text-tertiary);">✨ Rendu adaptatif : cadrage parfait sans débordement</span>
       </div>
 
       <!-- Canvas invisible haute résolution 2K -->
@@ -1599,6 +1715,27 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         Copier le texte du post
       </button>
+
+      <!-- Boutons de partage direct 1-clic -->
+      <div class="quick-share-buttons" style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+        <span style="font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em; display:flex; align-items:center; gap:6px;">
+          🚀 Partager mon appui en 1 clic :
+        </span>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;">
+          <button type="button" class="btn btn-secondary" id="btn-share-x" style="padding:8px 10px; font-size:0.78rem;">
+            🐦 Sur X (Twitter)
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-share-linkedin" style="padding:8px 10px; font-size:0.78rem;">
+            💼 Sur LinkedIn
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-share-fb" style="padding:8px 10px; font-size:0.78rem;">
+            👥 Sur Facebook
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-share-wa" style="padding:8px 10px; font-size:0.78rem;">
+            💬 Sur WhatsApp
+          </button>
+        </div>
+      </div>
 
       <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:16px; margin-top:auto;">
         <span style="font-size:0.72rem; font-weight:800; color:var(--accent-emerald); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:8px;">
@@ -1678,6 +1815,14 @@
     const crosshairBL = document.getElementById('crosshair-bl');
     const crosshairBR = document.getElementById('crosshair-br');
     const cardStampBadge = document.getElementById('card-stamp-badge');
+    const chkSupporterBadge = document.getElementById('chk-supporter-badge');
+    const viewSupporterBadge = document.getElementById('view-supporter-badge');
+
+    // Nœuds de structure et d'adaptation dynamique
+    const panelViewport = document.querySelector('.panel-viewport');
+    const cardContentWrap = cardNode ? cardNode.querySelector('.card-content-wrap') : null;
+    const viewMainNarrative = cardNode ? cardNode.querySelector('.card-main-narrative') : null;
+    const btnZoomFit = document.getElementById('btn-zoom-fit');
 
     // Form inputs
     const inputKicker = document.getElementById('input-kicker');
@@ -1722,6 +1867,7 @@
     let currentPlatform = 'x';
     let currentPhotoSrc = 'assets/media/william-guindon.jpg';
     let currentZoom = 1;
+    let autoFitZoom = true;
 
     // Dimensions
     const FORMATS = {
@@ -1842,6 +1988,71 @@
 
     // Gabarits thématiques riches & ultra-lisibles
     const TEMPLATES = {
+      support_citizen: {
+        kicker: "✊ CITOYEN SOLIDAIRE · SEM-26-003",
+        title: "« J'appuie la soumission SEM-26-003 pour la Grande Tourbière »",
+        body: "Face aux 278 000 m² de milieux humides menacés à Blainville, je me joins à l'effort citoyen. Protéger nos écosystèmes et faire respecter les lois environnementales est notre devoir collectif.",
+        highlight: "JE SOUTIENS LE REGISTRE CITOYEN CCE / ACEUM",
+        author: "Citoyenne / Citoyen solidaire",
+        role: "En appui à la sauvegarde de la Grande Tourbière",
+        date: "Mobilisation citoyenne · williamguindon.me",
+        theme: "emerald",
+        layout: "editorial",
+        font: "sans",
+        img: "tourbiere.jpg",
+        stamp: false,
+        supporterBadge: true,
+        live: false
+      },
+      support_tourbiere: {
+        kicker: "🌿 TOUCHE PAS À MA TOURBIÈRE",
+        title: "« Sauvegardons la Grande Tourbière de Blainville »",
+        body: "La Grande Tourbière est un puits de carbone inestimable et un sanctuaire pour la biodiversité. Refusons l'expansion de 278 000 m² de déchets dangereux de Stablex.",
+        highlight: "278 000 M² DE MILIEUX HUMIDES À PROTÉGER D'URGENCE",
+        author: "Collectif citoyen & sympathisants",
+        role: "Défenseurs des milieux humides du Québec",
+        date: "Échéance fédérale : 16 octobre 2026",
+        theme: "terracotta",
+        layout: "brutalist",
+        font: "sans",
+        img: "tourbiere.jpg",
+        stamp: false,
+        supporterBadge: true,
+        live: false
+      },
+      support_youth: {
+        kicker: "📢 SOLIDARITÉ INTERGÉNÉRATIONNELLE",
+        title: "« Solidaire avec la jeunesse qui défend notre droit à un avenir sain »",
+        body: "À 15 ans, William Guindon porte un dossier international devant la CCE pour faire appliquer les lois environnementales. L'inaction climatique et l'enfouissement toxique doivent cesser.",
+        highlight: "JUSTICE CLIMATIQUE & DROIT DES GÉNÉRATIONS",
+        author: "Citoyen solidaire",
+        role: "En appui à la démarche citoyenne de William Guindon",
+        date: "Dossier CCE SEM-26-003 · williamguindon.me",
+        theme: "gold",
+        layout: "editorial",
+        font: "serif",
+        img: "assets/media/william-guindon.jpg",
+        stamp: false,
+        supporterBadge: true,
+        live: false
+      },
+      support_badge: {
+        kicker: "🛡️ GARDIEN DE LA TOURBIÈRE",
+        title: "« Je protège la Grande Tourbière de Blainville »",
+        body: "278 000 m² de milieux humides menacés par la Cellule 6 de Stablex · Procédure internationale CCE SEM-26-003 devant le Secrétariat de l'ACEUM.",
+        highlight: "CITOYEN SOLIDAIRE · SEM-26-003",
+        author: "Gardien de la biodiversité",
+        role: "Citoyen engagé pour l'environnement",
+        date: "williamguindon.me · Registre public CCE",
+        theme: "cyber",
+        layout: "stat",
+        font: "sans",
+        img: "assets/media/moteur-recherche-pieces.jpg",
+        stamp: false,
+        supporterBadge: true,
+        live: false
+      },
+
       quote: {
         kicker: "DÉCLARATION OFFICIELLE",
         title: "« Vous ne ferez pas taire la jeunesse qui défend son avenir. »",
@@ -2083,7 +2294,12 @@
       crosshairBR.style.display = crosshairsShow;
 
       // Tampon officiel
-      cardStampBadge.style.display = chkStamp.checked ? 'block' : 'none';
+      if (cardStampBadge) cardStampBadge.style.display = chkStamp && chkStamp.checked ? 'block' : 'none';
+      if (viewSupporterBadge) {
+        const isSupp = chkSupporterBadge && chkSupporterBadge.checked;
+        viewSupporterBadge.style.display = isSupp ? 'inline-flex' : 'none';
+        if (viewTopMetadata) viewTopMetadata.style.display = isSupp ? 'none' : 'block';
+      }
 
       // Avatar
       if (chkAvatarProfile.checked && currentPhotoSrc && currentPhotoSrc !== 'none') {
@@ -2154,7 +2370,17 @@
       const author = inputAuthor.value.trim();
       let text = '';
 
-            if (currentTemplate === 'reconciliation') {
+            if (currentTemplate && currentTemplate.startsWith('support_')) {
+        if (currentPlatform === 'x') {
+          text = "✊ J'appuie officiellement le dossier citoyen SEM-26-003 porté par @WilliamGuindon devant la CCE (ACEUM).\n\n278 000 m² de milieux humides menacés à Blainville : l'inaction n'est pas une option. Protégeons la Grande Tourbière !\n\n🔗 williamguindon.me\n#SEM26003 #GrandeTourbière #Blainville #Environnement #Québec #TouchePasAMaTourbière";
+        } else if (currentPlatform === 'insta') {
+          text = "🌿 J'appuie la protection de la Grande Tourbière de Blainville !\n\nFace aux menaces d'enfouissement de matières dangereuses (Cellule 6 de Stablex) et aux 278 000 m² de milieux humides en péril, je me tiens solidaire de la communication citoyenne internationale SEM-26-003 portée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM).\n\nNos milieux humides sont nos boucliers climatiques et des puits de carbone indispensables.\n\n👉 Rejoignez le mouvement citoyen et consultez le registre complet des pièces justificatives sur williamguindon.me (lien dans la bio).\n\n.\n.\n#GrandeTourbière #Blainville #SEM26003 #JusticeEnvironnementale #MilieuxHumides #Québec #JeunessePourLeClimat #TouchePasAMaTourbiere #Écologie #ACEUM #CCE";
+        } else if (currentPlatform === 'linkedin') {
+          text = "Engagement citoyen & Responsabilité environnementale\n\nJ'appuie la communication citoyenne SEM-26-003 déposée devant le Secrétariat de la Commission de coopération environnementale (CCE / ACEUM).\n\nCe dossier citoyen rigoureux soulève des questions fondamentales sur l'application effective des lois environnementales fédérales face au projet d'expansion de déchets dangereux à Blainville.\n\nLa préservation de 278 000 m² de tourbières et de milieux humides concerne directement notre résilience écologique collective et le respect du droit environnemental.\n\nConsultez l'ensemble des pièces probatoires et le registre public en libre accès : https://williamguindon.me\n\n#Environnement #Gouvernance #DroitEnvironnemental #SEM26003 #GrandeTourbière #RSE #Canada #Québec #DéveloppementDurable";
+        } else if (currentPlatform === 'fb') {
+          text = "✊ Je protège la Grande Tourbière de Blainville !\n\nJ'appuie la démarche citoyenne de William Guindon (dossier international SEM-26-003 devant la CCE / ACEUM). 278 000 m² de milieux humides sont menacés par l'enfouissement de déchets dangereux. L'échéance fédérale est fixée au 16 octobre 2026.\n\nDécouvrez le dossier complet, les études hydrogéologiques et partagez à votre tour pour soutenir l'effort citoyen : https://williamguindon.me\n\n#GrandeTourbière #Blainville #SEM26003 #Environnement #TouchePasAMaTourbière";
+        }
+      } else if (currentTemplate === 'reconciliation') {
         if (currentPlatform === 'x') {
           text = '🧡 Shé:kon. En cette Semaine nationale de la vérité et de la réconciliation (30 septembre), rappelons que la défense de la Grande Tourbière de Blainville s\'inscrit sur le territoire traditionnel non cédé Kanien\'kehá:ka et Anishinaabeg.\n\nChaque enfant compte.\n\n🔗 williamguindon.me/edition-speciale-reconciliation.html\n#NDTR #OrangeShirtDay #ChaqueEnfantCompte #SEM26003 #GrandeTourbière';
         } else if (currentPlatform === 'insta') {
@@ -2395,6 +2621,7 @@
           currentPhotoSrc = tpl.img;
           chkStamp.checked = tpl.stamp;
           chkLiveDot.checked = tpl.live;
+          if (chkSupporterBadge) chkSupporterBadge.checked = !!tpl.supporterBadge;
 
           // Sync boutons d'interface
           document.querySelectorAll('.theme-card').forEach(tc => tc.classList.toggle('active', tc.dataset.theme === currentTheme));
@@ -2484,7 +2711,7 @@
     });
 
     // ÉCOUTEURS DES COMMUTATEURS
-    [chkQuoteMark, chkCrosshairs, chkStamp, chkLiveDot, chkAvatarProfile, chkVerifiedBadge, chkSignatureSvg, chkFooterMeta].forEach(chk => {
+    [chkQuoteMark, chkCrosshairs, chkStamp, chkSupporterBadge, chkLiveDot, chkAvatarProfile, chkVerifiedBadge, chkSignatureSvg, chkFooterMeta].filter(Boolean).forEach(chk => {
       chk.addEventListener('change', updateStage);
     });
 
