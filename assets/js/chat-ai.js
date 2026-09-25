@@ -241,7 +241,7 @@ DIRECTIVES DE RÉPONSE :
       aiModal = document.createElement('div');
       aiModal.className = 'ai-modal-overlay';
       aiModal.innerHTML = `
-        <div class="ai-modal-card anticapture-zone" data-anticapture="true" data-strict="true" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+        <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
           <div class="ai-modal-header">
             <div class="ai-modal-title" id="ai-modal-title">
               <span class="ai-live-dot"></span>

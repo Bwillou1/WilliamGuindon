@@ -113,7 +113,7 @@
   }
 
   function showSecurityShieldOverlays() {
-    // 1. Overlay dédié au Chat IA (au-dessus des messages / réponses)
+    // 1. Overlay dédié au Chat IA (au-dessus du flux de messages / réponses)
     const chatTab = document.getElementById('ai-tab-chat');
     if (chatTab && chatTab.classList.contains('active')) {
       let aiOverlay = document.getElementById('ai-chat-shield-overlay');
@@ -129,6 +129,7 @@
           </p>
           <div class="anticapture-shield-hint">Cliquez ou revenez sur la fenêtre pour réactiver l'affichage</div>
         `;
+        chatTab.style.position = 'relative';
         chatTab.appendChild(aiOverlay);
       }
       aiOverlay.style.display = 'block';
@@ -137,10 +138,11 @@
     // 2. Overlay dédié à la messagerie Nostr (messagerie.html)
     const isMessageriePage = window.location.pathname.includes('messagerie.html');
     if (isMessageriePage) {
-      const msgContainers = document.querySelectorAll('#view-inbox-panel, #view-send-panel, #inbox-list-container');
+      const msgContainers = document.querySelectorAll('#inbox-list-container, #msg-content');
       msgContainers.forEach(container => {
         if (!container) return;
-        let msgOverlay = container.querySelector('.messagerie-shield-overlay');
+        const parent = container.parentElement || container;
+        let msgOverlay = parent.querySelector('.messagerie-shield-overlay');
         if (!msgOverlay) {
           msgOverlay = document.createElement('div');
           msgOverlay.className = 'anticapture-shield-card messagerie-shield-overlay';
@@ -152,8 +154,8 @@
             </p>
             <div class="anticapture-shield-hint">Cliquez ou reprenez le focus pour afficher vos messages</div>
           `;
-          container.style.position = 'relative';
-          container.appendChild(msgOverlay);
+          parent.style.position = 'relative';
+          parent.appendChild(msgOverlay);
         }
         msgOverlay.style.display = 'block';
       });
@@ -296,39 +298,28 @@
     if (isMessageriePage) {
       const msgSelectors = [
         '#msg-content',
-        '#view-send-panel',
-        '#view-send-panel .msg-box-container',
-        '#view-inbox-panel',
-        '#view-inbox-panel .msg-box-container',
         '#inbox-list-container',
-        '.inbox-msg-card',
-        '.msg-box-container',
+        '.inbox-msg-card-body',
         '#burner-nsec-plain',
         '#burner-npub-plain',
         '#log-receipt',
         '#msg-receipt',
-        '.key-display-box'
+        '.key-display-box',
+        '.key-highlight-card'
       ];
       document.querySelectorAll(msgSelectors.join(', ')).forEach(el => {
         applyDeterrenceToElement(el, true);
       });
     }
 
-    // 4. Réponses, synthèses et interface du Chat IA (chat-ai.js / ai.html)
+    // 4. Réponses et synthèses textuelles de l'Assistant IA (chat-ai.js / ai.html)
+    // Note : L'en-tête (titre, onglets), les questions rapides, le champ de saisie et le disclaimer restent toujours 100% visibles et nets.
     const aiSelectors = [
-      '.ai-chat-bubble.bot',
-      '.ai-chat-bubble.bot *',
       '#ai-chat-box',
-      '.ai-chat-messages',
+      '.ai-chat-bubble.bot',
       '#ai-summary-output',
       '.ai-summary-result',
-      '.ai-summary-card',
-      '.ai-summary-box',
-      '#ai-preset-prompt-text',
-      '.ai-modal-card',
-      '#ai-tab-chat',
-      '#ai-tab-summary',
-      '#ai-tab-models'
+      '#ai-preset-prompt-text'
     ];
     document.querySelectorAll(aiSelectors.join(', ')).forEach(el => {
       applyDeterrenceToElement(el, true);
