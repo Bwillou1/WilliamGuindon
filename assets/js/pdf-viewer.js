@@ -169,13 +169,17 @@
     tabThumbnails: document.getElementById('tab-thumbnails'),
     tabOutline: document.getElementById('tab-outline'),
     tabSearch: document.getElementById('tab-search'),
+    tabExplorer: document.getElementById('tab-explorer'),
     tabAi: document.getElementById('tab-ai'),
     tabInfo: document.getElementById('tab-info'),
     paneThumbnails: document.getElementById('pane-thumbnails'),
     paneOutline: document.getElementById('pane-outline'),
     paneSearch: document.getElementById('pane-search'),
+    paneExplorer: document.getElementById('pane-explorer'),
     paneAi: document.getElementById('pane-ai'),
     paneInfo: document.getElementById('pane-info'),
+    inputExplorerSearch: document.getElementById('viewer-explorer-search'),
+    explorerTree: document.getElementById('viewer-explorer-tree'),
     thumbnailsGrid: document.getElementById('thumbnails-grid'),
     outlineTree: document.getElementById('outline-tree'),
     inputSearch: document.getElementById('input-search'),
@@ -920,6 +924,7 @@
       { btn: dom.tabThumbnails, pane: dom.paneThumbnails, name: 'thumbnails' },
       { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' },
       { btn: dom.tabSearch, pane: dom.paneSearch, name: 'search' },
+      { btn: dom.tabExplorer, pane: dom.paneExplorer, name: 'explorer' },
       { btn: dom.tabAi, pane: dom.paneAi, name: 'ai' },
       { btn: dom.tabInfo, pane: dom.paneInfo, name: 'info' }
     ];
@@ -937,6 +942,9 @@
 
     if (tabName === 'search' && dom.inputSearch) {
       setTimeout(() => dom.inputSearch.focus(), 150);
+    } else if (tabName === 'explorer') {
+      renderExplorerInSidebar();
+      if (dom.inputExplorerSearch) setTimeout(() => dom.inputExplorerSearch.focus(), 150);
     } else if (tabName === 'ai') {
       checkViewerAiCapabilities();
       if (dom.viewerChatInput) setTimeout(() => dom.viewerChatInput.focus(), 150);
@@ -997,6 +1005,152 @@
     }
   }
 
+  let explorerLoaded = false;
+  const SIDEBAR_ARCHIVE_FILES = ["01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png", "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv", "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv", "01_Especes_Menacees_Biodiversite/G04_Tortue_serpentine_BIFFE_AUDIT.csv", "01_Especes_Menacees_Biodiversite/G05_Fiche_Statut_Espece_LEP_BIFFE_AUDIT.png", "01_Especes_Menacees_Biodiversite/G06_observations-752640_BIFFE_AUDIT.csv", "01_Especes_Menacees_Biodiversite/G07_515-2025-rae_BIFFE_AUDIT.pdf", "01_Especes_Menacees_Biodiversite/G08_2025-03-18_Memoire_PL93-2_BIFFE_AUDIT.pdf", "01_Especes_Menacees_Biodiversite/G09_Article_LeDevoir_Especes_Menacees_BIFFE_AUDIT.pdf", "01_Especes_Menacees_Biodiversite/G10_Tableau_Especes_Menacees_Federal_2026-07-06_BIFFE_AUDIT.pdf", "01_Especes_Menacees_Biodiversite/G11_Rapport_371_BAPE_2026-07-06_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_11h49.00_BIFFE_AUDIT.png", "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_12h14.48_BIFFE_AUDIT.png", "02_Contaminations_Fuites_Stablex_Medias/Capture_2026-07-16_12h32.50_BIFFE_AUDIT.png", "02_Contaminations_Fuites_Stablex_Medias/Dossier_Stablex_financement_republicains_TVA_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H01_Blainville_Groupes_Plainte_Stablex_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H02_Debordement_Eau_Coloree_Stablex_JDM_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H03_Plainte_Groupes_Environnementaux_CityNews_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H04_Metaux_Toxiques_Echantillonnages_Radio_Canada_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H05_Des_poissons_proteges_LeDevoir_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H06_Evacuation_Trois_Entreprises_JDM_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H07_Explosion_Blainville_6_Blesses_TVA_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H08_Metaux_Lourds_Contamination_Inquietante_TVA_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H09_Metaux_Lourds_Eaux_Blainville_Nord_Info_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H13_Communique_Fuite_Toxique_Climat_Quebec_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H14_Stablex_Repond_Allegations_CIME_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H15_Metaux_Toxiques_Detectes_Climat_Quebec_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H16_Projet_Loi_Aide_Stablex_Radio_Canada_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H17_Gestion_Dechets_Dangereux_Radio_Canada_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H18_Benoit_Charette_Accuse_Blainville_LeDevoir_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H19_Contamination_Inquietante_Stablex_TVA_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H20_Examen_Impacts_Poisson_LeDevoir_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H21_Campagne_Echantillonnage_Presse_Toi_A_Gauche_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H22_Bunkers_Plan_Bouchard_Guerre_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/H23_Site_Camp_Bouchard_Decontamination(x)_Munitions_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/Martine_Oullet_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/Protection_dune_tourbiere_a_Blainville_Le_combat_dun_adolescent_a_lONU_BIFFE_AUDIT.pdf", "02_Contaminations_Fuites_Stablex_Medias/Stablex_ecoblanchiment_Presse_toi_a_gauche_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I01_Fiche_Technique_Suivi_2026-07-06_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I02_Etude_UQAM_COBAMIL_Esker_Ste_Therese_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I03_Memoire_UQAM_Geomorphologie_Laurentides_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I04_Rapport_Final_Caracterisation_Milieux_Naturels_2014_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I05_Carte_Especes_Susceptibles_Menacees_BIFFE_AUDIT.jpg", "03_Etudes_Ecologiques_Cartes_Tourbiere/I06_Carte_Valeur_Ecologique_Tourbiere_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I07_Carte_Localisation_Milieux_Naturels_Blainville_BIFFE_AUDIT.png", "03_Etudes_Ecologiques_Cartes_Tourbiere/I08_Carte_Obsers_BIFFE_AUDIT.pdf", "03_Etudes_Ecologiques_Cartes_Tourbiere/I09_Memoire_Collectif_Projet_Loi_93_Mars2025_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/2flush_BIFFE_AUDIT.mp4", "04_Preuves_Citoyennes_Tests_Eau_Rapports/62-DET2_fr_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Capture d’écran, le 2026-07-16 à 12.14.48_BIFFE_AUDIT.png", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Capture d’écran, le 2026-07-16 à 12.32.50_BIFFE_AUDIT.png", "04_Preuves_Citoyennes_Tests_Eau_Rapports/DM30_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Des groupes portent plainte contre Stablex et dénoncent le désengagement du ministère de l’Environnement - Eau Secours_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/EauSecours_Groupes_portent_plainte_Stablex_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/F01_2026-06-10_Stablex_Rapport-WaterShed-1_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/F02_Resultats_Tests_Citoyens_Blainville_Stable_BIFFE_AUDIT.kml", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Firme_externe_embauchee_par_la_ville_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/La science citoyenne expose la pollution causée par une entreprise de Blainville - Pivot_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/PHOTO_PATRICK_SANFAÇON_LA_PRESSE_BIFFE_AUDIT.png", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Rencontre_expert_2026-07-07_version_longue_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/Ressource_visuelle_BIFFE_AUDIT.pdf", "04_Preuves_Citoyennes_Tests_Eau_Rapports/reddit_BIFFE_AUDIT.pdf", "05_Images_Satellites_Sentinel2_NDVI/Annexe_Pieces_Justificatives_Complement_SEM-26-003_BIFFE_AUDIT.csv", "05_Images_Satellites_Sentinel2_NDVI/Complement_information_SEM-26-003_BIFFE_AUDIT.pdf", "05_Images_Satellites_Sentinel2_NDVI/J01_2026-04-24_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J02_2026-04-24_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J03_2026-06-13_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J04_2026-06-13_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J05_2026-06-13_Sentinel-2_L2A_SWIR_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J06_2026-07-23_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J07_2026-07-23_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J08_2026-09-11_Sentinel-2_L2A_True_Color_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J09_2026-09-11_Sentinel-2_L2A_NDVI_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J10_2026-09-11_Sentinel-2_L2A_SWIR_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J11_2026-04-24_au_2026-09-11_Sentinel-2_L2A_Timelapse_BIFFE_AUDIT.gif", "05_Images_Satellites_Sentinel2_NDVI/J12_2026-04-24_au_2026-09-11_Sentinel-2_L2A_Timelapse_BIFFE_AUDIT.mp4", "05_Images_Satellites_Sentinel2_NDVI/J13_2026-09-13_Vecteur_Emprise_Etude_Stablex_Cellule6_BIFFE_AUDIT.geojson", "05_Images_Satellites_Sentinel2_NDVI/J14_2026-09-13_Capture_Serie_Spectrale_NDVI_6M_Mars-Sept2026_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J15_2026-09-13_Capture_Serie_Spectrale_NDVI_3M_Juin-Sept2026_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J16_2026-09-13_Capture_Serie_Spectrale_NDVI_3M_Mars-Juin2026_BIFFE_AUDIT.png", "05_Images_Satellites_Sentinel2_NDVI/J17_2026-03-11_au_2026-09-11_Sentinel-2_L2A_NDVI_Donnees_Brutes_6M_BIFFE_AUDIT.csv", "05_Images_Satellites_Sentinel2_NDVI/J18_2026-06-11_au_2026-09-11_Sentinel-2_L2A_NDVI_Donnees_Brutes_3M_Ete_BIFFE_AUDIT.csv", "05_Images_Satellites_Sentinel2_NDVI/J19_2026-03-13_au_2026-06-13_Sentinel-2_L2A_NDVI_Donnees_Brutes_3M_Printemps_BIFFE_AUDIT.csv", "06_Demarches_Juridiques_ONU_ECCC/2026-06-30_Lettre_reponse_M_Guindon_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Capture_2026-07-16_CanLII_BIFFE_AUDIT.png", "06_Demarches_Juridiques_ONU_ECCC/D01_Accuse_Reception_Enquete_Stablex_03Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D02_Demande_Enquete_Autorites_03Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D03_Suivi_Demande_Enquete_10Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D04_Demande_Clarification_STB_16Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D05_Notification_Ecrite_Prealable_CCE_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D06_Accuse_Notification_ECCC_19Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D07_Accuse_Automatique_MERN_19Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D08_Accuse_Automatique_MELCCFP_19Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D09_Accuse_Automatique_PMO_19Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D0_Formulaire_Demande_Acces_Redacted_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D0_Reponse_Acces_Blainville_30Juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D10_minister_19juin2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D11_Demande_Rencontre_ECCC_2026-06-28_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D11_Demande_Rencontre_ECCC_2026-06-28_BIFFE.png", "06_Demarches_Juridiques_ONU_ECCC/D12_Accuse_Reception_ECCC_2026-06-28_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D13_Rapport_Soumission_ONU_2026-06-28_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D14_Resume_Soumission_Environnementale_2026-06-28_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/D14_Resume_Soumission_Environnementale_2026-06-28_BIFFE.png", "06_Demarches_Juridiques_ONU_ECCC/E02_Demande_Precisions_Ville_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Formulaire_accesV2026_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Gmail_Demande_acces_Lacs_Fauvel_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Gmail_RE_Soumission_petition_environnementale_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Lettre_CEDD_au_petitionnaire_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Petition_environnementale_Stablex_Blainville_BIFFE.pdf", "06_Demarches_Juridiques_ONU_ECCC/Reponse_partielle_ministere_BIFFE.pdf", "07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf", "07_Lettres_Appui_Communications_CCE/26-3-det2_fr (2).pdf", "07_Lettres_Appui_Communications_CCE/26-3-rsub_fr_redacted (5).pdf", "08_Audit_Tracabilite_Registres/00_CHAIN_OF_CUSTODY.sha256", "08_Audit_Tracabilite_Registres/00_RAPPORT_AUDIT_GFIH_COMPL.md", "08_Audit_Tracabilite_Registres/00_REGISTRE_DES_BIFFURES.pdf", "08_Audit_Tracabilite_Registres/00_REGISTRE_DES_BIFFURES.txt", "A - B - C/00_CHAIN_OF_CUSTODY.pdf", "A - B - C/00_CHAIN_OF_CUSTODY.sha256", "A - B - C/00_RAPPORT_AUDIT_ABC.md", "A - B - C/00_REGISTRE_DES_BIFFURES.pdf", "A - B - C/00_REGISTRE_DES_BIFFURES.txt", "A - B - C/3026512.pdf", "A - B - C/A01_Etude_Impact_Cellule6_Nov2020.pdf", "A - B - C/A02_Analyse_Air_Ambiant_Stablex_Dec2024.pdf", "A - B - C/A03_Rapport_Inspection_Stablex.pdf", "A - B - C/A04_Mise_Jour_Description_Impacts_Juin2022.pdf", "A - B - C/B01_Caracterisation_Sols_Dec2025.pdf", "A - B - C/B02_Caracterisation_Eaux_Surface_Dec2025.pdf", "A - B - C/B03_Caracterisation_Milieu_Naturel_Oct2023.pdf", "A - B - C/C01_Courriel_Suivi_57.pdf", "A - B - C/C02_Demande_Engagements_DGEES_45.pdf", "A - B - C/C03_Complements_Information_MELCCFP_44.pdf", "A - B - C/C04_Projet_Reechantillonnage_Urgence_42.pdf", "A - B - C/C05_Requetes_Consultation_Publique_31.pdf", "A - B - C/C06_Document_Officiel_Suivi_22.pdf", "A - B - C/C07_Document_Officiel_Suivi_16.pdf", "A - B - C/C08_Directive_Ministerielle_MELCCFP.pdf", "A - B - C/CCE - À l’heure des comptes - Résultats de la requête.pdf", "A - B - C/Capture d’écran, le 2026-07-06 à 13.29.47.png", "A - B - C/Capture d’écran, le 2026-07-16 à 12.17.05.png", "A - B - C/DB14_Rapport d_enquête 7122-02-89-0000022.pdf", "A - B - C/Dossier Stablex_ du financement à des républicains controversés _ TVA Nouvelles.pdf", "A - B - C/Profil de lobbying de Republic Services • OpenSecrets.pdf", "A - B - C/Recensement 2021 Blainvillois.pdf", "A - B - C/Rejets polluants/Analyse de conformité LCPE – Cas Stablex.pdf", "A - B - C/Rejets polluants/INRP_2012_5491.pdf", "A - B - C/Rejets polluants/INRP_2024_5491 (Tableau).pdf", "A - B - C/Rejets polluants/INRP_2024_5491.pdf", "A - B - C/Rejets polluants/INRP_2025_5491.pdf", "A - B - C/Rejets polluants/Journal des débats de l_Assemblée nationale - Assemblée nationale du Québec.pdf", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.50.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.57.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.04.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.12.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.18.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.25.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.32.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.38.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.45.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.53.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.04.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.22.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.29.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.35.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.42.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.48.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.53.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.59.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.05.png", "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.12.png", "A - B - C/Rejets polluants/Plan Bouchard/Site 06875001 - Camp Bouchard, ancien dépôt de munitions.pdf", "A - B - C/Rejets polluants/rejet.pdf", "A - B - C/Sealosafe/https_www.britishnewspaperarchive.co.uk_search_results_1989-06-20_NewspaperTitle=Birmingham_2BNews&IssueId=BL_2F0003661_2F19890620_2F&County=Warwickshire_2C_20England.png", "A - B - C/Sealosafe/pr84.pdf", "A - B - C/Sealosafe/rapport371.pdf", "A - B - C/Sealosafe/seal12.png", "A - B - C/Sealosafe/seal13.png", "A - B - C/Sealosafe/seal14.png", "A - B - C/Sealosafe/seal15.png", "A - B - C/Sealosafe/seal16.png", "A - B - C/Sealosafe/seal18.png", "A - B - C/Sealosafe/seal20.png", "A - B - C/compte-rendu-rencontre-2-stablex.pdf", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S_2.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_2.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_3.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_4.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/471362605_557192947288793_7552720520798828378_n.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/486693577_628236726851081_4669035421769396090_n.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488581095_634855336189220_7127364322750908112_n.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488595555_635345709473516_6276673584910527341_n.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/498641043_668527152822038_5242990835995525266_n.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/8_oct_fuite_CCBC6S.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_10.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_11.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_12.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_13.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_14.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_15.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_16.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_17.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_18.JPG", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_19.JPG", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_20.JPG", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_21.JPG.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_6.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_7.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_9.jpg", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.14.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.25.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.32.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.40.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.58.55.png", "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/PHOTO PATRICK SANFAÇON, LA PRESSE.webp", "RC/RC _ Enquête.docx", "RC/RC-1.pdf", "RC/RC-2.pdf", "RC/RC-3.pdf", "RC/RC-4.pdf"];
+
+  function renderExplorerInSidebar() {
+    if (!dom.explorerTree || explorerLoaded) return;
+    explorerLoaded = true;
+
+    dom.explorerTree.innerHTML = '<div style="padding: 12px; font-size: 11.5px; color: var(--text-faint); text-align: center;">Chargement de l\'arborescence probatoire...</div>';
+
+    function buildSidebarTree(fileList) {
+      const root = { subfolders: {}, files: [] };
+      fileList.forEach(fullPath => {
+        let clean = fullPath;
+        if (clean.startsWith('00_DOSSIER_POUR_JOURNALISTES_BIFFE/')) {
+          clean = clean.replace('00_DOSSIER_POUR_JOURNALISTES_BIFFE/', '');
+        }
+        const parts = clean.split('/');
+        const fileName = parts.pop();
+        let cur = root;
+        parts.forEach(p => {
+          if (!cur.subfolders[p]) cur.subfolders[p] = { subfolders: {}, files: [] };
+          cur = cur.subfolders[p];
+        });
+        cur.files.push({
+          name: fileName,
+          originalPath: fullPath,
+          cleanPath: clean,
+          isPdf: fileName.toLowerCase().endsWith('.pdf')
+        });
+      });
+      return root;
+    }
+
+    function countFolder(n) {
+      let c = n.files.length;
+      for (const k in n.subfolders) c += countFolder(n.subfolders[k]);
+      return c;
+    }
+
+    function renderNode(node, container, isRoot) {
+      const folders = Object.keys(node.subfolders).sort((a, b) => a.localeCompare(b, 'fr', { numeric: true }));
+      folders.forEach((fName, idx) => {
+        const sub = node.subfolders[fName];
+        const total = countFolder(sub);
+        const div = document.createElement('div');
+        div.className = 'tree-node' + (isRoot && idx === 0 ? ' open' : '');
+        div.style.marginBottom = '2px';
+
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex; align-items:center; gap:6px; padding:5px 8px; cursor:pointer; font-size:12px; font-weight:600; border-radius:6px; color:var(--text);';
+        header.innerHTML = `
+          <span style="font-size:9px; width:12px; text-align:center; color:var(--text-faint);">▶</span>
+          <span>📁</span>
+          <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(fName)}">${escapeHTML(fName)}</span>
+          <span style="font-size:10px; color:var(--accent-deep); background:var(--accent-wash); padding:1px 6px; border-radius:10px;">${total}</span>
+        `;
+
+        const children = document.createElement('div');
+        children.style.cssText = 'display:none; padding-left:10px; border-left:1.5px dashed var(--line); margin-left:8px; margin-top:2px;';
+
+        header.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = div.classList.toggle('open');
+          children.style.display = isOpen ? 'block' : 'none';
+          header.querySelector('span').textContent = isOpen ? '▼' : '▶';
+        });
+
+        if (isRoot && idx === 0) {
+          children.style.display = 'block';
+          header.querySelector('span').textContent = '▼';
+        }
+
+        renderNode(sub, children, false);
+        div.appendChild(header);
+        div.appendChild(children);
+        container.appendChild(div);
+      });
+
+      const files = node.files.sort((a, b) => a.name.localeCompare(b.name, 'fr', { numeric: true }));
+      files.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-file-item';
+        item.style.cssText = 'display:flex; align-items:center; gap:6px; padding:4px 8px; cursor:pointer; font-size:11.5px; border-radius:5px; margin:1px 0; color:var(--text); transition:background 0.12s;';
+        item.dataset.fileName = f.name.toLowerCase();
+
+        const icon = f.isPdf ? '📕' : f.name.match(/\.(png|jpg|jpeg|webp|gif)$/i) ? '🌿' : f.name.match(/\.(mp4|mov)$/i) ? '🎥' : f.name.endsWith('.csv') ? '📊' : '📝';
+        item.innerHTML = `
+          <span>${icon}</span>
+          <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(f.name)}">${escapeHTML(f.name)}</span>
+        `;
+
+        item.addEventListener('mouseenter', () => item.style.background = 'var(--accent-wash)');
+        item.addEventListener('mouseleave', () => {
+          if (!item.classList.contains('active')) item.style.background = 'transparent';
+        });
+
+        const archiveUrl = 'https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/' + encodeURI(f.originalPath);
+
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.sidebar-file-item').forEach(el => {
+            el.classList.remove('active');
+            el.style.background = 'transparent';
+          });
+          item.classList.add('active');
+          item.style.background = 'var(--accent-wash)';
+
+          if (f.isPdf) {
+            loadPDF(archiveUrl, 1);
+            if (dom.badge) dom.badge.textContent = 'Archive Probatoire';
+            document.title = `${f.name} — Lecteur Officiel · William Guindon`;
+            if (window.innerWidth < 900) toggleSidebar(false);
+          } else {
+            window.open(archiveUrl, '_blank');
+          }
+        });
+
+        container.appendChild(item);
+      });
+    }
+
+    const treeData = buildSidebarTree(SIDEBAR_ARCHIVE_FILES);
+    dom.explorerTree.innerHTML = '';
+    renderNode(treeData, dom.explorerTree, true);
+
+    // Filtrage en direct
+    if (dom.inputExplorerSearch) {
+      dom.inputExplorerSearch.addEventListener('input', () => {
+        const q = dom.inputExplorerSearch.value.trim().toLowerCase();
+        const items = dom.explorerTree.querySelectorAll('.sidebar-file-item');
+        items.forEach(it => {
+          const isMatch = !q || (it.dataset.fileName || '').includes(q);
+          it.style.display = isMatch ? 'flex' : 'none';
+          if (isMatch && q) {
+            let p = it.parentElement;
+            while (p && p !== dom.explorerTree) {
+              if (p.style.display === 'none') p.style.display = 'block';
+              p = p.parentElement;
+            }
+          }
+        });
+      });
+    }
+  }
+
+
   /**
    * Configuration de tous les écouteurs d'événements
    */
@@ -1005,6 +1159,10 @@
     if (dom.docSelect) {
       dom.docSelect.addEventListener('change', () => {
         const docKey = dom.docSelect.value;
+        if (docKey === '__open_drive__') {
+          window.location.href = 'dossier-journalistes.html';
+          return;
+        }
         if (DOCS_CATALOG[docKey]) {
           const doc = DOCS_CATALOG[docKey];
           loadPDF(doc.file, 1);
@@ -1031,6 +1189,7 @@
     if (dom.tabThumbnails) dom.tabThumbnails.addEventListener('click', () => switchSidebarTab('thumbnails'));
     if (dom.tabOutline) dom.tabOutline.addEventListener('click', () => switchSidebarTab('outline'));
     if (dom.tabSearch) dom.tabSearch.addEventListener('click', () => switchSidebarTab('search'));
+    if (dom.tabExplorer) dom.tabExplorer.addEventListener('click', () => switchSidebarTab('explorer'));
     if (dom.tabAi) dom.tabAi.addEventListener('click', () => switchSidebarTab('ai'));
     if (dom.tabInfo) dom.tabInfo.addEventListener('click', () => switchSidebarTab('info'));
 
