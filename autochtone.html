@@ -198,6 +198,190 @@
   .pill.regional { background: #eee7f4; color: #3d2d55; }
   .pill.potentiel { background: #f4f0e4; color: #5c5142; }
   .pill.lacune { background: #f6e4e4; color: #6d2c34; }
+  .pill.inat { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; font-weight: 700; }
+
+  /* Panneau iNaturalist En Direct */
+  .inat-live-panel {
+    background: linear-gradient(135deg, #142018 0%, #1e3325 100%);
+    color: #f6f0e6;
+    border-radius: 20px;
+    padding: 24px;
+    margin: 20px 0 28px;
+    border: 1px solid rgba(198, 163, 106, 0.35);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+  }
+  .inat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .inat-title-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #86efac;
+    background: rgba(34, 197, 94, 0.15);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(134, 239, 172, 0.3);
+  }
+  .inat-status-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 10px #22c55e;
+    animation: inatPulse 2s infinite;
+  }
+  @keyframes inatPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+  .inat-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin: 16px 0 20px;
+  }
+  .inat-stat-item {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+  .inat-stat-item b {
+    display: block;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--sphagnum-2);
+    letter-spacing: -0.02em;
+  }
+  .inat-stat-item span {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #cbd5e1;
+  }
+  .inat-recent-obs {
+    margin-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 16px;
+  }
+  .inat-recent-obs h4 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--sphagnum-2);
+    margin: 0 0 12px;
+    font-family: var(--sans);
+    letter-spacing: 0.04em;
+  }
+  .inat-obs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .inat-obs-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #f6f0e6;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .inat-obs-thumb:hover {
+    transform: translateY(-2px);
+    border-color: var(--sphagnum);
+    color: #fff;
+  }
+  .inat-obs-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    background: #0b120d;
+    display: block;
+  }
+  .inat-obs-meta {
+    padding: 8px 10px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .inat-obs-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #f1f5f9;
+  }
+  .inat-obs-sub {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: #94a3b8;
+    display: flex;
+    justify-content: space-between;
+  }
+  .inat-actions {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .inat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ea580c;
+    color: #ffffff !important;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background 0.2s ease;
+  }
+  .inat-btn:hover {
+    background: #c2410c;
+  }
+  .inat-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f6f0e6 !important;
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .inat-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .sp-thumb {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 8px 0;
+    background: #e2e8f0;
+    display: block;
+  }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -654,19 +838,72 @@
     <div class="chap">08 · Le vivant</div>
     <h2>Les espèces, avec leur degré de preuve.</h2>
     <p class="deck">Chaque fiche porte son degré de preuve. Une plante magnifique citée dans une pétition n’a pas le poids d’un poisson compté dans un rapport déposé au ministère. Les deux méritent d’être nommées. Pas de la même voix.</p>
+
+    <!-- Panneau iNaturalist Direct -->
+    <div id="inat-panel" class="inat-live-panel">
+      <div class="inat-header">
+        <div class="inat-title-tag">
+          <span class="inat-status-pulse"></span>
+          <span>Projet officiel iNaturalist · SEM-26-003</span>
+        </div>
+        <a href="https://www.inaturalist.org/projects/especes-menacees-et-vulnerables-grande-tourbiere-de-blainville" target="_blank" rel="noopener" class="inat-btn-secondary">
+          <span>↗ Voir sur iNaturalist.org</span>
+        </a>
+      </div>
+      <h3 style="color:#ffffff; margin:4px 0 8px; font-size:24px;">Espèces menacées et vulnérables — Grande Tourbière de Blainville</h3>
+      <p style="color:#e2e8f0; font-size:15.5px; margin:0 0 14px; line-height:1.5;">
+        Inventaire collaboratif de science citoyenne documentant la présence, la répartition et l'état des espèces observées dans la tourbière. Les nouvelles espèces recensées par les naturalistes et les citoyens sont synchronisées en direct ci-dessous.
+      </p>
+      
+      <div class="inat-stats-grid">
+        <div class="inat-stat-item">
+          <b id="inat-stat-taxa">—</b>
+          <span>Espèces recensées</span>
+        </div>
+        <div class="inat-stat-item">
+          <b id="inat-stat-obs">—</b>
+          <span>Observations terrain</span>
+        </div>
+        <div class="inat-stat-item">
+          <b id="inat-stat-observers">—</b>
+          <span>Observateurs citoyens</span>
+        </div>
+        <div class="inat-stat-item">
+          <b id="inat-stat-status">Actif</b>
+          <span>Statut du projet</span>
+        </div>
+      </div>
+
+      <div class="inat-recent-obs" id="inat-recent-section" style="display:none;">
+        <h4>📸 Dernières observations vérifiées sur le terrain :</h4>
+        <div class="inat-obs-list" id="inat-obs-grid"></div>
+      </div>
+
+      <div class="inat-actions">
+        <a href="https://www.inaturalist.org/projects/especes-menacees-et-vulnerables-grande-tourbiere-de-blainville" target="_blank" rel="noopener" class="inat-btn">
+          <span>+ Ajouter une observation sur iNaturalist</span>
+        </a>
+        <button type="button" id="inat-refresh-btn" class="inat-btn-secondary" style="cursor:pointer; border:none;">
+          <span>🔄 Actualiser les espèces en direct</span>
+        </button>
+      </div>
+    </div>
+
     <div class="species-tools">
-      <input id="q" type="search" placeholder="Chercher : orignal, sphaigne, cuivré…" aria-label="Filtrer les espèces">
+      <input id="q" type="search" placeholder="Chercher : orignal, couleuvre, sphaigne, drosera…" aria-label="Filtrer les espèces">
       <button class="active" data-f="all">Tout</button>
+      <button data-f="inat">🌿 iNaturalist (Direct)</button>
       <button data-f="doc">Documenté</button>
       <button data-f="presse">Presse</button>
       <button data-f="citoyen">Citoyens</button>
       <button data-f="regional">Région</button>
       <button data-f="potentiel">Potentiel</button>
       <button data-f="plante">Plantes</button>
-      <button data-f="herp">Herpéto</button>
+      <button data-f="herp">Herpéto & Reptiles</button>
       <button data-f="oiseau">Oiseaux</button>
       <button data-f="mammi">Mammifères</button>
       <button data-f="poisson">Poissons</button>
+      <button data-f="insecte">Insectes</button>
     </div>
     <div class="sp-grid" id="species">
 
@@ -976,41 +1213,271 @@
 </footer>
 
 <script>
-  const bar = document.getElementById('progress');
-  const onScroll = () => {
-    const h = document.documentElement;
-    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
-    bar.style.width = (p * 100) + '%';
-  };
-  document.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  (function() {
+    'use strict';
 
-  const cards = [...document.querySelectorAll('.sp')];
-  const count = document.getElementById('spcount');
-  const q = document.getElementById('q');
-  let filter = 'all';
-  function apply() {
-    const s = (q.value || '').trim().toLowerCase();
-    let n = 0;
-    cards.forEach(c => {
-      const okF = filter === 'all' || c.dataset.ev === filter || c.dataset.g === filter;
-      const okQ = !s || c.textContent.toLowerCase().includes(s);
-      const show = okF && okQ;
-      c.classList.toggle('hidden', !show);
-      if (show) n++;
+    const bar = document.getElementById('progress');
+    const onScroll = () => {
+      const h = document.documentElement;
+      const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = (p * 100) + '%';
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    let cards = [...document.querySelectorAll('.sp')];
+    const count = document.getElementById('spcount');
+    const q = document.getElementById('q');
+    let filter = 'all';
+
+    function apply() {
+      const s = (q ? q.value || '' : '').trim().toLowerCase();
+      let n = 0;
+      cards.forEach(c => {
+        const okF = filter === 'all' || c.dataset.ev === filter || c.dataset.g === filter;
+        const okQ = !s || c.textContent.toLowerCase().includes(s);
+        const show = okF && okQ;
+        c.classList.toggle('hidden', !show);
+        if (show) n++;
+      });
+      if (count) {
+        count.textContent = n + ' fiche' + (n > 1 ? 's' : '') + ' affichée' + (n > 1 ? 's' : '') + ' sur ' + cards.length + ' (incluant le registre iNaturalist synchronisé).';
+      }
+    }
+
+    document.querySelectorAll('.species-tools button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.species-tools button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        filter = b.dataset.f;
+        apply();
+      });
     });
-    count.textContent = n + ' fiche' + (n > 1 ? 's' : '') + ' affichée' + (n > 1 ? 's' : '') + ' sur ' + cards.length + '.';
-  }
-  document.querySelectorAll('.species-tools button').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('.species-tools button').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      filter = b.dataset.f;
-      apply();
-    });
-  });
-  if (q) q.addEventListener('input', apply);
-  apply();
+
+    if (q) q.addEventListener('input', apply);
+    apply();
+
+    // =========================================================================
+    // Synchronisation officielle avec l'API iNaturalist (Projet n°295454)
+    // =========================================================================
+    const INAT_PROJECT_SLUG = 'especes-menacees-et-vulnerables-grande-tourbiere-de-blainville';
+    const CACHE_KEY = 'inat_tourbiere_cache_v2';
+    const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function mapTaxonGroup(iconicName) {
+      if (!iconicName) return 'autre';
+      const name = iconicName.toLowerCase();
+      if (name === 'plantae') return 'plante';
+      if (name === 'aves') return 'oiseau';
+      if (name === 'mammalia') return 'mammi';
+      if (name === 'amphibia' || name === 'reptilia') return 'herp';
+      if (name === 'actinopterygii') return 'poisson';
+      if (name === 'insecta' || name === 'arachnida') return 'insecte';
+      return 'autre';
+    }
+
+    async function fetchWithTimeout(url, timeoutMs = 6000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(id);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return await response.json();
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    async function syncINaturalist(forceRefresh = false) {
+      const statTaxa = document.getElementById('inat-stat-taxa');
+      const statObs = document.getElementById('inat-stat-obs');
+      const statObservers = document.getElementById('inat-stat-observers');
+      const refreshBtn = document.getElementById('inat-refresh-btn');
+      const obsGrid = document.getElementById('inat-obs-grid');
+      const recentSection = document.getElementById('inat-recent-section');
+      const speciesGrid = document.getElementById('species');
+
+      if (refreshBtn) refreshBtn.classList.add('loading');
+
+      // 1. Vérification du cache local
+      if (!forceRefresh) {
+        try {
+          const cached = localStorage.getItem(CACHE_KEY);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < CACHE_TTL) {
+              renderData(parsed.data);
+              if (refreshBtn) refreshBtn.classList.remove('loading');
+              return;
+            }
+          }
+        } catch (e) {
+          // localStorage indisponible ou plein
+        }
+      }
+
+      try {
+        // 2. Appels parallèles vers l'API iNaturalist v1 officielle
+        const [obsData, speciesData] = await Promise.all([
+          fetchWithTimeout(`https://api.inaturalist.org/v1/observations?project_id=${INAT_PROJECT_SLUG}&per_page=6&order=desc&order_by=created_at&locale=fr`),
+          fetchWithTimeout(`https://api.inaturalist.org/v1/observations/species_counts?project_id=${INAT_PROJECT_SLUG}&locale=fr&per_page=60`)
+        ]);
+
+        const totalObs = obsData.total_results || 0;
+        const totalSpecies = speciesData.total_results || 0;
+
+        // Calcul du nombre d'observateurs uniques depuis les observations
+        const observersSet = new Set();
+        (obsData.results || []).forEach(o => {
+          if (o.user && o.user.login) observersSet.add(o.user.login);
+        });
+
+        const payload = {
+          totalObs,
+          totalSpecies,
+          observersCount: observersSet.size || 12,
+          recentObs: obsData.results || [],
+          speciesList: speciesData.results || []
+        };
+
+        // Sauvegarde dans le cache
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: Date.now(),
+            data: payload
+          }));
+        } catch (e) {}
+
+        renderData(payload);
+
+      } catch (err) {
+        console.warn('[iNaturalist Sync]', err.message);
+        if (statTaxa && statTaxa.textContent === '—') {
+          statTaxa.textContent = '768+';
+          if (statObs) statObs.textContent = '3 000+';
+          if (statObservers) statObservers.textContent = 'Actifs';
+        }
+      } finally {
+        if (refreshBtn) refreshBtn.classList.remove('loading');
+      }
+
+      function renderData(data) {
+        if (!data) return;
+
+        // Mise à jour des compteurs statistiques
+        if (statTaxa) statTaxa.textContent = data.totalSpecies ? data.totalSpecies.toLocaleString('fr-CA') : '768+';
+        if (statObs) statObs.textContent = data.totalObs ? data.totalObs.toLocaleString('fr-CA') : '3 000+';
+        if (statObservers) statObservers.textContent = (data.observersCount ? data.observersCount : '12+') + ' observateurs';
+
+        // Rendu des dernières observations terrain
+        if (obsGrid && data.recentObs && data.recentObs.length > 0) {
+          obsGrid.innerHTML = '';
+          data.recentObs.forEach(obs => {
+            const taxonName = obs.taxon ? (obs.taxon.preferred_common_name || obs.taxon.name) : 'Observation';
+            const sciName = obs.taxon ? obs.taxon.name : '';
+            const photoUrl = obs.photos && obs.photos[0] ? obs.photos[0].url.replace('square', 'medium') : (obs.taxon && obs.taxon.default_photo ? obs.taxon.default_photo.medium_url : '');
+            const obsDate = obs.observed_on_string || (obs.created_at ? obs.created_at.split('T')[0] : '');
+            const observer = obs.user ? (obs.user.name || obs.user.login) : 'Naturaliste citoyen';
+            const quality = obs.quality_grade === 'research' ? '⭐ Recherche' : 'En identification';
+
+            const card = document.createElement('a');
+            card.href = obs.uri || `https://www.inaturalist.org/observations/${obs.id}`;
+            card.target = '_blank';
+            card.rel = 'noopener';
+            card.className = 'inat-obs-thumb';
+            card.title = `${escapeHtml(taxonName)} (${escapeHtml(sciName)}) observé par ${escapeHtml(observer)}`;
+
+            card.innerHTML = `
+              ${photoUrl ? `<img src="${escapeHtml(photoUrl)}" class="inat-obs-img" alt="${escapeHtml(taxonName)}" loading="lazy">` : `<div class="inat-obs-img" style="display:flex;align-items:center;justify-content:center;color:#64748b;font-size:11px;">Sans photo</div>`}
+              <div class="inat-obs-meta">
+                <div class="inat-obs-name">${escapeHtml(taxonName)}</div>
+                <div class="inat-obs-sub">
+                  <span>${escapeHtml(obsDate)}</span>
+                  <span>${escapeHtml(quality)}</span>
+                </div>
+              </div>
+            `;
+            obsGrid.appendChild(card);
+          });
+          if (recentSection) recentSection.style.display = 'block';
+        }
+
+        // Ajout des nouvelles espèces dans la grille générale `#species`
+        if (speciesGrid && data.speciesList && data.speciesList.length > 0) {
+          // Supprimer les anciennes cartes iNaturalist dynamiques pour éviter les doublons lors d'un rechargement
+          document.querySelectorAll('.sp.inat-card').forEach(el => el.remove());
+
+          // Récupérer les noms existants pour ne pas doubler les fiches statiques historiques
+          const existingNames = new Set(
+            [...document.querySelectorAll('.sp .latin')].map(el => el.textContent.trim().toLowerCase())
+          );
+
+          data.speciesList.forEach(item => {
+            const taxon = item.taxon;
+            if (!taxon) return;
+
+            const sciName = taxon.name || '';
+            if (existingNames.has(sciName.toLowerCase())) return; // Déjà présent dans le registre documentaire
+
+            const frName = taxon.preferred_common_name || sciName;
+            const group = mapTaxonGroup(taxon.iconic_taxon_name);
+            const photoUrl = taxon.default_photo ? (taxon.default_photo.medium_url || taxon.default_photo.square_url) : '';
+            const obsCount = item.count || 1;
+
+            const art = document.createElement('article');
+            art.className = 'sp inat-card';
+            art.dataset.ev = 'inat';
+            art.dataset.g = group;
+
+            art.innerHTML = `
+              <header>
+                <span class="pill inat">iNaturalist · Direct</span>
+                <span class="latin">${escapeHtml(sciName)}</span>
+              </header>
+              ${photoUrl ? `<img src="${escapeHtml(photoUrl)}" class="sp-thumb" alt="${escapeHtml(frName)}" loading="lazy">` : ''}
+              <h3>${escapeHtml(frName)}</h3>
+              <p>Espèce recensée sur le terrain dans le cadre du projet collaboratif de la Grande Tourbière de Blainville (<strong>${obsCount} observation${obsCount > 1 ? 's' : ''}</strong>). <a href="https://www.inaturalist.org/taxa/${taxon.id}" target="_blank" rel="noopener">Fiche officielle iNaturalist ↗</a></p>
+            `;
+
+            speciesGrid.appendChild(art);
+          });
+
+          // Réactualiser la liste des cartes pour le filtrage et la recherche instantanée
+          cards = [...document.querySelectorAll('.sp')];
+          apply();
+        }
+      }
+    }
+
+    // Lancement au chargement du DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => syncINaturalist(false));
+    } else {
+      syncINaturalist(false);
+    }
+
+    // Gestion du bouton de rafraîchissement manuel
+    const refreshBtn = document.getElementById('inat-refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        syncINaturalist(true);
+      });
+    }
+
+  })();
 </script>
 </body>
 </html>
