@@ -334,13 +334,12 @@
     }
 
     // 4. Réponses et synthèses textuelles de l'Assistant IA (chat-ai.js / ai.html)
-    // Note : L'en-tête (titre, onglets), les questions rapides, le champ de saisie et le disclaimer restent toujours 100% visibles et nets.
+    // Note : L'en-tête (titre, onglets), les questions rapides, le champ de saisie, le prompt documentaire prêt à l'emploi et le disclaimer restent toujours 100% visibles, nets et copiables.
     const aiSelectors = [
       '#ai-chat-box',
       '.ai-chat-bubble.bot',
       '#ai-summary-output',
-      '.ai-summary-result',
-      '#ai-preset-prompt-text'
+      '.ai-summary-result'
     ];
     document.querySelectorAll(aiSelectors.join(', ')).forEach(el => {
       applyDeterrenceToElement(el, true);

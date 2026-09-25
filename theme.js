@@ -14,9 +14,9 @@
     document.head.appendChild(s);
   }
 
-  loadScript('assets/js/theme-core.js?v=20260925-v4');
-  loadScript('assets/js/chat-ai.js?v=20260925-v4');
-  loadScript('assets/js/anticapture.js?v=20260925-v4');
+  loadScript('assets/js/theme-core.js?v=20260925-v5');
+  loadScript('assets/js/chat-ai.js?v=20260925-v5');
+  loadScript('assets/js/anticapture.js?v=20260925-v5');
 
   const path = window.location.pathname;
   const isHome = path === '/' || path.endsWith('index.html') || path === '';
