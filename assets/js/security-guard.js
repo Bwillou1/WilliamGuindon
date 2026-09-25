@@ -54,22 +54,52 @@
 
     let isSameOrigin = false;
     try {
-      const topHost = window.top.location.hostname;
-      if (ALLOWED_HOSTS.includes(topHost)) {
-        isSameOrigin = true;
+      if (window.top && window.top.location) {
+        const topHost = window.top.location.hostname;
+        if (ALLOWED_HOSTS.includes(topHost)) {
+          isSameOrigin = true;
+        }
       }
     } catch (_) {
       // DOMException (SecurityError) = Origine parente externe ou sandbox sans allow-same-origin
       isSameOrigin = false;
     }
 
+    // Vérification des ancêtres dans l'API du navigateur
+    try {
+      if (!isSameOrigin && window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0) {
+        let allAncestorsAllowed = true;
+        for (let i = 0; i < window.location.ancestorOrigins.length; i++) {
+          const originHost = new URL(window.location.ancestorOrigins[i]).hostname;
+          if (!ALLOWED_HOSTS.includes(originHost)) {
+            allAncestorsAllowed = false;
+            break;
+          }
+        }
+        if (allAncestorsAllowed) {
+          isSameOrigin = true;
+        }
+      }
+    } catch (_) {}
+
+    // Vérification du referrer interne du site
+    try {
+      if (!isSameOrigin && document.referrer) {
+        const refHost = new URL(document.referrer).hostname;
+        if (ALLOWED_HOSTS.includes(refHost)) {
+          isSameOrigin = true;
+        }
+      }
+    } catch (_) {}
+
     if (isSameOrigin) return false;
 
-    // Exceptions autorisées : visionneuse de documents / PDF et horloge live / retransmission
+    // Exceptions autorisées : visionneuse de documents / PDF, horloge live, lecteur et explorateur de documents
     const path = window.location.pathname.toLowerCase();
     const isAllowedEmbed = path.endsWith('viewer.html') || 
                            path.endsWith('live.html') || 
-                           path.endsWith('lecteur.html');
+                           path.endsWith('lecteur.html') ||
+                           path.endsWith('dossier-journalistes.html');
 
     if (isAllowedEmbed) return false;
 

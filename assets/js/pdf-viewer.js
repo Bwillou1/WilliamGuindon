@@ -1121,7 +1121,7 @@
         header.style.cssText = 'display:flex; align-items:center; gap:6px; padding:5px 8px; cursor:pointer; font-size:12px; font-weight:600; border-radius:6px; color:var(--text);';
         header.innerHTML = `
           <span style="font-size:9px; width:12px; text-align:center; color:var(--text-faint);">▶</span>
-          <span>📁</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
           <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(fName)}">${escapeHTML(fName)}</span>
           <span style="font-size:10px; color:var(--accent-deep); background:var(--accent-wash); padding:1px 6px; border-radius:10px;">${total}</span>
         `;
@@ -1154,9 +1154,13 @@
         item.style.cssText = 'display:flex; align-items:center; gap:6px; padding:4px 8px; cursor:pointer; font-size:11.5px; border-radius:5px; margin:1px 0; color:var(--text); transition:background 0.12s;';
         item.dataset.fileName = f.name.toLowerCase();
 
-        const icon = f.isPdf ? '📕' : f.name.match(/\.(png|jpg|jpeg|webp|gif)$/i) ? '🌿' : f.name.match(/\.(mp4|mov)$/i) ? '🎥' : f.name.endsWith('.csv') ? '📊' : '📝';
+        let svgIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
+        if (f.isPdf) {
+          svgIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>';
+        }
+
         item.innerHTML = `
-          <span>${icon}</span>
+          <span style="display:inline-flex;align-items:center;flex-shrink:0;">${svgIcon}</span>
           <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHTML(f.name)}">${escapeHTML(f.name)}</span>
         `;
 
