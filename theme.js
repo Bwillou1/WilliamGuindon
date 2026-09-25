@@ -16,6 +16,7 @@
 
   loadScript('assets/js/theme-core.js');
   loadScript('assets/js/chat-ai.js?v=20260920-v1');
+  loadScript('assets/js/anticapture.js?v=20260924');
 
   const path = window.location.pathname;
   const isHome = path === '/' || path.endsWith('index.html') || path === '';

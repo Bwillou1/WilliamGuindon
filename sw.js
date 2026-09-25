@@ -36,6 +36,7 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/page-home.js',
   '/assets/js/chat-ai.js',
+  '/assets/js/anticapture.js',
   '/assets/js/hero-depth-3d.js',
   '/assets/css/pdf-viewer.css',
   '/assets/js/pdf-viewer.js',
