@@ -75,6 +75,63 @@
     }, CONFIG.toastDuration);
   }
 
+  function showSecurityShieldOverlays() {
+    // 1. Overlay dédié au Chat IA (au-dessus des messages / réponses)
+    const chatTab = document.getElementById('ai-tab-chat');
+    if (chatTab && chatTab.classList.contains('active')) {
+      let aiOverlay = document.getElementById('ai-chat-shield-overlay');
+      if (!aiOverlay) {
+        aiOverlay = document.createElement('div');
+        aiOverlay.id = 'ai-chat-shield-overlay';
+        aiOverlay.className = 'anticapture-shield-card';
+        aiOverlay.innerHTML = `
+          <div class="anticapture-shield-badge">🔒 Protection active contre la capture</div>
+          <div class="anticapture-shield-title">Réponses de l'IA masquées temporairement</div>
+          <p class="anticapture-shield-text">
+            L'assistant documentaire est un outil informatique automatisé distinct de William Guindon. Les réponses et synthèses générées par l'IA ne constituent en aucun cas une preuve juridique, n'ont aucune valeur probatoire officielle devant la CCE ou les tribunaux et ne peuvent être utilisées comme déclaration formelle.
+          </p>
+          <div class="anticapture-shield-hint">👉 Cliquez ou revenez sur la fenêtre pour réactiver l'affichage</div>
+        `;
+        chatTab.appendChild(aiOverlay);
+      }
+      aiOverlay.style.display = 'block';
+    }
+
+    // 2. Overlay dédié à la messagerie Nostr (messagerie.html)
+    const isMessageriePage = window.location.pathname.includes('messagerie.html');
+    if (isMessageriePage) {
+      const msgContainers = document.querySelectorAll('#view-inbox-panel, #view-send-panel, #inbox-list-container');
+      msgContainers.forEach(container => {
+        if (!container) return;
+        let msgOverlay = container.querySelector('.messagerie-shield-overlay');
+        if (!msgOverlay) {
+          msgOverlay = document.createElement('div');
+          msgOverlay.className = 'anticapture-shield-card messagerie-shield-overlay';
+          msgOverlay.innerHTML = `
+            <div class="anticapture-shield-badge">🛡️ Bouclier de confidentialité actif</div>
+            <div class="anticapture-shield-title">Communications et clés chiffrées masquées</div>
+            <p class="anticapture-shield-text">
+              Les messages chiffrés et clés sont protégés lors de la perte de focus pour empêcher toute capture d'écran non autorisée par des logiciels espions (spyware / screen-grabber).
+            </p>
+            <div class="anticapture-shield-hint">👉 Cliquez ou reprenez le focus pour afficher vos messages</div>
+          `;
+          container.style.position = 'relative';
+          container.appendChild(msgOverlay);
+        }
+        msgOverlay.style.display = 'block';
+      });
+    }
+  }
+
+  function hideSecurityShieldOverlays() {
+    const aiOverlay = document.getElementById('ai-chat-shield-overlay');
+    if (aiOverlay) aiOverlay.style.display = 'none';
+
+    document.querySelectorAll('.messagerie-shield-overlay').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+
   function triggerBlurProtection(reason) {
     if (protectedElements.size === 0) {
       discoverAndProtectElements();
@@ -89,6 +146,8 @@
         el.classList.add('anticapture-blurred');
       }
     });
+
+    showSecurityShieldOverlays();
 
     if ((reason === 'screenshot' || reason === 'copy' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
       try {
@@ -124,6 +183,8 @@
         el.classList.remove('anticapture-blurred');
       }
     });
+
+    hideSecurityShieldOverlays();
   }
 
   function applyDeterrenceToElement(el, isStrictConfidential) {
@@ -393,6 +454,55 @@
         filter: blur(28px) !important;
         opacity: 0.04 !important;
         pointer-events: none !important;
+      }
+      .anticapture-shield-card {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(13, 17, 24, 0.96);
+        border: 1px solid rgba(16, 185, 129, 0.45);
+        border-radius: 12px;
+        padding: 18px 20px;
+        max-width: 90%;
+        width: 360px;
+        text-align: center;
+        color: #ffffff;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 100;
+        pointer-events: auto;
+      }
+      .anticapture-shield-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .anticapture-shield-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 6px;
+      }
+      .anticapture-shield-text {
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: #cbd5e1;
+        margin: 0 0 8px 0;
+      }
+      .anticapture-shield-hint {
+        font-size: 10.5px;
+        color: #94a3b8;
+        font-weight: 600;
       }
       .ai-chat-bubble.bot,
       .ai-chat-bubble.bot *,
