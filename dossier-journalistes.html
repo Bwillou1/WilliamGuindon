@@ -4,396 +4,198 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' https://archive.org https://*.archive.org; connect-src 'self' https://archive.org https://*.archive.org; object-src 'none';">
-  <title>Explorateur Documentaire · Grande Tourbière de Blainville · Dossier SEM-26-003</title>
-  <meta name="description" content="Explorateur documentaire officiel en arborescence interactive style Google Drive Nature : consultation des 222 pièces probatoires, analyses d'impact et démarches juridiques relatives à la Grande Tourbière de Blainville.">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://williamguindon.me/dossier-journalistes.html">
-
+  <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
+  <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces probatoires, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#064e3b">
 
   <style>
-    :root {
-      /* Palette Thème Nature — Grande Tourbière de Blainville */
-      --bg-page: #edf2ee;
-      --bg-surface: #ffffff;
-      --bg-sidebar: #f5f8f5;
-      --border-color: #cbd7ce;
-      --border-subtle: #dfe8e1;
-      --text-main: #141c16;
-      --text-muted: #3a4c3f;
-      --text-subtle: #5f7566;
-      
-      --nature-dark: #064e3b;
-      --nature-forest: #0d652d;
-      --nature-leaf: #16a34a;
-      --nature-light: #eaf5ed;
-      --nature-active: #d2ecd9;
-      --nature-hover: #e3f2e7;
-      
-      --earth-brown: #854d0e;
-      --earth-bg: #fef9c3;
-      --moss-accent: #2e7d32;
-
-      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; }
     body {
-      font-family: var(--font-stack);
-      background: var(--bg-page);
-      color: var(--text-main);
-      padding: 12px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 12px;
+      background: #edf2ee;
+      color: #1a241e;
     }
-
-    /* Conteneur principal Google Drive Style Nature */
     .drive-container {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(6, 78, 59, 0.08);
+      background: #ffffff;
+      border: 1px solid #cbd7cf;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(6, 78, 59, 0.08);
       display: flex;
       flex-direction: column;
-      flex: 1;
-      height: 100%;
+      height: 94vh;
       overflow: hidden;
     }
-
-    /* En-tête Nature */
     .drive-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--border-color);
-      background: linear-gradient(180deg, #ffffff 0%, #f9fbf9 100%);
-      z-index: 10;
-    }
-
-    .header-left {
-      display: flex;
       align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
-    }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-bottom: 1px solid #dce5df;
       background: #ffffff;
-      color: var(--nature-forest);
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.15s ease;
+      gap: 12px;
     }
-    .btn-back:hover {
-      background: var(--nature-light);
-      border-color: var(--nature-leaf);
-    }
-
-    .header-brand {
+    .drive-header-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
-
-    .header-icon {
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-    }
-
-    .header-title-block h1 {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--nature-dark);
-      line-height: 1.2;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header-title-block .subtitle {
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .badge-status {
+    .btn-back-home {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 10px;
-      border-radius: 14px;
-      background: var(--nature-light);
-      color: var(--nature-forest);
-      border: 1px solid #c2e2cc;
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      border: 1px solid #cbd7cf;
+      background: #ffffff;
+      color: #064e3b;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
     }
-
-    .header-actions {
+    .btn-back-home:hover {
+      background: #eaf5ee;
+      border-color: #0d652d;
+    }
+    .drive-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #064e3b;
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+      gap: 8px;
     }
-
-    .btn-download-all {
-      background: linear-gradient(135deg, var(--nature-forest) 0%, var(--nature-dark) 100%);
+    .drive-badge-count {
+      font-size: 11.5px;
+      font-weight: 600;
+      background: #eaf5ee;
+      color: #0d652d;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #c8e4d0;
+    }
+    .drive-btn-download {
+      background: #0d652d;
       color: #ffffff;
       text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: 7px 15px;
+      border-radius: 6px;
       font-size: 13px;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 6px rgba(6, 78, 59, 0.25);
-      transition: all 0.15s ease;
-      border: 1px solid rgba(255,255,255,0.1);
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(6, 78, 59, 0.2);
+      transition: background 0.15s;
     }
-    .btn-download-all:hover {
-      background: linear-gradient(135deg, #095023 0%, #033628 100%);
-      box-shadow: 0 4px 10px rgba(6, 78, 59, 0.35);
-      transform: translateY(-1px);
+    .drive-btn-download:hover {
+      background: #064e3b;
     }
-
-    /* Corps : Double volet */
     .drive-body {
       display: flex;
       flex: 1;
-      height: calc(100% - 59px);
       overflow: hidden;
     }
-
-    /* Volet gauche : Explorateur de dossiers Style Nature */
-    .drive-sidebar {
-      width: 40%;
-      min-width: 330px;
-      max-width: 540px;
-      border-right: 1px solid var(--border-color);
-      background: var(--bg-sidebar);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .sidebar-controls {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border-subtle);
-      background: var(--bg-sidebar);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .search-box {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 8px 32px 8px 34px;
-      font-size: 12.5px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      background: #ffffff;
-      color: var(--text-main);
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .search-box input:focus {
-      border-color: var(--nature-leaf);
-      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 11px;
-      font-size: 13px;
-      color: var(--text-subtle);
-      pointer-events: none;
-    }
-
-    .search-clear {
-      position: absolute;
-      right: 10px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      color: var(--text-subtle);
-      display: none;
-      padding: 2px;
-    }
-
-    .tree-actions-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .btn-tree-toggle {
-      background: transparent;
-      border: none;
-      color: var(--nature-forest);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 11.5px;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .btn-tree-toggle:hover {
-      background: var(--nature-light);
-    }
-
+    /* Colonne gauche : Arborescence récursive Nature */
     .drive-tree-pane {
-      flex: 1;
+      width: 44%;
+      min-width: 320px;
+      max-width: 520px;
+      border-right: 1px solid #dce5df;
       overflow-y: auto;
-      overflow-x: hidden;
-      padding: 8px 8px 30px 8px;
+      background: #f7faf7;
+      padding: 8px 6px;
     }
-
-    /* Noeuds arborescents récursifs Nature */
     .tree-node {
       user-select: none;
       margin-bottom: 2px;
     }
-
     .tree-folder-header {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 6px 9px;
+      gap: 6px;
+      padding: 6px 10px;
       cursor: pointer;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--nature-dark);
+      color: #1b4332;
+      transition: background 0.1s;
       border-radius: 6px;
-      transition: background 0.12s ease;
     }
     .tree-folder-header:hover {
-      background: var(--nature-hover);
+      background: #eaf5ee;
     }
-
     .folder-chevron {
       font-size: 10px;
+      transition: transform 0.2s ease;
+      color: #52796f;
       width: 14px;
-      text-align: center;
-      color: var(--text-subtle);
       display: inline-block;
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
     }
     .tree-node.open > .tree-folder-header > .folder-chevron {
       transform: rotate(90deg);
-      color: var(--nature-forest);
+      color: #0d652d;
     }
-
-    .folder-icon {
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-
     .folder-name {
       flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .folder-count {
-      font-size: 10.5px;
-      color: var(--nature-forest);
-      font-weight: 700;
-      background: var(--nature-light);
-      border: 1px solid #d0e8d6;
-      padding: 1px 7px;
+      font-size: 11px;
+      color: #0d652d;
+      font-weight: 600;
+      background: #eaf5ee;
+      padding: 1px 6px;
       border-radius: 10px;
+      border: 1px solid #c8e4d0;
     }
-
     .tree-children {
       display: none;
       padding-left: 14px;
-      border-left: 1.5px solid var(--border-color);
+      border-left: 1.5px dashed #cbd7cf;
       margin-left: 12px;
       margin-top: 2px;
-      margin-bottom: 2px;
     }
     .tree-node.open > .tree-children {
       display: block;
     }
-
-    /* Fichiers */
     .drive-item {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 6px 9px;
+      gap: 8px;
+      padding: 6px 10px;
       cursor: pointer;
-      color: var(--text-main);
-      font-size: 12px;
-      border-radius: 6px;
+      color: #2d3748;
+      font-size: 12.5px;
+      transition: background 0.1s;
+      border-radius: 5px;
       margin: 1px 0;
-      transition: all 0.12s ease;
     }
     .drive-item:hover {
-      background: var(--nature-hover);
-      color: var(--nature-dark);
+      background: #eaf5ee;
+      color: #064e3b;
     }
     .drive-item.active {
-      background: var(--nature-active);
-      color: var(--nature-dark);
+      background: #d4edd9;
+      color: #064e3b;
       font-weight: 700;
-      border-left: 3px solid var(--nature-forest);
+      border-left: 3px solid #0d652d;
     }
-
-    .drive-item-icon {
-      font-size: 13.5px;
-      flex-shrink: 0;
-    }
-
     .drive-item-name {
-      flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      flex: 1;
     }
-
-    .drive-item-ext {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: var(--text-subtle);
-      text-transform: uppercase;
-      padding: 1px 5px;
-      border-radius: 3px;
-      background: rgba(0,0,0,0.06);
-    }
-    .drive-item.active .drive-item-ext {
-      background: rgba(6, 78, 59, 0.12);
-      color: var(--nature-dark);
-    }
-
-    /* Volet droit : Visualiseur multi-formats */
+    /* Colonne droite : Visualiseur */
     .drive-preview-pane {
       flex: 1;
       display: flex;
@@ -402,428 +204,130 @@
       position: relative;
       overflow: hidden;
     }
-
     .preview-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 8px 18px;
-      border-bottom: 1px solid var(--border-color);
-      background: linear-gradient(180deg, #ffffff 0%, #fafcfa 100%);
-      min-height: 50px;
-    }
-
-    .preview-header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      overflow: hidden;
-    }
-
-    .preview-file-icon {
-      font-size: 20px;
-    }
-
-    .preview-title-wrap {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .preview-filename {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--nature-dark);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 480px;
-    }
-
-    .preview-filemeta {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .preview-header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    .btn-action-tool {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      font-size: 13px;
       background: #ffffff;
-      color: var(--nature-dark);
-      font-size: 12px;
+      border-bottom: 1px solid #dce5df;
+      color: #064e3b;
       font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
     }
-    .btn-action-tool:hover {
-      background: var(--nature-light);
-      border-color: var(--nature-leaf);
-    }
-    .btn-action-primary {
-      background: var(--nature-forest);
-      border-color: var(--nature-forest);
-      color: #ffffff;
-    }
-    .btn-action-primary:hover {
-      background: var(--nature-dark);
-      border-color: var(--nature-dark);
-      color: #ffffff;
-    }
-
-    /* Zone d'affichage */
     .preview-stage {
       flex: 1;
-      height: calc(100% - 50px);
-      position: relative;
-      background: #f7faf7;
       overflow: auto;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #f7faf7;
+      position: relative;
     }
-
-    /* Rendu PDF (Iframe vers viewer.html) */
     .preview-iframe {
       width: 100%;
       height: 100%;
       border: none;
       background: #475569;
     }
-
-    /* Rendu Image */
-    .image-stage-wrap {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: auto;
-      padding: 20px;
-    }
-
     .preview-image {
-      max-width: 96%;
-      max-height: 94%;
+      max-width: 95%;
+      max-height: 95%;
       object-fit: contain;
       border-radius: 8px;
-      box-shadow: 0 6px 20px rgba(6, 78, 59, 0.12);
+      box-shadow: 0 4px 16px rgba(6, 78, 59, 0.15);
       background: #ffffff;
-      transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
     }
-
-    .image-toolbar {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(6, 78, 59, 0.88);
-      backdrop-filter: blur(8px);
-      padding: 6px 14px;
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #ffffff;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      z-index: 5;
-    }
-    .image-toolbar button {
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 12px;
-      transition: background 0.15s ease;
-    }
-    .image-toolbar button:hover {
-      background: rgba(255,255,255,0.2);
-    }
-
-    /* Rendu Vidéo */
     .preview-video {
       max-width: 95%;
       max-height: 90%;
-      border-radius: 10px;
+      border-radius: 8px;
       outline: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-      background: #000000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     }
-
-    /* Rendu Données / CSV */
-    .table-stage-wrap {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #ffffff;
-    }
-
-    .table-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 18px;
-      background: var(--nature-light);
-      border-bottom: 1px solid var(--border-color);
-      font-size: 12px;
-      color: var(--nature-dark);
-      font-weight: 600;
-    }
-
-    .table-scroll {
-      flex: 1;
-      overflow: auto;
-      padding: 0;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      font-family: var(--font-stack);
-      white-space: nowrap;
-    }
-    .data-table th {
-      position: sticky;
-      top: 0;
-      background: #e3ede5;
-      color: var(--nature-dark);
-      font-weight: 700;
-      text-align: left;
-      padding: 9px 14px;
-      border-bottom: 2px solid var(--border-color);
-      z-index: 1;
-    }
-    .data-table td {
-      padding: 8px 14px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-    .data-table tr:nth-child(even) td {
-      background: #fbfdfb;
-    }
-    .data-table tr:hover td {
-      background: #edf7ef;
-    }
-
-    /* Rendu Texte / Code / SHA256 */
-    .code-stage-wrap {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background: #111a14;
-      color: #e2efe5;
-    }
-
-    .code-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 16px;
-      background: #1a271f;
-      border-bottom: 1px solid #283a2e;
-      font-size: 11.5px;
-      color: #8fa896;
-    }
-
-    .code-content {
-      flex: 1;
-      margin: 0;
-      padding: 16px;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      line-height: 1.6;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    /* Écran vide / Non prévisualisable */
     .no-preview {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 40px 20px;
-      color: var(--text-muted);
-      max-width: 480px;
+      padding: 30px;
+      color: #52796f;
     }
-    .no-preview-icon {
-      font-size: 56px;
-      margin-bottom: 16px;
-      opacity: 0.9;
-    }
-    .no-preview h3 {
-      font-size: 17px;
-      color: var(--nature-dark);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-    .no-preview p {
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 22px;
-    }
-
-    /* Barre de toast pour retour utilisateur */
-    .toast-msg {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      background: var(--nature-dark);
+    .no-preview span { font-size: 48px; margin-bottom: 12px; }
+    .btn-download-single {
+      background: #0d652d;
       color: #ffffff;
+      text-decoration: none;
       padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 12.5px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: 600;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      z-index: 99;
-      opacity: 0;
-      transform: translateY(-8px);
-      transition: all 0.2s ease;
-      pointer-events: none;
+      margin-top: 15px;
+      transition: background 0.15s;
     }
-    .toast-msg.show {
-      opacity: 1;
-      transform: translateY(0);
+    .btn-download-single:hover {
+      background: #064e3b;
     }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      body { padding: 6px; }
-      .drive-container { height: 100vh; }
+    .drive-loading {
+      padding: 20px;
+      text-align: center;
+      color: #52796f;
+      font-size: 13px;
+    }
+    @media (max-width: 768px) {
+      .drive-container { height: auto; min-height: 90vh; }
       .drive-body { flex-direction: column; }
-      .drive-sidebar { width: 100%; min-width: 100%; max-height: 42vh; }
-      .drive-preview-pane { min-height: 58vh; }
-      .header-title-block .subtitle { display: none; }
+      .drive-tree-pane { width: 100%; min-width: 100%; max-height: 45vh; }
+      .drive-preview-pane { min-height: 50vh; }
     }
   </style>
 </head>
 <body>
 
 <div class="drive-container">
-
-  <!-- En-tête Nature avec décompte et action de téléchargement global -->
-  <header class="drive-header">
-    <div class="header-left">
-      <a href="index.html#dossier-cce" class="btn-back" title="Retour au portail officiel">
+  <div class="drive-header">
+    <div class="drive-header-left">
+      <a href="index.html#dossier-cce" class="btn-back-home" title="Retour au portail officiel">
         <span>←</span>
         <span>Accueil</span>
       </a>
-
-      <div class="header-brand">
-        <span class="header-icon">🌿</span>
-        <div class="header-title-block">
-          <h1 id="main-header-title">Grande Tourbière de Blainville · Archive Probatoire SEM-26-003</h1>
-          <span class="subtitle">Registre documentaire complet déposé à la CCE / ACEUM &amp; Dossier journalistes</span>
-        </div>
+      <div class="drive-title">
+        <span>🌿</span>
+        <span id="title-count">Dossier SEM-26-003</span>
       </div>
-
-      <span id="badge-total" class="badge-status">🟢 Chargement...</span>
     </div>
+    
+    <a id="btn-download-all" 
+       href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex/formats=ORIGINAL" 
+       class="drive-btn-download"
+       target="_blank"
+       rel="noopener"
+       title="Télécharger l'ensemble des 222 pièces probatoires originales en ZIP">
+      <span>📦</span>
+      <span>Télécharger tout (ZIP)</span>
+    </a>
+  </div>
 
-    <div class="header-actions">
-      <a id="btn-download-all" 
-         href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex/formats=ORIGINAL" 
-         class="btn-download-all"
-         target="_blank"
-         rel="noopener"
-         title="Télécharger l'ensemble des 222 pièces probatoires originales en archive ZIP">
-        <span>📦</span>
-        <span>Télécharger tout (ZIP complet)</span>
-      </a>
-    </div>
-  </header>
-
-  <!-- Corps double panneau -->
   <div class="drive-body">
+    <div id="drive-tree" class="drive-tree-pane">
+      <div class="drive-loading">Chargement des 222 pièces probatoires...</div>
+    </div>
 
-    <!-- Volet gauche : Arborescence récursive Nature -->
-    <aside class="drive-sidebar">
-      <div class="sidebar-controls">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="tree-search-input" placeholder="Filtrer les 222 pièces probatoires..." aria-label="Recherche de fichiers">
-          <button type="button" id="tree-search-clear" class="search-clear" title="Effacer la recherche">✕</button>
-        </div>
-        <div class="tree-actions-row">
-          <span id="tree-files-count">Arborescence documentaire</span>
-          <div>
-            <button type="button" id="btn-expand-all" class="btn-tree-toggle">Tout déplier</button>
-            <span>·</span>
-            <button type="button" id="btn-collapse-all" class="btn-tree-toggle">Tout replier</button>
-          </div>
-        </div>
-      </div>
-
-      <nav id="drive-tree" class="drive-tree-pane" aria-label="Arborescence des dossiers">
-        <div style="padding: 24px; text-align: center; color: var(--text-subtle); font-size: 13px;">
-          Chargement des dossiers de la réserve documentaire...
-        </div>
-      </nav>
-    </aside>
-
-    <!-- Volet droit : Rendu multi-formats -->
-    <main class="drive-preview-pane">
+    <div class="drive-preview-pane">
       <div class="preview-header">
-        <div class="preview-header-left">
-          <span id="preview-icon" class="preview-file-icon">📄</span>
-          <div class="preview-title-wrap">
-            <span id="current-filename" class="preview-filename">Sélectionnez un document</span>
-            <span id="current-filemeta" class="preview-filemeta">Aucune sélection</span>
-          </div>
-        </div>
-
-        <div class="preview-header-actions">
-          <button type="button" id="btn-copy-content" class="btn-action-tool" style="display: none;" title="Copier le contenu dans le presse-papiers">
-            <span>📋</span>
-            <span>Copier</span>
-          </button>
-          <button type="button" id="btn-toggle-table-raw" class="btn-action-tool" style="display: none;" title="Basculer entre tableau et texte brut">
-            <span>🔀</span>
-            <span id="lbl-toggle-view">Vue brute</span>
-          </button>
-          <a id="btn-open-external" href="#" target="_blank" rel="noopener" class="btn-action-tool" style="display: none;" title="Ouvrir dans un nouvel onglet">
-            <span>↗</span>
-            <span>Plein écran</span>
-          </a>
-          <a id="btn-download-file" href="#" download class="btn-action-tool btn-action-primary" style="display: none;" title="Télécharger le fichier original">
-            <span>⬇</span>
-            <span>Télécharger</span>
-          </a>
-        </div>
+        <span id="current-filename">Sélectionnez un document</span>
+        <a id="direct-file-link" href="#" target="_blank" rel="noopener" style="color: #0d652d; text-decoration: none; font-size: 12px; font-weight: 600; display: none;">Ouvrir l'original ↗</a>
       </div>
-
+      
       <div id="preview-stage" class="preview-stage">
         <div class="no-preview">
-          <div class="no-preview-icon">🌲</div>
-          <h3>Réserve Documentaire SEM-26-003</h3>
-          <p>Choisissez un document dans l'arborescence de gauche pour afficher son contenu en haute fidélité (PDF avec lecteur interactif, photographies, vidéos, tables d'échantillonnage ou registres de données).</p>
+          <span>🌲</span>
+          <p>Choisissez un document dans l'arborescence pour afficher son contenu.</p>
         </div>
       </div>
-
-      <div id="toast-notify" class="toast-msg">Copié dans le presse-papiers</div>
-    </main>
-
+    </div>
   </div>
 </div>
 
@@ -831,12 +335,11 @@
 (function() {
   'use strict';
 
-  var IDENTIFIER = "dossier-journalistes-tourbiere-blainville-stablex";
-  var METADATA_API = "https://archive.org/metadata/" + IDENTIFIER + "/files";
-  var DOWNLOAD_BASE = "https://archive.org/download/" + IDENTIFIER + "/";
+  const identifier = "dossier-journalistes-tourbiere-blainville-stablex";
+  const apiUrl = "https://archive.org/metadata/" + identifier + "/files";
 
   // Répertoire complet et vérifié des 222 pièces probatoires
-  var FALLBACK_FILES = [
+  const fallbackList = [
   "01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png",
   "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
   "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv",
@@ -1061,634 +564,198 @@
   "RC/RC-4.pdf"
 ];
 
-  var allFiles = [];
-  var fileMetadataMap = {};
-  var currentActiveItem = null;
-  var currentFileObj = null;
-  var currentRawText = "";
-  var isRawTableView = false;
+  function processFiles(filesData) {
+    const treeContainer = document.getElementById("drive-tree");
+    if (!treeContainer) return;
+    treeContainer.innerHTML = "";
 
-  function showToast(text) {
-    var toast = document.getElementById("toast-notify");
-    if (!toast) return;
-    toast.textContent = text;
-    toast.classList.add("show");
-    setTimeout(function() { toast.classList.remove("show"); }, 2200);
-  }
+    // Filtrer les fichiers systèmes et métadonnées internes
+    const validFiles = filesData.filter(item => {
+      const name = typeof item === "string" ? item : item.name;
+      return !name.endsWith('_meta.sqlite') && 
+             !name.endsWith('_meta.xml') && 
+             !name.endsWith('_files.xml') && 
+             !name.endsWith('_archive.torrent') &&
+             !name.startsWith('__ia_thumb') &&
+             !name.includes('.thumbs/') &&
+             !name.includes('00_GUIDE_JOURNALISTES_BIFFE');
+    });
 
-  function getFileExtension(name) {
-    var dot = name.lastIndexOf(".");
-    return dot !== -1 ? name.slice(dot + 1).toLowerCase() : "";
-  }
-
-  function getFileType(ext) {
-    if (ext === "pdf") return "pdf";
-    if (["png", "jpg", "jpeg", "webp", "gif"].indexOf(ext) !== -1) return "image";
-    if (["mp4", "mov", "webm"].indexOf(ext) !== -1) return "video";
-    if (ext === "csv") return "csv";
-    if (["txt", "sha256", "geojson", "kml", "md"].indexOf(ext) !== -1) return "text";
-    if (["zip", "tar", "gz", "7z"].indexOf(ext) !== -1) return "archive";
-    return "other";
-  }
-
-  function getFileIcon(ext) {
-    var type = getFileType(ext);
-    switch (type) {
-      case "pdf": return "📕";
-      case "image": return "🌿";
-      case "video": return "🎥";
-      case "csv": return "📊";
-      case "text": return "📝";
-      case "archive": return "📦";
-      default: return "📄";
+    const titleEl = document.getElementById("title-count");
+    if (titleEl) {
+      titleEl.innerHTML = 'Grande Tourbière de Blainville <span class="drive-badge-count">' + validFiles.length + ' pièces</span>';
     }
-  }
 
-  function getFolderThematicIcon(name) {
-    var n = name.toLowerCase();
-    if (n.indexOf("especes") !== -1 || n.indexOf("biodiversite") !== -1) return "🦆";
-    if (n.indexOf("contamination") !== -1 || n.indexOf("fuite") !== -1) return "⚠️";
-    if (n.indexOf("etudes") !== -1 || n.indexOf("cartes") !== -1 || n.indexOf("tourbiere") !== -1) return "🗺️";
-    if (n.indexOf("preuves") !== -1 || n.indexOf("eau") !== -1 || n.indexOf("tests") !== -1) return "💧";
-    if (n.indexOf("satellite") !== -1 || n.indexOf("sentinel") !== -1 || n.indexOf("ndvi") !== -1) return "🛰️";
-    if (n.indexOf("demarches") !== -1 || n.indexOf("onu") !== -1 || n.indexOf("juridique") !== -1) return "⚖️";
-    if (n.indexOf("appui") !== -1 || n.indexOf("communication") !== -1) return "📜";
-    if (n.indexOf("audit") !== -1 || n.indexOf("tracabilite") !== -1) return "🔍";
-    if (n.indexOf("rejets") !== -1) return "🏭";
-    if (n.indexOf("bouchard") !== -1) return "🎖️";
-    if (n.indexOf("sealosafe") !== -1) return "🔬";
-    if (n.indexOf("rc") !== -1) return "🎙️";
-    if (n.indexOf("recueil") !== -1 || n.indexOf("photo") !== -1) return "📸";
-    return "📁";
-  }
+    // Construction de l'arbre multi-niveaux récursif
+    const root = { subfolders: {}, files: [] };
 
-  function formatBytes(bytes) {
-    if (!bytes || isNaN(bytes)) return "";
-    var b = parseInt(bytes, 10);
-    if (b < 1024) return b + " octets";
-    if (b < 1048576) return (b / 1024).toFixed(1) + " Ko";
-    return (b / 1048576).toFixed(1) + " Mo";
-  }
+    validFiles.forEach(item => {
+      const fullPath = typeof item === "string" ? item : item.name;
+      let clean = fullPath;
+      if (clean.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")) {
+        clean = clean.replace("00_DOSSIER_POUR_JOURNALISTES_BIFFE/", "");
+      }
 
-  function buildTree(fileList) {
-    var root = { subfolders: {}, files: [] };
+      const parts = clean.split('/');
+      const fileName = parts.pop();
+      let current = root;
 
-    fileList.forEach(function(fileObj) {
-      var fullRelative = fileObj.relativePath;
-      var parts = fullRelative.split("/");
-      var fileName = parts.pop();
-      var current = root;
-
-      parts.forEach(function(folderName) {
+      parts.forEach(folderName => {
         if (!current.subfolders[folderName]) {
           current.subfolders[folderName] = { subfolders: {}, files: [] };
         }
         current = current.subfolders[folderName];
       });
 
-      var ext = getFileExtension(fileName);
       current.files.push({
-        originalArchiveName: fileObj.originalArchiveName,
-        relativePath: fileObj.relativePath,
         name: fileName,
-        ext: ext
+        fullPath: fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? fullPath : "00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath
       });
     });
 
-    return root;
-  }
+    const stage = document.getElementById("preview-stage");
+    let firstSelected = false;
 
-  function countRecursive(node) {
-    var count = node.files.length;
-    for (var k in node.subfolders) {
-      count += countRecursive(node.subfolders[k]);
-    }
-    return count;
-  }
+    function renderTree(node, container, isRoot = false) {
+      // 1. Dossiers et sous-dossiers
+      const folderNames = Object.keys(node.subfolders).sort((a, b) => a.localeCompare(b, "fr", { numeric: true }));
+      folderNames.forEach((folderName, idx) => {
+        const subNode = node.subfolders[folderName];
+        const nodeDiv = document.createElement("div");
+        // Ouvrir les dossiers racines par défaut pour rendre les documents directement visibles
+        nodeDiv.className = "tree-node" + (isRoot ? " open" : "");
 
-  function renderTreeDOM(node, container, isRoot) {
-    if (typeof isRoot === "undefined") isRoot = false;
-
-    // 1. Sous-dossiers alphabétiques
-    var folderKeys = Object.keys(node.subfolders).sort(function(a, b) {
-      return a.localeCompare(b, "fr", { numeric: true });
-    });
-
-    folderKeys.forEach(function(folderName, idx) {
-      var subNode = node.subfolders[folderName];
-      var totalCount = countRecursive(subNode);
-
-      var nodeDiv = document.createElement("div");
-      nodeDiv.className = "tree-node" + (isRoot ? " open" : "");
-      nodeDiv.dataset.folderName = folderName.toLowerCase();
-
-      var icon = getFolderThematicIcon(folderName);
-
-      var header = document.createElement("div");
-      header.className = "tree-folder-header";
-      header.innerHTML = '<span class="folder-chevron">▶</span>' +
-        '<span class="folder-icon">' + icon + '</span>' +
-        '<span class="folder-name" title="' + folderName + '">' + folderName + '</span>' +
-        '<span class="folder-count">' + totalCount + '</span>';
-
-      header.addEventListener("click", function(e) {
-        e.stopPropagation();
-        nodeDiv.classList.toggle("open");
-      });
-
-      var childrenContainer = document.createElement("div");
-      childrenContainer.className = "tree-children";
-
-      renderTreeDOM(subNode, childrenContainer, false);
-
-      nodeDiv.appendChild(header);
-      nodeDiv.appendChild(childrenContainer);
-      container.appendChild(nodeDiv);
-    });
-
-    // 2. Fichiers du dossier courant
-    var sortedFiles = node.files.slice().sort(function(a, b) {
-      return a.name.localeCompare(b.name, "fr", { numeric: true });
-    });
-
-    sortedFiles.forEach(function(fileObj) {
-      var item = document.createElement("div");
-      item.className = "drive-item";
-      item.dataset.fileName = fileObj.name.toLowerCase();
-      item.dataset.fullPath = fileObj.originalArchiveName;
-
-      var icon = getFileIcon(fileObj.ext);
-
-      item.innerHTML = '<span class="drive-item-icon">' + icon + '</span>' +
-        '<span class="drive-item-name" title="' + fileObj.name + '">' + fileObj.name + '</span>' +
-        '<span class="drive-item-ext">' + fileObj.ext + '</span>';
-
-      item.addEventListener("click", function(e) {
-        e.stopPropagation();
-        selectFile(fileObj, item);
-      });
-
-      container.appendChild(item);
-    });
-  }
-
-  function selectFile(fileObj, itemEl) {
-    if (currentActiveItem) {
-      currentActiveItem.classList.remove("active");
-    }
-    currentActiveItem = itemEl;
-    if (itemEl) itemEl.classList.add("active");
-
-    currentFileObj = fileObj;
-    currentRawText = "";
-    isRawTableView = false;
-
-    var fileUrl = DOWNLOAD_BASE + encodeURI(fileObj.originalArchiveName);
-    var meta = fileMetadataMap[fileObj.originalArchiveName] || {};
-    var sizeStr = formatBytes(meta.size);
-
-    // Mettre à jour la barre d'en-tête de prévisualisation
-    var lblName = document.getElementById("current-filename");
-    var lblMeta = document.getElementById("current-filemeta");
-    var iconEl = document.getElementById("preview-icon");
-    var btnOpen = document.getElementById("btn-open-external");
-    var btnDownload = document.getElementById("btn-download-file");
-    var btnCopy = document.getElementById("btn-copy-content");
-    var btnToggleTable = document.getElementById("btn-toggle-table-raw");
-
-    if (lblName) lblName.textContent = fileObj.name;
-    if (lblMeta) {
-      var parts = [];
-      if (sizeStr) parts.push(sizeStr);
-      if (fileObj.ext) parts.push(fileObj.ext.toUpperCase());
-      lblMeta.textContent = parts.join(" · ") || "Document Probatoire";
-    }
-    if (iconEl) iconEl.textContent = getFileIcon(fileObj.ext);
-
-    if (btnDownload) {
-      btnDownload.href = fileUrl;
-      btnDownload.download = fileObj.name;
-      btnDownload.style.display = "inline-flex";
-    }
-
-    if (btnCopy) btnCopy.style.display = "none";
-    if (btnToggleTable) btnToggleTable.style.display = "none";
-
-    var stage = document.getElementById("preview-stage");
-    if (!stage) return;
-    stage.innerHTML = "";
-
-    var type = getFileType(fileObj.ext);
-
-    // 1. PDF : Intégration dans viewer.html officiel via iframe
-    if (type === "pdf") {
-      var viewerUrl = "viewer.html?file=" + encodeURIComponent(fileUrl);
-      if (btnOpen) {
-        btnOpen.href = viewerUrl;
-        btnOpen.style.display = "inline-flex";
-      }
-
-      var iframe = document.createElement("iframe");
-      iframe.className = "preview-iframe";
-      iframe.src = viewerUrl;
-      iframe.title = fileObj.name;
-      stage.appendChild(iframe);
-    }
-    // 2. Images : Centrage + zoom interactif
-    else if (type === "image") {
-      if (btnOpen) {
-        btnOpen.href = fileUrl;
-        btnOpen.style.display = "inline-flex";
-      }
-
-      var wrap = document.createElement("div");
-      wrap.className = "image-stage-wrap";
-
-      var img = document.createElement("img");
-      img.className = "preview-image";
-      img.src = fileUrl;
-      img.alt = fileObj.name;
-
-      var zoom = 1.0;
-      var toolbar = document.createElement("div");
-      toolbar.className = "image-toolbar";
-      toolbar.innerHTML = '<button type="button" id="img-zoom-out" title="Zoom arrière">－</button>' +
-        '<span id="img-zoom-val" style="font-size:12px; min-width:44px; text-align:center; font-weight:600;">100%</span>' +
-        '<button type="button" id="img-zoom-in" title="Zoom avant">＋</button>' +
-        '<button type="button" id="img-zoom-reset" title="Taille normale">1:1</button>';
-
-      wrap.appendChild(img);
-      wrap.appendChild(toolbar);
-      stage.appendChild(wrap);
-
-      toolbar.querySelector("#img-zoom-in").addEventListener("click", function() {
-        zoom = Math.min(3.5, zoom + 0.25);
-        img.style.transform = "scale(" + zoom + ")";
-        toolbar.querySelector("#img-zoom-val").textContent = Math.round(zoom * 100) + "%";
-      });
-      toolbar.querySelector("#img-zoom-out").addEventListener("click", function() {
-        zoom = Math.max(0.4, zoom - 0.25);
-        img.style.transform = "scale(" + zoom + ")";
-        toolbar.querySelector("#img-zoom-val").textContent = Math.round(zoom * 100) + "%";
-      });
-      toolbar.querySelector("#img-zoom-reset").addEventListener("click", function() {
-        zoom = 1.0;
-        img.style.transform = "scale(1)";
-        toolbar.querySelector("#img-zoom-val").textContent = "100%";
-      });
-    }
-    // 3. Vidéos : Balise HTML5 avec contrôles
-    else if (type === "video") {
-      if (btnOpen) {
-        btnOpen.href = fileUrl;
-        btnOpen.style.display = "inline-flex";
-      }
-
-      var video = document.createElement("video");
-      video.className = "preview-video";
-      video.src = fileUrl;
-      video.controls = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      stage.appendChild(video);
-    }
-    // 4. Données tabulaires (CSV)
-    else if (type === "csv") {
-      if (btnOpen) {
-        btnOpen.href = fileUrl;
-        btnOpen.style.display = "inline-flex";
-      }
-      if (btnCopy) btnCopy.style.display = "inline-flex";
-      if (btnToggleTable) {
-        btnToggleTable.style.display = "inline-flex";
-        document.getElementById("lbl-toggle-view").textContent = "Vue brute";
-      }
-
-      stage.innerHTML = '<div style="color:var(--nature-dark); font-size:13px; font-weight:600;">Chargement du tableau probatoire...</div>';
-
-      fetch(fileUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.text();
-        })
-        .then(function(csvText) {
-          currentRawText = csvText;
-          renderCsvData(csvText, stage);
-        })
-        .catch(function(err) {
-          stage.innerHTML = '<div class="no-preview">' +
-            '<div class="no-preview-icon">📊</div>' +
-            '<h3>Visualisation directe indisponible</h3>' +
-            '<p>Le fichier CSV peut être téléchargé directement : ' + err.message + '</p>' +
-            '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>Télécharger le CSV</a>' +
-            '</div>';
-        });
-    }
-    // 5. Texte brut, GeoJSON, KML, SHA-256, Markdown
-    else if (type === "text") {
-      if (btnOpen) {
-        btnOpen.href = fileUrl;
-        btnOpen.style.display = "inline-flex";
-      }
-      if (btnCopy) btnCopy.style.display = "inline-flex";
-
-      stage.innerHTML = '<div style="color:var(--nature-dark); font-size:13px; font-weight:600;">Chargement du registre probatoire...</div>';
-
-      fetch(fileUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.text();
-        })
-        .then(function(rawText) {
-          currentRawText = rawText;
-          renderTextData(rawText, stage);
-        })
-        .catch(function(err) {
-          stage.innerHTML = '<div class="no-preview">' +
-            '<div class="no-preview-icon">📝</div>' +
-            '<h3>Visualisation directe indisponible</h3>' +
-            '<p>Le document est accessible en téléchargement direct.</p>' +
-            '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>Télécharger le fichier</a>' +
-            '</div>';
-        });
-    }
-    // 6. Archives & autres formats
-    else {
-      if (btnOpen) btnOpen.style.display = "none";
-
-      stage.innerHTML = '<div class="no-preview">' +
-        '<div class="no-preview-icon">' + getFileIcon(fileObj.ext) + '</div>' +
-        '<h3>' + fileObj.name + '</h3>' +
-        '<p>Ce format (' + fileObj.ext.toUpperCase() + ') est disponible en téléchargement original pour analyse locale.</p>' +
-        '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>' +
-        '<span>⬇ Télécharger l\'original (' + (sizeStr || fileObj.ext.toUpperCase()) + ')</span>' +
-        '</a>' +
-        '</div>';
-    }
-  }
-
-  function parseCsvRows(text) {
-    var lines = text.split(/\r?\n/).filter(function(line) { return line.trim().length > 0; });
-    if (!lines.length) return [];
-    
-    var first = lines[0];
-    var sep = (first.match(/;/g) || []).length > (first.match(/,/g) || []).length ? ";" : ",";
-
-    return lines.map(function(line) {
-      var row = [];
-      var inQuote = false;
-      var cur = "";
-      for (var i = 0; i < line.length; i++) {
-        var c = line[i];
-        if (c === '"') {
-          inQuote = !inQuote;
-        } else if (c === sep && !inQuote) {
-          row.push(cur.trim());
-          cur = "";
-        } else {
-          cur += c;
+        function countTotal(n) {
+          let total = n.files.length;
+          for (let k in n.subfolders) total += countTotal(n.subfolders[k]);
+          return total;
         }
-      }
-      row.push(cur.trim());
-      return row;
-    });
-  }
 
-  function renderCsvData(text, container) {
-    var rows = parseCsvRows(text);
-    if (!rows.length) {
-      container.innerHTML = '<div class="no-preview"><p>Fichier CSV vide.</p></div>';
-      return;
-    }
+        const count = countTotal(subNode);
+        const header = document.createElement("div");
+        header.className = "tree-folder-header";
+        header.innerHTML = `
+          <span class="folder-chevron">▶</span>
+          <span>📁</span>
+          <span class="folder-name" title="${folderName}">${folderName}</span>
+          <span class="folder-count">${count}</span>
+        `;
 
-    var wrap = document.createElement("div");
-    wrap.className = "table-stage-wrap";
+        header.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nodeDiv.classList.toggle("open");
+        });
 
-    var toolbar = document.createElement("div");
-    toolbar.className = "table-toolbar";
-    toolbar.innerHTML = '<span>' + (rows.length - 1) + ' entrées détectées · ' + rows[0].length + ' colonnes</span>' +
-      '<span style="color:var(--text-subtle);">Défilement horizontal et vertical actif</span>';
+        const childrenContainer = document.createElement("div");
+        childrenContainer.className = "tree-children";
 
-    var scrollBox = document.createElement("div");
-    scrollBox.className = "table-scroll";
+        renderTree(subNode, childrenContainer, false);
 
-    var table = document.createElement("table");
-    table.className = "data-table";
-
-    // En-tête
-    var headerRow = rows[0];
-    var thead = document.createElement("thead");
-    var trHead = document.createElement("tr");
-    headerRow.forEach(function(col) {
-      var th = document.createElement("th");
-      th.textContent = col.replace(/^["']+|["']+$/g, "");
-      trHead.appendChild(th);
-    });
-    thead.appendChild(trHead);
-    table.appendChild(thead);
-
-    // Corps de la table
-    var tbody = document.createElement("tbody");
-    for (var r = 1; r < rows.length; r++) {
-      var tr = document.createElement("tr");
-      rows[r].forEach(function(val) {
-        var td = document.createElement("td");
-        td.textContent = val.replace(/^["']+|["']+$/g, "");
-        tr.appendChild(td);
+        nodeDiv.appendChild(header);
+        nodeDiv.appendChild(childrenContainer);
+        container.appendChild(nodeDiv);
       });
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
 
-    scrollBox.appendChild(table);
-    wrap.appendChild(toolbar);
-    wrap.appendChild(scrollBox);
-    container.innerHTML = "";
-    container.appendChild(wrap);
-  }
+      // 2. Fichiers du niveau courant
+      node.files.sort((a, b) => a.name.localeCompare(b.name, "fr", { numeric: true })).forEach(fileObj => {
+        const item = document.createElement("div");
+        item.className = "drive-item";
 
-  function renderTextData(text, container) {
-    var wrap = document.createElement("div");
-    wrap.className = "code-stage-wrap";
+        const lower = fileObj.name.toLowerCase();
+        let icon = "📄";
+        if (lower.endsWith(".pdf")) icon = "📕";
+        else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) icon = "🎥";
+        else if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) icon = "🌿";
+        else if (lower.endsWith(".csv")) icon = "📊";
+        else if (lower.endsWith(".zip") || lower.endsWith(".tar")) icon = "📦";
+        else if (lower.endsWith(".docx") || lower.endsWith(".doc")) icon = "📘";
+        else if (lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".sha256") || lower.endsWith(".geojson") || lower.endsWith(".kml")) icon = "📝";
 
-    var toolbar = document.createElement("div");
-    toolbar.className = "code-toolbar";
-    var lineCount = text.split("\n").length;
-    toolbar.innerHTML = '<span>' + lineCount + ' lignes · Format UTF-8 brut</span>' +
-      '<span>Encodage standard</span>';
+        item.innerHTML = `
+          <span>${icon}</span>
+          <span class="drive-item-name" title="${fileObj.name}">${fileObj.name}</span>
+        `;
 
-    var pre = document.createElement("pre");
-    pre.className = "code-content";
-    pre.textContent = text;
+        const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
 
-    wrap.appendChild(toolbar);
-    wrap.appendChild(pre);
-    container.innerHTML = "";
-    container.appendChild(wrap);
-  }
+        item.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
+          item.classList.add("active");
 
-  // Initialisation et traitement des données de fichiers
-  function initExplorer(rawList) {
-    // Filtrage des métadonnées internes et fichiers parasites
-    var filtered = rawList.filter(function(item) {
-      var name = typeof item === "string" ? item : item.name;
-      return !name.endsWith("_meta.sqlite") &&
-             !name.endsWith("_meta.xml") &&
-             !name.endsWith("_files.xml") &&
-             !name.endsWith("_archive.torrent") &&
-             !name.startsWith("__ia_thumb") &&
-             !name.includes(".thumbs/") &&
-             !name.includes("00_GUIDE_JOURNALISTES_BIFFE");
-    });
-
-    fileMetadataMap = {};
-    allFiles = filtered.map(function(item) {
-      var orig = typeof item === "string" ? item : item.name;
-      if (typeof item === "object") {
-        fileMetadataMap[orig] = item;
-      }
-      var clean = orig;
-      if (clean.indexOf("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") === 0) {
-        clean = clean.replace("00_DOSSIER_POUR_JOURNALISTES_BIFFE/", "");
-      }
-      return {
-        originalArchiveName: orig,
-        relativePath: clean
-      };
-    });
-
-    // Mettre à jour les compteurs
-    var countBadge = document.getElementById("badge-total");
-    if (countBadge) countBadge.textContent = "🟢 " + allFiles.length + " pièces probatoires";
-    var treeCount = document.getElementById("tree-files-count");
-    if (treeCount) treeCount.textContent = allFiles.length + " documents classés";
-
-    // Construction et affichage de l'arborescence
-    var tree = buildTree(allFiles);
-    var treeContainer = document.getElementById("drive-tree");
-    if (treeContainer) {
-      treeContainer.innerHTML = "";
-      renderTreeDOM(tree, treeContainer, true);
-    }
-
-    // Sélection automatique du premier PDF probatoire
-    var firstPdf = allFiles.find(function(f) {
-      return f.relativePath.toLowerCase().endsWith(".pdf");
-    });
-    if (firstPdf) {
-      setTimeout(function() {
-        var items = document.querySelectorAll('.drive-item');
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].dataset.fullPath === firstPdf.originalArchiveName) {
-            selectFile(firstPdf, items[i]);
-            var p = items[i].parentElement;
-            while (p && p.id !== "drive-tree") {
-              if (p.classList && p.classList.contains("tree-node")) {
-                p.classList.add("open");
-              }
-              p = p.parentElement;
-            }
-            break;
+          const curFile = document.getElementById("current-filename");
+          if (curFile) curFile.textContent = fileObj.name;
+          const directLink = document.getElementById("direct-file-link");
+          if (directLink) {
+            directLink.href = fileUrl;
+            directLink.style.display = "inline";
           }
-        }
-      }, 60);
-    }
-  }
 
-  // Configuration des événements globaux
-  function setupEventListeners() {
-    // Boutons Tout déplier / Tout replier
-    document.getElementById("btn-expand-all")?.addEventListener("click", function() {
-      document.querySelectorAll(".tree-node").forEach(function(node) { node.classList.add("open"); });
-    });
-    document.getElementById("btn-collapse-all")?.addEventListener("click", function() {
-      document.querySelectorAll(".tree-node").forEach(function(node) { node.classList.remove("open"); });
-    });
+          if (stage) {
+            stage.innerHTML = "";
 
-    // Recherche / Filtre en temps réel
-    var searchInput = document.getElementById("tree-search-input");
-    var searchClear = document.getElementById("tree-search-clear");
-
-    if (searchInput) {
-      searchInput.addEventListener("input", function() {
-        var query = searchInput.value.trim().toLowerCase();
-        if (searchClear) searchClear.style.display = query ? "block" : "none";
-
-        var items = document.querySelectorAll(".drive-item");
-        items.forEach(function(item) {
-          var name = item.dataset.fileName || "";
-          var isMatch = !query || name.indexOf(query) !== -1;
-          item.style.display = isMatch ? "flex" : "none";
-          if (isMatch && query) {
-            // Ouvrir récursivement tous les dossiers parents
-            var parent = item.parentElement;
-            while (parent && parent.id !== "drive-tree") {
-              if (parent.classList.contains("tree-node")) {
-                parent.classList.add("open");
-              }
-              parent = parent.parentElement;
+            if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
+              const img = document.createElement("img");
+              img.src = fileUrl;
+              img.className = "preview-image";
+              img.alt = fileObj.name;
+              stage.appendChild(img);
+            } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
+              const video = document.createElement("video");
+              video.src = fileUrl;
+              video.controls = true;
+              video.autoplay = true;
+              video.className = "preview-video";
+              stage.appendChild(video);
+            } else if (lower.endsWith(".pdf")) {
+              const iframe = document.createElement("iframe");
+              iframe.className = "preview-iframe";
+              // Intégration dans le lecteur officiel personnalisé
+              iframe.src = "viewer.html?file=" + encodeURIComponent(fileUrl);
+              iframe.title = fileObj.name;
+              stage.appendChild(iframe);
+            } else {
+              const box = document.createElement("div");
+              box.className = "no-preview";
+              box.innerHTML = `
+                <span>${icon}</span>
+                <h4 style="margin: 0 0 8px 0; color: #064e3b;">${fileObj.name}</h4>
+                <p>Ce document est disponible en consultation directe.</p>
+                <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le document</a>
+              `;
+              stage.appendChild(box);
             }
           }
         });
+
+        container.appendChild(item);
+
+        if (!firstSelected && lower.endsWith(".pdf")) {
+          setTimeout(() => item.click(), 60);
+          firstSelected = true;
+        }
       });
     }
 
-    if (searchClear && searchInput) {
-      searchClear.addEventListener("click", function() {
-        searchInput.value = "";
-        searchClear.style.display = "none";
-        searchInput.dispatchEvent(new Event("input"));
-        searchInput.focus();
-      });
-    }
-
-    // Copie du contenu texte ou CSV
-    document.getElementById("btn-copy-content")?.addEventListener("click", function() {
-      if (!currentRawText) return;
-      navigator.clipboard.writeText(currentRawText).then(function() {
-        showToast("Contenu copié dans le presse-papiers !");
-      }).catch(function() {
-        showToast("Impossible d'accéder au presse-papiers");
-      });
-    });
-
-    // Basculer affichage CSV Table / Brut
-    document.getElementById("btn-toggle-table-raw")?.addEventListener("click", function() {
-      if (!currentRawText || !currentFileObj || getFileType(currentFileObj.ext) !== "csv") return;
-      var stage = document.getElementById("preview-stage");
-      var lbl = document.getElementById("lbl-toggle-view");
-      if (!stage || !lbl) return;
-
-      isRawTableView = !isRawTableView;
-      if (isRawTableView) {
-        lbl.textContent = "Vue tableau";
-        renderTextData(currentRawText, stage);
-      } else {
-        lbl.textContent = "Vue brute";
-        renderCsvData(currentRawText, stage);
-      }
-    });
+    renderTree(root, treeContainer, true);
   }
 
-  setupEventListeners();
-
-  // Interrogation de l'API avec fallback immédiat garanti
-  fetch(METADATA_API)
-    .then(function(r) {
+  // Tente d'interroger l'API pour récupérer les 222 fichiers en direct ; bascule instantanément sur la liste complète en cas de blocage réseau
+  fetch(apiUrl)
+    .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
-    .then(function(data) {
+    .then(data => {
       if (data && data.result && data.result.length > 50) {
-        initExplorer(data.result);
+        processFiles(data.result);
       } else {
-        initExplorer(FALLBACK_FILES);
+        processFiles(fallbackList);
       }
     })
-    .catch(function() {
-      initExplorer(FALLBACK_FILES);
+    .catch(() => {
+      processFiles(fallbackList);
     });
-
 })();
 </script>
 
