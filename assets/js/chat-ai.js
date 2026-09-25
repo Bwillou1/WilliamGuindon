@@ -241,7 +241,7 @@ DIRECTIVES DE RÉPONSE :
       aiModal = document.createElement('div');
       aiModal.className = 'ai-modal-overlay';
       aiModal.innerHTML = `
-        <div class="ai-modal-card" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+        <div class="ai-modal-card anticapture-zone" data-anticapture="true" data-strict="true" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
           <div class="ai-modal-header">
             <div class="ai-modal-title" id="ai-modal-title">
               <span class="ai-live-dot"></span>
@@ -253,7 +253,6 @@ DIRECTIVES DE RÉPONSE :
           <!-- Onglets Navigation IA -->
           <div class="ai-tabs" role="tablist">
             <button class="ai-tab-btn active" data-tab="chat" role="tab" aria-selected="true"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Clavarder</button>
-            <button class="ai-tab-btn" data-tab="summary" role="tab" aria-selected="false"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Résumer</button>
             <button class="ai-tab-btn" data-tab="models" role="tab" aria-selected="false"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg> Liens IA</button>
           </div>
 
@@ -287,27 +286,7 @@ DIRECTIVES DE RÉPONSE :
             </p>
           </div>
 
-          <!-- Onglet 2 : Résumé instantané -->
-          <div class="ai-tab-content" id="ai-tab-summary">
-            <div class="ai-watermark-strip">[SYNTHÈSE IA NON VALIDÉE • DOCUMENT NON OFFICIEL]</div>
-            <div class="ai-summary-box">
-              <div class="ai-summary-card">
-                <div style="font-size:13.5px; font-weight:700; margin-bottom:8px; color:var(--text);">
-                  Génération de résumé automatique :
-                </div>
-                <div class="ai-summary-actions">
-                  <button type="button" class="ai-action-btn" id="btn-sum-bullets"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> Points clés (Bullets)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-tldr"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> TL;DR (1 paragraphe)</button>
-                  <button type="button" class="ai-action-btn" id="btn-sum-legal"><svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Résumé Juridique CCE</button>
-                </div>
-                <div class="ai-summary-result" id="ai-summary-output">
-                  Cliquez sur un bouton ci-dessus pour générer un résumé instantané du dossier.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Onglet 3 : Liens IA externes & Prompts -->
+          <!-- Onglet 2 : Liens IA externes & Prompts -->
           <div class="ai-tab-content" id="ai-tab-models">
             <div class="ai-models-scroll">
               <p class="ai-modal-desc">
@@ -510,11 +489,17 @@ DIRECTIVES DE RÉPONSE :
 
           botBubble.innerHTML = formatAiResponse(reply);
           scrollChatToBottom();
+          if (window.AntiCapture && window.AntiCapture.protect) {
+            window.AntiCapture.protect(botBubble, true);
+          }
         } catch (err) {
           showOfflineBanner();
           const fallbackReply = generateLocalAnswer(question);
           botBubble.innerHTML = formatAiResponse(fallbackReply);
           scrollChatToBottom();
+          if (window.AntiCapture && window.AntiCapture.protect) {
+            window.AntiCapture.protect(botBubble, true);
+          }
         } finally {
           if (userInput) userInput.disabled = false;
           startCooldown(3);
@@ -535,73 +520,6 @@ DIRECTIVES DE RÉPONSE :
           sendChatMessage(q);
         });
       });
-
-      const sumOutput = document.getElementById('ai-summary-output');
-      const btnBullets = document.getElementById('btn-sum-bullets');
-      const btnTldr = document.getElementById('btn-sum-tldr');
-      const btnLegal = document.getElementById('btn-sum-legal');
-      const summaryBtns = [btnBullets, btnTldr, btnLegal].filter(Boolean);
-
-      async function runSummarizer(type) {
-        if (!sumOutput) return;
-        summaryBtns.forEach(b => { b.disabled = true; });
-        sumOutput.innerHTML = '<em>Analyse et génération de la synthèse documentaire...</em>';
-        const sumPrompts = {
-          bullets: "Présente une synthèse documentaire sous forme de 5 points clés clairs et concis avec puces sur le dossier SEM-26-003 : le site de la Grande Tourbière de Blainville, l'agrandissement de Stablex, le refus du BAPE 371, la Loi 93 sous bâillon et la décision CCE ordonnant au Canada de répondre d'ici le 16 octobre 2026.",
-          tldr: "Rédige une synthèse documentaire factuelle en exactement 1 paragraphe dense résumant le dossier SEM-26-003, la soumission citoyenne de William Guindon et la décision de la CCE du 17 août 2026.",
-          legal: "Rédige une note documentaire factuelle structurée expliquant le cadre juridique du dossier SEM-26-003 : articles 24.27 et 24.28 de l'ACEUM, application de la Loi sur les oiseaux migrateurs (LCOM) et de la Loi sur les espèces en péril (LEP), et impact de la Loi 93."
-        };
-        const query = sumPrompts[type] || sumPrompts.bullets;
-
-        const messages = [
-          {
-            role: 'system',
-            content: DOSSIER_CONTEXT
-          },
-          { role: 'user', content: query }
-        ];
-
-        try {
-          let res = '';
-          try {
-            res = await callGroq(messages);
-            hideOfflineBanner();
-          } catch (_) {
-            throw _;
-          }
-          sumOutput.innerHTML = `<strong>Synthèse Documentaire :</strong><br>${formatAiResponse(res)}`;
-        } catch (err) {
-          showOfflineBanner();
-          if (type === 'bullets') {
-            sumOutput.innerHTML = `
-              <strong>Points clés du dossier SEM-26-003 :</strong>
-              <ul style="padding-left:18px; margin:8px 0;">
-                <li><strong>Site :</strong> Grande Tourbière de Blainville (278 000 m² de milieux humides menacés par la cellule 6 de Stablex).</li>
-                <li><strong>BAPE :</strong> Rapport 371 concluant au caractère « prématuré » du projet et recommandant le refus.</li>
-                <li><strong>Loi 93 :</strong> Loi d'exception adoptée sous bâillon en mars 2025 pour restreindre les contestations judiciaires.</li>
-                <li><strong>Décision CCE :</strong> Détermination positive du 17 août 2026 obligeant le Canada à répondre d'ici le 16 octobre 2026.</li>
-                <li><strong>Auteur :</strong> William Guindon, premier mineur de l'histoire du traité à obtenir une telle décision.</li>
-              </ul>
-            `;
-          } else if (type === 'tldr') {
-            sumOutput.innerHTML = `
-              <strong>En 1 paragraphe (TL;DR) :</strong><br>
-              À 14 ans, William Guindon a déposé la soumission SEM-26-003 devant la Commission nord-américaine de coopération environnementale (CCE) pour contester l'enfouissement de matières dangereuses dans la tourbière de Blainville après l'adoption sous bâillon de la Loi 93. Le 17 août 2026, le Secrétariat de la CCE a validé la recevabilité de la communication et sommé le Canada de s'expliquer avant le 16 octobre 2026.
-            `;
-          } else {
-            sumOutput.innerHTML = `
-              <strong>Synthèse Juridique &amp; Traité CCE (Articles 24.27 &amp; 24.28 ACEUM) :</strong><br>
-              Le Secrétariat de la CCE a confirmé que la soumission satisfait l'ensemble des critères d'admissibilité du traité et exige des explications formelles du gouvernement fédéral quant à l'application effective de la <em>Loi sur la convention concernant les oiseaux migrateurs (1994)</em> et de la <em>Loi sur les espèces en péril (2002)</em>. L'étape suivante permettra au Secrétariat d'instruire l'ouverture d'un dossier factuel public indépendant.
-            `;
-          }
-        } finally {
-          summaryBtns.forEach(b => { b.disabled = false; });
-        }
-      }
-
-      if (btnBullets) btnBullets.addEventListener('click', () => runSummarizer('bullets'));
-      if (btnTldr) btnTldr.addEventListener('click', () => runSummarizer('tldr'));
-      if (btnLegal) btnLegal.addEventListener('click', () => runSummarizer('legal'));
 
       aiModal.querySelector('.ai-modal-close').addEventListener('click', () => {
         aiModal.classList.remove('active');
@@ -682,6 +600,9 @@ DIRECTIVES DE RÉPONSE :
         aiModal.classList.add('active');
         document.body.classList.add('ai-sidebar-active');
       }
+      if (window.AntiCapture && window.AntiCapture.scan) {
+        window.AntiCapture.scan();
+      }
       const userInput = document.getElementById('ai-user-input');
       if (userInput) {
         if (query && typeof query === 'string') {
@@ -718,8 +639,6 @@ DIRECTIVES DE RÉPONSE :
         }
         const chatBox = document.getElementById('ai-chat-box');
         if (chatBox) chatBox.innerHTML = '';
-        const sumOutput = document.getElementById('ai-summary-output');
-        if (sumOutput) sumOutput.innerHTML = '';
       } else {
         if (floatingBtn) floatingBtn.style.display = '';
       }

@@ -19,7 +19,7 @@
   'use strict';
 
   const CONFIG = {
-    blurAmount: '26px',
+    blurAmount: '28px',
     unblurDuration: 3000,
     toastDuration: 3000
   };
@@ -82,20 +82,25 @@
     protectedElements.forEach(el => {
       if (el && el.isConnected) {
         el.style.filter = `blur(${CONFIG.blurAmount})`;
-        el.style.opacity = '0.08';
+        el.style.opacity = '0.04';
         el.style.pointerEvents = 'none';
-        el.style.transition = 'filter 0.08s ease-in-out, opacity 0.08s ease-in-out';
+        el.style.transition = 'filter 0.06s ease-in-out, opacity 0.06s ease-in-out';
+        el.classList.add('anticapture-blurred');
       }
     });
 
-    if (reason === 'screenshot' && navigator.clipboard && navigator.clipboard.writeText) {
+    if ((reason === 'screenshot' || reason === 'copy' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
       try {
         navigator.clipboard.writeText('');
       } catch (_) {}
     }
 
-    if (reason === 'screenshot' || reason === 'devtools') {
+    if (reason === 'screenshot') {
       showToast("Protection anti-capture active · Éléments sensibles masqués");
+    } else if (reason === 'devtools') {
+      showToast("Inspection désactivée sur l'assistant IA · Contenu protégé masqué");
+    } else if (reason === 'copy') {
+      showToast("Protection anti-copie : copie interdite sur les réponses IA");
     }
 
     if (activeBlurTimer) clearTimeout(activeBlurTimer);
@@ -115,6 +120,7 @@
         el.style.filter = '';
         el.style.opacity = '';
         el.style.pointerEvents = '';
+        el.classList.remove('anticapture-blurred');
       }
     });
   }
@@ -123,6 +129,7 @@
     if (!el || protectedElements.has(el)) return;
     protectedElements.add(el);
 
+    el.classList.add('anticapture-protected');
     el.style.webkitUserSelect = 'none';
     el.style.userSelect = 'none';
     el.style.webkitUserDrag = 'none';
@@ -130,7 +137,14 @@
 
     el.addEventListener('contextmenu', e => {
       e.preventDefault();
-      showToast("Protection anti-copie : clic droit désactivé sur cet élément.");
+      e.stopPropagation();
+      const isAiElement = el.closest && (el.closest('.ai-modal-card') || el.closest('#ai-chat-box') || el.closest('#ai-summary-output') || el.classList.contains('ai-chat-bubble'));
+      if (isAiElement || isStrictConfidential) {
+        triggerBlurProtection('devtools');
+        showToast("Inspection et clic droit désactivés dans l'assistant IA.");
+      } else {
+        showToast("Protection anti-copie : clic droit désactivé sur cet élément.");
+      }
       return false;
     }, true);
 
@@ -140,7 +154,7 @@
     }, true);
 
     el.addEventListener('selectstart', e => {
-      if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+      if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA' && !el.classList.contains('ai-chat-input')) {
         e.preventDefault();
         return false;
       }
@@ -148,16 +162,18 @@
 
     el.addEventListener('copy', e => {
       e.preventDefault();
-      if (isStrictConfidential) {
-        triggerBlurProtection('copy');
-      } else {
-        showToast("Reproduction et copie non autorisées de cet élément.");
+      e.stopPropagation();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { navigator.clipboard.writeText(''); } catch (_) {}
       }
+      triggerBlurProtection('copy');
+      showToast("Protection active : la copie du texte des réponses IA est désactivée.");
       return false;
     }, true);
 
     el.addEventListener('cut', e => {
       e.preventDefault();
+      e.stopPropagation();
       return false;
     }, true);
   }
@@ -210,15 +226,18 @@
       });
     }
 
-    // 4. Réponses et synthèses du Chat IA (chat-ai.js / ai.html)
+    // 4. Réponses, synthèses et interface du Chat IA (chat-ai.js / ai.html)
     const aiSelectors = [
       '.ai-chat-bubble.bot',
       '#ai-chat-box',
-      '#ai-summary-output',
-      '#ai-preset-prompt-text'
+      '.ai-chat-messages',
+      '#ai-preset-prompt-text',
+      '.ai-modal-card',
+      '#ai-tab-chat',
+      '#ai-tab-models'
     ];
     document.querySelectorAll(aiSelectors.join(', ')).forEach(el => {
-      applyDeterrenceToElement(el, false);
+      applyDeterrenceToElement(el, true);
     });
 
     // 5. Cibles universelles déclarées via balisage HTML
@@ -233,6 +252,7 @@
       const code = e.code || '';
       const isMac = (navigator.platform || '').toUpperCase().indexOf('MAC') >= 0;
       const cmdOrCtrl = isMac ? (e.metaKey || e.ctrlKey) : (e.ctrlKey || e.metaKey);
+      const isAltOrOption = e.altKey;
 
       // 1. Touche PrintScreen (Windows/Linux)
       if (key === 'printscreen' || code === 'PrintScreen' || e.keyCode === 44) {
@@ -251,13 +271,38 @@
         triggerBlurProtection('screenshot');
       }
 
-      // 4. Inspection DevTools : F12, Ctrl+Shift+I/C/J, Ctrl+U
-      if (key === 'f12' || (cmdOrCtrl && e.shiftKey && ['KeyI', 'KeyC', 'KeyJ'].includes(code)) || (cmdOrCtrl && code === 'KeyU')) {
+      // 4. Inspection DevTools : F12, Ctrl+Shift+I/C/J, Cmd+Option+I/C/J, Ctrl+U, Cmd+Option+U
+      const isDevToolsShortcut = 
+        key === 'f12' ||
+        e.keyCode === 123 ||
+        (cmdOrCtrl && e.shiftKey && ['KeyI', 'KeyC', 'KeyJ'].includes(code)) ||
+        (cmdOrCtrl && e.shiftKey && ['i', 'c', 'j'].includes(key)) ||
+        (cmdOrCtrl && isAltOrOption && ['KeyI', 'KeyC', 'KeyJ'].includes(code)) ||
+        (cmdOrCtrl && isAltOrOption && ['i', 'c', 'j'].includes(key)) ||
+        (cmdOrCtrl && (code === 'KeyU' || key === 'u'));
+
+      if (isDevToolsShortcut) {
+        e.preventDefault();
+        e.stopPropagation();
         triggerBlurProtection('devtools');
+        showToast("Inspection et outils de développement désactivés.");
+        return false;
       }
 
-      // Touche Entrée pour débloquer immédiatement
-      if (key === 'enter') {
+      // 5. Tentative de sélection tout (Cmd+A / Ctrl+A) hors champs de saisie
+      if (cmdOrCtrl && (key === 'a' || code === 'KeyA')) {
+        const active = document.activeElement;
+        const inInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+        if (!inInput) {
+          e.preventDefault();
+          triggerBlurProtection('copy');
+          showToast("Sélection globale désactivée sur les contenus protégés.");
+          return false;
+        }
+      }
+
+      // Touche Entrée pour débloquer
+      if (key === 'enter' && !activeBlurTimer) {
         clearBlurProtection();
       }
     }, true);
@@ -281,7 +326,9 @@
     });
 
     document.documentElement.addEventListener('mouseenter', () => {
-      clearBlurProtection();
+      if (!activeBlurTimer) {
+        clearBlurProtection();
+      }
     });
 
     window.addEventListener('blur', () => {
@@ -289,19 +336,25 @@
     });
 
     window.addEventListener('focus', () => {
-      clearBlurProtection();
+      if (!activeBlurTimer) {
+        clearBlurProtection();
+      }
     });
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         triggerBlurProtection('visibility_hidden');
       } else {
-        clearBlurProtection();
+        if (!activeBlurTimer) {
+          clearBlurProtection();
+        }
       }
     });
 
     document.addEventListener('click', () => {
-      clearBlurProtection();
+      if (!activeBlurTimer) {
+        clearBlurProtection();
+      }
     });
   }
 
@@ -318,9 +371,22 @@
         user-select: none !important;
       }
       .anticapture-blurred {
-        filter: blur(26px) !important;
-        opacity: 0.08 !important;
+        filter: blur(28px) !important;
+        opacity: 0.04 !important;
         pointer-events: none !important;
+      }
+      .ai-chat-bubble.bot,
+      .ai-chat-bubble.bot *,
+      .ai-summary-output,
+      .ai-summary-output *,
+      .ai-summary-result,
+      .ai-summary-result * {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-drag: none !important;
       }
       @media print {
         img[src*="signature.svg"],
@@ -332,7 +398,15 @@
         #msg-content,
         .msg-box-container,
         #inbox-list-container,
-        .key-highlight-card {
+        .key-highlight-card,
+        .ai-modal-overlay,
+        .ai-modal-card,
+        #ai-chat-box,
+        .ai-chat-messages,
+        .ai-chat-bubble,
+        .ai-summary-output,
+        .ai-summary-box,
+        .ai-summary-card {
           display: none !important;
         }
       }
@@ -375,7 +449,7 @@
 
   window.AntiCapture = {
     protect: applyDeterrenceToElement,
-    blurAll: () => triggerBlurProtection('manual'),
+    blurAll: (reason) => triggerBlurProtection(reason || 'manual'),
     unblurAll: clearBlurProtection,
     scan: discoverAndProtectElements
   };
