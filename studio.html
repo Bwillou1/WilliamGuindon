@@ -647,22 +647,22 @@
   /* TAMPON OFFICIEL GRUNGE / WAX SEAL */
   .card-official-stamp {
     position: absolute;
-    bottom: 95px;
-    right: 40px;
-    border: 2px dashed rgba(239, 68, 68, 0.8);
+    top: 22px;
+    right: 28px;
+    border: 2px dashed rgba(239, 68, 68, 0.85);
     color: #ef4444;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    transform: rotate(-8deg);
-    z-index: 5;
+    letter-spacing: 0.12em;
+    transform: rotate(5deg);
+    z-index: 7;
     pointer-events: none;
-    background: rgba(239, 68, 68, 0.08);
+    background: rgba(239, 68, 68, 0.1);
     backdrop-filter: blur(4px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
   }
 
   /* CONTENEUR FLEXBOX PRINCIPAL DU CONTENU */
@@ -749,9 +749,9 @@
   }
 
   .card-display-title {
-    font-size: 44px;
+    font-size: 26px;
     font-weight: 800;
-    line-height: 1.18;
+    line-height: 1.22;
     letter-spacing: -0.02em;
     outline: none;
     word-break: break-word;
@@ -759,16 +759,16 @@
   }
 
   .card-accent-separator {
-    width: 70px;
-    height: 4px;
+    width: 60px;
+    height: 3px;
     border-radius: 2px;
-    margin: 4px 0;
+    margin: 2px 0;
   }
 
   .card-display-body {
-    font-size: 21px;
+    font-size: 14.5px;
     font-weight: 450;
-    line-height: 1.55;
+    line-height: 1.5;
     opacity: 0.9;
     outline: none;
     word-break: break-word;
@@ -778,10 +778,10 @@
   .card-highlight-capsule {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
+    gap: 8px;
+    padding: 8px 16px;
     border-radius: var(--radius-md);
-    font-size: 16px;
+    font-size: 12.5px;
     font-weight: 800;
     letter-spacing: 0.04em;
     backdrop-filter: blur(12px);
@@ -793,8 +793,8 @@
   .card-footer-block {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding-top: 20px;
+    gap: 10px;
+    padding-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
   }
 
@@ -807,13 +807,13 @@
   .card-author-profile {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
   .card-avatar-halo {
-    width: 66px;
-    height: 66px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    padding: 3px;
+    padding: 2px;
     background: linear-gradient(135deg, var(--accent-emerald), transparent);
     flex-shrink: 0;
   }
@@ -828,36 +828,36 @@
   .card-author-text {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
   .card-author-name-wrap {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 21px;
+    font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.01em;
   }
   .card-verified-badge {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background: #10b981;
     color: #000;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 900;
   }
   .card-author-role {
-    font-size: 14px;
+    font-size: 11.5px;
     font-weight: 500;
     opacity: 0.8;
   }
 
   .card-signature-container {
-    height: 62px;
+    height: 40px;
     display: flex;
     align-items: center;
   }
@@ -1463,10 +1463,10 @@
         <div class="satori-card-node" id="card-render-node" style="width: 560px; height: 560px; padding: 48px;">
           
           <!-- Couche photo arrière-plan -->
-          <div class="card-layer-bg-photo" id="card-bg-photo"></div>
+          <div class="card-layer-bg-photo" id="card-bg-photo" style="background-image:url('assets/media/william-guindon.jpg'); opacity:0.35;"></div>
 
           <!-- Couche dégradé dynamique -->
-          <div class="card-layer-gradient-overlay" id="card-bg-gradient"></div>
+          <div class="card-layer-gradient-overlay" id="card-bg-gradient" style="background:radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.25) 0%, transparent 60%);"></div>
 
           <!-- Couche micro-texture -->
           <div class="card-layer-noise" id="card-bg-noise"></div>
@@ -1842,142 +1842,142 @@
       }
     };
 
-    // Gabarits thématiques riches
+        // Gabarits thématiques riches
     const TEMPLATES = {
       quote: {
-        kicker: 'DÉCLARATION OFFICIELLE · DOSSIER SEM-26-003',
-        title: '« Vous ne ferez pas taire la jeunesse qui défend son avenir. »',
-        body: 'La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons le respect intégral des lois environnementales.',
-        highlight: 'ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026',
-        author: 'William Guindon',
-        role: 'Auteur de la soumission CCE SEM-26-003 · Chercheur citoyen',
-        date: 'Septembre 2026 · Blainville, Québec',
-        theme: 'emerald',
-        layout: 'editorial',
-        font: 'serif',
-        img: 'assets/media/william-guindon.jpg',
+        kicker: "DÉCLARATION OFFICIELLE · DOSSIER SEM-26-003",
+        title: "« Vous ne ferez pas taire la jeunesse qui défend son avenir. »",
+        body: "La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons le respect intégral des lois environnementales.",
+        highlight: "ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026",
+        author: "William Guindon",
+        role: "Auteur de la soumission CCE SEM-26-003 · Chercheur citoyen",
+        date: "Septembre 2026 · Blainville, Québec",
+        theme: "emerald",
+        layout: "editorial",
+        font: "serif",
+        img: "assets/media/william-guindon.jpg",
         stamp: false,
         live: false
       },
       alert: {
-        kicker: '🚨 ALERTE JURIDIQUE & ENVIRONNEMENTALE INTERNATIONALE',
-        title: 'Le Canada sommé de répondre avant le 16 octobre 2026',
-        body: 'Détermination positive historique rendue par la Commission de coopération environnementale (CCE / ACEUM). Examen approfondi de l'omission d'application des lois environnementales fédérales à Blainville.',
-        highlight: 'ARTICLE 24.27 ACEUM · DÉCISION DU SECRÉTARIAT',
-        author: 'William Guindon',
-        role: 'Auteur de la communication citoyenne SEM-26-003',
-        date: 'Procédure internationale en cours',
-        theme: 'crimson',
-        layout: 'brutalist',
-        font: 'syne',
-        img: 'tourbiere.jpg',
+        kicker: "🚨 ALERTE JURIDIQUE & ENVIRONNEMENTALE INTERNATIONALE",
+        title: "Le Canada sommé de répondre avant le 16 octobre 2026",
+        body: "Détermination positive historique rendue par la Commission de coopération environnementale (CCE / ACEUM). Examen approfondi de l'omission d'application des lois environnementales fédérales à Blainville.",
+        highlight: "ARTICLE 24.27 ACEUM · DÉCISION DU SECRÉTARIAT",
+        author: "William Guindon",
+        role: "Auteur de la communication citoyenne SEM-26-003",
+        date: "Procédure internationale en cours",
+        theme: "crimson",
+        layout: "brutalist",
+        font: "syne",
+        img: "tourbiere.jpg",
         stamp: true,
         live: true
       },
       investigation: {
-        kicker: '🔍 DOSSIER D'ENQUÊTE & ANALYSES PROBATOIRES',
-        title: '278 000 m² de milieux humides menacés par la Cellule 6',
-        body: 'Étude d'impact hydrogéologique, modélisation de migration des métaux lourds (cadmium) et analyse probatoire transmise au registre international de la CCE.',
-        highlight: 'PIÈCE JUSTIFICATIVE · BAPE 371 & CCE SEM-26-003',
-        author: 'William Guindon',
-        role: 'Enquêteur citoyen indépendant · Registre public',
-        date: 'Septembre 2026 · williamguindon.me',
-        theme: 'gold',
-        layout: 'dossier',
-        font: 'mono',
-        img: 'assets/media/clarification-independance.jpg',
+        kicker: "🔍 DOSSIER D'ENQUÊTE & ANALYSES PROBATOIRES",
+        title: "278 000 m² de milieux humides menacés par la Cellule 6",
+        body: "Étude d'impact hydrogéologique, modélisation de migration des métaux lourds (cadmium) et analyse probatoire transmise au registre international de la CCE.",
+        highlight: "PIÈCE JUSTIFICATIVE · BAPE 371 & CCE SEM-26-003",
+        author: "William Guindon",
+        role: "Enquêteur citoyen indépendant · Registre public",
+        date: "Septembre 2026 · williamguindon.me",
+        theme: "gold",
+        layout: "dossier",
+        font: "mono",
+        img: "assets/media/clarification-independance.jpg",
         stamp: true,
         live: false
       },
       stat: {
-        kicker: '📊 IMPACT HYDROLOGIQUE & PÉRIL ÉCOLOGIQUE',
-        statNum: '278 000 m²',
-        statLbl: 'DE MILIEUX HUMIDES MENACÉS',
-        title: 'La plus grande expansion de déchets dangereux du Québec',
-        body: '43 ans d'enfouissement industriel à Blainville, 22 000 tonnes de cadmium sous haute surveillance et un puits de carbone millénaire directement ciblé.',
-        highlight: 'ART. 24.28 ACEUM · REGISTRE TRANSPARENT',
-        author: 'William Guindon',
-        role: 'Auteur du dossier SEM-26-003',
-        date: 'Dossier public CCE · Blainville',
-        theme: 'cyber',
-        layout: 'stat',
-        font: 'syne',
-        img: 'assets/media/moteur-recherche-pieces.jpg',
+        kicker: "📊 IMPACT HYDROLOGIQUE & PÉRIL ÉCOLOGIQUE",
+        statNum: "278 000 m²",
+        statLbl: "DE MILIEUX HUMIDES MENACÉS",
+        title: "La plus grande expansion de déchets dangereux du Québec",
+        body: "43 ans d'enfouissement industriel à Blainville, 22 000 tonnes de cadmium sous haute surveillance et un puits de carbone millénaire directement ciblé.",
+        highlight: "ART. 24.28 ACEUM · REGISTRE TRANSPARENT",
+        author: "William Guindon",
+        role: "Auteur du dossier SEM-26-003",
+        date: "Dossier public CCE · Blainville",
+        theme: "cyber",
+        layout: "stat",
+        font: "syne",
+        img: "assets/media/moteur-recherche-pieces.jpg",
         stamp: false,
         live: false
       },
       clarification: {
-        kicker: '⚖️ DÉCLARATION FORMELLE D'INDÉPENDANCE (ARTICLE A.5)',
-        title: 'Absence de collaboration politique & Stricte Indépendance',
-        body: 'La soumission SEM-26-003 a été conçue, rédigée et déposée de manière rigoureusement autonome et autofinancée. Aucune affiliation ni financement d'aucune organisation politique ou corporative.',
-        highlight: 'CHARTE D'INTÉGRITÉ & ÉTHIQUE PUBLIQUE',
-        author: 'William Guindon',
-        role: 'Déclarant & auteur exclusif du dossier',
-        date: '24 septembre 2026 · Registre des politiques',
-        theme: 'gold',
-        layout: 'editorial',
-        font: 'serif',
-        img: 'assets/media/clarification-independance.jpg',
+        kicker: "⚖️ DÉCLARATION FORMELLE D'INDÉPENDANCE (ARTICLE A.5)",
+        title: "Absence de collaboration politique & Stricte Indépendance",
+        body: "La soumission SEM-26-003 a été conçue, rédigée et déposée de manière rigoureusement autonome et autofinancée. Aucune affiliation ni financement d'aucune organisation politique ou corporative.",
+        highlight: "CHARTE D'INTÉGRITÉ & ÉTHIQUE PUBLIQUE",
+        author: "William Guindon",
+        role: "Déclarant & auteur exclusif du dossier",
+        date: "24 septembre 2026 · Registre des politiques",
+        theme: "gold",
+        layout: "editorial",
+        font: "serif",
+        img: "assets/media/clarification-independance.jpg",
         stamp: true,
         live: false
       },
-            reconciliation: {
-        kicker: '🧡 30 SEPTEMBRE · JOURNÉE NATIONALE DE LA VÉRITÉ ET DE LA RÉCONCILIATION',
-        title: 'Shé:kon · Honorer la Terre-Mère et la mémoire des générations',
-        body: 'À l\'occasion de la Semaine nationale de la vérité et de la réconciliation, nous reconnaissons l\'intendance millénaire des nations Kanien\'kehá:ka et Anishinaabeg sur les terres et les eaux de la Grande Tourbière de Blainville. Chaque enfant compte.',
-        highlight: 'CHAQUE ENFANT COMPTE · EVERY CHILD MATTERS',
-        author: 'William Guindon',
-        role: 'Militant écologiste · Dossier SEM-26-003 CCE',
-        date: '30 septembre · Tiohtià:ke / Blainville',
-        theme: 'terracotta',
-        layout: 'editorial',
-        font: 'serif',
-        img: 'assets/media/ndtr-banner-rcaanc.jpg',
+      reconciliation: {
+        kicker: "🧡 30 SEPTEMBRE · JOURNÉE NATIONALE DE LA VÉRITÉ ET DE LA RÉCONCILIATION",
+        title: "Shé:kon · Honorer la Terre-Mère et la mémoire des générations",
+        body: "À l'occasion de la Semaine nationale de la vérité et de la réconciliation, nous reconnaissons l'intendance millénaire des nations Kanien'kehá:ka et Anishinaabeg sur les terres et les eaux de la Grande Tourbière de Blainville. Chaque enfant compte.",
+        highlight: "CHAQUE ENFANT COMPTE · EVERY CHILD MATTERS",
+        author: "William Guindon",
+        role: "Militant écologiste · Dossier SEM-26-003 CCE",
+        date: "30 septembre · Tiohtià:ke / Blainville",
+        theme: "terracotta",
+        layout: "editorial",
+        font: "serif",
+        img: "assets/media/ndtr-banner-rcaanc.jpg",
         stamp: false,
         live: false
       },
       nature: {
-        kicker: '🌿 PATRIMOINE NATUREL DES BASSES-LAURENTIDES',
-        title: 'Sauvegarde intégrale de la Grande Tourbière de Blainville',
-        body: 'Véritable poumon écologique et réservoir de biodiversité abritant des espèces vulnérables menacées par les projets d'enfouissement de matières dangereuses.',
-        highlight: 'SANCTUAIRE ÉCOLOGIQUE & PUITS DE CARBONE',
-        author: 'William Guindon',
-        role: 'Militant écologiste · Dossier SEM-26-003',
-        date: 'Blainville · Québec, Canada',
-        theme: 'emerald',
-        layout: 'editorial',
-        font: 'serif',
-        img: 'tourbiere.jpg',
+        kicker: "🌿 PATRIMOINE NATUREL DES BASSES-LAURENTIDES",
+        title: "Sauvegarde intégrale de la Grande Tourbière de Blainville",
+        body: "Véritable poumon écologique et réservoir de biodiversité abritant des espèces vulnérables menacées par les projets d'enfouissement de matières dangereuses.",
+        highlight: "SANCTUAIRE ÉCOLOGIQUE & PUITS DE CARBONE",
+        author: "William Guindon",
+        role: "Militant écologiste · Dossier SEM-26-003",
+        date: "Blainville · Québec, Canada",
+        theme: "emerald",
+        layout: "editorial",
+        font: "serif",
+        img: "tourbiere.jpg",
         stamp: false,
         live: false
       },
       press: {
-        kicker: '📰 COUVERTURE MÉDIATIQUE & REVUE DE PRESSE',
-        title: '« L'adolescent qui défie les géants de l'enfouissement »',
-        body: 'Couverture nationale dans Le Devoir, La Presse, CBC News, The Rover. Accès libre à toutes les pièces probatoires, études hydrogéologiques et dossier de presse officiel.',
-        highlight: 'KIT MÉDIA COMPLET & RECHERCHE PLEIN TEXTE OCR',
-        author: 'William Guindon',
-        role: 'Contact presse : contact@williamguindon.me',
-        date: 'williamguindon.me/presse.html',
-        theme: 'parchment',
-        layout: 'editorial',
-        font: 'serif',
-        img: 'assets/media/william-guindon.jpg',
+        kicker: "📰 COUVERTURE MÉDIATIQUE & REVUE DE PRESSE",
+        title: "« L'adolescent qui défie les géants de l'enfouissement »",
+        body: "Couverture nationale dans Le Devoir, La Presse, CBC News, The Rover. Accès libre à toutes les pièces probatoires, études hydrogéologiques et dossier de presse officiel.",
+        highlight: "KIT MÉDIA COMPLET & RECHERCHE PLEIN TEXTE OCR",
+        author: "William Guindon",
+        role: "Contact presse : contact@williamguindon.me",
+        date: "williamguindon.me/presse.html",
+        theme: "parchment",
+        layout: "editorial",
+        font: "serif",
+        img: "assets/media/william-guindon.jpg",
         stamp: false,
         live: false
       },
       live: {
-        kicker: '🎙️ INTERVENTION PUBLIQUE & DIRECT CITOYEN',
-        title: 'Le pouvoir d'agir : la jeunesse et le droit environnemental',
-        body: 'Analyse en direct des développements juridiques de la soumission CCE, des réponses des gouvernements et des prochaines étapes de mobilisation pour la Grande Tourbière.',
-        highlight: 'CLAVARDAGE IA DOCUMENTÉ SUR LE DOSSIER',
-        author: 'William Guindon',
-        role: 'Militant écologiste au Québec',
-        date: 'Direct sur williamguindon.me',
-        theme: 'crimson',
-        layout: 'brutalist',
-        font: 'syne',
-        img: 'assets/media/william-guindon.jpg',
+        kicker: "🎙️ INTERVENTION PUBLIQUE & DIRECT CITOYEN",
+        title: "Le pouvoir d'agir : la jeunesse et le droit environnemental",
+        body: "Analyse en direct des développements juridiques de la soumission CCE, des réponses des gouvernements et des prochaines étapes de mobilisation pour la Grande Tourbière.",
+        highlight: "CLAVARDAGE IA DOCUMENTÉ SUR LE DOSSIER",
+        author: "William Guindon",
+        role: "Militant écologiste au Québec",
+        date: "Direct sur williamguindon.me",
+        theme: "crimson",
+        layout: "brutalist",
+        font: "syne",
+        img: "assets/media/william-guindon.jpg",
         stamp: false,
         live: true
       }
@@ -2127,23 +2127,23 @@
       const isLandscape = currentFormat === 'landscape';
 
       if (isStory) {
-        cardNode.style.padding = '46px 32px';
-        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '30px' : '34px';
-        viewCardBody.style.fontSize = '18px';
-        viewStatNumber.style.fontSize = '72px';
-        cardQuoteGlyph.style.fontSize = '120px';
+        cardNode.style.padding = '34px 26px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '24px' : '26px';
+        viewCardBody.style.fontSize = '14.5px';
+        viewStatNumber.style.fontSize = '56px';
+        cardQuoteGlyph.style.fontSize = '90px';
       } else if (isLandscape) {
-        cardNode.style.padding = '36px 48px';
-        viewCardTitle.style.fontSize = '30px';
-        viewCardBody.style.fontSize = '17px';
-        viewStatNumber.style.fontSize = '70px';
-        cardQuoteGlyph.style.fontSize = '120px';
+        cardNode.style.padding = '24px 34px';
+        viewCardTitle.style.fontSize = '22px';
+        viewCardBody.style.fontSize = '13.5px';
+        viewStatNumber.style.fontSize = '48px';
+        cardQuoteGlyph.style.fontSize = '80px';
       } else {
-        cardNode.style.padding = '48px 48px';
-        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '38px' : '42px';
-        viewCardBody.style.fontSize = '20px';
-        viewStatNumber.style.fontSize = '92px';
-        cardQuoteGlyph.style.fontSize = '160px';
+        cardNode.style.padding = '30px 32px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '25px' : '27px';
+        viewCardBody.style.fontSize = '14.5px';
+        viewStatNumber.style.fontSize = '64px';
+        cardQuoteGlyph.style.fontSize = '110px';
       }
     }
 
@@ -2196,18 +2196,21 @@
 
     // GÉNÉRATION DU SVG VECTORIEL PUR
     function generateVectorSvg(w, h) {
+      const fmt = FORMATS[currentFormat];
+      const baseW = fmt.w;
+      const baseH = fmt.h;
       const pal = PALETTES[currentTheme];
       const isStory = currentFormat === 'story';
       const isLandscape = currentFormat === 'landscape';
 
-      const pad = isStory ? 80 : isLandscape ? 60 : 90;
-      const titleSize = isStory ? 60 : isLandscape ? 52 : 68;
-      const bodySize = isStory ? 36 : isLandscape ? 30 : 38;
+      const pad = isStory ? 70 : isLandscape ? 50 : 70;
+      const titleSize = isStory ? 54 : isLandscape ? 44 : 52;
+      const bodySize = isStory ? 30 : isLandscape ? 24 : 28;
 
       const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
       return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${baseW} ${baseH}">
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="${pal.bg.match(/#[0-9a-f]{6}/gi)?.[0] || '#021a12'}"/>
