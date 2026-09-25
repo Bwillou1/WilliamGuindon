@@ -9,6 +9,53 @@
   // Configuration PDF.js locale
   if (typeof pdfjsLib !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/vendor/pdfjs/pdf.worker.min.js';
+
+    // Exposition conforme de l'API pdfjsLib.TextLayer pour pdfjs-dist 3.11.174
+    if (!pdfjsLib.TextLayer) {
+      pdfjsLib.TextLayer = class TextLayer {
+        constructor({ textContentSource, container, viewport, textDivs = [] }) {
+          this.textContentSource = textContentSource;
+          this.container = container;
+          this.viewport = viewport;
+          this.textDivs = textDivs;
+          this._renderTask = null;
+        }
+
+        async render() {
+          this.container.style.setProperty('--scale-factor', this.viewport.scale);
+          if (typeof pdfjsLib.setLayerDimensions === 'function') {
+            pdfjsLib.setLayerDimensions(this.container, this.viewport);
+          } else {
+            this.container.style.width = `${Math.floor(this.viewport.width)}px`;
+            this.container.style.height = `${Math.floor(this.viewport.height)}px`;
+          }
+
+          this._renderTask = pdfjsLib.renderTextLayer({
+            textContentSource: this.textContentSource,
+            container: this.container,
+            viewport: this.viewport,
+            textDivs: this.textDivs
+          });
+
+          if (this._renderTask && this._renderTask.promise) {
+            await this._renderTask.promise;
+          }
+
+          // Ajout de la balise .endOfContent pour la sélection multi-lignes fluide (spécification pdf.js)
+          if (!this.container.querySelector('.endOfContent')) {
+            const endDiv = document.createElement('div');
+            endDiv.className = 'endOfContent';
+            this.container.appendChild(endDiv);
+          }
+        }
+
+        cancel() {
+          if (this._renderTask && typeof this._renderTask.cancel === 'function') {
+            this._renderTask.cancel();
+          }
+        }
+      };
+    }
   }
 
   // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
@@ -128,6 +175,7 @@
     layoutMode: 'continuous', // 'continuous', 'single', 'spread'
     readingMode: 'normal', // 'normal', 'dark', 'sepia', 'contrast'
     pageRenderingQueue: new Map(), // pageNum -> renderTask
+    textLayerRenderingQueue: new Map(), // pageNum -> textLayerInstance
     renderedPages: new Set(),
     pageHeights: [],
     pageWidths: [],
@@ -299,6 +347,10 @@
         if (task && task.cancel) task.cancel();
       }
       state.pageRenderingQueue.clear();
+      for (const [pageNum, textTask] of state.textLayerRenderingQueue.entries()) {
+        if (textTask && typeof textTask.cancel === 'function') textTask.cancel();
+      }
+      state.textLayerRenderingQueue.clear();
       state.renderedPages.clear();
 
       // Charger le document
@@ -306,6 +358,7 @@
         url: safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
+        standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
         enableXfa: true,
         // CVE-2024-4367 (exécution de JS arbitraire à l'ouverture d'un PDF piégé) : neutralisée en conservant isEvalSupported à false. Ne jamais repasser à true.
         isEvalSupported: false
@@ -422,6 +475,11 @@
       if (task && task.cancel) task.cancel();
       state.pageRenderingQueue.delete(pageNum);
     }
+    if (state.textLayerRenderingQueue.has(pageNum)) {
+      const textTask = state.textLayerRenderingQueue.get(pageNum);
+      if (textTask && typeof textTask.cancel === 'function') textTask.cancel();
+      state.textLayerRenderingQueue.delete(pageNum);
+    }
 
     try {
       const page = await state.pdfDoc.getPage(pageNum);
@@ -459,24 +517,26 @@
       state.pageRenderingQueue.delete(pageNum);
       state.renderedPages.add(pageNum);
 
-      // Rendre la couche de texte pour la sélection & la recherche
+      // Rendre la couche de texte pour la sélection & la recherche avec l'API TextLayer synchronisée
       textLayer.innerHTML = '';
-      textLayer.style.width = `${Math.floor(viewport.width)}px`;
-      textLayer.style.height = `${Math.floor(viewport.height)}px`;
       textLayer.style.setProperty('--scale-factor', viewport.scale);
+      if (typeof pdfjsLib.setLayerDimensions === 'function') {
+        pdfjsLib.setLayerDimensions(textLayer, viewport);
+      } else {
+        textLayer.style.width = `${Math.floor(viewport.width)}px`;
+        textLayer.style.height = `${Math.floor(viewport.height)}px`;
+      }
 
       const textContent = await page.getTextContent();
-      if (pdfjsLib.renderTextLayer) {
-        const renderTextTask = pdfjsLib.renderTextLayer({
-          textContentSource: textContent,
-          container: textLayer,
-          viewport: viewport,
-          textDivs: []
-        });
-        if (renderTextTask && renderTextTask.promise) {
-          await renderTextTask.promise;
-        }
-      }
+      const textLayerInstance = new pdfjsLib.TextLayer({
+        textContentSource: textContent,
+        container: textLayer,
+        viewport: viewport
+      });
+      state.textLayerRenderingQueue.set(pageNum, textLayerInstance);
+
+      await textLayerInstance.render();
+      state.textLayerRenderingQueue.delete(pageNum);
     } catch (err) {
       if (err.name !== 'RenderingCancelledException') {
         console.warn(`Rendu annulé ou erreur page ${pageNum}:`, err);
@@ -517,6 +577,10 @@
         if (task && task.cancel) task.cancel();
       });
       state.pageRenderingQueue.clear();
+      state.textLayerRenderingQueue.forEach(task => {
+        if (task && typeof task.cancel === 'function') task.cancel();
+      });
+      state.textLayerRenderingQueue.clear();
       state.renderedPages.clear();
 
       // Mettre à jour les dimensions de tous les wrappers existants

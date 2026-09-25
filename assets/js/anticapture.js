@@ -19,6 +19,11 @@
 (function () {
   'use strict';
 
+  // Les visionneuses de documents probatoires officiels sont exemptées de toute restriction
+  if (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html')) {
+    return;
+  }
+
   // CONTRÔLE D'INTÉGRITÉ HÔTE & ANTI-FRAMING RADICAL (REDONDANCE NIVEAU 2)
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
   const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
@@ -191,7 +196,7 @@
 
     showSecurityShieldOverlays();
 
-    if ((reason === 'screenshot' || reason === 'copy' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
+    if ((reason === 'screenshot' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
       try {
         navigator.clipboard.writeText('');
       } catch (_) {}
@@ -394,11 +399,18 @@
         return false;
       }
 
-      // 5. Tentative de sélection tout (Cmd+A / Ctrl+A) hors champs de saisie
+      // 5. Tentative de sélection tout (Cmd+A / Ctrl+A) sur un élément spécifiquement protégé
       if (cmdOrCtrl && (key === 'a' || code === 'KeyA')) {
         const active = document.activeElement;
         const inInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
-        if (!inInput) {
+        const inViewer = active && (active.closest && (active.closest('.textLayer') || active.closest('#viewer-viewport') || active.closest('.pdf-app')));
+        if (inViewer || inInput) {
+          return;
+        }
+        const sel = window.getSelection ? window.getSelection() : null;
+        const selNode = sel && sel.anchorNode;
+        const inProtected = selNode && (selNode.nodeType === 1 ? selNode : selNode.parentElement)?.closest?.('[data-anticapture="true"], .anticapture-zone, .ai-modal-card, #ai-chat-box, .messagerie-shield-overlay');
+        if (inProtected) {
           e.preventDefault();
           triggerBlurProtection('copy');
           showToast("Sélection globale désactivée sur les contenus protégés.");

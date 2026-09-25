@@ -703,8 +703,6 @@ html, body {
   text-align: initial;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   overflow: hidden;
   opacity: 1;
   line-height: 1;
@@ -715,8 +713,8 @@ html, body {
   transform-origin: 0 0;
   z-index: 2;
   pointer-events: auto;
-  user-select: text;
-  -webkit-user-select: text;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 
 .page-wrapper .textLayer :is(span, br) {
@@ -725,21 +723,37 @@ html, body {
   white-space: pre;
   cursor: text;
   transform-origin: 0% 0%;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+.page-wrapper .textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: -1;
+  cursor: default;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.page-wrapper .textLayer .endOfContent.active {
+  top: 0;
 }
 
 .page-wrapper .textLayer ::selection {
-  background: rgba(34, 197, 94, 0.45);
-  color: transparent;
+  background: rgba(34, 197, 94, 0.45) !important;
+  color: transparent !important;
 }
 
 .page-wrapper .textLayer ::-moz-selection {
-  background: rgba(34, 197, 94, 0.45);
-  color: transparent;
+  background: rgba(34, 197, 94, 0.45) !important;
+  color: transparent !important;
 }
 
 .page-wrapper .textLayer br::selection,
 .page-wrapper .textLayer br::-moz-selection {
-  background: transparent;
+  background: transparent !important;
 }
 
 
