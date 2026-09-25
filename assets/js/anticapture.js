@@ -62,7 +62,7 @@
       document.body.appendChild(toast);
     }
 
-    toast.innerHTML = `<span style="font-size:16px;">🛡️</span> <span>${message}</span>`;
+    toast.innerHTML = `<span style="font-weight:800; color:#10b981; margin-right:4px;">[Sécurité]</span> <span>${message}</span>`;
     toast.style.opacity = '1';
     toast.style.transform = 'translateX(-50%) translateY(0)';
 
@@ -85,12 +85,12 @@
         aiOverlay.id = 'ai-chat-shield-overlay';
         aiOverlay.className = 'anticapture-shield-card';
         aiOverlay.innerHTML = `
-          <div class="anticapture-shield-badge">🔒 Protection active contre la capture</div>
+          <div class="anticapture-shield-badge">Protection active contre la capture</div>
           <div class="anticapture-shield-title">Réponses de l'IA masquées temporairement</div>
           <p class="anticapture-shield-text">
             L'assistant documentaire est un outil informatique automatisé distinct de William Guindon. Les réponses et synthèses générées par l'IA ne constituent en aucun cas une preuve juridique, n'ont aucune valeur probatoire officielle devant la CCE ou les tribunaux et ne peuvent être utilisées comme déclaration formelle.
           </p>
-          <div class="anticapture-shield-hint">👉 Cliquez ou revenez sur la fenêtre pour réactiver l'affichage</div>
+          <div class="anticapture-shield-hint">Cliquez ou revenez sur la fenêtre pour réactiver l'affichage</div>
         `;
         chatTab.appendChild(aiOverlay);
       }
@@ -108,12 +108,12 @@
           msgOverlay = document.createElement('div');
           msgOverlay.className = 'anticapture-shield-card messagerie-shield-overlay';
           msgOverlay.innerHTML = `
-            <div class="anticapture-shield-badge">🛡️ Bouclier de confidentialité actif</div>
+            <div class="anticapture-shield-badge">Bouclier de confidentialité actif</div>
             <div class="anticapture-shield-title">Communications et clés chiffrées masquées</div>
             <p class="anticapture-shield-text">
-              Les messages chiffrés et clés sont protégés lors de la perte de focus pour empêcher toute capture d'écran non autorisée par des logiciels espions (spyware / screen-grabber).
+              Les messages chiffrés et clés de communication sont automatiquement protégés lors de la perte de focus pour empêcher toute capture d'écran non autorisée par des logiciels espions (spyware / capture d'arrière-plan).
             </p>
-            <div class="anticapture-shield-hint">👉 Cliquez ou reprenez le focus pour afficher vos messages</div>
+            <div class="anticapture-shield-hint">Cliquez ou reprenez le focus pour afficher vos messages</div>
           `;
           container.style.position = 'relative';
           container.appendChild(msgOverlay);
@@ -254,30 +254,7 @@
       applyDeterrenceToElement(el, true);
     });
 
-    // 2. Logos des médias partenaires & diffuseurs et logos d'événements
-    const logoSelectors = [
-      '.media-logos-ticker-wrapper img',
-      '.media-logos-ticker-track img',
-      '.media-logo-item img',
-      '.media-logo-item',
-      '.press-logo-img',
-      '.press-logo-link img',
-      '.press-logo-link',
-      '.event-card-logo-wrap img',
-      'img[src*="lapresse-logo"]',
-      'img[src*="ledevoir-logo"]',
-      'img[src*="cbc-logo"]',
-      'img[src*="tvbl-logo"]',
-      'img[src*="the-rover-logo"]',
-      'img[src*="lesasdelinfo-logo"]',
-      'img[src*="logo-areq-csq"]',
-      'img[src*="logo-mouvement-actes-csq"]'
-    ];
-    document.querySelectorAll(logoSelectors.join(', ')).forEach(el => {
-      applyDeterrenceToElement(el, true);
-    });
-
-    // 3. Messagerie sécurisée Nostr (messagerie.html)
+    // 2. Messagerie sécurisée Nostr (messagerie.html)
     const isMessageriePage = window.location.pathname.includes('messagerie.html');
     if (isMessageriePage) {
       const msgSelectors = [
@@ -530,18 +507,6 @@
         #inbox-list-container,
         .inbox-msg-card,
         .key-highlight-card,
-        .media-logos-ticker-wrapper,
-        .press-carousel-wrapper,
-        .press-logo-img,
-        .media-logo-item,
-        img[src*="lapresse-logo"],
-        img[src*="ledevoir-logo"],
-        img[src*="cbc-logo"],
-        img[src*="tvbl-logo"],
-        img[src*="the-rover-logo"],
-        img[src*="lesasdelinfo-logo"],
-        img[src*="logo-areq-csq"],
-        img[src*="logo-mouvement-actes-csq"],
         .ai-modal-overlay,
         .ai-modal-card,
         #ai-chat-box,
