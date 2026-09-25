@@ -279,6 +279,25 @@ SOFTWARE.
 
 ---
 
+### Satori (HTML/CSS to SVG Vector Engine)
+- **Auteurs :** Copyright (c) Vercel, Inc.
+- **Licence :** Mozilla Public License 2.0 (MPL-2.0)
+- **URL :** https://github.com/vercel/satori
+- **Description :** Architecture et principes de rendu vectoriel convertissant le modèle HTML/CSS flexbox en graphiques vectoriels SVG purs et exports Retina 2K pour le studio de création de visuels et de déclarations citoyennes (`studio.html`).
+
+```text
+Mozilla Public License Version 2.0
+==================================
+
+1. Definitions
+--------------
+...
+Full license text available at: https://www.mozilla.org/en-US/MPL/2.0/
+and https://github.com/vercel/satori/blob/main/LICENSE
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).

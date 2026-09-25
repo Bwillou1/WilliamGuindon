@@ -693,8 +693,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
     flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
   }
   
   .tpl-filter-btn.active {
@@ -705,34 +708,43 @@
   .card-supporter-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 11px;
+    gap: 5px;
+    padding: 3px 9px;
     border-radius: var(--radius-full);
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     background: rgba(0, 0, 0, 0.8);
     border: 1.5px solid #10b981;
     color: #34d399;
     backdrop-filter: blur(8px);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .card-kicker-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 5px 12px;
+    gap: 6px;
+    padding: 4px 10px;
     border-radius: var(--radius-full);
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-    flex-shrink: 0;
+    max-width: 72%;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+  }
+  #view-kicker-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .card-live-dot {
     width: 8px;
@@ -748,12 +760,13 @@
   }
 
   .card-header-metadata {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.05em;
-    opacity: 0.7;
+    opacity: 0.8;
     text-transform: uppercase;
     flex-shrink: 0;
+    white-space: nowrap;
   }
 
   /* TITRE PRINCIPAL & BODY */
@@ -834,20 +847,23 @@
   .card-highlight-capsule {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 7px 14px;
+    gap: 7px;
+    padding: 5px 12px;
     border-radius: var(--radius-md);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     backdrop-filter: blur(12px);
     width: fit-content;
     max-width: 100%;
+    box-sizing: border-box;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.25;
+    word-break: break-word;
   }
 
   /* BAS DE CARTE (AUTEUR / SIGNATURE / FOOTER) */
@@ -935,18 +951,46 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 13px;
+    font-size: 11.5px;
     font-weight: 700;
-    opacity: 0.75;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
+    gap: 8px;
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .card-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    flex-shrink: 1;
   }
   .card-seal-cce {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    font-size: 10.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+  .card-footer-email {
+    font-size: 10.5px;
+    font-weight: 600;
+    opacity: 0.85;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
   }
   #view-date-tag {
     margin-left: auto;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   /* BARRE DE CONTRÔLE DE ZOOM PRÉVISUALISATION */
@@ -1675,8 +1719,9 @@
               </div>
 
               <div class="card-bottom-submeta" id="view-bottom-submeta">
-                <div class="card-seal-cce" id="view-cce-tag">
-                  <span>🏛️ Commission de coopération environnementale</span>
+                <div class="card-footer-left" id="view-footer-left">
+                  <span class="card-seal-cce" id="view-cce-tag" style="display:none;">🏛️ CCE SEM-26-003</span>
+                  <span class="card-footer-email" id="view-email-tag">contact@williamguindon.me</span>
                 </div>
                 <div id="view-date-tag" style="font-weight:800; letter-spacing:0.04em;">williamguindon.me</div>
               </div>
@@ -1822,6 +1867,7 @@
     const viewFooterBlock = document.getElementById('view-footer-block');
     const viewBottomSubmeta = document.getElementById('view-bottom-submeta');
     const viewCceTag = document.getElementById('view-cce-tag');
+    const viewEmailTag = document.getElementById('view-email-tag');
     const viewDateTag = document.getElementById('view-date-tag');
 
     const cardQuoteGlyph = document.getElementById('card-quote-glyph');
@@ -2018,7 +2064,8 @@
         img: "tourbiere.jpg",
         stamp: false,
         supporterBadge: true,
-        live: false
+        live: false,
+        cceSeal: false
       },
       support_tourbiere: {
         kicker: "🌿 TOUCHE PAS À MA TOURBIÈRE",
@@ -2034,7 +2081,8 @@
         img: "tourbiere.jpg",
         stamp: false,
         supporterBadge: true,
-        live: false
+        live: false,
+        cceSeal: false
       },
       support_youth: {
         kicker: "📢 SOLIDARITÉ INTERGÉNÉRATIONNELLE",
@@ -2050,7 +2098,8 @@
         img: "assets/media/william-guindon.jpg",
         stamp: false,
         supporterBadge: true,
-        live: false
+        live: false,
+        cceSeal: false
       },
       support_badge: {
         kicker: "🛡️ GARDIEN DE LA TOURBIÈRE",
@@ -2066,7 +2115,8 @@
         img: "assets/media/moteur-recherche-pieces.jpg",
         stamp: false,
         supporterBadge: true,
-        live: false
+        live: false,
+        cceSeal: false
       },
 
       quote: {
@@ -2159,7 +2209,8 @@
         font: "serif",
         img: "assets/media/ndtr-banner-rcaanc.jpg",
         stamp: false,
-        live: false
+        live: false,
+        cceSeal: false
       },
       nature: {
         kicker: "🌿 GRANDE TOURBIÈRE DE BLAINVILLE",
@@ -2346,6 +2397,9 @@
         viewCceTag.style.display = (chkCceSeal && chkCceSeal.checked) ? 'inline-flex' : 'none';
         viewCceTag.style.color = pal.accent;
       }
+      if (viewEmailTag) {
+        viewEmailTag.style.color = pal.textMuted;
+      }
       viewDateTag.textContent = 'williamguindon.me';
       viewDateTag.style.color = pal.textMuted;
 
@@ -2366,29 +2420,37 @@
     // Gestion du dimensionnement selon le format
     function applyFormatScale(fmt) {
       const isStory = currentFormat === 'story';
+      const isPortrait = currentFormat === 'portrait';
       const isLandscape = currentFormat === 'landscape';
 
       if (isStory) {
-        cardNode.style.padding = '32px 24px';
-        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '23px' : '25px';
-        viewCardBody.style.fontSize = '14px';
-        viewStatNumber.style.fontSize = '54px';
-        cardQuoteGlyph.style.fontSize = '86px';
-        if (viewMainNarrative) viewMainNarrative.style.gap = '12px';
+        cardNode.style.padding = '26px 20px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '21px' : '23px';
+        viewCardBody.style.fontSize = '13px';
+        viewStatNumber.style.fontSize = '50px';
+        cardQuoteGlyph.style.fontSize = '80px';
+        if (viewMainNarrative) viewMainNarrative.style.gap = '10px';
+      } else if (isPortrait) {
+        cardNode.style.padding = '22px 24px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '21px' : '23px';
+        viewCardBody.style.fontSize = '13px';
+        viewStatNumber.style.fontSize = '52px';
+        cardQuoteGlyph.style.fontSize = '82px';
+        if (viewMainNarrative) viewMainNarrative.style.gap = '10px';
       } else if (isLandscape) {
-        cardNode.style.padding = '18px 28px';
-        viewCardTitle.style.fontSize = '20px';
+        cardNode.style.padding = '16px 26px';
+        viewCardTitle.style.fontSize = '19px';
         viewCardBody.style.fontSize = '12px';
         viewStatNumber.style.fontSize = '40px';
-        cardQuoteGlyph.style.fontSize = '70px';
+        cardQuoteGlyph.style.fontSize = '68px';
         if (viewMainNarrative) viewMainNarrative.style.gap = '8px';
       } else {
-        cardNode.style.padding = '28px 30px';
-        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '24px' : '26px';
-        viewCardBody.style.fontSize = '14px';
-        viewStatNumber.style.fontSize = '60px';
-        cardQuoteGlyph.style.fontSize = '96px';
-        if (viewMainNarrative) viewMainNarrative.style.gap = '12px';
+        cardNode.style.padding = '26px 28px';
+        viewCardTitle.style.fontSize = currentLayout === 'stat' ? '23px' : '25px';
+        viewCardBody.style.fontSize = '13.5px';
+        viewStatNumber.style.fontSize = '58px';
+        cardQuoteGlyph.style.fontSize = '92px';
+        if (viewMainNarrative) viewMainNarrative.style.gap = '11px';
       }
     }
 
@@ -2396,12 +2458,18 @@
     function autoFitCardContent() {
       if (!cardContentWrap) return;
       const isLandscape = currentFormat === 'landscape';
-      const minTitleSize = isLandscape ? 15 : 17;
-      const minBodySize = isLandscape ? 10.5 : 11.5;
+      const minTitleSize = isLandscape ? 14 : 16;
+      const minBodySize = isLandscape ? 10 : 11;
       let guard = 0;
 
+      const isOverflowing = () => {
+        const wrapOver = cardContentWrap.scrollHeight > cardContentWrap.clientHeight + 1;
+        const narrOver = viewMainNarrative ? (viewMainNarrative.scrollHeight > viewMainNarrative.clientHeight + 1) : false;
+        return wrapOver || narrOver;
+      };
+
       // Boucle itérative fine : tant que le contenu déborde, on compacte harmonieusement
-      while (cardContentWrap.scrollHeight > cardContentWrap.clientHeight && guard < 22) {
+      while (isOverflowing() && guard < 24) {
         guard++;
         let changed = false;
 
@@ -2424,20 +2492,30 @@
         // 3. Réduire l'espacement entre éléments narratifs
         if (viewMainNarrative) {
           const currentGap = parseFloat(window.getComputedStyle(viewMainNarrative).gap) || 10;
-          if (currentGap > 6) {
-            viewMainNarrative.style.gap = `${Math.max(5, currentGap - 1.5)}px`;
+          if (currentGap > 4) {
+            viewMainNarrative.style.gap = `${Math.max(4, currentGap - 1.5)}px`;
             changed = true;
           }
         }
 
         // 4. Réduire le padding vertical de la carte si l'espace est très contraint
         const currentPadTop = parseFloat(window.getComputedStyle(cardNode).paddingTop) || 24;
-        const minPad = isLandscape ? 12 : 18;
+        const minPad = isLandscape ? 12 : 16;
         if (currentPadTop > minPad) {
           const newPad = Math.max(minPad, currentPadTop - 2);
           cardNode.style.paddingTop = `${newPad}px`;
           cardNode.style.paddingBottom = `${newPad}px`;
           changed = true;
+        }
+
+        // 5. Réduire la taille de la capsule si présente
+        if (viewHighlightCapsule && viewHighlightCapsule.style.display !== 'none') {
+          const curCapsulePx = parseFloat(window.getComputedStyle(viewHighlightCapsule).fontSize) || 11;
+          if (curCapsulePx > 9.5) {
+            viewHighlightCapsule.style.fontSize = `${curCapsulePx - 0.5}px`;
+            viewHighlightCapsule.style.padding = '4px 10px';
+            changed = true;
+          }
         }
 
         if (!changed) break;
@@ -2582,7 +2660,7 @@
     <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; box-sizing: border-box; overflow: hidden;">
       
       <div style="display: flex; flex-direction: column; align-items: flex-start; gap: ${mainGap}px; flex: 1 1 auto; min-height: 0; overflow: hidden; justify-content: center;">
-        <div style="display: inline-flex; align-items: center; padding: 10px 24px; border-radius: 9999px; font-size: 22px; font-weight: 800; text-transform: uppercase; color: ${pal.accent}; background: ${pal.accentPillBg}; border: 2px solid ${pal.accentPillBorder}; flex-shrink: 0;">
+        <div style="display: inline-flex; align-items: center; padding: 10px 24px; border-radius: 9999px; font-size: 22px; font-weight: 800; text-transform: uppercase; color: ${pal.accent}; background: ${pal.accentPillBg}; border: 2px solid ${pal.accentPillBorder}; flex-shrink: 0; max-width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
           ${esc(inputKicker.value)}
         </div>
         
@@ -2604,7 +2682,7 @@
         ` : ''}
 
         ${inputHighlight.value.trim() ? `
-          <div style="display: inline-flex; align-items: center; padding: 14px 26px; border-radius: 12px; font-size: 22px; font-weight: 800; color: ${pal.accent}; background: ${pal.boxBg}; border: 2px solid ${pal.boxBorder}; margin-top: 6px; flex-shrink: 0;">
+          <div style="display: inline-flex; align-items: center; padding: 12px 24px; border-radius: 12px; font-size: 20px; font-weight: 800; color: ${pal.accent}; background: ${pal.boxBg}; border: 2px solid ${pal.boxBorder}; margin-top: 6px; flex-shrink: 0; max-width: 100%; box-sizing: border-box; line-height: 1.25;">
             ⚖️ ${esc(inputHighlight.value)}
           </div>
         ` : ''}
@@ -2623,10 +2701,13 @@
           ` : ''}
         </div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: ${pal.textMuted};">
-          ${(chkCceSeal && chkCceSeal.checked) ? `
-            <span style="color: ${pal.accent};">🏛️ Commission de coopération environnementale</span>
-          ` : '<span></span>'}
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; color: ${pal.textMuted};">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            ${(chkCceSeal && chkCceSeal.checked) ? `
+              <span style="color: ${pal.accent}; font-size: 18px;">🏛️ CCE SEM-26-003</span>
+            ` : ''}
+            <span style="font-size: 18px; font-weight: 600; opacity: 0.85;">contact@williamguindon.me</span>
+          </div>
           <span style="font-weight: 800; letter-spacing: 0.04em;">williamguindon.me</span>
         </div>
       </div>
