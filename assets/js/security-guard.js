@@ -13,26 +13,57 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
   if (isConsolePage) return;
 
-  // 1. CONTRÔLE D'ENCADREMENT IFRAME & AVERTISSEMENT D'AUTHENTICITÉ (ANTI-CLICKJACKING / ANTI-FRAMING)
-  function enforceFrameSecurity() {
-    let isFramed = false;
-    let isSameOrigin = false;
+  // 1. CONTRÔLE D'ENCADREMENT IFRAME & VERROUILLAGE RADICAL IMPÉNÉTRABLE (ANTI-CLICKJACKING / ANTI-BYPASS PROXY / WORKERS)
+  function isFramedEnvironment() {
+    try {
+      if (window.self !== window.top) return true;
+    } catch (_) { return true; }
 
     try {
-      isFramed = (window.self !== window.top);
-      if (isFramed) {
-        const topHost = window.top.location.hostname;
-        if (ALLOWED_HOSTS.includes(topHost)) {
-          isSameOrigin = true;
+      if (window.parent && window.parent !== window.self) return true;
+    } catch (_) { return true; }
+
+    try {
+      if (window.top && window.top !== window.self) return true;
+    } catch (_) { return true; }
+
+    try {
+      if (window.frameElement !== null) return true;
+    } catch (_) { return true; }
+
+    try {
+      if (window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0) {
+        for (let i = 0; i < window.location.ancestorOrigins.length; i++) {
+          const origin = window.location.ancestorOrigins[i];
+          try {
+            const host = new URL(origin).hostname;
+            if (!ALLOWED_HOSTS.includes(host)) return true;
+          } catch (_) {
+            return true;
+          }
         }
       }
+    } catch (_) { return true; }
+
+    return false;
+  }
+
+  function enforceFrameSecurity() {
+    const isFramed = isFramedEnvironment();
+    if (!isFramed) return false;
+
+    let isSameOrigin = false;
+    try {
+      const topHost = window.top.location.hostname;
+      if (ALLOWED_HOSTS.includes(topHost)) {
+        isSameOrigin = true;
+      }
     } catch (_) {
-      // DOMException = Le document parent est sur une origine différente (site tiers/iframe externe)
-      isFramed = true;
+      // DOMException (SecurityError) = Origine parente externe ou sandbox sans allow-same-origin
       isSameOrigin = false;
     }
 
-    if (!isFramed || isSameOrigin) return;
+    if (isSameOrigin) return false;
 
     // Exceptions autorisées : visionneuse de documents / PDF et horloge live / retransmission
     const path = window.location.pathname.toLowerCase();
@@ -40,13 +71,14 @@
                            path.endsWith('live.html') || 
                            path.endsWith('lecteur.html');
 
-    if (isAllowedEmbed) return;
+    if (isAllowedEmbed) return false;
 
-    // Rendu immédiat de l'écran d'avertissement d'authenticité
-    renderFrameWarningScreen();
+    // VERROUILLAGE RADICAL & PURGE DU DOM POUR RENDRE LE BYPASS IMPOSSIBLE
+    renderFrameLockdownScreen();
+    return true; // Bloqué
   }
 
-  function renderFrameWarningScreen() {
+  function renderFrameLockdownScreen() {
     let safeUrl = 'https://williamguindon.me/';
     try {
       const rawPath = window.location.pathname;
@@ -57,15 +89,57 @@
       safeUrl = 'https://williamguindon.me/';
     }
 
-    const render = () => {
+    // 1. Tentative d'évasion immédiate vers le haut (Frame Busting)
+    try {
+      if (window.top && window.top.location && window.top.location.href !== window.location.href) {
+        window.top.location.href = safeUrl;
+      }
+    } catch (_) {}
+
+    // 2. Application de la feuille de style anti-framing radicale
+    let lockStyle = document.getElementById('wg-frame-lock-style');
+    if (!lockStyle) {
+      lockStyle = document.createElement('style');
+      lockStyle.id = 'wg-frame-lock-style';
+      lockStyle.textContent = `
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          overflow: hidden !important;
+          background: #064e3b !important;
+        }
+        body > *:not(#wg-frame-warning-wrapper) {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `;
+      (document.head || document.documentElement).appendChild(lockStyle);
+    }
+
+    const applyLockdown = () => {
+      // Nettoyer tous les autres éléments du document pour empêcher toute lecture résiduelle
+      if (document.body) {
+        const children = Array.from(document.body.children);
+        for (const child of children) {
+          if (child.id !== 'wg-frame-warning-wrapper' && child.id !== 'wg-frame-lock-style') {
+            try { child.remove(); } catch (_) { child.style.display = 'none'; }
+          }
+        }
+      }
+
       let overlay = document.getElementById('wg-frame-warning-wrapper');
       if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'wg-frame-warning-wrapper';
-        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#f7f9f7;color:#111827;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;z-index:2147483647;padding:20px;box-sizing:border-box;overflow:auto;';
+        overlay.setAttribute('data-wg-lockdown', 'true');
+        overlay.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;background:#064e3b !important;color:#111827 !important;display:flex !important;align-items:center !important;justify-content:center !important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;z-index:2147483647 !important;padding:20px !important;box-sizing:border-box !important;overflow:auto !important;opacity:1 !important;visibility:visible !important;filter:none !important;pointer-events:auto !important;';
 
         overlay.innerHTML = `
-          <div style="background:#ffffff;border:2px solid #059669;border-radius:18px;padding:32px 28px;max-width:620px;width:100%;box-shadow:0 20px 45px rgba(6,78,59,0.12);text-align:center;box-sizing:border-box;">
+          <div style="background:#ffffff;border:2px solid #059669;border-radius:18px;padding:32px 28px;max-width:620px;width:100%;box-shadow:0 20px 45px rgba(0,0,0,0.5);text-align:center;box-sizing:border-box;">
             <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.1);color:#065f46;border:1px solid rgba(5,150,105,0.25);padding:6px 16px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:16px;">
               <span>🛡️ Protection d'Intégrité &amp; Anti-Framing</span>
             </div>
@@ -76,7 +150,7 @@
 
             <div style="background:#fffbeb;border:1px solid #fef3c7;border-left:4px solid #f59e0b;border-radius:8px;padding:14px 16px;text-align:left;margin-bottom:18px;font-size:13.5px;color:#92400e;line-height:1.5;">
               <strong>⚠️ Avertissement d'authenticité :</strong><br>
-              Cette page est actuellement affichée à l'intérieur d'un cadre ou site tiers. Cette version est <u>potentiellement altérée, fausse ou trompeuse et ne constitue pas l'original vérifié</u>.
+              Cette page est actuellement affichée à l'intérieur d'un cadre, proxy ou site tiers. Cette intégration est <u>bloquée afin de prévenir toute altération, détournement de clic ou présentation trompeuse</u> du dossier officiel.
             </div>
 
             <p style="font-size:13.5px;color:#4b5563;line-height:1.6;margin:0 0 20px 0;text-align:left;">
@@ -92,8 +166,8 @@
               <a id="wg-frame-warning-top-link" target="_top" style="display:inline-block;background:#059669;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,0.3);text-align:center;">
                 Accéder à la version officielle originale (Plein écran) ↗
               </a>
-              <a href="https://williamguindon.me" target="_top" style="display:inline-block;background:transparent;color:#047857;text-decoration:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;text-align:center;">
-                Aller à la page d'accueil de williamguindon.me →
+              <a href="https://williamguindon.me" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:transparent;color:#047857;text-decoration:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;text-align:center;">
+                Ouvrir dans un nouvel onglet sécurisé →
               </a>
             </div>
 
@@ -109,17 +183,40 @@
         if (topLink) topLink.href = safeUrl;
 
         (document.body || document.documentElement).appendChild(overlay);
+      } else {
+        overlay.style.setProperty('display', 'flex', 'important');
+        overlay.style.setProperty('visibility', 'visible', 'important');
+        overlay.style.setProperty('opacity', '1', 'important');
+        overlay.style.setProperty('filter', 'none', 'important');
+        overlay.style.setProperty('z-index', '2147483647', 'important');
       }
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', render, { once: true });
+      document.addEventListener('DOMContentLoaded', applyLockdown, { once: true });
     } else {
-      render();
+      applyLockdown();
     }
+
+    // 3. MutationObserver anti-suppression / anti-altération : neutralise les scripts ou workers qui tentent de masquer le verrouillage
+    try {
+      const observer = new MutationObserver(() => {
+        applyLockdown();
+      });
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class', 'hidden']
+      });
+    } catch (_) {}
+
+    // Watchdog périodique continu
+    setInterval(applyLockdown, 100);
   }
 
-  enforceFrameSecurity();
+  const isFramedAndBlocked = enforceFrameSecurity();
+  if (isFramedAndBlocked) return;
 
   // 2. GESTION DE L'ÉTAT RÉACTIF 0MS (BROADCASTCHANNEL + STORAGE EVENT + POLLING DISTANT)
   let lastAppliedStateJson = null;
