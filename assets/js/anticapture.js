@@ -64,6 +64,9 @@
 
   let activeBlurTimer = null;
   let activeToastTimer = null;
+  let isWindowFocused = true;
+  let isMouseInside = true;
+  let isDocumentVisible = true;
   const protectedElements = new Set();
 
   function showToast(message) {
@@ -202,16 +205,34 @@
       showToast("Protection anti-copie : copie interdite sur les réponses IA");
     }
 
-    if (activeBlurTimer) clearTimeout(activeBlurTimer);
-    activeBlurTimer = setTimeout(() => {
-      clearBlurProtection();
-    }, CONFIG.unblurDuration);
-  }
-
-  function clearBlurProtection() {
     if (activeBlurTimer) {
       clearTimeout(activeBlurTimer);
       activeBlurTimer = null;
+    }
+
+    // Un timer de réactivation automatique n'est programmé QUE pour des événements ponctuels (copie, raccourci capture ou devtools)
+    // Pour une perte de focus, souris sortie ou onglet masqué, le masquage reste STRICTEMENT PERMANENT tant que l'utilisateur n'est pas revenu.
+    const isTransientEvent = reason === 'screenshot' || reason === 'copy' || reason === 'devtools';
+    if (isTransientEvent) {
+      activeBlurTimer = setTimeout(() => {
+        activeBlurTimer = null;
+        if (isWindowFocused && isMouseInside && document.visibilityState === 'visible') {
+          clearBlurProtection();
+        }
+      }, CONFIG.unblurDuration);
+    }
+  }
+
+  function clearBlurProtection(force) {
+    if (activeBlurTimer) {
+      clearTimeout(activeBlurTimer);
+      activeBlurTimer = null;
+    }
+
+    // Ne défloute pas si l'utilisateur est toujours en dehors de la page, sauf si un déblocage forcé est demandé
+    if (!force) {
+      if (document.visibilityState === 'hidden') return;
+      if (!isWindowFocused && !isMouseInside) return;
     }
 
     protectedElements.forEach(el => {
@@ -387,8 +408,8 @@
       }
 
       // Touche Entrée pour débloquer
-      if (key === 'enter' && !activeBlurTimer) {
-        clearBlurProtection();
+      if (key === 'enter') {
+        clearBlurProtection(true);
       }
     }, true);
 
@@ -405,41 +426,48 @@
   }
 
   function setupFocusAndVisibilityListeners() {
-    // Déclenchement sur toutes les pages pour les éléments protégés
+    // Détection souris hors de la page
     document.documentElement.addEventListener('mouseleave', () => {
-      triggerBlurProtection('window_blur');
+      isMouseInside = false;
+      triggerBlurProtection('mouseleave');
     });
 
     document.documentElement.addEventListener('mouseenter', () => {
-      if (!activeBlurTimer) {
+      isMouseInside = true;
+      if (document.visibilityState === 'visible') {
         clearBlurProtection();
       }
     });
 
+    // Détection perte et reprise de focus fenêtre
     window.addEventListener('blur', () => {
+      isWindowFocused = false;
       triggerBlurProtection('window_blur');
     });
 
     window.addEventListener('focus', () => {
-      if (!activeBlurTimer) {
+      isWindowFocused = true;
+      if (document.visibilityState === 'visible') {
         clearBlurProtection();
       }
     });
 
+    // Détection masquage / changement d'onglet
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
+        isDocumentVisible = false;
         triggerBlurProtection('visibility_hidden');
       } else {
-        if (!activeBlurTimer) {
-          clearBlurProtection();
-        }
+        isDocumentVisible = true;
+        clearBlurProtection();
       }
     });
 
+    // Clic pour débloquer
     document.addEventListener('click', () => {
-      if (!activeBlurTimer) {
-        clearBlurProtection();
-      }
+      isWindowFocused = true;
+      isMouseInside = true;
+      clearBlurProtection();
     });
   }
 

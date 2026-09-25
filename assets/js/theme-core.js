@@ -215,13 +215,13 @@
     // Module IA documentaire global (accessible sur l'ensemble des pages)
     if (!document.querySelector('script[src*="chat-ai.js"]')) {
       const chatScript = document.createElement('script');
-      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260925-v3';
+      chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260925-v4';
       chatScript.defer = true;
       document.head.appendChild(chatScript);
     }
     if (!document.querySelector('script[src*="anticapture.js"]')) {
       const acScript = document.createElement('script');
-      acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260925-v3';
+      acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260925-v4';
       acScript.defer = true;
       document.head.appendChild(acScript);
     }
