@@ -157,6 +157,12 @@
       chatScript.defer = true;
       document.head.appendChild(chatScript);
     }
+    if (!document.querySelector('script[src*="anticapture.js"]')) {
+      const acScript = document.createElement('script');
+      acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260924';
+      acScript.defer = true;
+      document.head.appendChild(acScript);
+    }
 
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
