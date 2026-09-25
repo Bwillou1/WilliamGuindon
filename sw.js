@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v53';
+const CACHE_NAME = 'wg-pwa-v54';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -11,6 +11,7 @@ const ASSETS_TO_CACHE = [
   '/stablex.html',
   '/communiques.html',
   '/live.html',
+  '/flux.html',
   '/viewer.html',
   '/ai.html',
   '/txt.html',
@@ -65,6 +66,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/autonomie-juridique-adolescents.webp',
   '/assets/media/clarification-independance.jpg',
   '/assets/media/clarification-independance.webp',
+  '/assets/media/confirmation-cce-premier-mineur-1994.png',
+  '/assets/media/confirmation-cce-premier-mineur-1994.webp',
   '/assets/media/ndtr-banner-rcaanc.jpg',
   '/assets/media/ndtr-banner-rcaanc.webp',
   '/assets/media/umap-preview.webp',

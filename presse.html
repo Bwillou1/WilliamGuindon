@@ -236,6 +236,15 @@
           </div>
           <div class="nav-notif-body">
             <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Presse</a>
+              </div>
+            </article>
+            <article class="notif-item">
               <div class="notif-item-tag">22 septembre 2026 · Kit Presse &amp; Transparence</div>
               <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (d'ici le 1ᵉʳ oct.)</h5>
               <p class="notif-item-desc">Annonce officielle : mise en ligne d'ici le 1ᵉʳ octobre 2026 d'un moteur de recherche interne plein texte (OCR) et d'un kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
@@ -340,6 +349,9 @@
               </p>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" id="btn-pinpoint-expand" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 8px 14px; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--line);" title="Agrandir la fenêtre de défilement">
+                <span id="expand-icon">↕️</span> <span id="expand-text">Agrandir la vue</span>
+              </button>
               <button type="button" id="btn-pinpoint-fullscreen" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 8px 14px; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--line);">
                 <span id="fs-icon">⛶</span> <span id="fs-text">Plein écran</span>
               </button>
@@ -353,20 +365,49 @@
             Collection complète de documents officiels, notifications écrites, avis de non-conformité et échanges administratifs liés à la communication citoyenne SEM-26-003 déposée auprès de la Commission de coopération environnementale (CCE / ACEUM).
           </p>
 
-          <div style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #2563eb; border-radius: 6px; padding: 12px 16px; margin: 0 0 18px;">
+          <div style="background: rgba(59, 130, 246, 0.08); border-left: 4px solid #2563eb; border-radius: 6px; padding: 12px 16px; margin: 0 0 16px;">
             <p style="font-size: 0.92rem; line-height: 1.55; margin: 0; color: var(--text);">
               <strong>ℹ️ Analyse assistée par Gemini :</strong> Vous pouvez explorer et rechercher les pièces en texte intégral directement ci-dessous. Pour utiliser le moteur d'analyse et de synthèse sémantique propulsé par <strong>l'IA Google Gemini</strong> (questions en langage naturel, analyse croisée de documents volumineux), il est nécessaire de vous connecter avec votre compte Google en ouvrant la collection sur le <a href="https://journaliststudio.google.com/pinpoint/search?collection=73bb813da3c5c4b0" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: 700; text-decoration: underline;">site officiel de Google Journalist Studio ↗</a>.
             </p>
           </div>
 
+          <!-- Barre de recherche directe sur cette page -->
+          <div class="pinpoint-search-wrapper" style="margin-bottom: 14px;">
+            <form id="pinpoint-search-form" style="display: flex; gap: 8px; flex-wrap: wrap;" onsubmit="return false;">
+              <div style="flex: 1; min-width: 260px; position: relative; display: flex; align-items: center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; color: var(--text-muted); pointer-events: none;" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input 
+                  type="text" 
+                  id="pinpoint-search-input" 
+                  placeholder="Rechercher des pièces directement sur cette page (ex: cadmium, Loi 93, BAPE 371)..." 
+                  style="width: 100%; padding: 10px 14px 10px 38px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;"
+                  aria-label="Rechercher dans les pièces justificatives Google Journalist Studio"
+                >
+              </div>
+              <button type="submit" id="btn-pinpoint-search" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; font-weight: 700; font-size: 0.95rem;">
+                <span>Rechercher</span>
+              </button>
+            </form>
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span style="font-weight: 600;">Mots-clés suggérés :</span>
+              <button type="button" class="pinpoint-tag-btn" data-query="cadmium">cadmium</button>
+              <button type="button" class="pinpoint-tag-btn" data-query="Loi 93">Loi 93</button>
+              <button type="button" class="pinpoint-tag-btn" data-query="BAPE 371">BAPE 371</button>
+              <button type="button" class="pinpoint-tag-btn" data-query="Cellule 6">Cellule 6</button>
+              <button type="button" class="pinpoint-tag-btn" data-query="phosphore blanc">phosphore blanc</button>
+              <button type="button" class="pinpoint-tag-btn" data-query="Grande Tourbière">Grande Tourbière</button>
+            </div>
+          </div>
+
           <!-- Intégration interactive directe Google Journalist Studio Pinpoint (via Proxy Cloudflare) -->
-          <div id="pinpoint-embed-box" style="background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line, rgba(255,255,255,0.15)); box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 8px; position: relative; transition: all 0.3s ease;">
+          <div id="pinpoint-embed-box" style="background: #ffffff; border-radius: 8px; overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line, rgba(255,255,255,0.15)); box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 8px; position: relative; transition: all 0.3s ease;">
             <iframe 
               id="pinpoint-iframe"
               src="/api/pinpoint-proxy" 
               title="Moteur de recherche des pièces justificatives Google Journalist Studio Pinpoint — Collection SEM-26-003"
-              style="width: 100%; height: 740px; border: 0; display: block; background: #ffffff;"
+              style="width: 100%; height: 780px; min-height: 520px; border: 0; display: block; background: #ffffff; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch;"
               loading="lazy"
+              scrolling="yes"
               allow="clipboard-write; fullscreen">
             </iframe>
           </div>
@@ -441,9 +482,9 @@
         <tr><td>Formation</td><td>Études secondaires dans les Laurentides (en cours)</td></tr>
         <tr><td>Profession</td><td>Militant environnemental, étudiant</td></tr>
         <tr><td>Dossier principal</td><td>Expansion du site d'enfouissement de déchets dangereux Stablex dans la Grande Tourbière de Blainville (Projet de loi 93, mars 2025)</td></tr>
-        <tr><td>SEM-26-003</td><td>Communication déposée à la CCE. Le 17 août 2026, le Secrétariat rend une <strong>détermination positive</strong> (art. 24.27(2) & 24.27(3)) exigeant une réponse du Canada d'ici le 16 octobre 2026. William Guindon est le premier mineur de l'histoire SEM à obtenir cette décision.</td></tr>
+        <tr><td>SEM-26-003</td><td>Communication déposée à la CCE. Le 17 août 2026, le Secrétariat rend une <strong>détermination positive</strong> (art. 24.27(2) & 24.27(3)) exigeant une réponse du Canada d'ici le 16 octobre 2026. William Guindon est le premier mineur de l'histoire SEM à obtenir cette décision. Confirmation officielle écrite de l'Unité SEM de la CCE le 25 septembre 2026 : <em>« depuis 1994, c'est la première fois qu'un auteur nous indique être mineur au moment de soumettre un dossier à la CCE »</em>.</td></tr>
         <tr><td>Démarche ONU</td><td>Déposition formelle au Rapporteur spécial sur les toxiques et les droits de l'homme (Dr Marcos A. Orellana), mai 2026</td></tr>
-        <tr><td>Distinctions</td><td>Prix Méritas 2023 et 2024 ; Étoile d'argent, Cadets de l'Armée royale canadienne ; Premier mineur dans l'histoire des Soumissions SEM (CCE)</td></tr>
+        <tr><td>Distinctions &amp; Jalon</td><td>Confirmation officielle CCE : Premier mineur de l'histoire du processus SEM (depuis 1994) ; Prix Méritas 2023 et 2024 ; Étoile d'argent, Cadets de l'Armée royale canadienne</td></tr>
         <tr><td>Profils officiels</td><td><a href="https://www.linkedin.com/in/william-guindon/" rel="me">LinkedIn</a> · <a href="https://www.facebook.com/williamguindon.officiel" rel="me">Facebook</a> · <a href="https://www.youtube.com/@william-guindon" rel="me">YouTube</a> · <a href="https://github.com/Bwillou1" rel="me">GitHub</a></td></tr>
       </table>
       <div class="note">Désambiguïsation : William Guindon, militant écologiste né en 2011 à Sainte-Marthe-sur-le-Lac (Québec), ne doit pas être confondu avec d'autres personnes portant un nom similaire. En cas de doute, les sources primaires ci-dessous font foi.</div>
@@ -456,6 +497,7 @@
       <h3>Documents officiels et couverture existante</h3>
       <ul class="srcs">
         <li><span class="tag">Victoire CCE</span><a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer">Détermination positive du Secrétariat CCE (PDF) ↗</a><span class="meta">17 août 2026 · Réponse du Canada exigée en vertu de l'art. 24.27(3)</span></li>
+        <li><span class="tag">Preuve CCE</span><a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer">Confirmation officielle CCE : Premier mineur depuis 1994 (Capture/Preuve) ↗</a><span class="meta">25 septembre 2026 · Courriel officiel de l'Unité SEM du Secrétariat CCE</span></li>
         <li><span class="tag">Officiel</span><a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer">SEM-26-003 : Soumission révisée (PDF) ↗</a><span class="meta">16 juillet 2026 · Document officiel de 15 pages</span></li>
         <li><span class="tag">Officiel</span><a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/">Registre SEM-26-003 — Commission de coopération environnementale</a><span class="meta">Registre officiel trinational CCE (FR/EN)</span></li>
         <li><span class="tag">Officiel</span><a href="https://doi.org/10.5281/zenodo.21416989">SEM-26-003 : Communication révisée (Zenodo)</a><span class="meta">Déposée le 17 juillet 2026 · DOI: 10.5281/zenodo.21416989</span></li>
@@ -554,6 +596,27 @@
 </footer>
 
 <style>
+  #pinpoint-search-input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+  }
+  .pinpoint-tag-btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .pinpoint-tag-btn:hover {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.4);
+    color: #2563eb;
+    transform: translateY(-1px);
+  }
   #pinpoint-embed-box:fullscreen,
   #pinpoint-embed-box:-webkit-full-screen {
     width: 100vw !important;
@@ -589,19 +652,59 @@
     var btnFs = document.getElementById('btn-pinpoint-fullscreen');
     var fsIcon = document.getElementById('fs-icon');
     var fsText = document.getElementById('fs-text');
+    var searchForm = document.getElementById('pinpoint-search-form');
+    var searchInput = document.getElementById('pinpoint-search-input');
+    var iframe = document.getElementById('pinpoint-iframe');
+    var tagBtns = document.querySelectorAll('.pinpoint-tag-btn');
 
-    // 1. Défilement doux vers le studio au survol
-    if (card && embedBox) {
-      var lastScrollTime = 0;
-      card.addEventListener('mouseenter', function() {
-        var now = Date.now();
-        if (now - lastScrollTime > 3000) {
-          lastScrollTime = now;
-          var rect = embedBox.getBoundingClientRect();
-          // Défile seulement si l'iframe n'est pas déjà bien visible au centre
-          if (rect.top < 60 || rect.top > window.innerHeight * 0.4) {
-            embedBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
+    // Recherche directe sur cette page
+    function executeSearch(query) {
+      if (!iframe) return;
+      var q = (query || '').trim();
+      var baseProxy = '/api/pinpoint-proxy';
+      var params = new URLSearchParams();
+      params.set('collection', '73bb813da3c5c4b0');
+      if (q) {
+        params.set('q', q);
+      }
+      iframe.src = baseProxy + '?' + params.toString();
+    }
+
+    if (searchForm && searchInput) {
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        executeSearch(searchInput.value);
+      });
+    }
+
+    tagBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var q = btn.getAttribute('data-query');
+        if (searchInput) searchInput.value = q;
+        executeSearch(q);
+      });
+    });
+
+    var btnExpand = document.getElementById('btn-pinpoint-expand');
+    var expandIcon = document.getElementById('expand-icon');
+    var expandText = document.getElementById('expand-text');
+    var isExpanded = false;
+
+    if (btnExpand && iframe) {
+      btnExpand.addEventListener('click', function() {
+        isExpanded = !isExpanded;
+        if (isExpanded) {
+          iframe.style.height = '1200px';
+          if (expandText) expandText.textContent = 'Réduire la vue';
+          if (expandIcon) expandIcon.textContent = '↕️';
+          btnExpand.style.background = 'rgba(59, 130, 246, 0.15)';
+          btnExpand.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+        } else {
+          iframe.style.height = '780px';
+          if (expandText) expandText.textContent = 'Agrandir la vue';
+          if (expandIcon) expandIcon.textContent = '↕️';
+          btnExpand.style.background = '';
+          btnExpand.style.borderColor = '';
         }
       });
     }

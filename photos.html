@@ -276,6 +276,71 @@
     line-height: 1.5;
     margin: 0 auto 10px;
   }
+  .lightbox-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .lightbox-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    background: #059669;
+    color: #ffffff;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+  .lightbox-download-btn:hover {
+    background: #10b981;
+    border-color: #34d399;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.45);
+    color: #ffffff;
+  }
+  .lightbox-download-btn:active {
+    transform: translateY(0);
+  }
+  .lightbox-download-btn.is-downloading {
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  .photo-card-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: rgba(16, 185, 129, 0.25);
+    border: 1px solid rgba(52, 211, 153, 0.45);
+    color: #a7f3d0;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  .photo-card-download-btn:hover {
+    background: #059669;
+    border-color: #10b981;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+  .photo-card-download-btn svg, .lightbox-download-btn svg {
+    flex-shrink: 0;
+  }
   .lightbox-close {
     position: absolute;
     top: -42px;
@@ -676,7 +741,10 @@
     photos.forEach(item => {
       const card = document.createElement("div");
       card.className = "photo-card";
-      card.onclick = () => openLightbox(item);
+      card.onclick = (e) => {
+        if (e.target.closest(".photo-card-download-btn")) return;
+        openLightbox(item);
+      };
 
       const licenseHtml = item.license ? `<span class="photo-license-badge" title="Licence d'utilisation">${item.license}</span>` : "";
       const thumbUrl = getOptimizedImageUrl(item.imageUrl, 600);
@@ -690,10 +758,23 @@
             <div class="photo-title">${item.title}</div>
             <div class="photo-meta">
               <span>${item.location ? item.location + " · " : ""}${item.date || ""}</span>
+              <button type="button" class="photo-card-download-btn" title="Télécharger cette photo" aria-label="Télécharger l'image ${item.title || ''}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Télécharger</span>
+              </button>
             </div>
           </div>
         </div>
       `;
+
+      const cardDlBtn = card.querySelector(".photo-card-download-btn");
+      if (cardDlBtn) {
+        cardDlBtn.onclick = (e) => {
+          e.stopPropagation();
+          downloadPhoto(item, cardDlBtn);
+        };
+      }
+
       grid.appendChild(card);
     });
   }
@@ -747,13 +828,111 @@
 
     const licenseText = item.license ? `<span style="display:inline-block; padding:2px 8px; background:rgba(255,255,255,0.1); border-radius:4px; font-size:12px; margin-left:8px;">Licence : ${item.license}</span>` : "";
     const commonsUrl = commonsLog[item.id];
-    const commonsBtn = commonsUrl ? `<a href="${commonsUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; padding:3px 10px; background:rgba(59,130,246,0.25); border:1px solid rgba(59,130,246,0.5); color:#93c5fd; border-radius:4px; font-size:12px; text-decoration:none; font-weight:600; margin-left:8px;" title="Consulter la fiche officielle sur Wikimedia Commons"><span>Wikimedia Commons</span> ↗</a>` : "";
+    const commonsBtn = commonsUrl ? `<a href="${commonsUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; padding:6px 12px; background:rgba(59,130,246,0.25); border:1px solid rgba(59,130,246,0.5); color:#93c5fd; border-radius:6px; font-size:13px; text-decoration:none; font-weight:600;" title="Consulter la fiche officielle sur Wikimedia Commons"><span>Wikimedia Commons</span> ↗</a>` : "";
 
     caption.innerHTML = `
       <h3>${item.title}</h3>
       <p>${item.description || ""}</p>
-      <div class="photo-lightbox-meta">${item.location ? '<svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ' + item.location + ' · ' : ''}${item.date || ''}${licenseText}${commonsBtn}</div>
+      <div class="photo-lightbox-meta">${item.location ? '<svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ' + item.location + ' · ' : ''}${item.date || ''}${licenseText}</div>
+      <div class="lightbox-actions-row">
+        <button type="button" class="lightbox-download-btn" id="lightbox-download-btn" title="Télécharger cette photographie en haute résolution">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Télécharger la photo HD</span>
+        </button>
+        ${commonsBtn}
+      </div>
     `;
+
+    const lbDlBtn = document.getElementById("lightbox-download-btn");
+    if (lbDlBtn) {
+      lbDlBtn.onclick = (e) => {
+        e.stopPropagation();
+        downloadPhoto(item, lbDlBtn);
+      };
+    }
+  }
+
+  async function downloadPhoto(item, triggerEl) {
+    if (!item || !item.imageUrl) return;
+
+    let originalHtml = "";
+    if (triggerEl) {
+      originalHtml = triggerEl.innerHTML;
+      triggerEl.classList.add("is-downloading");
+      triggerEl.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="svg-spin" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/>
+        </svg>
+        <span>Téléchargement...</span>
+      `;
+    }
+
+    // Déterminer l'extension
+    let extension = "jpg";
+    try {
+      const pathname = new URL(item.imageUrl, window.location.origin).pathname;
+      const m = pathname.match(/\\.([a-zA-Z0-9]+)$/);
+      if (m && ["jpg", "jpeg", "png", "webp", "svg"].includes(m[1].toLowerCase())) {
+        extension = m[1].toLowerCase();
+      }
+    } catch (_) {}
+
+    // Nom de fichier propre et explicite pour l'archive documentaire
+    const cleanTitle = (item.title || item.id || "william-guindon-photographie")
+      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "william-guindon-photo";
+    const filename = `${cleanTitle}.${extension}`;
+
+    // Télécharger l'image dans sa résolution source HD
+    const hdUrl = item.imageUrl;
+
+    try {
+      const resp = await fetch(hdUrl, { mode: "cors" });
+      if (!resp.ok) throw new Error("Erreur réseau");
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      }, 400);
+
+      if (triggerEl) {
+        triggerEl.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Téléchargé !</span>
+        `;
+        setTimeout(() => {
+          triggerEl.classList.remove("is-downloading");
+          triggerEl.innerHTML = originalHtml;
+        }, 1800);
+      }
+    } catch (err) {
+      // Fallback direct
+      const a = document.createElement("a");
+      a.href = hdUrl;
+      a.download = filename;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      if (triggerEl) {
+        triggerEl.classList.remove("is-downloading");
+        triggerEl.innerHTML = originalHtml;
+      }
+    }
   }
 
   function closeLightbox() {

@@ -1,0 +1,64 @@
+name: Déploiement Automatique IPFS (Pinata)
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'AGENT.md'
+      - 'AGENTS.md'
+      - 'GEMINI.md'
+      - '.github/workflows/codeql.yml'
+      - '.github/workflows/eslint.yml'
+      - '.github/workflows/semgrep.yml'
+  schedule:
+    # Exécution automatique toutes les 2 semaines (1er et 15 de chaque mois à 04:00 UTC)
+    - cron: '0 4 1,15 *'
+  workflow_dispatch:
+    inputs:
+      unpin_previous:
+        description: 'Désépingler les anciens CIDs pour libérer du quota de stockage ?'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: pinata-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-to-pinata:
+    name: 🌐 Déploiement Dossier Complet IPFS (Pinata)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configuration de l'environnement Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🚀 Déploiement et Épinglage (Folder Upload - 1 Pin)
+        id: pinata_upload
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET || secrets.PINATA_SECRET_KEY }}
+          UNPIN_PREVIOUS: ${{ inputs.unpin_previous || 'false' }}
+        run: |
+          node scripts/deploy-pinata.js
+
+      - name: 📋 Affichage récapitulatif du CID généré
+        if: success()
+        run: |
+          echo "======================================================"
+          echo "✔ DÉPLOIEMENT IPFS VALIDÉ AVEC SUCCÈS"
+          echo "CID IPFS généré : ${{ steps.pinata_upload.outputs.ipfs_cid }}"
+          echo "Passerelle principale : ${{ steps.pinata_upload.outputs.ipfs_gateway }}"
+          echo "======================================================"

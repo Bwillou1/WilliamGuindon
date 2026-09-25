@@ -13,6 +13,7 @@ const CORE_FILES = [
   'communiques.html',
   'presse.html',
   'stablex.html',
+  'flux.html',
   'viewer.html',
   'ai.html',
   'txt.html',

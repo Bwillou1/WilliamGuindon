@@ -76,12 +76,26 @@ export default {
 
     const contentType = response.headers.get("content-type") || "";
 
-    // 6. Réécriture du code HTML pour fixer les chemins relatifs (CSS/JS/Images)
+    // 6. Réécriture du code HTML pour fixer les chemins relatifs et forcer le défilement autonome
     if (contentType.includes("text/html")) {
       const rewriter = new HTMLRewriter()
         .on("head", {
           element(element) {
             element.prepend(`<base href="${TARGET_ORIGIN}/" target="_blank">`, { html: true });
+            element.append(`<style>
+              html, body {
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                height: 100% !important;
+                -webkit-overflow-scrolling: touch !important;
+                overscroll-behavior-y: contain !important;
+              }
+              /* Conteneurs de liste et de résultats Pinpoint défilables */
+              [role="main"], .pinpoint-content, .scrollable-content, div[jscontroller], div[jsname] {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+              }
+            </style>`, { html: true });
           },
         })
         .on("a", {

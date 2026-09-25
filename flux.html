@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<script src="assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://cdn.jsdelivr.net https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://api.websitecarbon.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+<title>Flux RSS &amp; Veille Environnementale — William Guindon</title>
+
+<meta name="description" content="Lecteur de flux et hub de veille en temps réel : actualités de William Guindon, décisions CCE SEM-26-003, communiqués de presse et alertes écologiques.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://williamguindon.me/flux.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/flux.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/flux.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités &amp; Dossier SEM-26-003" href="https://williamguindon.me/feed.xml">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="manifest" href="manifest.json">
+<link rel="alternate" type="text/plain" href="https://williamguindon.me/llms-full.txt" title="SEM-26-003 Full Plain-Text Knowledge Base">
+<link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
+
+<meta name="theme-color" content="#064e3b">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Flux RSS &amp; Veille Environnementale — William Guindon">
+<meta property="og:description" content="Lecteur de flux et hub de veille en temps réel : actualités de William Guindon, décisions CCE SEM-26-003, communiqués de presse et alertes écologiques.">
+<meta property="og:url" content="https://williamguindon.me/flux.html">
+<meta property="og:image" content="https://williamguindon.me/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_CA">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flux RSS &amp; Veille Environnementale — William Guindon">
+<meta name="twitter:description" content="Lecteur de flux et hub de veille en temps réel : actualités de William Guindon, décisions CCE SEM-26-003, communiqués de presse et alertes écologiques.">
+<meta name="twitter:image" content="https://williamguindon.me/og-image.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://williamguindon.me/flux.html#webpage",
+  "url": "https://williamguindon.me/flux.html",
+  "name": "Flux RSS & Veille Environnementale — William Guindon",
+  "description": "Lecteur de flux et hub de veille en direct pour le dossier CCE SEM-26-003, communiqués et alertes environnementales.",
+  "inLanguage": "fr-CA",
+  "publisher": {
+    "@type": "Person",
+    "name": "William Guindon",
+    "url": "https://williamguindon.me/#person"
+  }
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+<script src="assets/js/theme-core.js" defer></script>
+
+<style>
+.flux-container {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3.5rem;
+}
+.flux-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 24px 0 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.flux-search-wrap {
+  flex: 1;
+  min-width: 240px;
+  position: relative;
+}
+.flux-search-input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg, #f8fafc);
+  color: var(--text, #1e293b);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+.flux-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted, #64748b);
+  pointer-events: none;
+}
+.flux-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.flux-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg-card, #ffffff);
+  color: var(--text, #1e293b);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.flux-btn:hover {
+  background: var(--bg-hover, #f1f5f9);
+  border-color: var(--primary, #059669);
+  color: var(--primary, #059669);
+}
+.flux-btn-primary {
+  background: var(--primary, #059669);
+  color: #ffffff;
+  border-color: var(--primary, #059669);
+}
+.flux-btn-primary:hover {
+  background: var(--primary-hover, #047857);
+  color: #ffffff;
+}
+.flux-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+  scrollbar-width: thin;
+}
+.flux-filter-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg-card, #ffffff);
+  color: var(--muted, #64748b);
+  transition: all 0.2s ease;
+}
+.flux-filter-pill.active,
+.flux-filter-pill:hover {
+  background: var(--primary, #059669);
+  color: #ffffff;
+  border-color: var(--primary, #059669);
+}
+.flux-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.flux-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.flux-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  border-color: var(--primary, #059669);
+}
+.flux-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.flux-card-date {
+  font-size: 0.82rem;
+  color: var(--muted, #64748b);
+  font-weight: 500;
+}
+.flux-card-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--primary, #059669);
+}
+.flux-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+.flux-card-title a {
+  color: var(--text, #0f172a);
+  text-decoration: none;
+}
+.flux-card-title a:hover {
+  color: var(--primary, #059669);
+  text-decoration: underline;
+}
+.flux-card-thumb {
+  max-width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border, #e2e8f0);
+  margin: 6px 0;
+}
+.flux-card-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted, #475569);
+}
+.flux-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light, #f1f5f9);
+}
+.flux-fusion-box {
+  margin: 48px 0 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.04), rgba(37, 99, 235, 0.04));
+  border: 1px solid var(--border, #cbd5e1);
+}
+.flux-fusion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.flux-fusion-logo {
+  font-size: 1.6rem;
+}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navigation principale"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Fermer</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : Dossier SEM-26-003 -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Dossier SEM-26-003 ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu" open>
+            <summary class="nav-submenu-summary">
+              <span>Pièces maîtresses</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="registre-cce-sem26003.html" class="nav-dropdown-item">Registre documentaire SEM-26-003</a>
+              <a href="stablex.html" class="nav-dropdown-item">Dossier Stablex &amp; Tourbière</a>
+              <a href="cce.html" class="nav-dropdown-item">Procédure CCE / ACEUM</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Miroirs Décentralisés (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Suivi &amp; Outils Direct</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Échéance 16 oct.</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="./#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu" open>
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="flux.html" class="nav-dropdown-item active" aria-current="page">Flux &amp; Veille RSS en direct</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Presse &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Politiques & Cadre légal -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Politiques &amp; Cadre légal ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="politiques.html" class="nav-dropdown-item">00. Registre des politiques (Hub)</a>
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Déclaration Anti-SLAPP</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Presse</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–10. Statut &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="vie-privee-parents.html" class="nav-dropdown-item">10. Vie privée &amp; Rôle des parents</a>
+              <a href="terms.html" class="nav-dropdown-item">Conditions d'utilisation</a>
+              <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : À propos & Contact -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="./#apropos" class="nav-dropdown-item">Biographie de William Guindon</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contact</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="./#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Notifications & Alertes -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="Nouvelles alertes actives" aria-label="Nouvelles alertes"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Presse</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">22 septembre 2026 · Kit Presse &amp; Transparence</div>
+              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (d'ici le 1ᵉʳ oct.)</h5>
+              <p class="notif-item-desc">Annonce officielle : mise en ligne d'ici le 1ᵉʳ octobre 2026 d'un moteur de recherche interne plein texte (OCR) et d'un kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Voir l'annonce Kit Média ↗</a>
+                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">Veille citoyenne &amp; Syndication</span>
+      <h1>Flux RSS &amp; Veille Documentaire en Direct</h1>
+      <p>Agrégateur de flux d'information citoyenne, actualités du dossier SEM-26-003, avis officiels et veille environnementale.</p>
+    </div>
+  </section>
+
+  <div class="flux-container">
+    <!-- Barre de contrôle et recherche -->
+    <div class="flux-controls-bar">
+      <div class="flux-search-wrap">
+        <svg class="flux-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="flux-search" class="flux-search-input" placeholder="Filtrer les actualités, mots-clés, articles..." aria-label="Rechercher dans les flux">
+      </div>
+      <div class="flux-actions">
+        <button id="btn-refresh" class="flux-btn" type="button" title="Rafraîchir le flux">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          <span>Actualiser</span>
+        </button>
+        <a href="feed.xml" target="_blank" class="flux-btn flux-btn-primary" title="Flux RSS brut">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+          <span>Flux RSS (feed.xml)</span>
+        </a>
+        <button id="btn-export-opml" class="flux-btn" type="button" title="Exporter en OPML">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Exporter OPML</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtres par catégorie -->
+    <div class="flux-filters" role="tablist" aria-label="Filtres thématiques">
+      <button class="flux-filter-pill active" data-filter="all" role="tab" aria-selected="true">Tous les articles</button>
+      <button class="flux-filter-pill" data-filter="SEM-26-003" role="tab" aria-selected="false">Dossier SEM-26-003</button>
+      <button class="flux-filter-pill" data-filter="Communiqués" role="tab" aria-selected="false">Communiqués officiels</button>
+      <button class="flux-filter-pill" data-filter="Preuve" role="tab" aria-selected="false">Preuves &amp; Attestations</button>
+      <button class="flux-filter-pill" data-filter="Enquête" role="tab" aria-selected="false">Enquêtes citoyennes</button>
+      <button class="flux-filter-pill" data-filter="Environnement" role="tab" aria-selected="false">Écologie &amp; Tourbière</button>
+    </div>
+
+    <!-- Conteneur des articles -->
+    <div id="flux-feed-container" class="flux-grid" role="feed" aria-busy="true">
+      <div style="text-align: center; padding: 40px; color: var(--muted, #64748b);">
+        <p>Chargement du flux en direct...</p>
+      </div>
+    </div>
+
+    <!-- Section d'inspiration et remerciements open source : Fusion (0x2E/fusion) -->
+    <div class="flux-fusion-box">
+      <div class="flux-fusion-header">
+        <span class="flux-fusion-logo" aria-hidden="true">⚡</span>
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--text, #0f172a);">Architecture de Veille &amp; Remerciements Open Source</h3>
+          <p style="margin: 4px 0 0; font-size: 0.88rem; color: var(--muted, #64748b);">Inspiration technique et ergonomie inspirée du projet open source <strong>Fusion</strong>.</p>
+        </div>
+      </div>
+      <p style="font-size: 0.92rem; line-height: 1.6; color: var(--text, #334155); margin-bottom: 12px;">
+        Le hub de veille et lecteur de flux ci-dessus reprend les principes d'autonomie, de sobriété numérique et de légèreté popularisés par l'agrégateur RSS libre <strong>Fusion</strong> (<a href="https://github.com/0x2E/fusion" target="_blank" rel="noopener noreferrer"><code>0x2E/fusion</code> ↗</a>), conçu par <strong>0x2E</strong> sous licence MIT.
+      </p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <a href="https://github.com/0x2E/fusion" target="_blank" rel="noopener noreferrer" class="flux-btn" style="font-size: 0.82rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Dépôt GitHub 0x2E/fusion ↗</span>
+        </a>
+        <a href="dependances-licences.html" class="flux-btn" style="font-size: 0.82rem;">
+          <span>Voir le registre des licences &amp; tiers</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Script interactif du lecteur de flux RSS -->
+<script>
+(function() {
+  'use strict';
+
+  const container = document.getElementById('flux-feed-container');
+  const searchInput = document.getElementById('flux-search');
+  const filterPills = document.querySelectorAll('.flux-filter-pill');
+  const refreshBtn = document.getElementById('btn-refresh');
+  const exportOpmlBtn = document.getElementById('btn-export-opml');
+
+  let feedItems = [];
+  let currentFilter = 'all';
+  let currentQuery = '';
+
+  // Formatage de la date en français
+  function formatDate(dateStr) {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return new Intl.DateTimeFormat('fr-CA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(d);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  // Échappement HTML sécurisé
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, function(m) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[m];
+    });
+  }
+
+  // Chargement et parsing du flux RSS feed.xml
+  async function loadFeed() {
+    container.setAttribute('aria-busy', 'true');
+    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted, #64748b);"><p>Synchronisation du flux en cours...</p></div>';
+
+    try {
+      const res = await fetch('feed.xml?_t=' + Date.now());
+      if (!res.ok) throw new Error('Impossible de charger feed.xml');
+      const xmlText = await res.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const items = xmlDoc.querySelectorAll('item');
+
+      feedItems = Array.from(items).map(item => {
+        const title = item.querySelector('title')?.textContent || 'Sans titre';
+        const link = item.querySelector('link')?.textContent || '#';
+        const pubDate = item.querySelector('pubDate')?.textContent || '';
+        const description = item.querySelector('description')?.textContent || '';
+        const category = item.querySelector('category')?.textContent || 'Actualité';
+        const enclosure = item.querySelector('enclosure');
+        const enclosureUrl = enclosure ? enclosure.getAttribute('url') : null;
+        const enclosureType = enclosure ? enclosure.getAttribute('type') : null;
+
+        return {
+          title,
+          link,
+          pubDate,
+          description,
+          category,
+          enclosureUrl,
+          enclosureType
+        };
+      });
+
+      renderFeed();
+    } catch (err) {
+      console.error('Erreur chargement flux:', err);
+      container.innerHTML = `
+        <div style="text-align: center; padding: 30px; background: rgba(239, 68, 68, 0.08); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
+          <p style="color: #dc2626; font-weight: 600; margin: 0 0 8px;">Impossible de synchroniser le flux en direct.</p>
+          <p style="font-size: 0.9rem; margin: 0 0 14px; color: var(--text);">Vous pouvez consulter directement le fichier brut XML :</p>
+          <a href="feed.xml" class="flux-btn flux-btn-primary">Ouvrir feed.xml ↗</a>
+        </div>
+      `;
+    } finally {
+      container.setAttribute('aria-busy', 'false');
+    }
+  }
+
+  // Rendu de la liste d'articles filtrée
+  function renderFeed() {
+    const q = currentQuery.toLowerCase().trim();
+    const filtered = feedItems.filter(item => {
+      const matchFilter = (currentFilter === 'all') ||
+        (currentFilter === 'SEM-26-003' && (item.category.includes('SEM') || item.title.includes('SEM') || item.description.includes('SEM') || item.title.includes('CCE') || item.title.includes('mineur'))) ||
+        (currentFilter === 'Communiqués' && (item.category.includes('Communiqué') || item.title.includes('Communiqué'))) ||
+        (currentFilter === 'Preuve' && (item.category.includes('Preuve') || item.category.includes('Officiel') || item.title.includes('Attestation') || item.title.includes('mineur'))) ||
+        (currentFilter === 'Enquête' && (item.category.includes('Enquête') || item.title.includes('Enquête') || item.title.includes('Partis'))) ||
+        (currentFilter === 'Environnement' && (item.category.includes('Environnement') || item.title.includes('Tourbière') || item.title.includes('Stablex')));
+
+      if (!matchFilter) return false;
+      if (!q) return true;
+
+      return item.title.toLowerCase().includes(q) ||
+             item.description.toLowerCase().includes(q) ||
+             item.category.toLowerCase().includes(q);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--muted, #64748b);">
+          <p style="font-size: 1.1rem; margin: 0 0 6px;">Aucun article ne correspond à votre recherche.</p>
+          <p style="font-size: 0.88rem; margin: 0;">Essayez d'autres mots-clés ou réinitialisez les filtres.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const isImage = item.enclosureUrl && (item.enclosureType?.startsWith('image/') || /\.(png|webp|jpg|jpeg)$/i.test(item.enclosureUrl));
+      
+      return `
+        <article class="flux-card">
+          <div class="flux-card-header">
+            <span class="flux-card-date">${formatDate(item.pubDate)}</span>
+            <span class="flux-card-badge">${escapeHtml(item.category)}</span>
+          </div>
+          <h2 class="flux-card-title">
+            <a href="${escapeHtml(item.link)}">${escapeHtml(item.title)}</a>
+          </h2>
+          ${isImage ? `
+            <a href="${escapeHtml(item.enclosureUrl)}" target="_blank" rel="noopener noreferrer">
+              <img src="${escapeHtml(item.enclosureUrl)}" alt="${escapeHtml(item.title)}" class="flux-card-thumb" loading="lazy">
+            </a>
+          ` : ''}
+          <p class="flux-card-desc">${escapeHtml(item.description)}</p>
+          <div class="flux-card-footer">
+            <a href="${escapeHtml(item.link)}" class="flux-btn flux-btn-primary" style="font-size: 0.82rem;">
+              <span>Consulter la source</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <button class="flux-btn btn-share" type="button" data-title="${escapeHtml(item.title)}" data-url="${escapeHtml(item.link)}" style="font-size: 0.82rem;" title="Partager">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>Partager</span>
+            </button>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Événements de partage
+    container.querySelectorAll('.btn-share').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const title = btn.getAttribute('data-title');
+        const url = btn.getAttribute('data-url');
+        if (navigator.share) {
+          navigator.share({ title, url }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(url).then(() => {
+            const span = btn.querySelector('span');
+            const oldText = span.textContent;
+            span.textContent = 'Copié !';
+            setTimeout(() => { span.textContent = oldText; }, 2000);
+          });
+        }
+      });
+    });
+  }
+
+  // Export OPML
+  function exportOpml() {
+    const opmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Flux Officiels et Veille Citoyenne — William Guindon</title>
+    <dateCreated>${new Date().toUTCString()}</dateCreated>
+    <ownerName>William Guindon</ownerName>
+  </head>
+  <body>
+    <outline text="William Guindon (Actualités &amp; Dossier SEM-26-003)" type="rss" xmlUrl="https://williamguindon.me/feed.xml" htmlUrl="https://williamguindon.me/" category="Environnement, Droit international"/>
+    <outline text="Commission de Coopération Environnementale (CCE / CEC)" type="rss" xmlUrl="https://www.cec.org/feed/" htmlUrl="https://www.cec.org" category="Droit international, ACEUM"/>
+  </body>
+</opml>`;
+
+    const blob = new Blob([opmlContent], { type: 'text/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'williamguindon-feeds.opml';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Événements
+  searchInput.addEventListener('input', e => {
+    currentQuery = e.target.value;
+    renderFeed();
+  });
+
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
+      });
+      pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
+      currentFilter = pill.getAttribute('data-filter');
+      renderFeed();
+    });
+  });
+
+  refreshBtn.addEventListener('click', loadFeed);
+  exportOpmlBtn.addEventListener('click', exportOpml);
+
+  // Initialisation
+  loadFeed();
+})();
+</script>
+
+<!-- Pied de page global -->
+<footer class="site-footer" role="contentinfo">
+  <div class="wrap footer-wrap">
+    <div class="footer-col">
+      <h3>William Guindon</h3>
+      <p>Citoyen engagé · Auteur de la communication citoyenne SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).</p>
+      <p><a href="statut-mineur.html">Statut légal de citoyen mineur (15 ans)</a> · <a href="vie-privee-parents.html">Rôle des parents</a></p>
+    </div>
+    <div class="footer-col">
+      <h3>Accès direct</h3>
+      <ul>
+        <li><a href="registre-cce-sem26003.html">Registre documentaire SEM-26-003</a></li>
+        <li><a href="live.html">Compte à rebours de l'échéance CCE</a></li>
+        <li><a href="flux.html">Flux RSS &amp; Veille en direct</a></li>
+        <li><a href="presse.html">Espace Presse &amp; Kit Média</a></li>
+        <li><a href="ai.html">Espace IA &amp; LLM</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Transparence &amp; Cadre</h3>
+      <ul>
+        <li><a href="politiques.html">Registre des politiques</a></li>
+        <li><a href="dependances-licences.html">Dépendances &amp; Licences tierces</a></li>
+        <li><a href="privacy.html">Politique de confidentialité</a></li>
+        <li><a href="terms.html">Conditions d'utilisation</a></li>
+        <li><a href="deontologie.html">Charte de déontologie</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="wrap">
+      <p>© 2026 William Guindon. Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>. Code source et dépendances libres selon leurs licences respectives (MIT, Apache-2.0, MPL-2.0).</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
