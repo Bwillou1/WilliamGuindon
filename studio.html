@@ -883,6 +883,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    background-image: url('assets/media/william-guindon.jpg') !important;
     background-size: cover;
     background-position: center;
     border: 2px solid #000;
@@ -1645,7 +1646,7 @@
                 
                 <div class="card-author-profile">
                   <div class="card-avatar-halo" id="view-avatar-halo">
-                    <div class="card-avatar-img" id="view-avatar-img"></div>
+                    <div class="card-avatar-img" id="view-avatar-img" style="background-image:url('assets/media/william-guindon.jpg');"></div>
                   </div>
                   <div class="card-author-text">
                     <div class="card-author-name-wrap">
@@ -2301,10 +2302,10 @@
         if (viewTopMetadata) viewTopMetadata.style.display = isSupp ? 'none' : 'block';
       }
 
-      // Avatar
-      if (chkAvatarProfile.checked && currentPhotoSrc && currentPhotoSrc !== 'none') {
+      // Avatar : TOUJOURS la vraie photo de William Guindon (jamais la photo de fond)
+      if (chkAvatarProfile.checked) {
         viewAvatarHalo.style.display = 'block';
-        viewAvatarImg.style.backgroundImage = `url("${currentPhotoSrc}")`;
+        viewAvatarImg.style.backgroundImage = 'url("assets/media/william-guindon.jpg")';
         viewAvatarHalo.style.background = `linear-gradient(135deg, ${pal.accent}, transparent)`;
       } else {
         viewAvatarHalo.style.display = 'none';
