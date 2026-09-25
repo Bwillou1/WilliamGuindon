@@ -1179,7 +1179,7 @@
       var totalCount = countRecursive(subNode);
 
       var nodeDiv = document.createElement("div");
-      nodeDiv.className = "tree-node" + (isRoot && idx === 0 ? " open" : "");
+      nodeDiv.className = "tree-node" + (isRoot ? " open" : "");
       nodeDiv.dataset.folderName = folderName.toLowerCase();
 
       var icon = getFolderThematicIcon(folderName);
@@ -1421,7 +1421,7 @@
         '<h3>' + fileObj.name + '</h3>' +
         '<p>Ce format (' + fileObj.ext.toUpperCase() + ') est disponible en téléchargement original pour analyse locale.</p>' +
         '<a href="' + fileUrl + '" class="btn-action-tool btn-action-primary" download>' +
-        '<span>⬇ Télécharger l'original (' + (sizeStr || fileObj.ext.toUpperCase()) + ')</span>' +
+        '<span>⬇ Télécharger l\'original (' + (sizeStr || fileObj.ext.toUpperCase()) + ')</span>' +
         '</a>' +
         '</div>';
     }
@@ -1576,10 +1576,22 @@
       return f.relativePath.toLowerCase().endsWith(".pdf");
     });
     if (firstPdf) {
-      var el = document.querySelector('.drive-item[data-full-path="' + CSS.escape(firstPdf.originalArchiveName) + '"]');
-      if (el) {
-        setTimeout(function() { el.click(); }, 60);
-      }
+      setTimeout(function() {
+        var items = document.querySelectorAll('.drive-item');
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].dataset.fullPath === firstPdf.originalArchiveName) {
+            selectFile(firstPdf, items[i]);
+            var p = items[i].parentElement;
+            while (p && p.id !== "drive-tree") {
+              if (p.classList && p.classList.contains("tree-node")) {
+                p.classList.add("open");
+              }
+              p = p.parentElement;
+            }
+            break;
+          }
+        }
+      }, 60);
     }
   }
 
