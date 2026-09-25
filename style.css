@@ -5351,6 +5351,20 @@ body:has(.ai-modal-overlay.active) .floating-ai-btn,
   border: 1px solid var(--line);
   color: var(--text);
   border-bottom-left-radius: 4px;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+}
+.ai-chat-bubble.bot * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
 }
 .ai-chat-bubble.bot strong {
   color: var(--accent);
@@ -7616,13 +7630,13 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
    MODULE ANTI-CAPTURE & CONFIDENTIALITÉ (Inspiré de react-anticapture)
    ========================================================================== */
 .anticapture-protected {
-  transition: filter 0.12s ease-in-out, opacity 0.12s ease-in-out !important;
+  transition: filter 0.08s ease-in-out, opacity 0.08s ease-in-out !important;
   -webkit-user-select: none !important;
   user-select: none !important;
 }
 .anticapture-blurred {
-  filter: blur(24px) !important;
-  opacity: 0.15 !important;
+  filter: blur(28px) !important;
+  opacity: 0.04 !important;
   pointer-events: none !important;
 }
 .anticapture-no-select {
@@ -7641,7 +7655,15 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   #msg-content,
   .msg-box-container,
   #inbox-list-container,
-  .key-highlight-card {
+  .key-highlight-card,
+  .ai-modal-overlay,
+  .ai-modal-card,
+  #ai-chat-box,
+  .ai-chat-messages,
+  .ai-chat-bubble,
+  .ai-summary-output,
+  .ai-summary-box,
+  .ai-summary-card {
     display: none !important;
   }
 }
