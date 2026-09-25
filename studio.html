@@ -945,6 +945,9 @@
     align-items: center;
     gap: 6px;
   }
+  #view-date-tag {
+    margin-left: auto;
+  }
 
   /* BARRE DE CONTRÔLE DE ZOOM PRÉVISUALISATION */
   .preview-control-toolbar {
@@ -1554,7 +1557,15 @@
           </div>
 
           <div class="switch-row">
-            <span>Sceau CCE &amp; URL williamguindon.me</span>
+            <span>Mention « 🏛️ Commission de coopération environnementale »</span>
+            <label class="switch">
+              <input type="checkbox" id="chk-cce-seal" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <span>Ligne de pied de page (Sceau &amp; williamguindon.me)</span>
             <label class="switch">
               <input type="checkbox" id="chk-footer-meta" checked>
               <span class="slider-round"></span>
@@ -1740,12 +1751,15 @@
 
       <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:16px; margin-top:auto;">
         <span style="font-size:0.72rem; font-weight:800; color:var(--accent-emerald); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:8px;">
-          💎 Atouts du Moteur Graphique
+          💎 Atouts &amp; Remerciements Open Source
         </span>
         <ul style="font-size:0.78rem; color:var(--text-secondary); line-height:1.6; list-style:none; display:flex; flex-direction:column; gap:6px;">
-          <li>• <strong>Rendu vectoriel Satori</strong> : mise en page intelligente sans coupure de texte.</li>
+          <li>• <strong>Rendu vectoriel Satori</strong> : modèle flexbox/SVG inspiré du projet GitHub open-source <a href="https://github.com/vercel/satori" target="_blank" rel="noopener noreferrer" style="color:var(--accent-emerald); font-weight:600; text-decoration:none;">vercel/satori ↗</a> pour une typographie sans coupure.</li>
           <li>• <strong>Double Export</strong> : SVG pur ou PNG Haute Définition 2K (2160×2160 px).</li>
           <li>• <strong>Zéro fuite d'indexation</strong> : protégé et exclu de tous les robots IA.</li>
+          <li style="margin-top:4px; padding-top:6px; border-top:1px dashed var(--border-subtle);">
+            🤝 <a href="dependances-licences.html" target="_blank" rel="noopener noreferrer" style="color:var(--text-tertiary); text-decoration:underline;">Consulter le registre complet des crédits &amp; licences</a>
+          </li>
         </ul>
       </div>
 
@@ -1850,6 +1864,7 @@
     const chkAvatarProfile = document.getElementById('chk-avatar-profile');
     const chkVerifiedBadge = document.getElementById('chk-verified-badge');
     const chkSignatureSvg = document.getElementById('chk-signature-svg');
+    const chkCceSeal = document.getElementById('chk-cce-seal');
     const chkFooterMeta = document.getElementById('chk-footer-meta');
 
     // Post box
@@ -2327,7 +2342,10 @@
       // Bas de page
       viewFooterBlock.style.display = (chkSignatureSvg.checked || chkAvatarProfile.checked || chkFooterMeta.checked) ? 'flex' : 'none';
       viewBottomSubmeta.style.display = chkFooterMeta.checked ? 'flex' : 'none';
-      viewCceTag.style.color = pal.accent;
+      if (viewCceTag) {
+        viewCceTag.style.display = (chkCceSeal && chkCceSeal.checked) ? 'inline-flex' : 'none';
+        viewCceTag.style.color = pal.accent;
+      }
       viewDateTag.textContent = 'williamguindon.me';
       viewDateTag.style.color = pal.textMuted;
 
@@ -2606,7 +2624,9 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: ${pal.textMuted};">
-          <span style="color: ${pal.accent};">🏛️ Dossier CCE SEM-26-003</span>
+          ${(chkCceSeal && chkCceSeal.checked) ? `
+            <span style="color: ${pal.accent};">🏛️ Commission de coopération environnementale</span>
+          ` : '<span></span>'}
           <span style="font-weight: 800; letter-spacing: 0.04em;">williamguindon.me</span>
         </div>
       </div>
@@ -2724,6 +2744,7 @@
           chkStamp.checked = tpl.stamp;
           chkLiveDot.checked = tpl.live;
           if (chkSupporterBadge) chkSupporterBadge.checked = !!tpl.supporterBadge;
+          if (chkCceSeal) chkCceSeal.checked = tpl.cceSeal !== false;
 
           // Sync boutons d'interface
           document.querySelectorAll('.theme-card').forEach(tc => tc.classList.toggle('active', tc.dataset.theme === currentTheme));
@@ -2813,7 +2834,7 @@
     });
 
     // ÉCOUTEURS DES COMMUTATEURS
-    [chkQuoteMark, chkCrosshairs, chkStamp, chkSupporterBadge, chkLiveDot, chkAvatarProfile, chkVerifiedBadge, chkSignatureSvg, chkFooterMeta].filter(Boolean).forEach(chk => {
+    [chkQuoteMark, chkCrosshairs, chkStamp, chkSupporterBadge, chkLiveDot, chkAvatarProfile, chkVerifiedBadge, chkSignatureSvg, chkCceSeal, chkFooterMeta].filter(Boolean).forEach(chk => {
       chk.addEventListener('change', updateStage);
     });
 
@@ -2874,6 +2895,7 @@
       rangePhotoOpacity.value = 0.35;
       valPhotoOpacity.textContent = '35%';
       selectPhotoFilter.value = 'none';
+      if (chkCceSeal) chkCceSeal.checked = true;
       autoFitZoom = true;
       document.querySelectorAll('.zoom-btn').forEach(b => b.classList.toggle('active', b.dataset.zoom === 'fit'));
       updateStage();
