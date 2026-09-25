@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v59';
+const CACHE_NAME = 'wg-pwa-v60';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -6,6 +6,7 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/edition-speciale-reconciliation.html',
   '/autochtone.html',
+  '/dossier-journalistes.html',
   '/registre.html',
   '/enquete-partis.html',
   '/presse.html',

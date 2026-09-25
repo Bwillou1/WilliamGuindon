@@ -8,6 +8,7 @@ const CORE_FILES = [
   'index.html',
   'edition-speciale-reconciliation.html',
   'autochtone.html',
+  'dossier-journalistes.html',
   'registre.html',
   'enquete-partis.html',
   'live.html',
