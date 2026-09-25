@@ -644,25 +644,25 @@
   .card-crosshair.bl { bottom: 18px; left: 20px; }
   .card-crosshair.br { bottom: 18px; right: 20px; }
 
-  /* TAMPON OFFICIEL GRUNGE / WAX SEAL */
+  /* TAMPON OFFICIEL GRUNGE / WAX SEAL (Position basse sans collision) */
   .card-official-stamp {
     position: absolute;
-    top: 22px;
+    bottom: 72px;
     right: 28px;
-    border: 2px dashed rgba(239, 68, 68, 0.85);
-    color: #ef4444;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 11px;
+    border: 1.5px solid rgba(248, 113, 113, 0.9);
+    color: #fca5a5;
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    transform: rotate(5deg);
+    transform: rotate(-4deg);
     z-index: 7;
     pointer-events: none;
-    background: rgba(239, 68, 68, 0.1);
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
   }
 
   /* CONTENEUR FLEXBOX PRINCIPAL DU CONTENU */
@@ -686,9 +686,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: var(--radius-full);
-    font-size: 13px;
+    font-size: 11.5px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1478,10 +1478,8 @@
           <div class="card-crosshair bl" id="crosshair-bl">+</div>
           <div class="card-crosshair br" id="crosshair-br">+</div>
 
-          <!-- Tampon officiel CCE -->
-          <div class="card-official-stamp" id="card-stamp-badge">
-            DOSSIER CCE SEM-26-003 · PUBLIC
-          </div>
+          <!-- Tampon officiel CCE non-collision -->
+          <div class="card-official-stamp" id="card-stamp-badge" style="display:none;">DOSSIER CCE · OFFICIEL</div>
 
           <!-- Conteneur Flexbox structuré -->
           <div class="card-content-wrap">
@@ -1733,81 +1731,81 @@
       landscape: { w: 1200, h: 675, stageW: 640, stageH: 360, label: '1200 × 675 px (16:9 X / Web)' }
     };
 
-    // Palettes de couleurs royales
+        // Palettes royales haute lisibilité
     const PALETTES = {
       emerald: {
         bg: 'linear-gradient(135deg, #021a12 0%, #032b1f 40%, #01150e 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.25) 0%, transparent 60%)',
-        accent: '#10b981',
-        accentSecondary: '#34d399',
-        accentPillBg: 'rgba(16, 185, 129, 0.18)',
-        accentPillBorder: 'rgba(16, 185, 129, 0.5)',
+        overlay: 'linear-gradient(180deg, rgba(2, 26, 18, 0.85) 0%, rgba(2, 26, 18, 0.6) 50%, rgba(1, 21, 14, 0.95) 100%)',
+        accent: '#34d399',
+        accentSecondary: '#6ee7b7',
+        accentPillBg: 'rgba(0, 0, 0, 0.65)',
+        accentPillBorder: 'rgba(52, 211, 153, 0.6)',
         textMain: '#ffffff',
-        textMuted: '#a7f3d0',
-        cardBorder: 'rgba(16, 185, 129, 0.3)',
-        cardGlow: 'rgba(16, 185, 129, 0.35)',
-        boxBg: 'rgba(4, 41, 30, 0.75)',
-        boxBorder: 'rgba(52, 211, 153, 0.45)',
+        textMuted: '#e2e8f0',
+        cardBorder: 'rgba(52, 211, 153, 0.35)',
+        cardGlow: 'rgba(16, 185, 129, 0.25)',
+        boxBg: 'rgba(0, 0, 0, 0.75)',
+        boxBorder: 'rgba(52, 211, 153, 0.5)',
         sigFilter: 'invert(1) brightness(1.2)'
       },
       gold: {
         bg: 'linear-gradient(135deg, #141109 0%, #201a0d 45%, #090703 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.25) 0%, transparent 60%)',
-        accent: '#f59e0b',
-        accentSecondary: '#fbbf24',
-        accentPillBg: 'rgba(245, 158, 11, 0.18)',
-        accentPillBorder: 'rgba(245, 158, 11, 0.5)',
+        overlay: 'linear-gradient(180deg, rgba(20, 17, 9, 0.85) 0%, rgba(20, 17, 9, 0.6) 50%, rgba(9, 7, 3, 0.95) 100%)',
+        accent: '#fbbf24',
+        accentSecondary: '#fde68a',
+        accentPillBg: 'rgba(0, 0, 0, 0.65)',
+        accentPillBorder: 'rgba(251, 191, 36, 0.6)',
         textMain: '#ffffff',
-        textMuted: '#fde68a',
+        textMuted: '#f1f5f9',
         cardBorder: 'rgba(245, 158, 11, 0.35)',
-        cardGlow: 'rgba(245, 158, 11, 0.35)',
-        boxBg: 'rgba(38, 29, 10, 0.8)',
-        boxBorder: 'rgba(245, 158, 11, 0.45)',
+        cardGlow: 'rgba(245, 158, 11, 0.25)',
+        boxBg: 'rgba(0, 0, 0, 0.75)',
+        boxBorder: 'rgba(245, 158, 11, 0.5)',
         sigFilter: 'invert(66%) sepia(85%) saturate(850%) hue-rotate(360deg) brightness(105%)'
       },
       crimson: {
-        bg: 'linear-gradient(135deg, #1e0505 0%, #360a0a 45%, #0f0202 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.28) 0%, transparent 60%)',
-        accent: '#ef4444',
-        accentSecondary: '#f87171',
-        accentPillBg: 'rgba(239, 68, 68, 0.2)',
-        accentPillBorder: 'rgba(239, 68, 68, 0.55)',
+        bg: 'linear-gradient(135deg, #180303 0%, #290606 45%, #0e0202 100%)',
+        overlay: 'linear-gradient(180deg, rgba(24, 3, 3, 0.88) 0%, rgba(24, 3, 3, 0.65) 50%, rgba(14, 2, 2, 0.96) 100%)',
+        accent: '#f87171',
+        accentSecondary: '#fca5a5',
+        accentPillBg: 'rgba(0, 0, 0, 0.7)',
+        accentPillBorder: 'rgba(248, 113, 113, 0.7)',
         textMain: '#ffffff',
-        textMuted: '#fecaca',
+        textMuted: '#f1f5f9',
         cardBorder: 'rgba(239, 68, 68, 0.35)',
-        cardGlow: 'rgba(239, 68, 68, 0.4)',
-        boxBg: 'rgba(56, 10, 10, 0.85)',
-        boxBorder: 'rgba(239, 68, 68, 0.5)',
+        cardGlow: 'rgba(239, 68, 68, 0.3)',
+        boxBg: 'rgba(0, 0, 0, 0.8)',
+        boxBorder: 'rgba(239, 68, 68, 0.6)',
         sigFilter: 'invert(1) brightness(1.2)'
       },
       cyber: {
         bg: 'linear-gradient(135deg, #050b14 0%, #0a1728 45%, #020409 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25) 0%, transparent 60%)',
+        overlay: 'linear-gradient(180deg, rgba(5, 11, 20, 0.85) 0%, rgba(5, 11, 20, 0.6) 50%, rgba(2, 4, 9, 0.95) 100%)',
         accent: '#38bdf8',
         accentSecondary: '#7dd3fc',
-        accentPillBg: 'rgba(56, 189, 248, 0.18)',
-        accentPillBorder: 'rgba(56, 189, 248, 0.5)',
+        accentPillBg: 'rgba(0, 0, 0, 0.65)',
+        accentPillBorder: 'rgba(56, 189, 248, 0.6)',
         textMain: '#ffffff',
-        textMuted: '#bae6fd',
+        textMuted: '#f1f5f9',
         cardBorder: 'rgba(56, 189, 248, 0.35)',
-        cardGlow: 'rgba(56, 189, 248, 0.35)',
-        boxBg: 'rgba(10, 28, 48, 0.85)',
-        boxBorder: 'rgba(56, 189, 248, 0.45)',
+        cardGlow: 'rgba(56, 189, 248, 0.25)',
+        boxBg: 'rgba(0, 0, 0, 0.75)',
+        boxBorder: 'rgba(56, 189, 248, 0.5)',
         sigFilter: 'invert(75%) sepia(80%) saturate(1200%) hue-rotate(170deg)'
       },
-            terracotta: {
-        bg: 'linear-gradient(135deg, #1c0a02 0%, #381403 45%, #0f0501 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.35) 0%, transparent 60%)',
-        accent: '#ea580c',
-        accentSecondary: '#fb923c',
-        accentPillBg: 'rgba(234, 88, 12, 0.22)',
-        accentPillBorder: 'rgba(234, 88, 12, 0.55)',
+      terracotta: {
+        bg: 'linear-gradient(135deg, #1c0a02 0%, #351303 45%, #0f0501 100%)',
+        overlay: 'linear-gradient(180deg, rgba(28, 10, 2, 0.88) 0%, rgba(28, 10, 2, 0.65) 50%, rgba(15, 5, 1, 0.96) 100%)',
+        accent: '#fb923c',
+        accentSecondary: '#fdba74',
+        accentPillBg: 'rgba(0, 0, 0, 0.7)',
+        accentPillBorder: 'rgba(251, 146, 60, 0.7)',
         textMain: '#ffffff',
-        textMuted: '#fed7aa',
+        textMuted: '#f8fafc',
         cardBorder: 'rgba(234, 88, 12, 0.4)',
-        cardGlow: 'rgba(234, 88, 12, 0.45)',
-        boxBg: 'rgba(67, 20, 7, 0.85)',
-        boxBorder: 'rgba(234, 88, 12, 0.5)',
+        cardGlow: 'rgba(234, 88, 12, 0.3)',
+        boxBg: 'rgba(0, 0, 0, 0.8)',
+        boxBorder: 'rgba(251, 146, 60, 0.6)',
         sigFilter: 'invert(60%) sepia(90%) saturate(1200%) hue-rotate(360deg)'
       },
       parchment: {
@@ -1827,25 +1825,25 @@
       },
       twilight: {
         bg: 'linear-gradient(135deg, #130a22 0%, #23123d 45%, #0a0414 100%)',
-        overlay: 'radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.28) 0%, transparent 60%)',
+        overlay: 'linear-gradient(180deg, rgba(19, 10, 34, 0.85) 0%, rgba(19, 10, 34, 0.6) 50%, rgba(10, 4, 20, 0.95) 100%)',
         accent: '#c084fc',
         accentSecondary: '#e879f9',
-        accentPillBg: 'rgba(168, 85, 247, 0.2)',
-        accentPillBorder: 'rgba(168, 85, 247, 0.5)',
+        accentPillBg: 'rgba(0, 0, 0, 0.65)',
+        accentPillBorder: 'rgba(192, 132, 252, 0.6)',
         textMain: '#ffffff',
-        textMuted: '#e9d5ff',
+        textMuted: '#f1f5f9',
         cardBorder: 'rgba(168, 85, 247, 0.35)',
-        cardGlow: 'rgba(168, 85, 247, 0.4)',
-        boxBg: 'rgba(38, 18, 66, 0.85)',
-        boxBorder: 'rgba(192, 132, 252, 0.45)',
+        cardGlow: 'rgba(168, 85, 247, 0.25)',
+        boxBg: 'rgba(0, 0, 0, 0.75)',
+        boxBorder: 'rgba(192, 132, 252, 0.5)',
         sigFilter: 'invert(70%) sepia(60%) saturate(1500%) hue-rotate(240deg)'
       }
     };
 
-        // Gabarits thématiques riches
+    // Gabarits thématiques riches & ultra-lisibles
     const TEMPLATES = {
       quote: {
-        kicker: "DÉCLARATION OFFICIELLE · DOSSIER SEM-26-003",
+        kicker: "DÉCLARATION OFFICIELLE",
         title: "« Vous ne ferez pas taire la jeunesse qui défend son avenir. »",
         body: "La Grande Tourbière de Blainville est un écosystème irremplaçable. Devant la Commission de coopération environnementale, nous exigeons le respect intégral des lois environnementales.",
         highlight: "ÉCHÉANCE FÉDÉRALE : 16 OCTOBRE 2026",
@@ -1860,7 +1858,7 @@
         live: false
       },
       alert: {
-        kicker: "🚨 ALERTE JURIDIQUE & ENVIRONNEMENTALE INTERNATIONALE",
+        kicker: "🚨 ALERTE CCE · ACEUM",
         title: "Le Canada sommé de répondre avant le 16 octobre 2026",
         body: "Détermination positive historique rendue par la Commission de coopération environnementale (CCE / ACEUM). Examen approfondi de l'omission d'application des lois environnementales fédérales à Blainville.",
         highlight: "ARTICLE 24.27 ACEUM · DÉCISION DU SECRÉTARIAT",
@@ -1869,13 +1867,13 @@
         date: "Procédure internationale en cours",
         theme: "crimson",
         layout: "brutalist",
-        font: "syne",
+        font: "sans",
         img: "tourbiere.jpg",
-        stamp: true,
+        stamp: false,
         live: true
       },
       investigation: {
-        kicker: "🔍 DOSSIER D'ENQUÊTE & ANALYSES PROBATOIRES",
+        kicker: "🔍 PREUVES D'ENQUÊTE · SEM-26-003",
         title: "278 000 m² de milieux humides menacés par la Cellule 6",
         body: "Étude d'impact hydrogéologique, modélisation de migration des métaux lourds (cadmium) et analyse probatoire transmise au registre international de la CCE.",
         highlight: "PIÈCE JUSTIFICATIVE · BAPE 371 & CCE SEM-26-003",
@@ -1884,13 +1882,13 @@
         date: "Septembre 2026 · williamguindon.me",
         theme: "gold",
         layout: "dossier",
-        font: "mono",
+        font: "sans",
         img: "assets/media/clarification-independance.jpg",
-        stamp: true,
+        stamp: false,
         live: false
       },
       stat: {
-        kicker: "📊 IMPACT HYDROLOGIQUE & PÉRIL ÉCOLOGIQUE",
+        kicker: "📊 CHIFFRES CLÉS STABLEX",
         statNum: "278 000 m²",
         statLbl: "DE MILIEUX HUMIDES MENACÉS",
         title: "La plus grande expansion de déchets dangereux du Québec",
@@ -1901,13 +1899,13 @@
         date: "Dossier public CCE · Blainville",
         theme: "cyber",
         layout: "stat",
-        font: "syne",
+        font: "sans",
         img: "assets/media/moteur-recherche-pieces.jpg",
         stamp: false,
         live: false
       },
       clarification: {
-        kicker: "⚖️ DÉCLARATION FORMELLE D'INDÉPENDANCE (ARTICLE A.5)",
+        kicker: "⚖️ DÉCLARATION D'INDÉPENDANCE (ARTICLE A.5)",
         title: "Absence de collaboration politique & Stricte Indépendance",
         body: "La soumission SEM-26-003 a été conçue, rédigée et déposée de manière rigoureusement autonome et autofinancée. Aucune affiliation ni financement d'aucune organisation politique ou corporative.",
         highlight: "CHARTE D'INTÉGRITÉ & ÉTHIQUE PUBLIQUE",
@@ -1918,11 +1916,11 @@
         layout: "editorial",
         font: "serif",
         img: "assets/media/clarification-independance.jpg",
-        stamp: true,
+        stamp: false,
         live: false
       },
       reconciliation: {
-        kicker: "🧡 30 SEPTEMBRE · JOURNÉE NATIONALE DE LA VÉRITÉ ET DE LA RÉCONCILIATION",
+        kicker: "🧡 30 SEPTEMBRE · RÉCONCILIATION",
         title: "Shé:kon · Honorer la Terre-Mère et la mémoire des générations",
         body: "À l'occasion de la Semaine nationale de la vérité et de la réconciliation, nous reconnaissons l'intendance millénaire des nations Kanien'kehá:ka et Anishinaabeg sur les terres et les eaux de la Grande Tourbière de Blainville. Chaque enfant compte.",
         highlight: "CHAQUE ENFANT COMPTE · EVERY CHILD MATTERS",
@@ -1937,7 +1935,7 @@
         live: false
       },
       nature: {
-        kicker: "🌿 PATRIMOINE NATUREL DES BASSES-LAURENTIDES",
+        kicker: "🌿 GRANDE TOURBIÈRE DE BLAINVILLE",
         title: "Sauvegarde intégrale de la Grande Tourbière de Blainville",
         body: "Véritable poumon écologique et réservoir de biodiversité abritant des espèces vulnérables menacées par les projets d'enfouissement de matières dangereuses.",
         highlight: "SANCTUAIRE ÉCOLOGIQUE & PUITS DE CARBONE",
@@ -1952,7 +1950,7 @@
         live: false
       },
       press: {
-        kicker: "📰 COUVERTURE MÉDIATIQUE & REVUE DE PRESSE",
+        kicker: "📰 REVUE DE PRESSE NATIONALE",
         title: "« L'adolescent qui défie les géants de l'enfouissement »",
         body: "Couverture nationale dans Le Devoir, La Presse, CBC News, The Rover. Accès libre à toutes les pièces probatoires, études hydrogéologiques et dossier de presse officiel.",
         highlight: "KIT MÉDIA COMPLET & RECHERCHE PLEIN TEXTE OCR",
@@ -1967,7 +1965,7 @@
         live: false
       },
       live: {
-        kicker: "🎙️ INTERVENTION PUBLIQUE & DIRECT CITOYEN",
+        kicker: "🎙️ EN DIRECT · MOBILISATION CITOYENNE",
         title: "Le pouvoir d'agir : la jeunesse et le droit environnemental",
         body: "Analyse en direct des développements juridiques de la soumission CCE, des réponses des gouvernements et des prochaines étapes de mobilisation pour la Grande Tourbière.",
         highlight: "CLAVARDAGE IA DOCUMENTÉ SUR LE DOSSIER",
@@ -1976,7 +1974,7 @@
         date: "Direct sur williamguindon.me",
         theme: "crimson",
         layout: "brutalist",
-        font: "syne",
+        font: "sans",
         img: "assets/media/william-guindon.jpg",
         stamp: false,
         live: true
@@ -1995,8 +1993,9 @@
       stageWrapper.style.transform = `scale(${currentZoom})`;
 
       // Typographie choisie
-      let fontTitle = '"Playfair Display", serif';
-      if (currentFont === 'syne') fontTitle = '"Syne", sans-serif';
+      let fontTitle = '"Plus Jakarta Sans", sans-serif';
+      if (currentFont === 'serif') fontTitle = '"Playfair Display", Georgia, serif';
+      else if (currentFont === 'syne') fontTitle = '"Syne", sans-serif';
       else if (currentFont === 'sans') fontTitle = '"Plus Jakarta Sans", sans-serif';
       else if (currentFont === 'mono') fontTitle = '"Space Grotesk", monospace';
 
@@ -2226,14 +2225,14 @@
   <rect width="100%" height="100%" fill="url(#bg-grad)"/>
 
   <!-- Cadre et coins d'orfèvrerie -->
-  <rect x="36" y="36" width="${w - 72}" height="${h - 72}" fill="none" stroke="${pal.boxBorder}" stroke-width="4" rx="24"/>
+  <rect x="36" y="36" width="${baseW - 72}" height="${baseH - 72}" fill="none" stroke="${pal.boxBorder}" stroke-width="4" rx="24"/>
   <text x="56" y="70" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
-  <text x="${w - 74}" y="70" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
-  <text x="56" y="${h - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
-  <text x="${w - 74}" y="${h - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="${baseW - 74}" y="70" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="56" y="${baseH - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
+  <text x="${baseW - 74}" y="${baseH - 50}" fill="${pal.accent}" font-family="monospace" font-size="28" font-weight="900">+</text>
 
   <!-- ForeignObject Satori-style pour flexbox parfait -->
-  <foreignObject x="${pad}" y="${pad}" width="${w - pad * 2}" height="${h - pad * 2}">
+  <foreignObject x="${pad}" y="${pad}" width="${baseW - pad * 2}" height="${baseH - pad * 2}">
     <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; box-sizing: border-box;">
       
       <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 24px;">

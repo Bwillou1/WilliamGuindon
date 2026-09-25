@@ -247,6 +247,38 @@ SOFTWARE.
 
 ---
 
+### Gutenberg (Web Typography & Print Framework)
+- **Auteur :** Copyright (c) 2016 Bård Farstad (bafs)
+- **Licence :** MIT License
+- **URL :** https://github.com/bafs/gutenberg
+- **Description :** Cadre de travail pour la typographie web moderne et les feuilles de style d'impression. Fournit les fondations typographiques, le rythme vertical, les échelles modulaires proportionnelles et la mise en page d'impression de haute précision pour l'ensemble des pages du site, notamment les politiques et chartes éthiques, les communiqués de presse, les déclarations publiques et les pages d'analyses documentaires.
+
+```text
+The MIT License (MIT)
+
+Copyright (c) 2016 Bård Farstad
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).
