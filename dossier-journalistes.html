@@ -278,9 +278,10 @@
       background: #ffffff;
       position: relative;
       overflow: hidden;
+      min-width: 0;
     }
     .preview-header {
-      padding: 10px 18px;
+      padding: 8px 16px;
       font-size: 13px;
       background: #ffffff;
       border-bottom: 1px solid #dce5df;
@@ -290,21 +291,58 @@
       justify-content: space-between;
       align-items: center;
       z-index: 2;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .preview-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-preview-action {
+      color: #0d652d;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #eaf5ee;
+      border: 1px solid #c8e4d0;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-preview-action:hover {
+      background: #0d652d;
+      color: #ffffff;
+      border-color: #0d652d;
     }
     .preview-stage {
       flex: 1;
-      overflow: auto;
+      width: 100%;
+      min-height: 0;
+      overflow: hidden;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: stretch;
+      justify-content: stretch;
       background: #f7faf7;
       position: relative;
     }
+    .preview-stage.is-media {
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+    }
     .preview-iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       border: none;
       background: #ffffff;
+      display: block;
     }
     .preview-image {
       max-width: 95%;
@@ -397,8 +435,11 @@
 
     <div class="drive-preview-pane">
       <div class="preview-header">
-        <span id="current-filename">Sélectionnez un document</span>
-        <a id="direct-file-link" href="#" target="_blank" rel="noopener" style="color: #0d652d; text-decoration: none; font-size: 12px; font-weight: 600; display: none;">Ouvrir l'original ↗</a>
+        <span id="current-filename" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">Sélectionnez un document</span>
+        <div class="preview-header-actions" id="preview-header-actions" style="display: none;">
+          <a id="btn-fullscreen-viewer" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Consulter dans le lecteur officiel grand écran">Plein écran ↗</a>
+          <a id="direct-file-link" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Télécharger le fichier original">Télécharger original ↗</a>
+        </div>
       </div>
       
       <div id="preview-stage" class="preview-stage">
@@ -649,13 +690,16 @@
     if (!treeContainer) return;
     treeContainer.innerHTML = "";
 
-    // Filtrer les fichiers systèmes et métadonnées internes
+    // Filtrer les fichiers systèmes, métadonnées internes et dérivés automatiques archive.org
     const validFiles = filesData.filter(item => {
       const name = typeof item === "string" ? item : item.name;
-      return !name.endsWith('_meta.sqlite') && 
+      const isDerivative = typeof item === "object" && item.source === "derivative";
+      return !isDerivative &&
+             !name.endsWith('_meta.sqlite') && 
              !name.endsWith('_meta.xml') && 
              !name.endsWith('_files.xml') && 
              !name.endsWith('_archive.torrent') &&
+             !name.endsWith('_text_pdfmeta.json') &&
              !name.startsWith('__ia_thumb') &&
              !name.includes('.thumbs/') &&
              !name.includes('00_GUIDE_JOURNALISTES_BIFFE');
@@ -770,22 +814,30 @@
 
           const curFile = document.getElementById("current-filename");
           if (curFile) curFile.textContent = fileObj.name;
+          const headerActions = document.getElementById("preview-header-actions");
+          if (headerActions) headerActions.style.display = "flex";
+
           const directLink = document.getElementById("direct-file-link");
           if (directLink) {
             directLink.href = fileUrl;
-            directLink.style.display = "inline";
+            directLink.style.display = "inline-flex";
           }
+          const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
 
           if (stage) {
             stage.innerHTML = "";
 
             if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
+              if (fsViewerLink) fsViewerLink.style.display = "none";
+              stage.classList.add("is-media");
               const img = document.createElement("img");
               img.src = fileUrl;
               img.className = "preview-image";
               img.alt = fileObj.name;
               stage.appendChild(img);
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
+              if (fsViewerLink) fsViewerLink.style.display = "none";
+              stage.classList.add("is-media");
               const video = document.createElement("video");
               video.src = fileUrl;
               video.controls = true;
@@ -793,13 +845,22 @@
               video.className = "preview-video";
               stage.appendChild(video);
             } else if (lower.endsWith(".pdf")) {
+              stage.classList.remove("is-media");
+              const viewerUrl = "viewer.html?file=" + encodeURIComponent(corsPdfUrl);
+              if (fsViewerLink) {
+                fsViewerLink.href = viewerUrl;
+                fsViewerLink.style.display = "inline-flex";
+              }
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
-              // Intégration dans le lecteur officiel avec support CORS direct
-              iframe.src = "viewer.html?file=" + encodeURIComponent(corsPdfUrl);
               iframe.title = fileObj.name;
+              iframe.setAttribute("allow", "fullscreen");
+              // Intégration dans le lecteur officiel avec support CORS direct
+              iframe.src = viewerUrl;
               stage.appendChild(iframe);
             } else {
+              if (fsViewerLink) fsViewerLink.style.display = "none";
+              stage.classList.add("is-media");
               const box = document.createElement("div");
               box.className = "no-preview";
               box.innerHTML = `
@@ -825,9 +886,13 @@
     renderTree(root, treeContainer, true);
   }
 
-  // Tente d'interroger l'API pour récupérer les 222 fichiers en direct ; bascule instantanément sur la liste complète en cas de blocage réseau
-  fetch(apiUrl)
+  // Tente d'interroger l'API avec un délai de sécurité de 2,5 s avant bascule sur la liste certifiée
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+  fetch(apiUrl, { signal: controller.signal })
     .then(r => {
+      clearTimeout(timeoutId);
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
@@ -839,6 +904,7 @@
       }
     })
     .catch(() => {
+      clearTimeout(timeoutId);
       processFiles(fallbackList);
     });
 

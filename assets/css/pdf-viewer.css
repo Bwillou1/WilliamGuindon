@@ -121,7 +121,39 @@ html, body {
   border-color: var(--accent);
 }
 
+/* Mode intégré en iframe (ex: dossier-journalistes.html) */
+body.is-embedded,
+html.is-embedded {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body.is-embedded .pdf-app {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .is-embedded .viewer-back-btn {
+  display: none !important;
+}
+
+/* Suppression absolue de tout widget de clavardage ou champ de message sur le lecteur */
+.floating-ai-btn,
+.ai-chat-window,
+#ai-chat-window,
+.viewer-chat-form,
+.viewer-chat-input,
+.viewer-chat-messages {
   display: none !important;
 }
 
@@ -1440,56 +1472,7 @@ kbd {
   display: block;
 }
 .viewer-ai-chat-section {
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.viewer-ai-chat-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-}
-.viewer-chat-messages {
-  max-height: 220px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 4px 0;
-}
-.ai-chat-bubble-sm {
-  font-size: 12.5px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  line-height: 1.45;
-}
-.viewer-ai-pills {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  -webkit-overflow-scrolling: touch;
-}
-.viewer-chat-form {
-  display: flex;
-  gap: 6px;
-}
-.viewer-chat-input {
-  flex: 1;
-  font-size: 16px; /* 16px pour éviter le zoom iOS Safari */
-  height: 36px;
-  border-radius: 6px;
-  padding: 0 10px;
-}
-.viewer-chat-submit {
-  font-size: 12.5px;
-  padding: 0 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  touch-action: manipulation;
-}
+
 
 .print-container {
   display: none;
