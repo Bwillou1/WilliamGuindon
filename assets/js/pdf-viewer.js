@@ -186,7 +186,7 @@
     searchResults: [],
     currentSearchIndex: -1,
     isSearching: false,
-    sidebarOpen: window.innerWidth > 900
+    sidebarOpen: (window.self === window.top && window.innerWidth > 900)
   };
 
   // Éléments du DOM
@@ -294,6 +294,9 @@
     // Détection mode intégré (iFrame) pour adapter l'interface
     if (window.self !== window.top) {
       document.body.classList.add('is-embedded');
+      state.sidebarOpen = false;
+      if (dom.sidebar) dom.sidebar.classList.add('collapsed');
+      if (dom.btnSidebarToggle) dom.btnSidebarToggle.classList.remove('active');
     }
 
     // 2. Extraire et assainir les paramètres de l'URL (query string et hash)
@@ -363,7 +366,8 @@
       state.renderedPages.clear();
 
       // Charger le document
-      const loadingTask = pdfjsLib.getDocument({
+      const isRemoteArchive = safeUrl.includes('archive.org');
+      const docOptions = {
         url: safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
@@ -371,7 +375,12 @@
         enableXfa: true,
         // CVE-2024-4367 (exécution de JS arbitraire à l'ouverture d'un PDF piégé) : neutralisée en conservant isEvalSupported à false. Ne jamais repasser à true.
         isEvalSupported: false
-      });
+      };
+      if (isRemoteArchive) {
+        docOptions.disableRange = true;
+        docOptions.disableStream = true;
+      }
+      const loadingTask = pdfjsLib.getDocument(docOptions);
 
       state.pdfDoc = await loadingTask.promise;
       state.totalPages = state.pdfDoc.numPages;

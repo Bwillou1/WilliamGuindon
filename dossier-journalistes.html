@@ -102,15 +102,89 @@
       flex: 1;
       overflow: hidden;
     }
-    /* Colonne gauche : Arborescence récursive Nature */
+    /* Colonne gauche : Arborescence récursive Nature réductible et redimensionnable */
     .drive-tree-pane {
-      width: 44%;
-      min-width: 320px;
-      max-width: 520px;
+      width: 290px;
+      min-width: 140px;
+      max-width: 600px;
       border-right: 1px solid #dce5df;
       overflow-y: auto;
       background: #f7faf7;
       padding: 8px 6px;
+      flex-shrink: 0;
+      transition: width 0.15s ease, padding 0.15s ease;
+      position: relative;
+    }
+    .drive-tree-pane.collapsed {
+      width: 0 !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      border-right: none !important;
+      overflow: hidden !important;
+      visibility: hidden;
+    }
+    .drive-tree-pane.is-resizing {
+      transition: none !important;
+      user-select: none;
+    }
+
+    /* Séparateur pour ajuster la largeur de la barre de gauche */
+    .drive-splitter {
+      width: 8px;
+      background: #f0f4f1;
+      cursor: col-resize;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .drive-splitter::after {
+      content: "";
+      width: 2px;
+      height: 32px;
+      background: #cbd7cf;
+      border-radius: 2px;
+      transition: background 0.15s, height 0.15s;
+    }
+    .drive-splitter:hover,
+    .drive-splitter.is-dragging {
+      background: #d4edd9;
+    }
+    .drive-splitter:hover::after,
+    .drive-splitter.is-dragging::after {
+      background: #0d652d;
+      height: 48px;
+    }
+
+    /* Bouton pour réduire / agrandir la barre de gauche */
+    .btn-toggle-tree {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd7cf;
+      background: #ffffff;
+      color: #064e3b;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-toggle-tree:hover {
+      background: #eaf5ee;
+      border-color: #0d652d;
+    }
+    .btn-toggle-tree.is-collapsed {
+      background: #064e3b;
+      color: #ffffff;
+      border-color: #064e3b;
     }
     .tree-node {
       user-select: none;
@@ -280,8 +354,9 @@
     @media (max-width: 768px) {
       .drive-container { height: auto; min-height: 90vh; }
       .drive-body { flex-direction: column; }
-      .drive-tree-pane { width: 100%; min-width: 100%; max-height: 45vh; }
+      .drive-tree-pane { width: 100% !important; min-width: 100% !important; max-height: 45vh; }
       .drive-preview-pane { min-height: 50vh; }
+      .drive-splitter { display: none !important; }
     }
   </style>
 </head>
@@ -294,6 +369,10 @@
         <span>←</span>
         <span>Accueil</span>
       </a>
+      <button type="button" id="btn-toggle-tree" class="btn-toggle-tree" title="Réduire ou agrandir la barre de gauche" aria-label="Réduire la barre de gauche">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        <span id="btn-toggle-tree-text">Réduire barre</span>
+      </button>
       <div class="drive-title">
         <span id="title-count">Dossier SEM-26-003</span>
       </div>
@@ -313,6 +392,8 @@
     <div id="drive-tree" class="drive-tree-pane">
       <div class="drive-loading">Chargement des 222 pièces probatoires...</div>
     </div>
+
+    <div class="drive-splitter" id="drive-splitter" title="Glisser pour redimensionner la barre"></div>
 
     <div class="drive-preview-pane">
       <div class="preview-header">
@@ -621,8 +702,8 @@
       folderNames.forEach((folderName, idx) => {
         const subNode = node.subfolders[folderName];
         const nodeDiv = document.createElement("div");
-        // Ouvrir les dossiers racines par défaut pour rendre les documents directement visibles
-        nodeDiv.className = "tree-node" + (isRoot ? " open" : "");
+        // Ouvrir le premier dossier par défaut pour rendre les premiers documents directement visibles
+        nodeDiv.className = "tree-node" + (idx === 0 ? " open" : "");
 
         function countTotal(n) {
           let total = n.files.length;
@@ -760,6 +841,103 @@
     .catch(() => {
       processFiles(fallbackList);
     });
+
+  // Gestion du redimensionnement glissant et du repli de la barre latérale gauche
+  const splitter = document.getElementById("drive-splitter");
+  const treePane = document.getElementById("drive-tree");
+  const driveBody = document.querySelector(".drive-body");
+  const btnToggleTree = document.getElementById("btn-toggle-tree");
+  const btnToggleText = document.getElementById("btn-toggle-tree-text");
+
+  let isDragging = false;
+  const savedWidth = localStorage.getItem("wg_drive_tree_w") || "290";
+
+  if (treePane && window.innerWidth > 768) {
+    treePane.style.width = savedWidth + "px";
+  }
+
+  function toggleTreeSidebar(forceState) {
+    if (!treePane) return;
+    const isCurrentlyCollapsed = treePane.classList.contains("collapsed");
+    const shouldCollapse = (typeof forceState === "boolean") ? forceState : !isCurrentlyCollapsed;
+
+    if (shouldCollapse) {
+      treePane.classList.add("collapsed");
+      if (btnToggleTree) btnToggleTree.classList.add("is-collapsed");
+      if (btnToggleText) btnToggleText.textContent = "Afficher barre";
+      if (splitter) splitter.style.display = "none";
+    } else {
+      treePane.classList.remove("collapsed");
+      if (btnToggleTree) btnToggleTree.classList.remove("is-collapsed");
+      if (btnToggleText) btnToggleText.textContent = "Réduire barre";
+      if (splitter) splitter.style.display = "flex";
+      const w = localStorage.getItem("wg_drive_tree_w") || "290";
+      treePane.style.width = w + "px";
+    }
+    window.dispatchEvent(new Event("resize"));
+  }
+
+  if (btnToggleTree) {
+    btnToggleTree.addEventListener("click", () => toggleTreeSidebar());
+  }
+
+  if (splitter && treePane && driveBody) {
+    splitter.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      isDragging = true;
+      splitter.classList.add("is-dragging");
+      treePane.classList.add("is-resizing");
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      const rect = driveBody.getBoundingClientRect();
+      let newW = e.clientX - rect.left;
+      if (newW < 140) newW = 140;
+      if (newW > rect.width * 0.75) newW = rect.width * 0.75;
+      treePane.style.width = Math.round(newW) + "px";
+      localStorage.setItem("wg_drive_tree_w", Math.round(newW));
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (isDragging) {
+        isDragging = false;
+        splitter.classList.remove("is-dragging");
+        treePane.classList.remove("is-resizing");
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        window.dispatchEvent(new Event("resize"));
+      }
+    });
+
+    // Support tactile (tablettes et mobiles tactiles)
+    splitter.addEventListener("touchstart", () => {
+      isDragging = true;
+      splitter.classList.add("is-dragging");
+      treePane.classList.add("is-resizing");
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      if (!isDragging || !e.touches[0]) return;
+      const rect = driveBody.getBoundingClientRect();
+      let newW = e.touches[0].clientX - rect.left;
+      if (newW < 140) newW = 140;
+      if (newW > rect.width * 0.75) newW = rect.width * 0.75;
+      treePane.style.width = Math.round(newW) + "px";
+      localStorage.setItem("wg_drive_tree_w", Math.round(newW));
+    }, { passive: true });
+
+    window.addEventListener("touchend", () => {
+      if (isDragging) {
+        isDragging = false;
+        splitter.classList.remove("is-dragging");
+        treePane.classList.remove("is-resizing");
+        window.dispatchEvent(new Event("resize"));
+      }
+    });
+  }
 })();
 </script>
 
