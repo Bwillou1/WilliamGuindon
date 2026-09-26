@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v62';
+const CACHE_NAME = 'wg-pwa-v63';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -31,6 +31,7 @@ const ASSETS_TO_CACHE = [
   '/opsec.html',
   '/statut-mineur.html',
   '/vie-privee-parents.html',
+  '/protection-archive.html',
   '/dependances-licences.html',
   '/llms.txt',
   '/llms-full.txt',
