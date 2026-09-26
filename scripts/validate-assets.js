@@ -108,7 +108,8 @@ const licenseChecks = [
   { file: 'assets/vendor/pdfjs/pdf.worker.min.js', required: 'Apache License' },
   { file: 'assets/vendor/pdfjs/pdf_viewer.css', required: 'Apache License' },
   { file: 'assets/js/nostr-bundle.js', required: 'Bundled license information' },
-  { file: 'assets/vendor/curtains/curtains.umd.min.js', required: 'MIT License' }
+  { file: 'assets/vendor/curtains/curtains.umd.min.js', required: 'MIT License' },
+  { file: 'assets/js/papaparse.min.js', required: 'License: MIT' }
 ];
 
 for (const check of licenseChecks) {

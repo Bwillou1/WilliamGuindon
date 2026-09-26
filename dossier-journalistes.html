@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#064e3b">
+  <script src="assets/js/papaparse.min.js"></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -388,6 +389,167 @@
       text-align: center;
       color: #52796f;
       font-size: 13px;
+    }
+    /* Visualiseur interactif CSV propulsé par PapaParse */
+    .csv-viewer-pane {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+      font-size: 12px;
+    }
+    .csv-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 8px 14px;
+      background: #f7faf8;
+      border-bottom: 1px solid #dce5df;
+    }
+    .csv-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .csv-search-input {
+      padding: 5px 10px;
+      border: 1px solid #cbd7cf;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+      min-width: 220px;
+      background: #ffffff;
+      color: #1a241e;
+    }
+    .csv-search-input:focus {
+      border-color: #0d652d;
+      box-shadow: 0 0 0 2px rgba(13, 101, 45, 0.15);
+    }
+    .csv-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: #eaf5ee;
+      border: 1px solid #c8e4d0;
+      color: #0d652d;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+    .csv-pagination {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: #52796f;
+    }
+    .csv-page-btn {
+      padding: 3px 8px;
+      border: 1px solid #cbd7cf;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #064e3b;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .csv-page-btn:hover:not(:disabled) {
+      background: #0d652d;
+      color: #ffffff;
+      border-color: #0d652d;
+    }
+    .csv-page-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .csv-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      background: #ffffff;
+    }
+    .csv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+    .csv-table th {
+      position: sticky;
+      top: 0;
+      background: #eef4f0;
+      color: #064e3b;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 2px solid #cbd7cf;
+      border-right: 1px solid #e2ece5;
+      z-index: 2;
+      user-select: none;
+    }
+    .csv-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #edf2ee;
+      border-right: 1px solid #f0f4f1;
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #2d3748;
+    }
+    .csv-table tr:hover td {
+      background: #f2f7f4;
+    }
+    .csv-table tr:nth-child(even) td {
+      background: #fafcfa;
+    }
+    .csv-table tr:nth-child(even):hover td {
+      background: #edf5f0;
+    }
+    .csv-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f7faf8;
+      border-top: 1px solid #dce5df;
+      font-size: 11px;
+      color: #52796f;
+    }
+    .csv-attribution {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .csv-attribution a {
+      color: #0d652d;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .csv-btn-download {
+      color: #0d652d;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #eaf5ee;
+      border: 1px solid #c8e4d0;
+      transition: all 0.15s;
+    }
+    .csv-btn-download:hover {
+      background: #0d652d;
+      color: #ffffff;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     @media (max-width: 768px) {
       .drive-container { height: auto; min-height: 90vh; }
@@ -858,6 +1020,43 @@
               // Intégration dans le lecteur officiel avec support CORS direct
               iframe.src = viewerUrl;
               stage.appendChild(iframe);
+            } else if (lower.endsWith(".csv")) {
+              if (fsViewerLink) fsViewerLink.style.display = "none";
+              stage.classList.remove("is-media");
+              stage.innerHTML = `
+                <div class="csv-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:12px;font-size:13px;">
+                  <div class="csv-spinner" style="width:28px;height:28px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+                  <span>Lecture et analyse des données CSV via PapaParse...</span>
+                </div>
+              `;
+
+              fetch(corsPdfUrl)
+                .then(res => {
+                  if (!res.ok) throw new Error("Erreur réseau HTTP " + res.status);
+                  return res.text();
+                })
+                .then(csvText => {
+                  if (typeof Papa === "undefined") {
+                    throw new Error("Bibliothèque PapaParse non disponible");
+                  }
+                  const results = Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    dynamicTyping: false
+                  });
+                  renderCsvViewer(results, fileObj, fileUrl, stage);
+                })
+                .catch(err => {
+                  stage.classList.add("is-media");
+                  stage.innerHTML = `
+                    <div class="no-preview">
+                      <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
+                      <h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le tableau en direct</h4>
+                      <p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier CSV (${err.message}) est accessible en téléchargement direct.</p>
+                      <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier CSV original</a>
+                    </div>
+                  `;
+                });
             } else {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.add("is-media");
@@ -881,6 +1080,180 @@
           firstSelected = true;
         }
       });
+    }
+
+    function renderCsvViewer(results, fileObj, fileUrl, stage) {
+      stage.innerHTML = "";
+      const allRows = results.data || [];
+      const fields = results.meta && results.meta.fields && results.meta.fields.length > 0
+        ? results.meta.fields
+        : (allRows[0] ? Object.keys(allRows[0]) : []);
+
+      if (allRows.length === 0 || fields.length === 0) {
+        stage.classList.add("is-media");
+        stage.innerHTML = `
+          <div class="no-preview">
+            <span style="display:inline-flex;margin-bottom:8px;">📄</span>
+            <h4 style="margin: 0 0 8px 0; color: #064e3b;">Fichier CSV vide</h4>
+            <p style="font-size:12px;color:#52796f;">Ce document ne contient aucune donnée tabulaire exploitable.</p>
+            <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier</a>
+          </div>
+        `;
+        return;
+      }
+
+      const pane = document.createElement("div");
+      pane.className = "csv-viewer-pane";
+
+      const PAGE_SIZE = 50;
+      let currentPage = 1;
+      let filteredRows = allRows;
+
+      pane.innerHTML = `
+        <div class="csv-toolbar">
+          <div class="csv-toolbar-left">
+            <input type="search" class="csv-search-input" id="csv-search" placeholder="Rechercher dans les données (${fields.length} colonnes)..." aria-label="Rechercher dans le tableau CSV">
+            <span class="csv-badge" id="csv-stats-badge">${allRows.length.toLocaleString("fr-CA")} entrées</span>
+          </div>
+          <div class="csv-pagination" id="csv-pagination-wrap">
+            <button type="button" class="csv-page-btn" id="csv-prev" title="Page précédente" aria-label="Page précédente">&larr; Précédent</button>
+            <span id="csv-page-info" style="font-weight:600;">Page 1 sur 1</span>
+            <button type="button" class="csv-page-btn" id="csv-next" title="Page suivante" aria-label="Page suivante">Suivant &rarr;</button>
+          </div>
+        </div>
+        <div class="csv-table-wrap">
+          <table class="csv-table">
+            <thead>
+              <tr id="csv-thead-tr"></tr>
+            </thead>
+            <tbody id="csv-tbody"></tbody>
+          </table>
+        </div>
+        <div class="csv-footer">
+          <div class="csv-attribution">
+            <span>Tableau interactif propulsé par <a href="https://github.com/mholt/PapaParse" target="_blank" rel="noopener" title="Visiter PapaParse sur GitHub">PapaParse</a> (Licence MIT — Remerciements à Matthew Holt et aux contributeurs open source)</span>
+          </div>
+          <div class="csv-footer-actions">
+            <a href="${fileUrl}" target="_blank" rel="noopener" class="csv-btn-download" title="Télécharger le fichier original">Télécharger original CSV ↗</a>
+          </div>
+        </div>
+      `;
+
+      stage.appendChild(pane);
+
+      const theadTr = pane.querySelector("#csv-thead-tr");
+      const thIndex = document.createElement("th");
+      thIndex.textContent = "#";
+      thIndex.style.width = "45px";
+      thIndex.style.textAlign = "center";
+      theadTr.appendChild(thIndex);
+
+      fields.forEach(field => {
+        const th = document.createElement("th");
+        th.textContent = field;
+        th.title = field;
+        theadTr.appendChild(th);
+      });
+
+      const tbody = pane.querySelector("#csv-tbody");
+      const searchInput = pane.querySelector("#csv-search");
+      const statsBadge = pane.querySelector("#csv-stats-badge");
+      const pageInfo = pane.querySelector("#csv-page-info");
+      const btnPrev = pane.querySelector("#csv-prev");
+      const btnNext = pane.querySelector("#csv-next");
+
+      function updateTable() {
+        const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        pageInfo.textContent = `Page ${currentPage} sur ${totalPages}`;
+        btnPrev.disabled = (currentPage <= 1);
+        btnNext.disabled = (currentPage >= totalPages);
+
+        if (filteredRows.length === allRows.length) {
+          statsBadge.textContent = `${allRows.length.toLocaleString("fr-CA")} entrées · ${fields.length} col.`;
+        } else {
+          statsBadge.textContent = `${filteredRows.length.toLocaleString("fr-CA")} / ${allRows.length.toLocaleString("fr-CA")} filtrées`;
+        }
+
+        tbody.innerHTML = "";
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pageItems = filteredRows.slice(start, start + PAGE_SIZE);
+
+        if (pageItems.length === 0) {
+          const emptyTr = document.createElement("tr");
+          const emptyTd = document.createElement("td");
+          emptyTd.colSpan = fields.length + 1;
+          emptyTd.style.textAlign = "center";
+          emptyTd.style.padding = "24px";
+          emptyTd.style.color = "#52796f";
+          emptyTd.textContent = "Aucun résultat correspondant aux critères de recherche.";
+          emptyTr.appendChild(emptyTd);
+          tbody.appendChild(emptyTr);
+          return;
+        }
+
+        pageItems.forEach((row, idx) => {
+          const tr = document.createElement("tr");
+          const tdIdx = document.createElement("td");
+          tdIdx.textContent = String(start + idx + 1);
+          tdIdx.style.textAlign = "center";
+          tdIdx.style.color = "#718096";
+          tdIdx.style.fontWeight = "600";
+          tr.appendChild(tdIdx);
+
+          fields.forEach(field => {
+            const td = document.createElement("td");
+            const val = row[field];
+            const textVal = val != null ? String(val).trim() : "";
+            td.textContent = textVal;
+            td.title = textVal;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+
+      btnPrev.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          updateTable();
+        }
+      });
+
+      btnNext.addEventListener("click", () => {
+        const totalPages = Math.ceil(filteredRows.length / PAGE_SIZE);
+        if (currentPage < totalPages) {
+          currentPage++;
+          updateTable();
+        }
+      });
+
+      let searchTimer = null;
+      searchInput.addEventListener("input", (e) => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          const q = (e.target.value || "").toLowerCase().trim();
+          if (!q) {
+            filteredRows = allRows;
+          } else {
+            filteredRows = allRows.filter(row => {
+              for (let i = 0; i < fields.length; i++) {
+                const val = row[fields[i]];
+                if (val && String(val).toLowerCase().includes(q)) {
+                  return true;
+                }
+              }
+              return false;
+            });
+          }
+          currentPage = 1;
+          updateTable();
+        }, 120);
+      });
+
+      updateTable();
     }
 
     renderTree(root, treeContainer, true);

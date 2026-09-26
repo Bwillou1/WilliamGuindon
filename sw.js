@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v60';
+const CACHE_NAME = 'wg-pwa-v61';
 const MAX_CACHE_ENTRIES = 96;
 
 const ASSETS_TO_CACHE = [
@@ -41,6 +41,7 @@ const ASSETS_TO_CACHE = [
   '/assets/js/chat-ai.js',
   '/assets/js/anticapture.js',
   '/assets/js/hero-depth-3d.js',
+  '/assets/js/papaparse.min.js',
   '/assets/css/pdf-viewer.css',
   '/assets/js/pdf-viewer.js',
   '/assets/vendor/pdfjs/pdf.min.js',
