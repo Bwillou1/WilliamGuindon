@@ -693,13 +693,15 @@
 <script>
   let allPhotos = [];
   let commonsLog = {};
+  let googlePhotosLog = {};
 
   async function loadPhotos() {
     const grid = document.getElementById("photos-grid");
     try {
-      const [resPhotos, resCommons] = await Promise.allSettled([
+      const [resPhotos, resCommons, resGooglePhotos] = await Promise.allSettled([
         fetch("data/photos.json?v=" + Date.now()).then(r => r.json()),
-        fetch("data/wikimedia-sync-log.json?v=" + Date.now()).then(r => r.json())
+        fetch("data/wikimedia-sync-log.json?v=" + Date.now()).then(r => r.json()),
+        fetch("data/google-photos-sync-log.json?v=" + Date.now()).then(r => r.json())
       ]);
       if (resPhotos.status === "fulfilled" && Array.isArray(resPhotos.value)) {
         allPhotos = resPhotos.value;
@@ -708,6 +710,13 @@
         resCommons.value.synced.forEach(s => {
           if (s && s.id && s.commonsUrl) {
             commonsLog[s.id] = s.commonsUrl;
+          }
+        });
+      }
+      if (resGooglePhotos.status === "fulfilled" && resGooglePhotos.value && Array.isArray(resGooglePhotos.value.synced)) {
+        resGooglePhotos.value.synced.forEach(s => {
+          if (s && s.id && s.googlePhotosUrl) {
+            googlePhotosLog[s.id] = s.googlePhotosUrl;
           }
         });
       }
@@ -830,6 +839,8 @@
     const licenseText = item.license ? `<span style="display:inline-block; padding:2px 8px; background:rgba(255,255,255,0.1); border-radius:4px; font-size:12px; margin-left:8px;">Licence : ${item.license}</span>` : "";
     const commonsUrl = commonsLog[item.id];
     const commonsBtn = commonsUrl ? `<a href="${commonsUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; padding:6px 12px; background:rgba(59,130,246,0.25); border:1px solid rgba(59,130,246,0.5); color:#93c5fd; border-radius:6px; font-size:13px; text-decoration:none; font-weight:600;" title="Consulter la fiche officielle sur Wikimedia Commons"><span>Wikimedia Commons</span> ↗</a>` : "";
+    const googlePhotosUrl = googlePhotosLog[item.id];
+    const googlePhotosBtn = googlePhotosUrl ? `<a href="${googlePhotosUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; padding:6px 12px; background:rgba(234,67,53,0.18); border:1px solid rgba(234,67,53,0.45); color:#fca5a5; border-radius:6px; font-size:13px; text-decoration:none; font-weight:600;" title="Consulter dans Google Photos"><span>Google Photos</span> ↗</a>` : "";
 
     caption.innerHTML = `
       <h3>${item.title}</h3>
@@ -845,6 +856,7 @@
           <span>Télécharger la photo HD</span>
         </button>
         ${commonsBtn}
+        ${googlePhotosBtn}
       </div>
     `;
 

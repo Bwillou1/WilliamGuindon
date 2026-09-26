@@ -1,0 +1,44 @@
+name: Synchronisation automatique Google Photos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/photos.json'
+      - 'data/blog.json'
+      - 'scripts/sync-google-photos.js'
+      - 'assets/uploads/**'
+      - 'assets/media/**'
+  workflow_dispatch:
+
+jobs:
+  sync-google-photos:
+    name: Publication vers Google Photos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Exécution du script de synchronisation Google Photos
+        env:
+          GOOGLE_PHOTOS_CLIENT_ID: ${{ secrets.GOOGLE_PHOTOS_CLIENT_ID }}
+          GOOGLE_PHOTOS_CLIENT_SECRET: ${{ secrets.GOOGLE_PHOTOS_CLIENT_SECRET }}
+          GOOGLE_PHOTOS_REFRESH_TOKEN: ${{ secrets.GOOGLE_PHOTOS_REFRESH_TOKEN }}
+          GOOGLE_PHOTOS_ALBUM_ID: ${{ secrets.GOOGLE_PHOTOS_ALBUM_ID }}
+        run: node scripts/sync-google-photos.js
+
+      - name: Commit et push du registre de synchronisation
+        run: |
+          git config --global user.name "Google Photos Sync Bot"
+          git config --global user.email "bot@williamguindon.me"
+          git add data/google-photos-sync-log.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(sync): mise à jour du registre de synchronisation Google Photos [skip ci]" && git push)
