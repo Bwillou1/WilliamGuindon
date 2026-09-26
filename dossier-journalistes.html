@@ -569,9 +569,9 @@
         <span>←</span>
         <span>Accueil</span>
       </a>
-      <button type="button" id="btn-toggle-tree" class="btn-toggle-tree" title="Réduire ou agrandir la barre de gauche" aria-label="Réduire la barre de gauche">
+      <button type="button" id="btn-toggle-tree" class="btn-toggle-tree is-collapsed" title="Afficher ou masquer la barre latérale" aria-label="Afficher la barre latérale">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-        <span id="btn-toggle-tree-text">Réduire barre</span>
+        <span id="btn-toggle-tree-text">Afficher barre</span>
       </button>
       <div class="drive-title">
         <span id="title-count">Dossier SEM-26-003</span>
@@ -589,11 +589,11 @@
   </div>
 
   <div class="drive-body">
-    <div id="drive-tree" class="drive-tree-pane">
+    <div id="drive-tree" class="drive-tree-pane collapsed">
       <div class="drive-loading">Chargement des 222 pièces probatoires...</div>
     </div>
 
-    <div class="drive-splitter" id="drive-splitter" title="Glisser pour redimensionner la barre"></div>
+    <div class="drive-splitter" id="drive-splitter" style="display: none;" title="Glisser pour redimensionner la barre"></div>
 
     <div class="drive-preview-pane">
       <div class="preview-header">
@@ -1291,10 +1291,6 @@
   let isDragging = false;
   const savedWidth = localStorage.getItem("wg_drive_tree_w") || "290";
 
-  if (treePane && window.innerWidth > 768) {
-    treePane.style.width = savedWidth + "px";
-  }
-
   function toggleTreeSidebar(forceState) {
     if (!treePane) return;
     const isCurrentlyCollapsed = treePane.classList.contains("collapsed");
@@ -1315,6 +1311,9 @@
     }
     window.dispatchEvent(new Event("resize"));
   }
+
+  // Par défaut, la barre latérale est fermée lors de l'affichage initial
+  toggleTreeSidebar(true);
 
   if (btnToggleTree) {
     btnToggleTree.addEventListener("click", () => toggleTreeSidebar());

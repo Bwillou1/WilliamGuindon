@@ -126,7 +126,7 @@
 
       <div id="viewer-sidebar-backdrop" class="viewer-sidebar-backdrop" aria-hidden="true"></div>
 
-      <aside id="viewer-sidebar" class="viewer-sidebar" aria-label="Panneau de navigation du document">
+      <aside id="viewer-sidebar" class="viewer-sidebar collapsed" aria-label="Panneau de navigation du document">
         <div class="sidebar-header-row">
           <div class="sidebar-tabs" role="tablist">
             <button type="button" id="tab-thumbnails" class="sidebar-tab-btn active" role="tab" aria-selected="true" aria-controls="pane-thumbnails" title="Vignettes des pages">
@@ -137,18 +137,6 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
               <span>Sommaire</span>
             </button>
-            <button type="button" id="tab-search" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-search" title="Recherche dans le texte">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <span>Recherche</span>
-            </button>
-            <button type="button" id="tab-explorer" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-explorer" title="Arborescence documentaire complète (222 pièces probatoires)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-              <span>Dossier (222)</span>
-            </button>
-            <button type="button" id="tab-info" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-info" title="Informations et métadonnées">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-              <span>Infos</span>
-            </button>
           </div>
           <button type="button" id="btn-sidebar-close" class="sidebar-close-btn" title="Fermer le volet (Esc)" aria-label="Fermer le panneau latéral">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -156,43 +144,12 @@
         </div>
 
         <div class="sidebar-content">
-          
           <div id="pane-thumbnails" class="sidebar-pane active" role="tabpanel">
             <div id="thumbnails-grid" class="thumbnails-grid"></div>
           </div>
 
           <div id="pane-outline" class="sidebar-pane" role="tabpanel">
             <div id="outline-tree"></div>
-          </div>
-
-          <div id="pane-search" class="sidebar-pane" role="tabpanel">
-            <div class="search-box">
-              <div class="search-input-wrap">
-                <input type="text" id="input-search" class="search-input" placeholder="Rechercher dans le texte..." aria-label="Recherche textuelle">
-                <button type="button" id="btn-search-prev" class="tool-btn tool-btn-search-nav" title="Occurrence précédente">▲</button>
-                <button type="button" id="btn-search-next" class="tool-btn tool-btn-search-nav" title="Occurrence suivante">▼</button>
-              </div>
-              <div class="search-meta-bar">
-                <span id="search-count-label">0 résultat</span>
-                <span>(Entrée pour chercher)</span>
-              </div>
-            </div>
-            <div id="search-results-list" class="search-results-list"></div>
-          </div>
-
-          <div id="pane-explorer" class="sidebar-pane" role="tabpanel">
-            <div style="padding: 10px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; background: var(--bg);">
-              <input type="text" id="viewer-explorer-search" placeholder="Filtrer les 222 pièces probatoires..." style="width: 100%; padding: 6px 10px; font-size: 11.5px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-card); color: var(--text); outline: none;">
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-faint);">
-                <span>222 pièces probatoires</span>
-                <a href="dossier-journalistes.html" style="color: var(--accent-deep); text-decoration: none; font-weight: 700;">Grand écran ↗</a>
-              </div>
-            </div>
-            <div id="viewer-explorer-tree" style="padding: 8px 6px; overflow-y: auto; max-height: calc(100vh - 180px);"></div>
-          </div>
-
-          <div id="pane-info" class="sidebar-pane" role="tabpanel">
-            <table id="doc-meta-table" class="doc-meta-table"></table>
           </div>
         </div>
       </aside>

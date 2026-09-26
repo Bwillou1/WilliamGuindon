@@ -186,7 +186,7 @@
     searchResults: [],
     currentSearchIndex: -1,
     isSearching: false,
-    sidebarOpen: (window.self === window.top && window.innerWidth > 900)
+    sidebarOpen: false
   };
 
   // Éléments du DOM
@@ -1011,11 +1011,7 @@
   function switchSidebarTab(tabName) {
     const tabs = [
       { btn: dom.tabThumbnails, pane: dom.paneThumbnails, name: 'thumbnails' },
-      { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' },
-      { btn: dom.tabSearch, pane: dom.paneSearch, name: 'search' },
-      { btn: dom.tabExplorer, pane: dom.paneExplorer, name: 'explorer' },
-      { btn: dom.tabAi, pane: dom.paneAi, name: 'ai' },
-      { btn: dom.tabInfo, pane: dom.paneInfo, name: 'info' }
+      { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' }
     ];
 
     tabs.forEach(t => {
