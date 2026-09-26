@@ -1,0 +1,32 @@
+name: Miroir Git Automatique vers Codeberg
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: mirror-codeberg-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mirror-to-codeberg:
+    name: Synchronisation Miroir Codeberg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout complet de l'arbre Git
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push miroir vers Codeberg
+        env:
+          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
+        run: |
+          if [ -z "$CODEBERG_TOKEN" ]; then
+            echo "::error::Le secret CODEBERG_TOKEN est manquant ou vide."
+            exit 1
+          fi
+          git remote add codeberg "https://Bwillou1:${CODEBERG_TOKEN}@codeberg.org/Bwillou1/WilliamGuindon.git"
+          git push --mirror --force codeberg

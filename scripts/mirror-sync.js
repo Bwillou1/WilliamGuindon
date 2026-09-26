@@ -75,6 +75,13 @@ mirrorsData.mirrors.tor_onion = {
   torBrowserRequired: true
 };
 
+mirrorsData.mirrors.codeberg = {
+  name: 'Forge Git Éthique (Codeberg e.V.)',
+  status: 'Disponible',
+  url: 'https://codeberg.org/Bwillou1/WilliamGuindon',
+  description: 'Réplication continue et indépendante de l\'arbre Git complet.'
+};
+
 mirrorsData.documents_sha256 = {};
 
 for (const docRel of DOCS) {
