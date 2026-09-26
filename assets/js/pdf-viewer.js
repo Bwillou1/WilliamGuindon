@@ -282,13 +282,17 @@
    * Initialisation générale
    */
   async function init() {
-    // 1. Initialiser le thème (sync avec site)
-    const savedTheme = localStorage.getItem('wg_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    // 1. Initialiser le thème (sync avec site) — mode clair par défaut pour la lecture documentaire
+    const savedTheme = localStorage.getItem('wg_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     if (savedTheme === 'dark') {
       state.readingMode = 'dark';
       dom.app.classList.add('mode-dark');
       if (dom.selectReadingMode) dom.selectReadingMode.value = 'dark';
+    } else {
+      state.readingMode = 'normal';
+      dom.app.classList.remove('mode-dark', 'mode-sepia', 'mode-contrast');
+      if (dom.selectReadingMode) dom.selectReadingMode.value = 'normal';
     }
 
     // Détection mode intégré (iFrame) pour adapter l'interface
@@ -522,6 +526,10 @@
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.scale(dpr, dpr);
+
+      // Fond blanc papier garanti pour éviter tout compositeur sombre par défaut
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, viewport.width, viewport.height);
 
       const renderContext = {
         canvasContext: ctx,
@@ -1583,10 +1591,11 @@ ER  -
         document.documentElement.setAttribute('data-theme', nextTheme);
         localStorage.setItem('wg_theme', nextTheme);
 
-        if (nextTheme === 'dark' && state.readingMode === 'normal') {
-          setReadingMode('dark');
-        } else if (nextTheme === 'light' && state.readingMode === 'dark') {
-          setReadingMode('normal');
+        if (nextTheme === 'dark') {
+          if (state.readingMode === 'normal') setReadingMode('dark');
+        } else {
+          if (state.readingMode === 'dark') setReadingMode('normal');
+          dom.app.classList.remove('mode-dark');
         }
       });
     }
