@@ -6,6 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' https://archive.org https://*.archive.org; connect-src 'self' https://archive.org https://*.archive.org; object-src 'none';">
   <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
   <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces probatoires, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
+  <link rel="canonical" href="https://williamguindon.me/dossier-journalistes.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
@@ -679,6 +680,7 @@
         `;
 
         const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+        const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
 
         item.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -712,15 +714,15 @@
             } else if (lower.endsWith(".pdf")) {
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
-              // Intégration dans le lecteur officiel personnalisé
-              iframe.src = "viewer.html?file=" + encodeURIComponent(fileUrl);
+              // Intégration dans le lecteur officiel avec support CORS direct
+              iframe.src = "viewer.html?file=" + encodeURIComponent(corsPdfUrl);
               iframe.title = fileObj.name;
               stage.appendChild(iframe);
             } else {
               const box = document.createElement("div");
               box.className = "no-preview";
               box.innerHTML = `
-                <span>${icon}</span>
+                <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
                 <h4 style="margin: 0 0 8px 0; color: #064e3b;">${fileObj.name}</h4>
                 <p>Ce document est disponible en consultation directe.</p>
                 <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le document</a>

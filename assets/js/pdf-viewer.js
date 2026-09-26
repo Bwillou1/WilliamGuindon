@@ -147,13 +147,17 @@
     if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) {
       return clean;
     }
-    // Validation sécurisée des URLs distantes d'archive probatoire
+    // Validation sécurisée des URLs distantes d'archive probatoire avec support natif CORS
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         const parsed = new URL(clean);
         if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
           if (parsed.pathname.toLowerCase().endsWith('.pdf') || parsed.pathname.includes('.pdf')) {
-            return clean;
+            let pathname = parsed.pathname;
+            if (pathname.startsWith('/download/')) {
+              pathname = '/cors/' + pathname.substring(10);
+            }
+            return `https://archive.org${pathname}${parsed.search}`;
           }
         }
       }
@@ -285,6 +289,11 @@
       state.readingMode = 'dark';
       dom.app.classList.add('mode-dark');
       if (dom.selectReadingMode) dom.selectReadingMode.value = 'dark';
+    }
+
+    // Détection mode intégré (iFrame) pour adapter l'interface
+    if (window.self !== window.top) {
+      document.body.classList.add('is-embedded');
     }
 
     // 2. Extraire et assainir les paramètres de l'URL (query string et hash)
