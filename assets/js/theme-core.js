@@ -212,14 +212,34 @@
   }
 
   function initApp() {
-    // Module IA documentaire global (accessible sur l'ensemble des pages)
-    if (!document.querySelector('script[src*="chat-ai.js"]')) {
+    const currentPath = window.location.pathname.toLowerCase();
+    const POLICY_FILES = [
+      'politiques.html',
+      'deontologie.html',
+      'independance.html',
+      'ia-ethique.html',
+      'anti-slapp.html',
+      'embargo.html',
+      'experts.html',
+      'tracabilite.html',
+      'opsec.html',
+      'statut-mineur.html',
+      'vie-privee-parents.html',
+      'terms.html',
+      'privacy.html',
+      'netiquette.html',
+      'dependances-licences.html'
+    ];
+    const isPolicyPage = POLICY_FILES.some(f => currentPath.endsWith(f));
+    const isDocViewer = currentPath.includes('viewer.html') || currentPath.includes('lecteur.html') || currentPath.includes('dossier-journalistes.html');
+
+    // Module IA documentaire global (désactivé sur les pages de politiques et les lecteurs de documents probatoires)
+    if (!isPolicyPage && !isDocViewer && !document.querySelector('script[src*="chat-ai.js"]')) {
       const chatScript = document.createElement('script');
       chatScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/chat-ai.js?v=20260925-v5';
       chatScript.defer = true;
       document.head.appendChild(chatScript);
     }
-    const isDocViewer = window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html');
     if (!isDocViewer && !document.querySelector('script[src*="anticapture.js"]')) {
       const acScript = document.createElement('script');
       acScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/anticapture.js?v=20260925-v5';

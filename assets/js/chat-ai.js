@@ -6,6 +6,11 @@
 (function () {
   'use strict';
 
+  // Ne jamais charger le clavardage IA sur les lecteurs de documents probatoires
+  if (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html')) {
+    return;
+  }
+
   function isWebArchiveOrMirror() {
     const host = (window.location.hostname || '').toLowerCase();
     const allowed = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
@@ -23,7 +28,31 @@
     return false;
   }
 
+  function isPolicyPage() {
+    const path = (window.location.pathname || '').toLowerCase();
+    const policyFiles = [
+      'politiques.html',
+      'deontologie.html',
+      'independance.html',
+      'ia-ethique.html',
+      'anti-slapp.html',
+      'embargo.html',
+      'experts.html',
+      'tracabilite.html',
+      'opsec.html',
+      'statut-mineur.html',
+      'vie-privee-parents.html',
+      'terms.html',
+      'privacy.html',
+      'netiquette.html',
+      'dependances-licences.html'
+    ];
+    return policyFiles.some(f => path.endsWith(f)) || path.includes('viewer.html') || path.includes('lecteur.html') || path.includes('dossier-journalistes.html');
+  }
+
   function initFloatingAiHub() {
+    if (isPolicyPage()) return;
+
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;

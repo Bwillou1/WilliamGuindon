@@ -4555,7 +4555,7 @@ h1, h2, h3, h4, h5, h6 {
     widows: 3;
   }
   
-  /* Masquage des éléments interactifs et navigation */
+  /* Masquage absolu des éléments interactifs, navigation et widgets parasites */
   .site, header.site, footer, .scroll-progress-bar, .bg-blob-container,
   .tv-ticker-bar, .media-ticker-banner, .skip-link, .pr-action-row,
   .communique-action-bar, .btn-open-doc, .hero, nav, .dialog-footer,
@@ -4563,8 +4563,11 @@ h1, h2, h3, h4, h5, h6 {
   .contact-section-padded, #contact, #references, #faq,
   .btn, .nav-dropdown, .communique-hero, .srcnote,
   .floating-ai-btn, #js-floating-ai-btn, .ai-modal-overlay, .ai-copy-alert,
-  .menu-toggle, .theme-toggle-btn, .nav-notif-dropdown, .mobile-nav-header,
+  .ai-bubble-inner, .ai-bubble-pulse, .ai-modal-card, #ai-chat-box,
+  .menu-toggle, .theme-toggle-btn, .nav-notif-dropdown, .nav-notif-panel, .mobile-nav-header,
   .bio-floating-player, .quick-search-modal, .media-logos-ticker-wrapper,
+  .press-explorer-frame-wrapper, iframe, .special-edition-banner,
+  .anticapture-toast, .anticapture-shield-overlay,
   .legal-print-button, button, input, select, textarea {
     display: none !important;
   }
@@ -7806,4 +7809,15 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 .special-edition-action-btn {
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Désactivation stricte des widgets flottants sur les pages de politiques
+   ========================================================================== */
+.policy-hub-grid ~ .floating-ai-btn,
+.legal-wrap ~ .floating-ai-btn,
+.legal-page .floating-ai-btn,
+.legal-page .bio-floating-player,
+body[data-page="policy"] .floating-ai-btn {
+  display: none !important;
 }
