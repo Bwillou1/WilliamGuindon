@@ -12,10 +12,37 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 // Répertoire racine du projet
 const ROOT_DIR = path.resolve(__dirname, '..');
 const FOLDER_NAME = 'williamguindon-site';
+
+// Chargement sécurisé de .env (racine du projet ou home directory)
+function loadEnvFile(filePath) {
+  if (!fs.existsSync(filePath)) return;
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx === -1) continue;
+      const key = trimmed.substring(0, eqIdx).trim();
+      let val = trimmed.substring(eqIdx + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.substring(1, val.length - 1);
+      }
+      if (!process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+  } catch (_) {}
+}
+
+loadEnvFile(path.join(ROOT_DIR, '.env'));
+loadEnvFile(path.join(os.homedir(), '.env'));
 
 // Clés d'authentification Pinata
 const PINATA_JWT = process.env.PINATA_JWT || '';
