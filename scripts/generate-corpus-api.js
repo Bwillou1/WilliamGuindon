@@ -268,8 +268,8 @@ htmlFiles.forEach(file => {
     category = 'Cadre Normatif, Éthique & Légal';
   } else if (['stablex.html', 'registre.html', 'registre-cce-sem26003.html', 'cce.html', 'dossier-journalistes.html', 'live.html'].includes(file)) {
     category = 'Dossier Juridique CCE / SEM-26-003';
-  } else if (['autochtone.html', 'edition-speciale-reconciliation.html', 'enquete-partis.html'].includes(file)) {
-    category = 'Enquêtes Citoyennes & Histoire';
+  } else if (['agir.html', 'autochtone.html', 'edition-speciale-reconciliation.html', 'enquete-partis.html'].includes(file)) {
+    category = 'Action Citoyenne, Enquêtes & Histoire';
   } else if (['blog.html', 'presse.html', 'communiques.html'].includes(file)) {
     category = 'Publications & Presse';
   } else if (['ai.html', 'txt.html', 'flux.html', 'miroirs.html', 'projets.html'].includes(file)) {
