@@ -163,6 +163,14 @@ async function run() {
     await setClaim(csrfToken, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 150 });
     await setClaim(csrfToken, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 1860 });
 
+    // 4. Domaines d'action / Thèmes clés (P921) : Protection de l'environnement (Q213568) & Justice environnementale (Q1414122)
+    await setClaim(csrfToken, 'P921', 'value', { 'entity-type': 'item', 'numeric-id': 213568 });
+    await setClaim(csrfToken, 'P921', 'value', { 'entity-type': 'item', 'numeric-id': 1414122 });
+
+    // 5. Décrit par la source (P1343) : La Presse (Q1337424) & Le Devoir (Q1504424)
+    await setClaim(csrfToken, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1337424 });
+    await setClaim(csrfToken, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1504424 });
+
     console.log('\n🎉 Mise à jour de la fiche Wikidata Q141439370 terminée avec succès !');
   } catch (err) {
     console.error('Erreur lors de la mise à jour Wikidata :', err.message);

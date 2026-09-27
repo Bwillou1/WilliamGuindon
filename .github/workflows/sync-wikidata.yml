@@ -1,0 +1,33 @@
+name: Synchronisation et Enrichissement Wikidata
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/sync-wikidata.js'
+
+permissions:
+  contents: read
+
+jobs:
+  update-wikidata:
+    name: Mise à jour Entité Wikidata (Q141439370)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Exécution du script d'enrichissement Wikidata
+        env:
+          WIKIMEDIA_USERNAME: ${{ secrets.WIKIMEDIA_USERNAME }}
+          WIKIMEDIA_BOT_PASSWORD: ${{ secrets.WIKIMEDIA_BOT_PASSWORD }}
+          WIKIMEDIA_TOKEN: ${{ secrets.WIKIMEDIA_TOKEN }}
+        run: node scripts/sync-wikidata.js
