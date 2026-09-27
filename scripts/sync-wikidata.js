@@ -261,7 +261,8 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P734', 'value', { 'entity-type': 'item', 'numeric-id': 37438740 }, 'Nom: Guindon (Q37438740)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1477', 'value', { 'text': 'William Tristan Logan Théo Guindon', 'language': 'fr' }, 'Nom de naissance complet');
 
-    // 3. Identifiants plateformes
+    // 3. Identifiants plateformes & Graphes
+    await setClaimIfMissing(csrfToken, currentClaims, 'P2671', 'value', '/g/11f0_2fm1h', 'Google Knowledge Graph: /g/11f0_2fm1h');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
     await setClaimIfMissing(csrfToken, currentClaims, 'P12045', 'value', 'Bwillou1', 'Codeberg: Bwillou1');
