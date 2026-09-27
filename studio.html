@@ -2842,7 +2842,18 @@
       return lines;
     }
 
-    function drawStudioCardToCanvas(ctx, baseW, baseH) {
+    function loadImageAsync(src) {
+      return new Promise(resolve => {
+        if (!src || src === 'none') return resolve(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    function drawStudioCardToCanvas(ctx, baseW, baseH, assets = {}) {
       const pal = PALETTES[currentTheme] || PALETTES.emerald;
       const isStory = currentFormat === 'story';
       const isLandscape = currentFormat === 'landscape';
@@ -2857,24 +2868,48 @@
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, baseW, baseH);
 
+      // Photo de fond si présente
+      if (assets.bgImg && assets.bgImg.naturalWidth > 0) {
+        ctx.save();
+        const img = assets.bgImg;
+        const opacity = parseFloat(rangePhotoOpacity.value) || 0.45;
+        ctx.globalAlpha = opacity;
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const cardRatio = baseW / baseH;
+        let dw, dh, dx, dy;
+        if (imgRatio > cardRatio) {
+          dh = baseH;
+          dw = baseH * imgRatio;
+          dx = (baseW - dw) / 2;
+          dy = 0;
+        } else {
+          dw = baseW;
+          dh = baseW / imgRatio;
+          dx = 0;
+          dy = (baseH - dh) / 2;
+        }
+        ctx.drawImage(img, dx, dy, dw, dh);
+        ctx.restore();
+      }
+
       // Overlay vignette
       const overlayGrad = ctx.createLinearGradient(0, 0, 0, baseH);
-      overlayGrad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
-      overlayGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.1)');
-      overlayGrad.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+      overlayGrad.addColorStop(0, 'rgba(0, 0, 0, 0.35)');
+      overlayGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.15)');
+      overlayGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
       ctx.fillStyle = overlayGrad;
       ctx.fillRect(0, 0, baseW, baseH);
 
       // 2. Cadre et coins d'orfèvrerie
       ctx.save();
       ctx.strokeStyle = pal.boxBorder || pal.cardBorder || 'rgba(52, 211, 153, 0.4)';
-      ctx.lineWidth = 3;
-      drawStudioRoundRect(ctx, 32, 32, baseW - 64, baseH - 64, 24);
+      ctx.lineWidth = isStory ? 4 : (isLandscape ? 2.5 : 3.5);
+      drawStudioRoundRect(ctx, 32, 32, baseW - 64, baseH - 64, isStory ? 28 : 24);
       ctx.stroke();
 
       if (chkCrosshairs.checked) {
         ctx.fillStyle = pal.accent;
-        ctx.font = '900 26px monospace';
+        ctx.font = '900 ' + (isStory ? '32px' : '26px') + ' monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('+', 52, 52);
@@ -2889,7 +2924,7 @@
         ctx.save();
         ctx.fillStyle = pal.accent;
         ctx.globalAlpha = 0.08;
-        ctx.font = '900 ' + (isLandscape ? '140px' : '200px') + ' "Playfair Display", Georgia, serif';
+        ctx.font = '900 ' + (isStory ? '240px' : (isLandscape ? '140px' : '200px')) + ' "Playfair Display", Georgia, serif';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'top';
         ctx.fillText('“', baseW - (isLandscape ? 50 : 60), 40);
@@ -2897,17 +2932,20 @@
       }
 
       // 3. Dimensions & Marges
-      const padX = isStory ? 54 : isLandscape ? 44 : 56;
-      const padY = isStory ? 64 : isLandscape ? 38 : 56;
+      const padX = isStory ? 64 : isLandscape ? 48 : 60;
+      const padY = isStory ? 74 : isLandscape ? 38 : 58;
       const contentW = baseW - padX * 2;
 
       // 4. Haut de carte (Kicker + Métadonnées)
       const kickerText = (inputKicker.value || '').trim();
+      let topBarH = isStory ? 46 : (isLandscape ? 34 : 40);
+      let kickerFontSize = isStory ? 22 : (isLandscape ? 17 : 20);
+
       if (kickerText) {
         ctx.save();
-        ctx.font = '800 19px "Plus Jakarta Sans", sans-serif';
-        const kw = Math.min(contentW * 0.75, ctx.measureText(kickerText).width + 36);
-        drawStudioRoundRect(ctx, padX, padY, kw, 38, 19);
+        ctx.font = '800 ' + kickerFontSize + 'px "Plus Jakarta Sans", sans-serif';
+        const kw = Math.min(contentW * 0.75, ctx.measureText(kickerText).width + (isStory ? 44 : 36));
+        drawStudioRoundRect(ctx, padX, padY, kw, topBarH, topBarH / 2);
         ctx.fillStyle = pal.accentPillBg || 'rgba(0,0,0,0.65)';
         ctx.fill();
         ctx.strokeStyle = pal.accentPillBorder || pal.accent;
@@ -2918,75 +2956,134 @@
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'left';
         
-        let tx = padX + 18;
+        let tx = padX + (isStory ? 20 : 16);
         if (chkLiveDot.checked) {
           ctx.beginPath();
-          ctx.arc(tx + 5, padY + 19, 5, 0, Math.PI * 2);
+          ctx.arc(tx + 5, padY + topBarH / 2, 5, 0, Math.PI * 2);
           ctx.fillStyle = '#ef4444';
           ctx.fill();
           tx += 16;
         }
 
         ctx.fillStyle = pal.accent;
-        ctx.fillText(kickerText, tx, padY + 19);
+        ctx.fillText(kickerText, tx, padY + topBarH / 2);
         ctx.restore();
       }
 
       // Metadata haut droite
       ctx.save();
-      ctx.font = '700 17px "Plus Jakarta Sans", sans-serif';
+      const topMetaFontSize = isStory ? 20 : (isLandscape ? 15 : 18);
+      ctx.font = '700 ' + topMetaFontSize + 'px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = pal.textMuted || '#e2e8f0';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       if (chkSupporterBadge && chkSupporterBadge.checked) {
         ctx.fillStyle = pal.accent;
-        ctx.fillText('✊ CITOYEN SOLIDAIRE', baseW - padX, padY + 19);
+        ctx.fillText('✊ CITOYEN SOLIDAIRE', baseW - padX, padY + topBarH / 2);
       } else {
-        ctx.fillText('ACEUM · CCE', baseW - padX, padY + 19);
+        ctx.fillText('ACEUM · CCE', baseW - padX, padY + topBarH / 2);
       }
       ctx.restore();
 
-      // 5. Zone Narratrice Centrale
-      let curY = padY + 68;
-
-      // Statistique héroïque
-      if (currentLayout === 'stat') {
-        const statNum = (inputStatNum.value || '278 000 m²').trim();
-        const statLbl = (inputStatLbl.value || 'DE MILIEUX HUMIDES MENACÉS').trim();
-        ctx.save();
-        ctx.font = '900 ' + (isLandscape ? '70px' : '88px') + ' "Plus Jakarta Sans", sans-serif';
-        ctx.fillStyle = pal.accent;
-        ctx.textBaseline = 'top';
-        ctx.textAlign = 'left';
-        ctx.fillText(statNum, padX, curY);
-        curY += (isLandscape ? 74 : 94);
-
-        ctx.font = '800 19px "Plus Jakarta Sans", sans-serif';
-        ctx.fillStyle = pal.textMuted || '#cbd5e1';
-        ctx.fillText(statLbl, padX, curY);
-        curY += 34;
-        ctx.restore();
-      }
-
-      // Titre principal
+      // 5. Calcul & Mesure du Bloc Narratif Central (pour Centrage Parfait)
       const titleText = (inputTitle.value || '').trim();
+      const bodyText = (inputBody.value || '').trim();
+      const hlText = (inputHighlight.value || '').trim();
+
+      const titleLen = titleText.length;
+      const bodyLen = bodyText.length;
+
+      // Échelles typographiques adaptées
+      let titleFontSize = isStory ? 62 : (isLandscape ? 36 : (isPortrait ? 52 : 48));
+      if (titleLen > 110) titleFontSize = Math.round(titleFontSize * 0.72);
+      else if (titleLen > 70) titleFontSize = Math.round(titleFontSize * 0.84);
+      else if (titleLen > 45) titleFontSize = Math.round(titleFontSize * 0.92);
+
+      let bodyFontSize = isStory ? 30 : (isLandscape ? 19 : (isPortrait ? 25 : 23));
+      if (bodyLen > 240) bodyFontSize = Math.round(bodyFontSize * 0.76);
+      else if (bodyLen > 130) bodyFontSize = Math.round(bodyFontSize * 0.86);
+
+      let hlFontSize = isStory ? 23 : (isLandscape ? 15 : (isPortrait ? 20 : 19));
+
       let fontTitleName = '"Playfair Display", Georgia, serif';
       if (currentFont === 'sans') fontTitleName = '"Plus Jakarta Sans", sans-serif';
       else if (currentFont === 'syne') fontTitleName = '"Syne", sans-serif';
       else if (currentFont === 'mono') fontTitleName = '"Space Grotesk", monospace';
 
-      const titleLen = titleText.length;
-      let titleFontSize = isLandscape ? (titleLen > 90 ? 26 : titleLen > 50 ? 30 : 36) : (titleLen > 90 ? 34 : titleLen > 50 ? 40 : 48);
-      if (isStory && titleLen > 70) titleFontSize = Math.max(30, titleFontSize - 6);
+      // Mesure Titre
+      ctx.font = '900 ' + titleFontSize + 'px ' + fontTitleName;
+      const titleLines = wrapCanvasText(ctx, titleText, contentW);
+      const titleLineH = titleFontSize * 1.25;
+      const titleTotalH = titleLines.length * titleLineH;
 
+      // Mesure Statistique
+      let statTotalH = 0;
+      const statNum = (inputStatNum.value || '278 000 m²').trim();
+      const statLbl = (inputStatLbl.value || 'DE MILIEUX HUMIDES MENACÉS').trim();
+      const statNumFontSize = isStory ? 104 : (isLandscape ? 68 : 88);
+      const statLblFontSize = isStory ? 22 : (isLandscape ? 17 : 20);
+      if (currentLayout === 'stat') {
+        statTotalH = statNumFontSize + statLblFontSize + (isStory ? 36 : 24);
+      }
+
+      // Ligne d'accent
+      const accentSepH = isStory ? 32 : (isLandscape ? 16 : 24);
+
+      // Mesure Corps
+      let bodyTotalH = 0;
+      let bodyLines = [];
+      const bodyLineH = bodyFontSize * 1.5;
+      if (bodyText) {
+        ctx.font = '450 ' + bodyFontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+        bodyLines = wrapCanvasText(ctx, bodyText, contentW);
+        bodyTotalH = bodyLines.length * bodyLineH + (isStory ? 24 : 14);
+      }
+
+      // Mesure Highlight
+      let hlTotalH = 0;
+      let hlH = hlFontSize + (isStory ? 28 : (isLandscape ? 18 : 22));
+      let hlW = 0;
+      if (hlText) {
+        ctx.font = '800 ' + hlFontSize + 'px "Plus Jakarta Sans", sans-serif';
+        hlW = Math.min(contentW, ctx.measureText('⚖️  ' + hlText).width + (isStory ? 44 : 36));
+        hlTotalH = hlH + (isStory ? 20 : 14);
+      }
+
+      const totalNarrativeH = statTotalH + titleTotalH + accentSepH + bodyTotalH + hlTotalH;
+
+      // Définition de l'espace disponible entre la barre du haut et le footer
+      const headerBottom = padY + topBarH + (isStory ? 30 : 18);
+      const footerH = isStory ? 200 : (isLandscape ? 110 : 150);
+      const footerTop = baseH - padY - footerH;
+      const availableSpace = Math.max(0, footerTop - headerBottom);
+
+      // CENTRAGE VERTICAL HARMONIEUX
+      let curY = headerBottom + Math.max(16, (availableSpace - totalNarrativeH) / 2);
+
+      // 6. Tracé des éléments narratifs
+      // Statistique héroïque
+      if (currentLayout === 'stat') {
+        ctx.save();
+        ctx.font = '900 ' + statNumFontSize + 'px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = pal.accent;
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+        ctx.fillText(statNum, padX, curY);
+        curY += statNumFontSize + 6;
+
+        ctx.font = '800 ' + statLblFontSize + 'px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = pal.textMuted || '#cbd5e1';
+        ctx.fillText(statLbl, padX, curY);
+        curY += statLblFontSize + (isStory ? 30 : 18);
+        ctx.restore();
+      }
+
+      // Titre
       ctx.save();
       ctx.font = '900 ' + titleFontSize + 'px ' + fontTitleName;
       ctx.fillStyle = pal.textMain || '#ffffff';
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
-
-      const titleLines = wrapCanvasText(ctx, titleText, contentW);
-      const titleLineH = titleFontSize * 1.24;
       for (const line of titleLines) {
         ctx.fillText(line, padX, curY);
         curY += titleLineH;
@@ -2994,49 +3091,34 @@
       ctx.restore();
 
       // Ligne d'accent
-      curY += (isLandscape ? 8 : 14);
+      curY += (isStory ? 16 : (isLandscape ? 8 : 12));
       ctx.save();
       ctx.fillStyle = pal.accent;
-      drawStudioRoundRect(ctx, padX, curY, 80, 5, 2.5);
+      drawStudioRoundRect(ctx, padX, curY, isStory ? 100 : 80, isStory ? 6 : 5, 3);
       ctx.fill();
-      curY += 20;
+      curY += (isStory ? 26 : (isLandscape ? 14 : 20));
       ctx.restore();
 
       // Corps du texte
-      const bodyText = (inputBody.value || '').trim();
-      if (bodyText) {
-        const bodyLen = bodyText.length;
-        let bodyFontSize = isLandscape ? (bodyLen > 180 ? 15 : 18) : (bodyLen > 180 ? 19 : 23);
-        if (isStory && bodyLen > 180) bodyFontSize = Math.max(16, bodyFontSize - 3);
-
+      if (bodyText && bodyLines.length > 0) {
         ctx.save();
         ctx.font = '450 ' + bodyFontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
         ctx.fillStyle = pal.textMuted || '#e2e8f0';
         ctx.textBaseline = 'top';
         ctx.textAlign = 'left';
-
-        const bodyLines = wrapCanvasText(ctx, bodyText, contentW);
-        const bodyLineH = bodyFontSize * 1.46;
         for (const line of bodyLines) {
           ctx.fillText(line, padX, curY);
           curY += bodyLineH;
         }
-        curY += (isLandscape ? 8 : 14);
+        curY += (isStory ? 20 : (isLandscape ? 10 : 16));
         ctx.restore();
       }
 
       // Capsule Highlight
-      const hlText = (inputHighlight.value || '').trim();
       if (hlText) {
         ctx.save();
-        const hlFontSize = isLandscape ? 15 : 18;
         ctx.font = '800 ' + hlFontSize + 'px "Plus Jakarta Sans", sans-serif';
-        const displayHl = '⚖️  ' + hlText;
-        const fullHlW = ctx.measureText(displayHl).width + 36;
-        const hlW = Math.min(contentW, fullHlW);
-        const hlH = hlFontSize + 20;
-
-        drawStudioRoundRect(ctx, padX, curY, hlW, hlH, 10);
+        drawStudioRoundRect(ctx, padX, curY, hlW, hlH, isStory ? 14 : 10);
         ctx.fillStyle = pal.boxBg || 'rgba(0, 0, 0, 0.75)';
         ctx.fill();
         ctx.strokeStyle = pal.boxBorder || pal.accent;
@@ -3046,49 +3128,82 @@
         ctx.fillStyle = pal.accent;
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'left';
-        ctx.fillText(displayHl, padX + 16, curY + hlH / 2);
+        ctx.fillText('⚖️  ' + hlText, padX + (isStory ? 20 : 16), curY + hlH / 2);
         ctx.restore();
       }
 
-      // 6. Bas de carte (Pied de page)
-      const footerY = baseH - padY - (isLandscape ? 48 : 62);
+      // 7. Bas de carte (Pied de page)
+      const footerY = baseH - padY - (isStory ? 140 : (isLandscape ? 70 : 110));
       ctx.save();
       // Ligne de séparation
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(padX, footerY - (isLandscape ? 12 : 18));
-      ctx.lineTo(baseW - padX, footerY - (isLandscape ? 12 : 18));
+      ctx.moveTo(padX, footerY - (isStory ? 24 : (isLandscape ? 12 : 18)));
+      ctx.lineTo(baseW - padX, footerY - (isStory ? 24 : (isLandscape ? 12 : 18)));
       ctx.stroke();
 
       // Profil / Auteur
       let authorLeft = padX;
+      if (chkAvatarProfile.checked) {
+        const avatarSize = isStory ? 58 : (isLandscape ? 40 : 50);
+        const avatarY = footerY - (isStory ? 6 : 4);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(authorLeft + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2 + 2, 0, Math.PI * 2);
+        ctx.fillStyle = pal.accent;
+        ctx.globalAlpha = 0.5;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        ctx.beginPath();
+        ctx.arc(authorLeft + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+        ctx.clip();
+        if (assets.avatarImg && assets.avatarImg.naturalWidth > 0) {
+          ctx.drawImage(assets.avatarImg, authorLeft, avatarY, avatarSize, avatarSize);
+        } else {
+          ctx.fillStyle = '#064e3b';
+          ctx.fillRect(authorLeft, avatarY, avatarSize, avatarSize);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '800 ' + (avatarSize * 0.4) + 'px "Plus Jakarta Sans", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('WG', authorLeft + avatarSize / 2, avatarY + avatarSize / 2);
+        }
+        ctx.restore();
+        authorLeft += avatarSize + (isStory ? 18 : 14);
+      }
+
       const authorText = (inputAuthor.value || 'William Guindon').trim();
       const roleText = (inputRole.value || 'Auteur du dossier SEM-26-003').trim();
+      const authorFontSize = isStory ? 32 : (isLandscape ? 22 : 28);
+      const roleFontSize = isStory ? 22 : (isLandscape ? 15 : 18);
 
       ctx.fillStyle = pal.textMain || '#ffffff';
-      ctx.font = '800 ' + (isLandscape ? '22px' : '26px') + ' "Plus Jakarta Sans", sans-serif';
+      ctx.font = '800 ' + authorFontSize + 'px "Plus Jakarta Sans", sans-serif';
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
-      ctx.fillText(authorText + (chkVerifiedBadge.checked ? ' ✓' : ''), authorLeft, footerY - (isLandscape ? 4 : 8));
+      ctx.fillText(authorText + (chkVerifiedBadge.checked ? ' ✓' : ''), authorLeft, footerY - (isStory ? 4 : 2));
 
       ctx.fillStyle = pal.textMuted || '#94a3b8';
-      ctx.font = '500 ' + (isLandscape ? '16px' : '18px') + ' "Plus Jakarta Sans", sans-serif';
-      ctx.fillText(roleText, authorLeft, footerY + (isLandscape ? 22 : 26));
+      ctx.font = '500 ' + roleFontSize + 'px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(roleText, authorLeft, footerY + (isStory ? 38 : (isLandscape ? 24 : 32)));
 
       // Signature officielle à droite
       if (chkSignatureSvg.checked) {
+        const sigFontSize = isStory ? 32 : (isLandscape ? 22 : 28);
         ctx.textAlign = 'right';
         ctx.textBaseline = 'top';
-        ctx.font = 'italic 800 ' + (isLandscape ? '22px' : '26px') + ' "Playfair Display", Georgia, serif';
+        ctx.font = 'italic 800 ' + sigFontSize + 'px "Playfair Display", Georgia, serif';
         ctx.fillStyle = pal.accent;
-        ctx.fillText('William Guindon ✍️', baseW - padX, footerY - (isLandscape ? 2 : 4));
+        ctx.fillText('William Guindon ✍️', baseW - padX, footerY - (isStory ? 2 : 0));
       }
 
       // Métadonnées du bas (URL et courriel)
       if (chkFooterMeta.checked) {
-        const subY = footerY + (isLandscape ? 46 : 56);
-        ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+        const subY = footerY + (isStory ? 84 : (isLandscape ? 52 : 70));
+        const submetaFontSize = isStory ? 19 : (isLandscape ? 14 : 16);
+        ctx.font = '700 ' + submetaFontSize + 'px "Plus Jakarta Sans", sans-serif';
         ctx.textBaseline = 'top';
 
         // Gauche
@@ -3113,19 +3228,30 @@
     }
 
     // RENDU CANAS 2K VERS PNG HAUTE DÉFINITION
-    function render2KCanvas(callback) {
+    async function render2KCanvas(callback) {
       try {
         const fmt = FORMATS[currentFormat];
-        const scale = 2; // Rendu Retina 2K (ex: 2160x2160 pour 1:1)
+        const scale = 2; // Rendu Retina 2K (ex: 2160x2160 pour 1:1, 2160x3840 pour 9:16)
         exportCanvas.width = fmt.w * scale;
         exportCanvas.height = fmt.h * scale;
         const ctx = exportCanvas.getContext('2d');
+
+        // Attente du chargement complet des polices pour un rendu parfait
+        if (document.fonts && document.fonts.ready) {
+          try { await document.fonts.ready; } catch (e) {}
+        }
+
+        // Préchargement asynchrone des médias (photo de fond et avatar)
+        const [bgImg, avatarImg] = await Promise.all([
+          loadImageAsync(currentPhotoSrc),
+          chkAvatarProfile.checked ? loadImageAsync('assets/media/william-guindon.jpg') : Promise.resolve(null)
+        ]);
 
         ctx.clearRect(0, 0, exportCanvas.width, exportCanvas.height);
         ctx.save();
         ctx.scale(scale, scale);
 
-        drawStudioCardToCanvas(ctx, fmt.w, fmt.h);
+        drawStudioCardToCanvas(ctx, fmt.w, fmt.h, { bgImg, avatarImg });
 
         ctx.restore();
 
