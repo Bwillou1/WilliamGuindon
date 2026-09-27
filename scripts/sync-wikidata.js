@@ -222,25 +222,67 @@ async function run() {
 
     const currentClaims = await fetchCurrentClaims();
 
-    // 1. Identifiant GitHub (P2037)
+    // 1. Identifiants plateformes
     await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
-
-    // 2. Identifiant Page Facebook (P2013)
     await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P12045', 'value', 'Bwillou1', 'Codeberg: Bwillou1');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P5715', 'value', 'https://independent.academia.edu/GuindonWilliam', 'Academia.edu: GuindonWilliam');
 
-    // 3. Langues parlées / écrites : Français (Q150) et Anglais (Q1860)
+    // 2. Identité & Noms
+    await setClaimIfMissing(csrfToken, currentClaims, 'P735', 'value', { 'entity-type': 'item', 'numeric-id': 12344159 }, 'Prénom: William (Q12344159)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P734', 'value', { 'entity-type': 'item', 'numeric-id': 37438740 }, 'Nom: Guindon (Q37438740)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P1477', 'value', { 'text': 'William Tristan Logan Théo Guindon', 'language': 'fr' }, 'Nom de naissance complet');
+
+    // 3. Résidence
+    await setClaimIfMissing(csrfToken, currentClaims, 'P551', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Résidence: Blainville (Q139568)');
+
+    // 4. Langues parlées / écrites : Français (Q150), Anglais (Q1860) et Espagnol (Q1321)
     await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 150 }, 'Langue: Français (Q150)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 1860 }, 'Langue: Anglais (Q1860)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 1321 }, 'Langue: Espagnol (Q1321)');
 
-    // 4. Domaine d'activité (P101) : Protection de l'environnement (Q213568) & Justice environnementale (Q1414122)
-    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 213568 }, 'Domaine: Protection de l’environnement (Q213568)');
-    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 1414122 }, 'Domaine: Justice environnementale (Q1414122)');
+    // 5. Domaine d'activité (P101) : Protection de l'environnement & Justice environnementale
+    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 832237 }, 'Domaine: Protection de l’environnement (Q832237)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 1479527 }, 'Domaine: Justice environnementale (Q1479527)');
 
-    // 5. Décrit par la source (P1343) : La Presse (Q1337424) & Le Devoir (Q1504424)
+    // 6. Décrit par la source (P1343) : La Presse (Q1337424) & Le Devoir (Q1504424)
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1337424 }, 'Source: La Presse (Q1337424)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1504424 }, 'Source: Le Devoir (Q1504424)');
 
-    console.log('\n🎉 Mise à jour de la fiche Wikidata Q141439370 terminée avec succès !');
+    // 7. Descriptions multilingues
+    console.log('\nMise à jour des descriptions multilingues...');
+    const descriptions = [
+      { lang: 'fr', val: 'militant écologiste et climatique québécois' },
+      { lang: 'en', val: 'Quebec environmental and climate activist' },
+      { lang: 'es', val: 'activista ambiental y climático quebequense' }
+    ];
+    for (const d of descriptions) {
+      await requestApi({
+        action: 'wbsetdescription',
+        id: ITEM_ID,
+        language: d.lang,
+        value: d.val,
+        token: csrfToken,
+        format: 'json'
+      });
+      console.log(`  ✔ Description [${d.lang}] : ${d.val}`);
+    }
+
+    // 8. Alias multilingues
+    console.log('\nMise à jour des alias multilingues...');
+    for (const lang of ['fr', 'en', 'es']) {
+      await requestApi({
+        action: 'wbsetaliases',
+        id: ITEM_ID,
+        language: lang,
+        add: 'William Tristan Logan Théo Guindon|William G.',
+        token: csrfToken,
+        format: 'json'
+      });
+      console.log(`  ✔ Alias [${lang}] enregistrés`);
+    }
+
+    console.log('\n🎉 Mise à jour complète de la fiche Wikidata Q141439370 terminée avec succès !');
   } catch (err) {
     console.error('Erreur lors de la mise à jour Wikidata :', err.message);
     process.exit(1);
