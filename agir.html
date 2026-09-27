@@ -42,77 +42,81 @@
 
 <style>
   .action-page-hero {
-    background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%);
+    background: radial-gradient(circle at 50% 15%, #065f46 0%, #064e3b 55%, #022c22 100%);
     color: #ffffff;
-    padding: 60px 20px 48px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 72px 20px 64px;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+    text-align: center;
+    position: relative;
   }
   .action-page-hero h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
     font-weight: 800;
+    letter-spacing: -0.025em;
     line-height: 1.15;
-    margin: 0 0 16px;
-    color: #f8fafc;
+    margin: 0 0 18px;
+    color: #ffffff;
   }
   .action-page-hero p.lead {
     font-size: 1.15rem;
-    line-height: 1.6;
-    color: #cbd5e1;
-    max-width: 820px;
+    line-height: 1.7;
+    color: #e2e8f0;
+    max-width: 840px;
+    margin: 0 auto 36px;
+  }
+  .action-page-hero p.lead strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .action-page-hero p.lead .lead-highlight {
+    color: #fde047;
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(253, 224, 71, 0.25);
+  }
+  .action-hero-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+    max-width: 940px;
     margin: 0 auto;
   }
-  .action-badge-row {
+  .action-hero-cta-card {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 24px;
-  }
-  .action-pill {
-    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #f1f5f9;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .action-nav-shortcuts {
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    backdrop-filter: blur(10px);
-  }
-  .action-nav-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .action-nav-list a {
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #ffffff;
     text-decoration: none;
-    color: var(--text-color);
-    font-size: 0.88rem;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
+    text-align: left;
+    backdrop-filter: blur(12px);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .action-nav-list a:hover {
-    background: var(--bg-hover);
-    border-color: var(--border-color);
-    color: var(--primary-color, #059669);
+  .action-hero-cta-card:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #34d399;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+  }
+  .action-hero-cta-card .cta-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .action-hero-cta-card .cta-text {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+  }
+  .action-hero-cta-card .cta-text strong {
+    color: #ffffff;
+    font-size: 0.98rem;
+    font-weight: 700;
   }
   .action-section {
     padding: 48px 0;
@@ -546,33 +550,35 @@
 
 <!-- Hero Section -->
 <section class="action-page-hero text-center" id="main-content">
-  <div class="wrap" style="max-width: 900px; margin: 0 auto;">
-    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); padding: 5px 14px; border-radius: 9999px; font-size: 0.85rem; font-weight: 700; color: #a7f3d0; margin-bottom: 16px;">
+  <div class="wrap" style="max-width: 960px; margin: 0 auto;">
+    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.25); border: 1px solid rgba(52, 211, 153, 0.45); padding: 6px 16px; border-radius: 9999px; font-size: 0.85rem; font-weight: 700; color: #6ee7b7; margin-bottom: 20px;">
       <span>⏳ Échéance fédérale : 16 octobre 2026</span>
     </div>
     <h1>Comment Agir &amp; Soutenir</h1>
     <p class="lead">
-      La Commission de coopération environnementale (CCE / ACEUM) a jugé admissible la communication <strong>SEM-26-003</strong> portant sur la destruction de 278&nbsp;000&nbsp;m² de milieux humides et des concentrations de cadmium mesurées jusqu'à 320 fois la norme. <strong>Ce n'est pas à un adolescent de 15 ans de porter ce dossier seul.</strong> Voici les moyens concrets pour faire entendre votre voix.
+      La Commission de coopération environnementale (CCE / ACEUM) a jugé admissible la communication <strong>SEM-26-003</strong> portant sur la destruction de 278&nbsp;000&nbsp;m² de milieux humides et des concentrations de cadmium mesurées jusqu'à 320 fois la norme. <span class="lead-highlight">Ce n'est pas à un adolescent de 15 ans de porter ce dossier seul.</span> Voici 4 moyens concrets et immédiats pour faire entendre votre voix :
     </p>
     
-    <div class="action-badge-row">
-      <span class="action-pill">📸 Science participative iNaturalist</span>
-      <span class="action-pill">✉️ 4 Modèles de lettres d'interpellation</span>
-      <span class="action-pill">📢 Partage &amp; Mobilisation</span>
-      <span class="action-pill">🔬 Équipement scientifique (Throne)</span>
+    <div class="action-hero-cta-grid">
+      <a href="#inaturalist" class="action-hero-cta-card">
+        <span class="cta-icon">🌿</span>
+        <span class="cta-text">Science citoyenne <strong>iNaturalist</strong></span>
+      </a>
+      <a href="#lettres" class="action-hero-cta-card">
+        <span class="cta-icon">✉️</span>
+        <span class="cta-text">Modèles de lettres <strong>Élus &amp; Villes</strong></span>
+      </a>
+      <a href="#partage" class="action-hero-cta-card">
+        <span class="cta-icon">📢</span>
+        <span class="cta-text">Partager sur vos <strong>Réseaux</strong></span>
+      </a>
+      <a href="#soutien-materiel" class="action-hero-cta-card">
+        <span class="cta-icon">🔬</span>
+        <span class="cta-text">Équipement de terrain <strong>Throne</strong></span>
+      </a>
     </div>
   </div>
 </section>
-
-<!-- Raccourcis de navigation -->
-<nav class="action-nav-shortcuts" aria-label="Raccourcis de la page">
-  <ul class="action-nav-list">
-    <li><a href="#inaturalist">1. Science citoyenne (iNaturalist)</a></li>
-    <li><a href="#lettres">2. Modèles de lettres (Députés &amp; Villes)</a></li>
-    <li><a href="#partage">3. Partage &amp; Réseaux</a></li>
-    <li><a href="#soutien-materiel">4. Matériel scientifique (Throne)</a></li>
-  </ul>
-</nav>
 
 <main class="wrap" style="max-width: 900px; margin: 36px auto; padding: 0 16px;">
 
