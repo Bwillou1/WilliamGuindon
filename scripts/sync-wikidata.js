@@ -155,11 +155,13 @@ async function getCsrfToken() {
 }
 
 async function fetchCurrentClaims() {
-  const res = await fetch(`https://www.wikidata.org/wiki/Special:EntityData/${ITEM_ID}.json`, {
-    headers: { 'User-Agent': USER_AGENT }
+  const res = await requestApi({
+    action: 'wbgetentities',
+    ids: ITEM_ID,
+    props: 'claims|descriptions|aliases',
+    format: 'json'
   });
-  const data = await res.json();
-  return data.entities[ITEM_ID]?.claims || {};
+  return res.entities?.[ITEM_ID]?.claims || {};
 }
 
 async function removeClaim(csrfToken, claimGuid) {
