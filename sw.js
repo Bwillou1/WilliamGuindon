@@ -1,9 +1,10 @@
-const CACHE_NAME = 'wg-pwa-v64';
+const CACHE_NAME = 'wg-pwa-v65';
 const MAX_CACHE_ENTRIES = 128;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/apercu.html',
   '/edition-speciale-reconciliation.html',
   '/autochtone.html',
   '/dossier-journalistes.html',
@@ -77,6 +78,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/clarification-independance.webp',
   '/assets/media/confirmation-cce-premier-mineur-1994.png',
   '/assets/media/confirmation-cce-premier-mineur-1994.webp',
+  '/assets/media/sem-26-003-apercu-banniere.webp',
   '/assets/media/ndtr-banner-rcaanc.jpg',
   '/assets/media/ndtr-banner-rcaanc.webp',
   '/assets/media/umap-preview.webp',

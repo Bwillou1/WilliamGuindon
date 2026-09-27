@@ -6,6 +6,7 @@ console.log('=== Vérification de l\'intégrité des assets et du Service Worker
 // 1. Vérification des fichiers de base
 const CORE_FILES = [
   'index.html',
+  'apercu.html',
   'edition-speciale-reconciliation.html',
   'autochtone.html',
   'dossier-journalistes.html',
