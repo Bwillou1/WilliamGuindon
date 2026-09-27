@@ -90,6 +90,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/the-rover-logo.jpg',
   '/assets/media/educaloi-logo.png',
   '/assets/media/educaloi-logo.webp',
+  '/assets/media/sgtb-medaillon.png',
+  '/assets/media/sgtb-medaillon.webp',
   '/assets/media/logo-areq-csq.png',
   '/assets/media/logo-areq-csq.webp',
   '/assets/media/logo-mouvement-actes-csq.png',
