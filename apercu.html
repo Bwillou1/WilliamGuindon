@@ -294,6 +294,199 @@ u{text-decoration:none;box-shadow:inset 0 -.42em 0 rgba(154,116,18,.18)}
 .policy-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12) !important;color:#ffffff !important;padding:10px 16px;border-radius:8px;border:1.5px solid rgba(138,232,189,0.45) !important;text-decoration:none !important;font-size:13.5px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.25);transition:all .2s ease}
 .policy-pill:hover{background:rgba(138,232,189,0.25) !important;border-color:#8ae8bd !important;color:#ffffff !important;transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.4),0 0 12px rgba(138,232,189,0.3)}
 
+/* ---------- bandeau de statut site non officiel ---------- */
+.official-status-banner {
+  margin: 0 0 36px;
+  padding: 24px 28px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-left: 6px solid #d97706;
+  border-radius: 8px;
+  color: #78350f;
+  font-family: var(--sans);
+}
+.status-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.status-banner-icon {
+  flex-shrink: 0;
+  color: #d97706;
+}
+.status-banner-header h2 {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.3;
+}
+.official-status-banner p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #92400e;
+}
+.official-status-banner p:last-of-type {
+  margin-bottom: 16px;
+}
+.status-banner-links {
+  background: rgba(254, 243, 199, 0.6);
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+.status-links-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #b45309;
+  margin-bottom: 8px;
+}
+.status-pdf-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.status-pdf-list li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9a3412;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.status-pdf-list li a:hover {
+  color: #c2410c;
+}
+.status-pdf-list .doc-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: #b45309;
+  text-decoration: none;
+}
+
+/* ---------- légende des 3 registres probatoires ---------- */
+.registre-legend {
+  margin: 24px 0 32px;
+  padding: 18px 22px;
+  background: #f5f8f6;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--sans);
+}
+.registre-legend-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--soft);
+  margin-bottom: 12px;
+}
+.registre-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.reg-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.reg-item strong {
+  display: block;
+  font-weight: 700;
+}
+.reg-icon-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.reg-icon-box--blue { background: #2563eb; }
+.reg-icon-box--yellow { background: #d97706; }
+.reg-icon-box--red { background: #dc2626; }
+
+/* ---------- styles d'encadrés de registres ---------- */
+.reg-constat {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #1e3a8a;
+}
+.reg-allegation {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #fefce8;
+  border-left: 4px solid #d97706;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #78350f;
+}
+.reg-rapporte {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #7f1d1d;
+}
+.reg-tag {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.reg-tag--constat { background: #dbeafe; color: #1e40af; }
+.reg-tag--allegation { background: #fef3c7; color: #92400e; }
+.reg-tag--rapporte { background: #fee2e2; color: #991b1b; }
+
+.alert--reserve {
+  margin: 20px 0;
+  padding: 18px 22px;
+  background: #fffbeb;
+  border-left: 4px solid #d97706;
+  border-radius: 0 6px 6px 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #92400e;
+}
+.note--nuance {
+  margin: 18px 0;
+  padding: 16px 20px;
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  border-radius: 0 6px 6px 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #14532d;
+}
+
 /* ---------- chrome ---------- */
 .progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:transparent;pointer-events:none}
 .progress i{display:block;height:100%;width:0;background:var(--green)}
@@ -576,6 +769,43 @@ u{text-decoration:none;box-shadow:inset 0 -.42em 0 rgba(154,116,18,.18)}
 <main id="main-content">
 <div class="sheet" id="top">
 
+<aside class="official-status-banner" role="note" aria-labelledby="banner-status-title">
+  <div class="status-banner-header">
+    <svg class="status-banner-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+    <h2 id="banner-status-title">Ce site n'est pas un document officiel</h2>
+  </div>
+  <p>Cette page est une synthèse citoyenne rédigée par l'auteur de la plainte. Elle n'émane ni de la Commission de coopération environnementale, ni du gouvernement du Canada, ni du gouvernement du Québec. Elle n'a aucune valeur probante et ne lie personne.</p>
+  <p>Les seules sources faisant foi sont les documents du registre public de la CCE. En cas de divergence entre cette page et ces documents, ce sont les documents officiels qui prévalent.</p>
+  <p><strong>À noter :</strong> les pièces déposées par l'auteur (communication révisée et informations à l'appui) sont officielles en tant que dépôts au registre, mais leur contenu demeure allégué et n'a été ni vérifié ni endossé par la CCE.</p>
+  <div class="status-banner-links">
+    <span class="status-links-title">Documents officiels du registre public de la CCE :</span>
+    <ul class="status-pdf-list">
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det2_fr.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter la décision du Secrétariat du 17 août 2026 (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Décision du Secrétariat du 17 août 2026 <span class="doc-tag">(PDF, cec.org) ↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter la communication révisée du 16 juillet 2026 (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Communication révisée (16 juillet 2026) <span class="doc-tag">(PDF, cec.org) ↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/09-l-appui-sem-26-003_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter les informations à l'appui de 102 pages (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Informations à l'appui (102 p.) <span class="doc-tag">(PDF, cec.org) ↗</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
 <header class="cover">
   <div class="cover-banner-wrap" style="margin-bottom: 32px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
     <picture>
@@ -598,24 +828,44 @@ u{text-decoration:none;box-shadow:inset 0 -.42em 0 rgba(154,116,18,.18)}
 <div class="howto">
   <p><strong>Comment lire ce document.</strong> Il est conçu pour que n'importe qui comprenne, sans connaissance juridique préalable. Chaque terme technique est expliqué la première fois qu'il apparaît, et chaque fois que vous croisez la mention <span class="badge">En clair</span> il s'agit de la traduction, en français de tous les jours, du passage juridique qui précède.</p>
   <p class="warnline"><strong class="sig">La règle numéro un :</strong> à ce jour, <u>personne n'a été jugé coupable de quoi que ce soit</u>. La Commission a seulement accepté d'examiner une plainte. Tout ce qu'elle contient demeure une <strong>allégation</strong>, c'est-à-dire une affirmation qui reste à vérifier.</p>
+  
+  <div class="registre-legend">
+    <div class="registre-legend-title">Distinction des trois registres documentaires :</div>
+    <div class="registre-legend-grid">
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--blue"></span>
+        <div><strong>Constat du Secrétariat</strong> Décision officielle et filtrage formel de la CCE.</div>
+      </div>
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--yellow"></span>
+        <div><strong>Allégation du plaignant</strong> Pièces versées au registre public, non vérifiées par la CCE.</div>
+      </div>
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--red"></span>
+        <div><strong>Propos rapportés</strong> Transcriptions d'entretiens et observations citoyennes.</div>
+      </div>
+    </div>
+  </div>
+
   <p style="margin-top: 12px; font-size: 0.92rem; opacity: 0.95;"><strong>Note méthodologique &amp; cadre juridique :</strong> Synthèse informative issue de l'analyse citoyenne de pièces publiques. Consultez la <a href="#note-methodologique" style="text-decoration: underline; font-weight: 600;">note méthodologique, le cadre de bonne foi et la déclaration Anti-SLAPP ↓</a>.</p>
 </div>
 
 <nav class="toc">
-  <div class="kicker">Sommaire — 12 parties &amp; cadre méthodologique</div>
+  <div class="kicker">Sommaire — 13 parties &amp; cadre méthodologique</div>
   <ol class="toc-list">
-<li><a href="#p1">L'histoire, racontée simplement</a></li>
-<li><a href="#p2">Qui est qui : les acteurs</a></li>
-<li><a href="#p3">Le lieu : tourbière, cellule n° 6, Camp Bouchard</a></li>
-<li><a href="#p4">Le mécanisme, de A à Z</a></li>
-<li><a href="#p5">La plainte, allégation par allégation</a></li>
-<li><a href="#p6">La décision, décortiquée</a></li>
-<li><a href="#p7">Les contresens à éviter</a></li>
-<li><a href="#p8">La suite : dates et scénarios</a></li>
-<li><a href="#p9">Vérifications et pièges de chiffres</a></li>
-<li><a href="#p10">Questions que tout le monde se pose</a></li>
-<li><a href="#p11">Glossaire complet</a></li>
-<li><a href="#p12">Sources</a></li>
+<li><a href="#p1">01 · L'histoire, racontée simplement</a></li>
+<li><a href="#p2">02 · Qui est qui : les acteurs</a></li>
+<li><a href="#p3">03 · Le lieu : tourbière, cellule n° 6, Camp Bouchard</a></li>
+<li><a href="#p4">04 · Le mécanisme, de A à Z</a></li>
+<li><a href="#p5">05 · La plainte, allégation par allégation</a></li>
+<li><a href="#p6">06 · La décision, décortiquée</a></li>
+<li><a href="#p7">07 · Les contresens à éviter</a></li>
+<li><a href="#p8">08 · La suite : dates et scénarios</a></li>
+<li><a href="#p9">09 · Vérifications et pièges de chiffres</a></li>
+<li><a href="#p10">10 · Questions que tout le monde se pose</a></li>
+<li><a href="#p11">11 · Glossaire complet</a></li>
+<li><a href="#p12-contradictions">12 · Les contradictions internes aux pièces officielles</a></li>
+<li><a href="#p13">13 · Sources</a></li>
 <li><a href="#note-methodologique">Note méthodologique, bonne foi &amp; Anti-SLAPP</a></li>
   </ol>
 </nav>
@@ -876,6 +1126,11 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 <li><strong>Art. 32</strong> — interdit de tuer, blesser, harceler, capturer ou prendre un individu d'une espèce inscrite comme disparue, en voie de disparition ou menacée.</li>
 <li><strong>Art. 33</strong> — interdit d'endommager ou de détruire la <em>résidence</em> de ces individus (leur nid, leur terrier, leur hibernacle).</li>
 <li><strong>Art. 58</strong> — interdit de détruire l'<em>habitat essentiel</em>. Point capital : cette interdiction s'applique aux espèces aquatiques et aux oiseaux migrateurs <strong>même en dehors des terres fédérales</strong>. C'est la porte d'entrée sur un terrain privé.</li>
+<li style="list-style:none; margin:12px 0;">
+  <div class="note--nuance">
+    <strong>Nuance, écrite par l'auteur lui-même.</strong> Dans son annexe de 102 pages (section 3.2.3), il concède que la protection formelle de l'habitat essentiel sous l'article 58 « dépend de sa désignation légale dans un programme de rétablissement (ce qui n'est pas finalisé pour ce site) » et, sur les terres non fédérales, « d'un décret d'application souvent complexe ». L'argument repose donc sur le paragraphe 58(5.1), propre aux oiseaux migrateurs, et non sur une application automatique de l'article 58.
+  </div>
+</li>
 <li><strong>Art. 73</strong> — c'est l'article du <em>permis</em>. Le ministre peut autoriser une activité touchant une espèce inscrite, mais seulement si toutes les autres options ont été envisagées, si toutes les mesures de minimisation sont prises, et si la survie de l'espèce n'est pas mise en péril. La décision doit être <strong>motivée et inscrite au registre public</strong>.</li>
 <li><strong>Art. 79</strong> — oblige quiconque évalue les effets environnementaux d'un projet à <strong>notifier le ministre</strong> si une espèce inscrite risque d'être touchée.</li>
 </ul>
@@ -892,11 +1147,13 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 <tr class="alt"><td>Petite chauve-souris brune, Chauve-souris nordique, Pipistrelle de l'Est</td><td><strong>En voie de disparition</strong></td><td>Étude d'impact, potentiellement présentes</td></tr>
 <tr><td>Engoulevent bois-pourri</td><td>À statut</td><td>Étude d'impact : « utilise largement la zone pour s'alimenter et potentiellement pour nicher » ; mâles entendus chantant sur territoire</td></tr>
 <tr class="alt"><td>Engoulevent d'Amérique, Pioui de l'Est</td><td>À statut</td><td>Rapport MELCCFP 2025 : habitat favorable</td></tr>
-<tr><td>Salamandre à quatre orteils — <strong>27 spécimens</strong> observés en mai 2016</td><td>Susceptible d'être désignée (Québec)</td><td>Inventaires marécages MH-5, MH-19, MH-20, MH-24</td></tr>
-<tr class="alt"><td>Tortue peinte, « trouvée en abondance »</td><td>À statut fédéral</td><td>Étude d'impact Englobe 2020</td></tr>
-<tr><td>Grand pic, Grand Héron, Héron vert</td><td>Observés lors d'inventaires</td><td>Demande d'engagements du MELCCFP 2024</td></tr>
+<tr><td>Salamandre à quatre orteils — <strong>27 spécimens</strong> observés en mai 2016</td><td>Non en péril (fédéral) / Susceptible d'être désignée menacée ou vulnérable (Québec)</td><td>Inventaires marécages MH-5, MH-19, MH-20, MH-24</td></tr>
+<tr class="alt"><td>Frêne noir</td><td>Recommandée par le COSEPAC</td><td>Plainte, tableau 4.1 ; cartographie MRNF du 12 septembre 2023</td></tr>
+<tr><td>Tortue peinte, « trouvée en abondance »</td><td>À statut fédéral</td><td>Étude d'impact Englobe 2020</td></tr>
+<tr class="alt"><td>Grand pic, Grand Héron, Héron vert</td><td>Observés lors d'inventaires</td><td>Demande d'engagements du MELCCFP 2024</td></tr>
 </tbody>
 </table>
+<p class="tbl-note" style="font-size: 0.85rem; color: var(--text-muted, #555); margin-top: 8px;"><em>Note :</em> Le statut fédéral « non en péril » de la Salamandre à quatre orteils limite la portée de l'argument fondé sur la <em>Loi sur les espèces en péril</em> pour cette espèce, qui relève du statut provincial. Les 27 spécimens observés en mai 2016 (méthode standardisée Ouellet, 2005, marécages MH-5, MH-19, MH-20 et MH-24) restent pertinents comme indicateurs de sensibilité du milieu.</p>
 
 <p><strong>Les trois arguments de fond :</strong></p>
 <ol>
@@ -1039,6 +1296,141 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 
 <h3>5.8 — Une honnêteté à signaler</h3>
 <p>La section 15 de la plainte énumère les collaborateurs — un professeur-chercheur en hydrologie environnementale, une analyste en biodiversité, plusieurs regroupements citoyens, une représentante de la Nation Kanien'kehá:ka — puis précise noir sur blanc que leurs contributions « ne constituent pas une approbation, un endossement ou une co-signature du rapport final, de ses conclusions ou de ses interprétations juridiques ». Plusieurs restent anonymes à leur demande. C'est une précaution que peu de plaignants prennent, et elle mérite d'être relevée : <strong>on ne peut pas attribuer les conclusions du dossier aux scientifiques qui l'ont conseillé.</strong></p>
+
+<h3>5.9 — Les éléments de terrain documentés au dossier</h3>
+<div class="reg-allegation">
+  <span class="reg-tag reg-tag--allegation">🟨 Allégations du plaignant</span>
+  <p><em>Ce qui suit provient des pièces déposées par l'auteur. Ce sont des allégations appuyées sur des documents, que la Commission n'a ni vérifiées ni validées. Le Secrétariat rappelle qu'à ce stade les preuves « ne font pas l'objet d'un examen approfondi ».</em></p>
+</div>
+
+<h4>a) Le rapport d'inspection provincial n° 402462402 (avril 2025)</h4>
+<ul>
+  <li><strong>Zone de protection riveraine de 10 m prévue :</strong> balisage totalement absent sur le terrain lors du constat.</li>
+  <li><strong>Circulation de machinerie lourde :</strong> observée à environ 5 m du cours d'eau sans nom, en contravention des bandes de recul prescrites.</li>
+  <li><strong>Gestion du roseau commun (<em>Phragmites australis</em>) :</strong> secteurs colonisés non balisés et machinerie non nettoyée en sortie de zone contaminée, risquant d'accélérer l'invasion biologique.</li>
+  <li><strong>Cinq manquements distincts au décret identifiés :</strong> intervention provinciale close sur la recommandation d'un simple avis de non-conformité, au motif administratif de la « faible longueur de rive touchée » et du caractère d'un « site déjà perturbé ».</li>
+</ul>
+
+<h4>b) Chronologie des incidents versés au dossier</h4>
+<table class="tbl">
+  <caption>Incidents environnementaux, déversements et avis d'inspection recensés dans les pièces de la communication</caption>
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Incident documenté</th>
+      <th scope="col">Référence</th>
+      <th scope="col">Disposition visée</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2010</td>
+      <td>Dépassement de mercure</td>
+      <td>Pièce C07</td>
+      <td>Caractère récurrent</td>
+    </tr>
+    <tr class="alt">
+      <td>4 juin 2025</td>
+      <td>Avis de non-conformité provincial</td>
+      <td>n° 402555956</td>
+      <td>Décret 515-2025</td>
+    </tr>
+    <tr>
+      <td>Mai 2025 / 22 mai 2026</td>
+      <td>Transport de tours d'éclairage en période de nidification (voir note de datation en Partie 09)</td>
+      <td>Photo citoyenne</td>
+      <td>ROM art. 5(1)</td>
+    </tr>
+    <tr class="alt">
+      <td>21 août 2025</td>
+      <td>Déversement routier &gt; 1 300 L ; Bureau Veritas : 17 métaux détectés sur 17 recherchés ; plomb × 42, mercure × 38, cadmium × 4 des normes CMM</td>
+      <td>Pièces LP-9, LP-10, RC-3</td>
+      <td>LP art. 36(3)</td>
+    </tr>
+    <tr>
+      <td>Oct.-nov. 2025</td>
+      <td>Campagne WaterShed Monitoring : dépassements multiples</td>
+      <td>Pièce F01</td>
+      <td>LP art. 36(3), LCPE</td>
+    </tr>
+    <tr class="alt">
+      <td>10 février 2026</td>
+      <td>Avis de non-conformité — barrières à sédiments</td>
+      <td>n° 402467797</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>13 mars – 15 avril 2026</td>
+      <td>Mortalité piscicole aux lacs Fauvel (cyprinidés, centrarchidés, grands brochets)</td>
+      <td>Pièces LP-13 à LP-15</td>
+      <td>LP art. 34.4, 38</td>
+    </tr>
+    <tr class="alt">
+      <td>14 avril 2026</td>
+      <td>Déversement d'huile hydraulique, ruisseau Locke Head touché</td>
+      <td>Dossier 301886321, cat. 1</td>
+      <td>LP art. 36(3)</td>
+    </tr>
+    <tr>
+      <td>18 juin 2026</td>
+      <td>Débordement des fossés de confinement après pluies estivales ordinaires</td>
+      <td>Dossier 301899969, cat. 1</td>
+      <td>LP art. 36(3), 38</td>
+    </tr>
+    <tr class="alt">
+      <td>2 juillet 2026</td>
+      <td>Récurrence après 20 à 30 mm de pluie, constat identique</td>
+      <td>Observation citoyenne</td>
+      <td>LP art. 36(3), 38</td>
+    </tr>
+    <tr>
+      <td>Non daté au dossier</td>
+      <td>Rejet estimé à 20 tonnes d'acide nitrique et de solides chlorés, 760 boul. Industriel ; mobilisation de trois services incendie et de la Santé publique des Laurentides</td>
+      <td>Dossier 301537240, cat. 1</td>
+      <td>LCPE</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>c) L'hydrogéologie du milieu récepteur (étude conjointe Chaire d'hydrogéologie urbaine de l'UQAM – COBAMIL)</h4>
+<ul>
+  <li><strong>Perméabilité :</strong> « Très forte perméabilité des sédiments dans la zone de recharge ».</li>
+  <li><strong>Connectivité hydrogéologique :</strong> « Très bonne réponse nappe-lac » concernant le lac Fauvel.</li>
+  <li><strong>Vulnérabilité terminale :</strong> Le lac Point Zéro constitue un « système terminal sans exutoire », classé « particulièrement vulnérable » aux apports contaminants.</li>
+  <li><strong>Modélisation de toxicité :</strong> La modélisation versée au dossier indique qu'un rejet à 2,0 mg/L de cadmium produirait une concentration <strong>180 fois supérieure</strong> au critère de toxicité aquatique chronique dans le ruisseau.</li>
+</ul>
+
+<h4>d) Le tuyau de déversement</h4>
+<p>Un tuyau physique situé à l'arrière de l'installation industrielle rejetterait des effluents non surveillés dans le fossé routier connecté au ruisseau Lockheed puis au lac Fauvel. La plainte soutient qu'il ne serait pas intégré au protocole d'échantillonnage officiel du ministère.</p>
+
+<h4>e) L'auto-surveillance — le conflit d'intérêts allégué</h4>
+<p>La plainte développe un grief d'auto-surveillance : le laboratoire privé de Stablex est accrédité par le ministère québécois ; les échantillonnages aux puits d'observation sont réalisés conjointement faute d'équipement ministériel autonome ; et une pratique alléguée de pompage préalable des puits diluerait les prélèvements, aboutissant à des résultats divergents Ministère/Stablex pour un même puits. L'auteur renvoie à l'article 272 de la LCPE réprimant les fausses déclarations.</p>
+<div class="reg-rapporte">
+  <span class="reg-tag reg-tag--rapporte">🟥 Propos rapportés</span>
+  <p><strong>Avertissement :</strong> Ces éléments reposent sur une transcription d'entretien horodatée avec un expert versée au dossier citoyen. Il s'agit de <strong>propos rapportés</strong> et d'affirmations de l'auteur, et non d'un constat officiel rendu par un tribunal ou une agence gouvernementale.</p>
+</div>
+
+<h4>f) Le volet municipal</h4>
+<ul>
+  <li><strong>Séances du conseil municipal des 7 et 14 juillet 2026 :</strong> L'hypothèse de l'anoxie, d'abord présentée comme une « certitude scientifique » dans le communiqué municipal du 15 avril 2026, a été requalifiée en simple « hypothèse » lors des débats ; la Ville a admis ne détenir aucun résultat d'analyse propre.</li>
+  <li><strong>Demande d'accès à l'information du 30 juin 2026 :</strong> La direction juridique municipale a répondu qu'il n'existait « aucun document correspondant à ce que vous recherchez » concernant des rapports fédéraux ou expertises indépendantes.</li>
+  <li><strong>Mesures de santé publique :</strong> Refus d'émettre une alerte préventive ou d'installer des avis de non-baignade pour l'été 2026 aux lacs Fauvel.</li>
+  <li><strong>Affectation du fonds d'expropriation :</strong> Proposition citoyenne — déclinée — d'affecter les intérêts du fonds d'expropriation de 17 M$ (gelé) au financement d'une surveillance environnementale citoyenne et universitaire indépendante, la Ville priorisant l'usage de ses réserves pour le pourvoi contre la Loi 93.</li>
+</ul>
+
+<h4>g) L'entente Blainville–Stablex du 11 mars 2020</h4>
+<p>L'entente contractuelle bilatérale du 11 mars 2020 prévoyait l'attribution de la « Partie résiduelle » (lot 2 272 801) à des fins de mesures compensatoires environnementales. La plainte soutient que l'existence de ces engagements contractuels bilatéraux a limité l'accès des tiers et citoyens à des recours administratifs ou civils suspensifs locaux.</p>
+
+<h3>5.10 — Les fondements juridiques invoqués dans l'annexe</h3>
+<p>Outre les textes législatifs stricts, l'annexe analytique de 102 pages mobilise plusieurs piliers de jurisprudence et principes généraux de droit canadien :</p>
+<ul>
+  <li><strong><em>R. c. Sault Ste. Marie</em>, [1978] 2 R.C.S. 1299 :</strong> Arrêt de principe consacrant la <em>responsabilité stricte</em> en matière réglementaire environnementale (l'absence d'intention coupable ne dispense pas de la diligence raisonnable).</li>
+  <li><strong><em>R. c. Cadillac Fairview Corp.</em>, 2013 ONCJ 94 :</strong> Confirme que l'interdiction de l'article 32 de la LEP s'applique pleinement aux atteintes non intentionnelles résultant d'activités industrielles ou commerciales.</li>
+  <li><strong><em>Reference re Impact Assessment Act</em>, 2023 CSC 23 :</strong> Portée de la compétence constitutionnelle fédérale résiduelle en matière de protection des pêches, des oiseaux et des espèces en péril.</li>
+  <li><strong><em>Affaire Impérial</em> :</strong> Principe selon lequel le pollueur historique demeure responsable de ses contaminants même après la cession d'un terrain (invoqué au dossier pour les passifs du Camp Bouchard).</li>
+  <li><strong>Articles 97 à 101 de la LEP :</strong> Dispositions pénales prévoyant des amendes pouvant atteindre 1 000 000 $ et des peines d'emprisonnement jusqu'à 5 ans pour les infractions graves.</li>
+  <li><strong>Article 6 de la LEP &amp; Principe de précaution :</strong> L'objet fondamental de la loi exige de prévenir la disparition des espèces sauvages sans attendre que la certitude scientifique absolue ne soit établie.</li>
+</ul>
 </section>
 
 <!-- ================================================================= -->
@@ -1064,7 +1456,7 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 <div class="panel-title">✔ Retenu — le Canada devra s'en expliquer</div>
 <table class="tbl tbl--plain">
 <tbody>
-<tr><td class="b wkey">Loi sur les pêches</td><td>art. 34.4, 35, 36(3), <strong>36(4) — ajouté dans la version révisée</strong>, 37, 38</td></tr>
+<tr><td class="b wkey">Loi sur les pêches</td><td>art. 34.4, 35, 36(3), <strong>36(4) — ajouté dans la version révisée</strong>, 37, 38 <sup><a href="#reserve-peches" title="Voir la réserve sur la numérotation au paragraphe 80" style="color:var(--green); font-weight:bold; text-decoration:underline;">[*]</a></sup></td></tr>
 <tr><td class="b">Loi sur les espèces en péril</td><td>art. 32(1) et 33 <em>(déjà retenus le 3 juin)</em> ; <strong>58, 73 et 79 — nouveaux</strong></td></tr>
 <tr><td class="b">Loi de 1994 sur les oiseaux migrateurs</td><td>art. 5.1(1)</td></tr>
 <tr><td class="b">Règlement sur les oiseaux migrateurs (2022)</td><td>art. 5(1) a), b) et c)</td></tr>
@@ -1212,13 +1604,20 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 <h3>La part américaine : trois indicateurs différents</h3>
 <p>La plainte évoque un plafond d'intrants américains et une part d'environ <strong>50 % des revenus</strong> (propos attribués au directeur de Stablex en 2025). Des sources journalistiques de 2025 citent <strong>17 % des volumes</strong> importés en 2024. Les travaux du BAPE évoquent près de <strong>30 %</strong> des déchets enfouis. Ce ne sont pas des versions contradictoires : ce sont un pourcentage de chiffre d'affaires, un pourcentage de tonnage importé et un pourcentage de tonnage enfoui. <strong>Volume ≠ revenu ≠ plafond autorisé.</strong></p>
 
-<h3>Trois coquilles dans la décision officielle</h3>
+<h3>Trois coquilles signalées dans la décision officielle</h3>
 <p>Sans effet sur le fond, mais à connaître si vous citez des numéros :</p>
 <ul>
 <li>Le titre de la section C annonce « Article 24.27(3)(b) », alors que le texte cité et la conclusion (paragraphe 79) visent bien l'alinéa <strong>(3)c)</strong>, celui des recours privés.</li>
 <li>Les paragraphes 71 et 73 renvoient à « l'article 24.27(3)e) », alors qu'il s'agit du critère de la communication écrite aux autorités, soit <strong>24.27(2)e)</strong>.</li>
 <li>La liste finale des lois, au paragraphe 80, est numérotée i, ii, iii… puis v : le « iv » — la <em>Loi sur les pêches</em> — a sauté à la mise en page, alors que ses articles sont bel et bien retenus dans le corps de l'analyse.</li>
 </ul>
+
+<div class="alert--reserve" id="reserve-peches">
+  <strong>Réserve.</strong> Ces signalements sont vérifiables, mais cette page n'a pas autorité pour rectifier un acte officiel. Tant que le Secrétariat n'a pas publié de rectificatif, le texte du PDF demeure la référence citable. Pour la <em>Loi sur les pêches</em>, ne citez pas cette page : renvoyez directement aux paragraphes 29 à 33 de la décision, où ses articles 34.4, 35, 36(3), 36(4), 37 et 38 sont expressément retenus.
+</div>
+
+<h3>La photo des tours d'éclairage : deux dates dans la même pièce</h3>
+<p>Le tableau de récurrence de la communication révisée la situe en « mai 2025 » ; le tableau de synthèse du même document indique « 22 mai / juin 2026 ». Cette page retient 2026. La contradiction est interne à la pièce officielle et n'a pas été tranchée par le Secrétariat.</p>
 
 <h3>Attribution des propos les plus frappants</h3>
 <p>Plusieurs affirmations fortes — le laboratoire de Stablex analysant sa propre pollution, le pompage des puits avant ré-échantillonnage, la « boue cimenteuse », la membrane « fausse sécurité », l'absence de preuve de décontamination du Camp Bouchard — proviennent d'une <strong>transcription d'entretien avec un expert</strong>, versée au dossier avec horodatage. Ce sont des <strong>propos rapportés</strong>, pas des constats officiels. La plainte précise elle-même que les collaborateurs scientifiques n'endossent ni ses conclusions ni ses interprétations juridiques.</p>
@@ -1298,8 +1697,81 @@ Une loi provinciale ? Exclue. Un traité international ? Exclu. Une déclaration
 <!-- ================================================================= -->
 <!-- PARTIE 12 -->
 <!-- ================================================================= -->
-<section id="p12">
-<h2><span class="sec-num">Partie 12</span><span class="sec-title">Sources</span></h2>
+<section id="p12-contradictions">
+<h2><span class="sec-num">Partie 12</span><span class="sec-title">Les contradictions internes aux pièces officielles</span></h2>
+
+<p class="sub-lead" style="font-weight: 500; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;"><em>Par souci de transparence, voici les incohérences relevées à l'intérieur même des documents officiels. Elles n'affectent pas le fond du dossier, mais quiconque cite des numéros ou des dates doit les connaître.</em></p>
+
+<h3>12.1 — Tableau comparatif des divergences internes</h3>
+<table class="tbl">
+  <caption>Divergences textuelles, dates et numérotations relevées au sein des actes de procédure</caption>
+  <thead>
+    <tr>
+      <th scope="col">Objet</th>
+      <th scope="col">Ce que dit une pièce</th>
+      <th scope="col">Ce que dit l'autre</th>
+      <th scope="col">Ce qui a été retenu</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Date de la communication révisée</strong></td>
+      <td>Mémoire signé le 16 juillet 2026 ; décision ¶6 : reçue le 16 juillet 2026</td>
+      <td>Page couverture de l'annexe de 102 p. : 17/07/2026</td>
+      <td>16 juillet 2026</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Liste des articles LCPE</strong></td>
+      <td>Section 3 du mémoire : « art. 2(1)a.2), 64, 91 subsidiaire »</td>
+      <td>ERRATUM du même mémoire : « 2(1)a.2), a.3), 64, 68, 71, 90, 91 et 93 »</td>
+      <td>Le Secrétariat a travaillé sur l'erratum</td>
+    </tr>
+    <tr>
+      <td><strong>Article 36(4) Loi sur les pêches</strong></td>
+      <td>Section « Lois principales confirmées » du mémoire : 34.4, 35, 36(3), 37, 38 — sans 36(4)</td>
+      <td>Cité ailleurs dans la révision ; décision ¶31 : « nouvellement cité », retenu</td>
+      <td>Retenu par le Secrétariat</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Date de la photo des projecteurs</strong></td>
+      <td>Tableau de récurrence : mai 2025</td>
+      <td>Tableau de synthèse : 22 mai / juin 2026</td>
+      <td>Non tranché</td>
+    </tr>
+    <tr>
+      <td><strong>Référence de la décision citée en bibliographie</strong></td>
+      <td>L'annexe cite A24.27(2)(3)/SEM/26-003/<strong>36</strong>/DET</td>
+      <td>La décision du 17 août porte .../<strong>62</strong>/DET</td>
+      <td>Renvoi à la décision du 3 juin, ou coquille</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Numérotation de la décision (¶80)</strong></td>
+      <td>Liste i, ii, iii… v</td>
+      <td>Le iv — <em>Loi sur les pêches</em> — manque</td>
+      <td>Articles retenus aux ¶29-33</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>12.2 — Ce que le Secrétariat reproche à la forme du dossier</h3>
+<p>Dans sa décision du 17 août 2026 (paragraphes 20 à 25), le Secrétariat de la CCE dresse un constat critique sur la confection formelle du dossier déposé par le plaignant, relevant notamment :</p>
+<ul>
+  <li><strong>Pièces non localisables :</strong> Les pièces cotées <code>LP-1</code> à <code>LP-12</code> mentionnées dans un tableau index n'ont pas pu être localisées par les analystes du Secrétariat dans le dépôt transmis.</li>
+  <li><strong>Indexation partielle :</strong> Un fichier d'index Excel ne recensait qu'une cinquantaine de pièces sur les plus de 200 documents versés.</li>
+  <li><strong>Captures d'écran brutes :</strong> Présence de dizaines de captures d'écran partielles dépourvues de contextualisation ou de métadonnées de traçabilité suffisantes.</li>
+  <li><strong>Doublons documentaires :</strong> Un même rapport d'étude apparaissait à double sous deux cotes de classement distinctes.</li>
+  <li><strong>Anomalies de structure :</strong> Présence de deux sections numérotées « 4 » dans le corps du mémoire révisé.</li>
+  <li><strong>Numérotation instable des conclusions :</strong> La liste des mesures de redressement demandées par l'auteur passait successivement de 3 à 5 puis à 6 points au fil du texte.</li>
+</ul>
+<p><em>Malgré ces faiblesses formelles inhérentes à une démarche citoyenne non représentée par un cabinet juridique, le Secrétariat a procédé d'office au reclassement méthodique des pièces en dix catégories pour mener son analyse d'admissibilité.</em></p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 13 -->
+<!-- ================================================================= -->
+<section id="p13">
+<span id="p12"></span>
+<h2><span class="sec-num">Partie 13</span><span class="sec-title">Sources</span></h2>
 <ul class="srcs">
 <li><strong>Décision du Secrétariat, 17 août 2026</strong> (cote A24.27(2)(3)/SEM/26-003/62/DET) — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det2_fr.pdf">26-3-det2_fr.pdf</a></li>
 <li><strong>Communication révisée, 16 juillet 2026</strong> — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-rsub_fr_redacted.pdf">26-3-rsub_fr_redacted.pdf</a></li>
