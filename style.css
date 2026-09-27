@@ -2207,17 +2207,56 @@ body.no-scroll {
     display: none !important;
   }
 
-  /* Navigation Mobile Directe à Plat (Flat Menu - 1 clic sans accordéons) */
+  /* Navigation Mobile mmenu : Système Multi-Panneaux Coulissants */
   .mobile-flat-nav {
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
     width: 100% !important;
     flex: 1 1 auto !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    min-height: 0 !important;
   }
 
-  /* Bouton d'action phare : Agir & Soutenir */
+  .mmenu-slider {
+    position: relative !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+  }
+
+  /* Panneaux coulissants avec glissement horizontal fluide */
+  .mmenu-panel {
+    display: none !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .mmenu-panel.is-active {
+    display: flex !important;
+    animation: mmenuSlideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+
+  .mmenu-panel.is-parent {
+    display: none !important;
+  }
+
+  @keyframes mmenuSlideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Bouton d'action prioritaire : Agir & Soutenir */
   .mobile-cta-btn {
     display: flex !important;
     align-items: center !important;
@@ -2230,7 +2269,7 @@ body.no-scroll {
     color: var(--text) !important;
     box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12) !important;
     margin-top: 4px !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 12px !important;
     transition: transform 0.15s ease, background-color 0.15s ease !important;
     -webkit-tap-highlight-color: transparent !important;
     position: relative !important;
@@ -2282,21 +2321,185 @@ body.no-scroll {
     color: var(--accent, #059669) !important;
   }
 
-  /* Groupes de liens directs à plat */
-  .mobile-flat-group {
+  /* Catégories de niveau 1 (Portes d'accès mmenu) */
+  .mmenu-categories {
     display: flex !important;
     flex-direction: column !important;
-    gap: 4px !important;
-    margin-bottom: 6px !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
   }
 
-  .mobile-flat-group-title {
-    font-size: 11px !important;
+  .mmenu-category-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--line) !important;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    cursor: pointer !important;
+    text-align: left !important;
+    font-family: inherit !important;
+    transition: all 0.16s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+    box-sizing: border-box !important;
+  }
+
+  .mmenu-category-btn:hover,
+  .mmenu-category-btn:active {
+    background: var(--accent-wash) !important;
+    border-color: var(--accent) !important;
+    transform: scale(0.99) !important;
+  }
+
+  .mmenu-cat-icon {
+    font-size: 20px !important;
+    margin-right: 12px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mmenu-cat-text {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .mmenu-cat-title {
+    font-size: 14px !important;
     font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
+    color: var(--text) !important;
+  }
+
+  .mmenu-cat-desc {
+    font-size: 11.5px !important;
     color: var(--text-muted) !important;
-    padding: 6px 4px 2px 4px !important;
+  }
+
+  .mmenu-cat-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mmenu-badge-count {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 10px !important;
+    background: var(--line) !important;
+    color: var(--text-muted) !important;
+  }
+
+  .mmenu-cat-arrow {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+  }
+
+  /* Raccourcis rapides sous forme de grille compacte */
+  .mmenu-quick-links {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+  }
+
+  .mmenu-quick-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .mmenu-quick-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    padding: 8px 4px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--line) !important;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    transition: all 0.15s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .mmenu-quick-item span {
+    font-size: 16px !important;
+  }
+
+  .mmenu-quick-item small {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+
+  .mmenu-quick-item:hover,
+  .mmenu-quick-item:active {
+    background: var(--accent-wash) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+  }
+
+  /* Sous-Panneaux : En-tête avec bouton retour */
+  .mmenu-sub-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    padding: 0 0 10px 0 !important;
+    margin-bottom: 8px !important;
+    border-bottom: 1px solid var(--line) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mmenu-back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+    background: var(--accent-wash) !important;
+    border: 1px solid var(--accent) !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    font-family: inherit !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .mmenu-back-btn:active {
+    transform: scale(0.96) !important;
+  }
+
+  .mmenu-panel-heading {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--text) !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Liste des liens complets dans chaque sous-panneau */
+  .mmenu-links-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    overflow-y: auto !important;
+    max-height: calc(100dvh - 180px) !important;
+    padding-bottom: 12px !important;
   }
 
   .mobile-flat-link {

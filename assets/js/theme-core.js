@@ -416,75 +416,284 @@
         const flatNav = document.createElement('div');
         flatNav.className = 'mobile-flat-nav';
         flatNav.setAttribute('role', 'navigation');
-        flatNav.setAttribute('aria-label', 'Menu mobile direct');
+        flatNav.setAttribute('aria-label', 'Menu mobile Slideout / mmenu');
         
         const isEn = document.documentElement.lang && document.documentElement.lang.startsWith('en');
         const isEs = document.documentElement.lang && document.documentElement.lang.startsWith('es');
 
         const ctaTitle = isEn ? 'How to Act & Support' : (isEs ? 'Cómo Actuar y Apoyar' : 'Comment Agir & Soutenir');
-        const ctaSub = isEn ? 'Citizen petition and advocacy' : (isEs ? 'Petición ciudadana y apoyo' : 'Pétition, mobilisation et action citoyenne');
-        const groupDossier = isEn ? 'Investigation & Evidence' : (isEs ? 'Expediente e Investigación' : 'Dossier CCE & Enquêtes');
-        const groupInfo = isEn ? 'News & Contact' : (isEs ? 'Noticias y Contacto' : 'Actualités & Contact');
+        const ctaSub = isEn ? 'Citizen petition and advocacy' : (isEs ? 'Petición ciudadana y apoyo' : 'Pétition, dons et mobilisation citoyenne');
 
         flatNav.innerHTML = `
-          <a href="agir.html" class="mobile-cta-btn">
-            <span class="mobile-cta-badge">✊ ${isEn ? 'Priority Action' : (isEs ? 'Acción prioritaria' : 'Action prioritaire')}</span>
-            <div class="mobile-cta-body">
-              <strong>${ctaTitle}</strong>
-              <span>${ctaSub}</span>
+          <div class="mmenu-slider">
+            <!-- 1. PANNEAU RACINE PRINCIPAL -->
+            <div class="mmenu-panel is-active" id="mmenu-root">
+              <a href="agir.html" class="mobile-cta-btn">
+                <span class="mobile-cta-badge">✊ ${isEn ? 'Priority Action' : (isEs ? 'Acción prioritaria' : 'Action prioritaire')}</span>
+                <div class="mobile-cta-body">
+                  <strong>${ctaTitle}</strong>
+                  <span>${ctaSub}</span>
+                </div>
+                <span class="mobile-cta-arrow" aria-hidden="true">→</span>
+              </a>
+
+              <div class="mmenu-categories">
+                <!-- Passerelle 1 : Dossier CCE & Enquêtes -->
+                <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-dossier">
+                  <span class="mmenu-cat-icon">📁</span>
+                  <div class="mmenu-cat-text">
+                    <span class="mmenu-cat-title">${isEn ? 'Investigation & Evidence' : (isEs ? 'Expediente e Investigación' : 'Dossier CCE & Enquêtes')}</span>
+                    <span class="mmenu-cat-desc">Stablex, registre, 222 pièces, partis...</span>
+                  </div>
+                  <div class="mmenu-cat-meta">
+                    <span class="mmenu-badge-count">9</span>
+                    <span class="mmenu-cat-arrow">›</span>
+                  </div>
+                </button>
+
+                <!-- Passerelle 2 : Actualités & Presse -->
+                <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-medias">
+                  <span class="mmenu-cat-icon">📰</span>
+                  <div class="mmenu-cat-text">
+                    <span class="mmenu-cat-title">${isEn ? 'News, Press & Media' : (isEs ? 'Noticias y Medios' : 'Actualités & Espace Presse')}</span>
+                    <span class="mmenu-cat-desc">Blog, kit média, communiqués, photos...</span>
+                  </div>
+                  <div class="mmenu-cat-meta">
+                    <span class="mmenu-badge-count">6</span>
+                    <span class="mmenu-cat-arrow">›</span>
+                  </div>
+                </button>
+
+                <!-- Passerelle 3 : Outils, IA & Échanges -->
+                <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-outils">
+                  <span class="mmenu-cat-icon">🤖</span>
+                  <div class="mmenu-cat-text">
+                    <span class="mmenu-cat-title">${isEn ? 'Tools, AI & Contact' : (isEs ? 'Herramientas, IA y Contacto' : 'Outils, IA & Contact')}</span>
+                    <span class="mmenu-cat-desc">Messagerie Nostr, IA, projets GitHub...</span>
+                  </div>
+                  <div class="mmenu-cat-meta">
+                    <span class="mmenu-badge-count">5</span>
+                    <span class="mmenu-cat-arrow">›</span>
+                  </div>
+                </button>
+
+                <!-- Passerelle 4 : Chartes & Politiques -->
+                <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-politiques">
+                  <span class="mmenu-cat-icon">🛡️</span>
+                  <div class="mmenu-cat-text">
+                    <span class="mmenu-cat-title">${isEn ? 'Charters & Legal Framework' : (isEs ? 'Cartas y Marco Legal' : 'Chartes & Cadre Légal')}</span>
+                    <span class="mmenu-cat-desc">Registre 00-12, Anti-SLAPP, déontologie...</span>
+                  </div>
+                  <div class="mmenu-cat-meta">
+                    <span class="mmenu-badge-count">8</span>
+                    <span class="mmenu-cat-arrow">›</span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Raccourcis directs en 1 tap -->
+              <div class="mmenu-quick-links">
+                <span class="mobile-flat-group-title">${isEn ? 'Quick Shortcuts' : (isEs ? 'Accesos rápidos' : 'Accès rapides')}</span>
+                <div class="mmenu-quick-grid">
+                  <a href="apercu.html" class="mmenu-quick-item">
+                    <span>💡</span>
+                    <small>Vulgarisation</small>
+                  </a>
+                  <a href="registre.html" class="mmenu-quick-item">
+                    <span>⚖️</span>
+                    <small>Registre CCE</small>
+                  </a>
+                  <a href="live.html" class="mmenu-quick-item">
+                    <span>⏱️</span>
+                    <small>Horloge 16 oct.</small>
+                  </a>
+                  <a href="autochtone.html" class="mmenu-quick-item">
+                    <span>🌿</span>
+                    <small>Autochtone</small>
+                  </a>
+                </div>
+              </div>
             </div>
-            <span class="mobile-cta-arrow" aria-hidden="true">→</span>
-          </a>
-          <div class="mobile-flat-group">
-            <span class="mobile-flat-group-title">${groupDossier}</span>
-            <a href="stablex.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">📁</span>
-              <span class="mobile-link-text">${isEn ? 'Stablex Investigation Dossier' : (isEs ? 'Expediente Stablex' : 'Dossier d\'enquête Stablex')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="apercu.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">💡</span>
-              <span class="mobile-link-text">${isEn ? 'Dossier Explained (SEM-26-003)' : (isEs ? 'Expediente Explicado' : 'Dossier expliqué (SEM-26-003)')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="registre.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">⚖️</span>
-              <span class="mobile-link-text">${isEn ? 'Official CEC Registry (222 records)' : (isEs ? 'Registro Oficial CCE' : 'Registre officiel CCE (222 pièces)')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="live.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">⏱️</span>
-              <span class="mobile-link-text">${isEn ? 'Clock · Oct 16 Deadline' : (isEs ? 'Reloj · Plazo 16 oct.' : 'Horloge · Échéance 16 oct.')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="autochtone.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">🌿</span>
-              <span class="mobile-link-text">${isEn ? 'Indigenous History & Ecology' : (isEs ? 'Historia Indígena y Ecología' : 'Histoire autochtone & Écologie')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-          </div>
-          <div class="mobile-flat-group">
-            <span class="mobile-flat-group-title">${groupInfo}</span>
-            <a href="presse.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">📰</span>
-              <span class="mobile-link-text">${isEn ? 'Press & Media Room' : (isEs ? 'Prensa y Medios' : 'Espace Presse & Médias')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="blog.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">📝</span>
-              <span class="mobile-link-text">${isEn ? 'Official Blog & Logbook' : (isEs ? 'Blog Oficial' : 'Blog officiel & Carnet')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="index.html#contact" class="mobile-flat-link">
-              <span class="mobile-link-icon">✉️</span>
-              <span class="mobile-link-text">${isEn ? 'Contact & Biography' : (isEs ? 'Contacto y Biografía' : 'Coordonnées & Contact')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
-            <a href="politiques.html" class="mobile-flat-link">
-              <span class="mobile-link-icon">🛡️</span>
-              <span class="mobile-link-text">${isEn ? 'Charters & Policies (00-12)' : (isEs ? 'Cartas y Políticas' : 'Chartes & Politiques (00-12)')}</span>
-              <span class="mobile-link-arrow">›</span>
-            </a>
+
+            <!-- 2. SOUS-PANNEAU : DOSSIER CCE & ENQUÊTES -->
+            <div class="mmenu-panel" id="mmenu-dossier">
+              <div class="mmenu-sub-header">
+                <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
+                <span class="mmenu-panel-heading">📁 ${isEn ? 'Investigation & CEC' : (isEs ? 'Expediente CCE' : 'Dossier CCE & Enquêtes')}</span>
+              </div>
+              <div class="mmenu-links-list">
+                <a href="stablex.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📁</span>
+                  <span class="mobile-link-text">Dossier d'enquête Stablex</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="apercu.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">💡</span>
+                  <span class="mobile-link-text">Dossier expliqué (SEM-26-003)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="registre.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">⚖️</span>
+                  <span class="mobile-link-text">Registre officiel CCE (Direct)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="dossier-journalistes.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🔍</span>
+                  <span class="mobile-link-text">Explorateur documentaire (222 pièces)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="enquete-partis.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🗳️</span>
+                  <span class="mobile-link-text">Enquête : Partis politiques (Cellule 6)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="autochtone.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🌿</span>
+                  <span class="mobile-link-text">Histoire autochtone &amp; Écologie</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="live.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">⏱️</span>
+                  <span class="mobile-link-text">Horloge Échéance 16 oct. 2026</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="viewer.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📄</span>
+                  <span class="mobile-link-text">Consulter les pièces (PDF interactif)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="miroirs.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🌐</span>
+                  <span class="mobile-link-text">Miroirs Décentralisés (IPFS/Tor)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- 3. SOUS-PANNEAU : ACTUALITÉS & PRESSE -->
+            <div class="mmenu-panel" id="mmenu-medias">
+              <div class="mmenu-sub-header">
+                <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
+                <span class="mmenu-panel-heading">📰 ${isEn ? 'News & Media' : (isEs ? 'Noticias y Prensa' : 'Actualités & Presse')}</span>
+              </div>
+              <div class="mmenu-links-list">
+                <a href="blog.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📝</span>
+                  <span class="mobile-link-text">Blog officiel &amp; Carnet</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="presse.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📰</span>
+                  <span class="mobile-link-text">Espace Presse &amp; Kit Média</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="communiques.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📢</span>
+                  <span class="mobile-link-text">Communiqués officiels</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="photos.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📸</span>
+                  <span class="mobile-link-text">Galerie Photos de terrain</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="flux.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📡</span>
+                  <span class="mobile-link-text">Flux RSS, Atom &amp; JSON</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="edition-speciale-reconciliation.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🧡</span>
+                  <span class="mobile-link-text">Édition spéciale Réconciliation</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- 4. SOUS-PANNEAU : OUTILS, IA & CONTACT -->
+            <div class="mmenu-panel" id="mmenu-outils">
+              <div class="mmenu-sub-header">
+                <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
+                <span class="mmenu-panel-heading">🤖 ${isEn ? 'Tools & AI' : (isEs ? 'Herramientas e IA' : 'Outils, IA & Contact')}</span>
+              </div>
+              <div class="mmenu-links-list">
+                <a href="messagerie.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">💬</span>
+                  <span class="mobile-link-text">Messagerie Sécurisée (Nostr)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="ai.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🤖</span>
+                  <span class="mobile-link-text">Espace IA &amp; Hub LLM</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="projets.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🐙</span>
+                  <span class="mobile-link-text">Projets &amp; Constellation GitHub</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="index.html#contact" class="mobile-flat-link">
+                  <span class="mobile-link-icon">✉️</span>
+                  <span class="mobile-link-text">Coordonnées &amp; Contact direct</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="txt.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📄</span>
+                  <span class="mobile-link-text">Version texte ultra-légère (&lt; 10 Ko)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- 5. SOUS-PANNEAU : CHARTES & CADRE LÉGAL -->
+            <div class="mmenu-panel" id="mmenu-politiques">
+              <div class="mmenu-sub-header">
+                <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
+                <span class="mmenu-panel-heading">🛡️ ${isEn ? 'Charters & Policies' : (isEs ? 'Cartas y Políticas' : 'Chartes & Cadre Légal')}</span>
+              </div>
+              <div class="mmenu-links-list">
+                <a href="politiques.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🛡️</span>
+                  <span class="mobile-link-text">00. Registre des politiques (Hub 00-12)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="deontologie.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-text">01. Charte de déontologie</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="independance.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">⚖️</span>
+                  <span class="mobile-link-text">02. Indépendance &amp; Intégrité</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="ia-ethique.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🤖</span>
+                  <span class="mobile-link-text">03. Éthique de l'IA</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="anti-slapp.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🛡️</span>
+                  <span class="mobile-link-text">04. Déclaration Anti-SLAPP</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="opsec.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">🔒</span>
+                  <span class="mobile-link-text">08. Sécurité lanceurs d'alerte (OpSec)</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="protection-archive.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-text">12. Protection de l'archive &amp; Retrait</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="dependances-licences.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-text">Crédits, licences &amp; tiers</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+              </div>
+            </div>
           </div>
         `;
 
@@ -512,12 +721,22 @@
         }
       }
 
+      function resetMmenuPanels() {
+        if (!nav) return;
+        nav.querySelectorAll('.mmenu-panel').forEach(p => {
+          p.classList.remove('is-active', 'is-parent');
+        });
+        const root = nav.querySelector('#mmenu-root');
+        if (root) root.classList.add('is-active');
+      }
+
       function closeMobileNav() {
         nav.classList.remove('active');
         backdrop.classList.remove('active');
         document.body.classList.remove('no-scroll');
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.innerHTML = hamburgerSvg;
+        setTimeout(resetMmenuPanels, 320);
       }
 
       function openMobileNav() {
@@ -550,6 +769,36 @@
       });
 
       nav.addEventListener('click', (e) => {
+        // Navigation fluide entre panneaux mmenu
+        const trigger = e.target.closest('[data-mmenu-target]');
+        if (trigger) {
+          e.preventDefault();
+          e.stopPropagation();
+          const targetId = trigger.getAttribute('data-mmenu-target');
+          const targetPanel = nav.querySelector('#' + targetId);
+          const rootPanel = nav.querySelector('#mmenu-root');
+          if (targetPanel && rootPanel) {
+            rootPanel.classList.remove('is-active');
+            rootPanel.classList.add('is-parent');
+            targetPanel.classList.add('is-active');
+          }
+          return;
+        }
+
+        const backBtn = e.target.closest('.mmenu-back-btn');
+        if (backBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const activeSub = nav.querySelector('.mmenu-panel:not(#mmenu-root).is-active');
+          const rootPanel = nav.querySelector('#mmenu-root');
+          if (activeSub) activeSub.classList.remove('is-active');
+          if (rootPanel) {
+            rootPanel.classList.remove('is-parent');
+            rootPanel.classList.add('is-active');
+          }
+          return;
+        }
+
         const link = e.target.closest('a');
         if (link && !link.closest('.nav-dropdown-menu') && !link.closest('.nav-lang-menu') && !link.closest('.nav-notif-menu')) {
           const dropdownsToClose = document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown');
