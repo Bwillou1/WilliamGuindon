@@ -169,15 +169,14 @@ async function removeClaim(csrfToken, claimGuid) {
   const data = {
     action: 'wbremoveclaims',
     claim: claimGuid,
-    claims: claimGuid,
     token: csrfToken,
     format: 'json'
   };
   const res = await requestApi(data);
   if (res.error) {
-    console.warn(`  ⚠️ Avertissement lors de la suppression : ${res.error.info || JSON.stringify(res.error)}`);
+    console.warn(`  ⚠️ Avertissement lors de la suppression (${claimGuid}) : ${res.error.info || JSON.stringify(res.error)}`);
   } else {
-    console.log(`  ✔ Déclaration supprimée avec succès :`, JSON.stringify(res));
+    console.log(`  ✔ Déclaration ${claimGuid} supprimée avec succès.`);
   }
 }
 
