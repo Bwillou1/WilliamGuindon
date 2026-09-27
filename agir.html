@@ -37,7 +37,8 @@
 <meta name="twitter:description" content="Guide pratique d'action citoyenne : science participative iNaturalist, 4 modèles de lettres d'interpellation, partage et soutien matériel.">
 <meta name="twitter:image" content="https://williamguindon.me/og-image.jpg">
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260904-slider">
+<script src="assets/js/theme-core.js" defer></script>
 
 <style>
   .action-page-hero {
@@ -323,23 +324,222 @@
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
-<!-- Navigation principale -->
-<header class="official-header" role="banner">
-  <div class="official-header-container">
-    <a href="./" class="official-brand" aria-label="Accueil William Guindon">
-      <span class="official-brand-badge" aria-hidden="true">WG</span>
-      <span class="official-brand-text">
-        <span class="official-brand-title">William Guindon</span>
-        <span class="official-brand-subtitle">Dossier CCE SEM-26-003 · Grande Tourbière</span>
-      </span>
-    </a>
-    
-    <nav class="official-nav" role="navigation" aria-label="Navigation principale">
-      <a href="./" class="official-nav-link">Accueil</a>
-      <a href="agir.html" class="official-nav-link active" style="font-weight: 800; color: #10b981;">✊ Comment Agir</a>
-      <a href="registre.html" class="official-nav-link">Registre CCE</a>
-      <a href="autochtone.html" class="official-nav-link">Mémoire &amp; Territoires</a>
-      <a href="live.html" class="official-nav-link">Compte à rebours</a>
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="./">William <span>Guindon</span></a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navigation principale"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Fermer</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : Dossier CCE & Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Dossier CCE &amp; Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Le Dossier &amp; Registre</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
+              <a href="enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier : Histoire autochtone &amp; Écologie</a>
+              <a href="apercu.html" class="nav-dropdown-item">Dossier expliqué &amp; Vulgarisation (SEM-26-003)</a>
+              <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Miroirs Décentralisés (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Suivi &amp; Outils Direct</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;">✊ Comment Agir &amp; Soutenir</a>
+              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Échéance 16 oct.</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="./#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Presse &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes (222 pièces)</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Politiques & Cadre légal -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Politiques &amp; Cadre légal ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="politiques.html" class="nav-dropdown-item">00. Registre des politiques (Hub)</a>
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Déclaration Anti-SLAPP</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Presse</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–12. Statut, Archives &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
+              <a href="terms.html" class="nav-dropdown-item">Conditions d'utilisation</a>
+              <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : À propos & Contact -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="./#apropos" class="nav-dropdown-item">Biographie de William Guindon</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contact</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="./#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" title="3 nouvelles alertes actives" aria-label="3 nouvelles alertes"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Action Citoyenne</div>
+              <h5 class="notif-item-title">Comment Agir : Guide &amp; Modèles de lettres d'interpellation</h5>
+              <p class="notif-item-desc">Mise en ligne du guide pratique d'action citoyenne : science participative iNaturalist, 4 modèles de courriels d'interpellation (députés, conseils municipaux) et soutien matériel.</p>
+              <div class="notif-item-links">
+                <a href="agir.html" class="notif-link-btn notif-link-primary">Consulter le guide ↗</a>
+                <a href="independance.html" class="notif-link-btn notif-link-ghost">Politique d'indépendance</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
+              <h5 class="notif-item-title">SEM-26-003 expliqué simplement : Le dossier complet et accessible</h5>
+              <p class="notif-item-desc">Publication d'une grande synthèse vulgarisée en 12 parties décortiquant la soumission citoyenne, la décision CCE du 17 août 2026, les allégations retenues et les pièges de chiffres.</p>
+              <div class="notif-item-links">
+                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
+                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
+              <span aria-hidden="true">🔔</span> S'abonner aux notifications
+            </button>
+          </div>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -451,18 +651,21 @@
     </p>
 
     <!-- Modèle 1 · À votre député·e -->
-    <article class="action-card" id="modele-depute">
-      <div class="action-card-header">
-        <div>
-          <h3 class="action-card-title">1 · À votre député·e (Fédéral ou Provincial)</h3>
-          <span style="font-size: 0.85rem; color: var(--text-muted);">Pour exiger la transparence totale de la réponse du Canada à la CCE</span>
+    <details class="action-accordion" id="modele-depute" open>
+      <summary>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; width: 100%; padding-right: 8px;">
+          <div>
+            <span style="font-size: 1.15rem; font-weight: 700; color: var(--text-color);">1 · À votre député·e (Fédéral ou Provincial)</span>
+            <span style="display: block; font-size: 0.85rem; font-weight: normal; color: var(--text-muted); margin-top: 2px;">Pour exiger la transparence totale de la réponse du Canada à la CCE</span>
+          </div>
+          <span class="action-card-badge">Fédéral &amp; Provincial</span>
         </div>
-        <span class="action-card-badge">Fédéral &amp; Provincial</span>
-      </div>
+      </summary>
 
-      <p style="margin: 0 0 6px; font-size: 0.9rem;"><strong>Objet :</strong> <span id="subj-1">SEM-26-003 — le Canada a jusqu'au 16 octobre. Et vous ?</span></p>
+      <div class="accordion-content">
+        <p style="margin: 0 0 8px; font-size: 0.9rem;"><strong>Objet :</strong> <span id="subj-1">SEM-26-003 — le Canada a jusqu'au 16 octobre. Et vous ?</span></p>
 
-      <div class="letter-preview-box" id="letter-1">Madame/Monsieur [Nom],
+        <div class="letter-preview-box" id="letter-1">Madame/Monsieur [Nom],
 
 Je suis [prénom nom], électeur·rice de [circonscription].
 
@@ -483,15 +686,16 @@ Je vous demande une réponse écrite. Je noterai la date à laquelle elle m'arri
 [Prénom Nom]
 [Adresse complète · code postal · courriel]</div>
 
-      <div class="action-btn-row">
-        <button type="button" class="btn-action-secondary js-copy-letter" data-target="letter-1">
-          <span>📋 Copier le texte</span>
-        </button>
-        <a href="mailto:?subject=SEM-26-003%20%E2%80%94%20le%20Canada%20a%20jusqu%27au%2016%20octobre.%20Et%20vous%20%3F&body=Madame%2FMonsieur%20%5BNom%5D%2C%0A%0AJe%20suis%20%5Bpr%C3%A9nom%20nom%5D%2C%20%C3%A9lecteur%C2%B7rice%20de%20%5Bcirconscription%5D.%0A%0ALe%2017%20ao%C3%BBt%202026%2C%20le%20Secr%C3%A9tariat%20de%20la%20Commission%20de%20coop%C3%A9ration%20environnementale%20a%20jug%C3%A9%20admissible%20la%20communication%20SEM-26-003.%20Elle%20porte%20sur%20l%27enfouissement%20de%20mati%C3%A8res%20dangereuses%20dans%20la%20Grande%20Tourbi%C3%A8re%20de%20Blainville%20%3A%20la%20cellule%206%20du%20site%20de%20Stablex%2C%20environ%20278%20000%20m%C2%B2%20de%20milieux%20humides%2C%20et%20des%20concentrations%20de%20cadmium%20mesur%C3%A9es%20jusqu%27%C3%A0%20320%20fois%20la%20norme.%0A%0AElle%20a%20%C3%A9t%C3%A9%20d%C3%A9pos%C3%A9e%20par%20un%20gar%C3%A7on%20de%2015%20ans.%20Aucun%20minist%C3%A8re%2C%20aucun%20%C3%A9lu%2C%20aucune%20agence%20ne%20l%27avait%20fait%20avant%20lui.%0A%0ALe%20Canada%20doit%20r%C3%A9pondre%20d%27ici%20le%2016%20octobre%202026.%20Je%20vous%20demande%20trois%20choses%20%3A%0A%0A1.%20Lire%20la%20d%C3%A9cision%20du%20Secr%C3%A9tariat%20%28cec.org%2C%20SEM-26-003%29.%0A2.%20Demander%20publiquement%20que%20la%20r%C3%A9ponse%20du%20Canada%20soit%20compl%C3%A8te%20et%20rendue%20publique%2C%20et%20non%20une%20description%20de%20proc%C3%A9dures%20administratives.%0A3.%20Exiger%20la%20divulgation%20int%C3%A9grale%20des%20donn%C3%A9es%20de%20suivi%20des%20eaux%20souterraines%20du%20site.%0A%0A%5BVotre%20phrase%20ici.%20Ex.%20%3A%20%C2%AB%20J%27habite%20%C3%A0%20trois%20kilom%C3%A8tres%20de%20ce%20site%20et%20j%27y%20ai%20appris%20%C3%A0%20mes%20enfants%20%C3%A0%20reconna%C3%AEtre%20les%20oiseaux.%20%C2%BB%5D%0A%0AJe%20vous%20demande%20une%20r%C3%A9ponse%20%C3%A9crite.%20Je%20noterai%20la%20date%20%C3%A0%20laquelle%20elle%20m%27arrive%20%E2%80%94%20ou%20ne%20m%27arrive%20pas.%0A%0A%5BPr%C3%A9nom%20Nom%5D%0A%5BAdresse%20compl%C3%A8te%20%C2%B7%20code%20postal%20%C2%B7%20courriel%5D" class="btn-action-primary">
-          <span>✉️ Ouvrir dans mon courriel</span>
-        </a>
+        <div class="action-btn-row">
+          <button type="button" class="btn-action-secondary js-copy-letter" data-target="letter-1">
+            <span>📋 Copier le texte</span>
+          </button>
+          <a href="mailto:?subject=SEM-26-003%20%E2%80%94%20le%20Canada%20a%20jusqu%27au%2016%20octobre.%20Et%20vous%20%3F&body=Madame%2FMonsieur%20%5BNom%5D%2C%0A%0AJe%20suis%20%5Bpr%C3%A9nom%20nom%5D%2C%20%C3%A9lecteur%C2%B7rice%20de%20%5Bcirconscription%5D.%0A%0ALe%2017%20ao%C3%BBt%202026%2C%20le%20Secr%C3%A9tariat%20de%20la%20Commission%20de%20coop%C3%A9ration%20environnementale%20a%20jug%C3%A9%20admissible%20la%20communication%20SEM-26-003.%20Elle%20porte%20sur%20l%27enfouissement%20de%20mati%C3%A8res%20dangereuses%20dans%20la%20Grande%20Tourbi%C3%A8re%20de%20Blainville%20%3A%20la%20cellule%206%20du%20site%20de%20Stablex%2C%20environ%20278%20000%20m%C2%B2%20de%20milieux%20humides%2C%20et%20des%20concentrations%20de%20cadmium%20mesur%C3%A9es%20jusqu%27%C3%A0%20320%20fois%20la%20norme.%0A%0AElle%20a%20%C3%A9t%C3%A9%20d%C3%A9pos%C3%A9e%20par%20un%20gar%C3%A7on%20de%2015%20ans.%20Aucun%20minist%C3%A8re%2C%20aucun%20%C3%A9lu%2C%20aucune%20agence%20ne%20l%27avait%20fait%20avant%20lui.%0A%0ALe%20Canada%20doit%20r%C3%A9pondre%20d%27ici%20le%2016%20octobre%202026.%20Je%20vous%20demande%20trois%20choses%20%3A%0A%0A1.%20Lire%20la%20d%C3%A9cision%20du%20Secr%C3%A9tariat%20%28cec.org%2C%20SEM-26-003%29.%0A2.%20Demander%20publiquement%20que%20la%20r%C3%A9ponse%20du%20Canada%20soit%20compl%C3%A8te%20et%20rendue%20publique%2C%20et%20non%20une%20description%20de%20proc%C3%A9dures%20administratives.%0A3.%20Exiger%20la%20divulgation%20int%C3%A9grale%20des%20donn%C3%A9es%20de%20suivi%20des%20eaux%20souterraines%20du%20site.%0A%0A%5BVotre%20phrase%20ici.%20Ex.%20%3A%20%C2%AB%20J%27habite%20%C3%A0%20trois%20kilom%C3%A8tres%20de%20ce%20site%20et%20j%27y%20ai%20appris%20%C3%A0%20mes%20enfants%20%C3%A0%20reconna%C3%AEtre%20les%20oiseaux.%20%C2%BB%5D%0A%0AJe%20vous%20demande%20une%20r%C3%A9ponse%20%C3%A9crite.%20Je%20noterai%20la%20date%20%C3%A0%20laquelle%20elle%20m%27arrive%20%E2%80%94%20ou%20ne%20m%27arrive%20pas.%0A%0A%5BPr%C3%A9nom%20Nom%5D%0A%5BAdresse%20compl%C3%A8te%20%C2%B7%20code%20postal%20%C2%B7%20courriel%5D" class="btn-action-primary">
+            <span>✉️ Ouvrir dans mon courriel</span>
+          </a>
+        </div>
       </div>
-    </article>
+    </details>
 
     <!-- Modèle 2 · À votre conseil municipal -->
     <article class="action-card" id="modele-municipal">
