@@ -569,9 +569,9 @@
         <span>←</span>
         <span>Accueil</span>
       </a>
-      <button type="button" id="btn-toggle-tree" class="btn-toggle-tree is-collapsed" title="Afficher ou masquer la barre latérale" aria-label="Afficher la barre latérale">
+      <button type="button" id="btn-toggle-tree" class="btn-toggle-tree" title="Afficher ou masquer la barre latérale" aria-label="Afficher ou masquer la barre latérale">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-        <span id="btn-toggle-tree-text">Afficher barre</span>
+        <span id="btn-toggle-tree-text">Réduire barre</span>
       </button>
       <div class="drive-title">
         <span id="title-count">Dossier SEM-26-003</span>
@@ -589,11 +589,11 @@
   </div>
 
   <div class="drive-body">
-    <div id="drive-tree" class="drive-tree-pane collapsed">
+    <div id="drive-tree" class="drive-tree-pane">
       <div class="drive-loading">Chargement des 222 pièces probatoires...</div>
     </div>
 
-    <div class="drive-splitter" id="drive-splitter" style="display: none;" title="Glisser pour redimensionner la barre"></div>
+    <div class="drive-splitter" id="drive-splitter" style="display: flex;" title="Glisser pour redimensionner la barre"></div>
 
     <div class="drive-preview-pane">
       <div class="preview-header">
@@ -900,7 +900,16 @@
     });
 
     const stage = document.getElementById("preview-stage");
-    let firstSelected = false;
+    let targetItemToSelect = null;
+    let firstPdfItem = null;
+
+    function hasTargetDoc(n, targetSubstring) {
+      if (n.files && n.files.some(f => f.name.includes(targetSubstring))) return true;
+      for (let k in n.subfolders) {
+        if (hasTargetDoc(n.subfolders[k], targetSubstring)) return true;
+      }
+      return false;
+    }
 
     function renderTree(node, container, isRoot = false) {
       // 1. Dossiers et sous-dossiers
@@ -908,8 +917,9 @@
       folderNames.forEach((folderName, idx) => {
         const subNode = node.subfolders[folderName];
         const nodeDiv = document.createElement("div");
-        // Ouvrir le premier dossier par défaut pour rendre les premiers documents directement visibles
-        nodeDiv.className = "tree-node" + (idx === 0 ? " open" : "");
+        // Ouvrir le premier dossier et le dossier contenant la pièce 26-3-rsub_fr_redacted par défaut
+        const shouldOpen = (idx === 0) || hasTargetDoc(subNode, "26-3-rsub_fr_redacted");
+        nodeDiv.className = "tree-node" + (shouldOpen ? " open" : "");
 
         function countTotal(n) {
           let total = n.files.length;
@@ -1075,9 +1085,10 @@
 
         container.appendChild(item);
 
-        if (!firstSelected && lower.endsWith(".pdf")) {
-          setTimeout(() => item.click(), 60);
-          firstSelected = true;
+        if (fileObj.name.includes("26-3-rsub_fr_redacted")) {
+          targetItemToSelect = item;
+        } else if (!firstPdfItem && lower.endsWith(".pdf")) {
+          firstPdfItem = item;
         }
       });
     }
@@ -1257,6 +1268,16 @@
     }
 
     renderTree(root, treeContainer, true);
+
+    const defaultItem = targetItemToSelect || firstPdfItem;
+    if (defaultItem) {
+      setTimeout(() => {
+        defaultItem.click();
+        if (defaultItem.scrollIntoView) {
+          defaultItem.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+    }
   }
 
   // Tente d'interroger l'API avec un délai de sécurité de 2,5 s avant bascule sur la liste certifiée
@@ -1312,8 +1333,8 @@
     window.dispatchEvent(new Event("resize"));
   }
 
-  // Par défaut, la barre latérale est fermée lors de l'affichage initial
-  toggleTreeSidebar(true);
+  // Par défaut, la barre latérale est visible sur écran normal et repliée sur smartphone
+  toggleTreeSidebar(window.innerWidth < 640);
 
   if (btnToggleTree) {
     btnToggleTree.addEventListener("click", () => toggleTreeSidebar());
