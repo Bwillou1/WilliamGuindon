@@ -35,6 +35,9 @@ var (
 	zipReader    *zip.ReadCloser
 	zipMutex     sync.RWMutex
 	fileCatalog  []string
+	loadedPath   string
+	lastError    string
+	isVerified   bool
 )
 
 func generateSessionToken() string {
@@ -43,6 +46,43 @@ func generateSessionToken() string {
 		return fmt.Sprintf("%d", time.Now().UnixNano())
 	}
 	return hex.EncodeToString(bytes)
+}
+
+func findPotentialZipFiles() []string {
+	var candidates []string
+	home, _ := os.UserHomeDir()
+
+	searchDirs := []string{
+		".",
+		filepath.Join(home, "Downloads"),
+		filepath.Join(home, "Desktop"),
+		filepath.Join(home, "Documents"),
+	}
+
+	for _, dir := range searchDirs {
+		// Vérification directe du nom par défaut
+		target := filepath.Join(dir, DEFAULT_ZIP_NAME)
+		if _, err := os.Stat(target); err == nil {
+			candidates = append(candidates, target)
+		}
+
+		// Recherche des fichiers contenant dossier-journalistes ou stablex
+		entries, err := os.ReadDir(dir)
+		if err == nil {
+			for _, e := range entries {
+				if !e.IsDir() && strings.HasSuffix(strings.ToLower(e.Name()), ".zip") {
+					lower := strings.ToLower(e.Name())
+					if strings.Contains(lower, "dossier") || strings.Contains(lower, "stablex") || strings.Contains(lower, "journaliste") {
+						p := filepath.Join(dir, e.Name())
+						if p != target {
+							candidates = append(candidates, p)
+						}
+					}
+				}
+			}
+		}
+	}
+	return candidates
 }
 
 func verifyAndLoadZip(filePath string) error {
@@ -54,22 +94,25 @@ func verifyAndLoadZip(filePath string) error {
 
 	hasher := sha256.New()
 	if _, err := io.Copy(hasher, f); err != nil {
-		return fmt.Errorf("erreur lors du calcul du hash : %w", err)
+		return fmt.Errorf("erreur lors du calcul du hash SHA-256 : %w", err)
 	}
 
 	computedHash := hex.EncodeToString(hasher.Sum(nil))
 
-	// Comparaison cryptographique en temps constant pour parer aux attaques temporelles
+	// Comparaison cryptographique en temps constant
 	if subtle.ConstantTimeCompare([]byte(computedHash), []byte(OFFICIAL_OTS_SHA256)) != 1 {
-		return fmt.Errorf("ÉCHEC D'INTÉGRITÉ CRYPTOGRAPHIQUE !\nAttendu (OpenTimestamps) : %s\nCalculé (Fichier local)  : %s\n\nCe fichier ZIP a été altéré, tronqué ou ne provient pas de l'archive officielle.", OFFICIAL_OTS_SHA256, computedHash)
+		return fmt.Errorf("ÉCHEC D'INTÉGRITÉ CRYPTOGRAPHIQUE !\nEmpreinte officielle (OpenTimestamps) : %s\nEmpreinte du fichier fourni         : %s\n\nCe fichier a été modifié, corrompu ou ne provient pas de l'archive officielle.", OFFICIAL_OTS_SHA256, computedHash)
 	}
 
 	zr, err := zip.OpenReader(filePath)
 	if err != nil {
-		return fmt.Errorf("erreur d'ouverture de l'archive ZIP : %w", err)
+		return fmt.Errorf("archive ZIP invalide ou corrompue : %w", err)
 	}
 
 	zipMutex.Lock()
+	if zipReader != nil {
+		zipReader.Close()
+	}
 	zipReader = zr
 
 	var files []string
@@ -79,7 +122,6 @@ func verifyAndLoadZip(filePath string) error {
 			continue
 		}
 		cleanName := strings.TrimPrefix(zf.Name, prefix)
-		// Ignorer les fichiers cachés du système
 		if strings.HasPrefix(filepath.Base(cleanName), ".") || strings.HasPrefix(cleanName, "__MACOSX") {
 			continue
 		}
@@ -87,9 +129,38 @@ func verifyAndLoadZip(filePath string) error {
 	}
 	sort.Strings(files)
 	fileCatalog = files
+	loadedPath = filePath
+	isVerified = true
+	lastError = ""
 	zipMutex.Unlock()
 
 	return nil
+}
+
+func pickNativeFile() (string, error) {
+	switch runtime.GOOS {
+	case "darwin":
+		cmd := exec.Command("osascript", "-e", `POSIX path of (choose file with prompt "Sélectionnez l'archive ZIP officielle SEM-26-003" of type {"zip"})`)
+		out, err := cmd.Output()
+		if err != nil {
+			return "", err
+		}
+		return strings.TrimSpace(string(out)), nil
+	case "windows":
+		cmd := exec.Command("powershell", "-Command", `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = "Fichiers ZIP (*.zip)|*.zip"; if($f.ShowDialog() -eq "OK"){ $f.FileName }`)
+		out, err := cmd.Output()
+		if err != nil {
+			return "", err
+		}
+		return strings.TrimSpace(string(out)), nil
+	default:
+		cmd := exec.Command("zenity", "--file-selection", "--file-filter=*.zip")
+		out, err := cmd.Output()
+		if err != nil {
+			return "", err
+		}
+		return strings.TrimSpace(string(out)), nil
+	}
 }
 
 func openBrowser(url string) {
@@ -112,35 +183,24 @@ func openBrowser(url string) {
 func main() {
 	sessionToken = generateSessionToken()
 
-	zipPath := DEFAULT_ZIP_NAME
+	var targetZip string
 	if len(os.Args) > 1 {
-		zipPath = os.Args[1]
+		targetZip = os.Args[1]
 	}
 
-	// Recherche intelligente dans le répertoire courant ou Downloads
-	if _, err := os.Stat(zipPath); os.IsNotExist(err) {
-		home, _ := os.UserHomeDir()
-		downloadPath := filepath.Join(home, "Downloads", DEFAULT_ZIP_NAME)
-		if _, errDl := os.Stat(downloadPath); errDl == nil {
-			zipPath = downloadPath
+	// Tentative de chargement automatique silencieux
+	if targetZip != "" {
+		if err := verifyAndLoadZip(targetZip); err != nil {
+			lastError = err.Error()
+		}
+	} else {
+		for _, candidate := range findPotentialZipFiles() {
+			if err := verifyAndLoadZip(candidate); err == nil {
+				fmt.Printf("✅ Archive détectée et authentifiée automatiquement : %s\n", candidate)
+				break
+			}
 		}
 	}
-
-	fmt.Println("===================================================================")
-	fmt.Println("  ARCHIVE DOCUMENTAIRE SEM-26-003 — LECTEUR LOCAL SÉCURISÉ")
-	fmt.Println("  Vérification de l'ancrage OpenTimestamps (Blockchain Bitcoin)...")
-	fmt.Println("===================================================================")
-
-	if err := verifyAndLoadZip(zipPath); err != nil {
-		fmt.Printf("\n❌ ERREUR CRITIQUE DE SÉCURITÉ :\n%v\n\n", err)
-		fmt.Println("L'application a bloqué le déverrouillage de l'interface.")
-		os.Exit(1)
-	}
-
-	fmt.Println("✅ INTÉGRITÉ VÉRIFIÉE AVEC SUCCÈS")
-	fmt.Printf("🔒 Hash OpenTimestamps : %s\n", OFFICIAL_OTS_SHA256)
-	fmt.Printf("📦 Fichier source      : %s\n", zipPath)
-	fmt.Printf("📄 Pièces authentifiées : %d documents probatoires\n", len(fileCatalog))
 
 	// Port d'écoute dynamique sur loopback 127.0.0.1
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
@@ -154,10 +214,11 @@ func main() {
 	mux.HandleFunc("/file/", handleStreamFile)
 	mux.HandleFunc("/api/catalog", handleCatalog)
 	mux.HandleFunc("/api/status", handleStatus)
+	mux.HandleFunc("/api/browse-native", handleBrowseNative)
+	mux.HandleFunc("/api/upload-zip", handleUploadZip)
 
 	appURL := fmt.Sprintf("http://127.0.0.1:%d/?token=%s", port, sessionToken)
 	fmt.Printf("\n🚀 Interface locale active : %s\n", appURL)
-	fmt.Println("Appuyez sur Ctrl+C pour fermer le coffre-fort local.")
 
 	go func() {
 		time.Sleep(300 * time.Millisecond)
@@ -166,8 +227,8 @@ func main() {
 
 	server := &http.Server{
 		Handler:      mux,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 60 * time.Second,
+		ReadTimeout:  120 * time.Second,
+		WriteTimeout: 120 * time.Second,
 	}
 
 	if err := server.Serve(listener); err != nil && err != http.ErrServerClosed {
@@ -183,6 +244,100 @@ func handleInterface(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store, private")
 	w.Write(embeddedHTML)
+}
+
+func handleStatus(w http.ResponseWriter, r *http.Request) {
+	zipMutex.RLock()
+	defer zipMutex.RUnlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{
+		"loaded":       isVerified,
+		"verified":     isVerified,
+		"hash":         OFFICIAL_OTS_SHA256,
+		"file_count":   len(fileCatalog),
+		"loaded_path":  loadedPath,
+		"last_error":   lastError,
+	})
+}
+
+func handleBrowseNative(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Query().Get("token") != sessionToken {
+		http.Error(w, "Accès non autorisé", http.StatusForbidden)
+		return
+	}
+	filePath, err := pickNativeFile()
+	if err != nil || filePath == "" {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{"success": false, "error": "Sélection annulée"})
+		return
+	}
+
+	if err := verifyAndLoadZip(filePath); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{"success": false, "error": err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"success": true, "path": filePath, "count": len(fileCatalog)})
+}
+
+func handleUploadZip(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Query().Get("token") != sessionToken {
+		http.Error(w, "Accès non autorisé", http.StatusForbidden)
+		return
+	}
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Limite de taille à 5 Go
+	r.Body = http.MaxBytesReader(w, r.Body, 5<<30)
+	mr, err := r.MultipartReader()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	tempFile, err := os.CreateTemp("", "dossier-journalistes-*.zip")
+	if err != nil {
+		http.Error(w, "Impossible de créer le fichier temporaire", http.StatusInternalServerError)
+		return
+	}
+	defer os.Remove(tempFile.Name())
+	defer tempFile.Close()
+
+	for {
+		part, err := mr.NextPart()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if part.FormName() == "file" {
+			if _, err := io.Copy(tempFile, part); err != nil {
+				http.Error(w, "Erreur de téléversement", http.StatusInternalServerError)
+				return
+			}
+			break
+		}
+	}
+
+	tempFile.Sync()
+
+	if err := verifyAndLoadZip(tempFile.Name()); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{"success": false, "error": err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"success": true, "count": len(fileCatalog)})
 }
 
 func handleCatalog(w http.ResponseWriter, r *http.Request) {
@@ -201,16 +356,6 @@ func handleCatalog(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func handleStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
-		"verified":   true,
-		"hash":       OFFICIAL_OTS_SHA256,
-		"file_count": len(fileCatalog),
-		"mode":       "local_ots_vault",
-	})
-}
-
 func handleStreamFile(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Get("token") != sessionToken {
 		http.Error(w, "Accès non autorisé (Token de session invalide)", http.StatusForbidden)
@@ -221,6 +366,11 @@ func handleStreamFile(w http.ResponseWriter, r *http.Request) {
 
 	zipMutex.RLock()
 	defer zipMutex.RUnlock()
+
+	if zipReader == nil {
+		http.Error(w, "Aucune archive déverrouillée", http.StatusNotFound)
+		return
+	}
 
 	prefix := "dossier-journalistes-tourbiere-blainville-stablex/"
 

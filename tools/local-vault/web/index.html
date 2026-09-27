@@ -88,6 +88,99 @@
       text-decoration: underline;
     }
 
+    /* Écran d'accueil / Déverrouillage */
+    .unlock-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 13, 22, 0.96);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .unlock-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-width: 620px;
+      width: 100%;
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+    .unlock-icon {
+      font-size: 48px;
+      margin-bottom: 6px;
+    }
+    .unlock-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+    .unlock-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      cursor: pointer;
+      background: var(--surface-2);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    .btn-native {
+      background: #0d9488;
+      color: white;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .btn-native:hover {
+      background: #0f766e;
+    }
+    .btn-download-link {
+      color: #60a5fa;
+      font-size: 13px;
+      text-decoration: underline;
+      display: inline-block;
+      margin-top: 6px;
+    }
+    .error-box {
+      display: none;
+      background: #450a0a;
+      border: 1px solid #991b1b;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: #fca5a5;
+      text-align: left;
+      white-space: pre-wrap;
+      font-family: var(--font-mono);
+    }
+
     /* Barre d'outils */
     .toolbar {
       background: var(--surface);
@@ -334,6 +427,35 @@
 </head>
 <body>
 
+  <!-- Écran de Déverrouillage Cryptographique -->
+  <div class="unlock-overlay" id="unlockOverlay">
+    <div class="unlock-card">
+      <div class="unlock-icon">🔒</div>
+      <h2 class="unlock-title">Déverrouillage du Coffre-Fort Documentaire</h2>
+      <p class="unlock-desc">
+        Pour garantir l'intégrité probatoire des <strong>222 pièces</strong> de l'archive SEM-26-003, l'application vérifie l'empreinte cryptographique <strong>OpenTimestamps (Bitcoin)</strong> avant d'autoriser l'accès.
+      </p>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <button class="btn-native" id="btnBrowseNative">
+        <span>📁 Sélectionner l'archive ZIP sur mon ordinateur</span>
+      </button>
+
+      <div class="drop-zone" id="dropZone">
+        <span style="font-size: 28px;">📦</span>
+        <strong>Ou glissez-déposez le fichier ZIP ici</strong>
+        <span style="font-size: 12px; color: var(--text-muted);">dossier-journalistes-tourbiere-blainville-stablex.zip</span>
+      </div>
+
+      <div>
+        <a href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex.zip" target="_blank" rel="noopener" class="btn-download-link">
+          📥 Télécharger l'archive originale complète depuis Internet Archive (3.1 Go)
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- En-tête Ancrage Cryptographique OpenTimestamps -->
   <div class="ots-header">
     <div class="ots-badge">
@@ -342,7 +464,7 @@
     </div>
     <div class="ots-status">
       <span style="color: #34d399;">●</span>
-      <span>Authentifiée & Immuable (100% Hors-Ligne)</span>
+      <span id="otsStatusText">Authentifiée & Immuable (100% Hors-Ligne)</span>
     </div>
   </div>
 
@@ -358,19 +480,19 @@
   <div class="toolbar">
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" class="search-input" placeholder="Rechercher parmi les 222 pièces probatoires (nom, date, cote)...">
+      <input type="text" id="searchInput" class="search-input" placeholder="Rechercher parmi les pièces probatoires (nom, date, cote)...">
     </div>
     <select id="folderFilter" class="folder-filter">
       <option value="">📁 Tous les dossiers (10 catégories)</option>
     </select>
-    <div class="stats-count" id="statsCount">Chargement de l'inventaire...</div>
+    <div class="stats-count" id="statsCount">Initialisation...</div>
   </div>
 
   <!-- Corps principal -->
   <div class="main-container">
     <!-- Liste latérale des pièces -->
     <div class="file-tree" id="fileTree">
-      <div style="padding: 20px; text-align: center; color: var(--text-muted);">Initialisation du répertoire cryptographique...</div>
+      <div style="padding: 20px; text-align: center; color: var(--text-muted);">En attente de l'archive...</div>
     </div>
 
     <!-- Prévisualisation centrale -->
@@ -386,7 +508,7 @@
         <div class="empty-state">
           <div class="empty-icon">📂</div>
           <h3>222 Pièces Probatoires Déverrouillées</h3>
-          <p>Le fichier ZIP a été validé selon l'empreinte OpenTimestamps. Cliquez sur n'importe quel document pour l'inspecter immédiatement en haute fidélité.</p>
+          <p>Cliquez sur n'importe quel document dans la colonne latérale pour l'inspecter immédiatement en haute fidélité.</p>
         </div>
       </div>
     </div>
@@ -398,9 +520,100 @@
 
       const token = new URLSearchParams(window.location.search).get('token') || '';
 
-      // Inventaire complet des fichiers probatoires
       let allFiles = [];
       let currentActivePath = null;
+
+      // Vérification du statut au démarrage
+      async function checkVaultStatus() {
+        try {
+          const res = await fetch('/api/status?token=' + encodeURIComponent(token));
+          const data = await res.json();
+          if (data.loaded && data.verified) {
+            document.getElementById('unlockOverlay').style.display = 'none';
+            loadCatalog();
+          } else {
+            document.getElementById('unlockOverlay').style.display = 'flex';
+            if (data.last_error) {
+              showError(data.last_error);
+            }
+          }
+        } catch(e) {
+          // Erreur de communication serveur
+        }
+      }
+
+      function showError(msg) {
+        const box = document.getElementById('errorBox');
+        box.textContent = msg;
+        box.style.display = 'block';
+      }
+
+      // Sélection native de fichier
+      document.getElementById('btnBrowseNative').addEventListener('click', async () => {
+        try {
+          const btn = document.getElementById('btnBrowseNative');
+          btn.textContent = '⏳ Analyse cryptographique du fichier...';
+          btn.disabled = true;
+
+          const res = await fetch('/api/browse-native?token=' + encodeURIComponent(token));
+          const data = await res.json();
+          btn.textContent = '📁 Sélectionner l'archive ZIP sur mon ordinateur';
+          btn.disabled = false;
+
+          if (data.success) {
+            document.getElementById('unlockOverlay').style.display = 'none';
+            loadCatalog();
+          } else if (data.error && data.error !== 'Sélection annulée') {
+            showError(data.error);
+          }
+        } catch(e) {
+          showError(e.message);
+        }
+      });
+
+      // Gestion du Drag & Drop
+      const dropZone = document.getElementById('dropZone');
+      ['dragenter', 'dragover'].forEach(name => {
+        dropZone.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropZone.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+        });
+      });
+
+      dropZone.addEventListener('drop', async (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length === 0) return;
+        const file = files[0];
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        dropZone.innerHTML = '<span>⏳</span><strong>Téléversement et calcul du SHA-256 en cours...</strong>';
+
+        try {
+          const res = await fetch('/api/upload-zip?token=' + encodeURIComponent(token), {
+            method: 'POST',
+            body: formData
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('unlockOverlay').style.display = 'none';
+            loadCatalog();
+          } else {
+            showError(data.error || 'Fichier non conforme');
+            dropZone.innerHTML = '<span style="font-size:28px;">📦</span><strong>Glissez-déposez le fichier ZIP ici</strong>';
+          }
+        } catch(err) {
+          showError(err.message);
+          dropZone.innerHTML = '<span style="font-size:28px;">📦</span><strong>Glissez-déposez le fichier ZIP ici</strong>';
+        }
+      });
 
       // Surveillance Wi-Fi / En ligne
       async function checkNetworkStatus() {
@@ -413,9 +626,7 @@
           if (res.ok) {
             document.getElementById('onlineAlert').style.display = 'flex';
           }
-        } catch(e) {
-          // Mode isolé ou pare-feu
-        }
+        } catch(e) {}
       }
       window.addEventListener('online', checkNetworkStatus);
       window.addEventListener('offline', () => {
@@ -423,24 +634,22 @@
       });
       checkNetworkStatus();
 
-      // Initialisation du catalogue depuis le serveur local
-      async function initCatalog() {
+      // Chargement du catalogue
+      async function loadCatalog() {
         try {
           const res = await fetch('/api/catalog?token=' + encodeURIComponent(token));
           if (res.ok) {
             const data = await res.json();
-            if (data.files && data.files.length > 0) {
-              allFiles = data.files;
-            }
+            allFiles = data.files || [];
+            populateFolders(allFiles);
+            renderTree(allFiles);
           }
         } catch(e) {}
-
-        populateFolders(allFiles);
-        renderTree(allFiles);
       }
 
       function populateFolders(files) {
         const select = document.getElementById('folderFilter');
+        select.innerHTML = '<option value="">📁 Tous les dossiers (10 catégories)</option>';
         const folders = new Set();
         files.forEach(f => {
           const parts = f.split('/');
@@ -457,7 +666,7 @@
       function getFileIcon(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.pdf')) return '📕';
-        if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return '🖼️';
+        if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.webp')) return '🖼️';
         if (lower.endsWith('.csv')) return '📊';
         if (lower.endsWith('.mp4') || lower.endsWith('.mov')) return '🎥';
         if (lower.endsWith('.mp3') || lower.endsWith('.wav')) return '🎵';
@@ -482,7 +691,6 @@
           return;
         }
 
-        // Regroupement par dossier
         const groups = {};
         filtered.forEach(f => {
           const parts = f.split('/');
@@ -512,14 +720,11 @@
         });
       }
 
-      // Sélection et streaming du document
       function selectDocument(filePath) {
         currentActivePath = filePath;
         const fileName = filePath.split('/').pop();
         const lower = fileName.toLowerCase();
 
-        // Mise à jour de la sélection dans la sidebar
-        document.querySelectorAll('.tree-item').forEach(el => el.classList.remove('active'));
         renderTree(allFiles);
 
         document.getElementById('previewTitle').textContent = fileName;
@@ -542,7 +747,7 @@
           iframe.src = streamUrl;
           iframe.title = fileName;
           stage.appendChild(iframe);
-        } else if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg')) {
+        } else if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.webp')) {
           const img = document.createElement('img');
           img.src = streamUrl;
           img.alt = fileName;
@@ -570,7 +775,6 @@
               stage.innerHTML = `<div class="empty-state"><h4>Erreur de lecture CSV</h4><p>${err.message}</p></div>`;
             });
         } else {
-          // Affichage texte brut / hex
           fetch(streamUrl)
             .then(r => r.text())
             .then(txt => {
@@ -585,7 +789,6 @@
         }
       }
 
-      // Moteur de rendu CSV rapide et autonome
       function renderCsvTable(csvText, container) {
         const lines = csvText.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
         if (lines.length === 0) {
@@ -628,11 +831,10 @@
         container.appendChild(tableContainer);
       }
 
-      // Écouteurs d'événements
       document.getElementById('searchInput').addEventListener('input', () => renderTree(allFiles));
       document.getElementById('folderFilter').addEventListener('change', () => renderTree(allFiles));
 
-      initCatalog();
+      checkVaultStatus();
     })();
   </script>
 </body>
