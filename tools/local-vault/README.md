@@ -21,14 +21,10 @@ Le lecteur intègre un contrôle cryptographique strict en dur dans son code sou
 2. **Placez** le binaire dans le même dossier que l'archive (ou dans votre dossier Téléchargements).
 3. **Lancez** le binaire correspondant à votre système :
 
-### macOS
-```bash
-# Pour Mac avec puce Apple Silicon (M1 / M2 / M3 / M4)
-./lecteur-dossier-journalistes-mac-arm64
-
-# Pour Mac Intel
-./lecteur-dossier-journalistes-mac-intel
-```
+### macOS (Image Disque .DMG)
+1. Téléchargez et ouvrez `Lecteur-Dossier-Journalistes-Mac-AppleSilicon-M1-M2-M3-M4.dmg` (ou `Lecteur-Dossier-Journalistes-Mac-Intel.dmg`).
+2. Glissez **Lecteur Dossier Journalistes** dans **Applications**.
+3. **Premier lancement :** Faites **Clic droit (ou Control + Clic)** sur l'application dans Applications → **Ouvrir** → Confirmez avec **Ouvrir**.
 
 ### Windows
 Double-cliquez sur `lecteur-dossier-journalistes-windows-x64.exe` ou lancez via invite de commandes PowerShell :
