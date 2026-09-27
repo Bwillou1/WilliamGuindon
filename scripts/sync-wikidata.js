@@ -249,6 +249,13 @@ async function run() {
         await removeClaim(csrfToken, c.id);
       }
     }
+
+    // Suppression de l'identifiant BAnQ (P4901) erroné
+    const p4901Claims = currentClaims['P4901'] || [];
+    for (const c of p4901Claims) {
+      await removeClaim(csrfToken, c.id);
+    }
+
     // Recharger après suppression
     currentClaims = await fetchCurrentClaims();
 
