@@ -69,22 +69,9 @@
     if (carouselContainer && cards.length > 0) {
       let currentIndex = 0;
       let autoPlayTimer = null;
-
-      if (carouselWrapper) {
-        carouselWrapper.style.overflow = 'hidden';
-        carouselWrapper.style.position = 'relative';
-        carouselWrapper.style.width = '100%';
-      }
-      carouselContainer.style.display = 'flex';
-      carouselContainer.style.flexDirection = 'row';
-      carouselContainer.style.flexWrap = 'nowrap';
-      carouselContainer.style.alignItems = 'stretch';
-      carouselContainer.style.gap = '24px';
-      carouselContainer.style.width = 'max-content';
-      carouselContainer.style.minWidth = '100%';
       const getGap = () => 24;
 
-      // Calcul mis en cache et optimisé pour éviter le layout thrashing
+      // Calcul mis en cache et optimisé pour éliminer le layout thrashing
       let cachedCardWidth = 350;
       let cachedWrapWidth = 0;
 

@@ -853,7 +853,9 @@
               }
             });
 
-            checkBackgroundFeedUpdates(reg);
+            navigator.serviceWorker.ready.then(activeReg => {
+              checkBackgroundFeedUpdates(activeReg);
+            }).catch(() => {});
           })
           .catch((err) => { if (DEBUG) console.log('SW registration skipped:', err); });
       });
