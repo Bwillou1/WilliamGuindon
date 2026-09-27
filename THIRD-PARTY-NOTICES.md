@@ -469,6 +469,8 @@ SOFTWARE.
 - **Meta Platforms (Plugin Page Facebook) :** Flux d'actualités et publications en direct de la page officielle (politique : [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy/)).
 - **Google LLC (YouTube No-Cookie) :** Diffusion vidéo et archives citoyennes via le domaine à confidentialité renforcée `youtube-nocookie.com` (politique : [policies.google.com/privacy](https://policies.google.com/privacy)).
 - **ImageKit (ik.imagekit.io) :** Réseau de diffusion de contenu média (CDN) et moteur d'optimisation en temps réel pour photographies de terrain et médias ([imagekit.io](https://imagekit.io)).
+- **Streamline Icons (StreamlineHQ) & Iconify :** Jeux d'icônes vectorielles et symboles d'interface SVG sous licence libre / MIT / CC BY 4.0 ([streamlinehq.com](https://www.streamlinehq.com/?ref=iconify&utm_source=iconify&utm_medium=partner&utm_campaign=expand-your-collection&tab=all&via=iconify) & [iconify.design](https://iconify.design/)).
+- **Lucide Icons & Feather Icons :** Jeux d'icônes vectorielles SVG intégrés sous licence ISC / MIT (Copyright (c) 2022-2026 Lucide Contributors, Copyright (c) 2013-2026 Cole Bemis).
 - **Commission de Coopération Environnementale (CCE / cec.org) :** Consultation en direct des données et pièces officielles du registre public SEM-26-003 ([cec.org](https://www.cec.org)).
 - **uMap / OpenStreetMap Suisse (umap.osm.ch) :** Service libre de cartographie vectorielle et interactive basé sur les données ouvertes OpenStreetMap.
 - **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (données sous licence Open Database License - ODbL).

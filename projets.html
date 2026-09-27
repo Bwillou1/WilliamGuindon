@@ -1175,7 +1175,7 @@ body.grid-active .tourbiere-overlay {
           </div>
           <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
             <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
-              <span aria-hidden="true">🔔</span> S'abonner aux notifications
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
             </button>
           </div>
         </div>
@@ -1204,7 +1204,7 @@ body.grid-active .tourbiere-overlay {
 
     <!-- Bannière Notice pour Écran Étroit / Mobile / Connexion Bas Débit -->
     <aside id="screen-notice-banner" class="screen-notice-banner" role="note">
-      <div class="screen-notice-banner-icon" aria-hidden="true">🖥️</div>
+      <div class="screen-notice-banner-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
       <div>
         <strong>Veuillez posséder un écran plus large</strong> (ordinateur de bureau) pour explorer la constellation cosmique 3D interactive, la physique orbitale et la descente vers la tourbière. Les cartes des projets sont affichées directement ci-dessous :
       </div>
@@ -1277,7 +1277,7 @@ body.grid-active .tourbiere-overlay {
   <!-- Overlay Grande Tourbière de Blainville (Visible en dézoom cosmique) -->
   <div id="tourbiere-overlay" class="tourbiere-overlay" aria-hidden="true" inert>
     <div class="tourbiere-glass-card">
-      <div class="tourbiere-badge">🌿 Écosystème Boréal Protégé • Blainville, QC</div>
+      <div class="tourbiere-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>Écosystème Boréal Protégé • Blainville, QC</div>
       <h2 class="tourbiere-title">Grande Tourbière de Blainville</h2>
       <p class="tourbiere-desc">
         Vous avez pris du recul sur le cosmos pour atterrir au cœur de la tourbière. C'est ici que s'enracine la communication citoyenne <strong>SEM-26-003</strong> déposée auprès de la CCE pour préserver ce sanctuaire écologique face à l'enfouissement de déchets dangereux.
@@ -1285,7 +1285,7 @@ body.grid-active .tourbiere-overlay {
       <div class="tourbiere-actions">
         <a href="stablex.html" class="tourbiere-btn tourbiere-btn-primary">Dossier Stablex ↗</a>
         <a href="registre.html" class="tourbiere-btn tourbiere-btn-secondary">Registre CCE ↗</a>
-        <button type="button" class="tourbiere-btn tourbiere-btn-cosmos" id="btn-return-cosmos">✨ Retour au Cosmos</button>
+        <button type="button" class="tourbiere-btn tourbiere-btn-cosmos" id="btn-return-cosmos">Retour au Cosmos</button>
       </div>
     </div>
   </div>
@@ -2237,7 +2237,7 @@ body.grid-active .tourbiere-overlay {
         starCtx.fill();
 
         // D. Étiquette Royale
-        const sunLabel = "☀️ WilliamGuindon (Soleil)";
+        const sunLabel = "WilliamGuindon (Soleil)";
         starCtx.font = "700 13px -apple-system, sans-serif";
         const textMetrics = starCtx.measureText(sunLabel);
         const textWidth = textMetrics.width;
@@ -2476,7 +2476,7 @@ body.grid-active .tourbiere-overlay {
     camera.targetY = (height * 0.52) - (star.y * camera.targetZoom);
 
     if (star.isSun) {
-      insTitle.innerHTML = `☀️ ${escapeHtml(r.name)} <span style="font-size:0.75rem; color:#fbbf24; border:1px solid #fbbf24; padding:2px 8px; border-radius:12px; margin-left:8px;">Astre Solaire Central</span>`;
+      insTitle.innerHTML = `${escapeHtml(r.name)} <span style="font-size:0.75rem; color:#fbbf24; border:1px solid #fbbf24; padding:2px 8px; border-radius:12px; margin-left:8px;">Astre Solaire Central</span>`;
     } else {
       insTitle.textContent = r.name;
     }
@@ -2759,7 +2759,7 @@ body.grid-active .tourbiere-overlay {
           <div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
               <h3 style="margin: 0; color: #fff; font-size: 1.15rem; font-weight: 700;">
-                ${isSun ? '☀️ ' : ''}${escapeHtml(r.name)}
+                ${escapeHtml(r.name)}
               </h3>
               ${isSun ? '<span style="font-size: 0.72rem; color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); padding: 2px 7px; border-radius: 10px; font-weight: 700; white-space: nowrap;">Astre Central</span>' : ''}
             </div>

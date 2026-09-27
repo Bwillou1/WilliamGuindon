@@ -8260,3 +8260,148 @@ body[data-page="policy"] .floating-ai-btn {
   fill: #cc0000;
 }
 
+/* ==========================================================================
+   Accordéons Section Contact : Infolettre & Méthodes Chiffrées (Session/PGP)
+   ========================================================================== */
+.contact-details-accordion {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  margin-top: 18px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.contact-details-accordion:hover,
+.contact-details-accordion[open] {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .contact-details-accordion:hover,
+[data-theme="dark"] .contact-details-accordion[open] {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.contact-details-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.contact-details-summary::-webkit-details-marker,
+.contact-details-summary::marker {
+  display: none !important;
+}
+
+.contact-details-summary:hover {
+  background-color: var(--accent-wash);
+}
+
+.contact-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1 1 auto;
+}
+
+.contact-summary-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.contact-summary-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.contact-summary-title {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.contact-summary-desc {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.contact-summary-arrow {
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.contact-details-accordion[open] .contact-summary-arrow {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.contact-details-body {
+  padding: 18px 20px 22px 20px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-card);
+  animation: accordionFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Bouton Infolettre Brevo compact & sans déformation */
+.sib-form-block__button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 24px !important;
+  min-height: 44px !important;
+  height: auto !important;
+  width: auto !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  background-color: var(--accent, #059669) !important;
+  color: #ffffff !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25) !important;
+}
+
+.sib-form-block__button:hover,
+.sib-form-block__button:active {
+  background-color: var(--accent-deep, #047857) !important;
+  transform: translateY(-1px) !important;
+}
+
+.sib-form-block__button .sib-hide-loader-icon,
+.sib-form-block__button .progress-indicator__icon {
+  width: 18px !important;
+  height: 18px !important;
+  display: none !important;
+}
+
+#sib-container {
+  max-width: 100% !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+
