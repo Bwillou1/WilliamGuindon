@@ -238,19 +238,19 @@ async function run() {
 
     let currentClaims = await fetchCurrentClaims();
 
-    // Correction du lieu de naissance (P19) : supprimer Saint-Jérôme (Q142436) si présent et définir Blainville (Q139568)
+    // Correction du lieu de naissance (P19) : supprimer toute ancienne valeur différente de Saint-Eustache (Q141505)
     const p19Claims = currentClaims['P19'] || [];
     for (const c of p19Claims) {
       const v = c.mainsnak?.datavalue?.value;
-      if (v?.['numeric-id'] === 142436 || v?.id === 'Q142436') {
+      if (v?.['numeric-id'] !== 141505 && v?.id !== 'Q141505') {
         await removeClaim(csrfToken, c.id);
       }
     }
     // Recharger après suppression
     currentClaims = await fetchCurrentClaims();
 
-    // 1. Lieu de naissance & Résidence (Blainville Q139568)
-    await setClaimIfMissing(csrfToken, currentClaims, 'P19', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Lieu de naissance: Blainville (Q139568)');
+    // 1. Lieu de naissance (Saint-Eustache Q141505) & Résidence (Blainville Q139568)
+    await setClaimIfMissing(csrfToken, currentClaims, 'P19', 'value', { 'entity-type': 'item', 'numeric-id': 141505 }, 'Lieu de naissance: Saint-Eustache (Q141505)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P551', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Résidence: Blainville (Q139568)');
 
     // 2. Identité & Noms (selon Schema.org Person)
