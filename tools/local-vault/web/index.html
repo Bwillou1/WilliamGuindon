@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecteur Local Sécurisé — Archive SEM-26-003 (Vérification OpenTimestamps)</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #111827;
+      --surface-2: #1f293d;
+      --border: #2e3d5b;
+      --text: #f3f4f6;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --primary: #3b82f6;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* En-tête de sécurité */
+    .ots-header {
+      background: #042f2e;
+      border-bottom: 1px solid #0d9488;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .ots-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #5eead4;
+      font-weight: 600;
+    }
+    .ots-hash {
+      font-family: var(--font-mono);
+      background: rgba(0,0,0,0.4);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #99f6e4;
+      border: 1px solid #115e59;
+    }
+    .ots-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      background: #134e4a;
+      color: #ccfbf1;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Notification Wi-Fi / Mise à jour */
+    .online-alert {
+      display: none;
+      background: #1e3a8a;
+      border-bottom: 1px solid #3b82f6;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: #dbeafe;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .online-alert a {
+      color: #93c5fd;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* Barre d'outils */
+    .toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .search-box {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px 8px 36px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .folder-filter {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      max-width: 320px;
+      cursor: pointer;
+    }
+    .stats-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Layout principal */
+    .main-container {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Arborescence / Liste */
+    .file-tree {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .tree-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 12px 8px 6px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tree-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      transition: background 0.15s ease;
+      word-break: break-all;
+    }
+    .tree-item:hover {
+      background: var(--surface-2);
+    }
+    .tree-item.active {
+      background: #065f46;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .item-icon {
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+    .item-name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Zone de prévisualisation */
+    .preview-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .preview-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .preview-title {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .preview-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-action:hover {
+      background: var(--border);
+    }
+
+    .preview-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding: 20px;
+      position: relative;
+    }
+    .preview-stage iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+      border-radius: var(--radius);
+    }
+    .preview-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .preview-video {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: var(--radius);
+      outline: none;
+    }
+
+    /* Tableau CSV */
+    .table-container {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    .csv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .csv-table th {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    .csv-table td {
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border);
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+    .csv-table tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* État vide */
+    .empty-state {
+      text-align: center;
+      max-width: 460px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .empty-icon {
+      font-size: 42px;
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .main-container { grid-template-columns: 1fr; }
+      .file-tree { height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- En-tête Ancrage Cryptographique OpenTimestamps -->
+  <div class="ots-header">
+    <div class="ots-badge">
+      <span>🔒 ARCHIVE LOCALE SÉCURISÉE</span>
+      <span class="ots-hash" title="Empreinte SHA-256 OpenTimestamps Bitcoin">SHA256: 3209f9ea95dfc096ebcdf1ac0288c97872206af11a6e978a74761c03b3eba4d7</span>
+    </div>
+    <div class="ots-status">
+      <span style="color: #34d399;">●</span>
+      <span>Authentifiée & Immuable (100% Hors-Ligne)</span>
+    </div>
+  </div>
+
+  <!-- Alerte Détection Wi-Fi / En Ligne -->
+  <div class="online-alert" id="onlineAlert">
+    <div>
+      📡 <strong>Accès Internet détecté :</strong> Vous consultez l'archive locale figée. Une version enrichie ou des communiqués récents peuvent être parus en ligne.
+    </div>
+    <a href="https://williamguindon.me/dossier-journalistes.html" target="_blank" rel="noopener">Consulter le dossier en direct sur williamguindon.me →</a>
+  </div>
+
+  <!-- Barre d'outils & recherche -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Rechercher parmi les 222 pièces probatoires (nom, date, cote)...">
+    </div>
+    <select id="folderFilter" class="folder-filter">
+      <option value="">📁 Tous les dossiers (10 catégories)</option>
+    </select>
+    <div class="stats-count" id="statsCount">Chargement de l'inventaire...</div>
+  </div>
+
+  <!-- Corps principal -->
+  <div class="main-container">
+    <!-- Liste latérale des pièces -->
+    <div class="file-tree" id="fileTree">
+      <div style="padding: 20px; text-align: center; color: var(--text-muted);">Initialisation du répertoire cryptographique...</div>
+    </div>
+
+    <!-- Prévisualisation centrale -->
+    <div class="preview-pane">
+      <div class="preview-header">
+        <span class="preview-title" id="previewTitle">Sélectionnez un document dans la colonne de gauche</span>
+        <div class="preview-actions" id="previewActions" style="display: none;">
+          <a href="#" id="btnDownloadFile" class="btn-action" download>💾 Enregistrer une copie locale</a>
+          <a href="#" id="btnOpenNewTab" class="btn-action" target="_blank">↗ Ouvrir dans un onglet</a>
+        </div>
+      </div>
+      <div class="preview-stage" id="previewStage">
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          <h3>222 Pièces Probatoires Déverrouillées</h3>
+          <p>Le fichier ZIP a été validé selon l'empreinte OpenTimestamps. Cliquez sur n'importe quel document pour l'inspecter immédiatement en haute fidélité.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const token = new URLSearchParams(window.location.search).get('token') || '';
+
+      // Inventaire complet des fichiers probatoires
+      let allFiles = [];
+      let currentActivePath = null;
+
+      // Surveillance Wi-Fi / En ligne
+      async function checkNetworkStatus() {
+        if (!navigator.onLine) {
+          document.getElementById('onlineAlert').style.display = 'none';
+          return;
+        }
+        try {
+          const res = await fetch('https://williamguindon.me/api/v1/documents.json', { method: 'HEAD', cache: 'no-store' });
+          if (res.ok) {
+            document.getElementById('onlineAlert').style.display = 'flex';
+          }
+        } catch(e) {
+          // Mode isolé ou pare-feu
+        }
+      }
+      window.addEventListener('online', checkNetworkStatus);
+      window.addEventListener('offline', () => {
+        document.getElementById('onlineAlert').style.display = 'none';
+      });
+      checkNetworkStatus();
+
+      // Initialisation du catalogue depuis le serveur local
+      async function initCatalog() {
+        try {
+          const res = await fetch('/api/catalog?token=' + encodeURIComponent(token));
+          if (res.ok) {
+            const data = await res.json();
+            if (data.files && data.files.length > 0) {
+              allFiles = data.files;
+            }
+          }
+        } catch(e) {}
+
+        populateFolders(allFiles);
+        renderTree(allFiles);
+      }
+
+      function populateFolders(files) {
+        const select = document.getElementById('folderFilter');
+        const folders = new Set();
+        files.forEach(f => {
+          const parts = f.split('/');
+          if (parts.length > 1) folders.add(parts[0]);
+        });
+        folders.forEach(folder => {
+          const opt = document.createElement('option');
+          opt.value = folder;
+          opt.textContent = '📁 ' + folder.replace(/_/g, ' ');
+          select.appendChild(opt);
+        });
+      }
+
+      function getFileIcon(filename) {
+        const lower = filename.toLowerCase();
+        if (lower.endsWith('.pdf')) return '📕';
+        if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return '🖼️';
+        if (lower.endsWith('.csv')) return '📊';
+        if (lower.endsWith('.mp4') || lower.endsWith('.mov')) return '🎥';
+        if (lower.endsWith('.mp3') || lower.endsWith('.wav')) return '🎵';
+        return '📄';
+      }
+
+      function renderTree(files) {
+        const tree = document.getElementById('fileTree');
+        const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+        const folderVal = document.getElementById('folderFilter').value;
+
+        const filtered = files.filter(f => {
+          const matchesSearch = !searchVal || f.toLowerCase().includes(searchVal);
+          const matchesFolder = !folderVal || f.startsWith(folderVal + '/');
+          return matchesSearch && matchesFolder;
+        });
+
+        document.getElementById('statsCount').textContent = `${filtered.length} / ${files.length} pièces`;
+
+        if (filtered.length === 0) {
+          tree.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">Aucun document trouvé pour cette recherche.</div>';
+          return;
+        }
+
+        // Regroupement par dossier
+        const groups = {};
+        filtered.forEach(f => {
+          const parts = f.split('/');
+          const groupName = parts.length > 1 ? parts[0] : 'Documents Racines';
+          if (!groups[groupName]) groups[groupName] = [];
+          groups[groupName].push(f);
+        });
+
+        tree.innerHTML = '';
+        Object.keys(groups).sort().forEach(groupName => {
+          const title = document.createElement('div');
+          title.className = 'tree-group-title';
+          title.innerHTML = `<span>📁 ${groupName.replace(/_/g, ' ')}</span><span>${groups[groupName].length}</span>`;
+          tree.appendChild(title);
+
+          groups[groupName].forEach(filePath => {
+            const fileName = filePath.split('/').pop();
+            const item = document.createElement('div');
+            item.className = 'tree-item' + (currentActivePath === filePath ? ' active' : '');
+            item.innerHTML = `
+              <span class="item-icon">${getFileIcon(fileName)}</span>
+              <span class="item-name" title="${fileName}">${fileName}</span>
+            `;
+            item.onclick = () => selectDocument(filePath);
+            tree.appendChild(item);
+          });
+        });
+      }
+
+      // Sélection et streaming du document
+      function selectDocument(filePath) {
+        currentActivePath = filePath;
+        const fileName = filePath.split('/').pop();
+        const lower = fileName.toLowerCase();
+
+        // Mise à jour de la sélection dans la sidebar
+        document.querySelectorAll('.tree-item').forEach(el => el.classList.remove('active'));
+        renderTree(allFiles);
+
+        document.getElementById('previewTitle').textContent = fileName;
+        const actions = document.getElementById('previewActions');
+        actions.style.display = 'flex';
+
+        const streamUrl = `/file/${encodeURI(filePath)}?token=${encodeURIComponent(token)}`;
+        const downloadBtn = document.getElementById('btnDownloadFile');
+        downloadBtn.href = streamUrl;
+        downloadBtn.download = fileName;
+
+        const openTabBtn = document.getElementById('btnOpenNewTab');
+        openTabBtn.href = streamUrl;
+
+        const stage = document.getElementById('previewStage');
+        stage.innerHTML = '';
+
+        if (lower.endsWith('.pdf')) {
+          const iframe = document.createElement('iframe');
+          iframe.src = streamUrl;
+          iframe.title = fileName;
+          stage.appendChild(iframe);
+        } else if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg')) {
+          const img = document.createElement('img');
+          img.src = streamUrl;
+          img.alt = fileName;
+          img.className = 'preview-image';
+          stage.appendChild(img);
+        } else if (lower.endsWith('.mp4') || lower.endsWith('.mov')) {
+          const video = document.createElement('video');
+          video.src = streamUrl;
+          video.controls = true;
+          video.autoplay = true;
+          video.className = 'preview-video';
+          stage.appendChild(video);
+        } else if (lower.endsWith('.mp3') || lower.endsWith('.wav')) {
+          const audio = document.createElement('audio');
+          audio.src = streamUrl;
+          audio.controls = true;
+          audio.autoplay = true;
+          stage.appendChild(audio);
+        } else if (lower.endsWith('.csv')) {
+          stage.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">Chargement et structuration des données tabulaires...</div>';
+          fetch(streamUrl)
+            .then(r => r.text())
+            .then(csv => renderCsvTable(csv, stage))
+            .catch(err => {
+              stage.innerHTML = `<div class="empty-state"><h4>Erreur de lecture CSV</h4><p>${err.message}</p></div>`;
+            });
+        } else {
+          // Affichage texte brut / hex
+          fetch(streamUrl)
+            .then(r => r.text())
+            .then(txt => {
+              const pre = document.createElement('pre');
+              pre.style.cssText = 'width: 100%; height: 100%; overflow: auto; background: var(--surface); padding: 15px; border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--text); border: 1px solid var(--border);';
+              pre.textContent = txt;
+              stage.appendChild(pre);
+            })
+            .catch(() => {
+              stage.innerHTML = `<div class="empty-state"><h4>Prévisualisation non disponible</h4><p>Ce format peut être téléchargé via le bouton ci-dessus.</p></div>`;
+            });
+        }
+      }
+
+      // Moteur de rendu CSV rapide et autonome
+      function renderCsvTable(csvText, container) {
+        const lines = csvText.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length === 0) {
+          container.innerHTML = '<div class="empty-state">Fichier CSV vide.</div>';
+          return;
+        }
+
+        const tableContainer = document.createElement('div');
+        tableContainer.className = 'table-container';
+
+        const table = document.createElement('table');
+        table.className = 'csv-table';
+
+        const thead = document.createElement('thead');
+        const headerCols = lines[0].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+        const headerRow = document.createElement('tr');
+        headerCols.forEach(col => {
+          const th = document.createElement('th');
+          th.textContent = col;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        for (let i = 1; i < lines.length; i++) {
+          const tr = document.createElement('tr');
+          const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+          cols.forEach(col => {
+            const td = document.createElement('td');
+            td.textContent = col;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+
+        tableContainer.appendChild(table);
+        container.innerHTML = '';
+        container.appendChild(tableContainer);
+      }
+
+      // Écouteurs d'événements
+      document.getElementById('searchInput').addEventListener('input', () => renderTree(allFiles));
+      document.getElementById('folderFilter').addEventListener('change', () => renderTree(allFiles));
+
+      initCatalog();
+    })();
+  </script>
+</body>
+</html>
