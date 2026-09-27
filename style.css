@@ -2017,7 +2017,8 @@ dialog.doc-dialog[open]::backdrop {
   transform: translateY(-6px) rotate(-45deg);
 }
 
-.mobile-nav-header {
+.mobile-nav-header,
+.mobile-flat-nav {
   display: none;
 }
 
@@ -2153,268 +2154,208 @@ body.no-scroll {
     position: relative;
   }
   
+  /* Navigation Tiroir Mobile Latérale (Inspirée de Slideout.js et mmenu.js) */
   header.site nav,
   .site nav,
   header nav,
   nav {
-    display: none;
-    position: absolute;
-    top: calc(100% + 1px);
-    left: 0;
-    right: 0;
-    background: var(--bg-card);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--line);
-    border-top: none;
-    border-bottom: 2px solid var(--accent);
-    border-radius: 0 0 16px 16px;
-    flex-direction: column;
-    padding: 16px 16px 18px 16px;
-    gap: 0;
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45);
-    z-index: var(--z-modal);
-    max-height: calc(100dvh - 75px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    display: flex !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: min(340px, 86vw) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-left: 1px solid var(--line) !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+    border-radius: 0 !important;
+    flex-direction: column !important;
+    padding: 16px 16px 20px 16px !important;
+    gap: 0 !important;
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.3) !important;
+    z-index: 10001 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    transform: translateX(105%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease !important;
+    visibility: hidden;
+    pointer-events: none;
   }
   
   header.site nav.active,
   .site nav.active,
   header nav.active,
   nav.active {
-    display: flex;
-    animation: navSlideDown 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  
-  @keyframes navSlideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Barre de Recherche Instantanée sur Mobile */
-  .nav-search-btn {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    padding: 10px 14px !important;
-    margin: 0 0 12px 0 !important;
-    border-radius: 10px !important;
-    background: var(--bg) !important;
-    border: 1px solid var(--line) !important;
-    font-size: 14px !important;
-    color: var(--text-muted) !important;
-    box-sizing: border-box !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    order: 2 !important;
-    -webkit-tap-highlight-color: transparent !important;
-  }
-
-  .nav-search-btn:hover,
-  .nav-search-btn:active {
-    border-color: var(--accent) !important;
-    background: var(--accent-wash) !important;
-    color: var(--text) !important;
-  }
-
-  .nav-search-kbd {
-    font-size: 11px !important;
-    padding: 2px 6px !important;
-    border-radius: 5px !important;
-    background: var(--bg-card) !important;
-    border: 1px solid var(--line) !important;
-    color: var(--text-faint) !important;
-  }
-  
-  nav a {
-    color: var(--text);
-    margin-left: 0;
-    font-size: 14.5px;
-    font-weight: 500;
-    width: 100%;
-    padding: 11px 12px;
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-    border-radius: 6px;
-    box-sizing: border-box;
-    transition: background-color 0.15s ease, color 0.15s ease;
-  }
-
-  nav a:hover,
-  nav a:active {
-    background: var(--accent-wash);
-    color: var(--accent-deep);
-  }
-  
-  nav a:last-child {
-    border-bottom: none;
-  }
-
-  /* Rubriques Principales (Style Liste Épurée) */
-  .nav-dropdown {
-    width: 100% !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border-bottom: 1px solid var(--line) !important;
-    position: static !important;
-    order: 3 !important;
-  }
-
-  .nav-dropdown-btn {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 14px 6px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    color: var(--text) !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    box-sizing: border-box !important;
-    cursor: pointer !important;
-    transition: color 0.15s ease, background-color 0.15s ease !important;
-    -webkit-tap-highlight-color: transparent !important;
-  }
-
-  .nav-dropdown-btn:hover,
-  .nav-dropdown-btn:active {
-    color: var(--accent) !important;
-    background: transparent !important;
-  }
-
-  .nav-dropdown.active .nav-dropdown-btn {
-    color: var(--accent) !important;
-    font-weight: 700 !important;
-    background: transparent !important;
-    border: none !important;
-  }
-
-  [data-theme="dark"] .nav-dropdown.active .nav-dropdown-btn {
-    color: #4ade80 !important;
-    background: transparent !important;
-  }
-
-  /* Sous-menus Déroulants Mobile */
-  .nav-dropdown-menu {
-    display: none !important;
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 2px 0 12px 0 !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
-    background: var(--bg) !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 10px !important;
-    box-sizing: border-box !important;
-    padding: 8px !important;
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
     animation: none !important;
   }
 
-  .nav-dropdown.active .nav-dropdown-menu {
-    display: block !important;
-    animation: fadeInDropdown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  /* Masquer les anciens sous-menus imbriqués labyrinthiques sur smartphone */
+  .nav-dropdown:not(.nav-lang-dropdown),
+  .nav-notif-dropdown,
+  .nav-search-btn {
+    display: none !important;
   }
 
-  @keyframes fadeInDropdown {
-    from {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Navigation Mobile Directe à Plat (Flat Menu - 1 clic sans accordéons) */
+  .mobile-flat-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
   }
 
-  [data-theme="dark"] .nav-dropdown-menu {
-    background: rgba(13, 21, 16, 0.95) !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+  /* Bouton d'action phare : Agir & Soutenir */
+  .mobile-cta-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 14px 14px 12px 14px !important;
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.16), rgba(16, 185, 129, 0.08)) !important;
+    border: 1.5px solid var(--accent, #059669) !important;
+    border-radius: 12px !important;
+    text-decoration: none !important;
+    color: var(--text) !important;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12) !important;
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+    transition: transform 0.15s ease, background-color 0.15s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+    position: relative !important;
   }
 
-  .nav-dropdown-grid {
-    grid-template-columns: 1fr !important;
+  .mobile-cta-btn:active {
+    transform: scale(0.98) !important;
+  }
+
+  .mobile-cta-badge {
+    position: absolute !important;
+    top: -9px !important;
+    left: 12px !important;
+    background: var(--accent, #059669) !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    padding: 2px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .mobile-cta-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+  }
+
+  .mobile-cta-body strong {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: var(--accent-deep, #047857) !important;
+  }
+
+  [data-theme="dark"] .mobile-cta-body strong {
+    color: #4ade80 !important;
+  }
+
+  .mobile-cta-body span {
+    font-size: 11.5px !important;
+    color: var(--text-muted) !important;
+    font-weight: 400 !important;
+  }
+
+  .mobile-cta-arrow {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--accent, #059669) !important;
+  }
+
+  /* Groupes de liens directs à plat */
+  .mobile-flat-group {
     display: flex !important;
     flex-direction: column !important;
     gap: 4px !important;
+    margin-bottom: 6px !important;
   }
 
-  .nav-dropdown-item {
+  .mobile-flat-group-title {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: var(--text-muted) !important;
+    padding: 6px 4px 2px 4px !important;
+  }
+
+  .mobile-flat-link {
     display: flex !important;
     align-items: center !important;
-    width: 100% !important;
+    gap: 12px !important;
     padding: 10px 12px !important;
+    min-height: 44px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--line) !important;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    text-decoration: none !important;
     font-size: 13.5px !important;
     font-weight: 500 !important;
-    border-radius: 6px !important;
-    border-bottom: 1px solid var(--line) !important;
     box-sizing: border-box !important;
-    color: var(--text) !important;
-    cursor: pointer !important;
-    min-height: 40px !important;
     transition: all 0.15s ease !important;
     -webkit-tap-highlight-color: transparent !important;
   }
 
-  .nav-dropdown-item:last-child {
-    border-bottom: none !important;
-  }
-
-  .nav-dropdown-item:hover,
-  .nav-dropdown-item:active {
+  .mobile-flat-link:hover,
+  .mobile-flat-link:active {
     background: var(--accent-wash) !important;
-    color: var(--accent-deep) !important;
-    font-weight: 600 !important;
+    border-color: var(--accent) !important;
+    color: var(--accent-deep, #047857) !important;
   }
 
-  /* Accordéons Internes (details/summary) */
-  .nav-submenu {
-    width: 100% !important;
-    margin-bottom: 6px !important;
-    box-sizing: border-box !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 8px !important;
-    background: var(--bg-card) !important;
-    overflow: hidden !important;
+  [data-theme="dark"] .mobile-flat-link:hover,
+  [data-theme="dark"] .mobile-flat-link:active {
+    color: #4ade80 !important;
   }
 
-  .nav-submenu:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  .nav-submenu-summary {
-    padding: 10px 12px !important;
-    font-size: 13.5px !important;
+  .mobile-flat-link.active {
+    background: var(--accent-wash) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent-deep, #047857) !important;
     font-weight: 700 !important;
-    color: var(--text) !important;
-    cursor: pointer !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    -webkit-tap-highlight-color: transparent !important;
-    transition: background 0.15s ease !important;
   }
 
-  .nav-submenu[open] .nav-submenu-summary {
-    background: var(--accent-wash) !important;
-    color: var(--accent-deep) !important;
-    border-bottom: 1px solid var(--line) !important;
+  [data-theme="dark"] .mobile-flat-link.active {
+    color: #4ade80 !important;
   }
 
-  .nav-submenu-items {
-    padding: 4px 6px !important;
+  .mobile-link-icon {
+    font-size: 16px !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mobile-link-text {
+    flex: 1 1 auto !important;
+    line-height: 1.3 !important;
+  }
+
+  .mobile-link-arrow {
+    font-size: 15px !important;
+    color: var(--text-muted) !important;
+    opacity: 0.6 !important;
+    flex-shrink: 0 !important;
   }
 
   /* Barre d'actions d'outils basse (Langue, Notifications, Thème) */
@@ -3909,6 +3850,11 @@ body.dark-theme .notif-link-ghost {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+  }
+  .mobile-flat-nav,
+  .mobile-nav-backdrop,
+  .mobile-nav-header {
+    display: none !important;
   }
 }
 

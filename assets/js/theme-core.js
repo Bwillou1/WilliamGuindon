@@ -412,6 +412,106 @@
         nav.insertBefore(mobileNavHeader, nav.firstChild);
       }
 
+      if (!nav.querySelector('.mobile-flat-nav')) {
+        const flatNav = document.createElement('div');
+        flatNav.className = 'mobile-flat-nav';
+        flatNav.setAttribute('role', 'navigation');
+        flatNav.setAttribute('aria-label', 'Menu mobile direct');
+        
+        const isEn = document.documentElement.lang && document.documentElement.lang.startsWith('en');
+        const isEs = document.documentElement.lang && document.documentElement.lang.startsWith('es');
+
+        const ctaTitle = isEn ? 'How to Act & Support' : (isEs ? 'Cómo Actuar y Apoyar' : 'Comment Agir & Soutenir');
+        const ctaSub = isEn ? 'Citizen petition and advocacy' : (isEs ? 'Petición ciudadana y apoyo' : 'Pétition, mobilisation et action citoyenne');
+        const groupDossier = isEn ? 'Investigation & Evidence' : (isEs ? 'Expediente e Investigación' : 'Dossier CCE & Enquêtes');
+        const groupInfo = isEn ? 'News & Contact' : (isEs ? 'Noticias y Contacto' : 'Actualités & Contact');
+
+        flatNav.innerHTML = `
+          <a href="agir.html" class="mobile-cta-btn">
+            <span class="mobile-cta-badge">✊ ${isEn ? 'Priority Action' : (isEs ? 'Acción prioritaria' : 'Action prioritaire')}</span>
+            <div class="mobile-cta-body">
+              <strong>${ctaTitle}</strong>
+              <span>${ctaSub}</span>
+            </div>
+            <span class="mobile-cta-arrow" aria-hidden="true">→</span>
+          </a>
+          <div class="mobile-flat-group">
+            <span class="mobile-flat-group-title">${groupDossier}</span>
+            <a href="stablex.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">📁</span>
+              <span class="mobile-link-text">${isEn ? 'Stablex Investigation Dossier' : (isEs ? 'Expediente Stablex' : 'Dossier d\'enquête Stablex')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="apercu.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">💡</span>
+              <span class="mobile-link-text">${isEn ? 'Dossier Explained (SEM-26-003)' : (isEs ? 'Expediente Explicado' : 'Dossier expliqué (SEM-26-003)')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="registre.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">⚖️</span>
+              <span class="mobile-link-text">${isEn ? 'Official CEC Registry (222 records)' : (isEs ? 'Registro Oficial CCE' : 'Registre officiel CCE (222 pièces)')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="live.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">⏱️</span>
+              <span class="mobile-link-text">${isEn ? 'Clock · Oct 16 Deadline' : (isEs ? 'Reloj · Plazo 16 oct.' : 'Horloge · Échéance 16 oct.')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="autochtone.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">🌿</span>
+              <span class="mobile-link-text">${isEn ? 'Indigenous History & Ecology' : (isEs ? 'Historia Indígena y Ecología' : 'Histoire autochtone & Écologie')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+          </div>
+          <div class="mobile-flat-group">
+            <span class="mobile-flat-group-title">${groupInfo}</span>
+            <a href="presse.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">📰</span>
+              <span class="mobile-link-text">${isEn ? 'Press & Media Room' : (isEs ? 'Prensa y Medios' : 'Espace Presse & Médias')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="blog.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">📝</span>
+              <span class="mobile-link-text">${isEn ? 'Official Blog & Logbook' : (isEs ? 'Blog Oficial' : 'Blog officiel & Carnet')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="index.html#contact" class="mobile-flat-link">
+              <span class="mobile-link-icon">✉️</span>
+              <span class="mobile-link-text">${isEn ? 'Contact & Biography' : (isEs ? 'Contacto y Biografía' : 'Coordonnées & Contact')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+            <a href="politiques.html" class="mobile-flat-link">
+              <span class="mobile-link-icon">🛡️</span>
+              <span class="mobile-link-text">${isEn ? 'Charters & Policies (00-12)' : (isEs ? 'Cartas y Políticas' : 'Chartes & Politiques (00-12)')}</span>
+              <span class="mobile-link-arrow">›</span>
+            </a>
+          </div>
+        `;
+
+        const curPath = window.location.pathname.split('/').pop() || 'index.html';
+        const curHash = window.location.hash;
+        flatNav.querySelectorAll('.mobile-flat-link').forEach(item => {
+          const target = item.getAttribute('href');
+          if (!target) return;
+          const targetFile = target.split('#')[0].split('/').pop() || 'index.html';
+          const targetHash = target.includes('#') ? '#' + target.split('#')[1] : '';
+          if (targetHash && curHash) {
+            if ((targetFile === curPath || (targetFile === 'index.html' && curPath === '')) && targetHash === curHash) {
+              item.classList.add('active');
+            }
+          } else if (!targetHash && (targetFile === curPath || (targetFile === 'index.html' && curPath === ''))) {
+            item.classList.add('active');
+          }
+        });
+
+        const toolbar = nav.querySelector('.nav-mobile-toolbar');
+        if (toolbar) {
+          nav.insertBefore(flatNav, toolbar);
+        } else {
+          nav.appendChild(flatNav);
+        }
+      }
+
       function closeMobileNav() {
         nav.classList.remove('active');
         backdrop.classList.remove('active');

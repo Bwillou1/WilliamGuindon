@@ -15,6 +15,8 @@ const NAV_LINKS = [
   { label: 'Dossier Stablex & CCE', url: 'stablex.html', icon: '📁' },
   { label: 'Agir & Soutenir', url: 'agir.html', icon: '✊', highlight: true },
   { label: 'Vulgarisation (SEM-26-003)', url: 'apercu.html', icon: '💡' },
+  { label: 'Registre officiel CCE (222 pièces)', url: 'registre.html', icon: '⚖️' },
+  { label: 'Histoire autochtone & Écologie', url: 'autochtone.html', icon: '🌿' },
   { label: 'Blog & Carnet', url: 'blog.html', icon: '📝' },
   { label: 'Espace Presse', url: 'presse.html', icon: '📰' },
   { label: 'À propos & Contact', url: 'index.html#contact', icon: '✉️' }
