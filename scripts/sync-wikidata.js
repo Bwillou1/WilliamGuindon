@@ -232,9 +232,9 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 150 }, 'Langue: Français (Q150)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 1860 }, 'Langue: Anglais (Q1860)');
 
-    // 4. Domaines d'action / Thèmes clés (P921) : Protection de l'environnement (Q213568) & Justice environnementale (Q1414122)
-    await setClaimIfMissing(csrfToken, currentClaims, 'P921', 'value', { 'entity-type': 'item', 'numeric-id': 213568 }, 'Thème: Protection de l’environnement (Q213568)');
-    await setClaimIfMissing(csrfToken, currentClaims, 'P921', 'value', { 'entity-type': 'item', 'numeric-id': 1414122 }, 'Thème: Justice environnementale (Q1414122)');
+    // 4. Domaine d'activité (P101) : Protection de l'environnement (Q213568) & Justice environnementale (Q1414122)
+    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 213568 }, 'Domaine: Protection de l’environnement (Q213568)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 1414122 }, 'Domaine: Justice environnementale (Q1414122)');
 
     // 5. Décrit par la source (P1343) : La Presse (Q1337424) & Le Devoir (Q1504424)
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1337424 }, 'Source: La Presse (Q1337424)');
