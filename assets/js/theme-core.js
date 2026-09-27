@@ -327,7 +327,12 @@
           <span class="nav-search-text">Recherche</span>
           <kbd class="nav-search-kbd">⌘K</kbd>
         `;
-        nav.insertBefore(searchBtn, nav.firstChild);
+        const mobileNavHdr = nav.querySelector('.mobile-nav-header');
+        if (mobileNavHdr && mobileNavHdr.nextSibling) {
+          nav.insertBefore(searchBtn, mobileNavHdr.nextSibling);
+        } else {
+          nav.insertBefore(searchBtn, nav.firstChild);
+        }
         searchBtn.addEventListener('click', () => openQuickSearch());
       }
 
@@ -357,12 +362,25 @@
         sessionStorage.setItem(themeStorageKey, newTheme);
         toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
       };
+
+      // Regroupement des utilitaires de barre d'actions (Langue, Notifs, Thème)
+      let navToolbar = nav.querySelector('.nav-mobile-toolbar');
+      if (!navToolbar) {
+        navToolbar = document.createElement('div');
+        navToolbar.className = 'nav-mobile-toolbar';
+        nav.appendChild(navToolbar);
+      }
+      const langDrop = nav.querySelector('.nav-lang-dropdown');
+      const notifDrop = nav.querySelector('.nav-notif-dropdown');
+      if (langDrop && langDrop.parentElement !== navToolbar) navToolbar.appendChild(langDrop);
+      if (notifDrop && notifDrop.parentElement !== navToolbar) navToolbar.appendChild(notifDrop);
+      if (toggleBtn && toggleBtn.parentElement !== navToolbar) navToolbar.appendChild(toggleBtn);
     }
 
     // Menu Mobile
     if (headerWrap && nav) {
       const hamburgerSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>`;
-      const closeSvg = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+      const closeSvg = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
 
       let menuToggle = headerWrap.querySelector('.menu-toggle');
       if (!menuToggle) {
