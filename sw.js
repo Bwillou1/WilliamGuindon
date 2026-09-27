@@ -44,6 +44,7 @@ const ASSETS_TO_CACHE = [
   '/llms-full.txt',
   '/style.css',
   '/theme.js',
+  '/navbar.js',
   '/assets/js/theme-core.js',
   '/assets/js/page-home.js',
   '/assets/js/chat-ai.js',
