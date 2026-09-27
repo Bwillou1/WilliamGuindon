@@ -126,6 +126,7 @@
       </p>
       <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <a href="../apis.json" target="_blank" class="btn btn-primary" style="font-weight: 700;">Manifeste apis.json (apisjson.org) ↗</a>
+        <a href="https://huggingface.co/datasets/Williesssss/sem-26-003" target="_blank" rel="noopener" class="btn btn-ghost" style="border-color:#ffcc00; color:#ffcc00; font-weight:700;">🤗 Dataset Hugging Face ↗</a>
         <a href="../openapi.json" target="_blank" class="btn btn-ghost">Spécification OpenAPI 3.1 ↗</a>
         <a href="../llms-full.txt" target="_blank" class="btn btn-ghost">Corpus brut llms-full.txt ↗</a>
       </div>
@@ -134,7 +135,7 @@
 
   <section style="padding: 40px 0;">
     <div class="wrap">
-      <h2>Points d'Accès Principaux (Endpoints REST)</h2>
+      <h2>Points d'Accès Principaux (Endpoints REST &amp; Open Data)</h2>
       
       <div class="api-grid">
         
@@ -156,7 +157,25 @@
           <a href="v1/corpus.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
-        <!-- 2. Annuaire des 222 documents -->
+        <!-- 2. Dataset Hugging Face -->
+        <article class="api-card">
+          <div>
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span class="api-method-get" style="background:#d97706;">DATASET</span>
+              <span class="api-endpoint-url">hf.co/datasets/Williesssss/sem-26-003</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Jeu de Données Hugging Face (IA &amp; LLMs)</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+              Jeu de données officiel structuré et prêt pour l'apprentissage machine, le fine-tuning, les benchmarks et les pipelines RAG, distribué sur le hub Hugging Face.
+            </p>
+            <div class="code-box">
+              <code>from datasets import load_dataset<br>ds = load_dataset("Williesssss/sem-26-003")</code>
+            </div>
+          </div>
+          <a href="https://huggingface.co/datasets/Williesssss/sem-26-003" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 14px;">Explorer sur Hugging Face ↗</a>
+        </article>
+
+        <!-- 3. Annuaire des 222 documents -->
         <article class="api-card">
           <div>
             <div style="display: flex; align-items: center; margin-bottom: 8px;">
@@ -174,7 +193,7 @@
           <a href="v1/documents.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
-        <!-- 3. Statut CCE temps réel -->
+        <!-- 4. Statut CCE temps réel -->
         <article class="api-card">
           <div>
             <div style="display: flex; align-items: center; margin-bottom: 8px;">
@@ -192,7 +211,7 @@
           <a href="../status.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
-        <!-- 4. LLMs feeds -->
+        <!-- 5. LLMs feeds -->
         <article class="api-card">
           <div>
             <div style="display: flex; align-items: center; margin-bottom: 8px;">
@@ -217,7 +236,7 @@
 <pre style="margin: 0; color: #e2e8f0;"><code>import urllib.request
 import json
 
-# 1. Récupération du corpus intégral de tout le site
+# Option A : Chargement direct du corpus complet via l'API REST
 url = "https://williamguindon.me/api/v1/corpus.json"
 req = urllib.request.Request(url, headers={"User-Agent": "AIAgent/1.0"})
 with urllib.request.urlopen(req) as response:
@@ -226,16 +245,17 @@ with urllib.request.urlopen(req) as response:
 print(f"Pages indexées : {corpus['statistics']['total_pages']}")
 print(f"Nombre total de mots : {corpus['statistics']['total_words']}")
 
-# 2. Recherche plein texte instantanée dans toutes les pages
+# Recherche plein texte instantanée dans toutes les pages
 query = "cadmium"
 matching_pages = [
     page for page in corpus["site_pages"]
     if query.lower() in page["full_text"].lower()
 ]
-
 print(f"Pages mentionnant '{query}' : {len(matching_pages)}")
-for p in matching_pages[:3]:
-    print(f"- {p['title']} ({p['url']})")
+
+# Option B : Chargement via Hugging Face Datasets
+# from datasets import load_dataset
+# dataset = load_dataset("Williesssss/sem-26-003")
 </code></pre>
       </div>
 
