@@ -1,0 +1,66 @@
+name: Publication du Lecteur Local Sécurisé (GitHub Release)
+
+on:
+  push:
+    tags:
+      - 'vault-v*'
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Compilation Multi-Plateforme & Publication
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          check-latest: true
+
+      - name: Compilation des exécutables (macOS, Windows, Linux)
+        run: |
+          chmod +x tools/local-vault/build.sh
+          bash tools/local-vault/build.sh
+
+      - name: Génération des sommes de contrôle SHA-256
+        run: |
+          cd tools/local-vault/dist
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publication de la Release GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Lecteur Local Sécurisé SEM-26-003 — ${{ github.ref_name }}"
+          body: |
+            ## 🔒 Archive Documentaire SEM-26-003 — Lecteur Local Autonome & Inviolable
+            
+            Ce lecteur de bureau autonome permet aux journalistes, avocats et citoyens de consulter les **222 pièces probatoires** du dossier en totale isolation hors-ligne, avec vérification stricte de l'ancrage cryptographique **OpenTimestamps (Blockchain Bitcoin)**.
+
+            ### 🛡️ Empreinte Cryptographique Certifiée
+            * **SHA-256 officiel de l'archive :** `3209f9ea95dfc096ebcdf1ac0288c97872206af11a6e978a74761c03b3eba4d7`
+            * **Garantie :** Si le fichier ZIP a été modifié d'un seul octet, le lecteur refuse le déverrouillage de l'interface.
+            * **Zéro extraction sur disque :** Streaming direct depuis la RAM (`zip.Reader`).
+
+            ### 📦 Téléchargements Directs
+            * 🪟 **Windows :** `lecteur-dossier-journalistes-windows-x64.exe`
+            * 🍏 **macOS (Apple Silicon M1/M2/M3/M4) :** `lecteur-dossier-journalistes-mac-arm64`
+            * 🍏 **macOS (Intel) :** `lecteur-dossier-journalistes-mac-intel`
+            * 🐧 **Linux :** `lecteur-dossier-journalistes-linux-x64`
+            * 📜 **Sommes de contrôle :** `SHA256SUMS.txt`
+
+            ### 🚀 Instructions Rapides
+            1. Téléchargez le binaire adapté à votre système ci-dessous.
+            2. Téléchargez l'archive complète des pièces : `dossier-journalistes-tourbiere-blainville-stablex.zip` depuis [Internet Archive](https://archive.org/details/dossier-journalistes-tourbiere-blainville-stablex) ou [williamguindon.me](https://williamguindon.me/dossier-journalistes.html).
+            3. Placez le binaire et l'archive dans le même dossier et lancez l'application.
+          files: |
+            tools/local-vault/dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

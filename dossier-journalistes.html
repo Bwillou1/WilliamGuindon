@@ -95,8 +95,25 @@
       box-shadow: 0 1px 3px rgba(6, 78, 59, 0.2);
       transition: background 0.15s;
     }
-    .drive-btn-download:hover {
-      background: #064e3b;
+    .drive-btn-vault {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      text-decoration: none;
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .drive-btn-vault:hover {
+      background: #0f172a;
+      border-color: #059669;
+      color: #34d399;
     }
     .drive-body {
       display: flex;
@@ -578,14 +595,24 @@
       </div>
     </div>
     
-    <a id="btn-download-all" 
-       href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex" 
-       class="drive-btn-download"
-       target="_blank"
-       rel="noopener"
-       title="Télécharger l'ensemble des 222 pièces probatoires originales en ZIP">
-      <span>Télécharger tout (ZIP)</span>
-    </a>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+      <a id="btn-download-vault" 
+         href="https://github.com/Bwillou1/WilliamGuindon/releases/latest" 
+         class="drive-btn-vault"
+         target="_blank"
+         rel="noopener"
+         title="Télécharger l'application lecteur hors-ligne sécurisée (Windows, Mac, Linux) avec vérification OpenTimestamps">
+        <span>🔒 Lecteur Hors-Ligne (Win / Mac / Linux)</span>
+      </a>
+      <a id="btn-download-all" 
+         href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex" 
+         class="drive-btn-download"
+         target="_blank"
+         rel="noopener"
+         title="Télécharger l'ensemble des 222 pièces probatoires originales en ZIP">
+        <span>Télécharger tout (ZIP)</span>
+      </a>
+    </div>
   </div>
 
   <div class="drive-body">
