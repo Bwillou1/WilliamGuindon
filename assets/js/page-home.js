@@ -82,29 +82,26 @@
       carouselContainer.style.gap = '24px';
       carouselContainer.style.width = 'max-content';
       carouselContainer.style.minWidth = '100%';
-      carouselContainer.style.willChange = 'transform';
-      carouselContainer.style.transform = 'translateX(0px)';
-
-      cards.forEach(c => {
-        c.style.flex = '0 0 350px';
-        c.style.width = '350px';
-        c.style.minWidth = '290px';
-        c.style.maxWidth = '380px';
-        c.style.boxSizing = 'border-box';
-        c.style.position = 'relative';
-      });
-
       const getGap = () => 24;
 
-      const getCardWidth = () => {
-        const first = cards[0];
-        return first ? first.getBoundingClientRect().width : 350;
+      // Calcul mis en cache et optimisé pour éviter le layout thrashing
+      let cachedCardWidth = 350;
+      let cachedWrapWidth = 0;
+
+      const measureDimensions = () => {
+        if (cards[0]) {
+          cachedCardWidth = cards[0].offsetWidth || 350;
+        }
+        if (carouselWrapper) {
+          cachedWrapWidth = carouselWrapper.offsetWidth || window.innerWidth;
+        }
       };
 
+      measureDimensions();
+
       const getVisibleCards = () => {
-        const wrapWidth = carouselWrapper ? carouselWrapper.getBoundingClientRect().width : window.innerWidth;
-        const cardW = getCardWidth();
-        return Math.max(1, Math.floor(wrapWidth / (cardW + getGap())));
+        const wrapW = cachedWrapWidth || window.innerWidth;
+        return Math.max(1, Math.floor(wrapW / (cachedCardWidth + getGap())));
       };
 
       const getMaxIndex = () => {
@@ -116,9 +113,8 @@
         const maxIdx = getMaxIndex();
         currentIndex = Math.max(0, Math.min(index, maxIdx));
 
-        const cardW = getCardWidth();
         const gap = getGap();
-        const offset = currentIndex * (cardW + gap);
+        const offset = currentIndex * (cachedCardWidth + gap);
 
         carouselContainer.style.transition = smooth ? 'transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1)' : 'none';
         carouselContainer.style.transform = `translateX(-${offset}px)`;
@@ -305,7 +301,7 @@
                     <h3 class="blog-preview-title">${ph.title}</h3>
                     <p class="blog-preview-excerpt">${ph.description || ''}</p>
                     <div class="blog-preview-footer">
-                      <a href="photos.html" class="blog-preview-link">Voir en grand ↗</a>
+                      <a href="photos.html" class="blog-preview-link" aria-label="Voir la photographie : ${ph.title || 'Photographie'} en grand">Voir en grand ↗</a>
                     </div>
                   </div>
                 </article>
@@ -334,7 +330,7 @@
                     <h3 class="blog-preview-title">${p.title}</h3>
                     <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
                     <div class="blog-preview-footer">
-                      <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link">Lire l'article complet ↗</a>
+                      <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link" aria-label="Lire l'article complet : ${p.title}">Lire l'article complet ↗</a>
                     </div>
                   </div>
                 </article>

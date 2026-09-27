@@ -1110,16 +1110,54 @@
       }
     }
 
-    function checkBackgroundFeedUpdates(reg) {
-      if (!('periodicSync' in reg)) return;
+    async function checkBackgroundFeedUpdates(reg) {
+      if (!reg || !('periodicSync' in reg) || !reg.active) return;
       try {
-        reg.periodicSync.register('check-cce-deadline', {
+        if ('permissions' in navigator) {
+          const status = await navigator.permissions.query({ name: 'periodic-background-sync' }).catch(() => null);
+          if (status && status.state !== 'granted') return;
+        }
+        await reg.periodicSync.register('check-cce-deadline', {
           minInterval: 12 * 60 * 60 * 1000
-        });
+        }).catch(() => {});
       } catch (_) {}
     }
 
-    // Boutons de copie
+    // Initialisation Lite YouTube Embed (Façade haute performance)
+    function initLiteYouTubeEmbeds() {
+      document.querySelectorAll('.js-lite-youtube').forEach(container => {
+        const activate = () => {
+          if (container.getAttribute('data-activated') === 'true') return;
+          container.setAttribute('data-activated', 'true');
+          const iframe = document.createElement('iframe');
+          iframe.src = container.getAttribute('data-src') || '';
+          iframe.title = container.getAttribute('data-title') || 'Vidéo YouTube';
+          iframe.style.position = 'absolute';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          iframe.style.border = '0';
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          iframe.allowFullscreen = true;
+          container.innerHTML = '';
+          container.appendChild(iframe);
+        };
+        container.addEventListener('click', activate, { once: true });
+        container.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+          }
+        });
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLiteYouTubeEmbeds);
+    } else {
+      initLiteYouTubeEmbeds();
+    }
+
     // Boutons d'impression légale
     document.querySelectorAll('.legal-print-button').forEach(btn => {
       btn.addEventListener('click', () => window.print());
