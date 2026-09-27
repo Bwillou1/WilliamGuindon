@@ -2798,43 +2798,384 @@
       showToast('✔ Fichier vectoriel SVG téléchargé !');
     });
 
+    // UTILITAIRES DE DESSIN CANVAS 2D HAUTE DÉFINITION
+    function drawStudioRoundRect(ctx, x, y, width, height, radius) {
+      if (typeof ctx.roundRect === 'function') {
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, height, radius);
+      } else {
+        const r = typeof radius === 'number' ? radius : (Array.isArray(radius) ? radius[0] : 0);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+    }
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+      if (!text) return [];
+      const words = text.split(/\s+/);
+      const lines = [];
+      let currentLine = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const testLine = currentLine ? currentLine + ' ' + word : word;
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+      return lines;
+    }
+
+    function drawStudioCardToCanvas(ctx, baseW, baseH) {
+      const pal = PALETTES[currentTheme] || PALETTES.emerald;
+      const isStory = currentFormat === 'story';
+      const isLandscape = currentFormat === 'landscape';
+      const isPortrait = currentFormat === 'portrait';
+
+      // 1. Fond en dégradé
+      const stops = (pal.bg && pal.bg.match(/#[0-9a-fA-F]{6}/g)) || ['#021a12', '#032b1f', '#01150e'];
+      const bgGrad = ctx.createLinearGradient(0, 0, baseW, baseH);
+      bgGrad.addColorStop(0, stops[0]);
+      bgGrad.addColorStop(0.5, stops[1] || stops[0]);
+      bgGrad.addColorStop(1, stops[2] || stops[stops.length - 1]);
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, baseW, baseH);
+
+      // Overlay vignette
+      const overlayGrad = ctx.createLinearGradient(0, 0, 0, baseH);
+      overlayGrad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+      overlayGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.1)');
+      overlayGrad.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+      ctx.fillStyle = overlayGrad;
+      ctx.fillRect(0, 0, baseW, baseH);
+
+      // 2. Cadre et coins d'orfèvrerie
+      ctx.save();
+      ctx.strokeStyle = pal.boxBorder || pal.cardBorder || 'rgba(52, 211, 153, 0.4)';
+      ctx.lineWidth = 3;
+      drawStudioRoundRect(ctx, 32, 32, baseW - 64, baseH - 64, 24);
+      ctx.stroke();
+
+      if (chkCrosshairs.checked) {
+        ctx.fillStyle = pal.accent;
+        ctx.font = '900 26px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('+', 52, 52);
+        ctx.fillText('+', baseW - 52, 52);
+        ctx.fillText('+', 52, baseH - 52);
+        ctx.fillText('+', baseW - 52, baseH - 52);
+      }
+      ctx.restore();
+
+      // Glyphe de citation en filigrane si activé
+      if (chkQuoteMark.checked && currentLayout !== 'stat') {
+        ctx.save();
+        ctx.fillStyle = pal.accent;
+        ctx.globalAlpha = 0.08;
+        ctx.font = '900 ' + (isLandscape ? '140px' : '200px') + ' "Playfair Display", Georgia, serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.fillText('“', baseW - (isLandscape ? 50 : 60), 40);
+        ctx.restore();
+      }
+
+      // 3. Dimensions & Marges
+      const padX = isStory ? 54 : isLandscape ? 44 : 56;
+      const padY = isStory ? 64 : isLandscape ? 38 : 56;
+      const contentW = baseW - padX * 2;
+
+      // 4. Haut de carte (Kicker + Métadonnées)
+      const kickerText = (inputKicker.value || '').trim();
+      if (kickerText) {
+        ctx.save();
+        ctx.font = '800 19px "Plus Jakarta Sans", sans-serif';
+        const kw = Math.min(contentW * 0.75, ctx.measureText(kickerText).width + 36);
+        drawStudioRoundRect(ctx, padX, padY, kw, 38, 19);
+        ctx.fillStyle = pal.accentPillBg || 'rgba(0,0,0,0.65)';
+        ctx.fill();
+        ctx.strokeStyle = pal.accentPillBorder || pal.accent;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = pal.accent;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        
+        let tx = padX + 18;
+        if (chkLiveDot.checked) {
+          ctx.beginPath();
+          ctx.arc(tx + 5, padY + 19, 5, 0, Math.PI * 2);
+          ctx.fillStyle = '#ef4444';
+          ctx.fill();
+          tx += 16;
+        }
+
+        ctx.fillStyle = pal.accent;
+        ctx.fillText(kickerText, tx, padY + 19);
+        ctx.restore();
+      }
+
+      // Metadata haut droite
+      ctx.save();
+      ctx.font = '700 17px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = pal.textMuted || '#e2e8f0';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      if (chkSupporterBadge && chkSupporterBadge.checked) {
+        ctx.fillStyle = pal.accent;
+        ctx.fillText('✊ CITOYEN SOLIDAIRE', baseW - padX, padY + 19);
+      } else {
+        ctx.fillText('ACEUM · CCE', baseW - padX, padY + 19);
+      }
+      ctx.restore();
+
+      // 5. Zone Narratrice Centrale
+      let curY = padY + 68;
+
+      // Statistique héroïque
+      if (currentLayout === 'stat') {
+        const statNum = (inputStatNum.value || '278 000 m²').trim();
+        const statLbl = (inputStatLbl.value || 'DE MILIEUX HUMIDES MENACÉS').trim();
+        ctx.save();
+        ctx.font = '900 ' + (isLandscape ? '70px' : '88px') + ' "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = pal.accent;
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+        ctx.fillText(statNum, padX, curY);
+        curY += (isLandscape ? 74 : 94);
+
+        ctx.font = '800 19px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = pal.textMuted || '#cbd5e1';
+        ctx.fillText(statLbl, padX, curY);
+        curY += 34;
+        ctx.restore();
+      }
+
+      // Titre principal
+      const titleText = (inputTitle.value || '').trim();
+      let fontTitleName = '"Playfair Display", Georgia, serif';
+      if (currentFont === 'sans') fontTitleName = '"Plus Jakarta Sans", sans-serif';
+      else if (currentFont === 'syne') fontTitleName = '"Syne", sans-serif';
+      else if (currentFont === 'mono') fontTitleName = '"Space Grotesk", monospace';
+
+      const titleLen = titleText.length;
+      let titleFontSize = isLandscape ? (titleLen > 90 ? 26 : titleLen > 50 ? 30 : 36) : (titleLen > 90 ? 34 : titleLen > 50 ? 40 : 48);
+      if (isStory && titleLen > 70) titleFontSize = Math.max(30, titleFontSize - 6);
+
+      ctx.save();
+      ctx.font = '900 ' + titleFontSize + 'px ' + fontTitleName;
+      ctx.fillStyle = pal.textMain || '#ffffff';
+      ctx.textBaseline = 'top';
+      ctx.textAlign = 'left';
+
+      const titleLines = wrapCanvasText(ctx, titleText, contentW);
+      const titleLineH = titleFontSize * 1.24;
+      for (const line of titleLines) {
+        ctx.fillText(line, padX, curY);
+        curY += titleLineH;
+      }
+      ctx.restore();
+
+      // Ligne d'accent
+      curY += (isLandscape ? 8 : 14);
+      ctx.save();
+      ctx.fillStyle = pal.accent;
+      drawStudioRoundRect(ctx, padX, curY, 80, 5, 2.5);
+      ctx.fill();
+      curY += 20;
+      ctx.restore();
+
+      // Corps du texte
+      const bodyText = (inputBody.value || '').trim();
+      if (bodyText) {
+        const bodyLen = bodyText.length;
+        let bodyFontSize = isLandscape ? (bodyLen > 180 ? 15 : 18) : (bodyLen > 180 ? 19 : 23);
+        if (isStory && bodyLen > 180) bodyFontSize = Math.max(16, bodyFontSize - 3);
+
+        ctx.save();
+        ctx.font = '450 ' + bodyFontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillStyle = pal.textMuted || '#e2e8f0';
+        ctx.textBaseline = 'top';
+        ctx.textAlign = 'left';
+
+        const bodyLines = wrapCanvasText(ctx, bodyText, contentW);
+        const bodyLineH = bodyFontSize * 1.46;
+        for (const line of bodyLines) {
+          ctx.fillText(line, padX, curY);
+          curY += bodyLineH;
+        }
+        curY += (isLandscape ? 8 : 14);
+        ctx.restore();
+      }
+
+      // Capsule Highlight
+      const hlText = (inputHighlight.value || '').trim();
+      if (hlText) {
+        ctx.save();
+        const hlFontSize = isLandscape ? 15 : 18;
+        ctx.font = '800 ' + hlFontSize + 'px "Plus Jakarta Sans", sans-serif';
+        const displayHl = '⚖️  ' + hlText;
+        const fullHlW = ctx.measureText(displayHl).width + 36;
+        const hlW = Math.min(contentW, fullHlW);
+        const hlH = hlFontSize + 20;
+
+        drawStudioRoundRect(ctx, padX, curY, hlW, hlH, 10);
+        ctx.fillStyle = pal.boxBg || 'rgba(0, 0, 0, 0.75)';
+        ctx.fill();
+        ctx.strokeStyle = pal.boxBorder || pal.accent;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = pal.accent;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        ctx.fillText(displayHl, padX + 16, curY + hlH / 2);
+        ctx.restore();
+      }
+
+      // 6. Bas de carte (Pied de page)
+      const footerY = baseH - padY - (isLandscape ? 48 : 62);
+      ctx.save();
+      // Ligne de séparation
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(padX, footerY - (isLandscape ? 12 : 18));
+      ctx.lineTo(baseW - padX, footerY - (isLandscape ? 12 : 18));
+      ctx.stroke();
+
+      // Profil / Auteur
+      let authorLeft = padX;
+      const authorText = (inputAuthor.value || 'William Guindon').trim();
+      const roleText = (inputRole.value || 'Auteur du dossier SEM-26-003').trim();
+
+      ctx.fillStyle = pal.textMain || '#ffffff';
+      ctx.font = '800 ' + (isLandscape ? '22px' : '26px') + ' "Plus Jakarta Sans", sans-serif';
+      ctx.textBaseline = 'top';
+      ctx.textAlign = 'left';
+      ctx.fillText(authorText + (chkVerifiedBadge.checked ? ' ✓' : ''), authorLeft, footerY - (isLandscape ? 4 : 8));
+
+      ctx.fillStyle = pal.textMuted || '#94a3b8';
+      ctx.font = '500 ' + (isLandscape ? '16px' : '18px') + ' "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(roleText, authorLeft, footerY + (isLandscape ? 22 : 26));
+
+      // Signature officielle à droite
+      if (chkSignatureSvg.checked) {
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.font = 'italic 800 ' + (isLandscape ? '22px' : '26px') + ' "Playfair Display", Georgia, serif';
+        ctx.fillStyle = pal.accent;
+        ctx.fillText('William Guindon ✍️', baseW - padX, footerY - (isLandscape ? 2 : 4));
+      }
+
+      // Métadonnées du bas (URL et courriel)
+      if (chkFooterMeta.checked) {
+        const subY = footerY + (isLandscape ? 46 : 56);
+        ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+        ctx.textBaseline = 'top';
+
+        // Gauche
+        ctx.textAlign = 'left';
+        if (chkCceSeal && chkCceSeal.checked) {
+          ctx.fillStyle = pal.accent;
+          ctx.fillText('🏛️ CCE SEM-26-003  ·  ', padX, subY);
+          const cceW = ctx.measureText('🏛️ CCE SEM-26-003  ·  ').width;
+          ctx.fillStyle = pal.textMuted || '#94a3b8';
+          ctx.fillText('contact@williamguindon.me', padX + cceW, subY);
+        } else {
+          ctx.fillStyle = pal.textMuted || '#94a3b8';
+          ctx.fillText('contact@williamguindon.me', padX, subY);
+        }
+
+        // Droite
+        ctx.textAlign = 'right';
+        ctx.fillStyle = pal.textMuted || '#94a3b8';
+        ctx.fillText('williamguindon.me', baseW - padX, subY);
+      }
+      ctx.restore();
+    }
+
     // RENDU CANAS 2K VERS PNG HAUTE DÉFINITION
     function render2KCanvas(callback) {
-      const fmt = FORMATS[currentFormat];
-      const scale = 2; // Rendu Retina 2K (ex: 2160x2160 pour 1:1)
-      exportCanvas.width = fmt.w * scale;
-      exportCanvas.height = fmt.h * scale;
-      const ctx = exportCanvas.getContext('2d');
+      try {
+        const fmt = FORMATS[currentFormat];
+        const scale = 2; // Rendu Retina 2K (ex: 2160x2160 pour 1:1)
+        exportCanvas.width = fmt.w * scale;
+        exportCanvas.height = fmt.h * scale;
+        const ctx = exportCanvas.getContext('2d');
 
-      const svgCode = generateVectorSvg(fmt.w * scale, fmt.h * scale);
-      const blob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-
-      img.onload = () => {
         ctx.clearRect(0, 0, exportCanvas.width, exportCanvas.height);
-        ctx.drawImage(img, 0, 0);
-        URL.revokeObjectURL(url);
-        exportCanvas.toBlob(blobResult => {
-          callback(blobResult);
-        }, 'image/png');
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        showToast('Erreur lors de la rasterisation 2K.');
-      };
-      img.src = url;
+        ctx.save();
+        ctx.scale(scale, scale);
+
+        drawStudioCardToCanvas(ctx, fmt.w, fmt.h);
+
+        ctx.restore();
+
+        if (exportCanvas.toBlob) {
+          exportCanvas.toBlob(blobResult => {
+            if (blobResult) {
+              callback(blobResult);
+            } else {
+              tryFallbackDataUrl(exportCanvas, callback);
+            }
+          }, 'image/png');
+        } else {
+          tryFallbackDataUrl(exportCanvas, callback);
+        }
+      } catch (err) {
+        console.error('Erreur lors du rendu 2K Canvas:', err);
+        showToast('Erreur lors de la génération PNG.');
+        callback(null);
+      }
+    }
+
+    function tryFallbackDataUrl(canvas, callback) {
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        fetch(dataUrl)
+          .then(res => res.blob())
+          .then(b => callback(b))
+          .catch(() => callback(null));
+      } catch (e) {
+        console.error('DataURL fallback failed:', e);
+        callback(null);
+      }
     }
 
     // TÉLÉCHARGEMENT PNG 2K
     document.getElementById('btn-download-png').addEventListener('click', () => {
       render2KCanvas(blob => {
-        if (!blob) return;
+        if (!blob) {
+          showToast('Erreur lors de la création du fichier PNG.');
+          return;
+        }
         const a = document.createElement('a');
         const cleanName = inputTitle.value.substring(0, 30).toLowerCase().replace(/[^a-z0-9]/g, '-');
         a.download = `william-guindon-${currentFormat}-${cleanName || 'visuel'}-2K.png`;
-        a.href = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
         showToast('✔ Image PNG 2K téléchargée !');
       });
     });
@@ -2842,7 +3183,10 @@
     // COPIER DANS LE PRESSE-PAPIERS
     document.getElementById('btn-copy-img').addEventListener('click', () => {
       render2KCanvas(async blob => {
-        if (!blob) return;
+        if (!blob) {
+          showToast('Erreur lors de la création du fichier PNG.');
+          return;
+        }
         try {
           if (navigator.clipboard && navigator.clipboard.write) {
             await navigator.clipboard.write([
