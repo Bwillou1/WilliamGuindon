@@ -1269,6 +1269,20 @@
 
     renderTree(root, treeContainer, true);
 
+    const treeFooter = document.createElement("div");
+    treeFooter.className = "drive-tree-footer";
+    treeFooter.style.cssText = "margin-top: 18px; padding: 12px 10px; border-top: 1px solid #dce5df; background: rgba(6, 78, 59, 0.04); border-radius: 6px;";
+    treeFooter.innerHTML = `
+      <a href="protection-archive.html" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #064e3b; text-decoration: none; font-weight: 600;" title="Consulter la Politique de protection et de retrait de l'archive (Charte 12)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>Protection &amp; Retrait (Charte 12) ↗</span>
+      </a>
+      <div style="font-size: 10px; color: #52796f; margin-top: 6px; font-family: monospace; word-break: break-all;" title="Empreinte SHA-256 certifiée OpenTimestamps Bitcoin">
+        SHA256: 3209f9ea95dfc096ebcdf1ac0288c97872206af11a6e978a74761c03b3eba4d7
+      </div>
+    `;
+    treeContainer.appendChild(treeFooter);
+
     const defaultItem = targetItemToSelect || firstPdfItem;
     if (defaultItem) {
       setTimeout(() => {
