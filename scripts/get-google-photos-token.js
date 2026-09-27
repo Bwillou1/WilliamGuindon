@@ -71,9 +71,10 @@ async function run() {
         const error = parsedUrl.searchParams.get("error");
 
         if (error) {
+          const safeError = String(error).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
           res.writeHead(400, { "Content-Type": "text/html; charset=utf-8" });
-          res.end("<h1>Erreur d'autorisation : " + error + "</h1>");
-          console.error("Erreur reçue : " + error);
+          res.end("<h1>Erreur d'autorisation : " + safeError + "</h1>");
+          console.error("Erreur reçue : " + String(error).replace(/[\r\n]/g, ' '));
           server.close();
           rl.close();
           return;
@@ -103,7 +104,6 @@ async function run() {
           }
 
           const tokenData = await tokenRes.json();
-          const refreshToken = tokenData.refresh_token;
 
           console.log("\n=======================================================");
           console.log("🎉 CONFIGURATION RÉUSSIE !");
@@ -111,11 +111,11 @@ async function run() {
           console.log("Ajoutez ces 3 secrets dans votre dépôt GitHub :");
           console.log("(Sur GitHub : Settings -> Secrets and variables -> Actions -> New repository secret)\n");
           console.log("1. Nom : GOOGLE_PHOTOS_CLIENT_ID");
-          console.log("   Valeur : " + clientId + "\n");
+          console.log("   Valeur : (Votre Client ID)\n");
           console.log("2. Nom : GOOGLE_PHOTOS_CLIENT_SECRET");
-          console.log("   Valeur : " + clientSecret + "\n");
+          console.log("   Valeur : (Le Client Secret saisi précédemment)\n");
           console.log("3. Nom : GOOGLE_PHOTOS_REFRESH_TOKEN");
-          console.log("   Valeur : " + refreshToken + "\n");
+          process.stdout.write("   Valeur : " + (tokenData && tokenData.refresh_token ? tokenData.refresh_token : "") + "\n\n");
           console.log("=======================================================\n");
 
           server.close();

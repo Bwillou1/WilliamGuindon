@@ -194,33 +194,49 @@ const FALLBACK_DOCS = [
   "00_SYNTHESE_GLOBALE_DOSSIER_SEM26003.pdf"
 ];
 
+const HTML_ENTITIES_MAP = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&apos;': "'",
+  '&nbsp;': ' '
+};
+
+function decodeHtmlEntities(str) {
+  return str.replace(/&(?:amp|lt|gt|quot|apos|#39|nbsp);/gi, (match) => {
+    const lower = match.toLowerCase();
+    return HTML_ENTITIES_MAP[lower] || (lower === '&#39;' ? "'" : match);
+  });
+}
+
 function extractCleanText(html) {
-  let clean = html.replace(/<head[\s\S]*?<\/head>/gi, '')
-                  .replace(/<script[\s\S]*?<\/script>/gi, '')
-                  .replace(/<style[\s\S]*?<\/style>/gi, '')
-                  .replace(/<svg[\s\S]*?<\/svg>/gi, '')
-                  .replace(/<!--[\s\S]*?-->/g, '');
+  let clean = html;
 
   const mainMatch = clean.match(/<main[\s\S]*?<\/main>/i);
   if (mainMatch) {
     clean = mainMatch[0];
+  } else {
+    clean = clean.replace(/<head\b[^>]*>[\s\S]*?<\/head>/gi, '');
   }
 
-  clean = clean.replace(/<\/(h[1-6]|p|div|section|article|li|tr|blockquote)>/gi, '\n')
-               .replace(/<br\s*[\/]?>/gi, '\n')
-               .replace(/<li[^>]*>/gi, '• ')
-               .replace(/<[^>]+>/g, ' ')
-               .replace(/&amp;/g, '&')
-               .replace(/&lt;/g, '<')
-               .replace(/&gt;/g, '>')
-               .replace(/&quot;/g, '"')
-               .replace(/&#39;/g, "'")
-               .replace(/&nbsp;/g, ' ')
-               .replace(/[ \t]+/g, ' ')
-               .replace(/\n\s*\n\s*\n+/g, '\n\n')
-               .trim();
+  // Suppression des blocs non textuels
+  clean = clean.replace(/<(?:script|style|svg|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|svg|noscript)>/gi, '');
+  clean = clean.replace(/<!--[\s\S]*?-->/g, '');
 
-  return clean;
+  // Conservation de la structure des paragraphes et listes
+  clean = clean.replace(/<\/(?:h[1-6]|p|div|section|article|li|tr|blockquote)>/gi, '\n')
+               .replace(/<br\s*[\/]?>/gi, '\n')
+               .replace(/<li\b[^>]*>/gi, '• ')
+               .replace(/<[^>]+>/g, ' ');
+
+  // Décodage des entités HTML en une seule passe pour éviter le double unescaping (CodeQL Alert #69)
+  clean = decodeHtmlEntities(clean);
+
+  return clean.replace(/[ \t]+/g, ' ')
+              .replace(/\n\s*\n\s*\n+/g, '\n\n')
+              .trim();
 }
 
 function extractMeta(html, filename) {

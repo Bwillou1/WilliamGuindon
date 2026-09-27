@@ -369,7 +369,13 @@
       state.renderedPages.clear();
 
       // Charger le document
-      const isRemoteArchive = safeUrl.includes('archive.org');
+      let isRemoteArchive = false;
+      try {
+        const parsed = new URL(safeUrl, window.location.href);
+        isRemoteArchive = parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org');
+      } catch (_) {
+        isRemoteArchive = false;
+      }
       const docOptions = {
         url: safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',

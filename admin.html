@@ -2364,18 +2364,23 @@
           notifStatusText.style.color = isActive ? "#22c55e" : "#ef4444";
         }
 
-        // Fonction de validation stricte d'URL d'image pour prévenir l'injection dans le DOM (CodeQL Alerts #55, #56)
-        function isSafeImageSrc(val) {
-          if (!val || typeof val !== 'string') return false;
+        // Fonction de validation stricte d'URL d'image pour prévenir l'injection dans le DOM (CodeQL Alerts #57, #58)
+        function getSafeImageUrl(val) {
+          if (!val || typeof val !== 'string') return '';
           const trimmed = val.trim();
-          if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.startsWith('/\\') && !trimmed.startsWith('\\')) return true;
-          if (trimmed.startsWith('data:image/')) return true;
+          if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.startsWith('/\\') && !trimmed.startsWith('\\')) {
+            return encodeURI(trimmed);
+          }
+          if (/^data:image\/(?:png|jpeg|jpg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(trimmed)) {
+            return trimmed;
+          }
           try {
             const parsed = new URL(trimmed, window.location.origin);
-            return (parsed.protocol === 'http:' || parsed.protocol === 'https:');
-          } catch (_) {
-            return false;
-          }
+            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+              return parsed.href;
+            }
+          } catch (_) {}
+          return '';
         }
 
         // Smartphone Push Card
@@ -2386,7 +2391,8 @@
           simPushSubtitle.textContent = subtitleVal || "Sous-texte ou description de la notification...";
         }
         if (simPushThumb) {
-          simPushThumb.src = (imageVal && isSafeImageSrc(imageVal)) ? imageVal : "/icon-192.png";
+          const safeSrc = getSafeImageUrl(imageVal);
+          simPushThumb.src = safeSrc || "/icon-192.png";
         }
         if (simPushAction) {
           simPushAction.style.display = linkVal ? "inline-flex" : "none";
@@ -2406,9 +2412,9 @@
       if (notifSubtitle) notifSubtitle.addEventListener("input", updateLivePreview);
       if (notifImage) notifImage.addEventListener("input", () => {
         if (notifPreviewThumb) {
-          const trimmed = notifImage.value.trim();
-          if (trimmed && isSafeImageSrc(trimmed)) {
-            notifPreviewThumb.src = trimmed;
+          const safeUrl = getSafeImageUrl(notifImage.value);
+          if (safeUrl) {
+            notifPreviewThumb.src = safeUrl;
             notifPreviewThumb.style.display = "block";
             if (notifDropzonePrompt) notifDropzonePrompt.style.display = "none";
           } else {
@@ -2433,8 +2439,9 @@
           if (notifImage) notifImage.value = state.broadcastImage || "";
           if (notifLink) notifLink.value = state.broadcastLink || "https://williamguindon.me/live.html";
 
-          if (state.broadcastImage && isSafeImageSrc(state.broadcastImage) && notifPreviewThumb) {
-            notifPreviewThumb.src = state.broadcastImage;
+          const safeStateImg = getSafeImageUrl(state.broadcastImage);
+          if (safeStateImg && notifPreviewThumb) {
+            notifPreviewThumb.src = safeStateImg;
             notifPreviewThumb.style.display = "block";
             if (notifDropzonePrompt) notifDropzonePrompt.style.display = "none";
           }
@@ -2475,8 +2482,9 @@
           if (notifDropzonePrompt) notifDropzonePrompt.innerHTML = '<span style="color:var(--accent);">Téléversement de l\'image en cours...</span>';
           const url = await uploadImageMedia(file, "/alertes");
           if (notifImage) notifImage.value = url;
-          if (notifPreviewThumb) {
-            notifPreviewThumb.src = url;
+          const safeUploadUrl = getSafeImageUrl(url);
+          if (notifPreviewThumb && safeUploadUrl) {
+            notifPreviewThumb.src = safeUploadUrl;
             notifPreviewThumb.style.display = "block";
           }
           if (notifDropzonePrompt) notifDropzonePrompt.style.display = "none";
