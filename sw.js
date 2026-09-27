@@ -1,5 +1,5 @@
-const CACHE_NAME = 'wg-pwa-v63';
-const MAX_CACHE_ENTRIES = 96;
+const CACHE_NAME = 'wg-pwa-v64';
+const MAX_CACHE_ENTRIES = 128;
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -17,6 +17,7 @@ const ASSETS_TO_CACHE = [
   '/viewer.html',
   '/ai.html',
   '/txt.html',
+  '/api/index.html',
   '/reload.html',
   '/miroirs.html',
   '/politiques.html',
@@ -33,6 +34,10 @@ const ASSETS_TO_CACHE = [
   '/vie-privee-parents.html',
   '/protection-archive.html',
   '/dependances-licences.html',
+  '/apis.json',
+  '/openapi.json',
+  '/api/v1/corpus.json',
+  '/api/v1/documents.json',
   '/llms.txt',
   '/llms-full.txt',
   '/style.css',

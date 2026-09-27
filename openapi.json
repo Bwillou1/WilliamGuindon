@@ -1,0 +1,158 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "William Guindon — API Publique Ouverte (SEM-26-003)",
+    "summary": "API d'accès libre au corpus intégral, aux textes complets du site, aux statuts juridiques et aux 222 pièces documentaires probatoires.",
+    "description": "API REST publique ouverte destinée aux modèles d'IA (LLMs), chercheurs, journalistes et agents autonomes pour interroger et extraire l'ensemble vérifié des documents, politiques et statuts du dossier SEM-26-003 (CCE / ACEUM).",
+    "version": "1.0.0",
+    "contact": {
+      "name": "William Guindon",
+      "email": "contact@williamguindon.me",
+      "url": "https://williamguindon.me/"
+    },
+    "license": {
+      "name": "CC BY-NC-ND 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://williamguindon.me",
+      "description": "Serveur de production officiel (HTTPS / Cloudflare Edge / GitHub Pages)"
+    }
+  ],
+  "paths": {
+    "/api/v1/corpus.json": {
+      "get": {
+        "summary": "Corpus intégral plein texte du site",
+        "description": "Retourne l'intégralité du texte brut et structuré de toutes les pages, politiques, analyses et métadonnées du site.",
+        "operationId": "getFullCorpus",
+        "responses": {
+          "200": {
+            "description": "Corpus textuel et métadonnées complètes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "author": {
+                      "type": "object"
+                    },
+                    "legal_framework": {
+                      "type": "object"
+                    },
+                    "site_pages": {
+                      "type": "array"
+                    },
+                    "documents_archive": {
+                      "type": "array"
+                    },
+                    "blog_posts": {
+                      "type": "array"
+                    },
+                    "press_releases": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents.json": {
+      "get": {
+        "summary": "Répertoire exhaustif des 222 pièces probatoires",
+        "description": "Retourne la liste complète des 222 documents, rapports BAPE, cartes SIG, données satellites Sentinel-2, tests d'eau et correspondances officielles avec leurs URLs Internet Archive et empreintes SHA-256.",
+        "operationId": "getDocumentsArchive",
+        "responses": {
+          "200": {
+            "description": "Liste des pièces justificatives avec métadonnées",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_documents": {
+                      "type": "integer"
+                    },
+                    "internet_archive_id": {
+                      "type": "string"
+                    },
+                    "documents": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status.json": {
+      "get": {
+        "summary": "Statut juridique en temps réel du dossier CCE SEM-26-003",
+        "description": "Retourne l'état officiel de la procédure devant la Commission de coopération environnementale, les dates butoirs et les indicateurs environnementaux.",
+        "operationId": "getCaseStatus",
+        "responses": {
+          "200": {
+            "description": "Statut et horodatages CCE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "Manifeste IA synthétique (/llms.txt standard)",
+        "description": "Retourne les directives de prompt système, la fiche de faits vérifiés et les liens vers les ressources documentaires structurées.",
+        "operationId": "getLlmsTxt",
+        "responses": {
+          "200": {
+            "description": "Fichier texte Markdown brut pour LLMs",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llms-full.txt": {
+      "get": {
+        "summary": "Corpus texte brut non compressé pour LLMs (/llms-full.txt)",
+        "description": "Document texte continu de plus de 215 Ko contenant la totalité des faits vérifiés, analyses juridiques, transcriptions et repères probatoires pour injection directe dans les contextes LLM.",
+        "operationId": "getLlmsFullTxt",
+        "responses": {
+          "200": {
+            "description": "Corpus brut complet pour modèles de langage",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

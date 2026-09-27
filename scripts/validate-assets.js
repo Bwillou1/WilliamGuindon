@@ -42,6 +42,11 @@ const CORE_FILES = [
   'status.json',
   'llms.txt',
   'llms-full.txt',
+  'apis.json',
+  'openapi.json',
+  'api/index.html',
+  'api/v1/corpus.json',
+  'api/v1/documents.json',
   'tools.json',
   'agent-skills.json'
 ];

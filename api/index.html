@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Publique Ouverte &amp; Registre Machine — William Guindon</title>
+  <meta name="description" content="API REST publique, ouverte et gratuite donnant accès machine et IA à l'intégralité du corpus documentaire, des textes du site et des 222 pièces probatoires (SEM-26-003).">
+  <link rel="canonical" href="https://williamguindon.me/api/">
+  <link rel="alternate" type="application/json" href="https://williamguindon.me/apis.json" title="APIs.json Manifest">
+  <link rel="alternate" type="application/json" href="https://williamguindon.me/openapi.json" title="OpenAPI 3.1 Specification">
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="William Guindon">
+  <meta property="og:title" content="API Publique Ouverte &amp; Registre Machine — William Guindon">
+  <meta property="og:description" content="Accès complet pour modèles d'IA, LLMs, chercheurs et développeurs à tout le corpus plein texte et aux 222 pièces probatoires du dossier SEM-26-003.">
+  <meta property="og:url" content="https://williamguindon.me/api/">
+  <meta property="og:image" content="https://williamguindon.me/og-image.jpg">
+
+  <link rel="stylesheet" href="../style.css?v=20260904-slider">
+  <script src="../assets/js/theme-core.js" defer></script>
+  <style>
+    .api-hero {
+      padding: 60px 0 40px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(6,78,59,0.15) 0%, rgba(2,6,23,0) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .api-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin: 32px 0 48px;
+    }
+    .api-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .api-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .api-method-get {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: monospace;
+      margin-right: 8px;
+    }
+    .api-endpoint-url {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 700;
+      word-break: break-all;
+    }
+    .code-box {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      overflow-x: auto;
+      margin: 14px 0;
+      position: relative;
+    }
+    .code-box code {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="../" class="logo">
+      <span class="logo-mark">WG</span>
+      <span class="logo-text">William Guindon</span>
+    </a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a href="../" class="nav-link">Accueil</a>
+      <a href="../dossier-journalistes.html" class="nav-link">Explorateur 222 pièces</a>
+      <a href="../politiques.html" class="nav-link">Politiques &amp; Chartes</a>
+      <a href="../ai.html" class="nav-link">Espace IA</a>
+      <a href="./" class="nav-link active">API Publique</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="api-hero">
+    <div class="wrap">
+      <div class="api-badge">● API Ouverte &amp; Gratuite · Libre Accès IA</div>
+      <h1>API Publique Ouverte &amp; Registre Machine</h1>
+      <p style="max-width: 760px; margin: 0 auto; color: var(--text-muted); font-size: 1.1rem; line-height: 1.6;">
+        Point d'accès standardisé, direct et sans clé d'authentification pour les modèles de langage (LLMs), chercheurs, développeurs et agents autonomes souhaitant interroger l'intégralité du corpus textuel, des documents officiels et des 222 pièces probatoires du dossier SEM-26-003.
+      </p>
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="../apis.json" target="_blank" class="btn btn-primary" style="font-weight: 700;">Manifeste apis.json (apisjson.org) ↗</a>
+        <a href="../openapi.json" target="_blank" class="btn btn-ghost">Spécification OpenAPI 3.1 ↗</a>
+        <a href="../llms-full.txt" target="_blank" class="btn btn-ghost">Corpus brut llms-full.txt ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 40px 0;">
+    <div class="wrap">
+      <h2>Points d'Accès Principaux (Endpoints REST)</h2>
+      
+      <div class="api-grid">
+        
+        <!-- 1. Corpus plein texte -->
+        <article class="api-card">
+          <div>
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span class="api-method-get">GET</span>
+              <span class="api-endpoint-url">/api/v1/corpus.json</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Corpus Intégral Plein Texte</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+              Retourne le texte brut et structuré de la totalité des pages du site, des 12 chartes fondamentales, des analyses écologiques, de l'enquête citoyenne et des métadonnées de gouvernance (+46 000 mots).
+            </p>
+            <div class="code-box">
+              <code>curl -s https://williamguindon.me/api/v1/corpus.json | jq '.statistics'</code>
+            </div>
+          </div>
+          <a href="v1/corpus.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+        </article>
+
+        <!-- 2. Annuaire des 222 documents -->
+        <article class="api-card">
+          <div>
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span class="api-method-get">GET</span>
+              <span class="api-endpoint-url">/api/v1/documents.json</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Répertoire des 222 Pièces Probatoires</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+              Index exhaustif des 222 pièces de l'archive SEM-26-003 : rapports du BAPE 371, cartes SIG, données satellites Sentinel-2 NDVI, tests de puits et correspondances avec leurs URLs Internet Archive et hashs SHA-256.
+            </p>
+            <div class="code-box">
+              <code>curl -s https://williamguindon.me/api/v1/documents.json | jq '.total_documents'</code>
+            </div>
+          </div>
+          <a href="v1/documents.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+        </article>
+
+        <!-- 3. Statut CCE temps réel -->
+        <article class="api-card">
+          <div>
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span class="api-method-get">GET</span>
+              <span class="api-endpoint-url">/status.json</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Statut Juridique &amp; Échéance CCE</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+              Statut en direct de la soumission SEM-26-003 auprès du Secrétariat de la CCE (ACEUM), indicateurs de conformité et compte à rebours de l'échéance du 16 octobre 2026.
+            </p>
+            <div class="code-box">
+              <code>curl -s https://williamguindon.me/status.json | jq '.determination'</code>
+            </div>
+          </div>
+          <a href="../status.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+        </article>
+
+        <!-- 4. LLMs feeds -->
+        <article class="api-card">
+          <div>
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+              <span class="api-method-get">GET</span>
+              <span class="api-endpoint-url">/llms-full.txt &amp; /llms.txt</span>
+            </div>
+            <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Flux Textuels Dédiés aux LLMs</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+              Fichiers conformes aux standards <a href="https://llmstxt.org/" target="_blank" rel="noopener">llmstxt.org</a> injectables directement dans les fenêtres de contexte des modèles d'IA (GPT-4o, Claude 3.5, Gemini 1.5 Pro, Llama 3).
+            </p>
+            <div class="code-box">
+              <code>curl -s https://williamguindon.me/llms-full.txt | head -n 25</code>
+            </div>
+          </div>
+          <a href="../llms-full.txt" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Consulter llms-full.txt ↗</a>
+        </article>
+
+      </div>
+
+      <h2>Exemple d'Intégration Python (Pour Agents IA &amp; RAG)</h2>
+      <div class="code-box" style="padding: 20px; font-size: 0.9rem;">
+<pre style="margin: 0; color: #e2e8f0;"><code>import urllib.request
+import json
+
+# 1. Récupération du corpus intégral de tout le site
+url = "https://williamguindon.me/api/v1/corpus.json"
+req = urllib.request.Request(url, headers={"User-Agent": "AIAgent/1.0"})
+with urllib.request.urlopen(req) as response:
+    corpus = json.loads(response.read().decode("utf-8"))
+
+print(f"Pages indexées : {corpus['statistics']['total_pages']}")
+print(f"Nombre total de mots : {corpus['statistics']['total_words']}")
+
+# 2. Recherche plein texte instantanée dans toutes les pages
+query = "cadmium"
+matching_pages = [
+    page for page in corpus["site_pages"]
+    if query.lower() in page["full_text"].lower()
+]
+
+print(f"Pages mentionnant '{query}' : {len(matching_pages)}")
+for p in matching_pages[:3]:
+    print(f"- {p['title']} ({p['url']})")
+</code></pre>
+      </div>
+
+      <div style="margin-top: 40px; padding: 24px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px;">
+        <h3 style="margin-top: 0;">Conformité, Licence &amp; Déontologie</h3>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">
+          L'utilisation de cette API publique et des données ouvertes est régie par la licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="noopener">Creative Commons CC BY-NC-ND 4.0</a> ainsi que par la <a href="../ia-ethique.html">Charte 03 (Éthique de l'IA &amp; Contrôle humain)</a> et la <a href="../protection-archive.html">Charte 12 (Protection de l'archive)</a>. L'indexation, la synthèse factuelle et la citation sont autorisées avec mention de la source officielle : <code>William Guindon (https://williamguindon.me/ — Dossier CCE SEM-26-003)</code>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official API Portal</span></div>
+    <div class="footer-licence-box">
+      Données ouvertes mises à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">CC BY-NC-ND 4.0</a>.
+    </div>
+    <div class="footer-sitemap-row">
+      <a href="../apis.json">apis.json</a> · 
+      <a href="../openapi.json">OpenAPI 3.1</a> · 
+      <a href="v1/corpus.json">API Corpus</a> · 
+      <a href="v1/documents.json">API Documents</a> · 
+      <a href="../llms.txt">llms.txt</a> · 
+      <a href="../llms-full.txt">llms-full.txt</a> · 
+      <a href="../ai.html">Espace IA</a> · 
+      <a href="#main-content">Haut ↑</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
