@@ -162,14 +162,30 @@ async function fetchCurrentClaims() {
   return data.entities[ITEM_ID]?.claims || {};
 }
 
+async function removeClaim(csrfToken, claimGuid) {
+  console.log(`Suppression de l'ancienne déclaration ${claimGuid}...`);
+  const data = {
+    action: 'wbremoveclaims',
+    claim: claimGuid,
+    token: csrfToken,
+    format: 'json'
+  };
+  const res = await requestApi(data);
+  if (res.error) {
+    console.warn(`  ⚠️ Avertissement lors de la suppression : ${res.error.info || JSON.stringify(res.error)}`);
+  } else {
+    console.log(`  ✔ Déclaration supprimée.`);
+  }
+}
+
 async function setClaimIfMissing(csrfToken, currentClaims, property, snakType, value, label) {
   const existing = currentClaims[property] || [];
-  const valStr = typeof value === 'object' ? (value['numeric-id'] || value.id) : value;
+  const valStr = typeof value === 'object' ? (value['numeric-id'] || value.id || value.text) : value;
 
   const alreadyPresent = existing.some(c => {
     const v = c.mainsnak?.datavalue?.value;
     if (typeof v === 'object' && v !== null) {
-      return (v['numeric-id'] === valStr || v.id === valStr || v.id === `Q${valStr}`);
+      return (v['numeric-id'] === valStr || v.id === valStr || v.id === `Q${valStr}` || v.text === valStr);
     }
     return v === valStr;
   });
@@ -220,21 +236,33 @@ async function run() {
     const csrfToken = await getCsrfToken();
     console.log('✔ Jeton CSRF obtenu avec succès.\n');
 
-    const currentClaims = await fetchCurrentClaims();
+    let currentClaims = await fetchCurrentClaims();
 
-    // 1. Identifiants plateformes
-    await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
-    await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
-    await setClaimIfMissing(csrfToken, currentClaims, 'P12045', 'value', 'Bwillou1', 'Codeberg: Bwillou1');
-    await setClaimIfMissing(csrfToken, currentClaims, 'P5715', 'value', 'https://independent.academia.edu/GuindonWilliam', 'Academia.edu: GuindonWilliam');
+    // Correction du lieu de naissance (P19) : supprimer Saint-Jérôme (Q142436) si présent et définir Blainville (Q139568)
+    const p19Claims = currentClaims['P19'] || [];
+    for (const c of p19Claims) {
+      const v = c.mainsnak?.datavalue?.value;
+      if (v?.['numeric-id'] === 142436 || v?.id === 'Q142436') {
+        await removeClaim(csrfToken, c.id);
+      }
+    }
+    // Recharger après suppression
+    currentClaims = await fetchCurrentClaims();
 
-    // 2. Identité & Noms
+    // 1. Lieu de naissance & Résidence (Blainville Q139568)
+    await setClaimIfMissing(csrfToken, currentClaims, 'P19', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Lieu de naissance: Blainville (Q139568)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P551', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Résidence: Blainville (Q139568)');
+
+    // 2. Identité & Noms (selon Schema.org Person)
     await setClaimIfMissing(csrfToken, currentClaims, 'P735', 'value', { 'entity-type': 'item', 'numeric-id': 12344159 }, 'Prénom: William (Q12344159)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P734', 'value', { 'entity-type': 'item', 'numeric-id': 37438740 }, 'Nom: Guindon (Q37438740)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1477', 'value', { 'text': 'William Tristan Logan Théo Guindon', 'language': 'fr' }, 'Nom de naissance complet');
 
-    // 3. Résidence
-    await setClaimIfMissing(csrfToken, currentClaims, 'P551', 'value', { 'entity-type': 'item', 'numeric-id': 139568 }, 'Résidence: Blainville (Q139568)');
+    // 3. Identifiants plateformes
+    await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P12045', 'value', 'Bwillou1', 'Codeberg: Bwillou1');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P5715', 'value', 'https://independent.academia.edu/GuindonWilliam', 'Academia.edu: GuindonWilliam');
 
     // 4. Langues parlées / écrites : Français (Q150), Anglais (Q1860) et Espagnol (Q1321)
     await setClaimIfMissing(csrfToken, currentClaims, 'P1412', 'value', { 'entity-type': 'item', 'numeric-id': 150 }, 'Langue: Français (Q150)');
@@ -249,7 +277,12 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1337424 }, 'Source: La Presse (Q1337424)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1504424 }, 'Source: Le Devoir (Q1504424)');
 
-    // 7. Descriptions multilingues
+    // 7. Décrit à l'URL (P973) - Articles de presse et sources documentaires officielles (Schema.org subjectOf)
+    await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-d-une-tourbiere-a-blainville/le-combat-d-un-adolescent-a-l-onu.php', 'Article La Presse (03/07/2026)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://www.ledevoir.com/opinion/lettres/865027/francois-legault-vous-detruisez-notre-avenir', 'Lettre ouverte Le Devoir (08/04/2025)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://therover.ca/blainville-teenager-takes-stablex-fight-international/', 'Article The Rover (16/07/2026)');
+
+    // 8. Descriptions multilingues
     console.log('\nMise à jour des descriptions multilingues...');
     const descriptions = [
       { lang: 'fr', val: 'militant écologiste et climatique québécois' },
@@ -268,7 +301,7 @@ async function run() {
       console.log(`  ✔ Description [${d.lang}] : ${d.val}`);
     }
 
-    // 8. Alias multilingues
+    // 9. Alias multilingues
     console.log('\nMise à jour des alias multilingues...');
     for (const lang of ['fr', 'en', 'es']) {
       await requestApi({
