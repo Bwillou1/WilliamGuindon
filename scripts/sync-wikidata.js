@@ -169,6 +169,7 @@ async function removeClaim(csrfToken, claimGuid) {
   const data = {
     action: 'wbremoveclaims',
     claim: claimGuid,
+    claims: claimGuid,
     token: csrfToken,
     format: 'json'
   };
@@ -176,7 +177,7 @@ async function removeClaim(csrfToken, claimGuid) {
   if (res.error) {
     console.warn(`  ⚠️ Avertissement lors de la suppression : ${res.error.info || JSON.stringify(res.error)}`);
   } else {
-    console.log(`  ✔ Déclaration supprimée.`);
+    console.log(`  ✔ Déclaration supprimée avec succès :`, JSON.stringify(res));
   }
 }
 
