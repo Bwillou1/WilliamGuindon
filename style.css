@@ -5585,12 +5585,17 @@ body.ai-sidebar-active {
 
 body.ai-sidebar-active .floating-ai-btn,
 body:has(.ai-modal-overlay.active) .floating-ai-btn,
-.ai-modal-overlay.active ~ .floating-ai-btn {
+.ai-modal-overlay.active ~ .floating-ai-btn,
+body.nav-drawer-open .floating-ai-btn,
+html.nav-drawer-open .floating-ai-btn,
+body.nav-drawer-open .ai-modal-overlay,
+html.nav-drawer-open .ai-modal-overlay,
+.hidden-by-nav-drawer {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
   display: none !important;
-  transform: scale(0.7);
+  transform: scale(0.7) !important;
 }
 
 .ai-modal-overlay {

@@ -11,15 +11,52 @@
 // 1. CONFIGURATION FACILE DES LIENS DE NAVIGATION
 // =============================================================================
 const NAV_LINKS = [
-  { label: 'Accueil', url: './', icon: '🏠' },
-  { label: 'Dossier Stablex & CCE', url: 'stablex.html', icon: '📁' },
-  { label: 'Agir & Soutenir', url: 'agir.html', icon: '✊', highlight: true },
-  { label: 'Vulgarisation (SEM-26-003)', url: 'apercu.html', icon: '💡' },
-  { label: 'Registre officiel CCE (222 pièces)', url: 'registre.html', icon: '⚖️' },
-  { label: 'Histoire autochtone & Écologie', url: 'autochtone.html', icon: '🌿' },
-  { label: 'Blog & Carnet', url: 'blog.html', icon: '📝' },
-  { label: 'Espace Presse', url: 'presse.html', icon: '📰' },
-  { label: 'À propos & Contact', url: 'index.html#contact', icon: '✉️' }
+  { 
+    label: 'Accueil', 
+    url: './', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>` 
+  },
+  { 
+    label: 'Dossier Stablex & CCE', 
+    url: 'stablex.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>` 
+  },
+  { 
+    label: 'Agir & Soutenir', 
+    url: 'agir.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>`, 
+    highlight: true 
+  },
+  { 
+    label: 'Vulgarisation (SEM-26-003)', 
+    url: 'apercu.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>` 
+  },
+  { 
+    label: 'Registre officiel CCE (222 pièces)', 
+    url: 'registre.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>` 
+  },
+  { 
+    label: 'Histoire autochtone & Écologie', 
+    url: 'autochtone.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>` 
+  },
+  { 
+    label: 'Blog & Carnet', 
+    url: 'blog.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>` 
+  },
+  { 
+    label: 'Espace Presse', 
+    url: 'presse.html', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>` 
+  },
+  { 
+    label: 'À propos & Contact', 
+    url: 'index.html#contact', 
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>` 
+  }
 ];
 
 // Configuration de la marque / Logo
@@ -38,6 +75,7 @@ class SiteNav extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this._isOpen = false;
+    this._scrollY = 0;
     this._handleKeydown = this._handleKeydown.bind(this);
     this._handleOutsideClick = this._handleOutsideClick.bind(this);
   }
@@ -84,16 +122,42 @@ class SiteNav extends HTMLElement {
     });
   }
 
-  // Verrouillage du scroll lors de l'ouverture du tiroir mobile
+  // Verrouillage anti-défilement et anti-rebond mobile (iOS/Android)
   lockScroll() {
-    this._prevScrollY = window.scrollY;
+    this._scrollY = window.scrollY || window.pageYOffset || 0;
+    document.documentElement.classList.add('nav-drawer-open');
+    document.body.classList.add('nav-drawer-open');
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${this._scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
+
+    // Masquage absolu du chatbot IA et des éléments flottants
+    document.querySelectorAll('.floating-ai-btn, #js-floating-ai-btn, .ai-modal-overlay, #ai-chat-box, .chat-trigger, .ai-quick-trigger').forEach(el => {
+      el.classList.add('hidden-by-nav-drawer');
+    });
   }
 
   unlockScroll() {
+    document.documentElement.classList.remove('nav-drawer-open');
+    document.body.classList.remove('nav-drawer-open');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
     document.body.style.overflow = '';
-    document.body.style.touchAction = '';
+
+    // Rétablissement des éléments flottants
+    document.querySelectorAll('.hidden-by-nav-drawer').forEach(el => {
+      el.classList.remove('hidden-by-nav-drawer');
+    });
+
+    if (typeof this._scrollY === 'number') {
+      window.scrollTo(0, this._scrollY);
+    }
   }
 
   toggleMenu() {
@@ -110,11 +174,13 @@ class SiteNav extends HTMLElement {
     const backdrop = this.shadowRoot.querySelector('.nav-backdrop');
     const burger = this.shadowRoot.querySelector('.burger-btn');
 
-    drawer.classList.add('open');
-    backdrop.classList.add('visible');
-    burger.classList.add('active');
-    burger.setAttribute('aria-expanded', 'true');
-    burger.setAttribute('aria-label', 'Fermer le menu');
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('visible');
+    if (burger) {
+      burger.classList.add('active');
+      burger.setAttribute('aria-expanded', 'true');
+      burger.setAttribute('aria-label', 'Fermer le menu');
+    }
 
     this.lockScroll();
   }
@@ -385,16 +451,21 @@ class SiteNav extends HTMLElement {
           position: fixed;
           top: 0;
           left: 0;
-          width: 100vw;
-          height: 100vh;
-          background: rgba(0, 0, 0, 0.45);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
+          right: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+          height: 100dvh;
+          background: rgba(0, 0, 0, 0.55);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
           opacity: 0;
           visibility: hidden;
-          transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+          transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s ease;
           z-index: 10000;
           pointer-events: none;
+          touch-action: none;
+          overscroll-behavior: contain;
         }
 
         .nav-backdrop.visible {
@@ -408,18 +479,24 @@ class SiteNav extends HTMLElement {
           position: fixed;
           top: 0;
           right: 0;
+          bottom: 0;
           width: 82%;
           max-width: 340px;
-          height: 100vh;
+          height: 100%;
+          height: 100dvh;
+          max-height: 100dvh;
           background: var(--drawer-bg);
           box-shadow: var(--drawer-shadow);
           z-index: 10001;
           display: flex;
           flex-direction: column;
           transform: translateX(100%);
-          transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+          overscroll-behavior-y: contain;
+          touch-action: pan-y;
           will-change: transform;
         }
 
