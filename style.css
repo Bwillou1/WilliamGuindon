@@ -23,9 +23,10 @@
   
   /* Z-Index Hierarchy */
   --z-base: 2;
-  --z-header: 100;
-  --z-dropdown: 200;
-  --z-overlay: 1000;
+  --z-banner: 10;
+  --z-header: 1000;
+  --z-dropdown: 1200;
+  --z-overlay: 1500;
   --z-modal: 2000;
   --z-toast: 3000;
   --z-max: 10000;
@@ -3165,7 +3166,7 @@ body.dark-theme .nav-notif-badge {
   border: 1px solid var(--line);
   border-radius: 6px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
-  z-index: var(--z-base);
+  z-index: var(--z-overlay);
   opacity: 0;
   visibility: hidden;
   transform: none;
@@ -8248,7 +8249,7 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   font-size: 13px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
-  z-index: 1000;
+  z-index: var(--z-banner, 10);
   width: 100%;
   box-sizing: border-box;
 }
