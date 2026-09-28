@@ -437,12 +437,12 @@
       </div>
 
       <div class="action-card live-action-card-center">
-        <h3 class="live-share-heading">Partager ce décompte en direct sur vos réseaux</h3>
+        <h2 class="live-share-heading">Partager ce décompte en direct sur vos réseaux</h2>
         <p class="live-share-desc">
           Diffusez l'horloge en direct pour sensibiliser vos proches et exiger la protection de la Grande Tourbière de Blainville.
         </p>
 
-        <div class="live-share-buttons" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
+        <div class="live-share-buttons" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:center;">
           <button type="button" class="btn btn-primary live-btn-action btn-enable-push" id="btn-enable-push" aria-label="S'abonner aux alertes de notification">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
           </button>
@@ -469,17 +469,49 @@
         </div>
       </div>
 
-      <aside class="action-card live-embed-aside">
-        <h4 class="live-embed-heading">Intégrer l'image du décompte sur votre site ou blog</h4>
+      <aside class="action-card live-embed-aside" aria-labelledby="embed-heading">
+        <h2 id="embed-heading" class="live-embed-heading">Intégrer le décompte officiel sur votre site ou blogue</h2>
         <p class="live-embed-desc">
-          Vous administrez un site web, un blogue ou un média ? Intégrez l'image vectorielle officielle qui affiche le décompte en direct :
+          Vous administrez un média, un portail d'information, un site citoyen ou une organisation ? Intégrez le widget interactif officiel ou le badge vectoriel qui s'actualise en direct.
         </p>
-        <div class="live-code-snippet">
-          &lt;a href="https://williamguindon.me/live.html"&gt;&lt;img src="https://williamguindon.me/countdown-live.svg" alt="Décompte CCE officiel SEM-26-003" width="600" /&gt;&lt;/a&gt;
+
+        <!-- Aperçu en direct du décompte -->
+        <div class="live-embed-preview">
+          <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #8ae8bd; margin-bottom: 12px; text-align: left;">
+            ✦ Aperçu en direct du widget intégré
+          </div>
+          <a href="https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; max-width: 100%;">
+            <img src="https://williamguindon.me/countdown-live.svg" alt="Décompte CCE officiel SEM-26-003" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);" width="600" height="180">
+          </a>
         </div>
+
+        <!-- Option 1 : Iframe responsive -->
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <strong style="color: #ffffff; font-size: 15px;">Option 1 · Widget Iframe responsive (Recommandé) :</strong>
+            <button type="button" class="live-copy-code-btn" data-copy-target="code-iframe" aria-label="Copier le code iframe">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copier le code Iframe</span>
+            </button>
+          </div>
+          <div class="live-code-snippet" id="code-iframe">&lt;iframe src="https://williamguindon.me/countdown-live.svg" width="100%" height="200" style="border:0; max-width:650px; border-radius:12px; overflow:hidden;" title="Décompte officiel CCE SEM-26-003 — William Guindon" loading="lazy"&gt;&lt;/iframe&gt;</div>
+        </div>
+
+        <!-- Option 2 : Badge Image & Lien HTML -->
+        <div style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <strong style="color: #ffffff; font-size: 15px;">Option 2 · Badge Image &amp; Lien (HTML / Blogue) :</strong>
+            <button type="button" class="live-copy-code-btn" data-copy-target="code-badge" aria-label="Copier le code HTML">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copier le code HTML</span>
+            </button>
+          </div>
+          <div class="live-code-snippet" id="code-badge">&lt;a href="https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer"&gt;&lt;img src="https://williamguindon.me/countdown-live.svg" alt="Décompte CCE officiel SEM-26-003" width="600" /&gt;&lt;/a&gt;</div>
+        </div>
+
         <div class="live-nav-row">
-          <a href="index.html" class="btn btn-ghost live-nav-btn">← Retour au site officiel</a>
-          <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary live-nav-btn">Consulter la décision CCE (PDF) ↗</a>
+          <a href="index.html" class="btn btn-ghost live-btn-action">← Retour au site officiel</a>
+          <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary live-btn-action">Consulter la décision CCE (PDF) ↗</a>
         </div>
       </aside>
 
@@ -568,6 +600,24 @@
         }
       });
     }
+
+    // Gestion des boutons de copie de code iframe / image
+    document.querySelectorAll('.live-copy-code-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const targetId = btn.getAttribute('data-copy-target');
+        const codeEl = document.getElementById(targetId);
+        if (!codeEl) return;
+        const textToCopy = codeEl.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          const origHTML = btn.innerHTML;
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copié !</span>`;
+          setTimeout(() => { btn.innerHTML = origHTML; }, 2500);
+        } catch (e) {
+          prompt("Copiez le code :", textToCopy);
+        }
+      });
+    });
   });
 </script>
 
