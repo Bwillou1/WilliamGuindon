@@ -1162,15 +1162,10 @@
       const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
-      const dEl = document.getElementById('cd-days');
-      const hEl = document.getElementById('cd-hours');
-      const mEl = document.getElementById('cd-mins');
-      const sEl = document.getElementById('cd-secs');
-
-      if (dEl) dEl.textContent = days;
-      if (hEl) hEl.textContent = String(hours).padStart(2, '0');
-      if (mEl) mEl.textContent = String(mins).padStart(2, '0');
-      if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+      document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = days);
+      document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = String(hours).padStart(2, '0'));
+      document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = String(mins).padStart(2, '0'));
+      document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = String(secs).padStart(2, '0'));
     }
 
     if (document.getElementById('cd-days') || document.getElementById('cd-hours')) {
