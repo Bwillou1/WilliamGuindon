@@ -98,6 +98,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/logo-areq-csq.webp',
   '/assets/media/logo-mouvement-actes-csq.png',
   '/assets/media/logo-mouvement-actes-csq.webp',
+  '/assets/media/signalement-faunique-plan-bouchard.jpg',
+  '/assets/media/signalement-faunique-plan-bouchard.webp',
   '/feed.xml',
   '/status.json'
 ];

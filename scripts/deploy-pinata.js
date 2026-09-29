@@ -83,7 +83,19 @@ const EXCLUDE_DIRS = new Set([
   'tor',
   '.gemini',
   '.idea',
-  '.vscode'
+  '.vscode',
+  '.agent',
+  '.agents',
+  '.claude',
+  '.freebuff',
+  'cosmic-space-background',
+  'scripts',
+  'workers',
+  'tmp',
+  'temp',
+  'scratch',
+  'build',
+  'dist'
 ]);
 
 const EXCLUDE_FILES = new Set([

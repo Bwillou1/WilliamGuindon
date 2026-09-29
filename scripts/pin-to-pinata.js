@@ -62,7 +62,13 @@ function getAllFiles(dirPath, arrayOfFiles = []) {
       file === 'temp' ||
       file === 'scratch' ||
       file === '.agent' ||
+      file === '.agents' ||
       file === '.claude' ||
+      file === '.freebuff' ||
+      file === '.gemini' ||
+      file === 'cosmic-space-background' ||
+      file === 'scripts' ||
+      file === 'workers' ||
       file === 'dist' ||
       file === 'build'
     ) {
