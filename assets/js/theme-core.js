@@ -1193,7 +1193,7 @@
       document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = String(secs).padStart(2, '0'));
     }
 
-    if (document.getElementById('cd-days') || document.getElementById('cd-hours')) {
+    if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days')) {
       updatePrecisionCountdown();
       setInterval(updatePrecisionCountdown, 1000);
     }
