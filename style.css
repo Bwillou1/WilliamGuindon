@@ -1006,7 +1006,7 @@ footer a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.15) 0%, rgba(11, 15, 12, 0.45) 100%), url('tourbiere.webp');
+  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.32) 0%, rgba(11, 15, 12, 0.65) 100%), url('tourbiere.webp');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
@@ -1019,7 +1019,7 @@ footer a:hover {
 }
 
 [data-theme="dark"] .hero-immersive {
-  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.2) 0%, rgba(11, 15, 12, 0.55) 100%), url('tourbiere.webp');
+  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.40) 0%, rgba(11, 15, 12, 0.72) 100%), url('tourbiere.webp');
 }
 
 .hero-curtains-container {
@@ -1067,13 +1067,13 @@ footer a:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.10) 45%, rgba(11, 15, 12, 0.45) 100%);
+  background: linear-gradient(to bottom, rgba(11, 15, 12, 0.28) 0%, rgba(11, 15, 12, 0.38) 45%, rgba(11, 15, 12, 0.65) 100%);
   z-index: 2;
   pointer-events: none;
 }
 
 [data-theme="dark"] .hero-curtains-overlay {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(11, 15, 12, 0.55) 100%);
+  background: linear-gradient(to bottom, rgba(11, 15, 12, 0.35) 0%, rgba(11, 15, 12, 0.48) 45%, rgba(11, 15, 12, 0.72) 100%);
 }
 
 .hero-immersive.has-webgl-3d {
@@ -9024,36 +9024,138 @@ body[data-page="policy"] .floating-ai-btn {
 }
 
 /* ==========================================================================
+   Hero Compact & Mot d'ordre (Même que l'usine soit conforme...)
+   ========================================================================== */
+.hero-immersive {
+  padding: clamp(36px, 5vh, 54px) 0 clamp(16px, 2.5vh, 24px) !important;
+  min-height: auto !important;
+}
+
+.hero-immersive .wrap {
+  gap: 10px !important;
+}
+
+.hero-portrait-badge {
+  margin-bottom: 2px !important;
+}
+
+.hero-portrait-avatar {
+  width: 82px !important;
+  height: 82px !important;
+}
+
+.hero-immersive .kicker {
+  padding: 5px 16px !important;
+  font-size: 11px !important;
+  margin: 0 !important;
+}
+
+.hero-immersive h1,
+.hero-immersive h1 span,
+.hero-immersive .hero-title-main {
+  font-size: clamp(28px, 4vw, 40px) !important;
+  margin: 0 !important;
+  line-height: 1.12 !important;
+}
+
+/* Mot d'ordre (motd) : Citation centrale de William Guindon */
+.hero-motd-quote {
+  background: rgba(11, 20, 16, 0.82) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+  border-left: 4px solid #22c55e !important;
+  border-radius: 12px !important;
+  padding: 10px 18px 8px !important;
+  margin: 2px auto 4px !important;
+  max-width: 780px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+  animation: none !important;
+  text-align: center !important;
+}
+
+.hero-motd-text {
+  font-family: var(--font-heading) !important;
+  font-size: clamp(14.5px, 2.1vw, 18px) !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  line-height: 1.35 !important;
+  color: #ffffff !important;
+  margin: 0 0 6px !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+}
+
+.hero-motd-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+}
+
+.hero-motd-quote cite {
+  font-size: 12.5px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-style: normal !important;
+  margin: 0 !important;
+}
+
+.hero-motd-quote cite a {
+  color: #4ade80 !important;
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+}
+
+.hero-motd-footer .audio-player-widget {
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.hero-motd-footer .audio-btn {
+  padding: 3px 10px !important;
+  font-size: 11.5px !important;
+  gap: 5px !important;
+  background: rgba(34, 197, 94, 0.2) !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+.hero-motd-footer .audio-btn:hover {
+  background: rgba(34, 197, 94, 0.35) !important;
+  border-color: #22c55e !important;
+}
+
+/* ==========================================================================
    Hero Crise & Échéance 16 Octobre (Point Focal Rouge Brique #E74C3C)
    ========================================================================== */
 .hero-crisis-card {
-  margin: 22px auto 24px;
+  margin: 2px auto 6px;
   max-width: 820px;
-  background: rgba(11, 20, 16, 0.82);
+  background: rgba(11, 20, 16, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(231, 76, 60, 0.5);
-  border-radius: 18px;
-  padding: 26px 22px 22px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 25px rgba(231, 76, 60, 0.18);
+  border: 2px solid rgba(231, 76, 60, 0.55);
+  border-radius: 16px;
+  padding: 14px 18px 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(231, 76, 60, 0.16);
   text-align: center;
 }
 
 .hero-crisis-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 11px;
+  gap: 6px;
+  font-size: 10.5px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #fca5a5;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .hero-crisis-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #E74C3C;
   box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
@@ -9061,12 +9163,12 @@ body[data-page="policy"] .floating-ai-btn {
 }
 
 .hero-crisis-title {
-  font-size: clamp(20px, 3.6vw, 34px);
+  font-size: clamp(17px, 2.6vw, 24px);
   font-weight: 900;
   color: #ffffff;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
@@ -9075,21 +9177,21 @@ body[data-page="policy"] .floating-ai-btn {
 }
 
 .hero-crisis-subtitle {
-  font-size: 14px;
+  font-size: 12.5px;
   color: #cbd5e1;
-  margin: 0 auto 18px;
+  margin: 0 auto 10px;
   max-width: 620px;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 /* Compteur dynamique Hero */
 .hero-countdown-box {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(231, 76, 60, 0.35);
-  border-radius: 14px;
-  padding: 16px 20px 14px;
-  max-width: 520px;
-  margin: 0 auto 20px;
+  border-radius: 12px;
+  padding: 8px 14px 6px;
+  max-width: 460px;
+  margin: 0 auto 10px;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
@@ -9097,40 +9199,40 @@ body[data-page="policy"] .floating-ai-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .hero-countdown-unit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 65px;
+  min-width: 56px;
 }
 
 .hero-countdown-val {
   font-family: var(--font-heading);
-  font-size: clamp(34px, 5.2vw, 48px);
+  font-size: clamp(26px, 3.8vw, 38px);
   font-weight: 800;
   color: #E74C3C;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 12px rgba(231, 76, 60, 0.35);
+  text-shadow: 0 2px 10px rgba(231, 76, 60, 0.35);
 }
 
 .hero-countdown-sep {
-  font-size: clamp(26px, 4vw, 36px);
+  font-size: clamp(20px, 3vw, 28px);
   font-weight: 700;
   color: rgba(231, 76, 60, 0.6);
-  margin-top: -12px;
+  margin-top: -6px;
 }
 
 .hero-countdown-lbl {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #94a3b8;
-  margin-top: 6px;
+  margin-top: 3px;
 }
 
 /* Pilules de presse autour */
@@ -9138,19 +9240,19 @@ body[data-page="policy"] .floating-ai-btn {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .hero-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 13px;
+  gap: 5px;
+  padding: 5px 11px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #ffffff;
   text-decoration: none;
@@ -9170,7 +9272,7 @@ body[data-page="policy"] .floating-ai-btn {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
@@ -9178,21 +9280,21 @@ body[data-page="policy"] .floating-ai-btn {
   background: #E74C3C;
   color: #ffffff !important;
   font-weight: 700;
-  font-size: 14px;
-  padding: 11px 20px;
-  border-radius: 10px;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 3px 12px rgba(231, 76, 60, 0.35);
+  box-shadow: 0 3px 10px rgba(231, 76, 60, 0.35);
   transition: all 0.2s ease;
 }
 
 .hero-btn-primary:hover {
   background: #c0392b;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(231, 76, 60, 0.5);
+  box-shadow: 0 4px 14px rgba(231, 76, 60, 0.5);
 }
 
 .hero-btn-outline {
@@ -9200,9 +9302,9 @@ body[data-page="policy"] .floating-ai-btn {
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.25);
   font-weight: 700;
-  font-size: 14px;
-  padding: 11px 20px;
-  border-radius: 10px;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -9217,7 +9319,7 @@ body[data-page="policy"] .floating-ai-btn {
 }
 
 .hero-press-container {
-  margin-top: 16px !important;
+  margin-top: 10px !important;
 }
 
 .hero-press-container .special-press-accordion {
@@ -9227,6 +9329,7 @@ body[data-page="policy"] .floating-ai-btn {
 
 .hero-press-container .special-press-summary {
   background: rgba(231, 76, 60, 0.1) !important;
+  padding: 7px 12px !important;
 }
 
 .hero-press-container .special-press-summary:hover {
@@ -9235,10 +9338,12 @@ body[data-page="policy"] .floating-ai-btn {
 
 .hero-press-container .special-press-summary-text strong {
   color: #ffffff !important;
+  font-size: 13px !important;
 }
 
 .hero-press-container .special-press-summary-text small {
   color: #cbd5e1 !important;
+  font-size: 11px !important;
 }
 
 .hero-press-container .special-press-sub-accordion {
@@ -9280,6 +9385,160 @@ body[data-page="policy"] .floating-ai-btn {
 .hero-press-container .special-press-link-pill:hover {
   background: rgba(231, 76, 60, 0.3) !important;
   border-color: #E74C3C !important;
+}
+
+/* ==========================================================================
+   Bannière d'alerte Échéance 16 Octobre (Top Banner multi-pages)
+   ========================================================================== */
+.site-deadline-topbar {
+  background: #0d1512;
+  background: linear-gradient(90deg, #0b1410 0%, #1e0e0e 50%, #0b1410 100%);
+  border-bottom: 1.5px solid rgba(231, 76, 60, 0.5);
+  color: #ffffff;
+  padding: 5px 16px;
+  position: relative;
+  z-index: 105;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.site-deadline-topbar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.site-deadline-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.site-deadline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(231, 76, 60, 0.22);
+  border: 1px solid rgba(231, 76, 60, 0.55);
+  color: #fca5a5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.site-deadline-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #E74C3C;
+  animation: notifBadgePulse 2s ease-in-out infinite;
+}
+
+.site-deadline-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.site-deadline-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-deadline-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 13px;
+  color: #E74C3C;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.site-deadline-val {
+  color: #ffffff;
+}
+
+.site-deadline-unit {
+  font-size: 10px;
+  color: #E74C3C;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.site-deadline-sep {
+  color: rgba(231, 76, 60, 0.6);
+  font-size: 11px;
+}
+
+.site-deadline-right {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.site-deadline-btn {
+  background: #E74C3C;
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.35);
+}
+
+.site-deadline-btn:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.5);
+}
+
+@media (max-width: 768px) {
+  .site-deadline-topbar {
+    padding: 4px 10px;
+  }
+  .site-deadline-topbar-wrap {
+    justify-content: center;
+    gap: 8px;
+  }
+  .site-deadline-title {
+    display: none;
+  }
+  .site-deadline-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  .site-deadline-clock {
+    font-size: 12px;
+    padding: 1px 6px;
+  }
+  .site-deadline-btn {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
 }
 
 

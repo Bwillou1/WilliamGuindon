@@ -247,6 +247,58 @@
       document.head.appendChild(acScript);
     }
 
+    // 0.B Bannière d'alerte officielle CCE 16 Octobre avec compte à rebours en temps réel
+    function initDeadlineTopBanner() {
+      const currentPath = window.location.pathname.toLowerCase();
+      if (currentPath.includes('console-admin.html') || currentPath.includes('admin.html') || currentPath.includes('editeur.html') || currentPath.includes('reload.html')) {
+        return;
+      }
+
+      if (document.querySelector('.site-deadline-topbar')) {
+        return;
+      }
+
+      const headerSite = document.querySelector('header.site');
+      if (!headerSite) return;
+
+      const banner = document.createElement('aside');
+      banner.className = 'site-deadline-topbar';
+      banner.setAttribute('role', 'region');
+      banner.setAttribute('aria-label', 'Compte à rebours de l’échéance CCE du 16 octobre 2026');
+
+      banner.innerHTML = `
+        <div class="wrap site-deadline-topbar-wrap">
+          <div class="site-deadline-left">
+            <span class="site-deadline-badge">
+              <span class="site-deadline-dot" aria-hidden="true"></span>
+              <span>16 OCTOBRE 2026</span>
+            </span>
+            <span class="site-deadline-title">Échéance CCE · Réponse du Canada (SEM-26-003) dans :</span>
+          </div>
+          <div class="site-deadline-center">
+            <div class="site-deadline-clock">
+              <span class="site-deadline-val js-cd-days">—</span><span class="site-deadline-unit">j</span>
+              <span class="site-deadline-sep">:</span>
+              <span class="site-deadline-val js-cd-hours">—</span><span class="site-deadline-unit">h</span>
+              <span class="site-deadline-sep">:</span>
+              <span class="site-deadline-val js-cd-mins">—</span><span class="site-deadline-unit">m</span>
+              <span class="site-deadline-sep">:</span>
+              <span class="site-deadline-val js-cd-secs">—</span><span class="site-deadline-unit">s</span>
+            </div>
+          </div>
+          <div class="site-deadline-right">
+            <a href="live.html" class="site-deadline-btn">
+              <span>Suivre en direct ↗</span>
+            </a>
+          </div>
+        </div>
+      `;
+
+      headerSite.parentNode.insertBefore(banner, headerSite);
+    }
+
+    initDeadlineTopBanner();
+
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
 

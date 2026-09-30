@@ -113,9 +113,9 @@
         // Sample photo with full native sharpness
         vec4 color = texture2D(uPhoto, finalUv);
 
-        // Enhance vivid morning sunlight and warm golden horizon
-        color.rgb = pow(color.rgb, vec3(0.94));
-        color.rgb += vec3(0.04, 0.025, 0.008) * (1.0 - depth);
+        // Assombrissement léger temporaire du ciel et de la brume lumineuse d'arrière-plan
+        color.rgb = pow(color.rgb, vec3(1.04));
+        color.rgb *= 0.86;
 
         gl_FragColor = color;
       }
