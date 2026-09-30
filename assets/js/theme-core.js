@@ -363,7 +363,23 @@
         toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
       };
 
-      // Regroupement des utilitaires de barre d'actions (Langue, Notifs, Thème)
+      // Regroupement des utilitaires d'en-tête (Notifs, Thème, Menu Mobile)
+      let headerTools = headerWrap.querySelector('.header-tools');
+      if (!headerTools) {
+        headerTools = document.createElement('div');
+        headerTools.className = 'header-tools';
+        headerWrap.appendChild(headerTools);
+      }
+
+      const notifDrop = document.querySelector('.nav-notif-dropdown');
+      if (notifDrop && notifDrop.parentElement !== headerTools) {
+        headerTools.appendChild(notifDrop);
+      }
+      if (toggleBtn && toggleBtn.parentElement !== headerTools) {
+        headerTools.appendChild(toggleBtn);
+      }
+
+      // Toolbar interne au menu tiroir (pour la langue en mobile)
       let navToolbar = nav.querySelector('.nav-mobile-toolbar');
       if (!navToolbar) {
         navToolbar = document.createElement('div');
@@ -371,10 +387,9 @@
         nav.appendChild(navToolbar);
       }
       const langDrop = nav.querySelector('.nav-lang-dropdown');
-      const notifDrop = nav.querySelector('.nav-notif-dropdown');
-      if (langDrop && langDrop.parentElement !== navToolbar) navToolbar.appendChild(langDrop);
-      if (notifDrop && notifDrop.parentElement !== navToolbar) navToolbar.appendChild(notifDrop);
-      if (toggleBtn && toggleBtn.parentElement !== navToolbar) navToolbar.appendChild(toggleBtn);
+      if (langDrop && langDrop.parentElement !== navToolbar) {
+        navToolbar.appendChild(langDrop);
+      }
     }
 
     // Menu Mobile
@@ -390,6 +405,11 @@
         menuToggle.setAttribute('aria-label', 'Menu principal');
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.innerHTML = hamburgerSvg;
+      }
+      let headerTools = headerWrap.querySelector('.header-tools');
+      if (headerTools && menuToggle.parentElement !== headerTools) {
+        headerTools.appendChild(menuToggle);
+      } else if (!headerTools && menuToggle.parentElement !== headerWrap) {
         headerWrap.appendChild(menuToggle);
       }
 
@@ -740,6 +760,11 @@
       }
 
       function openMobileNav() {
+        document.querySelectorAll('.nav-notif-dropdown.active').forEach(nd => {
+          nd.classList.remove('active');
+          const nb = nd.querySelector('.nav-notif-btn');
+          if (nb) nb.setAttribute('aria-expanded', 'false');
+        });
         nav.classList.add('active');
         backdrop.classList.add('active');
         document.body.classList.add('no-scroll');
@@ -1314,13 +1339,27 @@
 
     notifDropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-notif-btn');
-      const menu = dropdown.querySelector('.nav-notif-menu');
-      const closeBtn = dropdown.querySelector('.nav-notif-close-btn');
+      const menu = dropdown.querySelector('.nav-notif-menu, .nav-notif-panel');
+      const closeBtn = dropdown.querySelector('.nav-notif-close-btn, .nav-notif-close');
       if (!btn) return;
 
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         
+        // Fermer le tiroir mobile s'il est ouvert
+        const navEl = document.querySelector('header.site nav, nav');
+        const backdropEl = document.querySelector('.mobile-nav-backdrop');
+        const toggleEl = document.querySelector('.menu-toggle');
+        if (navEl && navEl.classList.contains('active')) {
+          navEl.classList.remove('active');
+          if (backdropEl) backdropEl.classList.remove('active');
+          document.body.classList.remove('no-scroll');
+          if (toggleEl) {
+            toggleEl.setAttribute('aria-expanded', 'false');
+            toggleEl.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>`;
+          }
+        }
+
         dropdowns.forEach(d => {
           d.classList.remove('active');
           const db = d.querySelector('.nav-dropdown-btn');
