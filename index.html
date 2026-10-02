@@ -756,7 +756,264 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20260930-v71">
+<link rel="stylesheet" href="style.css?v=20261001-v75">
+
+<style>
+/* Bannière d'exactitude & Intégrité Médias */
+details.press-policy-card {
+  margin: 22px 0 30px;
+  background: var(--bg-card, #ffffff);
+  border: 2px solid var(--accent, #059669);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.12);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+details.press-policy-card:hover {
+  box-shadow: 0 6px 24px rgba(5, 150, 105, 0.2);
+  border-color: var(--accent-deep, #047857);
+}
+
+details.press-policy-card summary.press-policy-summary {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.09) 0%, rgba(16, 185, 129, 0.03) 100%);
+  cursor: pointer;
+  user-select: none;
+  list-style: none !important;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+details.press-policy-card summary {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+details.press-policy-card summary::-webkit-details-marker {
+  display: none !important;
+}
+
+details.press-policy-card summary::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+details.press-policy-card summary.press-policy-summary:hover {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.07) 100%);
+}
+
+.press-policy-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.press-policy-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: var(--accent, #059669);
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);
+}
+
+.press-policy-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.press-policy-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep, #047857);
+}
+
+.press-policy-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text, #111827);
+  line-height: 1.35;
+}
+
+.press-policy-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg, #ffffff);
+  border: 1.5px solid var(--accent, #059669);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-deep, #047857);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+details.press-policy-card summary.press-policy-summary:hover .press-policy-toggle-pill {
+  background: var(--accent, #059669);
+  color: #ffffff;
+}
+
+.press-policy-toggle-chevron {
+  transition: transform 0.25s ease;
+}
+
+details.press-policy-card[open] .press-policy-toggle-chevron {
+  transform: rotate(180deg);
+}
+
+details.press-policy-card[open] .press-policy-toggle-pill {
+  background: var(--accent, #059669);
+  color: #ffffff;
+}
+
+.press-policy-body {
+  padding: 24px 26px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-card);
+}
+
+.press-policy-intro-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.94rem;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.press-policy-intro-alert svg {
+  color: #ef4444;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.press-policy-subtitle {
+  font-size: 0.96rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.press-policy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.press-policy-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--accent-wash);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.press-policy-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.press-policy-num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 6px;
+  padding: 2px 7px;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+.press-policy-item strong {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.press-policy-item p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.press-policy-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+
+.press-policy-conclusion {
+  padding: 14px 18px;
+  background: rgba(5, 150, 105, 0.07);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.press-policy-full-link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-deep, var(--accent));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.15s ease;
+}
+
+.press-policy-full-link:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  details.press-policy-card summary.press-policy-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .press-policy-toggle-pill {
+    width: 100%;
+    justify-content: center;
+  }
+  .press-policy-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
 
 <!-- Brevo Newsletter Form Styles & Fonts -->
 <style>
@@ -1654,21 +1911,21 @@
       <p>Retrouvez les reportages d'enquête, entrevues audiovisuelles et publications dans les grands médias nationaux et régionaux.</p>
 
       <!-- Politique d'exactitude : Bannière interactive d'intégrité médiatique -->
-      <details class="press-policy-card">
-        <summary class="press-policy-summary">
-          <div class="press-policy-header-left">
-            <div class="press-policy-badge-icon" aria-hidden="true">
+      <details class="press-policy-card" style="margin: 22px 0 30px; background: var(--bg-card, #ffffff); border: 2px solid var(--accent, #059669); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.12);">
+        <summary class="press-policy-summary" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 22px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.09) 0%, rgba(16, 185, 129, 0.03) 100%); cursor: pointer; user-select: none; list-style: none;">
+          <div class="press-policy-header-left" style="display: flex; align-items: center; gap: 14px; flex: 1;">
+            <div class="press-policy-badge-icon" aria-hidden="true" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 11px; background: var(--accent, #059669); color: #ffffff; flex-shrink: 0; box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 <polyline points="9 12 11 14 15 10"/>
               </svg>
             </div>
-            <div class="press-policy-titles">
-              <span class="press-policy-kicker">Transparence &amp; Rigueur Éditoriale</span>
-              <strong class="press-policy-heading">Politique d'exactitude : Pourquoi certains médias ne sont-ils pas répertoriés ici ?</strong>
+            <div class="press-policy-titles" style="display: flex; flex-direction: column; gap: 3px;">
+              <span class="press-policy-kicker" style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-deep, #047857);">Transparence &amp; Rigueur Éditoriale</span>
+              <strong class="press-policy-heading" style="font-size: 1.05rem; font-weight: 700; color: var(--text, #111827); line-height: 1.35;">Politique d'exactitude : Pourquoi certains médias ne sont-ils pas répertoriés ici ?</strong>
             </div>
           </div>
-          <div class="press-policy-toggle-pill">
+          <div class="press-policy-toggle-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--bg, #ffffff); border: 1.5px solid var(--accent, #059669); border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: var(--accent-deep, #047857); flex-shrink: 0;">
             <span class="press-policy-toggle-text">Consulter les critères</span>
             <svg class="press-policy-toggle-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
