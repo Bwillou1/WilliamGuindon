@@ -496,7 +496,6 @@ SOFTWARE.
   - *Intégrité des sous-ressources (SRI) :* Chargé dynamiquement depuis `unpkg.com` avec contrôle cryptographique `integrity="sha384-5Sivu2UajgUNg6Sxu3UHsZKjZlq9v6/slTAhA0/s21XcfNcrkSZRRO9K/0Cg14iP" crossorigin="anonymous"`.
   - *Non auto-hébergement :* Ce script n'est pas distribué localement dans `assets/` ni pré-mis en cache dans le Service Worker en raison de la clause copyleft de la GPL-3.0, incompatible avec la licence CC BY-NC-ND 4.0 du site.
 - **Umami Analytics :** Licence MIT (mesure d'audience sans traceurs publicitaires ni collecte de données personnelles nominatives).
-- **PostHog Analytics :** Licence MIT (plateforme d'analyse d'audience produit, télémétrie éthique et mesure d'impact, hébergée sur cloud sécurisé sans revente de données).
 - **Google Traduction :** Outil de traduction automatique fourni par Google à titre d'accessibilité internationale multilingue. Seul le texte original français fait foi juridique.
 - **Cal.com :** Plateforme de prise de rendez-vous avec la presse (conditions d'utilisation : [cal.com/terms](https://cal.com/terms)).
 - **Meta Platforms (Plugin Page Facebook) :** Flux d'actualités et publications en direct de la page officielle (politique : [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy/)).
