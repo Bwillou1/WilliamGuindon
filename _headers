@@ -6,6 +6,16 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Permissions-Policy: camera=(), microphone=(), geolocation=(), usb=()
 
+# Fichiers dynamiques et Service Worker (sans mise en cache stale)
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/site-state.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/status.json
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
+
 # Cache statique haute performance (1 an) pour les assets immuables
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
@@ -22,12 +32,18 @@
 /*.svg
   Cache-Control: public, max-age=31536000, immutable
 
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
+
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 
 /*.css
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache contrôlé pour les pages HTML
+# Cache contrôlé pour la racine et les pages HTML
+/
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
 /*.html
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400

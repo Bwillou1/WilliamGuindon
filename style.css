@@ -60,6 +60,11 @@ html {
   max-width: 100%;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 body {
   position: relative;
   top: 0 !important;
@@ -1111,6 +1116,7 @@ footer a:hover {
 .hero-portrait-avatar {
   width: 104px;
   height: 104px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--accent, #22c55e);
@@ -5297,6 +5303,8 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-card);
   border: 1px solid var(--line);
   padding: 14px 0;
+  min-height: 78px;
+  contain: layout;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
@@ -5391,6 +5399,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 24px;
   border-radius: 6px;
   padding: 8px 0 16px 0;
+  min-height: 320px;
+  contain: layout;
 }
 
 .press-carousel-container {
@@ -6474,6 +6484,8 @@ html.nav-drawer-open .ai-modal-overlay,
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 20px;
+  min-height: 440px;
+  contain: layout;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
@@ -9048,7 +9060,8 @@ body[data-page="policy"] .floating-ai-btn {
    ========================================================================== */
 .hero-immersive {
   padding: clamp(36px, 5vh, 54px) 0 clamp(16px, 2.5vh, 24px) !important;
-  min-height: auto !important;
+  min-height: clamp(540px, 75vh, 740px) !important;
+  contain: layout;
 }
 
 .hero-immersive .wrap {
@@ -9354,6 +9367,8 @@ body[data-page="policy"] .floating-ai-btn {
   width: 100%;
   box-sizing: border-box;
   font-size: 13px;
+  min-height: 38px;
+  contain: layout;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
