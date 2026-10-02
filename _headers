@@ -41,9 +41,23 @@
 /*.css
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache contrôlé pour la racine et les pages HTML
+# Cache contrôlé pour la racine et les pages HTML avec annonce Markdown pour agents IA
 /
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Link: </llms.txt>; rel="alternate"; type="text/markdown", </llms.txt>; rel="llms-txt"
 
 /*.html
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Link: </llms.txt>; rel="alternate"; type="text/markdown", </llms.txt>; rel="llms-txt"
+
+# Fichiers IA / LLM (Standard ouvert)
+/llms.txt
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Access-Control-Allow-Origin: *
+  Content-Type: text/plain; charset=utf-8
+
+/llms-full.txt
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Access-Control-Allow-Origin: *
+  Content-Type: text/plain; charset=utf-8
+
