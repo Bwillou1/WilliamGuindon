@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" style="background:#02150e;font-family:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <!--
+    Compte à rebours officiel CCE / ACEUM SEM-26-003 — William Guindon
+    Architecture hybride :
+    - Mode interactif (vue directe / iframe) : horloge JavaScript temps réel synchronisée
+    - Mode statique (balise <img> / Markdown) : animation vectorielle pure CSS cadencée
+    Remerciements à Tom Kwok pour le projet open source svgasm :
+    https://github.com/tomkwok/svgasm (Licence Apache-2.0)
+  -->
   <defs>
     <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#02150e" />
@@ -66,6 +74,83 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
+
+    /* Animation d'images-clés CSS sans JavaScript inspirée de svgasm (Tom Kwok) */
+    @keyframes svgasm-step {
+      0% { opacity: 1; visibility: visible; }
+      1.666% { opacity: 1; visibility: visible; }
+      1.667% { opacity: 0; visibility: hidden; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+    .sf-frame {
+      opacity: 0;
+      visibility: hidden;
+      animation: svgasm-step 60s infinite;
+    }
+    .sf-0 {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sf-0 { animation-delay: 0s; }
+    .sf-1 { animation-delay: 1s; }
+    .sf-2 { animation-delay: 2s; }
+    .sf-3 { animation-delay: 3s; }
+    .sf-4 { animation-delay: 4s; }
+    .sf-5 { animation-delay: 5s; }
+    .sf-6 { animation-delay: 6s; }
+    .sf-7 { animation-delay: 7s; }
+    .sf-8 { animation-delay: 8s; }
+    .sf-9 { animation-delay: 9s; }
+    .sf-10 { animation-delay: 10s; }
+    .sf-11 { animation-delay: 11s; }
+    .sf-12 { animation-delay: 12s; }
+    .sf-13 { animation-delay: 13s; }
+    .sf-14 { animation-delay: 14s; }
+    .sf-15 { animation-delay: 15s; }
+    .sf-16 { animation-delay: 16s; }
+    .sf-17 { animation-delay: 17s; }
+    .sf-18 { animation-delay: 18s; }
+    .sf-19 { animation-delay: 19s; }
+    .sf-20 { animation-delay: 20s; }
+    .sf-21 { animation-delay: 21s; }
+    .sf-22 { animation-delay: 22s; }
+    .sf-23 { animation-delay: 23s; }
+    .sf-24 { animation-delay: 24s; }
+    .sf-25 { animation-delay: 25s; }
+    .sf-26 { animation-delay: 26s; }
+    .sf-27 { animation-delay: 27s; }
+    .sf-28 { animation-delay: 28s; }
+    .sf-29 { animation-delay: 29s; }
+    .sf-30 { animation-delay: 30s; }
+    .sf-31 { animation-delay: 31s; }
+    .sf-32 { animation-delay: 32s; }
+    .sf-33 { animation-delay: 33s; }
+    .sf-34 { animation-delay: 34s; }
+    .sf-35 { animation-delay: 35s; }
+    .sf-36 { animation-delay: 36s; }
+    .sf-37 { animation-delay: 37s; }
+    .sf-38 { animation-delay: 38s; }
+    .sf-39 { animation-delay: 39s; }
+    .sf-40 { animation-delay: 40s; }
+    .sf-41 { animation-delay: 41s; }
+    .sf-42 { animation-delay: 42s; }
+    .sf-43 { animation-delay: 43s; }
+    .sf-44 { animation-delay: 44s; }
+    .sf-45 { animation-delay: 45s; }
+    .sf-46 { animation-delay: 46s; }
+    .sf-47 { animation-delay: 47s; }
+    .sf-48 { animation-delay: 48s; }
+    .sf-49 { animation-delay: 49s; }
+    .sf-50 { animation-delay: 50s; }
+    .sf-51 { animation-delay: 51s; }
+    .sf-52 { animation-delay: 52s; }
+    .sf-53 { animation-delay: 53s; }
+    .sf-54 { animation-delay: 54s; }
+    .sf-55 { animation-delay: 55s; }
+    .sf-56 { animation-delay: 56s; }
+    .sf-57 { animation-delay: 57s; }
+    .sf-58 { animation-delay: 58s; }
+    .sf-59 { animation-delay: 59s; }
   </style>
 
   <!-- Fond avec dégradé riche -->
@@ -97,28 +182,92 @@
   <!-- Jours -->
   <g transform="translate(120, 205)">
     <rect width="215" height="175" class="unit-card" />
-    <text x="107" y="105" class="unit-num">15</text>
+    <text id="cd-days" x="107" y="105" class="unit-num">13</text>
     <text x="107" y="148" class="unit-lbl">Jours</text>
   </g>
 
   <!-- Heures -->
   <g transform="translate(365, 205)">
     <rect width="215" height="175" class="unit-card" />
-    <text x="107" y="105" class="unit-num">06</text>
+    <text id="cd-hours" x="107" y="105" class="unit-num">08</text>
     <text x="107" y="148" class="unit-lbl">Heures</text>
   </g>
 
   <!-- Minutes -->
   <g transform="translate(610, 205)">
     <rect width="215" height="175" class="unit-card" />
-    <text x="107" y="105" class="unit-num">25</text>
+    <text id="cd-mins" x="107" y="105" class="unit-num">01</text>
     <text x="107" y="148" class="unit-lbl">Minutes</text>
   </g>
 
   <!-- Secondes -->
   <g transform="translate(855, 205)">
     <rect width="215" height="175" class="unit-card-sec" />
-    <text x="107" y="105" class="unit-num-sec">49</text>
+    <!-- Ticker JS actif en affichage direct dans le navigateur ou via iframe -->
+    <text id="cd-secs" x="107" y="105" class="unit-num-sec" style="display:none;">15</text>
+    <!-- Ticker CSS pur inspiré de svgasm pour contextes <img>, prévisualisations et Markdown sans JS -->
+    <g id="css-secs-container">
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-0">15</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-1">14</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-2">13</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-3">12</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-4">11</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-5">10</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-6">09</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-7">08</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-8">07</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-9">06</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-10">05</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-11">04</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-12">03</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-13">02</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-14">01</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-15">00</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-16">59</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-17">58</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-18">57</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-19">56</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-20">55</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-21">54</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-22">53</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-23">52</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-24">51</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-25">50</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-26">49</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-27">48</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-28">47</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-29">46</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-30">45</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-31">44</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-32">43</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-33">42</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-34">41</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-35">40</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-36">39</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-37">38</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-38">37</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-39">36</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-40">35</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-41">34</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-42">33</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-43">32</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-44">31</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-45">30</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-46">29</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-47">28</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-48">27</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-49">26</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-50">25</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-51">24</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-52">23</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-53">22</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-54">21</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-55">20</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-56">19</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-57">18</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-58">17</text>
+      <text x="107" y="105" class="unit-num-sec sf-frame sf-59">16</text>
+    </g>
     <text x="107" y="148" class="unit-lbl">Secondes</text>
   </g>
 
@@ -126,7 +275,7 @@
   <g transform="translate(200, 415)">
     <rect width="800" height="54" rx="27" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
     <text x="400" y="34" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle" dominant-baseline="middle">
-      <tspan fill="#ffffff" font-weight="800">21 985</tspan> minutes restantes au total avant la réponse officielle
+      <tspan id="cd-total-mins" fill="#ffffff" font-weight="800">19 201</tspan> minutes restantes au total avant la réponse officielle
     </text>
   </g>
 
@@ -145,4 +294,57 @@
     <rect x="860" y="530" width="230" height="44" rx="22" fill="#10b981" />
     <text x="975" y="557" font-size="15" font-weight="800" fill="#02150e" text-anchor="middle" dominant-baseline="middle">williamguindon.me/live</text>
   </g>
+
+  <!-- Script d'horloge dynamique temps réel pour vue directe et iframe -->
+  <script type="text/javascript">
+    <![CDATA[
+    (function() {
+      // Date cible : Échéance officielle CCE SEM-26-003 (16 octobre 2026 à 00:00:00 HAE)
+      var targetTime = new Date('2026-10-16T00:00:00-04:00').getTime();
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+      function updateClock() {
+        var now = Date.now();
+        var diff = Math.max(0, targetTime - now);
+        var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var s = Math.floor((diff % (1000 * 60)) / 1000);
+        var totalMins = Math.floor(diff / (1000 * 60));
+
+        var elDays = document.getElementById('cd-days');
+        var elHours = document.getElementById('cd-hours');
+        var elMins = document.getElementById('cd-mins');
+        var elSecs = document.getElementById('cd-secs');
+        var elTotal = document.getElementById('cd-total-mins');
+        var cssSecs = document.getElementById('css-secs-container');
+
+        if (cssSecs) {
+          cssSecs.style.display = 'none';
+        }
+        if (elDays) elDays.textContent = pad(d);
+        if (elHours) elHours.textContent = pad(h);
+        if (elMins) elMins.textContent = pad(m);
+        if (elSecs) {
+          elSecs.style.display = 'inline';
+          elSecs.textContent = pad(s);
+        }
+        if (elTotal) {
+          try {
+            elTotal.textContent = totalMins.toLocaleString('fr-CA');
+          } catch(e) {
+            elTotal.textContent = totalMins;
+          }
+        }
+      }
+
+      try {
+        updateClock();
+        setInterval(updateClock, 1000);
+      } catch(err) {
+        // En cas de blocage d'exécution de scripts, l'animation CSS svgasm assure l'animation
+      }
+    })();
+    ]]>
+  </script>
 </svg>

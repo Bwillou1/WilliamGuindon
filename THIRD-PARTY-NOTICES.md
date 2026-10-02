@@ -490,6 +490,28 @@ SOFTWARE.
 
 ---
 
+### svgasm
+- **Auteur :** Copyright 2019-2020 Tom Kwok
+- **Licence :** Apache License 2.0
+- **URL :** https://github.com/tomkwok/svgasm
+- **Description :** Architecture et technique d'animation vectorielle SVG autonome sans dépendance ni exécution JavaScript pour le compte à rebours officiel (`countdown-live.svg`). Permet le défilement et l'animation cadencée des secondes et de l'indicateur d'état en direct via des images-clés CSS (`@keyframes`), assurant un affichage animé même lorsque le SVG est inséré dans une balise image (`<img>`) ou un document statique (Markdown).
+
+```text
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).
