@@ -210,6 +210,13 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
 .lpill{font-size:11px;border-radius:10px;padding:2px 9px;font-weight:600}
 .allopen{font-size:13px;color:var(--blue);border:1px solid #dadce0;border-radius:16px;padding:3px 12px}
 .allopen:hover{background:#f8fafd}
+.btn-share-action{font-size:12px;font-weight:600;color:var(--blue);background:#edf2fc;border:1px solid #c2e7ff;border-radius:14px;padding:3px 10px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .15s ease}
+.btn-share-action:hover{background:#d3e3fd;color:#041e49;border-color:#7cacf8}
+.btn-share-action svg{width:13px;height:13px;fill:currentColor}
+@keyframes sharePulse{0%{box-shadow:0 0 0 0 rgba(11,87,208,0.5);border-color:#0b57d0}50%{box-shadow:0 0 0 8px rgba(11,87,208,0.2);border-color:#0b57d0;background:#f0f6ff}100%{box-shadow:0 0 0 0 rgba(11,87,208,0);border-color:#e4e6eb}}
+.share-highlight{animation:sharePulse 2s ease-in-out;border-color:#0b57d0 !important}
+.share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px);background:#202124;color:#fff;padding:10px 20px;border-radius:24px;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,0.3);opacity:0;visibility:hidden;transition:all .25s cubic-bezier(0,0,.2,1);z-index:99999;pointer-events:none}
+.share-toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 .card{background:#fff;border:1px solid #e7e9ec;border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 2px rgba(60,64,67,.06)}
 .card-head{display:flex;gap:14px;padding:12px 16px;cursor:pointer;align-items:flex-start}
 .card-head:hover{background:#fafbfc}
@@ -1704,13 +1711,17 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
         </div>
 
         <!-- PIÈCE C -->
-        <div class="msgr-piece-card">
+        <div class="msgr-piece-card" id="piece-c">
           <div class="msgr-piece-head">
             <div class="msgr-piece-title">PIÈCE C — Fil : « Exigence de caution parentale »</div>
             <div class="msgr-piece-labels">
               <span class="lpill" style="background:#18803820;color:#188038">Paternalisme</span>
               <span class="lpill" style="background:#e8710a20;color:#e8710a">Parents · fil « Annexe 1 »</span>
               <span class="lpill" style="background:#5f636820;color:#5f6368">Obstacles</span>
+              <button type="button" class="btn-share-action" onclick="copyDirectLink('c', this)" title="Partager la pièce C (copier le lien direct)">
+                <svg class="svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <span>Partager (#C)</span>
+              </button>
             </div>
           </div>
           <div class="msg-date-divider">14 DÉCEMBRE 2025</div>
@@ -1731,12 +1742,16 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
         </div>
 
         <!-- PIÈCE D -->
-        <div class="msgr-piece-card">
+        <div class="msgr-piece-card" id="piece-d">
           <div class="msgr-piece-head">
             <div class="msgr-piece-title">PIÈCE D — Fil : « Imposition politique et tentative d'appropriation »</div>
             <div class="msgr-piece-labels">
               <span class="lpill" style="background:#00897a20;color:#00897a">Enquête partis</span>
               <span class="lpill" style="background:#5f636820;color:#5f6368">Obstacles</span>
+              <button type="button" class="btn-share-action" onclick="copyDirectLink('d', this)" title="Partager la pièce D (copier le lien direct)">
+                <svg class="svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <span>Partager (#D)</span>
+              </button>
             </div>
           </div>
           <div class="msg-date-divider">18 MAI 2026</div>
@@ -1754,12 +1769,16 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
         </div>
 
         <!-- PIÈCE E -->
-        <div class="msgr-piece-card">
+        <div class="msgr-piece-card" id="piece-e">
           <div class="msgr-piece-head">
             <div class="msgr-piece-title">PIÈCE E — Fil : « Négation du travail individuel »</div>
             <div class="msgr-piece-labels">
               <span class="lpill" style="background:#9334e620;color:#9334e6">Défiance épistémique</span>
               <span class="lpill" style="background:#5f636820;color:#5f6368">Obstacles</span>
+              <button type="button" class="btn-share-action" onclick="copyDirectLink('e', this)" title="Partager la pièce E (copier le lien direct)">
+                <svg class="svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <span>Partager (#E)</span>
+              </button>
             </div>
           </div>
           <div class="msg-date-divider">19 MAI 2026</div>
@@ -1786,13 +1805,17 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
         </div>
 
         <!-- PIÈCE F -->
-        <div class="msgr-piece-card">
+        <div class="msgr-piece-card" id="piece-f">
           <div class="msgr-piece-head">
             <div class="msgr-piece-title">PIÈCE F — Fil : « Tone Policing et invalidation par l'âge »</div>
             <div class="msgr-piece-labels">
               <span class="lpill" style="background:#9334e620;color:#9334e6">Défiance épistémique</span>
               <span class="lpill" style="background:#18803820;color:#188038">Paternalisme</span>
               <span class="lpill" style="background:#5f636820;color:#5f6368">Obstacles</span>
+              <button type="button" class="btn-share-action" onclick="copyDirectLink('f', this)" title="Partager la pièce F (copier le lien direct)">
+                <svg class="svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <span>Partager (#F)</span>
+              </button>
             </div>
           </div>
           <div class="msg-date-divider">20 MAI 2026</div>
@@ -2394,7 +2417,62 @@ function toggleMsgrFullscreen(){
   }
 }
 
-function goList(){
+/* ===== Notification Toast pour le partage ===== */
+function showShareToast(msg){
+  let toast = document.getElementById('shareToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'shareToast';
+    toast.className = 'share-toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = '<svg style="width:16px;height:16px;fill:#81c995" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>' + msg + '</span>';
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function(){ toast.classList.remove('show'); }, 2800);
+}
+
+/* ===== Copie de lien direct et mise à jour URL ===== */
+async function copyDirectLink(tag, btn){
+  var cleanTag = String(tag).trim();
+  var url = window.location.origin + window.location.pathname + '#' + cleanTag;
+  if(history.replaceState){
+    history.replaceState(null, '', '#' + cleanTag);
+  } else {
+    window.location.hash = cleanTag;
+  }
+  
+  var ok = false;
+  if(navigator.clipboard && window.isSecureContext){
+    try{
+      await navigator.clipboard.writeText(url);
+      ok = true;
+    }catch(_){}
+  }
+  if(!ok){
+    try{
+      var inp = document.createElement('input');
+      inp.value = url;
+      document.body.appendChild(inp);
+      inp.select();
+      document.execCommand('copy');
+      document.body.removeChild(inp);
+      ok = true;
+    }catch(_){}
+  }
+  
+  if(btn){
+    var origHtml = btn.innerHTML;
+    btn.innerHTML = '<svg style="width:13px;height:13px;fill:currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <span>Lien copié !</span>';
+    setTimeout(function(){ btn.innerHTML = origHtml; }, 2000);
+  }
+  showShareToast('Lien copié : #' + cleanTag.toUpperCase());
+}
+
+function goList(pushHash){
+  if(pushHash !== false && history.replaceState){
+    history.replaceState(null, '', window.location.pathname);
+  }
   var tvm = document.getElementById('tv-messenger'); if(tvm) tvm.classList.remove('fullscreen');
   views.forEach(v=>v.style.display='none');
   views.forEach(v=>v.classList.remove('printme'));
@@ -2407,18 +2485,29 @@ function goList(){
     applyFilters();
   }
 }
-rows.forEach(r=>r.onclick=e=>{
-  if(e.target.classList.contains('st')){r.dataset.star=r.dataset.star==='1'?'0':'1';e.target.classList.toggle('on');return}
-  if(e.target.classList.contains('cb')){r.classList.toggle('sel');return}
-  const tv=document.getElementById('tv-'+r.dataset.id);
-  if(tv){
-    listwrap.style.display='none';
-    views.forEach(v=>v.style.display='none');
-    tv.style.display='block';tv.classList.add('printme');
-    document.querySelector('.messages').scrollTop=0;
+
+rows.forEach(r=>{
+  var tid = r.dataset.id;
+  var num = tid === 't0' ? '0' : tid.replace(/^t/, '');
+  
+  // Badge visuel du numéro de mail dans la liste
+  var subj = r.querySelector('.subj');
+  if(subj && !r.querySelector('.mail-num-badge')){
+    var badge = document.createElement('span');
+    badge.className = 'lpill mail-num-badge';
+    badge.style.cssText = 'background:#e8f0fe;color:#1967d2;margin-right:6px;font-weight:700;font-size:11px;';
+    badge.textContent = '#' + num;
+    subj.prepend(badge);
   }
+
+  r.onclick=e=>{
+    if(e.target.classList.contains('st')){r.dataset.star=r.dataset.star==='1'?'0':'1';e.target.classList.toggle('on');return}
+    if(e.target.classList.contains('cb')){r.classList.toggle('sel');return}
+    openThreadById(r.dataset.id, true);
+  };
 });
-document.querySelectorAll('.back').forEach(b=>b.onclick=goList);
+
+document.querySelectorAll('.back').forEach(b=>b.onclick=()=>goList(true));
 document.querySelectorAll('.card-head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
 document.querySelectorAll('.allopen').forEach(b=>b.onclick=()=>{
   const tv=b.closest('.threadview');const cards=[...tv.querySelectorAll('.card')];
@@ -2492,12 +2581,13 @@ function doSearch(v){var t=v.trim();
  results.innerHTML=h;
 }
 results.addEventListener('click',function(e){var r=e.target.closest('.res');if(!r)return;var m=idx[parseInt(r.getAttribute('data-i'),10)];
- results.style.display='none';openThreadById(m.tv.id.substring(3));
+ results.style.display='none';openThreadById(m.tv.id.substring(3), true);
  m.card.classList.add('open');m.card.scrollIntoView({behavior:'smooth',block:'center'});
  m.card.style.boxShadow='0 0 0 3px #0b57d0';setTimeout(function(){m.card.style.boxShadow=''},1900);
  search.value='';clearB.hidden=true;
 });
-function openThreadById(id){
+
+function openThreadById(id, pushHash){
   listwrap.style.display='none';
   results.style.display='none';
   views.forEach(function(v){v.style.display='none';v.classList.remove('printme')});
@@ -2506,15 +2596,165 @@ function openThreadById(id){
     tvv.style.display='block';
     tvv.classList.add('printme');
     document.querySelector('.messages').scrollTop=0;
+    if(pushHash && history.replaceState){
+      if(id.startsWith('t')){
+        var num = id === 't0' ? '0' : id.replace(/^t/, '');
+        history.replaceState(null, '', '#' + num);
+      } else {
+        history.replaceState(null, '', '#' + id);
+      }
+    }
+  }
+}
+
+/* ===== Injection automatique des boutons Partager dans chaque threadview ===== */
+document.querySelectorAll('.threadview').forEach(function(tv){
+  var tvMeta = tv.querySelector('.tv-meta');
+  if(!tvMeta || tvMeta.querySelector('.btn-share-action')) return;
+  var tag = '';
+  var label = '';
+  if(tv.id.startsWith('tv-t')){
+    var rawNum = tv.id.replace('tv-t', '');
+    tag = rawNum;
+    label = 'Partager (#' + rawNum + ')';
+  } else if(tv.id === 'tv-video'){
+    tag = 'video';
+    label = 'Partager (#vidéo)';
+  } else if(tv.id === 'tv-facebook'){
+    tag = 'facebook';
+    label = 'Partager (#facebook)';
+  } else if(tv.id === 'tv-messenger'){
+    tag = 'messenger';
+    label = 'Partager (#messenger)';
+  } else if(tv.id === 'tv-policy'){
+    tag = 'policy';
+    label = 'Partager (#protection)';
+  }
+  if(tag){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn-share-action';
+    btn.title = 'Partager cette section (copier le lien direct #' + tag + ')';
+    btn.innerHTML = '<svg class="svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg> <span>' + label + '</span>';
+    btn.onclick = function(){ copyDirectLink(tag, btn); };
+    tvMeta.appendChild(btn);
+  }
+});
+
+/* ===== Routeur d'URL hash pour partage (#1, #c, #video, etc.) ===== */
+function handleHashNavigation(){
+  var rawHash = (window.location.hash || '').replace(/^#/, '').trim().toLowerCase();
+  if(!rawHash || rawHash === 'inbox'){
+    goList(false);
+    return;
+  }
+
+  // 1. Vidéo
+  if(rawHash === 'video' || rawHash === 'v' || rawHash === 'tv-video'){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    var vTab = document.querySelector('[data-tab="video"]');
+    if(vTab) vTab.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    var vNav = document.querySelector('[data-nav="video"]');
+    if(vNav) vNav.classList.add('active');
+    openThreadById('video', false);
+    return;
+  }
+
+  // 2. Facebook
+  if(rawHash === 'facebook' || rawHash === 'fb' || rawHash === 'tv-facebook'){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    var fTab = document.querySelector('[data-tab="facebook"]');
+    if(fTab) fTab.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    var fNav = document.querySelector('[data-nav="facebook"]');
+    if(fNav) fNav.classList.add('active');
+    openThreadById('facebook', false);
+    renderFbComments();
+    return;
+  }
+  if(rawHash.startsWith('fb-')){
+    var commentId = rawHash.replace('fb-', '');
+    openThreadById('facebook', false);
+    renderFbComments();
+    setTimeout(function(){
+      var commentEl = document.querySelector('.fb-comment-item[data-id="' + commentId + '"]');
+      if(commentEl){
+        commentEl.scrollIntoView({behavior:'smooth', block:'center'});
+        commentEl.classList.add('share-highlight');
+        setTimeout(function(){ commentEl.classList.remove('share-highlight'); }, 3000);
+      }
+    }, 200);
+    return;
+  }
+
+  // 3. Messenger (pièces C, D, E, F ou global)
+  if(rawHash === 'messenger' || rawHash === 'msgr' || rawHash === 'm' || rawHash === 'tv-messenger'){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    var mTab = document.querySelector('[data-tab="messenger"]');
+    if(mTab) mTab.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    var mNav = document.querySelector('[data-nav="messenger"]');
+    if(mNav) mNav.classList.add('active');
+    openThreadById('messenger', false);
+    return;
+  }
+  var pieceMatch = rawHash.match(/^(?:piece-|messenger-)?([cdef])$/);
+  if(pieceMatch){
+    var letter = pieceMatch[1];
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    var mTab2 = document.querySelector('[data-tab="messenger"]');
+    if(mTab2) mTab2.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    var mNav2 = document.querySelector('[data-nav="messenger"]');
+    if(mNav2) mNav2.classList.add('active');
+    openThreadById('messenger', false);
+    setTimeout(function(){
+      var pEl = document.getElementById('piece-' + letter);
+      if(pEl){
+        pEl.scrollIntoView({behavior:'smooth', block:'center'});
+        pEl.classList.add('share-highlight');
+        setTimeout(function(){ pEl.classList.remove('share-highlight'); }, 3000);
+      }
+    }, 180);
+    return;
+  }
+
+  // 4. Cadre juridique & Politique
+  if(rawHash === 'policy' || rawHash === 'p' || rawHash === 'tv-policy' || rawHash === 'protection'){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    var pTab = document.querySelector('[data-tab="policy"]');
+    if(pTab) pTab.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    var pNav = document.querySelector('[data-nav="policy"]');
+    if(pNav) pNav.classList.add('active');
+    openThreadById('policy', false);
+    return;
+  }
+
+  // 5. Courriels par numéro (#1, #2, #24, #0 ou #t1, #t24, #mail-1)
+  var mailMatch = rawHash.match(/^(?:t|mail-)?(\d+)$/);
+  if(mailMatch){
+    var numStr = mailMatch[1];
+    var tidStr = 't' + numStr;
+    var tvEl = document.getElementById('tv-' + tidStr);
+    if(tvEl){
+      openThreadById(tidStr, false);
+      return;
+    }
+  }
+
+  // 6. Correspondance directe
+  var directTv = document.getElementById('tv-' + rawHash);
+  if(directTv){
+    openThreadById(rawHash, false);
   }
 }
 
 applyFilters();
 renderFbComments();
-if(window.location.hash==='#video'||window.location.hash==='#tv-video'){
-  const vNav=document.querySelector('[data-nav="video"]');
-  if(vNav) vNav.click();
-}
+handleHashNavigation();
+window.addEventListener('hashchange', handleHashNavigation);
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
