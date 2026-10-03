@@ -541,10 +541,10 @@
                   <span class="mmenu-cat-icon">⚖️</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'Autonomy & Ageism' : (isEs ? 'Autonomía y Edadismo' : 'Autonomie & Âgisme')}</span>
-                    <span class="mmenu-cat-desc">Statut mineur, droits 14–17 ans, discernement...</span>
+                    <span class="mmenu-cat-desc">${isEn ? 'Wmail — Public redacted annex' : (isEs ? 'Wmail — Anexo público redactado' : 'Wmail — Annexe publique caviardée')}</span>
                   </div>
                   <div class="mmenu-cat-meta">
-                    <span class="mmenu-badge-count">7</span>
+                    <span class="mmenu-badge-count">1</span>
                     <span class="mmenu-cat-arrow">›</span>
                   </div>
                 </button>
@@ -702,39 +702,9 @@
                 <span class="mmenu-panel-heading">⚖️ ${isEn ? 'Autonomy & Ageism' : (isEs ? 'Autonomía y Edadismo' : 'Autonomie & Âgisme')}</span>
               </div>
               <div class="mmenu-links-list">
-                <a href="statut-mineur.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🧑‍⚖️</span>
-                  <span class="mobile-link-text">Statut citoyen mineur &amp; Discernement</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
-                <a href="blog.html#plaidoyer-autonomie-juridique-adolescents-agisme-institutionnel" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📢</span>
-                  <span class="mobile-link-text">Plaidoyer : Autonomie des 14–17 ans</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
-                <a href="enquete-partis.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🗳️</span>
-                  <span class="mobile-link-text">Dialogue parlementaire &amp; Partis</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
                 <a href="age.html" class="mobile-flat-link">
                   <span class="mobile-link-icon">✉️</span>
-                  <span class="mobile-link-text">Annexe caviardée : Correspondance</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
-                <a href="statut-mineur.html#preuve-officielle-cce" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📜</span>
-                  <span class="mobile-link-text">Attestation CCE : 1ᵉʳ mineur depuis 1994</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
-                <a href="vie-privee-parents.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🛡️</span>
-                  <span class="mobile-link-text">Vie privée &amp; Protection des mineurs</span>
-                  <span class="mobile-link-arrow">›</span>
-                </a>
-                <a href="embargo.html#politique-exactitude-medias" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🚫</span>
-                  <span class="mobile-link-text">Refus de l'âgisme &amp; Condescendance</span>
+                  <span class="mobile-link-text">Wmail — Annexe publique caviardée</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
               </div>
