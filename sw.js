@@ -33,6 +33,7 @@ const ASSETS_TO_CACHE = [
   '/tracabilite.html',
   '/opsec.html',
   '/statut-mineur.html',
+  '/age.html',
   '/vie-privee-parents.html',
   '/protection-archive.html',
   '/dependances-licences.html',

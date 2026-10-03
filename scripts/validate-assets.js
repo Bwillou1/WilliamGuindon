@@ -34,6 +34,7 @@ const CORE_FILES = [
   'tracabilite.html',
   'opsec.html',
   'statut-mineur.html',
+  'age.html',
   'vie-privee-parents.html',
   'dependances-licences.html',
   'THIRD-PARTY-NOTICES.md',

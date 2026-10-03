@@ -544,7 +544,7 @@
                     <span class="mmenu-cat-desc">Statut mineur, droits 14–17 ans, discernement...</span>
                   </div>
                   <div class="mmenu-cat-meta">
-                    <span class="mmenu-badge-count">6</span>
+                    <span class="mmenu-badge-count">7</span>
                     <span class="mmenu-cat-arrow">›</span>
                   </div>
                 </button>
@@ -715,6 +715,11 @@
                 <a href="enquete-partis.html" class="mobile-flat-link">
                   <span class="mobile-link-icon">🗳️</span>
                   <span class="mobile-link-text">Dialogue parlementaire &amp; Partis</span>
+                  <span class="mobile-link-arrow">›</span>
+                </a>
+                <a href="age.html" class="mobile-flat-link">
+                  <span class="mobile-link-icon">✉️</span>
+                  <span class="mobile-link-text">Annexe caviardée : Correspondance</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="statut-mineur.html#preuve-officielle-cce" class="mobile-flat-link">
