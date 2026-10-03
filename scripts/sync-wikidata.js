@@ -292,6 +292,7 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://www.ledevoir.com/opinion/lettres/865027/francois-legault-vous-detruisez-notre-avenir', 'Lettre ouverte Le Devoir (08/04/2025)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://therover.ca/blainville-teenager-takes-stablex-fight-international/', 'Article The Rover (16/07/2026)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://policycommons.net/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/', 'Policy Commons (Handle 20.500.12592/5vrf8jc)');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P973', 'value', 'https://canadacommons.ca/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/', 'Canada Commons');
 
 
     // 8. Descriptions multilingues
