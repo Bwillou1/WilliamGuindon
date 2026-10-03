@@ -211,6 +211,16 @@
             "copyrightNotice": "© 2026 William Guindon. Tous droits réservés / CC BY-NC-ND 4.0",
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             "acquireLicensePage": "https://williamguindon.me/politiques.html#licences"
+          },
+          "video": {
+            "@type": "VideoObject",
+            "@id": "https://williamguindon.me/age.html#video-intervention",
+            "name": "Séance du conseil municipal de Blainville — Intervention citoyenne de William Guindon",
+            "description": "Intervention citoyenne officielle de William Guindon (14 ans) au conseil municipal de Blainville sur la mortalité de poissons au lac Fauvel et l'absence d'analyses toxicologiques.",
+            "thumbnailUrl": "https://williamguindon.me/og-image.jpg",
+            "uploadDate": "2026-05-19T19:00:00-04:00",
+            "embedUrl": "https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?si=qL9QjKl1tg3omcZH&controls=0",
+            "contentUrl": "https://www.youtube.com/watch?v=jegYlVFOW2Y"
           }
         },
         {
@@ -1154,6 +1164,12 @@
       const coverSrc = getOptimizedImageUrl(rawCoverSrc, 400);
       const tagsHtml = (post.tags || []).map(t => `<span class="blog-tag">#${t}</span>`).join("");
       const isSpecial = post.category === "Spécial";
+      const videoBadge = post.video ? `
+        <span class="blog-card-video-badge" style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.8);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;backdrop-filter:blur(4px);z-index:2;box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Vidéo</span>
+        </span>
+      ` : "";
       
       // Extraction de texte propre pour le résumé de la carte
       let cleanSummary = post.summary || "";
@@ -1163,9 +1179,10 @@
       }
 
       card.innerHTML = `
-        <div class="blog-card-img-wrap">
+        <div class="blog-card-img-wrap" style="position:relative;">
           <img src="${coverSrc}" alt="${post.title || 'Publication du carnet de bord'}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215" onerror="this.onerror=null; this.src='tourbiere.jpg';">
           <span class="blog-card-category ${isSpecial ? 'special' : ''}">${post.category || "Actualité"}</span>
+          ${videoBadge}
         </div>
         <div class="blog-card-body">
           <time class="blog-card-date">${post.date} · Par ${post.author || "William Guindon"}</time>
@@ -1219,6 +1236,36 @@
       formattedContent = formattedContent.split("\n\n").map(para => `<p>${para.replace(/\n/g, "<br>")}</p>`).join("");
     }
 
+    let videoSection = "";
+    if (post.video && post.video.embedUrl) {
+      videoSection = `
+        <div class="blog-video-box" style="margin:28px 0;padding:20px;border-radius:12px;background:rgba(11,87,208,0.05);border:1px solid rgba(11,87,208,0.18);">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#0b57d0;color:#fff;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </span>
+              <strong style="font-size:15px;color:var(--text, #1f1f1f);">${post.video.title || "Enregistrement vidéo officiel"}</strong>
+            </div>
+            ${post.video.duration ? `<span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,0.06);color:var(--muted,#666);">${post.video.duration}</span>` : ""}
+          </div>
+          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:#000;">
+            <iframe src="${post.video.embedUrl}" title="${post.video.title || 'Vidéo'}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+          </div>
+          ${post.video.caption ? `<p style="margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted,#555);">${post.video.caption}</p>` : ""}
+          ${post.video.transcriptUrl ? `
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(11,87,208,0.12);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <span style="font-size:12.5px;color:var(--muted,#666);">Séance officielle du conseil municipal</span>
+              <a href="${post.video.transcriptUrl}" style="font-size:13px;font-weight:700;color:#0b57d0;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <span>Lire la transcription intégrale verbatim</span>
+                <span>↗</span>
+              </a>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
     // Mise à jour de l'URL hash
     const postSlug = post.slug || post.id || "";
     if (postSlug) {
@@ -1236,6 +1283,7 @@
         <time class="blog-detail-time">Publié le ${post.date} · Par ${post.author || "William Guindon"}</time>
         <h1 class="blog-detail-title">${post.title}</h1>
         <div class="article-full-text">${formattedContent}</div>
+        ${videoSection}
         <div class="blog-detail-footer">
           <div class="blog-detail-tags">${tagsHtml}</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
