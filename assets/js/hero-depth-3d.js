@@ -103,19 +103,15 @@
         // Sample depth map (1.0 = foreground trees & moss, 0.0 = distant sunrise sky)
         float depth = texture2D(uDepth, coverUv).r;
 
-        // Centered focal depth: 0.35 (horizon stays stable, foreground separates smoothly in 3D)
-        float depthFactor = depth - 0.35;
+        // Centered focal depth: 0.20 (horizon stays perfectly stable, peatland & foreground separate with deep 3D relief)
+        float depthFactor = depth - 0.20;
 
         // Smooth physical stereoscopic parallax (crisp solid geometry, zero staircasing or tearing)
-        vec2 parallax = -uMouse * vec2(0.042, 0.028) * depthFactor;
+        vec2 parallax = -uMouse * vec2(0.045, 0.030) * depthFactor;
         vec2 finalUv = clamp(coverUv + parallax, 0.001, 0.999);
 
         // Sample photo with full native sharpness
         vec4 color = texture2D(uPhoto, finalUv);
-
-        // Assombrissement léger temporaire du ciel et de la brume lumineuse d'arrière-plan
-        color.rgb = pow(color.rgb, vec3(1.04));
-        color.rgb *= 0.86;
 
         gl_FragColor = color;
       }
