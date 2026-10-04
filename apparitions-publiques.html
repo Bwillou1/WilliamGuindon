@@ -43,73 +43,14 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-/* Grille responsive et filtres légers pour les cartes de presse officielles */
-.press-grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin: 28px 0 48px 0;
-}
-.press-grid-layout .press-card {
-  width: 100%;
-  max-width: 100%;
-  flex: none;
-}
-.filter-tabs-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 28px 0 20px 0;
-  position: sticky;
-  top: 60px;
-  z-index: 40;
-  background: rgba(var(--bg-rgb, 255, 255, 255), 0.95);
-  backdrop-filter: blur(10px);
-  padding: 12px 6px;
-  border-bottom: 1px solid var(--line);
-}
-.filter-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1.5px solid var(--line);
-  background: var(--bg-card);
-  color: var(--text);
-  transition: all 0.2s ease;
-}
-.filter-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.filter-btn.active {
-  background: var(--accent);
-  color: #ffffff;
-  border-color: var(--accent);
-  box-shadow: 0 3px 12px rgba(5, 150, 105, 0.35);
-}
-.filter-count-badge {
-  font-size: 0.75rem;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 2px 7px;
-  border-radius: 12px;
-}
-.filter-btn.active .filter-count-badge {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-}
+/* Grille responsive et style moderne pour les apparitions publiques */
 .official-quote-box {
-  margin: 24px 0 32px 0;
-  padding: 18px 22px;
+  margin: 28px 0 36px 0;
+  padding: 20px 24px;
   background: var(--bg-card);
   border-left: 4px solid var(--accent);
-  border-radius: 0 10px 10px 0;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 0 12px 12px 0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   font-style: italic;
   font-size: 1.05rem;
   line-height: 1.6;
@@ -123,11 +64,153 @@
   font-size: 0.85rem;
   color: var(--accent);
 }
+
+.filter-tabs-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 32px 0 28px 0;
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  background: var(--bg-card);
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+.filter-btn:hover {
+  background: rgba(5, 150, 105, 0.08);
+  color: var(--accent);
+}
+.filter-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 3px 12px rgba(5, 150, 105, 0.35);
+}
+.filter-count-badge {
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+.filter-btn.active .filter-count-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.press-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  margin: 28px 0 48px 0;
+}
+.press-grid-layout .press-card {
+  width: 100%;
+  max-width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.press-grid-layout .press-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+}
+.press-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.press-logo-link {
+  height: 48px;
+  padding: 4px 12px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.press-logo-link.logo-lapresse {
+  background: #E30613;
+}
+.press-logo-img {
+  max-height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+.press-date-tag {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.press-headline {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin: 0 0 10px 0;
+  color: var(--text);
+}
+.press-headline a {
+  color: inherit;
+  text-decoration: none;
+}
+.press-headline a:hover {
+  color: var(--accent);
+}
+.press-excerpt {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 18px 0;
+  flex: 1;
+}
+.press-card-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.press-read-link {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.press-read-link:hover {
+  text-decoration: underline;
+}
+
 .youtube-section-box {
   margin: 48px 0 36px 0;
   background: var(--bg-card);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 28px 24px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.04);
 }
@@ -147,28 +230,37 @@
   gap: 16px;
 }
 .yt-link-item {
-  background: var(--bg);
+  background: var(--canvas, rgba(0,0,0,0.02));
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 10px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: all 0.2s ease;
+}
+.yt-link-item:hover {
+  border-color: #dc2626;
+  background: var(--bg-card);
+  transform: translateY(-2px);
 }
 .yt-link-item h4 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: var(--text);
 }
 .yt-link-item p {
   margin: 0;
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  font-size: 0.86rem;
+  color: var(--muted);
   line-height: 1.5;
   flex: 1;
 }
 </style>
+
+<script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2" async defer></script>
 
 <script type="application/ld+json">
 {
@@ -207,9 +299,9 @@
 <body id="accueil">
 <a href="#main-content" class="skip-link">Passer au contenu principal</a>
 
-<!-- En-tête officiel du site -->
-<header class="header" role="banner">
-  <div class="wrap header-content">
+<!-- En-tête officiel du site standardisé -->
+<header class="site">
+  <div class="wrap">
     <a class="brand" href="./">William <span>Guindon</span></a>
     <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button">
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
@@ -869,6 +961,6 @@
 })();
 </script>
 
-<script src="theme.js" defer></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
 </html>
