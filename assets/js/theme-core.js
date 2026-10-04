@@ -1946,13 +1946,15 @@
                 }
               }
               // Si déjà le 16 octobre ou après
-              if (Date.now() >= TARGET_16_OCT && !localStorage.getItem('wg_deadline_notif_fired')) {
-                localStorage.setItem('wg_deadline_notif_fired', 'true');
-                new Notification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
-                  body: "Le délai légal de 60 jours imposé au Canada pour répondre sur la Grande Tourbière de Blainville (SEM-26-003) est échu.",
-                  icon: "/icon-192.png"
-                });
-              }
+              try {
+                if (Date.now() >= TARGET_16_OCT && !localStorage.getItem('wg_deadline_notif_fired')) {
+                  localStorage.setItem('wg_deadline_notif_fired', 'true');
+                  new Notification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+                    body: "Le délai légal de 60 jours imposé au Canada pour répondre sur la Grande Tourbière de Blainville (SEM-26-003) est échu.",
+                    icon: "/icon-192.png"
+                  });
+                }
+              } catch (_) {}
             }
           } catch (err) {
             if (DEBUG) console.warn('Erreur permission notification:', err);
@@ -1963,12 +1965,13 @@
 
     // Vérification automatique au chargement si l'échéance du 16 octobre 2026 est atteinte
     if ('Notification' in window && Notification.permission === 'granted' && Date.now() >= TARGET_16_OCT) {
-      if (!localStorage.getItem('wg_deadline_notif_fired')) {
-        localStorage.setItem('wg_deadline_notif_fired', 'true');
-        if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
-          navigator.serviceWorker.ready.then(reg => {
-            if (reg.showNotification) {
-              reg.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+      try {
+        if (!localStorage.getItem('wg_deadline_notif_fired')) {
+          localStorage.setItem('wg_deadline_notif_fired', 'true');
+          if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+            navigator.serviceWorker.ready.then(reg => {
+              if (reg.showNotification) {
+                reg.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
                 body: "Le délai officiel de 60 jours accordé au Canada dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu.",
                 icon: "/icon-192.png",
                 badge: "/favicon.svg",
@@ -1980,6 +1983,7 @@
           });
         }
       }
+      } catch (_) {}
     }
 
     async function checkBackgroundFeedUpdates(reg) {
