@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' https://archive.org https://*.archive.org; connect-src 'self' https://archive.org https://*.archive.org; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org; connect-src 'self' blob: data: https://archive.org https://*.archive.org; object-src 'none';">
   <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
   <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces probatoires, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
   <link rel="canonical" href="https://williamguindon.me/dossier-journalistes.html">
@@ -149,6 +149,62 @@
     }
     .drive-btn-download:hover {
       background: #064e3b;
+    }
+    .local-mode-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-local-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: #ffffff;
+      border: 1px solid #cbd7cf;
+    }
+    .btn-local-icon:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-local-icon:active {
+      transform: translateY(0);
+    }
+    .drive-item.is-cached .drive-item-name::after {
+      content: "• local";
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #059669;
+      background: #eaf5ee;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 6px;
+      display: inline-block;
+    }
+    .drive-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #064e3b;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      z-index: 9999;
+      transition: opacity 0.25s, transform 0.25s;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+    .drive-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .drive-body {
       display: flex;
@@ -631,6 +687,40 @@
     </div>
     
     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <!-- Contrôle du Mode Local / Hors-ligne -->
+      <div id="local-mode-container" class="local-mode-container">
+        <!-- Bouton d'activation initial -->
+        <button type="button" id="btn-enable-local" class="drive-btn-download" style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600;" title="Mettre en cache local les 222 pièces pour consultation directe 100% hors-ligne (sans cloud)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btn-enable-local-text">Mode Local (Hors-ligne)</span>
+        </button>
+
+        <!-- Barre de progression de téléchargement -->
+        <div id="local-progress-wrap" style="display: none; align-items: center; gap: 8px; background: #eaf5ee; border: 1px solid #c8e4d0; padding: 5px 12px; border-radius: 6px; font-size: 12px; color: #064e3b;">
+          <div style="width: 14px; height: 14px; border: 2px solid #cbd7cf; border-top-color: #0d652d; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+          <span id="local-progress-text" style="font-weight: 600;">Mise en cache : 0/222 (0%)</span>
+          <button type="button" id="btn-cancel-local" style="background: none; border: none; color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 4px;" title="Arrêter la mise en cache">✕</button>
+        </div>
+
+        <!-- Groupe actif : Indicateur Local + Corbeille + Synchronisation Cloud -->
+        <div id="local-active-group" style="display: none; align-items: center; gap: 6px;">
+          <div id="local-status-badge" style="display: inline-flex; align-items: center; gap: 6px; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 6px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 700;" title="Pièces stockées en mémoire locale de votre navigateur. Consultation instantanée sans connexion cloud.">
+            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+            <span id="local-status-text">Mode Local Actif</span>
+          </div>
+
+          <!-- Bouton 1 : Corbeille (Purge locale) -->
+          <button type="button" id="btn-purge-local" class="btn-local-icon" title="Purger le stockage local et repasser au mode cloud" aria-label="Purger le cache local">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </button>
+
+          <!-- Bouton 2 : Recherche / Synchronisation Cloud -->
+          <button type="button" id="btn-sync-local" class="btn-local-icon" title="Vérifier le cloud pour synchroniser d'éventuelles nouvelles versions ou pièces manquantes" aria-label="Rechercher des mises à jour sur le cloud">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </button>
+        </div>
+      </div>
+
       <a id="btn-petition-cedd"
          href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
          class="drive-btn-download"
@@ -919,6 +1009,232 @@
   "RC/RC-4.pdf"
 ];
 
+  const LOCAL_CACHE_NAME = "wg-sem26003-docs-v1";
+  let allValidFiles = [];
+  let cachedUrlsSet = new Set();
+  let isCachingProcessRunning = false;
+  let cancelCachingRequested = false;
+  let currentActiveBlobUrl = null;
+
+  function showDriveToast(message, type = 'info') {
+    let toast = document.getElementById("drive-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "drive-toast";
+      toast.className = "drive-toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.background = type === 'error' ? '#991b1b' : (type === 'success' ? '#065f46' : '#064e3b');
+    toast.classList.add("show");
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3800);
+  }
+
+  async function updateCacheTracking() {
+    if (!('caches' in window)) return;
+    try {
+      const cache = await caches.open(LOCAL_CACHE_NAME);
+      const keys = await cache.keys();
+      cachedUrlsSet = new Set(keys.map(k => k.url));
+      updateLocalModeUI();
+    } catch (e) {
+      console.warn("Erreur lecture cache local:", e);
+    }
+  }
+
+  function updateLocalModeUI() {
+    const btnEnable = document.getElementById("btn-enable-local");
+    const progressWrap = document.getElementById("local-progress-wrap");
+    const activeGroup = document.getElementById("local-active-group");
+    const statusText = document.getElementById("local-status-text");
+
+    if (isCachingProcessRunning) {
+      if (btnEnable) btnEnable.style.display = "none";
+      if (activeGroup) activeGroup.style.display = "none";
+      if (progressWrap) progressWrap.style.display = "inline-flex";
+      return;
+    }
+
+    if (progressWrap) progressWrap.style.display = "none";
+
+    const totalFiles = allValidFiles.length || 222;
+    let cachedCount = 0;
+    allValidFiles.forEach(f => {
+      const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(f.fullPath);
+      const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(f.fullPath);
+      if (cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
+        cachedCount++;
+      }
+    });
+
+    // Mise à jour de l'indicateur visuel sur chaque élément de l'arbre
+    document.querySelectorAll(".drive-item").forEach(item => {
+      const fullPath = item.getAttribute("data-fullpath");
+      if (!fullPath) return;
+      const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fullPath);
+      const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fullPath);
+      if (cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
+        item.classList.add("is-cached");
+      } else {
+        item.classList.remove("is-cached");
+      }
+    });
+
+    if (cachedCount > 0) {
+      if (btnEnable) btnEnable.style.display = "none";
+      if (activeGroup) activeGroup.style.display = "inline-flex";
+      if (statusText) {
+        statusText.textContent = `Mode Local (${cachedCount}/${totalFiles})`;
+      }
+    } else {
+      if (btnEnable) btnEnable.style.display = "inline-flex";
+      if (activeGroup) activeGroup.style.display = "none";
+    }
+  }
+
+  async function startLocalCaching(isSync = false) {
+    if (!('caches' in window)) {
+      alert("Votre navigateur ne prend pas en charge la mise en cache hors-ligne.");
+      return;
+    }
+    if (isCachingProcessRunning) return;
+
+    isCachingProcessRunning = true;
+    cancelCachingRequested = false;
+    updateLocalModeUI();
+
+    const progressText = document.getElementById("local-progress-text");
+    const total = allValidFiles.length || 222;
+    let completed = 0;
+    let newCachedCount = 0;
+
+    try {
+      const cache = await caches.open(LOCAL_CACHE_NAME);
+      const CONCURRENCY = 4;
+      let currentIndex = 0;
+
+      async function worker() {
+        while (currentIndex < allValidFiles.length && !cancelCachingRequested) {
+          const fileObj = allValidFiles[currentIndex++];
+          const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
+          const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+
+          const alreadyCached = cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl);
+          if (!isSync || !alreadyCached) {
+            try {
+              const res = await fetch(corsUrl, { mode: 'cors' });
+              if (res.ok) {
+                await cache.put(corsUrl, res);
+                cachedUrlsSet.add(corsUrl);
+                newCachedCount++;
+              }
+            } catch (err) {
+              console.warn("Échec cache pour " + fileObj.name, err);
+            }
+          }
+
+          completed++;
+          const percent = Math.round((completed / total) * 100);
+          if (progressText) {
+            progressText.textContent = `Mise en cache : ${completed}/${total} (${percent}%)`;
+          }
+        }
+      }
+
+      const workers = [];
+      for (let i = 0; i < CONCURRENCY; i++) {
+        workers.push(worker());
+      }
+      await Promise.all(workers);
+
+      if (cancelCachingRequested) {
+        showDriveToast("Mise en cache interrompue.", "info");
+      } else if (isSync) {
+        showDriveToast(`Synchronisation terminée : ${newCachedCount} nouvelle(s) pièce(s) ajoutée(s).`, "success");
+      } else {
+        showDriveToast(`Stockage local complet : ${total} pièces prêtes pour le visionnement direct !`, "success");
+      }
+    } catch (e) {
+      console.error("Erreur lors de la mise en cache :", e);
+      showDriveToast("Erreur lors de la mise en cache locale.", "error");
+    } finally {
+      isCachingProcessRunning = false;
+      await updateCacheTracking();
+    }
+  }
+
+  async function purgeLocalCache() {
+    if (!('caches' in window)) return;
+    const confirmPurge = confirm("Voulez-vous purger l'ensemble des pièces stockées localement dans votre navigateur et repasser en mode cloud distant ?");
+    if (!confirmPurge) return;
+
+    try {
+      if (currentActiveBlobUrl) {
+        URL.revokeObjectURL(currentActiveBlobUrl);
+        currentActiveBlobUrl = null;
+      }
+      await caches.delete(LOCAL_CACHE_NAME);
+      cachedUrlsSet.clear();
+      updateLocalModeUI();
+      showDriveToast("Stockage local vidé avec succès. Retour au mode cloud.", "success");
+    } catch (e) {
+      console.error("Erreur vidage cache :", e);
+      showDriveToast("Erreur lors de la purge du stockage local.", "error");
+    }
+  }
+
+  async function resolveFileResource(fileObj) {
+    const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+    const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
+
+    if ('caches' in window) {
+      try {
+        const cache = await caches.open(LOCAL_CACHE_NAME);
+        const match = await cache.match(corsPdfUrl) || await cache.match(fileUrl);
+        if (match) {
+          const blob = await match.blob();
+          if (currentActiveBlobUrl) {
+            URL.revokeObjectURL(currentActiveBlobUrl);
+          }
+          currentActiveBlobUrl = URL.createObjectURL(blob);
+          return {
+            isLocal: true,
+            blob: blob,
+            blobUrl: currentActiveBlobUrl,
+            rawUrl: fileUrl,
+            corsUrl: corsPdfUrl,
+            effectiveUrl: currentActiveBlobUrl
+          };
+        }
+      } catch (err) {
+        console.warn("Erreur lecture ressource depuis cache:", err);
+      }
+    }
+
+    return {
+      isLocal: false,
+      blob: null,
+      blobUrl: null,
+      rawUrl: fileUrl,
+      corsUrl: corsPdfUrl,
+      effectiveUrl: fileUrl
+    };
+  }
+
+  // Écouteurs pour les boutons de contrôle du mode local
+  const btnEnableLocal = document.getElementById("btn-enable-local");
+  const btnCancelLocal = document.getElementById("btn-cancel-local");
+  const btnPurgeLocal = document.getElementById("btn-purge-local");
+  const btnSyncLocal = document.getElementById("btn-sync-local");
+
+  if (btnEnableLocal) btnEnableLocal.addEventListener("click", () => startLocalCaching(false));
+  if (btnCancelLocal) btnCancelLocal.addEventListener("click", () => { cancelCachingRequested = true; });
+  if (btnPurgeLocal) btnPurgeLocal.addEventListener("click", () => purgeLocalCache());
+  if (btnSyncLocal) btnSyncLocal.addEventListener("click", () => startLocalCaching(true));
+
   function processFiles(filesData) {
     const treeContainer = document.getElementById("drive-tree");
     if (!treeContainer) return;
@@ -946,6 +1262,7 @@
 
     // Construction de l'arbre multi-niveaux récursif
     const root = { subfolders: {}, files: [] };
+    allValidFiles = [];
 
     validFiles.forEach(item => {
       const fullPath = typeof item === "string" ? item : item.name;
@@ -965,10 +1282,13 @@
         current = current.subfolders[folderName];
       });
 
-      current.files.push({
+      const fileItemObj = {
         name: fileName,
         fullPath: fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? fullPath : "00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath
-      });
+      };
+
+      current.files.push(fileItemObj);
+      allValidFiles.push(fileItemObj);
     });
 
     const stage = document.getElementById("preview-stage");
@@ -989,7 +1309,6 @@
       folderNames.forEach((folderName, idx) => {
         const subNode = node.subfolders[folderName];
         const nodeDiv = document.createElement("div");
-        // Ouvrir le premier dossier et le dossier contenant la pièce 26-3-rsub_fr_redacted par défaut
         const shouldOpen = (idx === 0) || hasTargetDoc(subNode, "26-3-rsub_fr_redacted");
         nodeDiv.className = "tree-node" + (shouldOpen ? " open" : "");
 
@@ -1028,6 +1347,7 @@
       node.files.sort((a, b) => a.name.localeCompare(b.name, "fr", { numeric: true })).forEach(fileObj => {
         const item = document.createElement("div");
         item.className = "drive-item";
+        item.setAttribute("data-fullpath", fileObj.fullPath);
 
         const lower = fileObj.name.toLowerCase();
         let svgIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52796f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
@@ -1048,10 +1368,7 @@
           <span class="drive-item-name" title="${fileObj.name}">${fileObj.name}</span>
         `;
 
-        const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
-        const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
-
-        item.addEventListener("click", (e) => {
+        item.addEventListener("click", async (e) => {
           e.stopPropagation();
           document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
           item.classList.add("active");
@@ -1062,11 +1379,22 @@
           if (headerActions) headerActions.style.display = "flex";
 
           const directLink = document.getElementById("direct-file-link");
+          const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
+
+          const res = await resolveFileResource(fileObj);
+
           if (directLink) {
-            directLink.href = fileUrl;
+            if (res.isLocal) {
+              directLink.href = res.blobUrl;
+              directLink.setAttribute("download", fileObj.name);
+              directLink.title = "Enregistrer une copie du fichier local sur votre ordinateur";
+            } else {
+              directLink.href = res.rawUrl;
+              directLink.removeAttribute("download");
+              directLink.title = "Télécharger le fichier original depuis le cloud (archive.org)";
+            }
             directLink.style.display = "inline-flex";
           }
-          const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
 
           if (stage) {
             stage.innerHTML = "";
@@ -1075,7 +1403,7 @@
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.add("is-media");
               const img = document.createElement("img");
-              img.src = fileUrl;
+              img.src = res.effectiveUrl;
               img.className = "preview-image";
               img.alt = fileObj.name;
               stage.appendChild(img);
@@ -1083,14 +1411,15 @@
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.add("is-media");
               const video = document.createElement("video");
-              video.src = fileUrl;
+              video.src = res.effectiveUrl;
               video.controls = true;
               video.autoplay = true;
               video.className = "preview-video";
               stage.appendChild(video);
             } else if (lower.endsWith(".pdf")) {
               stage.classList.remove("is-media");
-              const viewerUrl = "viewer.html?file=" + encodeURIComponent(corsPdfUrl);
+              const targetPdfUrl = res.isLocal ? res.blobUrl : res.corsUrl;
+              const viewerUrl = "viewer.html?file=" + encodeURIComponent(targetPdfUrl);
               if (fsViewerLink) {
                 fsViewerLink.href = viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
@@ -1099,46 +1428,61 @@
               iframe.className = "preview-iframe";
               iframe.title = fileObj.name;
               iframe.setAttribute("allow", "fullscreen");
-              // Intégration dans le lecteur officiel avec support CORS direct
               iframe.src = viewerUrl;
               stage.appendChild(iframe);
             } else if (lower.endsWith(".csv")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.remove("is-media");
-              stage.innerHTML = `
-                <div class="csv-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:12px;font-size:13px;">
-                  <div class="csv-spinner" style="width:28px;height:28px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-                  <span>Lecture et analyse des données CSV via PapaParse...</span>
-                </div>
-              `;
 
-              fetch(corsPdfUrl)
-                .then(res => {
-                  if (!res.ok) throw new Error("Erreur réseau HTTP " + res.status);
-                  return res.text();
-                })
-                .then(csvText => {
-                  if (typeof Papa === "undefined") {
-                    throw new Error("Bibliothèque PapaParse non disponible");
-                  }
-                  const results = Papa.parse(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    dynamicTyping: false
-                  });
-                  renderCsvViewer(results, fileObj, fileUrl, stage);
-                })
-                .catch(err => {
+              if (res.isLocal) {
+                if (typeof Papa === "undefined") {
                   stage.classList.add("is-media");
-                  stage.innerHTML = `
-                    <div class="no-preview">
-                      <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
-                      <h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le tableau en direct</h4>
-                      <p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier CSV (${err.message}) est accessible en téléchargement direct.</p>
-                      <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier CSV original</a>
-                    </div>
-                  `;
+                  stage.innerHTML = `<div class="no-preview"><h4>PapaParse non disponible</h4></div>`;
+                  return;
+                }
+                const csvText = await res.blob.text();
+                const results = Papa.parse(csvText, {
+                  header: true,
+                  skipEmptyLines: true,
+                  dynamicTyping: false
                 });
+                renderCsvViewer(results, fileObj, res.blobUrl, stage);
+              } else {
+                stage.innerHTML = `
+                  <div class="csv-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:12px;font-size:13px;">
+                    <div class="csv-spinner" style="width:28px;height:28px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+                    <span>Lecture et analyse des données CSV via PapaParse...</span>
+                  </div>
+                `;
+
+                fetch(res.corsUrl)
+                  .then(r => {
+                    if (!r.ok) throw new Error("Erreur réseau HTTP " + r.status);
+                    return r.text();
+                  })
+                  .then(csvText => {
+                    if (typeof Papa === "undefined") {
+                      throw new Error("Bibliothèque PapaParse non disponible");
+                    }
+                    const results = Papa.parse(csvText, {
+                      header: true,
+                      skipEmptyLines: true,
+                      dynamicTyping: false
+                    });
+                    renderCsvViewer(results, fileObj, res.rawUrl, stage);
+                  })
+                  .catch(err => {
+                    stage.classList.add("is-media");
+                    stage.innerHTML = `
+                      <div class="no-preview">
+                        <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
+                        <h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le tableau en direct</h4>
+                        <p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier CSV (${err.message}) est accessible en téléchargement direct.</p>
+                        <a href="${res.rawUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier CSV original</a>
+                      </div>
+                    `;
+                  });
+              }
             } else {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.add("is-media");
@@ -1148,7 +1492,7 @@
                 <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
                 <h4 style="margin: 0 0 8px 0; color: #064e3b;">${fileObj.name}</h4>
                 <p>Ce document est disponible en consultation directe.</p>
-                <a href="${fileUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le document</a>
+                <a href="${res.effectiveUrl}" class="btn-download-single" ${res.isLocal ? 'download="' + fileObj.name + '"' : 'target="_blank" rel="noopener"'}>Télécharger le document</a>
               `;
               stage.appendChild(box);
             }
@@ -1354,6 +1698,9 @@
       </div>
     `;
     treeContainer.appendChild(treeFooter);
+
+    // Initialisation du statut de cache sur l'arbre
+    updateCacheTracking();
 
     const defaultItem = targetItemToSelect || firstPdfItem;
     if (defaultItem) {

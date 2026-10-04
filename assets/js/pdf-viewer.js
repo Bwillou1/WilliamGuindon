@@ -147,6 +147,9 @@
     if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) {
       return clean;
     }
+    if (clean.startsWith('blob:')) {
+      return clean;
+    }
     // Validation sécurisée des URLs distantes d'archive probatoire avec support natif CORS
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
