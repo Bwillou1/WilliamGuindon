@@ -1,7 +1,8 @@
-const CACHE_NAME = 'wg-pwa-v83';
+const CACHE_NAME = 'wg-pwa-v84';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/apparitions-publiques.html',
   '/apercu.html',
   '/dossier-journalistes.html',
   '/viewer.html',

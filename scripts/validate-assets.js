@@ -16,6 +16,7 @@ const CORE_FILES = [
   'live.html',
   'communiques.html',
   'presse.html',
+  'apparitions-publiques.html',
   'stablex.html',
   'flux.html',
   'viewer.html',
