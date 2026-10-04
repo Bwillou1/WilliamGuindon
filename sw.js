@@ -85,6 +85,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/sem-26-003-apercu-banniere.webp',
   '/assets/media/ndtr-banner-rcaanc.jpg',
   '/assets/media/ndtr-banner-rcaanc.webp',
+  '/assets/media/memoire-autochtone-tourbiere.jpg',
+  '/assets/media/memoire-autochtone-tourbiere.webp',
   '/assets/media/umap-preview.webp',
   '/assets/media/lapresse-logo.png',
   '/assets/media/ledevoir-logo.png',

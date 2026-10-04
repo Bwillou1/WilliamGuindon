@@ -8,13 +8,13 @@
 <link rel="canonical" href="https://williamguindon.me/autochtone.html">
 <meta property="og:title" content="La tourbière qui se souvient — Grande Tourbière de Blainville">
 <meta property="og:description" content="Histoire autochtone, écologie millénaire et territoires d’eau autour de la Grande Tourbière de Blainville. Six mille ans de mémoire.">
-<meta property="og:image" content="https://williamguindon.me/og-image.jpg">
+<meta property="og:image" content="https://williamguindon.me/assets/media/memoire-autochtone-tourbiere.jpg">
 <meta property="og:url" content="https://williamguindon.me/autochtone.html">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="La tourbière qui se souvient — Grande Tourbière de Blainville">
 <meta name="twitter:description" content="Histoire autochtone, écologie et mémoire territoriale de la Grande Tourbière de Blainville.">
-<meta name="twitter:image" content="https://williamguindon.me/og-image.jpg">
+<meta name="twitter:image" content="https://williamguindon.me/assets/media/memoire-autochtone-tourbiere.jpg">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.json">
 <style>
@@ -80,19 +80,46 @@
   nav.top a:hover { background: var(--peat); color: var(--sphagnum-2); }
   .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: 90vh;
     color: #f6f0e6;
     background: #142018;
     overflow: hidden;
     display: grid;
     align-items: end;
   }
-  .hero svg.land { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-bg-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .hero-bg-media picture,
+  .hero-bg-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    display: block;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 32, 24, 0.4) 0%,
+      rgba(20, 32, 24, 0.68) 45%,
+      rgba(20, 32, 24, 0.94) 100%
+    );
+    pointer-events: none;
+  }
   .hero-copy {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     padding: 8vh 7vw 7vh;
     max-width: 980px;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
   }
   .kicker {
     font-family: var(--sans);
@@ -582,55 +609,13 @@
 </nav>
 
 <header class="hero">
-  <svg class="land" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#1b3344"/>
-        <stop offset=".45" stop-color="#35584a"/>
-        <stop offset="1" stop-color="#142018"/>
-      </linearGradient>
-      <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#1d4d55"/>
-        <stop offset="1" stop-color="#0e2428"/>
-      </linearGradient>
-      <filter id="mist">
-        <feTurbulence type="fractalNoise" baseFrequency=".008 .02" numOctaves="2" seed="3"/>
-        <feColorMatrix values="0 0 0 0 .85  0 0 0 0 .8  0 0 0 0 .7  0 0 0 .35 0"/>
-      </filter>
-    </defs>
-    <rect width="1440" height="900" fill="url(#sky)"/>
-    <path d="M0 250 C 220 220, 380 280, 560 250 C 760 214, 900 230, 1100 210 C 1260 196, 1360 220, 1440 200 L1440 900 L0 900 Z" fill="#1a3328" opacity=".85"/>
-    <path d="M0 340 C 180 300, 320 360, 520 330 C 760 292, 980 350, 1440 300 L1440 900 L0 900 Z" fill="#214233"/>
-    <ellipse cx="430" cy="560" rx="210" ry="46" fill="url(#water)" opacity=".85"/>
-    <ellipse cx="980" cy="610" rx="260" ry="54" fill="url(#water)"/>
-    <g fill="#6e8f62" opacity=".8">
-      <ellipse cx="250" cy="640" rx="70" ry="18"/>
-      <ellipse cx="390" cy="670" rx="90" ry="20"/>
-      <ellipse cx="620" cy="690" rx="80" ry="18"/>
-      <ellipse cx="860" cy="650" rx="110" ry="22"/>
-      <ellipse cx="1120" cy="680" rx="90" ry="18"/>
-    </g>
-    <g stroke="#d7c39a" stroke-width="1.2" fill="none" opacity=".7">
-      <path d="M300 700 q 8 -28 0 -48"/>
-      <path d="M318 706 q 10 -36 2 -58"/>
-      <path d="M1040 690 q 6 -30 0 -50"/>
-      <path d="M1060 696 q 12 -40 4 -62"/>
-    </g>
-    <g fill="#1a241c">
-      <path d="M180 720 l 8 -90 8 90z"/>
-      <path d="M210 730 l 6 -70 6 70z"/>
-      <path d="M760 640 l 14 -160 5 20 10 -40 4 180z"/>
-      <path d="M800 650 l 8 -90 8 90z"/>
-    </g>
-    <g fill="#8a3d48">
-      <path d="M470 700 c 10 -30 28 -30 36 0 c -8 8 -28 8 -36 0z"/>
-      <path d="M500 692 c 8 -22 20 -22 26 0 c -6 6 -20 6 -26 0z"/>
-      <path d="M1180 710 c 12 -34 30 -34 40 0 c -10 8 -30 8 -40 0z"/>
-    </g>
-    <circle cx="1188" cy="676" r="7" fill="#c6a36a"/>
-    <path d="M1240 640 q 30 20 10 50 q -20 8 -28 -8 q 8 -10 4 -22 q -16 6 -22 -8 q 12 -8 8 -18 q -10 -8 6 -12 q 8 8 22 18z" fill="#1c1612"/>
-    <rect width="1440" height="900" filter="url(#mist)"/>
-  </svg>
+  <div class="hero-bg-media">
+    <picture>
+      <source srcset="assets/media/memoire-autochtone-tourbiere.webp" type="image/webp">
+      <img src="assets/media/memoire-autochtone-tourbiere.jpg" alt="Cérémonie et présence autochtone aux abords des territoires d'eau et de la Grande Tourbière de Blainville" width="1024" height="728" loading="eager" fetchpriority="high">
+    </picture>
+    <div class="hero-overlay" aria-hidden="true"></div>
+  </div>
   <div class="hero-copy">
     <div class="kicker">Dossier · Blainville · Laurentides · 25 septembre 2026</div>
     <h1>La tourbière qui se souvient</h1>
