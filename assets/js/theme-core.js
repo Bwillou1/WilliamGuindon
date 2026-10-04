@@ -377,7 +377,6 @@
       if (savedLang && savedLang !== 'fr') {
         applyLanguage(savedLang);
       }
-    }
 
       // Bouton Recherche Rapide Globale (Cmd+K)
       let searchBtn = nav.querySelector('.nav-search-btn');
@@ -399,7 +398,6 @@
         }
         searchBtn.addEventListener('click', () => openQuickSearch());
       }
-
 
       // Bouton Mode Sombre / Clair
       let toggleBtn = nav.querySelector('.theme-toggle-btn');
@@ -428,19 +426,21 @@
       };
 
       // Regroupement des utilitaires d'en-tête (Notifs, Thème, Menu Mobile)
-      let headerTools = headerWrap.querySelector('.header-tools');
-      if (!headerTools) {
-        headerTools = document.createElement('div');
-        headerTools.className = 'header-tools';
-        headerWrap.appendChild(headerTools);
-      }
+      if (headerWrap) {
+        let headerTools = headerWrap.querySelector('.header-tools');
+        if (!headerTools) {
+          headerTools = document.createElement('div');
+          headerTools.className = 'header-tools';
+          headerWrap.appendChild(headerTools);
+        }
 
-      const notifDrop = document.querySelector('.nav-notif-dropdown');
-      if (notifDrop && notifDrop.parentElement !== headerTools) {
-        headerTools.appendChild(notifDrop);
-      }
-      if (toggleBtn && toggleBtn.parentElement !== headerTools) {
-        headerTools.appendChild(toggleBtn);
+        const notifDrop = document.querySelector('.nav-notif-dropdown');
+        if (notifDrop && notifDrop.parentElement !== headerTools) {
+          headerTools.appendChild(notifDrop);
+        }
+        if (toggleBtn && toggleBtn.parentElement !== headerTools) {
+          headerTools.appendChild(toggleBtn);
+        }
       }
 
       // Toolbar interne au menu tiroir (pour la langue en mobile)
@@ -995,6 +995,9 @@
         if (data.prochaine_echeance) {
           cceTargetDate = new Date(data.prochaine_echeance).getTime();
           updateCountdown();
+          if (typeof updatePrecisionCountdown === 'function') {
+            updatePrecisionCountdown();
+          }
         }
 
         const badgeState = document.getElementById('cce-live-state');
@@ -1270,9 +1273,8 @@
 
     // Décompte de précision (secondes)
     function updatePrecisionCountdown() {
-      const targetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
       const now = new Date().getTime();
-      const diff = Math.max(0, targetDate - now);
+      const diff = Math.max(0, cceTargetDate - now);
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
