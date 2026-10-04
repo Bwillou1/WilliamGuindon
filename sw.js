@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v84';
+const CACHE_NAME = 'wg-pwa-v86';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -161,15 +161,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 1. Accélération du rendu pour les images, styles, polices et scripts (Cache-First avec mise à jour en arrière-plan)
-  const isImageOrStaticAsset = event.request.destination === 'image' || 
-                               event.request.destination === 'style' || 
-                               event.request.destination === 'script' || 
-                               event.request.destination === 'font' ||
-                               url.pathname.startsWith('/assets/') ||
-                               /\.(webp|jpg|jpeg|png|svg|ico|gif|css|js|woff2?|ttf|eot)$/i.test(url.pathname);
+  // 1. Accélération locale maximale pour les images, styles, polices, scripts et données JSON (Cache-First + synchronisation silencieuse)
+  const isAcceleratedLocalAsset = event.request.destination === 'image' || 
+                                  event.request.destination === 'style' || 
+                                  event.request.destination === 'script' || 
+                                  event.request.destination === 'font' ||
+                                  url.pathname.startsWith('/assets/') ||
+                                  url.pathname.endsWith('.json') ||
+                                  url.pathname.endsWith('.svg') ||
+                                  /\.(webp|jpg|jpeg|png|svg|ico|gif|css|js|woff2?|ttf|eot|json)$/i.test(url.pathname);
 
-  if (isImageOrStaticAsset) {
+  if (isAcceleratedLocalAsset) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
@@ -183,8 +185,12 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         }).catch(() => null);
 
-        // Réponse instantanée depuis le cache si présente pour un affichage éclair
-        return cachedResponse || fetchPromise;
+        // Si présent en cache local : rendu immédiat (0 ms) pour une navigation ultra-fluide
+        if (cachedResponse) {
+          event.waitUntil(fetchPromise);
+          return cachedResponse;
+        }
+        return fetchPromise;
       })
     );
     return;

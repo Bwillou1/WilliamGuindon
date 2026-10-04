@@ -259,7 +259,7 @@
 }
 </style>
 
-<script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
+<script src="assets/js/theme-core.js?v=20261004-v76" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2" async defer></script>
 
 <script type="application/ld+json">
@@ -333,6 +333,27 @@
     </div>
   </div>
 </aside>
+<script>
+(function() {
+  function tickDeadline() {
+    var target = new Date('2026-10-16T00:00:00-04:00').getTime();
+    var now = Date.now();
+    var diff = Math.max(0, target - now);
+    var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    var s = Math.floor((diff % (1000 * 60)) / 1000);
+    var pad = function(n) { return (n < 10 ? '0' : '') + n; };
+
+    document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) { el.textContent = d; });
+    document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(function(el) { el.textContent = pad(h); });
+    document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(function(el) { el.textContent = pad(m); });
+    document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(function(el) { el.textContent = pad(s); });
+  }
+  tickDeadline();
+  setInterval(tickDeadline, 1000);
+})();
+</script>
 
 <!-- En-tête officiel du site standardisé -->
 <header class="site">

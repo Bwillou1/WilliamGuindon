@@ -321,7 +321,71 @@
     });
   }
 
+  // =========================================================================
+  // ACCÉLÉRATEUR DE NAVIGATION LOCALE ET FLUIDITÉ (PREFETCHING LOCAL INTELLIGENT)
+  // =========================================================================
+  function initLocalNavigationAccelerator() {
+    // Si l'utilisateur est en mode économie de données, ne pas précharger
+    if (navigator.connection && (navigator.connection.saveData || (navigator.connection.effectiveType && navigator.connection.effectiveType.includes('2g')))) {
+      return;
+    }
+
+    const prefetchedUrls = new Set();
+    const currentOrigin = window.location.origin;
+
+    function prefetchUrl(url) {
+      if (!url || prefetchedUrls.has(url)) return;
+      try {
+        const parsed = new URL(url, window.location.href);
+        // Seulement les pages internes du même domaine
+        if (parsed.origin !== currentOrigin) return;
+        // Ignorer les fichiers non-HTML (pdf, images, etc.) et les interfaces d'administration/sensibles
+        const path = parsed.pathname.toLowerCase();
+        if (path.endsWith('.pdf') || path.endsWith('.zip') || path.includes('admin') || path.includes('editeur') || path.includes('reload')) {
+          return;
+        }
+        // Ignorer si c'est la même page avec juste un hash différent
+        if (parsed.pathname === window.location.pathname) return;
+
+        prefetchedUrls.add(url);
+
+        // <link rel="prefetch"> natif pour mise en cache navigateur immédiate
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = parsed.href;
+        link.as = 'document';
+        document.head.appendChild(link);
+      } catch (_) {}
+    }
+
+    // Préchargement instantané au survol de la souris ou au touch
+    function onPointerEnter(e) {
+      const anchor = e.target.closest('a');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      prefetchUrl(href);
+    }
+
+    document.addEventListener('pointerenter', onPointerEnter, { passive: true, capture: true });
+    document.addEventListener('touchstart', onPointerEnter, { passive: true, capture: true });
+
+    // Préchargement échelonné des pages de navigation principales au repos
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => {
+        const navLinks = document.querySelectorAll('header.site nav a[href$=".html"]');
+        navLinks.forEach((a, index) => {
+          setTimeout(() => {
+            const h = a.getAttribute('href');
+            if (h) prefetchUrl(h);
+          }, index * 200);
+        });
+      }, { timeout: 3000 });
+    }
+  }
+
   function initApp() {
+    initLocalNavigationAccelerator();
     const currentPath = window.location.pathname.toLowerCase();
     const POLICY_FILES = [
       'politiques.html',
@@ -405,9 +469,15 @@
       `;
 
       headerSite.parentNode.insertBefore(banner, headerSite);
+      if (typeof updatePrecisionCountdown === 'function') {
+        updatePrecisionCountdown();
+      }
     }
 
     initDeadlineTopBanner();
+    if (typeof updatePrecisionCountdown === 'function') {
+      updatePrecisionCountdown();
+    }
 
     const nav = document.querySelector('header.site nav');
     const headerWrap = document.querySelector('header.site .wrap');
@@ -1092,30 +1162,47 @@
       daysElement.textContent = isEn ? `${days}d ${hours}h ${mins}m` : `${days}j ${hours}h ${mins}m`;
     }
 
+    function applyStatusData(data) {
+      if (!data) return;
+      if (data.prochaine_echeance) {
+        cceTargetDate = new Date(data.prochaine_echeance).getTime();
+        updateCountdown();
+        if (typeof updatePrecisionCountdown === 'function') {
+          updatePrecisionCountdown();
+        }
+      }
+
+      const badgeState = document.getElementById('cce-live-state');
+      if (badgeState) {
+        const isEn = document.documentElement.lang.startsWith('en');
+        badgeState.textContent = isEn ? (data.etat_en || data.etat_fr) : data.etat_fr;
+      }
+
+      const syncDateEl = document.getElementById('cce-sync-date');
+      if (syncDateEl && data.derniere_mise_a_jour) {
+        syncDateEl.textContent = data.derniere_mise_a_jour;
+      }
+    }
+
     async function loadDynamicStatus() {
+      // 1. Lecture instantanée depuis la mémoire locale (0 ms) pour affichage immédiat
+      try {
+        const cachedRaw = localStorage.getItem('wg_cached_cce_status') || sessionStorage.getItem('wg_cached_cce_status');
+        if (cachedRaw) {
+          applyStatusData(JSON.parse(cachedRaw));
+        }
+      } catch (_) {}
+
+      // 2. Synchronisation réseau en tâche de fond
       try {
         const res = await fetch('status.json');
         if (!res.ok) return;
         const data = await res.json();
-        
-        if (data.prochaine_echeance) {
-          cceTargetDate = new Date(data.prochaine_echeance).getTime();
-          updateCountdown();
-          if (typeof updatePrecisionCountdown === 'function') {
-            updatePrecisionCountdown();
-          }
-        }
-
-        const badgeState = document.getElementById('cce-live-state');
-        if (badgeState) {
-          const isEn = document.documentElement.lang.startsWith('en');
-          badgeState.textContent = isEn ? (data.etat_en || data.etat_fr) : data.etat_fr;
-        }
-
-        const syncDateEl = document.getElementById('cce-sync-date');
-        if (syncDateEl && data.derniere_mise_a_jour) {
-          syncDateEl.textContent = data.derniere_mise_a_jour;
-        }
+        try {
+          localStorage.setItem('wg_cached_cce_status', JSON.stringify(data));
+          sessionStorage.setItem('wg_cached_cce_status', JSON.stringify(data));
+        } catch (_) {}
+        applyStatusData(data);
       } catch (err) {
         if (DEBUG) console.warn('Statut CCE local utilisé (impossible de charger status.json)', err);
       }
@@ -1379,6 +1466,9 @@
 
     // Décompte de précision (secondes)
     function updatePrecisionCountdown() {
+      if (!cceTargetDate || isNaN(cceTargetDate)) {
+        cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
+      }
       const now = new Date().getTime();
       const diff = Math.max(0, cceTargetDate - now);
 
