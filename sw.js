@@ -1,66 +1,21 @@
-const CACHE_NAME = 'wg-pwa-v81';
+const CACHE_NAME = 'wg-pwa-v82';
 const MAX_CACHE_ENTRIES = 128;
 
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/agir.html',
   '/apercu.html',
-  '/edition-speciale-reconciliation.html',
-  '/autochtone.html',
   '/dossier-journalistes.html',
-  '/registre.html',
-  '/enquete-partis.html',
-  '/presse.html',
-  '/stablex.html',
-  '/communiques.html',
-  '/live.html',
-  '/flux.html',
   '/viewer.html',
-  '/ai.html',
-  '/txt.html',
-  '/api/index.html',
-  '/reload.html',
-  '/miroirs.html',
-  '/politiques.html',
-  '/netiquette.html',
-  '/deontologie.html',
-  '/independance.html',
-  '/ia-ethique.html',
-  '/anti-slapp.html',
-  '/embargo.html',
-  '/experts.html',
-  '/tracabilite.html',
-  '/opsec.html',
-  '/statut-mineur.html',
-  '/age.html',
-  '/vie-privee-parents.html',
-  '/protection-archive.html',
   '/dependances-licences.html',
-  '/apis.json',
-  '/openapi.json',
-  '/api/v1/corpus.json',
-  '/api/v1/documents.json',
-  '/llms.txt',
-  '/llms-full.txt',
-  '/style.css',
-  '/theme.js',
-  '/navbar.js',
-  '/assets/js/theme-core.js',
-  '/assets/js/page-home.js',
-  '/assets/js/chat-ai.js',
-  '/assets/js/anticapture.js',
-  '/assets/js/hero-depth-3d.js',
-  '/assets/js/papaparse.min.js',
-  '/assets/css/pdf-viewer.css',
-  '/assets/js/pdf-viewer.js',
-  '/assets/vendor/pdfjs/pdf.min.js',
-  '/assets/vendor/pdfjs/pdf.worker.min.js',
-  '/assets/vendor/pdfjs/pdf_viewer.css',
-  '/assets/vendor/curtains/curtains.umd.min.js',
   '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
+  '/assets/js/pdf-viewer.js',
+  '/assets/css/pdf-viewer.css',
+  '/assets/vendor/pdfjs/pdf.min.js',
+  '/assets/vendor/pdfjs/pdf.worker.min.js',
+  '/assets/vendor/pdfjs/pdf_viewer.css',
+  '/assets/js/papaparse.min.js',
+  '/style.css',
   '/manifest.json',
   '/favicon.svg',
   '/favicon-32.png',
@@ -69,41 +24,6 @@ const ASSETS_TO_CACHE = [
   '/icon-192.png',
   '/icon-512.png',
   '/og-image.jpg',
-  '/assets/media/william-guindon.jpg',
-  '/assets/media/william-guindon.webp',
-  '/assets/media/signature.svg',
-  '/assets/media/tourbiere-hero-3d.webp',
-  '/assets/media/tourbiere-hero-depth.webp',
-  '/assets/media/moteur-recherche-pieces.jpg',
-  '/assets/media/moteur-recherche-pieces.webp',
-  '/assets/media/autonomie-juridique-adolescents.jpg',
-  '/assets/media/autonomie-juridique-adolescents.webp',
-  '/assets/media/clarification-independance.jpg',
-  '/assets/media/clarification-independance.webp',
-  '/assets/media/confirmation-cce-premier-mineur-1994.png',
-  '/assets/media/confirmation-cce-premier-mineur-1994.webp',
-  '/assets/media/sem-26-003-apercu-banniere.webp',
-  '/assets/media/ndtr-banner-rcaanc.jpg',
-  '/assets/media/ndtr-banner-rcaanc.webp',
-  '/assets/media/memoire-autochtone-tourbiere.jpg',
-  '/assets/media/memoire-autochtone-tourbiere.webp',
-  '/assets/media/umap-preview.webp',
-  '/assets/media/lapresse-logo.png',
-  '/assets/media/ledevoir-logo.png',
-  '/assets/media/cbc-logo.jpg',
-  '/assets/media/tvbl-logo.png',
-  '/assets/media/lesasdelinfo-logo.png',
-  '/assets/media/the-rover-logo.jpg',
-  '/assets/media/educaloi-logo.png',
-  '/assets/media/educaloi-logo.webp',
-  '/assets/media/sgtb-medaillon.png',
-  '/assets/media/sgtb-medaillon.webp',
-  '/assets/media/logo-areq-csq.png',
-  '/assets/media/logo-areq-csq.webp',
-  '/assets/media/logo-mouvement-actes-csq.png',
-  '/assets/media/logo-mouvement-actes-csq.webp',
-  '/assets/media/signalement-faunique-plan-bouchard.jpg',
-  '/assets/media/signalement-faunique-plan-bouchard.webp',
   '/feed.xml',
   '/status.json'
 ];
@@ -134,7 +54,7 @@ function isCacheable(request, response) {
 
   const url = new URL(request.url);
 
-  // 1. Uniquement Same-Origin
+  // 1. Uniquement Same-Origin (ne jamais intercepter ni cacher les domaines externes comme GTranslate, Google Translate, Umami, etc.)
   if (url.origin !== self.location.origin) {
     return false;
   }
@@ -144,8 +64,20 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 3. Filtrer par en-tête Content-Type (HTML, CSS, JS, Images, Fonts, JSON, PDF, XML, Text, WASM/Binaires statiques)
+  // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur et apercu.html
+  // Le reste du site ne doit pas être mis en cache hors-ligne pour ne pas perturber les traductions et le contenu dynamique
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  if (contentType.includes('text/html')) {
+    const isOfflineAllowedHtml = url.pathname === '/apercu.html' || 
+                                 url.pathname === '/dossier-journalistes.html' || 
+                                 url.pathname === '/viewer.html' || 
+                                 url.pathname === '/dependances-licences.html';
+    if (!isOfflineAllowedHtml) {
+      return false;
+    }
+  }
+
+  // 4. Filtrer par en-tête Content-Type éligible
   const eligibleContentType = /^(text\/(html|css|javascript|plain|xml)|application\/(javascript|json|pdf|xml|wasm|octet-stream)|image\/|font\/)/i.test(contentType);
 
   return eligibleContentType;
@@ -179,7 +111,26 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+
+  // Ignorer complètement les domaines externes (GTranslate, Google Translate, Analytics, CDN, etc.)
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
   const isNavigation = event.request.mode === 'navigate';
+
+  // Pour les navigations HTML : ne traiter que les pages de documents et apercu.html
+  // Toutes les autres pages naviguent directement en direct sur le réseau sans interception SW (évite tout bug de traduction)
+  if (isNavigation) {
+    const isOfflineAllowed = url.pathname === '/apercu.html' || 
+                             url.pathname === '/dossier-journalistes.html' || 
+                             url.pathname === '/viewer.html' || 
+                             url.pathname === '/dependances-licences.html';
+    if (!isOfflineAllowed) {
+      return;
+    }
+  }
 
   event.respondWith(
     fetch(event.request)
@@ -200,12 +151,10 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse;
         }
 
-        // Fallback pour les navigations hors-ligne
-        if (isNavigation) {
-          const fallback = await caches.match('/index.html');
-          if (fallback) {
-            return fallback;
-          }
+        // Fallback pour la navigation apercu.html
+        if (isNavigation && url.pathname === '/apercu.html') {
+          const apercuFallback = await caches.match('/apercu.html');
+          if (apercuFallback) return apercuFallback;
         }
 
         return Promise.reject(new Error('Ressource hors-ligne indisponible'));
