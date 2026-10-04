@@ -4829,6 +4829,264 @@ body.dark-theme .notif-link-ghost {
   font-size: 22px;
   font-weight: 800;
 }
+
+/* ==========================================================================
+   Module d'adaptation de fuseau horaire (live.html & widgets)
+   ========================================================================== */
+.hero-countdown-tz {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(13, 21, 18, 0.85);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 9999px;
+  font-size: 13px;
+  color: #cbd5e1;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hero-countdown-tz strong {
+  color: #34d399;
+  font-weight: 700;
+}
+.hero-countdown-tz .tz-offset-tag {
+  color: #fca5a5;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(231, 76, 60, 0.2);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.tracker-tz-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8ae8bd;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  margin-top: 4px;
+}
+.tracker-tz-pill.is-adapted {
+  color: #fca5a5;
+  background: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.4);
+}
+
+.live-tz-card {
+  max-width: 860px;
+  margin: 0 auto 32px auto;
+  background: #091a14;
+  border: 1.5px solid rgba(52, 211, 153, 0.4);
+  border-radius: 16px;
+  padding: 26px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+.live-tz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.live-tz-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.live-tz-icon {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.live-tz-title {
+  font-family: var(--font-heading, 'Outfit', system-ui, sans-serif);
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.live-tz-subtitle {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.live-tz-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #8ae8bd;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.live-tz-status-pill.is-adapted {
+  background: rgba(231, 76, 60, 0.18);
+  border-color: rgba(231, 76, 60, 0.5);
+  color: #fca5a5;
+}
+
+.live-tz-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: notifBadgePulse 2s infinite ease-in-out;
+}
+
+.live-tz-status-pill.is-adapted .live-tz-status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.live-tz-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.live-tz-box {
+  background: rgba(13, 21, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.live-tz-box-official {
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+.live-tz-box-user {
+  border-color: rgba(231, 76, 60, 0.35);
+  background: rgba(22, 16, 16, 0.85);
+}
+
+.live-tz-box-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8ae8bd;
+  margin-bottom: 8px;
+}
+
+.live-tz-box-user .live-tz-box-badge {
+  color: #fca5a5;
+}
+
+.live-tz-box-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.live-tz-box-time {
+  font-family: var(--font-heading, 'Outfit', system-ui, sans-serif);
+  font-size: 20px;
+  font-weight: 800;
+  color: #34d399;
+  margin-bottom: 4px;
+}
+
+.live-tz-box-user .live-tz-box-time {
+  color: #ff7675;
+}
+
+.live-tz-box-zone {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.live-tz-box-note {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.4;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+  margin-top: 6px;
+}
+
+.live-tz-selector-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+}
+
+.live-tz-select-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.live-tz-select {
+  background: #0d1512;
+  color: #ffffff;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.live-tz-select:focus {
+  border-color: #34d399;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+}
+
+@media (max-width: 680px) {
+  .live-tz-grid {
+    grid-template-columns: 1fr;
+  }
+  .live-tz-box-time {
+    font-size: 18px;
+  }
+  .live-tz-selector-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .live-tz-select {
+    width: 100%;
+  }
+}
+
 .live-action-card-center {
   max-width: 860px;
   margin: 0 auto 32px auto;
@@ -9460,7 +9718,42 @@ body[data-page="policy"] .floating-ai-btn {
 .site-deadline-right {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.site-deadline-tz {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  cursor: default;
+}
+
+.site-deadline-tz:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.site-deadline-tz.is-adapted {
+  background: rgba(231, 76, 60, 0.18);
+  border-color: rgba(231, 76, 60, 0.45);
+  color: #fca5a5;
+}
+
+.site-deadline-tz.is-adapted:hover {
+  background: rgba(231, 76, 60, 0.28);
+  border-color: rgba(231, 76, 60, 0.65);
 }
 
 .site-deadline-btn {
@@ -9503,9 +9796,19 @@ body[data-page="policy"] .floating-ai-btn {
     font-size: 12px;
     padding: 1px 6px;
   }
+  .site-deadline-tz {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
   .site-deadline-btn {
     font-size: 10px;
     padding: 2px 7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-deadline-tz {
+    display: none;
   }
 }
 

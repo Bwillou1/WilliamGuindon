@@ -424,6 +424,164 @@
       document.head.appendChild(acScript);
     }
 
+    // 0.A Système de détection et d'adaptation du fuseau horaire
+    // Fuseau de référence officiel CCE : Montréal (Heure Avancée de l'Est / HAE · UTC-4)
+    function getVisitorTimezoneInfo(targetMs, customTz) {
+      const target = targetMs || cceTargetDate || new Date('2026-10-16T00:00:00-04:00').getTime();
+      let tz = customTz || '';
+      if (!tz || tz === 'auto') {
+        try {
+          tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Montreal';
+        } catch (_) {
+          tz = 'America/Montreal';
+        }
+      }
+
+      // Détection de la zone Est officielle (Montréal, Ottawa, Toronto, New York, etc.)
+      const isEastern = [
+        'America/Montreal', 'America/Toronto', 'America/New_York',
+        'America/Detroit', 'America/Iqaluit', 'America/Quebec',
+        'America/Nipigon', 'America/Thunder_Bay'
+      ].includes(tz) || tz.toLowerCase().includes('montreal');
+
+      const targetDateObj = new Date(target);
+
+      // Calcul des décalages en minutes par rapport à UTC à la date cible (2026-10-16)
+      const getOffsetMinutes = (timeZone, date) => {
+        try {
+          const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+          const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timeZone }));
+          return Math.round((tzDate.getTime() - utcDate.getTime()) / 60000);
+        } catch (_) {
+          return -240;
+        }
+      };
+
+      const mtlOffset = -240; // Montréal en HAE (UTC-4) le 16 octobre
+      const userOffset = getOffsetMinutes(tz, targetDateObj);
+      const diffHours = (userOffset - mtlOffset) / 60;
+
+      let diffStr = '';
+      if (diffHours > 0) {
+        diffStr = `+${Number.isInteger(diffHours) ? diffHours : diffHours.toFixed(1)}h`;
+      } else if (diffHours < 0) {
+        diffStr = `${Number.isInteger(diffHours) ? diffHours : diffHours.toFixed(1)}h`;
+      } else {
+        diffStr = '0h';
+      }
+
+      // Formatage de la date locale dans le fuseau
+      let localFull = '';
+      let localShort = '';
+      let tzAbbr = '';
+      try {
+        const dtf = new Intl.DateTimeFormat('fr-CA', {
+          timeZone: tz,
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short'
+        });
+        localFull = dtf.format(targetDateObj);
+        const parts = dtf.formatToParts(targetDateObj);
+        const tzPart = parts.find(p => p.type === 'timeZoneName');
+        if (tzPart) tzAbbr = tzPart.value;
+
+        const dtfShort = new Intl.DateTimeFormat('fr-CA', {
+          timeZone: tz,
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        localShort = dtfShort.format(targetDateObj);
+      } catch (_) {
+        localFull = '16 octobre 2026 à 00:00 HAE';
+        localShort = '16 oct. 00:00';
+      }
+
+      // Nom convivial de la ville / région
+      let city = tz.split('/').pop().replace(/_/g, ' ');
+      if (city === 'Montreal') city = 'Montréal';
+
+      // Icône / drapeau contextuel
+      let flag = '🌍';
+      if (isEastern || tz.startsWith('America/Montreal') || tz.startsWith('America/Toronto')) {
+        flag = '🇨🇦';
+      } else if (tz === 'Europe/Paris') {
+        flag = '🇫🇷';
+      } else if (tz === 'Europe/London') {
+        flag = '🇬🇧';
+      } else if (tz === 'Europe/Brussels') {
+        flag = '🇧🇪';
+      } else if (tz === 'Europe/Zurich') {
+        flag = '🇨🇭';
+      } else if (tz === 'America/Vancouver' || tz === 'America/Edmonton' || tz === 'America/Winnipeg' || tz === 'America/Halifax') {
+        flag = '🇨🇦';
+      } else if (tz.startsWith('America/')) {
+        flag = '🌎';
+      } else if (tz.startsWith('Europe/')) {
+        flag = '🇪🇺';
+      } else if (tz.startsWith('Asia/')) {
+        flag = '🌏';
+      }
+
+      let badgeLabel = '';
+      let badgeTitle = '';
+
+      if (isEastern) {
+        badgeLabel = `${flag} Montréal (HAE)`;
+        badgeTitle = `Fuseau officiel CCE : Montréal (Heure de l'Est / HAE, UTC-4). Échéance : 16 octobre 2026 à 00:00.`;
+      } else {
+        badgeLabel = `${flag} ${city} (${diffStr})`;
+        badgeTitle = `Votre fuseau local : ${tz} (${diffStr} par rapport à Montréal). Échéance adaptée à votre heure locale : ${localFull}.`;
+      }
+
+      return {
+        tz,
+        isEastern,
+        userOffset,
+        diffHours,
+        diffStr,
+        city,
+        flag,
+        tzAbbr,
+        localFull,
+        localShort,
+        badgeLabel,
+        badgeTitle
+      };
+    }
+
+    function updateTimezoneBadges(customTz) {
+      const tzInfo = getVisitorTimezoneInfo(cceTargetDate, customTz);
+      document.querySelectorAll('.js-cd-tz-badge').forEach(el => {
+        el.textContent = tzInfo.badgeLabel;
+        el.setAttribute('title', tzInfo.badgeTitle);
+        el.setAttribute('aria-label', tzInfo.badgeTitle);
+        if (!tzInfo.isEastern) {
+          el.classList.add('is-adapted');
+        } else {
+          el.classList.remove('is-adapted');
+        }
+      });
+
+      document.querySelectorAll('.js-cd-tz-desc').forEach(el => {
+        if (tzInfo.isEastern) {
+          el.innerHTML = `Heure officielle CCE : <strong>16 octobre 2026 à 00:00 (Montréal / HAE)</strong>`;
+        } else {
+          el.innerHTML = `Adapté à votre heure locale : <strong>${tzInfo.localFull}</strong> <span class="tz-offset-tag">${tzInfo.diffStr} vs Montréal</span>`;
+        }
+      });
+    }
+
+    window.WG_TIMEZONE = {
+      getInfo: getVisitorTimezoneInfo,
+      update: updateTimezoneBadges
+    };
+
     // 0.B Bannière d'alerte officielle CCE 16 Octobre avec compte à rebours en temps réel
     function initDeadlineTopBanner() {
       const currentPath = window.location.pathname.toLowerCase();
@@ -432,6 +590,7 @@
       }
 
       if (document.querySelector('.site-deadline-topbar')) {
+        updateTimezoneBadges();
         return;
       }
 
@@ -464,6 +623,7 @@
             </div>
           </div>
           <div class="site-deadline-right">
+            <span class="site-deadline-tz js-cd-tz-badge" id="site-deadline-tz" title="Fuseau horaire"></span>
             <a href="live.html" class="site-deadline-btn">
               <span>Suivre en direct ↗</span>
             </a>
@@ -472,12 +632,14 @@
       `;
 
       headerSite.parentNode.insertBefore(banner, headerSite);
+      updateTimezoneBadges();
       if (typeof updatePrecisionCountdown === 'function') {
         updatePrecisionCountdown();
       }
     }
 
     initDeadlineTopBanner();
+    updateTimezoneBadges();
     if (typeof updatePrecisionCountdown === 'function') {
       updatePrecisionCountdown();
     }
@@ -1169,6 +1331,7 @@
       if (data.prochaine_echeance) {
         cceTargetDate = new Date(data.prochaine_echeance).getTime();
         updateCountdown();
+        updateTimezoneBadges();
         if (typeof updatePrecisionCountdown === 'function') {
           updatePrecisionCountdown();
         }

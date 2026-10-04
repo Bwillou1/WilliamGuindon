@@ -441,6 +441,84 @@
         </div>
       </div>
 
+      <!-- Adaptation dynamique du fuseau horaire selon l'emplacement du visiteur -->
+      <section class="live-tz-card" aria-label="Fuseau horaire et adaptation locale de l'échéance">
+        <div class="live-tz-header">
+          <div class="live-tz-title-wrap">
+            <span class="live-tz-icon" aria-hidden="true">🌐</span>
+            <div>
+              <h2 class="live-tz-title">Adaptation selon votre fuseau horaire</h2>
+              <p class="live-tz-subtitle">L'échéance officielle internationale est ancrée à Montréal (Canada), mais s'ajuste automatiquement à votre pays et votre heure locale.</p>
+            </div>
+          </div>
+          <div class="live-tz-status-pill" id="live-user-tz-pill">
+            <span class="live-tz-status-dot"></span>
+            <span id="live-user-tz-pill-text">🇨🇦 Heure de l'Est (Montréal)</span>
+          </div>
+        </div>
+
+        <div class="live-tz-grid">
+          <!-- Carte 1 : Heure officielle CCE (Montréal / Canada) -->
+          <div class="live-tz-box live-tz-box-official">
+            <div class="live-tz-box-badge">🇨🇦 Référence officielle CCE</div>
+            <div class="live-tz-box-name">Montréal / Ottawa (Canada)</div>
+            <div class="live-tz-box-time" id="live-cce-box-time">16 octobre 2026 à 00:00:00</div>
+            <div class="live-tz-box-zone">Heure Avancée de l'Est (HAE · UTC-4)</div>
+            <div class="live-tz-box-note">Dossier CCE SEM-26-003 · Secrétariat de la Commission de coopération environnementale.</div>
+          </div>
+
+          <!-- Carte 2 : Heure locale de l'internaute -->
+          <div class="live-tz-box live-tz-box-user" id="live-user-box">
+            <div class="live-tz-box-badge" id="live-user-box-badge">📍 Votre échéance locale</div>
+            <div class="live-tz-box-name" id="live-user-box-name">Détection en cours...</div>
+            <div class="live-tz-box-time" id="live-user-box-time">—</div>
+            <div class="live-tz-box-zone" id="live-user-box-zone">—</div>
+            <div class="live-tz-box-note" id="live-user-box-note">—</div>
+          </div>
+        </div>
+
+        <!-- Sélecteur interactif de fuseau horaire -->
+        <div class="live-tz-selector-wrap">
+          <label for="live-tz-select" class="live-tz-select-label">
+            <span>Tester ou comparer un autre fuseau horaire mondial :</span>
+          </label>
+          <div class="live-tz-select-field">
+            <select id="live-tz-select" class="live-tz-select" aria-label="Choisir un fuseau horaire à afficher">
+              <option value="auto">🌐 Automatique (Mon fuseau détecté)</option>
+              <optgroup label="Canada &amp; États-Unis">
+                <option value="America/Montreal">🇨🇦 Montréal / Ottawa / Toronto (HAE, UTC-4 — Référence)</option>
+                <option value="America/Halifax">🇨🇦 Halifax / Moncton (HAA, UTC-3 / +1h)</option>
+                <option value="America/Winnipeg">🇨🇦 Winnipeg / Régina (HAC, UTC-5 / -1h)</option>
+                <option value="America/Edmonton">🇨🇦 Calgary / Edmonton (HAR, UTC-6 / -2h)</option>
+                <option value="America/Vancouver">🇨🇦 Vancouver / Victoria (HAP, UTC-7 / -3h)</option>
+                <option value="America/New_York">🇺🇸 New York / Washington (EDT, UTC-4)</option>
+                <option value="America/Chicago">🇺🇸 Chicago (CDT, UTC-5 / -1h)</option>
+                <option value="America/Denver">🇺🇸 Denver (MDT, UTC-6 / -2h)</option>
+                <option value="America/Los_Angeles">🇺🇸 Los Angeles / San Francisco (PDT, UTC-7 / -3h)</option>
+              </optgroup>
+              <optgroup label="Europe">
+                <option value="Europe/Paris">🇫🇷 Paris / France (CEST, UTC+2 / +6h)</option>
+                <option value="Europe/Brussels">🇧🇪 Bruxelles / Belgique (CEST, UTC+2 / +6h)</option>
+                <option value="Europe/Zurich">🇨🇭 Genève / Zurich / Suisse (CEST, UTC+2 / +6h)</option>
+                <option value="Europe/London">🇬🇧 Londres / UK (BST, UTC+1 / +5h)</option>
+                <option value="Europe/Berlin">🇩🇪 Berlin / Allemagne (CEST, UTC+2 / +6h)</option>
+                <option value="Europe/Madrid">🇪🇸 Madrid / Espagne (CEST, UTC+2 / +6h)</option>
+                <option value="Europe/Rome">🇮🇹 Rome / Italie (CEST, UTC+2 / +6h)</option>
+              </optgroup>
+              <optgroup label="Autres régions du monde">
+                <option value="America/Guadeloupe">🇬🇵 Guadeloupe / Martinique (AST, UTC-4)</option>
+                <option value="America/Cayenne">🇬🇫 Cayenne / Guyane (GFT, UTC-3 / +1h)</option>
+                <option value="Africa/Dakar">🇸🇳 Dakar / Sénégal (GMT, UTC+0 / +4h)</option>
+                <option value="Africa/Casablanca">🇲🇦 Casablanca / Maroc (WEST, UTC+1 / +5h)</option>
+                <option value="Asia/Tokyo">🇯🇵 Tokyo / Japon (JST, UTC+9 / +13h)</option>
+                <option value="Australia/Sydney">🇦🇺 Sydney / Australie (AEDT, UTC+11 / +15h)</option>
+                <option value="Pacific/Auckland">🇳🇿 Auckland / N-Z (NZDT, UTC+13 / +17h)</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </section>
+
       <div class="action-card live-action-card-center">
         <h2 class="live-share-heading">Partager ce décompte en direct sur vos réseaux</h2>
         <p class="live-share-desc">
@@ -590,6 +668,76 @@
 
     updateLiveCountdown();
     setInterval(updateLiveCountdown, 1000);
+
+    // Adaptation interactive du fuseau horaire
+    const tzSelect = document.getElementById("live-tz-select");
+    const tzPill = document.getElementById("live-user-tz-pill");
+    const tzPillText = document.getElementById("live-user-tz-pill-text");
+    const userBoxBadge = document.getElementById("live-user-box-badge");
+    const userBoxName = document.getElementById("live-user-box-name");
+    const userBoxTime = document.getElementById("live-user-box-time");
+    const userBoxZone = document.getElementById("live-user-box-zone");
+    const userBoxNote = document.getElementById("live-user-box-note");
+
+    function renderTimezoneComparison(customTz) {
+      let tzInfo;
+      if (window.WG_TIMEZONE && typeof window.WG_TIMEZONE.getInfo === 'function') {
+        tzInfo = window.WG_TIMEZONE.getInfo(targetDate, customTz);
+      } else {
+        const tz = customTz && customTz !== 'auto' ? customTz : (Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Montreal');
+        const isEastern = tz.includes('Montreal') || tz.includes('Toronto') || tz.includes('New_York');
+        const dtf = new Intl.DateTimeFormat('fr-CA', { timeZone: tz, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+        const localFull = dtf.format(new Date(targetDate));
+        tzInfo = {
+          tz,
+          isEastern,
+          city: tz.split('/').pop().replace(/_/g, ' '),
+          flag: isEastern ? '🇨🇦' : '🌍',
+          localFull,
+          diffStr: isEastern ? '0h' : '+6h',
+          badgeLabel: `${isEastern ? '🇨🇦' : '🌍'} ${tz.split('/').pop()}`,
+          tzAbbr: ''
+        };
+      }
+
+      if (tzPillText) tzPillText.textContent = tzInfo.badgeLabel;
+      if (tzPill) {
+        if (!tzInfo.isEastern) tzPill.classList.add('is-adapted');
+        else tzPill.classList.remove('is-adapted');
+      }
+
+      if (userBoxName) {
+        userBoxName.textContent = `${tzInfo.flag} ${tzInfo.city} (${tzInfo.tz})`;
+      }
+      if (userBoxTime) {
+        userBoxTime.textContent = tzInfo.localFull;
+      }
+      if (userBoxZone) {
+        userBoxZone.textContent = tzInfo.tzAbbr ? `Fuseau : ${tzInfo.tz} (${tzInfo.tzAbbr})` : `Fuseau : ${tzInfo.tz}`;
+      }
+      if (userBoxBadge) {
+        userBoxBadge.textContent = tzInfo.isEastern ? '🇨🇦 Fuseau officiel CCE (Aucun décalage)' : `📍 Votre échéance locale (${tzInfo.diffStr})`;
+      }
+      if (userBoxNote) {
+        if (tzInfo.isEastern) {
+          userBoxNote.innerHTML = `<strong>✓ Aucun décalage :</strong> Vous êtes dans le même fuseau horaire que la Commission de coopération environnementale (Montréal).`;
+        } else {
+          userBoxNote.innerHTML = `<strong>⏱️ Décalage : ${tzInfo.diffStr}</strong> par rapport à Montréal (HAE / UTC-4). Lorsque l'échéance officielle sonnera à minuit à Montréal, il sera exactement <strong>${tzInfo.localFull}</strong> chez vous.`;
+        }
+      }
+    }
+
+    renderTimezoneComparison('auto');
+
+    if (tzSelect) {
+      tzSelect.addEventListener('change', () => {
+        const val = tzSelect.value;
+        renderTimezoneComparison(val);
+        if (window.WG_TIMEZONE && typeof window.WG_TIMEZONE.update === 'function') {
+          window.WG_TIMEZONE.update(val);
+        }
+      });
+    }
 
     if (copyBtn) {
       copyBtn.addEventListener("click", async () => {
