@@ -1,5 +1,5 @@
-const CACHE_NAME = 'wg-pwa-v82';
-const MAX_CACHE_ENTRIES = 128;
+const CACHE_NAME = 'wg-pwa-v83';
+const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
   '/apercu.html',
@@ -16,6 +16,48 @@ const ASSETS_TO_CACHE = [
   '/assets/vendor/pdfjs/pdf_viewer.css',
   '/assets/js/papaparse.min.js',
   '/style.css',
+  '/theme.js',
+  '/navbar.js',
+  '/assets/js/theme-core.js',
+  '/assets/js/page-home.js',
+  '/assets/js/anticapture.js',
+  '/assets/js/hero-depth-3d.js',
+  '/assets/vendor/curtains/curtains.umd.min.js',
+  '/assets/media/william-guindon.jpg',
+  '/assets/media/william-guindon.webp',
+  '/assets/media/signature.svg',
+  '/assets/media/tourbiere-hero-3d.webp',
+  '/assets/media/tourbiere-hero-depth.webp',
+  '/assets/media/moteur-recherche-pieces.jpg',
+  '/assets/media/moteur-recherche-pieces.webp',
+  '/assets/media/autonomie-juridique-adolescents.jpg',
+  '/assets/media/autonomie-juridique-adolescents.webp',
+  '/assets/media/clarification-independance.jpg',
+  '/assets/media/clarification-independance.webp',
+  '/assets/media/confirmation-cce-premier-mineur-1994.png',
+  '/assets/media/confirmation-cce-premier-mineur-1994.webp',
+  '/assets/media/sem-26-003-apercu-banniere.webp',
+  '/assets/media/ndtr-banner-rcaanc.jpg',
+  '/assets/media/ndtr-banner-rcaanc.webp',
+  '/assets/media/memoire-autochtone-tourbiere.jpg',
+  '/assets/media/memoire-autochtone-tourbiere.webp',
+  '/assets/media/umap-preview.webp',
+  '/assets/media/lapresse-logo.png',
+  '/assets/media/ledevoir-logo.png',
+  '/assets/media/cbc-logo.jpg',
+  '/assets/media/tvbl-logo.png',
+  '/assets/media/lesasdelinfo-logo.png',
+  '/assets/media/the-rover-logo.jpg',
+  '/assets/media/educaloi-logo.png',
+  '/assets/media/educaloi-logo.webp',
+  '/assets/media/sgtb-medaillon.png',
+  '/assets/media/sgtb-medaillon.webp',
+  '/assets/media/logo-areq-csq.png',
+  '/assets/media/logo-areq-csq.webp',
+  '/assets/media/logo-mouvement-actes-csq.png',
+  '/assets/media/logo-mouvement-actes-csq.webp',
+  '/assets/media/signalement-faunique-plan-bouchard.jpg',
+  '/assets/media/signalement-faunique-plan-bouchard.webp',
   '/manifest.json',
   '/favicon.svg',
   '/favicon-32.png',
@@ -65,7 +107,7 @@ function isCacheable(request, response) {
   }
 
   // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur et apercu.html
-  // Le reste du site ne doit pas être mis en cache hors-ligne pour ne pas perturber les traductions et le contenu dynamique
+  // Le reste du HTML ne doit pas être mis en cache pour préserver le fonctionnement en direct des traductions
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
   if (contentType.includes('text/html')) {
     const isOfflineAllowedHtml = url.pathname === '/apercu.html' || 
@@ -77,7 +119,7 @@ function isCacheable(request, response) {
     }
   }
 
-  // 4. Filtrer par en-tête Content-Type éligible
+  // 4. Filtrer par en-tête Content-Type éligible (Images, CSS, JS, Fonts, PDF, JSON, etc.)
   const eligibleContentType = /^(text\/(html|css|javascript|plain|xml)|application\/(javascript|json|pdf|xml|wasm|octet-stream)|image\/|font\/)/i.test(contentType);
 
   return eligibleContentType;
@@ -118,10 +160,39 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // 1. Accélération du rendu pour les images, styles, polices et scripts (Cache-First avec mise à jour en arrière-plan)
+  const isImageOrStaticAsset = event.request.destination === 'image' || 
+                               event.request.destination === 'style' || 
+                               event.request.destination === 'script' || 
+                               event.request.destination === 'font' ||
+                               url.pathname.startsWith('/assets/') ||
+                               /\.(webp|jpg|jpeg|png|svg|ico|gif|css|js|woff2?|ttf|eot)$/i.test(url.pathname);
+
+  if (isImageOrStaticAsset) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
+          if (isCacheable(event.request, networkResponse)) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(async (cache) => {
+              await cache.put(event.request, responseClone);
+              await trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
+            });
+          }
+          return networkResponse;
+        }).catch(() => null);
+
+        // Réponse instantanée depuis le cache si présente pour un affichage éclair
+        return cachedResponse || fetchPromise;
+      })
+    );
+    return;
+  }
+
   const isNavigation = event.request.mode === 'navigate';
 
-  // Pour les navigations HTML : ne traiter que les pages de documents et apercu.html
-  // Toutes les autres pages naviguent directement en direct sur le réseau sans interception SW (évite tout bug de traduction)
+  // 2. Pour les navigations HTML : ne traiter en cache hors-ligne que apercu.html et les pièces
+  // Toutes les autres pages naviguent en direct réseau sans interception SW (garantit 0 bug de traduction)
   if (isNavigation) {
     const isOfflineAllowed = url.pathname === '/apercu.html' || 
                              url.pathname === '/dossier-journalistes.html' || 
