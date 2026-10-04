@@ -306,12 +306,12 @@
     // Intégration du sélecteur de langue unique (FR / EN / ES)
     if (nav) {
       let langDropdown = nav.querySelector('.nav-lang-dropdown');
+      const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang') || 'fr';
+      const currentLangUpper = (savedLang === 'en' ? 'EN' : savedLang === 'es' ? 'ES' : 'FR');
+
       if (!langDropdown) {
         langDropdown = document.createElement('div');
         langDropdown.className = 'nav-dropdown nav-lang-dropdown';
-
-        const savedLang = sessionStorage.getItem('wg_user_lang') || localStorage.getItem('wg_user_lang') || 'fr';
-        const currentLangUpper = (savedLang === 'en' ? 'EN' : savedLang === 'es' ? 'ES' : 'FR');
 
         langDropdown.innerHTML = `
           <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
@@ -346,26 +346,38 @@
         } else {
           nav.appendChild(langDropdown);
         }
-
+      } else {
+        // Mettre à jour l'affichage initial du badge de langue dans le menu statique
+        const codeSpan = langDropdown.querySelector('.current-lang-code');
+        if (codeSpan) codeSpan.textContent = currentLangUpper;
         langDropdown.querySelectorAll('.lang-select-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const targetLang = btn.getAttribute('data-lang');
-            langDropdown.classList.remove('active');
-            const navBtn = langDropdown.querySelector('.nav-dropdown-btn');
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === savedLang);
+        });
+      }
+
+      // Attacher les écouteurs sur tous les boutons de sélection de langue
+      document.querySelectorAll('.lang-select-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const targetLang = btn.getAttribute('data-lang');
+          const parentDrop = btn.closest('.nav-lang-dropdown') || langDropdown;
+          if (parentDrop) {
+            parentDrop.classList.remove('active');
+            const navBtn = parentDrop.querySelector('.nav-dropdown-btn');
             if (navBtn) {
               navBtn.setAttribute('aria-expanded', 'false');
               navBtn.blur();
             }
-            applyLanguage(targetLang);
-          });
+          }
+          applyLanguage(targetLang);
         });
+      });
 
-        if (savedLang && savedLang !== 'fr') {
-          applyLanguage(savedLang);
-        }
+      if (savedLang && savedLang !== 'fr') {
+        applyLanguage(savedLang);
       }
+    }
 
       // Bouton Recherche Rapide Globale (Cmd+K)
       let searchBtn = nav.querySelector('.nav-search-btn');
