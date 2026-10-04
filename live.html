@@ -451,9 +451,9 @@
               <p class="live-tz-subtitle">L'échéance officielle internationale est ancrée à Montréal (Canada), mais s'ajuste automatiquement à votre pays et votre heure locale.</p>
             </div>
           </div>
-          <div class="live-tz-status-pill" id="live-user-tz-pill">
+          <div class="live-tz-status-pill" id="live-user-tz-pill" style="display: none;">
             <span class="live-tz-status-dot"></span>
-            <span id="live-user-tz-pill-text">🇨🇦 Heure de l'Est (Montréal)</span>
+            <span id="live-user-tz-pill-text"></span>
           </div>
         </div>
 
@@ -700,10 +700,16 @@
         };
       }
 
-      if (tzPillText) tzPillText.textContent = tzInfo.badgeLabel;
       if (tzPill) {
-        if (!tzInfo.isEastern) tzPill.classList.add('is-adapted');
-        else tzPill.classList.remove('is-adapted');
+        if (tzInfo.isEastern || !tzInfo.badgeLabel) {
+          tzPill.style.display = 'none';
+          tzPill.classList.remove('is-adapted');
+          if (tzPillText) tzPillText.textContent = '';
+        } else {
+          tzPill.style.display = 'inline-flex';
+          tzPill.classList.add('is-adapted');
+          if (tzPillText) tzPillText.textContent = tzInfo.badgeLabel;
+        }
       }
 
       if (userBoxName) {

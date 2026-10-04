@@ -88,7 +88,7 @@
   const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.3 22c5.3 0 9.7-4.3 9.7-9.7 0-2.7-1.1-5.1-2.9-6.9-.5-.5-1.3-.1-1.2.6.7 3.5-.3 7.3-3 10-2.7 2.7-6.5 3.7-10 3-.7-.1-1.1.7-.6 1.2 1.8 1.8 4.2 2.8 6.8 2.8zm-2.8-5c2.7-.2 5.1-1.5 6.8-3.5C13 13.3 10 9.9 10 6c0-.8.1-1.6.3-2.4C7.4 4.5 5 7.4 5 10.9 5 14.3 7 16.7 9.5 17z"/></svg>`;
 
   // =========================================================================
-  // GESTIONNAIRE DE TRADUCTION IN-PLACE & MÉMOIRE PERMANENTE (FR / EN / ES)
+  // GESTIONNAIRE DE TRADUCTION IN-PLACE & RESTAURATION DU FRANÇAIS NATIF
   // =========================================================================
   const LANG_STORAGE_KEY = 'wg_user_lang';
 
@@ -104,45 +104,46 @@
     return '';
   }
 
+  function clearGoogTransCookies() {
+    const expire = "expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0;";
+    const domains = ['', window.location.hostname, '.' + window.location.hostname, getCookieDomain()];
+    const paths = ['/', window.location.pathname];
+
+    paths.forEach(p => {
+      domains.forEach(d => {
+        document.cookie = `googtrans=; ${expire} path=${p};`;
+        document.cookie = `googtrans=; ${expire} path=${p}; SameSite=Lax;`;
+        if (d) {
+          document.cookie = `googtrans=; ${expire} path=${p}; domain=${d};`;
+          document.cookie = `googtrans=; ${expire} path=${p}; domain=${d}; SameSite=Lax;`;
+        }
+      });
+    });
+  }
+
   function getSavedLanguage() {
     try {
-      const fromLocal = localStorage.getItem(LANG_STORAGE_KEY);
-      if (fromLocal && ['fr', 'en', 'es'].includes(fromLocal.toLowerCase())) {
-        return fromLocal.toLowerCase();
-      }
       const fromSession = sessionStorage.getItem(LANG_STORAGE_KEY);
       if (fromSession && ['fr', 'en', 'es'].includes(fromSession.toLowerCase())) {
         return fromSession.toLowerCase();
       }
-      const match = (document.cookie || '').match(/(?:^|;\s*)googtrans=\/(?:auto|fr)\/([a-z]{2})/i);
-      if (match && match[1]) {
-        const cLang = match[1].toLowerCase();
-        if (['fr', 'en', 'es'].includes(cLang)) {
-          return cLang;
-        }
+      const fromLocal = localStorage.getItem(LANG_STORAGE_KEY);
+      if (fromLocal && ['fr', 'en', 'es'].includes(fromLocal.toLowerCase())) {
+        return fromLocal.toLowerCase();
       }
     } catch (_) {}
     return 'fr';
   }
 
   function setGoogTransCookie(lang) {
-    const cookieDomain = getCookieDomain();
-    const expire = "expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/;";
-
-    // Purge préventive de toutes les variations pour éviter toute duplication
-    ['/', window.location.pathname].forEach(p => {
-      document.cookie = `googtrans=; ${expire} path=${p};`;
-      if (cookieDomain) document.cookie = `googtrans=; ${expire} path=${p}; domain=${cookieDomain};`;
-      if (window.location.hostname) document.cookie = `googtrans=; ${expire} path=${p}; domain=${window.location.hostname};`;
-    });
+    clearGoogTransCookies();
 
     if (lang && lang !== 'fr') {
       const val = `/fr/${lang}`;
-      // Persistance permanente (1 an = 31536000 s) dans les cookies du navigateur
-      const maxAge = '; max-age=31536000; SameSite=Lax; path=/';
-      document.cookie = `googtrans=${val}${maxAge};`;
+      const cookieDomain = getCookieDomain();
+      document.cookie = `googtrans=${val}; path=/; SameSite=Lax;`;
       if (cookieDomain) {
-        document.cookie = `googtrans=${val}${maxAge}; domain=${cookieDomain};`;
+        document.cookie = `googtrans=${val}; path=/; domain=${cookieDomain}; SameSite=Lax;`;
       }
     }
   }
@@ -157,7 +158,7 @@
       btn.classList.toggle('active', btnLang === lang);
     });
     try {
-      document.documentElement.setAttribute('lang', lang);
+      document.documentElement.setAttribute('lang', lang === 'fr' ? 'fr-CA' : lang);
     } catch (_) {}
   }
 
@@ -168,13 +169,15 @@
 
     combo.addEventListener('change', () => {
       const selected = (combo.value || '').toLowerCase();
-      if (selected && ['fr', 'en', 'es'].includes(selected)) {
+      if (selected && ['en', 'es'].includes(selected)) {
         try {
           localStorage.setItem(LANG_STORAGE_KEY, selected);
           sessionStorage.setItem(LANG_STORAGE_KEY, selected);
         } catch (_) {}
         setGoogTransCookie(selected);
         updateLangUI(selected);
+      } else if (!selected || selected === 'fr') {
+        applyLanguage('fr');
       }
     });
   }
@@ -182,6 +185,18 @@
   function triggerGoogleTranslateCombo(lang) {
     const combo = document.querySelector('.goog-te-combo');
     if (!combo || !combo.options || combo.options.length === 0) return false;
+
+    // Retour au français d'origine
+    if (!lang || lang === 'fr') {
+      combo.selectedIndex = 0;
+      combo.value = combo.options[0].value;
+      if (typeof combo.onchange === 'function') {
+        try { combo.onchange(); } catch(_) {}
+      }
+      combo.dispatchEvent(new Event('change', { bubbles: true }));
+      combo.dispatchEvent(new Event('input', { bubbles: true }));
+      return true;
+    }
 
     let matchedIndex = -1;
     for (let i = 0; i < combo.options.length; i++) {
@@ -259,34 +274,41 @@
     if (!targetLang) targetLang = 'fr';
     targetLang = targetLang.toLowerCase();
 
-    // 1. Sauvegarde permanente et synchronisée en mémoire (localStorage + sessionStorage)
+    // 1. Choix du français (restauration native pure, zéro Google Traduction)
+    if (targetLang === 'fr') {
+      try {
+        localStorage.removeItem(LANG_STORAGE_KEY);
+        sessionStorage.removeItem(LANG_STORAGE_KEY);
+      } catch (_) {}
+      clearGoogTransCookies();
+      updateLangUI('fr');
+
+      const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
+                           document.documentElement.classList.contains('translated-rtl') ||
+                           document.querySelector('.goog-te-combo');
+      if (isTranslated) {
+        triggerGoogleTranslateCombo('fr');
+        document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
+        document.body.style.top = '0px';
+        document.querySelectorAll('.goog-te-banner-frame, iframe.goog-te-menu-frame, .goog-tooltip, .goog-te-spinner-pos').forEach(el => el.remove());
+        // Rechargement propre sans cache ni cookie pour rétablir le DOM français natif
+        setTimeout(() => {
+          window.location.reload();
+        }, 150);
+      }
+      return;
+    }
+
+    // 2. Langue étrangère demandée (EN / ES)
     try {
       localStorage.setItem(LANG_STORAGE_KEY, targetLang);
       sessionStorage.setItem(LANG_STORAGE_KEY, targetLang);
     } catch (_) {}
 
-    // 2. Mise à jour de l'UI
     updateLangUI(targetLang);
-
-    // 3. Mise à jour du témoin permanent dans les cookies (1 an)
     setGoogTransCookie(targetLang);
 
-    // 4. Si choix du français (langue originale)
-    if (targetLang === 'fr') {
-      const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
-                           document.documentElement.classList.contains('translated-rtl') ||
-                           document.querySelector('.goog-te-combo');
-      if (isTranslated) {
-        if (triggerGoogleTranslateCombo('fr')) {
-          setTimeout(() => { window.location.reload(); }, 200);
-        } else {
-          window.location.reload();
-        }
-      }
-      return;
-    }
-
-    // 5. Activation de Google Traduction avec retry résilient
+    // 3. Activation de Google Traduction avec retry résilient
     ensureGoogleTranslateLoaded(() => {
       observeGoogleTranslateCombo();
       if (!triggerGoogleTranslateCombo(targetLang)) {
@@ -304,18 +326,20 @@
 
   // Synchronisation multi-onglets en direct
   window.addEventListener('storage', (e) => {
-    if (e.key === LANG_STORAGE_KEY && e.newValue) {
-      const newLang = e.newValue.toLowerCase();
-      if (['fr', 'en', 'es'].includes(newLang)) {
-        applyLanguage(newLang);
-      }
+    if (e.key === LANG_STORAGE_KEY) {
+      const newLang = (e.newValue || 'fr').toLowerCase();
+      applyLanguage(newLang);
     }
   });
 
-  // Restauration ultra-rapide au chargement initial du script
+  // Nettoyage préventif automatique au chargement initial :
+  // Le français est la langue officielle native du site. Si aucune langue étrangère
+  // n'a été expressément activée, on purge tous les témoins googtrans parasites
+  // pour empêcher le navigateur de basculer arbitrairement en anglais.
   const _bootLang = getSavedLanguage();
-  if (_bootLang && _bootLang !== 'fr') {
-    setGoogTransCookie(_bootLang);
+  if (_bootLang === 'fr') {
+    clearGoogTransCookies();
+  } else {
     ensureGoogleTranslateLoaded(() => {
       applyLanguage(_bootLang);
     });
@@ -532,8 +556,8 @@
       let badgeTitle = '';
 
       if (isEastern) {
-        badgeLabel = `${flag} Montréal (HAE)`;
-        badgeTitle = `Fuseau officiel CCE : Montréal (Heure de l'Est / HAE, UTC-4). Échéance : 16 octobre 2026 à 00:00.`;
+        badgeLabel = '';
+        badgeTitle = '';
       } else {
         badgeLabel = `${flag} ${city} (${diffStr})`;
         badgeTitle = `Votre fuseau local : ${tz} (${diffStr} par rapport à Montréal). Échéance adaptée à votre heure locale : ${localFull}.`;
@@ -558,21 +582,28 @@
     function updateTimezoneBadges(customTz) {
       const tzInfo = getVisitorTimezoneInfo(cceTargetDate, customTz);
       document.querySelectorAll('.js-cd-tz-badge').forEach(el => {
-        el.textContent = tzInfo.badgeLabel;
-        el.setAttribute('title', tzInfo.badgeTitle);
-        el.setAttribute('aria-label', tzInfo.badgeTitle);
-        if (!tzInfo.isEastern) {
-          el.classList.add('is-adapted');
-        } else {
+        if (tzInfo.isEastern || !tzInfo.badgeLabel) {
+          el.textContent = '';
+          el.removeAttribute('title');
+          el.removeAttribute('aria-label');
+          el.style.display = 'none';
           el.classList.remove('is-adapted');
+        } else {
+          el.textContent = tzInfo.badgeLabel;
+          el.setAttribute('title', tzInfo.badgeTitle);
+          el.setAttribute('aria-label', tzInfo.badgeTitle);
+          el.style.display = 'inline-flex';
+          el.classList.add('is-adapted');
         }
       });
 
       document.querySelectorAll('.js-cd-tz-desc').forEach(el => {
         if (tzInfo.isEastern) {
-          el.innerHTML = `Heure officielle CCE : <strong>16 octobre 2026 à 00:00 (Montréal / HAE)</strong>`;
+          el.innerHTML = '';
+          el.style.display = 'none';
         } else {
           el.innerHTML = `Adapté à votre heure locale : <strong>${tzInfo.localFull}</strong> <span class="tz-offset-tag">${tzInfo.diffStr} vs Montréal</span>`;
+          el.style.display = 'inline-flex';
         }
       });
     }
@@ -598,7 +629,8 @@
       if (!headerSite) return;
 
       const banner = document.createElement('aside');
-      banner.className = 'site-deadline-topbar';
+      banner.className = 'site-deadline-topbar notranslate';
+      banner.setAttribute('translate', 'no');
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Compte à rebours de l’échéance CCE du 16 octobre 2026');
 
@@ -612,7 +644,7 @@
             <span class="site-deadline-title">Échéance CCE · Réponse du Canada (SEM-26-003) dans :</span>
           </div>
           <div class="site-deadline-center">
-            <div class="site-deadline-clock">
+            <div class="site-deadline-clock notranslate" translate="no">
               <span class="site-deadline-val js-cd-days">—</span><span class="site-deadline-unit">j</span>
               <span class="site-deadline-sep">:</span>
               <span class="site-deadline-val js-cd-hours">—</span><span class="site-deadline-unit">h</span>
@@ -623,7 +655,7 @@
             </div>
           </div>
           <div class="site-deadline-right">
-            <span class="site-deadline-tz js-cd-tz-badge" id="site-deadline-tz" title="Fuseau horaire"></span>
+            <span class="site-deadline-tz js-cd-tz-badge" id="site-deadline-tz" style="display: none;"></span>
             <a href="live.html" class="site-deadline-btn">
               <span>Suivre en direct ↗</span>
             </a>
