@@ -52,7 +52,9 @@ const CORE_FILES = [
   'api/v1/corpus.json',
   'api/v1/documents.json',
   'tools.json',
-  'agent-skills.json'
+  'agent-skills.json',
+  '.well-known/security.txt',
+  'security.txt'
 ];
 
 let errors = [];
