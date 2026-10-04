@@ -5,7 +5,7 @@
  * Script de notification temps réel multi-canaux :
  * 1. IndexNow (Bing, ChatGPT Search, Copilot, Seznam, Naver, Yandex)
  * 2. WebSub / PubSubHubbub (Google News, lecteurs RSS, agrégateurs IA)
- * 3. Pings Sitemaps (Google & Bing)
+ * 3. Déclaration sitemaps robots.txt (Google & Bing)
  * 4. Internet Archive Wayback Machine (Instantanés pour Common Crawl et jeux de données LLM)
  */
 
@@ -152,15 +152,9 @@ async function main() {
   const superfeedrHub = await pingWebSub('https://pubsubhubbub.superfeedr.com/hub/publish', `https://${HOST}/feed.xml`);
   console.log(`   ➜ Superfeedr Hub (pubsubhubbub.superfeedr.com) : HTTP ${superfeedrHub.status} ${superfeedrHub.error ? `(${superfeedrHub.error})` : ''}`);
 
-  console.log('\n🗺️ [3/4] Ping des sitemaps (Googlebot & Bingbot)...');
-  const googlePing = await request(`https://www.google.com/ping?sitemap=https://${HOST}/sitemap.xml`);
-  console.log(`   ➜ Google Sitemap Ping : HTTP ${googlePing.status || 200}`);
-
-  const googleNewsPing = await request(`https://www.google.com/ping?sitemap=https://${HOST}/sitemap-news.xml`);
-  console.log(`   ➜ Google News Sitemap Ping : HTTP ${googleNewsPing.status || 200}`);
-
-  const bingPing = await request(`https://www.bing.com/ping?sitemap=https://${HOST}/sitemap.xml`);
-  console.log(`   ➜ Bing Sitemap Ping : HTTP ${bingPing.status || 200}`);
+  console.log('\n🗺️ [3/4] Déclaration des sitemaps (Indexation Google & Bing)...');
+  console.log(`   ➜ Googlebot & Bingbot : Découverte automatique via robots.txt (https://${HOST}/sitemap.xml)`);
+  console.log('   ➜ Remarque : Les anciens endpoints /ping?sitemap= ayant été désactivés par Google (HTTP 404) et Bing (HTTP 410), l\'indexation temps réel est gérée via IndexNow (étape 1), WebSub (étape 2) et Search Console.');
 
   console.log('\n🏛️ [4/4] Archivage Wayback Machine (Instantanés pour Common Crawl / Datasets IA)...');
   for (const pageUrl of WAYBACK_URLS) {
