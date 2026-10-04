@@ -1,9 +1,17 @@
 """Radar Knowledge Graph — vérifie si l'entité « William Guindon » existe dans le Google Knowledge Graph.
 
 Usage :
-  1. Obtenir une clé API (gratuite) : https://console.cloud.google.com/apis/credentials
-     -> Créer un projet -> Activer « Knowledge Graph Search API » -> Créer une clé API
-  2. Lancer :  python3 kg-monitor.py VOTRE_CLE_API
+  Option A (Directement dans le navigateur avec Google APIs Explorer, sans code) :
+    URL : https://developers.google.com/apis-explorer/#p/kgsearch/v1/kgsearch.entities.search
+    Paramètres :
+      - query : William Guindon
+      - languages : fr,en
+      - limit : 5
+
+  Option B (En ligne de commande avec ce script) :
+    1. Obtenir une clé API (gratuite) : https://console.cloud.google.com/apis/credentials
+       -> Créer un projet -> Activer « Knowledge Graph Search API » -> Créer une clé API
+    2. Lancer :  python3 kg-monitor.py VOTRE_CLE_API
 """
 
 import json
