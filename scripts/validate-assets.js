@@ -352,6 +352,74 @@ for (const htmlFile of htmlFiles) {
 
 console.log(`✔ [LIENS OK] ${checkedLinksCount} liens/ressources internes vérifiés sans erreur.`);
 
+// 7. Vérification de la santé SEO & Prévention des baisses de trafic Google Search
+console.log('\nVérification de la santé SEO & Prévention des anomalies Google Search :');
+
+// 7.1 Vérification de robots.txt
+const robotsPath = path.join(__dirname, '..', 'robots.txt');
+if (fs.existsSync(robotsPath)) {
+  const robotsTxt = fs.readFileSync(robotsPath, 'utf8');
+  if (!robotsTxt.includes('Allow: /')) {
+    errors.push('[SEO ERREUR] robots.txt ne contient pas "Allow: /" pour les moteurs de recherche.');
+  }
+  if (!robotsTxt.includes('sitemap.xml')) {
+    errors.push('[SEO ERREUR] robots.txt ne référence pas le sitemap principal sitemap.xml.');
+  }
+  console.log('✔ [ROBOTS OK] robots.txt autorise l\'exploration et déclare les sitemaps.');
+} else {
+  errors.push('[SEO ERREUR] Fichier robots.txt introuvable.');
+}
+
+// 7.2 Vérification de l'absence de noindex accidentel sur les pages publiques
+const PRIVATE_NOINDEX_PAGES = new Set([
+  'admin.html',
+  'console-admin.html',
+  'editeur.html',
+  'studio.html',
+  'reload.html',
+  '404.html'
+]);
+
+let publicPagesAudited = 0;
+let jsonLdBlocksAudited = 0;
+
+for (const htmlFile of htmlFiles) {
+  const htmlPath = path.join(__dirname, '..', htmlFile);
+  const content = fs.readFileSync(htmlPath, 'utf8');
+
+  // Audit noindex
+  if (content.toLowerCase().includes('noindex')) {
+    if (!PRIVATE_NOINDEX_PAGES.has(htmlFile)) {
+      errors.push(`[SEO ALERTE NOINDEX] Page publique contenant "noindex" non autorisée : "${htmlFile}". Risque de désindexation subite.`);
+    }
+  } else if (!PRIVATE_NOINDEX_PAGES.has(htmlFile)) {
+    publicPagesAudited++;
+  }
+
+  // Audit balise canonique sur les pages publiques indexables
+  if (!PRIVATE_NOINDEX_PAGES.has(htmlFile) && htmlFile !== 'google57da095d83ebd58e.html') {
+    if (!content.includes('rel="canonical"')) {
+      errors.push(`[SEO ALERTE CANONICAL] Page publique sans balise rel="canonical" : "${htmlFile}".`);
+    }
+  }
+
+  // Audit syntaxe JSON-LD
+  const jsonLdRegex = /<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi;
+  let ldMatch;
+  while ((ldMatch = jsonLdRegex.exec(content)) !== null) {
+    jsonLdBlocksAudited++;
+    try {
+      JSON.parse(ldMatch[1]);
+    } catch (e) {
+      errors.push(`[JSON-LD SYNTAXE] Erreur de parsing JSON-LD dans "${htmlFile}" : ${e.message}`);
+    }
+  }
+}
+
+console.log(`✔ [NOINDEX OK] ${publicPagesAudited} pages publiques vérifiées sans directive noindex accidentelle.`);
+console.log(`✔ [CANONICAL OK] Balises rel="canonical" vérifiées sur l'ensemble des pages publiques.`);
+console.log(`✔ [JSON-LD OK] ${jsonLdBlocksAudited} blocs de données structurées analysés et 100% valides.`);
+
 if (errors.length > 0) {
   console.error('\n❌ ERREURS DÉTECTÉES :');
   errors.forEach(err => console.error(`  - ${err}`));
