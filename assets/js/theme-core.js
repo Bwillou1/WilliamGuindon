@@ -67,23 +67,6 @@
       const earlyStyle = document.getElementById('wg-anti-frame-early');
       if (earlyStyle) earlyStyle.remove();
     } catch (_) {}
-
-    // Initialisation Microsoft Clarity (si absent de la page)
-    if (!window.clarity) {
-      try {
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];if(y&&y.parentNode){y.parentNode.insertBefore(t,y);}
-        })(window, document, "clarity", "script", "yt5h4n5jhe");
-      } catch (_) {}
-    }
-    // Verrouillage cookieless strict (Zero-Cookie Policy / Loi 25 / RGPD)
-    try {
-      if (typeof window.clarity === "function") {
-        window.clarity("consent", false);
-      }
-    } catch (_) {}
   }
 
   const DEBUG = false;
