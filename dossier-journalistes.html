@@ -776,6 +776,8 @@
         max-height: none !important;
         border-right: none !important;
         padding: 10px 8px !important;
+        visibility: visible !important;
+        overflow-y: auto !important;
       }
       .drive-container[data-mobile-view="tree"] .drive-preview-pane {
         display: none !important;
@@ -1272,6 +1274,11 @@
     }
     if (isCachingProcessRunning) return;
 
+    if (!isSync) {
+      const confirmLocal = confirm("Êtes-vous sûr de vouloir activer le mode local hors-ligne ?\n\nAttention : le téléchargement et la mise en mémoire locale de l'ensemble des 222 pièces probatoires représentent environ 600 Mo d'espace sur votre appareil.");
+      if (!confirmLocal) return;
+    }
+
     isCachingProcessRunning = true;
     cancelCachingRequested = false;
     updateLocalModeUI();
@@ -1571,7 +1578,7 @@
           document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
           item.classList.add("active");
 
-          if (window.innerWidth <= 768) {
+          if (window.innerWidth <= 768 && e.isTrusted) {
             setMobileView("preview");
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
@@ -1966,11 +1973,32 @@
       const w = localStorage.getItem("wg_drive_tree_w") || "290";
       treePane.style.width = w + "px";
     }
-    window.dispatchEvent(new Event("resize"));
+  // Confirmation avant téléchargement des archives complètes (~600 Mo)
+  const btnDownloadAll = document.getElementById("btn-download-all");
+  const btnDownloadTorrent = document.getElementById("btn-download-torrent");
+
+  if (btnDownloadAll) {
+    btnDownloadAll.addEventListener("click", (e) => {
+      const ok = confirm("Êtes-vous sûr de vouloir télécharger l'archive complète des 222 pièces ?\n\nAttention : ce téléchargement volumineux représente environ 600 Mo de données.");
+      if (!ok) {
+        e.preventDefault();
+      }
+    });
   }
 
-  // Par défaut, la barre latérale est visible sur écran normal et repliée sur smartphone
-  toggleTreeSidebar(window.innerWidth < 640);
+  if (btnDownloadTorrent) {
+    btnDownloadTorrent.addEventListener("click", (e) => {
+      const ok = confirm("Êtes-vous sûr de vouloir télécharger le fichier BitTorrent du dossier ?\n\nAttention : l'archive complète des 222 pièces probatoires représente environ 600 Mo de données une fois récupérée.");
+      if (!ok) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  // Sur grand écran, restaurer l'état de la barre latérale
+  if (window.innerWidth >= 769) {
+    toggleTreeSidebar(false);
+  }
 
   if (btnToggleTree) {
     btnToggleTree.addEventListener("click", () => toggleTreeSidebar());
