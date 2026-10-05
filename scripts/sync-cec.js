@@ -86,6 +86,13 @@ async function syncDossierStatus() {
   } else {
     console.log(`[${new Date().toISOString()}] Aucun changement détecté depuis la CCE. status.json inchangé (évite les commits fantômes).`);
   }
+
+  // Synchronisation des dates dynamiques (âge au 3 août, accords CCE à Noël)
+  try {
+    require('./update-dynamic-dates');
+  } catch (e) {
+    console.warn("Notice : Échec synchronisation dates dynamiques :", e.message);
+  }
 }
 
 syncDossierStatus();

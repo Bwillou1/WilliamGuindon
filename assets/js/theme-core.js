@@ -412,10 +412,93 @@
     }
   }
 
+  /**
+   * Actualisation automatique et réactive des dates et âges en temps réel
+   * - 3 août : incrémente automatiquement l'âge de William Guindon (né le 3 août 2011).
+   * - 25 décembre (Noël) : bascule au millésime suivant des accords de la CCE (1994 -> 33 ans dès Noël 2026)
+   *   et du site Stablex (1983).
+   */
+  function initDynamicDates() {
+    try {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth(); // 0 = janv, 7 = août, 11 = déc
+      const currentDay = now.getDate();
+
+      // 1. Âge actuel de William Guindon (né le 3 août 2011)
+      let age = currentYear - 2011;
+      if (currentMonth < 7 || (currentMonth === 7 && currentDay < 3)) {
+        age--;
+      }
+      const isMinor = age < 18;
+
+      // 2. Années CCE (depuis 1994) et Stablex (depuis 1983) avec bascule dès Noël (25 décembre)
+      const isChristmasOrLater = (currentMonth === 11 && currentDay >= 25);
+      let cceRefYear = currentYear;
+      if (isChristmasOrLater) {
+        cceRefYear += 1;
+      }
+      const cceYears = cceRefYear - 1994;
+      const stablexYears = cceRefYear - 1983;
+
+      // A. Éléments avec attributs explicites data-dynamic-*
+      document.querySelectorAll('[data-dynamic-age]').forEach(el => { el.textContent = String(age); });
+      document.querySelectorAll('[data-dynamic-cce-years]').forEach(el => { el.textContent = String(cceYears); });
+      document.querySelectorAll('[data-dynamic-stablex-years]').forEach(el => { el.textContent = String(stablexYears); });
+
+      // B. Mise à jour dans le DOM si les valeurs actuelles ont évolué par rapport aux valeurs de base (15 ans / 32 ans)
+      if (age !== 15 || cceYears !== 32) {
+        const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, li, td, th, span, div.snip, div.notif-item-desc, div.blog-preview-excerpt, blockquote');
+        textElements.forEach(el => {
+          if (el.children.length > 6) return;
+          Array.from(el.childNodes).forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && node.nodeValue) {
+              let val = node.nodeValue;
+              let changed = false;
+
+              if (age !== 15) {
+                // Remplacement ciblé respectant les faits historiques immuables (14 ans lors du dépôt initial, 15 ans décision positive CCE)
+                const newVal = val
+                  .replace(/(William Guindon \()(?:1[5-9]|2\d) ans(\))/g, `$1${age} ans$2`)
+                  .replace(/(aujourd'hui âgé de )(?:1[5-9]|2\d) ans/gi, `$1${age} ans`)
+                  .replace(/(personne mineure de )(?:1[5-9]|2\d) ans/gi, isMinor ? `$1${age} ans` : `personne majeure de ${age} ans`)
+                  .replace(/(sollicitant William Guindon \()(?:1[5-9]|2\d) ans(\))/gi, `$1${age} ans$2`)
+                  .replace(/(militant écologiste québécois \()(?:1[5-9]|2\d) ans(\))/gi, `$1${age} ans$2`)
+                  .replace(/(Statut légal de citoyen mineur \()(?:1[5-9]|2\d) ans(\))/gi, isMinor ? `$1${age} ans$2` : `Statut légal de citoyen majeur (${age} ans)`);
+                if (newVal !== val) {
+                  val = newVal;
+                  changed = true;
+                }
+              }
+
+              if (cceYears !== 32) {
+                const newVal = val
+                  .replace(/\ben (?:3[2-9]|[4-5]\d) ans d'(histoire|existence)\b/gi, `en ${cceYears} ans d'$1`)
+                  .replace(/\bpremier mineur en (?:3[2-9]|[4-5]\d) ans\b/gi, `premier mineur en ${cceYears} ans`)
+                  .replace(/\btout premier mineur en (?:3[2-9]|[4-5]\d) ans\b/gi, `tout premier mineur en ${cceYears} ans`);
+                if (newVal !== val) {
+                  val = newVal;
+                  changed = true;
+                }
+              }
+
+              if (changed) {
+                node.nodeValue = val;
+              }
+            }
+          });
+        });
+      }
+    } catch (e) {
+      console.warn('Notice : Erreur calcul dates dynamiques :', e);
+    }
+  }
+
   function initApp() {
     // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
     let cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
 
+    initDynamicDates();
     initLocalNavigationAccelerator();
     const currentPath = window.location.pathname.toLowerCase();
     const POLICY_FILES = [
