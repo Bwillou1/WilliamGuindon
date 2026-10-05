@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org; connect-src 'self' blob: data: https://archive.org https://*.archive.org; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org; connect-src 'self' blob: data: https://archive.org https://*.archive.org; object-src 'none';">
   <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
   <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces probatoires, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -1973,6 +1973,9 @@
       const w = localStorage.getItem("wg_drive_tree_w") || "290";
       treePane.style.width = w + "px";
     }
+    window.dispatchEvent(new Event("resize"));
+  }
+
   // Confirmation avant téléchargement des archives complètes (~600 Mo)
   const btnDownloadAll = document.getElementById("btn-download-all");
   const btnDownloadTorrent = document.getElementById("btn-download-torrent");
