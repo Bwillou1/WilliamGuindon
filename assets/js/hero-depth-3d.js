@@ -11,6 +11,12 @@
     return;
   }
 
+  // Éviter les tâches longues (TBT) sur mobile : désactiver le shader WebGL lourd sur petit écran / tactile
+  const isMobile = window.innerWidth < 768 || (('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024);
+  if (isMobile) {
+    return;
+  }
+
   function initHero3D() {
     const heroSection = document.getElementById('accueil') || document.getElementById('section-404') || document.querySelector('.hero-immersive') || document.querySelector('.hero-3d-wrap');
     const curtainsContainer = document.getElementById('hero-curtains-canvas') || document.querySelector('.hero-curtains-container');
@@ -322,10 +328,18 @@
     requestAnimationFrame(render);
   }
 
+  function scheduleInit() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initHero3D(), { timeout: 2500 });
+    } else {
+      setTimeout(initHero3D, 200);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHero3D);
+    document.addEventListener('DOMContentLoaded', scheduleInit);
   } else {
-    initHero3D();
+    scheduleInit();
   }
 })();
 
