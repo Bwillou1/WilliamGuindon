@@ -387,8 +387,12 @@
       const anchor = e.target.closest('a');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-      prefetchUrl(href);
+      if (!href || href.startsWith('#')) return;
+      try {
+        const parsed = new URL(href, window.location.href);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
+        prefetchUrl(parsed.href);
+      } catch (_) {}
     }
 
     document.addEventListener('pointerenter', onPointerEnter, { passive: true, capture: true });
@@ -2005,8 +2009,19 @@
         const activate = () => {
           if (container.getAttribute('data-activated') === 'true') return;
           container.setAttribute('data-activated', 'true');
+          const rawSrc = container.getAttribute('data-src') || '';
           const iframe = document.createElement('iframe');
-          iframe.src = container.getAttribute('data-src') || '';
+          try {
+            const parsed = new URL(rawSrc, window.location.href);
+            const trustedHosts = ['www.youtube-nocookie.com', 'www.youtube.com', 'youtube.com'];
+            if (parsed.protocol === 'https:' && trustedHosts.includes(parsed.hostname)) {
+              iframe.src = parsed.href;
+            } else {
+              return;
+            }
+          } catch (_) {
+            return;
+          }
           iframe.title = container.getAttribute('data-title') || 'Vidéo YouTube';
           iframe.style.position = 'absolute';
           iframe.style.top = '0';

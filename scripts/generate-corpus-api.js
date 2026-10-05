@@ -211,6 +211,30 @@ function decodeHtmlEntities(str) {
   });
 }
 
+function stripNonTextBlocks(html) {
+  let out = '';
+  let i = 0;
+  const len = html.length;
+  while (i < len) {
+    if (html.startsWith('<!--', i)) {
+      const end = html.indexOf('-->', i + 4);
+      i = end === -1 ? len : end + 3;
+      continue;
+    }
+    const match = html.slice(i, i + 15).match(/^<(script|style|svg|noscript)\b/i);
+    if (match) {
+      const tag = match[1].toLowerCase();
+      const closeTag = '</' + tag + '>';
+      const end = html.toLowerCase().indexOf(closeTag, i);
+      i = end === -1 ? len : end + closeTag.length;
+      continue;
+    }
+    out += html[i];
+    i++;
+  }
+  return out;
+}
+
 function extractCleanText(html) {
   let clean = html;
 
@@ -218,12 +242,14 @@ function extractCleanText(html) {
   if (mainMatch) {
     clean = mainMatch[0];
   } else {
-    clean = clean.replace(/<head\b[^>]*>[\s\S]*?<\/head>/gi, '');
+    const headEnd = clean.toLowerCase().indexOf('</head>');
+    if (headEnd !== -1) {
+      clean = clean.substring(headEnd + 7);
+    }
   }
 
-  // Suppression des blocs non textuels
-  clean = clean.replace(/<(?:script|style|svg|noscript)\b[^>]*>[\s\S]*?<\/(?:script|style|svg|noscript)>/gi, '');
-  clean = clean.replace(/<!--[\s\S]*?-->/g, '');
+  // Suppression des blocs non textuels et commentaires via analyseur linéaire sécurisé
+  clean = stripNonTextBlocks(clean);
 
   // Conservation de la structure des paragraphes et listes
   clean = clean.replace(/<\/(?:h[1-6]|p|div|section|article|li|tr|blockquote)>/gi, '\n')

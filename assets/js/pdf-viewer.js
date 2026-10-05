@@ -118,6 +118,8 @@
     }
   };
 
+  const ALLOWED_LOCAL_DOCS = new Set(Object.values(DOCS_CATALOG).map(d => d.file));
+
   /**
    * Échappement sécurisé des caractères HTML
    */
@@ -1417,7 +1419,8 @@
         let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
         const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : null;
 
-        const safeFile = getSafeDocUrl(state.currentFile);
+        const rawSafe = getSafeDocUrl(state.currentFile);
+        const safeFile = ALLOWED_LOCAL_DOCS.has(rawSafe) ? rawSafe : DOCS_CATALOG['decision-17-aout-2026'].file;
         const a = document.createElement('a');
         a.href = encodeURI(safeFile);
         a.download = safeFile.split('/').pop();
@@ -1820,7 +1823,14 @@ ER  -
         }, 300);
       };
 
-      printIframe.src = encodeURI(getSafeDocUrl(state.currentFile));
+      const rawPrint = getSafeDocUrl(state.currentFile);
+      const safePrintFile = ALLOWED_LOCAL_DOCS.has(rawPrint) ? rawPrint : null;
+      if (!safePrintFile) {
+        await fallbackPrintAllPages();
+        return;
+      }
+
+      printIframe.src = encodeURI(safePrintFile);
       return;
     } catch (e) {
       console.warn("Échec iframe native print:", e);

@@ -2258,22 +2258,46 @@ document.getElementById('dvClose').onclick=closeDoc;
 function closeDoc(){dv.classList.remove('open');document.body.classList.remove('dvopen')}
 document.getElementById('dvPrint').onclick=function(){document.body.classList.add('dvopen');setTimeout(function(){window.print()},60)};
 window.onafterprint=function(){document.body.classList.remove('dvopen')};
-function sheet(title,meta,body){return '<div class="sheet"><h1>'+title+'</h1><div class="docmeta">'+meta+'</div>'+body+'</div>'}
-function blackSheet(title,meta,noteTxt){var w=[97,88,93,79,96,85,91,76,98,87,82,94,78,90,95,84,92,80,89,96,86,93];var bars='';for(var i=0;i<w.length;i++){bars+='<div class="blackline" style="width:'+w[i]+'%"></div>'}return sheet(title,meta,bars+'<p class="dv-note">'+noteTxt+'</p>')}
+function renderSheet(title,meta,bodyNode){
+  var s=document.createElement('div');s.className='sheet';
+  var h1=document.createElement('h1');h1.textContent=title;s.appendChild(h1);
+  var dm=document.createElement('div');dm.className='docmeta';dm.textContent=meta;s.appendChild(dm);
+  if(bodyNode instanceof Node){s.appendChild(bodyNode)}
+  else if(typeof bodyNode==='string'){var p=document.createElement('p');p.textContent=bodyNode;s.appendChild(p)}
+  return s;
+}
+function renderBlackSheet(title,meta,noteTxt){
+  var w=[97,88,93,79,96,85,91,76,98,87,82,94,78,90,95,84,92,80,89,96,86,93];
+  var wr=document.createElement('div');
+  for(var i=0;i<w.length;i++){var bl=document.createElement('div');bl.className='blackline';bl.style.width=w[i]+'%';wr.appendChild(bl)}
+  var p=document.createElement('p');p.className='dv-note';p.textContent=noteTxt;wr.appendChild(p);
+  return renderSheet(title,meta,wr);
+}
 const DOCS={
- 'cce-form':function(){return sheet('Formulaire — Consentement du mineur','Commission de coopération environnementale · PDF · reconstitution caviardée',document.querySelector('#tv-t1 .doc .doc-body').innerHTML)},
- 'j22':function(){return sheet("Consentement à l'image — personne mineure",'Équipe audiovisuelle · DOCX · reconstitution caviardée',document.querySelector('#tv-t8 .doc .doc-body').innerHTML)},
- 'transferts':function(){return blackSheet('Fwd: Demandes soutenues de William — Campagne d\'échantillonnage Stablex (Annexe 1)','Transferts du 1er juillet 2026 · 2 PDF','Contenu = les courriels du fil « Annexe 1 ».')}
+ 'cce-form':function(){var src=document.querySelector('#tv-t1 .doc .doc-body');return renderSheet('Formulaire — Consentement du mineur','Commission de coopération environnementale · PDF · reconstitution caviardée',src?src.cloneNode(true):null)},
+ 'j22':function(){var src=document.querySelector('#tv-t8 .doc .doc-body');return renderSheet("Consentement à l'image — personne mineure",'Équipe audiovisuelle · DOCX · reconstitution caviardée',src?src.cloneNode(true):null)},
+ 'transferts':function(){return renderBlackSheet('Fwd: Demandes soutenues de William — Campagne d\'échantillonnage Stablex (Annexe 1)','Transferts du 1er juillet 2026 · 2 PDF','Contenu = les courriels du fil « Annexe 1 ».')}
 };
 function openDoc(id){
- var html='';
- if(DOCS[id]){html=DOCS[id]()}
- else if(id&&id.indexOf('msg:')===0){var pr=id.split(':');var tvv=document.getElementById('tv-'+pr[1]);if(tvv){var cs=tvv.querySelectorAll('.card');var c=cs[parseInt(pr[2],10)];
-   html=sheet(tvv.querySelector('h2').textContent,esc(c.querySelector('.l1').textContent+' · '+c.querySelector('.l2').textContent+' · '+c.querySelector('.cdate').textContent),c.querySelector('.card-body').innerHTML)}}
+ var sheetEl=null;
+ if(DOCS[id]){sheetEl=DOCS[id]()}
+ else if(id&&id.indexOf('msg:')===0){
+   var pr=id.split(':');var tvv=document.getElementById('tv-'+pr[1]);
+   if(tvv){
+     var cs=tvv.querySelectorAll('.card');var c=cs[parseInt(pr[2],10)];
+     if(c){
+       var h2=tvv.querySelector('h2');var l1=c.querySelector('.l1');var l2=c.querySelector('.l2');var cdate=c.querySelector('.cdate');var cardBody=c.querySelector('.card-body');
+       var title=h2?h2.textContent:'';
+       var meta=(l1?l1.textContent:'')+' · '+(l2?l2.textContent:'')+' · '+(cdate?cdate.textContent:'');
+       sheetEl=renderSheet(title,meta,cardBody?cardBody.cloneNode(true):null);
+     }
+   }
+ }
  else{return}
+ if(!sheetEl)return;
  dvTitle.innerHTML='<span class="cx">nom du fichier</span>&nbsp;· document reconstitué';
  dvPages.textContent='défilement continu';
- dvStage.innerHTML=html;dv.classList.add('open');dzFit();dvScroll.scrollTop=0;
+ dvStage.replaceChildren(sheetEl);dv.classList.add('open');dzFit();dvScroll.scrollTop=0;
 }
 document.querySelectorAll('.chip[data-doc]').forEach(function(ch){ch.addEventListener('click',function(e){e.stopPropagation();openDoc(ch.getAttribute('data-doc'))})});
 document.querySelectorAll('.docbtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();openDoc(b.getAttribute('data-doc'))})});

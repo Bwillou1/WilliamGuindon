@@ -94,7 +94,7 @@ async function requestApi(params, customHeaders = {}) {
 }
 
 async function loginBot(username, password) {
-  console.log(`Authentification du compte ${username} sur Wikidata...`);
+  console.log('Authentification du compte bot sur Wikidata...');
 
   // Étape 1 : Obtenir un login token
   const tokenData = await requestApi({
@@ -134,7 +134,7 @@ async function loginBot(username, password) {
     });
 
     if (clientLoginRes?.clientlogin?.status !== 'PASS') {
-      throw new Error(`Échec de connexion : ${clientLoginRes?.clientlogin?.message || loginRes?.login?.reason || JSON.stringify(clientLoginRes)}`);
+      throw new Error(`Échec de connexion : ${clientLoginRes?.clientlogin?.message || loginRes?.login?.reason || 'Erreur authentification Wikidata'}`);
     }
     console.log('✔ Authentification réussie (clientlogin) !');
   }
