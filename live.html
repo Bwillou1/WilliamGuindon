@@ -547,7 +547,7 @@
             <span class="live-tz-icon" aria-hidden="true">🌐</span>
             <div>
               <h2 class="live-tz-title">Adaptation selon votre fuseau horaire</h2>
-              <p class="live-tz-subtitle">L'échéance officielle internationale est ancrée à Montréal (Canada), mais s'ajuste automatiquement à votre pays et votre heure locale.</p>
+              <p class="live-tz-subtitle">L'échéance officielle internationale est fixée au fuseau de l'Est (UTC-4), mais s'ajuste automatiquement à votre pays et votre heure locale.</p>
             </div>
           </div>
           <div class="live-tz-status-pill" id="live-user-tz-pill" style="display: none;">
@@ -557,12 +557,12 @@
         </div>
 
         <div class="live-tz-grid">
-          <!-- Carte 1 : Heure officielle CCE (Montréal / Canada) -->
+          <!-- Carte 1 : Heure officielle CCE -->
           <div class="live-tz-box live-tz-box-official">
-            <div class="live-tz-box-badge">🇨🇦 Référence officielle CCE</div>
-            <div class="live-tz-box-name">Montréal / Ottawa (Canada)</div>
+            <div class="live-tz-box-badge">Référence officielle CCE</div>
+            <div class="live-tz-box-name">Heure de l'Est (UTC-4)</div>
             <div class="live-tz-box-time" id="live-cce-box-time">16 octobre 2026 à 00:00:00</div>
-            <div class="live-tz-box-zone">Heure Avancée de l'Est (HAE · UTC-4)</div>
+            <div class="live-tz-box-zone">Fuseau officiel international (UTC-4)</div>
             <div class="live-tz-box-note">Dossier CCE SEM-26-003 · Secrétariat de la Commission de coopération environnementale.</div>
           </div>
 
@@ -585,11 +585,11 @@
             <select id="live-tz-select" class="live-tz-select" aria-label="Choisir un fuseau horaire à afficher">
               <option value="auto">🌐 Automatique (Mon fuseau détecté)</option>
               <optgroup label="Canada &amp; États-Unis">
-                <option value="America/Montreal">🇨🇦 Montréal / Ottawa / Toronto (HAE, UTC-4 — Référence)</option>
-                <option value="America/Halifax">🇨🇦 Halifax / Moncton (HAA, UTC-3 / +1h)</option>
-                <option value="America/Winnipeg">🇨🇦 Winnipeg / Régina (HAC, UTC-5 / -1h)</option>
-                <option value="America/Edmonton">🇨🇦 Calgary / Edmonton (HAR, UTC-6 / -2h)</option>
-                <option value="America/Vancouver">🇨🇦 Vancouver / Victoria (HAP, UTC-7 / -3h)</option>
+                <option value="America/Montreal">Heure de l'Est (UTC-4 — Référence CCE)</option>
+                <option value="America/Halifax">Halifax / Moncton (UTC-3 / +1h)</option>
+                <option value="America/Winnipeg">Winnipeg / Régina (UTC-5 / -1h)</option>
+                <option value="America/Edmonton">Calgary / Edmonton (UTC-6 / -2h)</option>
+                <option value="America/Vancouver">Vancouver / Victoria (UTC-7 / -3h)</option>
                 <option value="America/New_York">🇺🇸 New York / Washington (EDT, UTC-4)</option>
                 <option value="America/Chicago">🇺🇸 Chicago (CDT, UTC-5 / -1h)</option>
                 <option value="America/Denver">🇺🇸 Denver (MDT, UTC-6 / -2h)</option>
@@ -791,10 +791,10 @@
           tz,
           isEastern,
           city: tz.split('/').pop().replace(/_/g, ' '),
-          flag: isEastern ? '🇨🇦' : '🌍',
+          flag: isEastern ? '🌐' : '🌍',
           localFull,
           diffStr: isEastern ? '0h' : '+6h',
-          badgeLabel: `${isEastern ? '🇨🇦' : '🌍'} ${tz.split('/').pop()}`,
+          badgeLabel: `${isEastern ? '🌐' : '🌍'} ${tz.split('/').pop()}`,
           tzAbbr: ''
         };
       }
@@ -812,22 +812,22 @@
       }
 
       if (userBoxName) {
-        userBoxName.textContent = `${tzInfo.flag} ${tzInfo.city} (${tzInfo.tz})`;
+        userBoxName.textContent = tzInfo.flag ? `${tzInfo.flag} ${tzInfo.city} (${tzInfo.tz})` : `${tzInfo.city} (${tzInfo.tz})`;
       }
       if (userBoxTime) {
         userBoxTime.textContent = tzInfo.localFull;
       }
       if (userBoxZone) {
-        userBoxZone.textContent = tzInfo.tzAbbr ? `Fuseau : ${tzInfo.tz} (${tzInfo.tzAbbr})` : `Fuseau : ${tzInfo.tz}`;
+        userBoxZone.textContent = `Fuseau : ${tzInfo.tz}`;
       }
       if (userBoxBadge) {
-        userBoxBadge.textContent = tzInfo.isEastern ? '🇨🇦 Fuseau officiel CCE (Aucun décalage)' : `📍 Votre échéance locale (${tzInfo.diffStr})`;
+        userBoxBadge.textContent = tzInfo.isEastern ? 'Fuseau officiel CCE (Aucun décalage)' : `📍 Votre échéance locale (${tzInfo.diffStr})`;
       }
       if (userBoxNote) {
         if (tzInfo.isEastern) {
-          userBoxNote.innerHTML = `<strong>✓ Aucun décalage :</strong> Vous êtes dans le même fuseau horaire que la Commission de coopération environnementale (Montréal).`;
+          userBoxNote.innerHTML = `<strong>✓ Aucun décalage :</strong> Vous êtes dans le même fuseau horaire que la Commission de coopération environnementale.`;
         } else {
-          userBoxNote.innerHTML = `<strong>⏱️ Décalage : ${tzInfo.diffStr}</strong> par rapport à Montréal (HAE / UTC-4). Lorsque l'échéance officielle sonnera à minuit à Montréal, il sera exactement <strong>${tzInfo.localFull}</strong> chez vous.`;
+          userBoxNote.innerHTML = `<strong>⏱️ Décalage : ${tzInfo.diffStr}</strong> par rapport au fuseau officiel (UTC-4). Lorsque l'échéance officielle sonnera à minuit, il sera exactement <strong>${tzInfo.localFull}</strong> chez vous.`;
         }
       }
     }

@@ -221,7 +221,7 @@ ${cssSecsFrames}    </g>
   <script type="text/javascript">
     <![CDATA[
     (function() {
-      // Date cible : Échéance officielle CCE SEM-26-003 (16 octobre 2026 à 00:00:00 HAE)
+      // Date cible : Échéance officielle CCE SEM-26-003 (16 octobre 2026 à 00:00:00 UTC-4)
       var targetTime = new Date('2026-10-16T00:00:00-04:00').getTime();
       function pad(n) { return (n < 10 ? '0' : '') + n; }
 

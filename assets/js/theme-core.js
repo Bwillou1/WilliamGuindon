@@ -449,7 +449,7 @@
     }
 
     // 0.A Système de détection et d'adaptation du fuseau horaire
-    // Fuseau de référence officiel CCE : Montréal (Heure Avancée de l'Est / HAE · UTC-4)
+    // Fuseau de référence officiel CCE : Heure de l'Est (UTC-4)
     function getVisitorTimezoneInfo(targetMs, customTz) {
       const target = targetMs || cceTargetDate || new Date('2026-10-16T00:00:00-04:00').getTime();
       let tz = customTz || '';
@@ -481,7 +481,7 @@
         }
       };
 
-      const mtlOffset = -240; // Montréal en HAE (UTC-4) le 16 octobre
+      const mtlOffset = -240; // Fuseau de référence CCE (UTC-4) le 16 octobre
       const userOffset = getOffsetMinutes(tz, targetDateObj);
       const diffHours = (userOffset - mtlOffset) / 60;
 
@@ -522,7 +522,7 @@
         });
         localShort = dtfShort.format(targetDateObj);
       } catch (_) {
-        localFull = '16 octobre 2026 à 00:00 HAE';
+        localFull = '16 octobre 2026 à 00:00 (UTC-4)';
         localShort = '16 oct. 00:00';
       }
 
@@ -533,7 +533,7 @@
       // Icône / drapeau contextuel
       let flag = '🌍';
       if (isEastern || tz.startsWith('America/Montreal') || tz.startsWith('America/Toronto')) {
-        flag = '🇨🇦';
+        flag = '🌐';
       } else if (tz === 'Europe/Paris') {
         flag = '🇫🇷';
       } else if (tz === 'Europe/London') {
@@ -543,7 +543,7 @@
       } else if (tz === 'Europe/Zurich') {
         flag = '🇨🇭';
       } else if (tz === 'America/Vancouver' || tz === 'America/Edmonton' || tz === 'America/Winnipeg' || tz === 'America/Halifax') {
-        flag = '🇨🇦';
+        flag = '🌐';
       } else if (tz.startsWith('America/')) {
         flag = '🌎';
       } else if (tz.startsWith('Europe/')) {
@@ -560,7 +560,7 @@
         badgeTitle = '';
       } else {
         badgeLabel = `${flag} ${city} (${diffStr})`;
-        badgeTitle = `Votre fuseau local : ${tz} (${diffStr} par rapport à Montréal). Échéance adaptée à votre heure locale : ${localFull}.`;
+        badgeTitle = `Votre fuseau local : ${tz} (${diffStr} par rapport au fuseau de référence). Échéance adaptée à votre heure locale : ${localFull}.`;
       }
 
       return {
@@ -602,7 +602,7 @@
           el.innerHTML = '';
           el.style.display = 'none';
         } else {
-          el.innerHTML = `Adapté à votre heure locale : <strong>${tzInfo.localFull}</strong> <span class="tz-offset-tag">${tzInfo.diffStr} vs Montréal</span>`;
+          el.innerHTML = `Adapté à votre heure locale : <strong>${tzInfo.localFull}</strong> <span class="tz-offset-tag">${tzInfo.diffStr} vs UTC-4</span>`;
           el.style.display = 'inline-flex';
         }
       });
