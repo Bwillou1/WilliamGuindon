@@ -2238,6 +2238,11 @@
     });
 
     window.downloadCceIcs = generateAndDownloadCceIcs;
+    window.AGENDA_PUBLIC_URLS = {
+      ical: "https://calendar.google.com/calendar/ical/afe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com/public/basic.ics",
+      webcal: "webcal://calendar.google.com/calendar/ical/afe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com/public/basic.ics",
+      google: "https://calendar.google.com/calendar/render?cid=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fafe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com%2Fpublic%2Fbasic.ics"
+    };
 
     initQuickSearch();
     initScrollReveal();
