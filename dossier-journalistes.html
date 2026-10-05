@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org; connect-src 'self' blob: data: https://archive.org https://*.archive.org; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.google.com; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://news.google.com https://*.google.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://news.google.com https://*.google.com https://cloudflareinsights.com; object-src 'none';">
   <title>Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon</title>
   <meta name="description" content="Explorateur documentaire officiel pour journalistes et chercheurs : pièces probatoires, analyses scientifiques et démarches juridiques de la communication citoyenne SEM-26-003.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -811,14 +811,70 @@
 <!-- Google Reader Revenue Manager (SwG Basic) -->
 <script async type="application/javascript" src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
 <script>
-  (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
-    basicSubscriptions.init({
-      type: "NewsArticle",
-      isPartOfType: ["Product"],
-      isPartOfProductId: "CAow9tThCw:openaccess",
-      clientOptions: { theme: "light", lang: "fr" },
+  try {
+    (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
+      try {
+        basicSubscriptions.init({
+          type: "NewsArticle",
+          isPartOfType: ["Product"],
+          isPartOfProductId: "CAow9tThCw:openaccess",
+          clientOptions: { theme: "light", lang: "fr" },
+        });
+      } catch (e) {
+        console.warn("[SwG] init warning:", e);
+      }
     });
-  });
+  } catch (e) {
+    console.warn("[SwG] push warning:", e);
+  }
+
+  // Nettoyage de l'URL si paramètre d'invalidation présent
+  if (window.location.search.includes('_t=')) {
+    try {
+      window.history.replaceState({}, '', window.location.pathname);
+    } catch (e) {}
+  }
+
+  // Synchronisation PWA et écouteur de mise à jour du Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        reg.update();
+      }).catch(() => {});
+    });
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  }
+
+  // Actualisation profonde : purge intégrale des caches navigateur + SW
+  async function forceActualiserDossier() {
+    const btn = document.getElementById("btn-force-refresh");
+    if (btn) {
+      btn.style.opacity = "0.6";
+      const span = btn.querySelector("span");
+      if (span) span.textContent = "Actualisation...";
+    }
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const reg of regs) {
+          await reg.unregister();
+        }
+      }
+    } catch (e) {
+      console.warn("Erreur lors de la purge :", e);
+    }
+    window.location.replace(window.location.pathname + '?_t=' + Date.now());
+  }
 </script>
 </head>
 <body>
@@ -833,6 +889,10 @@
       <button type="button" id="btn-toggle-tree" class="btn-toggle-tree" title="Afficher ou masquer la barre latérale" aria-label="Afficher ou masquer la barre latérale">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
         <span id="btn-toggle-tree-text">Réduire barre</span>
+      </button>
+      <button type="button" id="btn-force-refresh" class="btn-toggle-tree" onclick="forceActualiserDossier()" title="Actualisation profonde : vider les caches et forcer la dernière version" aria-label="Actualisation profonde">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Actualiser</span>
       </button>
       <div class="drive-title">
         <h1 id="title-count" style="font-size:inherit;font-weight:inherit;margin:0;display:inline;line-height:inherit;">Dossier pour Journalistes · Archive SEM-26-003</h1>
@@ -1182,6 +1242,105 @@
 ];
 
   const LOCAL_CACHE_NAME = "wg-sem26003-docs-v1";
+  const VAULT_DB_NAME = "wg_sem26003_vault";
+  const VAULT_DB_VERSION = 1;
+  const VAULT_STORE = "documents";
+
+  // Verrouillage persistant anti-éviction (StorageManager API)
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(granted => {
+      if (granted) {
+        console.log("[Storage] Persistance blindée accordée par le navigateur.");
+      }
+    }).catch(() => {});
+  }
+
+  function openVaultDB() {
+    return new Promise((resolve) => {
+      if (!('indexedDB' in window)) return resolve(null);
+      try {
+        const req = indexedDB.open(VAULT_DB_NAME, VAULT_DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(VAULT_STORE)) {
+            db.createObjectStore(VAULT_STORE, { keyPath: "url" });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      } catch (_) {
+        resolve(null);
+      }
+    });
+  }
+
+  async function saveDocToVault(url, blob, filename) {
+    try {
+      const db = await openVaultDB();
+      if (!db) return false;
+      return new Promise((resolve) => {
+        const tx = db.transaction(VAULT_STORE, "readwrite");
+        const store = tx.objectStore(VAULT_STORE);
+        store.put({
+          url: url,
+          blob: blob,
+          filename: filename || "",
+          savedAt: Date.now()
+        });
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      });
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function getDocFromVault(url) {
+    try {
+      const db = await openVaultDB();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        const tx = db.transaction(VAULT_STORE, "readonly");
+        const store = tx.objectStore(VAULT_STORE);
+        const req = store.get(url);
+        req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function getAllVaultKeys() {
+    try {
+      const db = await openVaultDB();
+      if (!db) return [];
+      return new Promise((resolve) => {
+        const tx = db.transaction(VAULT_STORE, "readonly");
+        const store = tx.objectStore(VAULT_STORE);
+        const req = store.getAllKeys();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function clearVaultDB() {
+    try {
+      const db = await openVaultDB();
+      if (!db) return;
+      return new Promise((resolve) => {
+        const tx = db.transaction(VAULT_STORE, "readwrite");
+        const store = tx.objectStore(VAULT_STORE);
+        store.clear();
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      });
+    } catch (_) {}
+  }
+
   let allValidFiles = [];
   let cachedUrlsSet = new Set();
   let isCachingProcessRunning = false;
@@ -1206,15 +1365,65 @@
   }
 
   async function updateCacheTracking() {
-    if (!('caches' in window)) return;
-    try {
-      const cache = await caches.open(LOCAL_CACHE_NAME);
-      const keys = await cache.keys();
-      cachedUrlsSet = new Set(keys.map(k => k.url));
-      updateLocalModeUI();
-    } catch (e) {
-      console.warn("Erreur lecture cache local:", e);
+    if (navigator.storage && navigator.storage.persist) {
+      try { await navigator.storage.persist(); } catch (_) {}
     }
+
+    let cache = null;
+    let cacheKeys = [];
+    if ('caches' in window) {
+      try {
+        cache = await caches.open(LOCAL_CACHE_NAME);
+        const keys = await cache.keys();
+        cacheKeys = keys.map(k => k.url);
+      } catch (e) {
+        console.warn("Erreur lecture cache local:", e);
+      }
+    }
+
+    const vaultKeys = await getAllVaultKeys();
+    const cacheKeysSet = new Set(cacheKeys);
+    const vaultKeysSet = new Set(vaultKeys);
+
+    // Auto-guérison croisée (Cross-Healing) :
+    // 1. Si présent dans IndexedDB mais absent de CacheStorage (ex: après un deep refresh ou purge cache HTTP)
+    if (cache && vaultKeys.length > 0) {
+      for (const vk of vaultKeys) {
+        if (!cacheKeysSet.has(vk)) {
+          try {
+            const blob = await getDocFromVault(vk);
+            if (blob) {
+              await cache.put(vk, new Response(blob, {
+                headers: {
+                  'Content-Type': 'application/pdf',
+                  'Content-Length': String(blob.size)
+                }
+              }));
+              cacheKeysSet.add(vk);
+            }
+          } catch (_) {}
+        }
+      }
+    }
+
+    // 2. Si présent dans CacheStorage mais absent d'IndexedDB
+    if (cache && cacheKeys.length > 0) {
+      for (const ck of cacheKeys) {
+        if (!vaultKeysSet.has(ck)) {
+          try {
+            const res = await cache.match(ck);
+            if (res) {
+              const blob = await res.blob();
+              await saveDocToVault(ck, blob, ck.split('/').pop());
+              vaultKeysSet.add(ck);
+            }
+          } catch (_) {}
+        }
+      }
+    }
+
+    cachedUrlsSet = new Set([...cacheKeysSet, ...vaultKeysSet]);
+    updateLocalModeUI();
   }
 
   function updateLocalModeUI() {
@@ -1259,7 +1468,7 @@
       if (btnEnable) btnEnable.style.display = "none";
       if (activeGroup) activeGroup.style.display = "inline-flex";
       if (statusText) {
-        statusText.textContent = `Mode Local (${cachedCount}/${totalFiles})`;
+        statusText.textContent = `Mode Local Blindé (${cachedCount}/${totalFiles})`;
       }
     } else {
       if (btnEnable) btnEnable.style.display = "inline-flex";
@@ -1268,15 +1477,19 @@
   }
 
   async function startLocalCaching(isSync = false) {
-    if (!('caches' in window)) {
-      alert("Votre navigateur ne prend pas en charge la mise en cache hors-ligne.");
+    if (!('caches' in window) && !('indexedDB' in window)) {
+      alert("Votre navigateur ne prend pas en charge le stockage local hors-ligne.");
       return;
     }
     if (isCachingProcessRunning) return;
 
     if (!isSync) {
-      const confirmLocal = confirm("Êtes-vous sûr de vouloir activer le mode local hors-ligne ?\n\nAttention : le téléchargement et la mise en mémoire locale de l'ensemble des 222 pièces probatoires représentent environ 600 Mo d'espace sur votre appareil.");
+      const confirmLocal = confirm("Êtes-vous sûr de vouloir activer le mode local hors-ligne ?\n\nAttention : le téléchargement et la mise en mémoire locale sécurisée de l'ensemble des 222 pièces probatoires représentent environ 600 Mo d'espace sur votre appareil.\n\nCe stockage persistant est protégé contre les purges de cookies et les actualisations forcées.");
       if (!confirmLocal) return;
+    }
+
+    if (navigator.storage && navigator.storage.persist) {
+      try { await navigator.storage.persist(); } catch (_) {}
     }
 
     isCachingProcessRunning = true;
@@ -1289,7 +1502,10 @@
     let newCachedCount = 0;
 
     try {
-      const cache = await caches.open(LOCAL_CACHE_NAME);
+      let cache = null;
+      if ('caches' in window) {
+        try { cache = await caches.open(LOCAL_CACHE_NAME); } catch (_) {}
+      }
       const CONCURRENCY = 4;
       let currentIndex = 0;
 
@@ -1304,7 +1520,21 @@
             try {
               const res = await fetch(corsUrl, { mode: 'cors' });
               if (res.ok) {
-                await cache.put(corsUrl, res);
+                const blob = await res.blob();
+
+                // 1. Stockage CacheStorage pour accès instantané
+                if (cache) {
+                  await cache.put(corsUrl, new Response(blob, {
+                    headers: {
+                      'Content-Type': 'application/pdf',
+                      'Content-Length': String(blob.size)
+                    }
+                  }));
+                }
+
+                // 2. Stockage dans le coffre persistant IndexedDB (survit aux purges de cache HTTP)
+                await saveDocToVault(corsUrl, blob, fileObj.name);
+
                 cachedUrlsSet.add(corsUrl);
                 newCachedCount++;
               }
@@ -1316,7 +1546,7 @@
           completed++;
           const percent = Math.round((completed / total) * 100);
           if (progressText) {
-            progressText.textContent = `Mise en cache : ${completed}/${total} (${percent}%)`;
+            progressText.textContent = `Mise en coffre blindé : ${completed}/${total} (${percent}%)`;
           }
         }
       }
@@ -1332,11 +1562,11 @@
       } else if (isSync) {
         showDriveToast(`Synchronisation terminée : ${newCachedCount} nouvelle(s) pièce(s) ajoutée(s).`, "success");
       } else {
-        showDriveToast(`Stockage local complet : ${total} pièces prêtes pour le visionnement direct !`, "success");
+        showDriveToast(`Stockage persistant complet : ${total} pièces archivées dans le coffre local !`, "success");
       }
     } catch (e) {
       console.error("Erreur lors de la mise en cache :", e);
-      showDriveToast("Erreur lors de la mise en cache locale.", "error");
+      showDriveToast("Erreur lors de la mise en coffre locale.", "error");
     } finally {
       isCachingProcessRunning = false;
       await updateCacheTracking();
@@ -1344,19 +1574,24 @@
   }
 
   async function purgeLocalCache() {
-    if (!('caches' in window)) return;
-    const confirmPurge = confirm("Voulez-vous purger l'ensemble des pièces stockées localement dans votre navigateur et repasser en mode cloud distant ?");
-    if (!confirmPurge) return;
+    const confirm1 = confirm("ATTENTION : Vous êtes sur le point de supprimer les ~600 Mo de pièces probatoires stockées sur votre appareil.\n\nVoulez-vous vraiment continuer ?");
+    if (!confirm1) return;
+
+    const confirm2 = confirm("CONFIRMATION DÉFINITIVE : Cette action videra à la fois le cache hors-ligne et le coffre-fort local persistant (IndexedDB).\n\nConfirmer la purge définitive ?");
+    if (!confirm2) return;
 
     try {
       if (currentActiveBlobUrl) {
         URL.revokeObjectURL(currentActiveBlobUrl);
         currentActiveBlobUrl = null;
       }
-      await caches.delete(LOCAL_CACHE_NAME);
+      if ('caches' in window) {
+        await caches.delete(LOCAL_CACHE_NAME);
+      }
+      await clearVaultDB();
       cachedUrlsSet.clear();
       updateLocalModeUI();
-      showDriveToast("Stockage local vidé avec succès. Retour au mode cloud.", "success");
+      showDriveToast("Stockage local et coffre-fort vidés avec succès. Retour au mode cloud.", "success");
     } catch (e) {
       console.error("Erreur vidage cache :", e);
       showDriveToast("Erreur lors de la purge du stockage local.", "error");
@@ -1367,6 +1602,7 @@
     const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
     const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
 
+    // 1. Essai prioritaire depuis CacheStorage
     if ('caches' in window) {
       try {
         const cache = await caches.open(LOCAL_CACHE_NAME);
@@ -1389,6 +1625,40 @@
       } catch (err) {
         console.warn("Erreur lecture ressource depuis cache:", err);
       }
+    }
+
+    // 2. Filet de sécurité indestructible : Récupération depuis le coffre-fort IndexedDB
+    try {
+      const vaultBlob = await getDocFromVault(corsPdfUrl) || await getDocFromVault(fileUrl);
+      if (vaultBlob) {
+        // Restauration immédiate dans CacheStorage en tâche de fond
+        if ('caches' in window) {
+          try {
+            const cache = await caches.open(LOCAL_CACHE_NAME);
+            await cache.put(corsPdfUrl, new Response(vaultBlob, {
+              headers: {
+                'Content-Type': 'application/pdf',
+                'Content-Length': String(vaultBlob.size)
+              }
+            }));
+          } catch (_) {}
+        }
+
+        if (currentActiveBlobUrl) {
+          URL.revokeObjectURL(currentActiveBlobUrl);
+        }
+        currentActiveBlobUrl = URL.createObjectURL(vaultBlob);
+        return {
+          isLocal: true,
+          blob: vaultBlob,
+          blobUrl: currentActiveBlobUrl,
+          rawUrl: fileUrl,
+          corsUrl: corsPdfUrl,
+          effectiveUrl: currentActiveBlobUrl
+        };
+      }
+    } catch (err) {
+      console.warn("Erreur lecture depuis coffre-fort IndexedDB:", err);
     }
 
     return {
@@ -1443,7 +1713,8 @@
   function processFiles(filesData) {
     const treeContainer = document.getElementById("drive-tree");
     if (!treeContainer) return;
-    treeContainer.innerHTML = "";
+    try {
+      treeContainer.innerHTML = "";
 
     // Filtrer les fichiers systèmes, métadonnées internes et dérivés automatiques archive.org
     const validFiles = filesData.filter(item => {

@@ -457,7 +457,11 @@
         localStorage.setItem('wg_last_nuke_ts', String(state.nukeCacheTrigger));
         try { sessionStorage.clear(); } catch (_) {}
         if ('caches' in window) {
-          caches.keys().then(names => { names.forEach(name => caches.delete(name)); });
+          caches.keys().then(names => {
+            names
+              .filter(name => !name.startsWith('wg-sem26003-docs') && !name.startsWith('wg-docs'))
+              .forEach(name => caches.delete(name));
+          });
         }
         if (navigator.serviceWorker) {
           navigator.serviceWorker.getRegistrations().then(regs => { regs.forEach(r => r.unregister()); });

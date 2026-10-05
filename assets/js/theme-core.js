@@ -2593,10 +2593,14 @@
       // 1. Vider le sessionStorage
       try { sessionStorage.clear(); } catch (_) {}
 
-      // 2. Supprimer tous les caches d'assets du CacheStorage (PWA / SW)
+      // 2. Supprimer tous les caches d'assets du CacheStorage (PWA / SW) sans toucher à l'archive documentaire
       if ('caches' in window) {
         const cacheKeys = await caches.keys();
-        await Promise.all(cacheKeys.map(k => caches.delete(k)));
+        await Promise.all(
+          cacheKeys
+            .filter(k => !k.startsWith('wg-sem26003-docs') && !k.startsWith('wg-docs'))
+            .map(k => caches.delete(k))
+        );
       }
 
       // 3. Désenregistrer tous les Service Workers actifs

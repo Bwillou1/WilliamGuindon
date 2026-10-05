@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v88';
+const CACHE_NAME = 'wg-pwa-v89';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -145,7 +145,9 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys
+          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
+          .map((key) => caches.delete(key))
       );
     }).then(() => self.clients.claim())
   );
@@ -271,7 +273,11 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (event.data === 'PURGE_CACHE' || event.data?.action === 'purgeCache') {
-    caches.keys().then((keys) => Promise.all(keys.map(k => caches.delete(k))));
+    caches.keys().then((keys) => Promise.all(
+      keys
+        .filter((key) => !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
+        .map(k => caches.delete(k))
+    ));
   }
   if (event.data === 'CHECK_DEADLINE' || event.data?.action === 'checkDeadline') {
     event.waitUntil(checkDeadlineNotification());
