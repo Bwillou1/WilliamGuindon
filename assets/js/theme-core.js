@@ -78,6 +78,12 @@
         })(window, document, "clarity", "script", "yt5h4n5jhe");
       } catch (_) {}
     }
+    // Verrouillage cookieless strict (Zero-Cookie Policy / Loi 25 / RGPD)
+    try {
+      if (typeof window.clarity === "function") {
+        window.clarity("consent", false);
+      }
+    } catch (_) {}
   }
 
   const DEBUG = false;
