@@ -40,6 +40,12 @@ async function syncDossierStatus() {
     },
     registre_url_fr: REGISTRY_URL_FR,
     registre_url_en: REGISTRY_URL_EN,
+    veille_folo: {
+      url: "https://folo.is/feed/1320323670668607488",
+      rss: "https://folo.is/feed/1320323670668607488/rss",
+      description_fr: "Abonnement public et flux RSS d'alerte lors des modifications directes sur cec.org",
+      description_en: "Public subscription and live alert RSS feed for direct modifications on cec.org"
+    },
     reseaux_sociaux: {
       linkedin: "https://www.linkedin.com/in/william-guindon/",
       facebook: "https://www.facebook.com/williamguindon.officiel",
@@ -77,6 +83,7 @@ async function syncDossierStatus() {
     existingData.etat_fr !== data.etat_fr ||
     existingData.prochaine_echeance !== data.prochaine_echeance ||
     existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr ||
+    JSON.stringify(existingData.veille_folo) !== JSON.stringify(data.veille_folo) ||
     JSON.stringify(existingData.reseaux_sociaux) !== JSON.stringify(data.reseaux_sociaux);
 
   if (hasChanged) {
