@@ -2192,7 +2192,19 @@
         }
       }, 100);
     }
+  } catch (err) {
+    console.error("Erreur d'affichage des pièces:", err);
+    if (treeContainer) {
+      treeContainer.innerHTML = `
+        <div style="padding: 24px 16px; text-align: center; color: #064e3b;">
+          <p style="font-weight: 700; margin-bottom: 8px;">Arborescence temporairement indisponible</p>
+          <p style="font-size: 12px; color: #52796f; margin-bottom: 12px;">Une réinitialisation du cache local peut résoudre ce problème.</p>
+          <button type="button" onclick="forceActualiserDossier()" class="drive-btn-download" style="background: #064e3b; color: white; display: inline-flex; margin: 0 auto; padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600;">Actualiser les pièces</button>
+        </div>
+      `;
+    }
   }
+}
 
   // Tente d'interroger l'API avec un délai de sécurité de 2,5 s avant bascule sur la liste certifiée
   const controller = new AbortController();
