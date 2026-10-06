@@ -1,0 +1,58 @@
+name: "PRERENDER & GEO Quality Guard"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.html"
+      - "data/**"
+      - "feed.xml"
+      - "prerender.mjs"
+      - ".github/workflows/prerender.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: prerender-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prerender-and-verify:
+    name: "Pré-rendu statique & Validation GEO"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: "Installer les dépendances (si applicable)"
+        run: npm ci || npm install --omit=dev
+
+      - name: "Exécuter prerender.mjs"
+        run: node prerender.mjs
+
+      - name: "Valider les assets et les liens"
+        run: npm test
+
+      - name: "Notifier IndexNow et les moteurs IA"
+        run: node scripts/ping-search-ai.js || true
+
+      - name: "Commit et Push des changements de pré-rendu"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Aucune modification de pré-rendu à commiter."
+          else
+            git commit -m "chore(prerender): actualisation du rendu statique et notification IndexNow [skip ci]"
+            git push origin main
+          fi
