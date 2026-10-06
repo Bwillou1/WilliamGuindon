@@ -22,6 +22,8 @@ const ALL_URLS = [
   `https://${HOST}/communiques.html`,
   `https://${HOST}/presse.html`,
   `https://${HOST}/stablex.html`,
+  `https://${HOST}/contamination.html`,
+  `https://${HOST}/loi-93.html`,
   `https://${HOST}/registre.html`,
   `https://${HOST}/live.html`,
   `https://${HOST}/politiques.html`,
@@ -47,6 +49,9 @@ const ALL_URLS = [
 
 const WAYBACK_URLS = [
   `https://${HOST}/`,
+  `https://${HOST}/stablex.html`,
+  `https://${HOST}/contamination.html`,
+  `https://${HOST}/loi-93.html`,
   `https://${HOST}/enquete-partis.html`,
   `https://${HOST}/communiques.html`,
   `https://${HOST}/presse.html`,
