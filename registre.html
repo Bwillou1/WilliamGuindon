@@ -226,9 +226,9 @@
       box-sizing: border-box;
     }
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
@@ -236,8 +236,8 @@
     .portal-container {
       display: flex;
       flex-direction: column;
-      width: 100vw;
-      height: 100vh;
+      min-height: 100vh;
+      width: 100%;
     }
     .portal-header {
       height: 52px;
@@ -328,9 +328,9 @@
       color: #ffffff;
     }
     .portal-frame-wrapper {
-      flex: 1;
+      height: 72vh;
+      min-height: 520px;
       width: 100%;
-      min-height: 0;
       position: relative;
       background-color: var(--bg);
     }
@@ -340,10 +340,127 @@
       border: none;
       display: block;
     }
+    .portal-summary-section {
+      background: var(--bg-bar);
+      border-top: 1px solid var(--line);
+      padding: 48px 24px;
+    }
+    .portal-summary-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .portal-summary-header {
+      margin-bottom: 28px;
+    }
+    .portal-summary-header h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.01em;
+    }
+    .portal-summary-header p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .portal-grid-facts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .portal-fact-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .portal-fact-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .portal-fact-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .portal-fact-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .portal-prose-block {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 28px;
+      line-height: 1.7;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .portal-prose-block h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 14px 0;
+    }
+    .portal-prose-block p {
+      margin: 0 0 14px 0;
+    }
+    .portal-prose-block p:last-child {
+      margin-bottom: 0;
+    }
+    .portal-prose-block ul {
+      margin: 0 0 16px 20px;
+      padding: 0;
+    }
+    .portal-prose-block li {
+      margin-bottom: 8px;
+    }
+    .portal-docs-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .portal-doc-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .portal-doc-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .portal-doc-name {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .portal-doc-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
     .portal-footer {
       background-color: var(--bg-bar);
       border-top: 1px solid var(--line);
-      padding: 6px 16px;
+      padding: 12px 16px;
       font-size: 12px;
       color: var(--text-muted);
       text-align: center;
@@ -366,20 +483,15 @@
       .portal-header {
         padding: 0 10px;
       }
+      .portal-frame-wrapper {
+        height: 60vh;
+        min-height: 420px;
+      }
+      .portal-summary-section {
+        padding: 32px 16px;
+      }
     }
   </style>
-<!-- Google Reader Revenue Manager (SwG Basic) -->
-<script async type="application/javascript" src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
-<script>
-  (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
-    basicSubscriptions.init({
-      type: "NewsArticle",
-      isPartOfType: ["Product"],
-      isPartOfProductId: "CAow9tThCw:openaccess",
-      clientOptions: { theme: "light", lang: "fr" },
-    });
-  });
-</script>
 </head>
 <body>
   <div class="portal-container">
@@ -430,6 +542,82 @@
         allowfullscreen>
       </iframe>
     </main>
+
+    <!-- Synthèse textuelle officielle du dossier pour agents IA, robots d'exploration et accessibilité -->
+    <section class="portal-summary-section" aria-label="Synthèse documentaire officielle du dossier CCE SEM-26-003">
+      <div class="portal-summary-wrap">
+        <header class="portal-summary-header">
+          <h2>Registre Documentaire Officiel · Dossier SEM-26-003</h2>
+          <p>Synthèse officielle et juridique de la communication citoyenne déposée auprès de la Commission de coopération environnementale (CCE / ACEUM) concernant l'expansion du site d'enfouissement de déchets dangereux de Stablex et la protection de la Grande Tourbière de Blainville.</p>
+        </header>
+
+        <div class="portal-grid-facts">
+          <div class="portal-fact-card">
+            <div class="portal-fact-label">Identifiant CCE</div>
+            <div class="portal-fact-val">SEM-26-003</div>
+            <div class="portal-fact-sub">Registre international public</div>
+          </div>
+          <div class="portal-fact-card">
+            <div class="portal-fact-label">Auteur citoyen</div>
+            <div class="portal-fact-val">William Guindon</div>
+            <div class="portal-fact-sub">Mineur agissant en défense de l'environnement</div>
+          </div>
+          <div class="portal-fact-card">
+            <div class="portal-fact-label">Décision CCE</div>
+            <div class="portal-fact-val">17 août 2026</div>
+            <div class="portal-fact-sub">Détermination positive (art. 24.27(2)/(3))</div>
+          </div>
+          <div class="portal-fact-card">
+            <div class="portal-fact-label">Échéance fédérale</div>
+            <div class="portal-fact-val">16 octobre 2026</div>
+            <div class="portal-fact-sub">Réponse obligatoire du Canada (art. 24.27(4))</div>
+          </div>
+        </div>
+
+        <article class="portal-prose-block">
+          <h3>Objet de la procédure et allégations juridiques internationales</h3>
+          <p>Le dossier <strong>SEM-26-003</strong> porte sur l'omission présumée du gouvernement du Canada d'assurer l'application efficace de ses lois environnementales fédérales dans le cadre du projet d'expansion de l'installation d'enfouissement de déchets industriels dangereux de l'entreprise <strong>Stablex Canada inc.</strong> à Blainville (Québec), menaçant directement l'intégrité de la <strong>Grande Tourbière de Blainville</strong>.</p>
+          <p>Le Secrétariat de la CCE a déterminé le 17 août 2026 que la communication citoyenne satisfait à l'ensemble des critères d'admissibilité de l'Accord commercial Canada-États-Unis-Mexique (ACEUM) et a officiellement sommé le Canada de déposer une réponse motivée avant le <strong>16 octobre 2026</strong>. Les allégations centrales retenues visent :</p>
+          <ul>
+            <li><strong>Loi sur les pêches (L.R.C. (1985), ch. F-14, art. 34.4 et 35) :</strong> L'interdiction d'entraîner la mort de poissons ou la détérioration, la perturbation ou la destruction (DPD) de l'habitat du poisson sans autorisation délivrée par le ministre de Pêches et Océans Canada (MPO).</li>
+            <li><strong>Loi sur les pêches (art. 36(3)) :</strong> L'interdiction absolue de déposer des substances nocives dans des eaux où vivent des poissons ou en un lieu où elles risquent de pénétrer dans ces eaux (notamment les risques avérés de contamination par le cadmium, les métaux lourds et les lixiviats industriels).</li>
+            <li><strong>Loi sur les espèces en péril (LEP) :</strong> L'absence d'évaluation adéquate et de mesures de protection visant les espèces protégées et leurs habitats essentiels au sein de la tourbière (couleuvre tachetée, grèbe esclavon, tortue serpentine, monarque).</li>
+            <li><strong>Droit du public et BAPE 371 :</strong> Le non-respect des conclusions du rapport d'enquête 371 du Bureau d'audiences publiques sur l'environnement (BAPE), qui concluait au caractère inacceptable de l'empiètement sur 278 000 m² de tourbière pour l'aménagement de la Cellule 6.</li>
+          </ul>
+        </article>
+
+        <article class="portal-prose-block">
+          <h3>Pièces maîtresses et ressources documentaires probatoires</h3>
+          <p>L'ensemble des pièces versées au dossier international est consultable en libre accès sous formats numériques ouverts :</p>
+          <div class="portal-docs-list">
+            <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" class="portal-doc-item">
+              <span class="portal-doc-name">Détermination positive CCE (26-2-det2_fr.pdf) ↗</span>
+              <span class="portal-doc-desc">Décision formelle du Secrétariat ordonnant la réponse du Canada (17 août 2026).</span>
+            </a>
+            <a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" class="portal-doc-item">
+              <span class="portal-doc-name">Communication révisée (26-3-rsub_fr_redacted.pdf) ↗</span>
+              <span class="portal-doc-desc">Mémoire juridique consolidé de 15 pages de William Guindon devant la CCE.</span>
+            </a>
+            <a href="dossier-journalistes.html" class="portal-doc-item">
+              <span class="portal-doc-name">Explorateur des 222 pièces probatoires ↗</span>
+              <span class="portal-doc-desc">Archive intégrale des preuves scientifiques, analyses d'eau, cartes et démarches administratives.</span>
+            </a>
+            <a href="llms-full.txt" class="portal-doc-item">
+              <span class="portal-doc-name">Corpus textuel intégral (llms-full.txt) ↗</span>
+              <span class="portal-doc-desc">Base documentaire brute complète optimisée pour les modèles de langage et agents IA.</span>
+            </a>
+            <a href="live.html" class="portal-doc-item">
+              <span class="portal-doc-name">Compte à rebours légal du 16 octobre 2026 ↗</span>
+              <span class="portal-doc-desc">Horloge temps réel décomptant l'échéance internationale de réponse du gouvernement fédéral.</span>
+            </a>
+            <a href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html" target="_blank" rel="noopener noreferrer" class="portal-doc-item">
+              <span class="portal-doc-name">Pétition 546 · Vérificateur général du Canada ↗</span>
+              <span class="portal-doc-desc">Pétition environnementale officielle no 546 déposée auprès du Commissaire à l'environnement.</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <footer class="portal-footer">
       <div class="footer-licence-box">

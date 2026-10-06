@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://news.google.com https://*.google.com https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.google.com; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://news.google.com https://*.google.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://news.google.com https://*.google.com https://cloudflareinsights.com; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com; object-src 'none';">
   <title>Dossier Journalistes · Archive SEM-26-003 — William Guindon</title>
   <meta name="description" content="Explorateur documentaire pour journalistes : pièces probatoires, analyses scientifiques et démarches juridiques du dossier citoyen CCE SEM-26-003.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -808,74 +808,6 @@
       .drive-btn-download { padding: 4px 8px; font-size: 11px; }
     }
   </style>
-<!-- Google Reader Revenue Manager (SwG Basic) -->
-<script async type="application/javascript" src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
-<script>
-  try {
-    (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
-      try {
-        basicSubscriptions.init({
-          type: "NewsArticle",
-          isPartOfType: ["Product"],
-          isPartOfProductId: "CAow9tThCw:openaccess",
-          clientOptions: { theme: "light", lang: "fr" },
-        });
-      } catch (e) {
-        console.warn("[SwG] init warning:", e);
-      }
-    });
-  } catch (e) {
-    console.warn("[SwG] push warning:", e);
-  }
-
-  // Nettoyage de l'URL si paramètre d'invalidation présent
-  if (window.location.search.includes('_t=')) {
-    try {
-      window.history.replaceState({}, '', window.location.pathname);
-    } catch (e) {}
-  }
-
-  // Synchronisation PWA et écouteur de mise à jour du Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then((reg) => {
-        reg.update();
-      }).catch(() => {});
-    });
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        refreshing = true;
-        window.location.reload();
-      }
-    });
-  }
-
-  // Actualisation profonde : purge intégrale des caches navigateur + SW
-  async function forceActualiserDossier() {
-    const btn = document.getElementById("btn-force-refresh");
-    if (btn) {
-      btn.style.opacity = "0.6";
-      const span = btn.querySelector("span");
-      if (span) span.textContent = "Actualisation...";
-    }
-    try {
-      if ('caches' in window) {
-        const keys = await caches.keys();
-        await Promise.all(keys.map(k => caches.delete(k)));
-      }
-      if ('serviceWorker' in navigator) {
-        const regs = await navigator.serviceWorker.getRegistrations();
-        for (const reg of regs) {
-          await reg.unregister();
-        }
-      }
-    } catch (e) {
-      console.warn("Erreur lors de la purge :", e);
-    }
-    window.location.replace(window.location.pathname + '?_t=' + Date.now());
-  }
-</script>
 </head>
 <body>
 
