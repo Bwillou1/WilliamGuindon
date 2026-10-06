@@ -384,7 +384,10 @@
 
     // Préchargement instantané au survol de la souris ou au touch
     function onPointerEnter(e) {
-      const anchor = e.target.closest('a');
+      if (!e.target) return;
+      const el = e.target instanceof Element ? e.target : (e.target.parentElement || null);
+      if (!el || typeof el.closest !== 'function') return;
+      const anchor = el.closest('a');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
       if (!href || href.startsWith('#')) return;
@@ -1346,8 +1349,11 @@
       });
 
       nav.addEventListener('click', (e) => {
+        const el = e.target instanceof Element ? e.target : e.target?.parentElement;
+        if (!el || typeof el.closest !== 'function') return;
+
         // Navigation fluide entre panneaux mmenu
-        const trigger = e.target.closest('[data-mmenu-target]');
+        const trigger = el.closest('[data-mmenu-target]');
         if (trigger) {
           e.preventDefault();
           e.stopPropagation();
@@ -1362,7 +1368,7 @@
           return;
         }
 
-        const backBtn = e.target.closest('.mmenu-back-btn');
+        const backBtn = el.closest('.mmenu-back-btn');
         if (backBtn) {
           e.preventDefault();
           e.stopPropagation();
@@ -1376,7 +1382,7 @@
           return;
         }
 
-        const link = e.target.closest('a');
+        const link = el.closest('a');
         if (link && !link.closest('.nav-dropdown-menu') && !link.closest('.nav-lang-menu') && !link.closest('.nav-notif-menu')) {
           const dropdownsToClose = document.querySelectorAll('.nav-dropdown, .nav-notif-dropdown');
           dropdownsToClose.forEach(d => {
@@ -1966,14 +1972,17 @@
     });
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.nav-dropdown')) {
+      const el = e.target instanceof Element ? e.target : (e.target?.parentElement || null);
+      const inDropdown = el && typeof el.closest === 'function' ? el.closest('.nav-dropdown') : null;
+      if (!inDropdown) {
         dropdowns.forEach(d => {
           d.classList.remove('active');
           const btn = d.querySelector('.nav-dropdown-btn');
           if (btn) btn.setAttribute('aria-expanded', 'false');
         });
       }
-      if (!e.target.closest('.nav-notif-dropdown')) {
+      const inNotif = el && typeof el.closest === 'function' ? el.closest('.nav-notif-dropdown') : null;
+      if (!inNotif) {
         notifDropdowns.forEach(d => {
           d.classList.remove('active');
           const btn = d.querySelector('.nav-notif-btn');
@@ -2727,7 +2736,10 @@
 
   // Écouteur global délégué pour le bouton de rechargement/purge complet
   document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('#btn-force-reload, .js-force-reload, [data-action="force-reload"]');
+    if (!e.target) return;
+    const el = e.target instanceof Element ? e.target : (e.target.parentElement || null);
+    if (!el || typeof el.closest !== 'function') return;
+    const trigger = el.closest('#btn-force-reload, .js-force-reload, [data-action="force-reload"]');
     if (trigger) {
       e.preventDefault();
       trigger.style.opacity = '0.6';

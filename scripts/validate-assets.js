@@ -18,6 +18,8 @@ const CORE_FILES = [
   'presse.html',
   'apparitions-publiques.html',
   'stablex.html',
+  'contamination.html',
+  'loi-93.html',
   'flux.html',
   'viewer.html',
   'ai.html',

@@ -1,0 +1,33 @@
+name: "PRERENDER & GEO Quality Guard"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.html'
+      - 'data/**'
+      - 'prerender.mjs'
+      - '.github/workflows/workflow-prerender.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: prerender-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prerender-and-verify:
+    name: "Vérification Prérendu & Garde-fous GEO"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: "Exécuter prerender.mjs"
+        run: node prerender.mjs --ping
