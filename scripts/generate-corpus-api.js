@@ -347,7 +347,7 @@ const documentsArchive = FALLBACK_DOCS.map((docPath, index) => {
     format: ext,
     archive_url: `https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(docPath)}`,
     viewer_url: ext === 'pdf' ? `https://williamguindon.me/viewer.html?file=${encodeURIComponent('https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/' + docPath)}` : `https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(docPath)}`,
-    license: "CC BY-NC-ND 4.0 / Utilisation équitable (art. 29 LDA / Fair Use 17 USC § 107)"
+    license: "Utilisation équitable (art. 29 LDA / Fair Dealing / Fair Use 17 USC § 107) · Droits réservés aux auteurs d'origine"
   };
 });
 
@@ -666,6 +666,27 @@ const apisJsonSpec = {
         {
           type: "WebMCP",
           url: "https://williamguindon.me/.well-known/webmcp/tools.json"
+        }
+      ]
+    },
+    {
+      name: "Public Agenda & Calendar Feed (iCal / Google Calendar)",
+      description: "Flux de calendrier public en direct (norme iCalendar RFC 5545) pour suivre et synchroniser les échéances juridiques, dates de dépôt, points de presse et événements publics de William Guindon.",
+      image: "https://williamguindon.me/icon-192.png",
+      humanURL: "https://williamguindon.me/live.html",
+      baseURL: "https://calendar.google.com/calendar/",
+      properties: [
+        {
+          type: "iCalendar",
+          url: "https://calendar.google.com/calendar/ical/afe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com/public/basic.ics"
+        },
+        {
+          type: "Webcal",
+          url: "webcal://calendar.google.com/calendar/ical/afe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com/public/basic.ics"
+        },
+        {
+          type: "GoogleCalendar",
+          url: "https://calendar.google.com/calendar/render?cid=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fafe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com%2Fpublic%2Fbasic.ics"
         }
       ]
     }

@@ -72,7 +72,9 @@
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf",
       author: "Secrétariat de la CCE",
       citation: "Secrétariat de la CCE. (2026). Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM concernant la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville). Commission de coopération environnementale.",
-      license: "Document public officiel CCE (Art. 24.27)"
+      license: "Document public officiel CCE (Art. 24.27 de l'ACEUM)",
+      isOriginalWork: false,
+      isCCE: true
     },
     'soumission-16-juillet-2026': {
       title: "Communication révisée SEM-26-003 (16 juillet 2026)",
@@ -86,7 +88,9 @@
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmbB7oBxudna3cYDGr5XK2iUhDf3qcvzNHCwEqVAQ8zfaV",
       author: "William Guindon",
       citation: "Guindon, W. (2026). Soumission révisée SEM-26-003 : Protection de la Grande Tourbière de Blainville et conformité environnementale ACEUM (Art. 24.27). Commission de coopération environnementale.",
-      license: "Creative Commons CC BY-NC-ND 4.0 International"
+      license: "Creative Commons CC BY-NC-ND 4.0 International",
+      isOriginalWork: true,
+      isCCE: false
     },
     'decision-3-juin-2026': {
       title: "Décision préliminaire du Secrétariat CCE (3 juin 2026)",
@@ -100,7 +104,9 @@
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmTKmiUFHimaFx2n2KGqSY6L7ccknSazes6Zb2YkgK8Kug",
       author: "Secrétariat de la CCE",
       citation: "Secrétariat de la CCE. (2026). Détermination préliminaire SEM-26-003 en vertu de l'article 24.27(1). Commission de coopération environnementale.",
-      license: "Document public officiel CCE (Art. 24.27)"
+      license: "Document public officiel CCE (Art. 24.27 de l'ACEUM)",
+      isOriginalWork: false,
+      isCCE: true
     },
     'onu-mai-2026': {
       title: "Déposition formelle à l'ONU (Mai 2026)",
@@ -114,7 +120,9 @@
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmQ8dva4AQ98StCWdVZFK7jNGWGbX91PgmPbNyuFTyh3Dx",
       author: "William Guindon",
       citation: "Guindon, W. (2026). Formal Deposition and Urgent Appeal: Human Rights Violations and Denial of Justice – The Stablex Case and Bill 93 in Quebec. Mandate of the UN Special Rapporteur on Toxics and Human Rights.",
-      license: "Creative Commons CC BY-NC-ND 4.0 International"
+      license: "Creative Commons CC BY-NC-ND 4.0 International",
+      isOriginalWork: true,
+      isCCE: false
     }
   };
 
@@ -170,6 +178,170 @@
       // Ignorer URL invalide
     }
     return DOCS_CATALOG['decision-17-aout-2026'].file;
+  }
+
+  let cachedDynamicSha256 = null;
+
+  async function computeCurrentDocSha256() {
+    if (cachedDynamicSha256) return cachedDynamicSha256;
+    try {
+      if (state.pdfDoc && typeof state.pdfDoc.getData === 'function') {
+        const rawBytes = await state.pdfDoc.getData();
+        const hashBuf = await crypto.subtle.digest('SHA-256', rawBytes);
+        const hashHex = Array.from(new Uint8Array(hashBuf))
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('');
+        cachedDynamicSha256 = hashHex;
+        return hashHex;
+      }
+    } catch (e) {
+      console.warn("Calcul SHA-256 dynamique non disponible:", e);
+    }
+    return null;
+  }
+
+  /**
+   * Résout les métadonnées juridiques et documentaires réelles d'un fichier.
+   * RÈGLE JURIDIQUE ABSOLUE : Seules les soumissions rédigées par William Guindon
+   * (ex. SEM-26-003, déposition ONU) sont sous sa licence CC BY-NC-ND 4.0.
+   * Toutes les autres pièces de l'archive (rapports BAPE, mémoires tiers, articles
+   * de presse, décisions de la CCE, lois) sont des pièces documentaires versées
+   * au dossier public d'intérêt général (fair dealing / art. 29 LDA).
+   */
+  function resolveDocInfo(fileUrl, pdfInfo = {}) {
+    const rawUrl = fileUrl || state.currentFile || '';
+    const cleanUrl = rawUrl.trim();
+    
+    // 1. Recherche dans le catalogue prédéfini
+    const currentDocKey = Object.keys(DOCS_CATALOG).find(k => {
+      const catFile = DOCS_CATALOG[k].file;
+      return cleanUrl === catFile || cleanUrl.endsWith(catFile);
+    });
+    
+    if (currentDocKey && DOCS_CATALOG[currentDocKey]) {
+      const doc = DOCS_CATALOG[currentDocKey];
+      return {
+        key: currentDocKey,
+        title: doc.title,
+        file: doc.file,
+        date: doc.date,
+        pages: state.totalPages || doc.pages,
+        type: doc.type,
+        sha256: doc.sha256,
+        citation: doc.citation,
+        author: doc.author,
+        license: doc.license,
+        isOriginalWork: !!doc.isOriginalWork,
+        isCCE: !!doc.isCCE
+      };
+    }
+
+    // 2. Document hors catalogue (pièces d'archive, études, mémoires tiers, etc.)
+    const decodedUrl = decodeURIComponent(cleanUrl);
+    const fileName = decodedUrl.split('/').pop().replace(/\?.*$/, '') || 'document.pdf';
+    const baseName = fileName.replace(/\.pdf$/i, '');
+
+    const isOriginalWork = false;
+    let isCCE = false;
+    let author = "Auteur tiers (Dossier public SEM-26-003)";
+    let docType = "Pièce documentaire probatoire";
+    let license = "Archive publique · Droits réservés aux auteurs d'origine (art. 29 LDA / Fair Dealing)";
+    let year = "2026";
+    let cleanTitle = baseName;
+
+    // Détection d'année dans le nom de fichier
+    const yearMatch = fileName.match(/(?:19|20)\d{2}/);
+    if (yearMatch) {
+      year = yearMatch[0];
+    }
+
+    // Identification de la source / organisme selon le nom de fichier
+    if (/26-[23]-|det2|det_|cec\.org/i.test(fileName)) {
+      isCCE = true;
+      author = "Secrétariat de la CCE";
+      docType = "Décision / Document officiel public CCE";
+      license = "Document officiel du registre public CCE (Art. 24.27 de l'ACEUM)";
+      cleanTitle = `Décision officielle CCE — ${baseName}`;
+    } else if (/LeDevoir|Le_Devoir/i.test(fileName)) {
+      author = "Le Devoir";
+      docType = "Article de presse / Enquête d'intérêt public";
+      license = "Droits réservés au journal Le Devoir · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/LaPresse|La_Presse/i.test(fileName)) {
+      author = "La Presse";
+      docType = "Article de presse / Enquête d'intérêt public";
+      license = "Droits réservés à La Presse · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/Radio[-_]Canada|RC/i.test(fileName)) {
+      author = "Radio-Canada";
+      docType = "Reportage journalistique d'intérêt public";
+      license = "Droits réservés à Radio-Canada · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/TVA/i.test(fileName)) {
+      author = "TVA Nouvelles";
+      docType = "Reportage journalistique d'information";
+      license = "Droits réservés à TVA Nouvelles · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/JDM|Journal_de_Montreal/i.test(fileName)) {
+      author = "Le Journal de Montréal";
+      docType = "Article de presse";
+      license = "Droits réservés au Journal de Montréal · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/BAPE|rapport371|371/i.test(fileName)) {
+      author = "Bureau d'audiences publiques sur l'environnement (BAPE)";
+      docType = "Rapport d'enquête et d'audience publique n° 371";
+      license = "Document public officiel (Gouvernement du Québec)";
+      cleanTitle = "Rapport 371 du BAPE — Lieux d'élimination de résidus industriels stabilisés";
+    } else if (/BIFFE|Memoire/i.test(fileName)) {
+      author = "Coalition citoyenne & experts du milieu (BIFFE)";
+      docType = "Mémoire citoyen d'audit et d'analyse technique";
+      license = "Mémoire public déposé à l'Assemblée nationale · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/EauSecours|Eau_Secours/i.test(fileName)) {
+      author = "Eau Secours";
+      docType = "Plainte environnementale d'intérêt public";
+      license = "Document d'alerte citoyenne · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/UQAM|COBAMIL/i.test(fileName)) {
+      author = "UQAM / COBAMIL";
+      docType = "Étude scientifique hydrogéologique";
+      license = "Rapport de recherche universitaire · Utilisation équitable (art. 29 LDA)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (/Sentinel|NDVI/i.test(fileName)) {
+      author = "Programme Copernicus (ESA / Union Européenne)";
+      docType = "Données d'observation satellite ouvertes (Sentinel-2)";
+      license = "Données ouvertes Copernicus (Open Access)";
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    } else if (pdfInfo && pdfInfo.Title && pdfInfo.Title.length > 3) {
+      cleanTitle = pdfInfo.Title;
+      if (pdfInfo.Author && !/William Guindon/i.test(pdfInfo.Author)) {
+        author = pdfInfo.Author;
+      }
+    } else {
+      cleanTitle = baseName.replace(/_/g, ' ').replace(/BIFFE AUDIT/gi, '').trim();
+    }
+
+    let citation = '';
+    if (isCCE) {
+      citation = `Secrétariat de la CCE. (${year}). ${cleanTitle}. Procédure citoyenne SEM-26-003. Commission de coopération environnementale (CCE / ACEUM).`;
+    } else {
+      citation = `${author} (${year}). ${cleanTitle}. Pièce versée au dossier public SEM-26-003 (Enfouissement de matières dangereuses à Blainville). Archive publique consultable sur williamguindon.me.`;
+    }
+
+    return {
+      key: null,
+      title: cleanTitle || fileName,
+      file: cleanUrl,
+      date: year,
+      pages: state.totalPages || 1,
+      type: docType,
+      sha256: null,
+      citation: citation,
+      author: author,
+      license: license,
+      isOriginalWork: isOriginalWork,
+      isCCE: isCCE
+    };
   }
 
   // État de l'application
@@ -255,14 +427,24 @@
     mobileBtnMode: document.getElementById('mobile-btn-mode'),
     mobileBtnFit: document.getElementById('mobile-btn-fit'),
     shortcutsDialog: document.getElementById('shortcuts-dialog'),
-    // Modale de Licence CC BY-NC-ND 4.0 & Téléchargement
+    // Modale de Notice documentaire & Téléchargement
     licenseDialog: document.getElementById('license-download-dialog'),
     btnLicenseDialogClose: document.getElementById('btn-license-dialog-close'),
+    licenseBadgePill: document.getElementById('license-badge-pill'),
+    licenseDialogHeading: document.getElementById('license-dialog-heading'),
     licenseDocTitle: document.getElementById('license-doc-title'),
     licenseDocMeta: document.getElementById('license-doc-meta'),
+    licenseTermsCard: document.getElementById('license-terms-card'),
+    licenseTermsHeader: document.getElementById('license-terms-header'),
+    licenseTermsTitle: document.getElementById('license-terms-title'),
+    licenseTermsText: document.getElementById('license-terms-text'),
+    licenseAiClause: document.getElementById('license-ai-clause'),
     licenseDocHash: document.getElementById('license-doc-hash'),
     licenseCitationText: document.getElementById('license-citation-text'),
+    licenseCitationLabel: document.getElementById('license-citation-label'),
     licenseCheckbox: document.getElementById('license-checkbox'),
+    licenseCheckboxLabel: document.getElementById('license-checkbox-label'),
+    licenseCheckboxText: document.getElementById('license-checkbox-text'),
     btnConfirmDownload: document.getElementById('btn-confirm-download'),
     btnCopyShareLink: document.getElementById('btn-copy-share-link'),
     btnCopyHash: document.getElementById('btn-copy-hash'),
@@ -358,6 +540,7 @@
    */
   async function loadPDF(url, startPage = 1) {
     showLoading("Chargement du document haute fidélité...");
+    cachedDynamicSha256 = null;
     const safeUrl = getSafeDocUrl(url);
     state.currentFile = safeUrl;
 
@@ -884,20 +1067,29 @@
     try {
       const metadata = await state.pdfDoc.getMetadata();
       const info = metadata.info || {};
-      let docKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
-      let catalogItem = docKey ? DOCS_CATALOG[docKey] : null;
+      const doc = resolveDocInfo(state.currentFile, info);
+      const sha = doc.sha256 || cachedDynamicSha256 || '';
       
+      let licenseBadge = '';
+      if (doc.isOriginalWork) {
+        licenseBadge = `<span style="background:rgba(34,197,94,0.15); color:var(--accent); font-weight:700; padding:2px 6px; border-radius:4px; font-size:11px;">CC BY-NC-ND 4.0 (Auteur: William Guindon)</span>`;
+      } else if (doc.isCCE) {
+        licenseBadge = `<span style="background:rgba(14,165,233,0.15); color:#0284c7; font-weight:700; padding:2px 6px; border-radius:4px; font-size:11px;">Document public officiel CCE (Art. 24.27)</span>`;
+      } else {
+        licenseBadge = `<span style="background:rgba(100,116,139,0.15); color:var(--text); font-weight:600; padding:2px 6px; border-radius:4px; font-size:11px;">Pièce versée au dossier public (art. 29 LDA)</span>`;
+      }
+
       let html = `
-        <tr><td class="label">Titre :</td><td class="value">${info.Title || document.title}</td></tr>
+        <tr><td class="label">Titre :</td><td class="value">${escapeHTML(doc.title || info.Title || document.title)}</td></tr>
         <tr><td class="label">Dossier :</td><td class="value"><strong>SEM-26-003</strong> (CCE / ACEUM)</td></tr>
         <tr><td class="label">Pages :</td><td class="value">${state.totalPages}</td></tr>
         <tr><td class="label">Format :</td><td class="value">PDF Original Vectoriel (HiDPI)</td></tr>
-        <tr><td class="label">Créateur :</td><td class="value">${info.Creator || 'Secrétariat CCE / William Guindon'}</td></tr>
-        <tr><td class="label">Date :</td><td class="value">${info.CreationDate ? formatPDFDate(info.CreationDate) : '2026'}</td></tr>
-        <tr><td class="label">Licence :</td><td class="value"><span style="background:rgba(34,197,94,0.15); color:var(--accent); font-weight:700; padding:2px 6px; border-radius:4px; font-size:11px;">CC BY-NC-ND 4.0</span></td></tr>
-        ${catalogItem && catalogItem.sha256 ? `<tr><td class="label">SHA-256 :</td><td class="value"><code style="font-size:11px; word-break:break-all; background:rgba(0,0,0,0.06); padding:2px 4px; border-radius:3px;">${catalogItem.sha256}</code></td></tr>` : ''}
-        ${catalogItem ? `<tr><td class="label">Miroir Git (Raw) :</td><td class="value"><a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/${catalogItem.file}" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:700;">Ouvrir la copie certifiée Git ↗</a></td></tr>` : ''}
-        <tr><td class="label">Fichier local :</td><td class="value"><a href="${state.currentFile}" download style="color:var(--accent); font-weight:700;">Télécharger le binaire original ↗</a></td></tr>
+        <tr><td class="label">Créateur / Auteur :</td><td class="value">${escapeHTML(doc.author)}</td></tr>
+        <tr><td class="label">Date :</td><td class="value">${info.CreationDate ? formatPDFDate(info.CreationDate) : escapeHTML(doc.date)}</td></tr>
+        <tr><td class="label">Licence / Statut :</td><td class="value">${licenseBadge}</td></tr>
+        ${sha ? `<tr><td class="label">SHA-256 :</td><td class="value"><code style="font-size:11px; word-break:break-all; background:rgba(0,0,0,0.06); padding:2px 4px; border-radius:3px;">${escapeHTML(sha)}</code></td></tr>` : ''}
+        ${doc.key && DOCS_CATALOG[doc.key] ? `<tr><td class="label">Miroir Git (Raw) :</td><td class="value"><a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/${DOCS_CATALOG[doc.key].file}" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:700;">Ouvrir la copie certifiée Git ↗</a></td></tr>` : ''}
+        <tr><td class="label">Fichier :</td><td class="value"><a href="${state.currentFile}" download style="color:var(--accent); font-weight:700;">Télécharger le binaire original ↗</a></td></tr>
       `;
       dom.docMetaTable.innerHTML = html;
     } catch (e) {
@@ -1048,20 +1240,45 @@
 
   function renderDocInfoPane() {
     if (!dom.paneInfo) return;
-    const doc = getCurrentDocInfo();
+    const doc = resolveDocInfo(state.currentFile);
+    const sha = doc.sha256 || cachedDynamicSha256 || '';
+
+    let licenseLine = '';
+    let authorLabel = 'Auteur :';
+    let btnText = 'Notice documentaire &amp; Téléchargement';
+
+    if (doc.isOriginalWork) {
+      licenseLine = '<div><strong>Licence :</strong> Creative Commons CC BY-NC-ND 4.0 International</div>';
+      authorLabel = 'Auteur :';
+      btnText = 'Licence d\'auteur &amp; Téléchargement';
+    } else if (doc.isCCE) {
+      licenseLine = '<div><strong>Statut :</strong> Document public officiel CCE (Procédure SEM-26-003)</div>';
+      authorLabel = 'Émetteur :';
+      btnText = 'Document officiel CCE &amp; Téléchargement';
+    } else {
+      licenseLine = `<div><strong>Statut juridique :</strong> ${escapeHTML(doc.license)}</div>`;
+      authorLabel = 'Source / Auteur :';
+      btnText = 'Notice documentaire &amp; Téléchargement';
+    }
+
     dom.paneInfo.innerHTML = `
       <div style="padding: 16px;">
         <h4 style="font-size: 1.05rem; margin: 0 0 12px; color: var(--text);">${escapeHTML(doc.title)}</h4>
         <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 16px;">
-          <div><strong>Auteur :</strong> ${escapeHTML(doc.author)}</div>
+          <div><strong>${authorLabel}</strong> ${escapeHTML(doc.author)}</div>
           <div><strong>Date :</strong> ${escapeHTML(doc.date || '2026')}</div>
           <div><strong>Pages :</strong> ${state.totalPages}</div>
-          <div><strong>Licence :</strong> CC BY-NC-ND 4.0 International</div>
-          <div style="margin-top: 8px;"><strong>Empreinte SHA-256 :</strong></div>
-          <code style="font-size: 11px; word-break: break-all; color: var(--accent); background: var(--bg-card); padding: 4px 6px; border-radius: 4px; display: block; margin-top: 4px;">${escapeHTML(doc.sha256)}</code>
+          ${licenseLine}
+          ${sha ? `
+            <div style="margin-top: 8px;"><strong>Empreinte SHA-256 :</strong></div>
+            <code style="font-size: 11px; word-break: break-all; color: var(--accent); background: var(--bg-card); padding: 4px 6px; border-radius: 4px; display: block; margin-top: 4px;">${escapeHTML(sha)}</code>
+          ` : `
+            <div style="margin-top: 8px;"><strong>Empreinte SHA-256 :</strong></div>
+            <span style="font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 4px;">Calculable au téléchargement du binaire</span>
+          `}
         </div>
         <div style="background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
-          <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 6px;">Citation Académique &amp; Juridique</div>
+          <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 6px;">Référence &amp; Citation Recommandée</div>
           <p style="font-size: 0.8rem; margin: 0 0 10px; line-height: 1.5; color: var(--text);">${escapeHTML(doc.citation)}</p>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
             <button type="button" class="btn-copy-mini" id="sidebar-btn-copy-cit">Copier</button>
@@ -1070,7 +1287,7 @@
           </div>
         </div>
         <button type="button" class="btn btn-primary" id="sidebar-btn-full-license" style="width: 100%; font-size: 0.88rem; padding: 8px 12px;">
-          Certificat de licence &amp; Téléchargement
+          ${btnText}
         </button>
       </div>
     `;
@@ -1470,19 +1687,21 @@
       });
     }
 
-    // Gestionnaires de la modale de licence & téléchargement (pour la soumission de William)
+    // Gestionnaires de la modale de notice & téléchargement
     if (dom.btnConfirmDownload) {
       dom.btnConfirmDownload.addEventListener('click', () => {
+        const docInfo = resolveDocInfo(state.currentFile);
+
         if (dom.licenseCheckbox && !dom.licenseCheckbox.checked) {
-          showToast("Veuillez accepter la licence CC BY-NC-ND 4.0 pour continuer.");
+          const warnMsg = docInfo.isOriginalWork
+            ? "Veuillez accepter la licence CC BY-NC-ND 4.0 pour continuer."
+            : "Veuillez accepter la notice de diffusion pour continuer.";
+          showToast(warnMsg, true);
           return;
         }
 
-        let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
-        const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : null;
-
         const rawSafe = getSafeDocUrl(state.currentFile);
-        const safeFile = ALLOWED_LOCAL_DOCS.has(rawSafe) ? rawSafe : DOCS_CATALOG['decision-17-aout-2026'].file;
+        const safeFile = ALLOWED_LOCAL_DOCS.has(rawSafe) ? rawSafe : state.currentFile;
         const downloadName = formatDocumentFileName(safeFile);
         const a = document.createElement('a');
         a.href = encodeURI(safeFile);
@@ -1491,17 +1710,30 @@
         a.click();
         document.body.removeChild(a);
 
-        // Copie de l'empreinte & citation dans le presse-papiers
-        const attributionText = docInfo 
-          ? `[Document Officiel CCE SEM-26-003]\nTitre: ${docInfo.title}\nAuteur: ${docInfo.author}\nLicence: ${docInfo.license}\nEmpreinte SHA-256: ${docInfo.sha256}\nCitation: ${docInfo.citation}\nSource officielle: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`
-          : `William Guindon · Dossier CCE SEM-26-003 · https://williamguindon.me`;
+        // Copie de l'empreinte & citation dans le presse-papiers avec attribution respectueuse
+        const sha = docInfo.sha256 || cachedDynamicSha256 || '';
+        let attributionText = '';
+        if (docInfo.isOriginalWork) {
+          attributionText = `[Document Officiel CCE SEM-26-003]\nTitre: ${docInfo.title}\nAuteur: William Guindon\nLicence: Creative Commons CC BY-NC-ND 4.0 International\n${sha ? 'Empreinte SHA-256: ' + sha + '\n' : ''}Citation: ${docInfo.citation}\nSource officielle: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`;
+        } else if (docInfo.isCCE) {
+          attributionText = `[Document Officiel du Registre CCE SEM-26-003]\nTitre: ${docInfo.title}\nÉmetteur: Secrétariat de la CCE\nStatut: Document public officiel (Art. 24.27 ACEUM)\n${sha ? 'Empreinte SHA-256: ' + sha + '\n' : ''}Citation: ${docInfo.citation}\nConsultable sur: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`;
+        } else {
+          attributionText = `[Pièce Documentaire · Dossier Public SEM-26-003]\nTitre: ${docInfo.title}\nAuteur / Source: ${docInfo.author}\nStatut juridique: ${docInfo.license}\n${sha ? 'Empreinte SHA-256: ' + sha + '\n' : ''}Citation: ${docInfo.citation}\nConsultable sur: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`;
+        }
 
         if (navigator.clipboard) {
           navigator.clipboard.writeText(attributionText).catch(() => {});
         }
 
         if (dom.licenseDialog) dom.licenseDialog.close();
-        showToast("Soumission téléchargée · Empreinte SHA-256 certifiée !");
+
+        if (docInfo.isOriginalWork) {
+          showToast("Soumission téléchargée · Empreinte SHA-256 certifiée !");
+        } else if (docInfo.isCCE) {
+          showToast("Décision CCE téléchargée · Registre officiel SEM-26-003");
+        } else {
+          showToast("Document téléchargé · Pièce du dossier public SEM-26-003");
+        }
       });
     }
 
@@ -1519,22 +1751,10 @@
       dom.btnCopyCitation.addEventListener('click', () => {
         if (dom.licenseCitationText && navigator.clipboard) {
           navigator.clipboard.writeText(dom.licenseCitationText.textContent).then(() => {
-            showToast("Citation académique copiée !");
+            showToast("Référence / Citation copiée !");
           });
         }
       });
-    }
-
-    function getCurrentDocInfo() {
-      const key = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
-      return (key && DOCS_CATALOG[key]) ? DOCS_CATALOG[key] : {
-        title: state.currentFile.split('/').pop(),
-        file: state.currentFile,
-        author: "William Guindon",
-        date: "2026",
-        sha256: "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710",
-        citation: "Guindon, W. (2026). Document officiel SEM-26-003. Commission de coopération environnementale."
-      };
     }
 
     function downloadFile(filename, content, mimeType) {
@@ -1551,15 +1771,21 @@
 
     if (dom.btnExportBibtex) {
       dom.btnExportBibtex.addEventListener('click', () => {
-        const doc = getCurrentDocInfo();
+        const doc = resolveDocInfo(state.currentFile);
         const bibKey = (doc.file ? doc.file.split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_') : 'sem26003_doc');
-        const bibContent = `@misc{${bibKey}_2026,
-  author = {${doc.author || 'Guindon, William'}},
-  title = {${doc.title || 'Document officiel SEM-26-003'}},
-  year = {2026},
-  howpublished = {Commission de coopération environnementale (CCE / ACEUM)},
+        const sha = doc.sha256 || cachedDynamicSha256 || '';
+        const authorField = doc.isOriginalWork ? 'Guindon, William' : doc.author;
+        const howPub = doc.isCCE
+          ? 'Commission de coopération environnementale (CCE / ACEUM)'
+          : 'Dossier documentaire public SEM-26-003 (CCE / ACEUM)';
+
+        const bibContent = `@misc{${bibKey}_${doc.date || 2026},
+  author = {${authorField}},
+  title = {${doc.title}},
+  year = {${doc.date || 2026}},
+  howpublished = {${howPub}},
   url = {https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}},
-  note = {Dossier CCE SEM-26-003 · Empreinte SHA-256: ${doc.sha256 || ''}}
+  note = {${doc.license}${sha ? ' · SHA-256: ' + sha : ''}}
 }
 `;
         downloadFile(`${bibKey}.bib`, bibContent, 'application/x-bibtex;charset=utf-8');
@@ -1569,16 +1795,18 @@
 
     if (dom.btnExportRis) {
       dom.btnExportRis.addEventListener('click', () => {
-        const doc = getCurrentDocInfo();
+        const doc = resolveDocInfo(state.currentFile);
         const risKey = (doc.file ? doc.file.split('/').pop().replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_') : 'sem26003_doc');
+        const sha = doc.sha256 || cachedDynamicSha256 || '';
+        const authorField = doc.isOriginalWork ? 'Guindon, William' : doc.author;
         const risContent = `TY  - ELEC
-AU  - ${doc.author || 'Guindon, William'}
-TI  - ${doc.title || 'Document officiel SEM-26-003'}
-PY  - 2026
+AU  - ${authorField}
+TI  - ${doc.title}
+PY  - ${doc.date || 2026}
 PB  - Commission de coopération environnementale
 UR  - https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}
 M3  - Dossier CCE SEM-26-003
-N1  - Empreinte SHA-256: ${doc.sha256 || ''}
+N1  - ${doc.license}${sha ? ' · Empreinte SHA-256: ' + sha : ''}
 ER  - 
 `;
         downloadFile(`${risKey}.ris`, risContent, 'application/x-research-info-systems;charset=utf-8');
@@ -1594,9 +1822,17 @@ ER  -
 
     if (dom.btnCopyShareLink) {
       dom.btnCopyShareLink.addEventListener('click', () => {
+        const docInfo = resolveDocInfo(state.currentFile);
         const shareUrl = `${window.location.origin}${window.location.pathname}?file=${encodeURIComponent(state.currentFile)}#page=${state.currentPage}`;
-        const citation = dom.licenseCitationText ? dom.licenseCitationText.textContent : '';
-        const fullShare = `${citation}\nSource: ${shareUrl}\nLicence: Creative Commons CC BY-NC-ND 4.0 (Auteur: William Guindon)`;
+        const citation = dom.licenseCitationText ? dom.licenseCitationText.textContent : docInfo.citation;
+        let fullShare = '';
+        if (docInfo.isOriginalWork) {
+          fullShare = `${citation}\nSource: ${shareUrl}\nLicence: Creative Commons CC BY-NC-ND 4.0 (Auteur: William Guindon)`;
+        } else if (docInfo.isCCE) {
+          fullShare = `${citation}\nSource: ${shareUrl}\nStatut: Document public officiel CCE (SEM-26-003)`;
+        } else {
+          fullShare = `${citation}\nSource: ${shareUrl}\nNotice: Pièce documentaire versée au dossier public SEM-26-003 (Droits des auteurs d'origine)`;
+        }
         if (navigator.clipboard) {
           navigator.clipboard.writeText(fullShare).then(() => {
             showToast("Lien & citation avec attribution copiés !");
@@ -1819,28 +2055,119 @@ ER  -
   }
 
   /**
-   * Ouvre la modale de licence CC BY-NC-ND 4.0, empreinte SHA-256 et téléchargement
+   * Ouvre la modale de notice documentaire / licence, empreinte SHA-256 et téléchargement
    */
-  function openLicenseDialog(action = 'download') {
+  async function openLicenseDialog(action = 'download') {
     if (!dom.licenseDialog) return;
 
-    // Retrouver le document actuel
-    let currentDocKey = Object.keys(DOCS_CATALOG).find(k => DOCS_CATALOG[k].file === state.currentFile);
-    const docInfo = (currentDocKey && DOCS_CATALOG[currentDocKey]) ? DOCS_CATALOG[currentDocKey] : {
-      title: state.currentFile.split('/').pop(),
-      date: "2026",
-      pages: state.totalPages,
-      type: "Pièce documentaire officielle",
-      sha256: "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710",
-      citation: `Guindon, W. (2026). Document officiel SEM-26-003. Commission de coopération environnementale.`,
-      author: "William Guindon",
-      license: "Creative Commons CC BY-NC-ND 4.0 International"
-    };
+    const docInfo = resolveDocInfo(state.currentFile);
 
+    // Titre et métadonnées du document
     if (dom.licenseDocTitle) dom.licenseDocTitle.textContent = docInfo.title;
-    if (dom.licenseDocMeta) dom.licenseDocMeta.textContent = `${docInfo.date} · ${docInfo.pages} pages · Auteur : ${docInfo.author}`;
-    if (dom.licenseDocHash) dom.licenseDocHash.textContent = docInfo.sha256;
+    if (dom.licenseDocMeta) {
+      if (docInfo.isOriginalWork) {
+        dom.licenseDocMeta.textContent = `${docInfo.date} · ${state.totalPages || docInfo.pages} pages · Auteur : William Guindon`;
+      } else if (docInfo.isCCE) {
+        dom.licenseDocMeta.textContent = `${docInfo.date} · ${state.totalPages || docInfo.pages} pages · Émetteur : Secrétariat de la CCE (SEM-26-003)`;
+      } else {
+        dom.licenseDocMeta.textContent = `${state.totalPages || docInfo.pages} pages · Dossier public SEM-26-003 · Source / Auteur : ${docInfo.author}`;
+      }
+    }
+
+    // Badge pill et Titre du dialogue
+    if (dom.licenseBadgePill) {
+      dom.licenseBadgePill.classList.remove('pill-cce', 'pill-third-party');
+      if (docInfo.isOriginalWork) {
+        dom.licenseBadgePill.textContent = "CC BY-NC-ND 4.0";
+      } else if (docInfo.isCCE) {
+        dom.licenseBadgePill.textContent = "Registre Officiel CCE";
+        dom.licenseBadgePill.classList.add('pill-cce');
+      } else {
+        dom.licenseBadgePill.textContent = "Archive Publique · Pièce Documentaire";
+        dom.licenseBadgePill.classList.add('pill-third-party');
+      }
+    }
+
+    if (dom.licenseDialogHeading) {
+      if (docInfo.isOriginalWork) {
+        dom.licenseDialogHeading.textContent = "Téléchargement & Licence d'Auteur";
+      } else if (docInfo.isCCE) {
+        dom.licenseDialogHeading.textContent = "Téléchargement & Document Officiel CCE";
+      } else {
+        dom.licenseDialogHeading.textContent = "Téléchargement & Notice de Diffusion Publique";
+      }
+    }
+
+    // Carte des termes & licence
+    if (dom.licenseTermsCard) {
+      dom.licenseTermsCard.classList.remove('card-cce', 'card-third-party');
+      if (docInfo.isOriginalWork) {
+        // Mode Auteur (William Guindon)
+        if (dom.licenseTermsTitle) dom.licenseTermsTitle.textContent = "Conditions de Licence Creative Commons (CC BY-NC-ND 4.0)";
+        if (dom.licenseTermsText) {
+          dom.licenseTermsText.innerHTML = "Vous êtes libre de partager, copier et redistribuer ce document original rédigé par William Guindon dans tout format. Vous devez obligatoirement <strong>créditer l'auteur (William Guindon)</strong>, intégrer un lien vers la source officielle et indiquer si des modifications ont été effectuées (pas d'utilisation commerciale ni d'œuvres dérivées sans accord préalable).";
+        }
+        if (dom.licenseAiClause) {
+          dom.licenseAiClause.innerHTML = "<span><strong>Consultation &amp; Indexation IA :</strong> L'indexation, la lecture automatisée et la citation par les intelligences artificielles ou moteurs de recherche sont autorisées dans le strict respect de la licence <strong>CC BY-NC-ND 4.0</strong> (usage non commercial, pas de dérivation) avec l'obligation de citer l'auteur : <em>William Guindon (SEM-26-003 / williamguindon.me)</em>.</span>";
+        }
+      } else if (docInfo.isCCE) {
+        // Mode CCE officiel
+        dom.licenseTermsCard.classList.add('card-cce');
+        if (dom.licenseTermsTitle) dom.licenseTermsTitle.textContent = "Statut Juridique — Document Officiel du Registre Public CCE";
+        if (dom.licenseTermsText) {
+          dom.licenseTermsText.innerHTML = "Ce document est une décision ou un acte officiel rendu par le Secrétariat de la <strong>Commission de coopération environnementale (CCE)</strong> en vertu du Chapitre 24 de l'Accord Canada–États-Unis–Mexique (ACEUM). Il appartient au dossier public international de la procédure SEM-26-003 et n'a pas été rédigé par William Guindon.";
+        }
+        if (dom.licenseAiClause) {
+          dom.licenseAiClause.innerHTML = "<span><strong>Diffusion officielle &amp; Archivage :</strong> Document public accessible à tous les citoyens, chercheurs et journalistes. La citation officielle doit mentionner le Secrétariat de la CCE et la procédure SEM-26-003.</span>";
+        }
+      } else {
+        // Mode Pièce d'archive / Auteur tiers
+        dom.licenseTermsCard.classList.add('card-third-party');
+        if (dom.licenseTermsTitle) dom.licenseTermsTitle.textContent = "Notice de Propriété Intellectuelle & Droits des Auteurs Tiers";
+        if (dom.licenseTermsText) {
+          dom.licenseTermsText.innerHTML = "<strong>Ce contenu n'appartient pas à William Guindon.</strong> Il s'agit d'une pièce probatoire, d'un mémoire d'expert, d'une étude environnementale ou d'un article de presse versé au dossier public d'intérêt général SEM-26-003. Les droits d'auteur demeurent la propriété exclusive de leurs auteurs et éditeurs respectifs, ou relèvent du domaine public.";
+        }
+        if (dom.licenseAiClause) {
+          dom.licenseAiClause.innerHTML = "<span><strong>Intérêt public &amp; Utilisation équitable :</strong> La consultation et le téléchargement sont offerts à des fins d'information citoyenne, de couverture journalistique et de recherche juridique, en conformité avec l'exception pour utilisation équitable (art. 29 de la Loi sur le droit d'auteur du Canada / Fair Dealing). En cas de citation, veillez à créditer les auteurs originaux du document.</span>";
+        }
+      }
+    }
+
+    // Empreinte SHA-256
+    if (dom.licenseDocHash) {
+      if (docInfo.sha256) {
+        dom.licenseDocHash.textContent = docInfo.sha256;
+      } else {
+        dom.licenseDocHash.textContent = "Calcul de l'empreinte SHA-256 en cours...";
+        computeCurrentDocSha256().then(computed => {
+          if (computed && dom.licenseDocHash) {
+            dom.licenseDocHash.textContent = computed;
+          } else if (dom.licenseDocHash) {
+            dom.licenseDocHash.textContent = "Empreinte vérifiable sur le binaire original téléchargé";
+          }
+        });
+      }
+    }
+
+    // Citation
     if (dom.licenseCitationText) dom.licenseCitationText.textContent = docInfo.citation;
+    if (dom.licenseCitationLabel) {
+      dom.licenseCitationLabel.textContent = docInfo.isOriginalWork
+        ? "Citation Recommandée (ISO 690 / APA / Juridique) :"
+        : "Référence & Citation Recommandée :";
+    }
+
+    // Case à cocher
+    if (dom.licenseCheckboxText) {
+      if (docInfo.isOriginalWork) {
+        dom.licenseCheckboxText.innerHTML = "J'accepte les conditions de la licence <strong>CC BY-NC-ND 4.0</strong> et m'engage à citer l'auteur (William Guindon).";
+      } else if (docInfo.isCCE) {
+        dom.licenseCheckboxText.innerHTML = "Je prends acte du statut de document officiel public de la CCE et m'engage à en respecter l'intégrité.";
+      } else {
+        dom.licenseCheckboxText.innerHTML = "Je prends acte que ce document provient d'un dossier documentaire public et m'engage à respecter les droits des auteurs d'origine.";
+      }
+    }
+
     if (dom.licenseCheckbox) dom.licenseCheckbox.checked = true;
     if (dom.btnConfirmDownload) dom.btnConfirmDownload.disabled = false;
 
