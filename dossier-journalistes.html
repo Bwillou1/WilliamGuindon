@@ -2702,6 +2702,24 @@
   if (tabBtnPreview) tabBtnPreview.addEventListener("click", () => setMobileView("preview"));
   if (btnMobileBackTree) btnMobileBackTree.addEventListener("click", () => setMobileView("tree"));
 
+  function formatDocumentFileName(filePath) {
+    if (!filePath) return 'document.pdf';
+    const rawName = filePath.split('/').pop().split('?')[0] || 'document.pdf';
+    const folderMatch = filePath.match(/(?:^|\/)0*([1-9]\d*)_[^\/]+\//);
+    const folderNum = folderMatch ? folderMatch[1] : null;
+    if (folderNum) {
+      const letterMatch = rawName.match(/^([A-Za-z])(?!\d*[A-Za-z])(\d+.*)$/);
+      if (letterMatch) {
+        const letter = letterMatch[1];
+        const rest = letterMatch[2];
+        if (!rest.startsWith(folderNum)) {
+          return `${letter}${folderNum}_${rest}`;
+        }
+      }
+    }
+    return rawName;
+  }
+
   function processFiles(filesData) {
     const treeContainer = document.getElementById("drive-tree");
     if (!treeContainer) return;
@@ -2858,14 +2876,15 @@
           const res = await resolveFileResource(fileObj);
 
           if (directLink) {
+            const formattedDownloadName = formatDocumentFileName(fileObj.fullPath);
             if (res.isLocal) {
               directLink.href = res.blobUrl;
-              directLink.setAttribute("download", fileObj.name);
-              directLink.title = "Enregistrer une copie du fichier local sur votre ordinateur";
+              directLink.setAttribute("download", formattedDownloadName);
+              directLink.title = `Enregistrer une copie du fichier (${formattedDownloadName}) sur votre ordinateur`;
             } else {
               directLink.href = res.rawUrl;
-              directLink.removeAttribute("download");
-              directLink.title = "Télécharger le fichier original depuis le cloud (archive.org)";
+              directLink.setAttribute("download", formattedDownloadName);
+              directLink.title = `Télécharger le fichier original (${formattedDownloadName}) depuis le cloud`;
             }
             directLink.style.display = "inline-flex";
           }

@@ -21,6 +21,8 @@ const ASSETS_TO_CACHE = [
   '/style.css',
   '/theme.js',
   '/navbar.js',
+  '/navbar.html',
+  '/assets/js/navbar-loader.js',
   '/assets/js/theme-core.js',
   '/assets/js/page-home.js',
   '/assets/js/anticapture.js',

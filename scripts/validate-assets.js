@@ -379,6 +379,7 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'editeur.html',
   'studio.html',
   'reload.html',
+  'navbar.html',
   '404.html'
 ]);
 

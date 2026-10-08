@@ -70,9 +70,9 @@
       sha256: "33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c",
       ipfsCid: "QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf",
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf",
-      author: "Secrétariat de la CCE · William Guindon (Auteur de la soumission)",
+      author: "Secrétariat de la CCE",
       citation: "Secrétariat de la CCE. (2026). Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM concernant la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville). Commission de coopération environnementale.",
-      license: "Creative Commons CC BY-NC-ND 4.0 International"
+      license: "Document public officiel CCE (Art. 24.27)"
     },
     'soumission-16-juillet-2026': {
       title: "Communication révisée SEM-26-003 (16 juillet 2026)",
@@ -100,7 +100,7 @@
       ipfsUrl: "https://gateway.pinata.cloud/ipfs/QmTKmiUFHimaFx2n2KGqSY6L7ccknSazes6Zb2YkgK8Kug",
       author: "Secrétariat de la CCE",
       citation: "Secrétariat de la CCE. (2026). Détermination préliminaire SEM-26-003 en vertu de l'article 24.27(1). Commission de coopération environnementale.",
-      license: "Creative Commons CC BY-NC-ND 4.0 International"
+      license: "Document public officiel CCE (Art. 24.27)"
     },
     'onu-mai-2026': {
       title: "Déposition formelle à l'ONU (Mai 2026)",
@@ -1389,10 +1389,64 @@
       dom.btnFullscreen.addEventListener('click', toggleFullscreen);
     }
 
-    // Téléchargement du binaire original avec licence CC BY-NC-ND 4.0 & Empreinte
+    /**
+     * Vérifie si le document est une soumission originale de William Guindon
+     */
+    function isAuthorSubmission(filePath) {
+      if (!filePath) return false;
+      const clean = filePath.trim();
+      return clean.includes('26-3-rsub_fr_redacted.pdf') || 
+             clean.includes('26-3-formal-deposition-and-urgent-appeal.pdf');
+    }
+
+    /**
+     * Ajoute le numéro du dossier après la lettre de classification du document
+     * (ex: dossier 01 et pièce G08 -> G1_08_...)
+     */
+    function formatDocumentFileName(filePath) {
+      if (!filePath) return 'document.pdf';
+      const rawName = filePath.split('/').pop().split('?')[0] || 'document.pdf';
+      
+      const folderMatch = filePath.match(/(?:^|\/)0*([1-9]\d*)_[^\/]+\//);
+      const folderNum = folderMatch ? folderMatch[1] : null;
+
+      if (folderNum) {
+        const letterMatch = rawName.match(/^([A-Za-z])(?!\d*[A-Za-z])(\d+.*)$/);
+        if (letterMatch) {
+          const letter = letterMatch[1];
+          const rest = letterMatch[2];
+          if (!rest.startsWith(folderNum)) {
+            return `${letter}${folderNum}_${rest}`;
+          }
+        }
+      }
+      return rawName;
+    }
+
+    /**
+     * Déclenche le téléchargement direct d'une pièce tierce sans imposer la licence CC BY-NC-ND
+     */
+    function triggerDirectDownload(filePath) {
+      const rawSafe = getSafeDocUrl(filePath);
+      const safeFile = ALLOWED_LOCAL_DOCS.has(rawSafe) ? rawSafe : filePath;
+      const downloadName = formatDocumentFileName(filePath || safeFile);
+      const a = document.createElement('a');
+      a.href = encodeURI(safeFile);
+      a.download = downloadName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Téléchargement de « ${downloadName} » initié`);
+    }
+
+    // Téléchargement du binaire : la licence CC BY-NC-ND 4.0 ne s'affiche que sur la soumission de William
     if (dom.btnDownload) {
       dom.btnDownload.addEventListener('click', () => {
-        openLicenseDialog('download');
+        if (isAuthorSubmission(state.currentFile)) {
+          openLicenseDialog('download');
+        } else {
+          triggerDirectDownload(state.currentFile);
+        }
       });
     }
 
@@ -1401,14 +1455,22 @@
       dom.btnPrint.addEventListener('click', printDocument);
     }
 
-    // Partage avec attribution CC BY-NC-ND 4.0
+    // Partage
     if (dom.btnShare) {
       dom.btnShare.addEventListener('click', () => {
-        openLicenseDialog('share');
+        if (isAuthorSubmission(state.currentFile)) {
+          openLicenseDialog('share');
+        } else {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+              showToast("Lien de la pièce copié dans le presse-papiers !");
+            }).catch(() => {});
+          }
+        }
       });
     }
 
-    // Gestionnaires de la modale de licence & téléchargement
+    // Gestionnaires de la modale de licence & téléchargement (pour la soumission de William)
     if (dom.btnConfirmDownload) {
       dom.btnConfirmDownload.addEventListener('click', () => {
         if (dom.licenseCheckbox && !dom.licenseCheckbox.checked) {
@@ -1421,24 +1483,25 @@
 
         const rawSafe = getSafeDocUrl(state.currentFile);
         const safeFile = ALLOWED_LOCAL_DOCS.has(rawSafe) ? rawSafe : DOCS_CATALOG['decision-17-aout-2026'].file;
+        const downloadName = formatDocumentFileName(safeFile);
         const a = document.createElement('a');
         a.href = encodeURI(safeFile);
-        a.download = safeFile.split('/').pop();
+        a.download = downloadName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
         // Copie de l'empreinte & citation dans le presse-papiers
         const attributionText = docInfo 
-          ? `[Document Officiel CCE SEM-26-003]\nTitre: ${docInfo.title}\nAuteur: ${docInfo.author}\nLicence: CC BY-NC-ND 4.0 International\nEmpreinte SHA-256: ${docInfo.sha256}\nCitation: ${docInfo.citation}\nSource officielle: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`
-          : `William Guindon · Dossier CCE SEM-26-003 · CC BY-NC-ND 4.0 · https://williamguindon.me`;
+          ? `[Document Officiel CCE SEM-26-003]\nTitre: ${docInfo.title}\nAuteur: ${docInfo.author}\nLicence: ${docInfo.license}\nEmpreinte SHA-256: ${docInfo.sha256}\nCitation: ${docInfo.citation}\nSource officielle: https://williamguindon.me/viewer.html?file=${encodeURIComponent(state.currentFile)}`
+          : `William Guindon · Dossier CCE SEM-26-003 · https://williamguindon.me`;
 
         if (navigator.clipboard) {
           navigator.clipboard.writeText(attributionText).catch(() => {});
         }
 
         if (dom.licenseDialog) dom.licenseDialog.close();
-        showToast("PDF original téléchargé · Empreinte SHA-256 certifiée !");
+        showToast("Soumission téléchargée · Empreinte SHA-256 certifiée !");
       });
     }
 
