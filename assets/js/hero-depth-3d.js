@@ -68,7 +68,7 @@
       }
     `;
 
-    // Fragment Shader : Projection de sphère 360° équirectangulaire
+    // Fragment Shader : Projection de sphère 360° équirectangulaire haute fidélité
     const fsSource = `
       precision mediump float;
       varying vec2 vUv;
@@ -82,30 +82,29 @@
       const float PI = 3.141592653589793;
 
       void main() {
-        // Rayon optique projeté depuis la caméra dans la sphère
+        // Rayon optique projeté depuis la caméra dans la sphère 3D
         vec2 screen = (vUv - 0.5) * 2.0;
         float tanFov = tan(uFov * 0.5);
         vec3 ray = normalize(vec3(screen.x * tanFov * uAspect, screen.y * tanFov, 1.0));
 
-        // Rotation Pitch (élévation / axe X)
+        // 1. Rotation Pitch (inclinaison verticale naturelle : haut = ciel, bas = sol)
         float cp = cos(uPitch);
         float sp = sin(uPitch);
-        vec3 r1 = vec3(ray.x, ray.y * cp - ray.z * sp, ray.y * sp + ray.z * cp);
+        vec3 r1 = vec3(ray.x, ray.y * cp + ray.z * sp, -ray.y * sp + ray.z * cp);
 
-        // Rotation Yaw (azimut / axe Y)
+        // 2. Rotation Yaw (azimut / orientation panoramique)
         float cy = cos(uYaw);
         float sy = sin(uYaw);
         vec3 r2 = vec3(r1.x * cy + r1.z * sy, r1.y, -r1.x * sy + r1.z * cy);
 
-        // Conversion coordonnées cartésiennes vers UV sphérique équirectangulaire
+        // Conversion cartésienne vers coordonnées UV équirectangulaires sphériques
         float theta = atan(r2.x, r2.z);
-        float phi = asin(clamp(r2.y, -1.0, 1.0));
+        float phi = asin(clamp(r2.y, -0.9999, 0.9999));
 
-        float u = (theta / (2.0 * PI)) + 0.5;
-        float v = (phi / PI) + 0.5;
+        float u = fract((theta / (2.0 * PI)) + 0.5);
+        float v = clamp((phi / PI) + 0.5, 0.001, 0.999);
 
-        vec4 texColor = texture2D(uPanoTex, vec2(u, v));
-        gl_FragColor = texColor;
+        gl_FragColor = texture2D(uPanoTex, vec2(u, v));
       }
     `;
 
@@ -157,7 +156,7 @@
 
     gl.uniform1i(uPanoTexLoc, 0);
 
-    // Texture panoramique
+    // Texture panoramique avec filtrage haute qualité
     const panoTex = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, panoTex);
@@ -176,8 +175,26 @@
       try {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, panoTex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        // UNPACK_FLIP_Y_WEBGL = true pour orientation endroit (ciel en haut, sol en bas)
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgPano);
+
+        // Mipmapping et filtrage anisotropique pour netteté maximale
+        try {
+          gl.generateMipmap(gl.TEXTURE_2D);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        } catch (e) {
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        }
+
+        const extAniso = gl.getExtension('EXT_texture_filter_anisotropic') ||
+                         gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') ||
+                         gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
+        if (extAniso) {
+          const maxAniso = gl.getParameter(extAniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT) || 4;
+          gl.texParameterf(gl.TEXTURE_2D, extAniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(maxAniso, 8));
+        }
+
         panoLoaded = true;
         heroSection.classList.add('has-webgl-3d');
         resize();
@@ -195,11 +212,11 @@
       imgPano.onload();
     }
 
-    // Paramètres optiques et orientation sphérique
+    // Paramètres optiques équilibrés et cinématiques
     const DEG2RAD = Math.PI / 180;
-    let baseYaw = -0.35; // Orientation initiale esthétique sur le cœur de la tourbière
-    let basePitch = -0.05; // Légère inclinaison vers le sol tourbeux
-    let baseFov = 72 * DEG2RAD;
+    let baseYaw = -0.35; // Orientation sur le paysage naturel
+    let basePitch = -0.04; // Légère inclinaison esthétique vers le sol
+    let baseFov = 78 * DEG2RAD; // Champ de vision naturel et net
 
     let currentYaw = baseYaw;
     let currentPitch = basePitch;
@@ -232,18 +249,18 @@
         return;
       }
 
-      // Dérive panoramique automatique subtile (autotour doux)
+      // Dérive panoramique automatique ultra-douce et lente (~4.5x plus lente)
       if (!prefersReducedMotion) {
-        baseYaw += 0.00035;
+        baseYaw += 0.00008;
       }
 
       targetYaw = baseYaw + mouseOffsetX;
-      targetPitch = Math.max(-65 * DEG2RAD, Math.min(65 * DEG2RAD, basePitch + mouseOffsetY));
+      targetPitch = Math.max(-45 * DEG2RAD, Math.min(45 * DEG2RAD, basePitch + mouseOffsetY));
 
-      // Interpolation d'amortissement fluide (lerp)
-      currentYaw += (targetYaw - currentYaw) * 0.06;
-      currentPitch += (targetPitch - currentPitch) * 0.06;
-      currentFov += (targetFov - currentFov) * 0.08;
+      // Amortissement cinématique fluide
+      currentYaw += (targetYaw - currentYaw) * 0.035;
+      currentPitch += (targetPitch - currentPitch) * 0.035;
+      currentFov += (targetFov - currentFov) * 0.05;
 
       gl.uniform1f(uYawLoc, currentYaw);
       gl.uniform1f(uPitchLoc, currentPitch);
@@ -255,14 +272,14 @@
       requestAnimationFrame(render);
     }
 
-    // Réactivité à la souris / pavé tactile
+    // Réactivité à la souris subtile et agréable (effet parallaxe doux)
     function onPointerMove(clientX, clientY) {
       if (!window.innerWidth || !window.innerHeight) return;
       const x = (clientX / window.innerWidth) * 2 - 1;
       const y = (clientY / window.innerHeight) * 2 - 1;
-      // Angle d'exploration panoramique réactif (amplitude ±45° azimut, ±25° élévation)
-      mouseOffsetX = x * 0.85;
-      mouseOffsetY = -y * 0.45;
+      // Parallaxe subtile et stable
+      mouseOffsetX = x * 0.22;
+      mouseOffsetY = y * 0.10;
     }
 
     window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });

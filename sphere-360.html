@@ -84,7 +84,7 @@
       // Pitch rotation (axe X)
       float cp = cos(uPitch);
       float sp = sin(uPitch);
-      vec3 r1 = vec3(ray.x, ray.y * cp - ray.z * sp, ray.y * sp + ray.z * cp);
+      vec3 r1 = vec3(ray.x, ray.y * cp + ray.z * sp, -ray.y * sp + ray.z * cp);
 
       // Yaw rotation (axe Y)
       float cy = cos(uYaw);
@@ -93,10 +93,10 @@
 
       // Coordonnées sphériques -> UV équirectangulaire
       float theta = atan(r2.x, r2.z); // -PI .. PI
-      float phi = asin(clamp(r2.y, -1.0, 1.0)); // -PI/2 .. PI/2
+      float phi = asin(clamp(r2.y, -0.9999, 0.9999)); // -PI/2 .. PI/2
 
-      float u = (theta / (2.0 * PI)) + 0.5;
-      float v = (phi / PI) + 0.5;
+      float u = fract((theta / (2.0 * PI)) + 0.5);
+      float v = clamp((phi / PI) + 0.5, 0.001, 0.999);
 
       gl_FragColor = texture2D(uTex, vec2(u, v));
     }
@@ -153,8 +153,14 @@
   img.crossOrigin = "anonymous";
   img.onload = () => {
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    try {
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    } catch (e) {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
     requestAnimationFrame(render);
   };
   img.onerror = () => {
