@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v95';
+const CACHE_NAME = 'wg-pwa-v96';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
