@@ -870,6 +870,14 @@
         </div>
       </div>
 
+      <button id="btn-show-video"
+              type="button"
+              class="drive-btn-download"
+              style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); cursor: pointer;"
+              title="Visionner la déclaration vidéo officielle de William Guindon (YouTube Short)">
+        <span class="btn-label-full">🎥 Déclaration vidéo (Short)</span>
+        <span class="btn-label-short">🎥 Vidéo</span>
+      </button>
       <a id="btn-petition-cedd"
          href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
          class="drive-btn-download"
@@ -1990,10 +1998,40 @@
         </div>
       </div>
       
-      <div id="preview-stage" class="preview-stage">
-        <div class="no-preview">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom: 10px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          <p>Choisissez un document dans l'arborescence pour afficher son contenu.</p>
+      <div id="preview-stage" class="preview-stage" style="overflow-y: auto;">
+        <div class="no-preview journalist-welcome-box" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 24px 16px; width: 100%; max-width: 540px; margin: 0 auto; text-align: center; overflow-y: auto; box-sizing: border-box; height: 100%;">
+          <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(220, 38, 38, 0.1); color: #dc2626; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 12px; border: 1px solid rgba(220, 38, 38, 0.25);">
+            <span style="width: 7px; height: 7px; background: #dc2626; border-radius: 50%;"></span>
+            Déclaration vidéo aux journalistes · YouTube Short
+          </div>
+          <h3 style="margin: 0 0 8px; font-size: 1.25rem; font-weight: 800; color: #064e3b; line-height: 1.3;">
+            Point de situation officiel de William Guindon
+          </h3>
+          <p style="font-size: 0.88rem; line-height: 1.5; color: #52796f; margin: 0 0 16px;">
+            Visionnez la déclaration vidéo ci-dessous en grand format, ou cliquez sur n'importe quel fichier dans l'arborescence de gauche pour afficher son contenu probatoire.
+          </p>
+
+          <div style="position: relative; width: 100%; max-width: 360px; aspect-ratio: 9/16; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 8px 26px rgba(0,0,0,0.22); border: 2px solid rgba(220, 38, 38, 0.35); flex-shrink: 0;">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/WbJj7S6M4Ic?rel=0&amp;modestbranding=1" 
+              title="Déclaration officielle de William Guindon pour les journalistes (YouTube Short)" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen 
+              loading="lazy" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;">
+            </iframe>
+          </div>
+
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
+            <a href="https://youtube.com/shorts/WbJj7S6M4Ic" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #dc2626; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700;">
+              Ouvrir sur YouTube Shorts ↗
+            </a>
+            <a href="presse.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-decoration: none; font-size: 12px; font-weight: 700;">
+              Kit Média &amp; Fiche de faits ↗
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -3358,6 +3396,81 @@
         window.dispatchEvent(new Event("resize"));
       }
     });
+  }
+
+  // Gestion du bouton Déclaration vidéo officielle (YouTube Short)
+  const btnShowVideo = document.getElementById("btn-show-video");
+  function showVideoDeclaration() {
+    const stage = document.getElementById("preview-stage");
+    const currentFilename = document.getElementById("current-filename");
+    const actions = document.getElementById("preview-header-actions");
+    const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
+    const directLink = document.getElementById("direct-file-link");
+
+    document.querySelectorAll(".drive-item.active").forEach(el => el.classList.remove("active"));
+
+    if (currentFilename) {
+      currentFilename.textContent = "Déclaration vidéo officielle pour les journalistes";
+    }
+    if (actions) actions.style.display = "inline-flex";
+    if (fsViewerLink) fsViewerLink.style.display = "none";
+    if (directLink) {
+      directLink.href = "https://youtube.com/shorts/WbJj7S6M4Ic";
+      directLink.setAttribute("target", "_blank");
+      directLink.removeAttribute("download");
+      directLink.textContent = "YouTube Shorts ↗";
+      directLink.title = "Ouvrir sur YouTube Shorts en plein écran";
+      directLink.style.display = "inline-flex";
+    }
+
+    if (stage) {
+      stage.classList.remove("is-media");
+      stage.innerHTML = `
+        <div class="no-preview journalist-welcome-box" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 24px 16px; width: 100%; max-width: 540px; margin: 0 auto; text-align: center; overflow-y: auto; box-sizing: border-box; height: 100%;">
+          <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(220, 38, 38, 0.1); color: #dc2626; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 12px; border: 1px solid rgba(220, 38, 38, 0.25);">
+            <span style="width: 7px; height: 7px; background: #dc2626; border-radius: 50%;"></span>
+            Déclaration vidéo aux journalistes · YouTube Short
+          </div>
+          <h3 style="margin: 0 0 8px; font-size: 1.25rem; font-weight: 800; color: #064e3b; line-height: 1.3;">
+            Point de situation officiel de William Guindon
+          </h3>
+          <p style="font-size: 0.88rem; line-height: 1.5; color: #52796f; margin: 0 0 16px;">
+            Visionnez la déclaration vidéo ci-dessous en grand format, ou cliquez sur n'importe quel fichier dans l'arborescence de gauche pour afficher son contenu probatoire.
+          </p>
+
+          <div style="position: relative; width: 100%; max-width: 360px; aspect-ratio: 9/16; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 8px 26px rgba(0,0,0,0.22); border: 2px solid rgba(220, 38, 38, 0.35); flex-shrink: 0;">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/WbJj7S6M4Ic?rel=0&amp;modestbranding=1" 
+              title="Déclaration officielle de William Guindon pour les journalistes (YouTube Short)" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen 
+              loading="lazy" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;">
+            </iframe>
+          </div>
+
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
+            <a href="https://youtube.com/shorts/WbJj7S6M4Ic" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #dc2626; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700;">
+              Ouvrir sur YouTube Shorts ↗
+            </a>
+            <a href="presse.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-decoration: none; font-size: 12px; font-weight: 700;">
+              Kit Média &amp; Fiche de faits ↗
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    const tabPreview = document.getElementById("tab-btn-preview");
+    if (tabPreview && window.innerWidth <= 768) {
+      tabPreview.click();
+    }
+  }
+
+  if (btnShowVideo) {
+    btnShowVideo.addEventListener("click", showVideoDeclaration);
   }
 })();
 </script>
