@@ -48,6 +48,7 @@ const CORE_FILES = [
   'status.json',
   'llms.txt',
   'llms-full.txt',
+  'transcriptions.txt',
   'apis.json',
   'openapi.json',
   'api/index.html',
