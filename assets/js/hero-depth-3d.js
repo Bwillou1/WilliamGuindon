@@ -1,16 +1,17 @@
 /**
- * Hero Photosphère 360° & Spatial Depth Projection Engine
- * Véritable projection sphérique équirectangulaire 360° en WebGL pur.
- * Affiche la vraie photosphère de la Grande Tourbière de Blainville avec rotation fluide,
- * navigation réactive au curseur / gyroscope, et intégration complète.
+ * Hero Depth 3D Parallax & Spatial Displacement Engine
+ * Rendu stéréoscopique natif haute définition en WebGL pur avec carte de profondeur (Depth Map).
+ * Zéro pixelisation : l'image est rendue à la résolution native exacte de l'écran avec couverture parfaite.
  */
 (() => {
   'use strict';
 
-  // Respecter la préférence d'accessibilité pour la réduction des mouvements
-  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Respecter la préférence de réduction de mouvement
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
 
-  function initHeroPhotosphere() {
+  function initHero3D() {
     const heroSection = document.getElementById('accueil') || document.getElementById('section-404') || document.querySelector('.hero-immersive') || document.querySelector('.hero-3d-wrap');
     const curtainsContainer = document.getElementById('hero-curtains-canvas') || document.querySelector('.hero-curtains-container');
 
@@ -19,14 +20,14 @@
     }
 
     // Empêcher l'initialisation multiple
-    if (heroSection.dataset.photosphereInit === 'true') {
+    if (heroSection.dataset.webgl3dInit === 'true') {
       return;
     }
-    heroSection.dataset.photosphereInit = 'true';
+    heroSection.dataset.webgl3dInit = 'true';
 
-    // Créer le canvas WebGL dédié pour la photosphère
+    // Créer le canvas WebGL dédié pour le relief spatial 3D
     const canvas = document.createElement('canvas');
-    canvas.id = 'hero-photosphere-canvas';
+    canvas.id = 'hero-webgl-3d-canvas';
     canvas.setAttribute('aria-hidden', 'true');
     canvas.style.position = 'absolute';
     canvas.style.top = '0';
@@ -54,11 +55,11 @@
              canvas.getContext('experimental-webgl', glOptions);
 
     if (!gl) {
-      console.warn('WebGL non disponible pour la photosphère 360°');
+      console.warn('[Hero 3D] WebGL non supporté sur cet appareil.');
       return;
     }
 
-    // Vertex Shader : quad couvrant tout l'écran
+    // Shaders
     const vsSource = `
       attribute vec2 aPosition;
       varying vec2 vUv;
@@ -68,46 +69,54 @@
       }
     `;
 
-    const FS_SOURCE = `
+    const fsSource = `
       #ifdef GL_FRAGMENT_PRECISION_HIGH
         precision highp float;
       #else
         precision mediump float;
       #endif
+
       varying vec2 vUv;
 
-      uniform sampler2D uPanoTex;
-      uniform float uYaw;
-      uniform float uPitch;
-      uniform float uFov;
-      uniform float uAspect;
+      uniform sampler2D uPhoto;
+      uniform sampler2D uDepth;
 
-      const float PI = 3.141592653589793;
-      const float TWO_PI = 6.283185307179586;
+      uniform vec2 uMouse;
+      uniform vec2 uResolution;
+      uniform vec2 uImageResolution;
+
+      // Ajustement de ratio en mode 'cover' préservant 100% de la netteté et des proportions
+      vec2 getCoverUv(vec2 uv, vec2 screenRes, vec2 imgRes) {
+        float screenAspect = screenRes.x / screenRes.y;
+        float imgAspect = imgRes.x / imgRes.y;
+        vec2 newUv = uv;
+        if (screenAspect > imgAspect) {
+          float scale = imgAspect / screenAspect;
+          newUv.y = (uv.y - 0.5) * scale + 0.5;
+        } else {
+          float scale = screenAspect / imgAspect;
+          newUv.x = (uv.x - 0.5) * scale + 0.5;
+        }
+        return newUv;
+      }
 
       void main() {
-        // Rayon optique projeté depuis la caméra dans la sphère 3D
-        vec2 screen = (vUv - 0.5) * 2.0;
-        float tanFov = tan(uFov * 0.5);
-        vec3 d = normalize(vec3(screen.x * tanFov * uAspect, screen.y * tanFov, 1.0));
+        vec2 coverUv = getCoverUv(vUv, uResolution, uImageResolution);
+        coverUv = clamp(coverUv, 0.001, 0.999);
 
-        // 1. Rotation Pitch (inclinaison verticale naturelle : haut = ciel, bas = sol)
-        float cp = cos(uPitch);
-        float sp = sin(uPitch);
-        vec3 r1 = vec3(d.x, d.y * cp + d.z * sp, -d.y * sp + d.z * cp);
+        // Échantillonnage de la carte de profondeur stéréoscopique
+        float depth = texture2D(uDepth, coverUv).r;
 
-        // 2. Rotation Yaw (azimut / orientation panoramique)
-        float cy = cos(uYaw);
-        float sy = sin(uYaw);
-        vec3 r2 = vec3(r1.x * cy + r1.z * sy, r1.y, -r1.x * sy + r1.z * cy);
+        // Plan focal centré : 0.22 (horizon stable, arbres et mousse au premier plan avec relief saisissant)
+        float depthFactor = depth - 0.22;
 
-        // Projection équirectangulaire standard :
-        // u = 0.5 + atan(d.x, -d.z) / 2π
-        // v = 0.5 + asin(clamp(d.y, -1, 1)) / π
-        float u = 0.5 + atan(r2.x, -r2.z) / TWO_PI;
-        float v = 0.5 + asin(clamp(r2.y, -1.0, 1.0)) / PI;
+        // Déplacement parallaxe stéréoscopique fluide sans déformation
+        vec2 parallax = -uMouse * vec2(0.040, 0.025) * depthFactor;
+        vec2 finalUv = clamp(coverUv + parallax, 0.001, 0.999);
 
-        gl_FragColor = texture2D(uPanoTex, vec2(u, v));
+        // Échantillonnage à la pleine résolution native 4K
+        vec4 color = texture2D(uPhoto, finalUv);
+        gl_FragColor = color;
       }
     `;
 
@@ -116,7 +125,7 @@
       gl.shaderSource(s, src);
       gl.compileShader(s);
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-        console.error('Shader compilation error:', gl.getShaderInfoLog(s));
+        console.error('[Shader 3D error]', gl.getShaderInfoLog(s));
         gl.deleteShader(s);
         return null;
       }
@@ -124,7 +133,7 @@
     }
 
     const vs = compileShader(gl.VERTEX_SHADER, vsSource);
-    const fs = compileShader(gl.FRAGMENT_SHADER, FS_SOURCE);
+    const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
     if (!vs || !fs) return;
 
     const program = gl.createProgram();
@@ -133,13 +142,13 @@
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Program link error:', gl.getProgramInfoLog(program));
+      console.error('[Program 3D error]', gl.getProgramInfoLog(program));
       return;
     }
 
     gl.useProgram(program);
 
-    // Géométrie quad 2 triangles
+    // Géométrie plein écran
     const posBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -151,35 +160,40 @@
     gl.enableVertexAttribArray(aPosLoc);
     gl.vertexAttribPointer(aPosLoc, 2, gl.FLOAT, false, 0, 0);
 
-    const uPanoTexLoc = gl.getUniformLocation(program, 'uPanoTex');
-    const uYawLoc = gl.getUniformLocation(program, 'uYaw');
-    const uPitchLoc = gl.getUniformLocation(program, 'uPitch');
-    const uFovLoc = gl.getUniformLocation(program, 'uFov');
-    const uAspectLoc = gl.getUniformLocation(program, 'uAspect');
+    const uPhotoLoc = gl.getUniformLocation(program, 'uPhoto');
+    const uDepthLoc = gl.getUniformLocation(program, 'uDepth');
+    const uMouseLoc = gl.getUniformLocation(program, 'uMouse');
+    const uResolutionLoc = gl.getUniformLocation(program, 'uResolution');
+    const uImageResolutionLoc = gl.getUniformLocation(program, 'uImageResolution');
 
-    gl.uniform1i(uPanoTexLoc, 0);
+    gl.uniform1i(uPhotoLoc, 0);
+    gl.uniform1i(uDepthLoc, 1);
 
-    // Texture panoramique avec filtrage haute qualité
-    const panoTex = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, panoTex);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    function createTexture() {
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([11, 15, 20, 255]));
+      return tex;
+    }
 
-    // Couleur de repli
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([11, 15, 20, 255]));
+    const photoTex = createTexture();
+    const depthTex = createTexture();
 
-    let panoLoaded = false;
+    let photoLoaded = false;
+    let depthLoaded = false;
+    let imageWidth = 4096;
+    let imageHeight = 2048;
 
-    function applyTextureImage(imgElement) {
+    function uploadTexture(texUnit, texObj, imgElement) {
       try {
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, panoTex);
+        gl.activeTexture(texUnit);
+        gl.bindTexture(gl.TEXTURE_2D, texObj);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
-        // Protection MAX_TEXTURE_SIZE
         const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096;
         let uploadSource = imgElement;
         const nw = imgElement.naturalWidth || imgElement.width;
@@ -215,82 +229,63 @@
           gl.texParameterf(gl.TEXTURE_2D, extAniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(maxAniso, 16));
         }
 
-        panoLoaded = true;
-        heroSection.classList.add('has-webgl-3d');
-        resize();
+        if (photoLoaded && depthLoaded) {
+          heroSection.classList.add('has-webgl-3d');
+          resize();
+        }
       } catch (err) {
-        console.warn('Erreur application texture photosphère:', err);
+        console.warn('[Hero 3D] Erreur upload texture:', err);
       }
     }
 
-    // Phase 1 : Chargement rapide et léger au premier rendu (2K rapide ~400 Ko)
-    const imgFast = new Image();
-    imgFast.crossOrigin = 'anonymous';
-    imgFast.onload = () => {
-      applyTextureImage(imgFast);
+    const CACHE_KEY = 'v=20261008-v8-sharp4k';
+
+    // 1. Photo HD
+    const photoImg = new Image();
+    photoImg.crossOrigin = 'anonymous';
+    photoImg.onload = () => {
+      imageWidth = photoImg.naturalWidth || 4096;
+      imageHeight = photoImg.naturalHeight || 2048;
+      photoLoaded = true;
+      uploadTexture(gl.TEXTURE0, photoTex, photoImg);
     };
-    imgFast.onerror = () => {
-      loadFullTexture();
+    photoImg.onerror = () => {
+      if (photoImg.src.includes('.webp')) {
+        photoImg.src = 'assets/media/tourbiere-hero-3d.jpg?' + CACHE_KEY;
+      }
     };
-    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp?v=20261008-v7-force-refresh';
-    if (imgFast.complete && imgFast.naturalWidth) {
-      imgFast.onload();
-    }
+    photoImg.src = 'assets/media/tourbiere-hero-3d.webp?' + CACHE_KEY;
 
-    // Phase 2 : Décompression totale Ultra-HD 4K (4096x2048 netteté maximale)
-    let fullTextureLoaded = false;
-    function loadFullTexture() {
-      if (fullTextureLoaded) return;
-      fullTextureLoaded = true;
+    // 2. Depth Map
+    const depthImg = new Image();
+    depthImg.crossOrigin = 'anonymous';
+    depthImg.onload = () => {
+      depthLoaded = true;
+      uploadTexture(gl.TEXTURE1, depthTex, depthImg);
+    };
+    depthImg.onerror = () => {
+      if (depthImg.src.includes('.webp')) {
+        depthImg.src = 'assets/media/tourbiere-hero-depth.png?' + CACHE_KEY;
+      }
+    };
+    depthImg.src = 'assets/media/tourbiere-hero-depth.webp?' + CACHE_KEY;
 
-      const imgFull = new Image();
-      imgFull.crossOrigin = 'anonymous';
-      imgFull.onload = () => {
-        applyTextureImage(imgFull);
-      };
-      imgFull.onerror = () => {
-        if (imgFull.src.includes('.webp')) {
-          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg?v=20261008-v7-force-refresh';
-        }
-      };
-      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp?v=20261008-v7-force-refresh';
-    }
-
-    // Déclenchement fluide dès que le thread est libre (1.2s à 2s)
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => {
-        setTimeout(loadFullTexture, 1200);
-      }, { timeout: 3000 });
-    } else {
-      setTimeout(loadFullTexture, 1500);
-    }
-
-    // Paramètres optiques et navigation 360° interactive
-    const DEG2RAD = Math.PI / 180;
-    const TWO_PI = Math.PI * 2;
-    let baseYaw = -0.35; // Orientation initiale sur le cœur de la tourbière
-    let basePitch = -0.04;
-    let baseFov = 75 * DEG2RAD; // FOV équilibré et net
-
-    let currentYaw = baseYaw;
-    let currentPitch = basePitch;
-    let currentFov = baseFov;
-
-    let targetYaw = baseYaw;
-    let targetPitch = basePitch;
-    let targetFov = baseFov;
-
+    // Variables de mouvement & interactions
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
     let isDragging = false;
-    let startPointerX = 0;
-    let startPointerY = 0;
-    let startYaw = baseYaw;
-    let startPitch = basePitch;
-    let lastUserActionTime = Date.now();
+    let startX = 0;
+    let startY = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let lastActionTime = Date.now();
     let isRendering = true;
 
     function resize() {
       const rect = heroSection.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
       const w = Math.max(1, Math.round(rect.width * dpr));
       const h = Math.max(1, Math.round(rect.height * dpr));
 
@@ -308,83 +303,97 @@
       }
 
       const now = Date.now();
-      // Reprise douce de l'autotour après 2.5s d'inactivité
-      if (!isDragging && !prefersReducedMotion && (now - lastUserActionTime > 2500)) {
-        targetYaw += 0.00012;
+      // Respiration vivante douce si inactif
+      if (!isDragging && (now - lastActionTime > 2000)) {
+        const time = now * 0.0008;
+        targetMouseX = Math.sin(time) * 0.25;
+        targetMouseY = Math.cos(time * 0.7) * 0.15;
       }
 
-      // Normalisation du Yaw sur [0, 2PI] pour rotation continue infinie à 360°
-      targetPitch = Math.max(-65 * DEG2RAD, Math.min(65 * DEG2RAD, targetPitch));
+      // Amortissement cinématique (lerp)
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
 
-      // Amortissement cinématique fluide (lerp)
-      currentYaw += (targetYaw - currentYaw) * (isDragging ? 0.15 : 0.04);
-      currentPitch += (targetPitch - currentPitch) * (isDragging ? 0.15 : 0.04);
-      currentFov += (targetFov - currentFov) * 0.08;
+      gl.useProgram(program);
 
-      gl.uniform1f(uYawLoc, currentYaw);
-      gl.uniform1f(uPitchLoc, currentPitch);
-      gl.uniform1f(uFovLoc, currentFov);
-      gl.uniform1f(uAspectLoc, canvas.width / canvas.height);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, photoTex);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, depthTex);
+
+      gl.uniform2f(uMouseLoc, mouseX, mouseY);
+      gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+      gl.uniform2f(uImageResolutionLoc, imageWidth, imageHeight);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
       requestAnimationFrame(render);
     }
 
-    // Gestion de l'exploration interactive 360° (Glisser / Drag pour tourner dans toutes les directions)
+    // Gestion de la souris / curseur sur tout l'en-tête
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      targetMouseX = Math.max(-1, Math.min(1, x));
+      targetMouseY = Math.max(-1, Math.min(1, y));
+      lastActionTime = Date.now();
+    }, { passive: true });
+
+    heroSection.addEventListener('mouseleave', () => {
+      targetMouseX = 0;
+      targetMouseY = 0;
+      lastActionTime = Date.now();
+    }, { passive: true });
+
+    // Gyroscope mobile (DeviceOrientation)
+    if (window.DeviceOrientationEvent && ('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma === null || e.beta === null) return;
+        const x = Math.max(-1, Math.min(1, e.gamma / 30));
+        const y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+        targetMouseX = x;
+        targetMouseY = y;
+        lastActionTime = Date.now();
+      }, { passive: true });
+    }
+
+    // Glisser / Toucher sur l'en-tête
     function isInteractiveElement(target) {
       if (!target) return false;
       return target.closest('a, button, input, textarea, select, .card, .btn, .interactive, [role="button"]');
     }
 
-    heroSection.style.cursor = 'grab';
-
     heroSection.addEventListener('pointerdown', (e) => {
       if (isInteractiveElement(e.target)) return;
       isDragging = true;
-      startPointerX = e.clientX;
-      startPointerY = e.clientY;
-      startYaw = targetYaw;
-      startPitch = targetPitch;
-      lastUserActionTime = Date.now();
-      heroSection.style.cursor = 'grabbing';
-      if (e.target.setPointerCapture) {
-        try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
-      }
+      startX = e.clientX;
+      startY = e.clientY;
+      dragStartX = targetMouseX;
+      dragStartY = targetMouseY;
+      lastActionTime = Date.now();
     }, { passive: true });
 
     window.addEventListener('pointermove', (e) => {
-      if (isDragging) {
-        const deltaX = e.clientX - startPointerX;
-        const deltaY = e.clientY - startPointerY;
-        const speed = (currentFov / window.innerWidth) * 1.5;
-        targetYaw = startYaw - deltaX * speed;
-        targetPitch = startPitch + deltaY * speed;
-        lastUserActionTime = Date.now();
-      }
+      if (!isDragging) return;
+      const dx = (e.clientX - startX) / (window.innerWidth * 0.5);
+      const dy = (e.clientY - startY) / (window.innerHeight * 0.5);
+      targetMouseX = Math.max(-1.5, Math.min(1.5, dragStartX + dx));
+      targetMouseY = Math.max(-1.5, Math.min(1.5, dragStartY - dy));
+      lastActionTime = Date.now();
     }, { passive: true });
 
-    function stopDrag(e) {
+    function stopDrag() {
       if (isDragging) {
         isDragging = false;
-        heroSection.style.cursor = 'grab';
-        lastUserActionTime = Date.now();
+        lastActionTime = Date.now();
       }
     }
 
     window.addEventListener('pointerup', stopDrag, { passive: true });
     window.addEventListener('pointercancel', stopDrag, { passive: true });
 
-    // Zoom molette fluide sur la photosphère
-    heroSection.addEventListener('wheel', (e) => {
-      if (isInteractiveElement(e.target)) return;
-      if (Math.abs(e.deltaY) > 5) {
-        targetFov = Math.max(45 * DEG2RAD, Math.min(95 * DEG2RAD, targetFov + Math.sign(e.deltaY) * 0.05));
-        lastUserActionTime = Date.now();
-      }
-    }, { passive: true });
-
-    // Détection de visibilité (IntersectionObserver pour économiser GPU/CPU hors écran)
+    // Observateur d'intersection (économiser GPU hors écran)
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -395,22 +404,13 @@
     }
 
     window.addEventListener('resize', resize, { passive: true });
-
     resize();
-    requestAnimationFrame(render);
-  }
-
-  function scheduleInit() {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => initHeroPhotosphere(), { timeout: 2000 });
-    } else {
-      setTimeout(initHeroPhotosphere, 150);
-    }
+    render();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', scheduleInit);
+    document.addEventListener('DOMContentLoaded', initHero3D);
   } else {
-    scheduleInit();
+    initHero3D();
   }
 })();
