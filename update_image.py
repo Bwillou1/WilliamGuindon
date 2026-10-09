@@ -126,9 +126,13 @@ try:
     )
 
     if res.status_code == 200 and res.content:
-        with open("blainville_latest.png", "wb") as f:
+        tmp_img = "blainville_latest.png.tmp"
+        with open(tmp_img, "wb") as f:
             f.write(res.content)
-        with open("meta.json", "w", encoding="utf-8") as f:
+        os.replace(tmp_img, "blainville_latest.png")
+
+        tmp_meta = "meta.json.tmp"
+        with open(tmp_meta, "w", encoding="utf-8") as f:
             json.dump({
                 "updated_at": now.strftime("%Y-%m-%d %H:%M UTC"),
                 "status": "success",
@@ -136,7 +140,8 @@ try:
                 "satellite": "Sentinel-2",
                 "coverage": "Grande Tourbière de Blainville"
             }, f, indent=2)
-        print("Image satellite blainville_latest.png et meta.json générées avec succès.")
+        os.replace(tmp_meta, "meta.json")
+        print("Image satellite blainville_latest.png et meta.json actualisées avec suppression et remplacement atomique.")
     else:
         print(f"Erreur API Copernicus ({res.status_code}): {res.text}")
         sys.exit(1)

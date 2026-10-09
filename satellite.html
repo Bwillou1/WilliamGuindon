@@ -550,7 +550,8 @@ document.addEventListener('DOMContentLoaded', function() {
     [45.712173, -73.8115699]
   ];
 
-  var satelliteOverlay = L.imageOverlay('blainville_latest.png', bounds, {
+  var imgTimestamp = Date.now();
+  var satelliteOverlay = L.imageOverlay('blainville_latest.png?_t=' + imgTimestamp, bounds, {
     opacity: 0.95,
     interactive: true
   }).addTo(map);
