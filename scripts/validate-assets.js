@@ -22,7 +22,6 @@ const CORE_FILES = [
   'loi-93.html',
   'flux.html',
   'viewer.html',
-  'sphere-360.html',
   'ai.html',
   'txt.html',
   'reload.html',
