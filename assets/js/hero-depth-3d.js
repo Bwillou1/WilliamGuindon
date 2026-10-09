@@ -232,7 +232,7 @@
     imgFast.onerror = () => {
       loadFullTexture();
     };
-    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp?v=20261008-v5-4k';
+    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp?v=20261008-v7-force-refresh';
     if (imgFast.complete && imgFast.naturalWidth) {
       imgFast.onload();
     }
@@ -250,10 +250,10 @@
       };
       imgFull.onerror = () => {
         if (imgFull.src.includes('.webp')) {
-          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg?v=20261008-v5-4k';
+          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg?v=20261008-v7-force-refresh';
         }
       };
-      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp?v=20261008-v5-4k';
+      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp?v=20261008-v7-force-refresh';
     }
 
     // Déclenchement fluide dès que le thread est libre (1.2s à 2s)
