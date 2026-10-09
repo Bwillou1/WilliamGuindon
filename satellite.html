@@ -219,7 +219,17 @@ document.addEventListener('DOMContentLoaded', function() {
   var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     maxZoom: 19
+  });
+
+  var satelliteBasemap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    maxZoom: 19
   }).addTo(map);
+
+  var baseMaps = {
+    "🛰️ Satellite HD (Vue aérienne)": satelliteBasemap,
+    "🗺️ Carte routière & topo (OpenStreetMap)": osmLayer
+  };
 
   // 2. Polygone de la Grande Tourbière de Blainville (Coordonnées [lat, lon])
   var polygonCoords = [
@@ -257,6 +267,13 @@ document.addEventListener('DOMContentLoaded', function() {
     opacity: 0.95,
     interactive: true
   }).addTo(map);
+
+  var overlayMaps = {
+    "🌿 Périmètre protégé (Grande Tourbière)": polygonLayer,
+    "🛰️ Capture Copernicus Sentinel-2 L2A": satelliteOverlay
+  };
+
+  L.control.layers(baseMaps, overlayMaps, { position: 'topright', collapsed: false }).addTo(map);
 
   satelliteOverlay.on('error', function() {
     console.warn('Image blainville_latest.png non encore générée par GitHub Actions.');
