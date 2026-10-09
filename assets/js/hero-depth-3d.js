@@ -70,7 +70,11 @@
 
     // Fragment Shader : Projection de sphère 360° équirectangulaire haute fidélité
     const fsSource = `
-      precision mediump float;
+      #ifdef GL_FRAGMENT_PRECISION_HIGH
+        precision highp float;
+      #else
+        precision mediump float;
+      #endif
       varying vec2 vUv;
 
       uniform sampler2D uPanoTex;
@@ -201,23 +205,21 @@
       }
     }
 
-    // Phase 1 : Chargement rapide et léger au premier rendu (2K rapide ~140 Ko)
+    // Phase 1 : Chargement rapide et léger au premier rendu (2K rapide ~400 Ko)
     const imgFast = new Image();
     imgFast.crossOrigin = 'anonymous';
     imgFast.onload = () => {
       applyTextureImage(imgFast);
     };
     imgFast.onerror = () => {
-      // Repli immédiat si fast non disponible
       loadFullTexture();
     };
-    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp';
+    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp?v=20261008-v5-4k';
     if (imgFast.complete && imgFast.naturalWidth) {
       imgFast.onload();
     }
 
-    // Phase 2 : Décompression totale Ultra-HD 4K (pleine résolution non-compressée)
-    // Se charge en tâche de fond 6 à 8 secondes après le chargement complet de la page
+    // Phase 2 : Décompression totale Ultra-HD 4K (4096x2048 netteté maximale)
     let fullTextureLoaded = false;
     function loadFullTexture() {
       if (fullTextureLoaded) return;
@@ -229,20 +231,20 @@
         applyTextureImage(imgFull);
       };
       imgFull.onerror = () => {
-        if (imgFull.src.endsWith('.webp')) {
-          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg';
+        if (imgFull.src.includes('.webp')) {
+          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg?v=20261008-v5-4k';
         }
       };
-      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp';
+      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp?v=20261008-v5-4k';
     }
 
-    // Déclenchement temporisé après chargement complet de la page (5 à 8 secondes)
-    if (document.readyState === 'complete') {
-      setTimeout(loadFullTexture, 6500);
+    // Déclenchement fluide dès que le thread est libre (1.2s à 2s)
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => {
+        setTimeout(loadFullTexture, 1200);
+      }, { timeout: 3000 });
     } else {
-      window.addEventListener('load', () => {
-        setTimeout(loadFullTexture, 6500);
-      });
+      setTimeout(loadFullTexture, 1500);
     }
 
     // Paramètres optiques et navigation 360° interactive

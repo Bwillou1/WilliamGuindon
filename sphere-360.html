@@ -66,7 +66,11 @@
   `;
 
   const FS = `
-    precision mediump float;
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+      precision highp float;
+    #else
+      precision mediump float;
+    #endif
     varying vec2 vUv;
     uniform sampler2D uTex;
     uniform float uYaw;
@@ -172,9 +176,9 @@
     requestAnimationFrame(render);
   };
   img.onerror = () => {
-    img.src = "assets/media/tourbiere-photosphere-360.jpg";
+    img.src = "assets/media/tourbiere-photosphere-360.jpg?v=20261008-v5-4k";
   };
-  img.src = "assets/media/tourbiere-photosphere-360.webp";
+  img.src = "assets/media/tourbiere-photosphere-360.webp?v=20261008-v5-4k";
 
   // Variables de caméra
   const DEG2RAD = Math.PI / 180;
