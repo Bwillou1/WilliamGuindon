@@ -14,7 +14,7 @@
   'use strict';
 
   const NAVBAR_URL = 'navbar.html';
-  const CACHE_KEY = 'wg_navbar_html_v1';
+  const CACHE_KEY = 'wg_navbar_html_v2';
 
   async function loadNavbar() {
     const placeholder = document.getElementById('navbar-placeholder') || document.querySelector('header.site');
