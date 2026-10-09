@@ -1,7 +1,8 @@
-const CACHE_NAME = 'wg-pwa-v106';
+const CACHE_NAME = 'wg-pwa-v107';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/satellite.html',
   '/apparitions-publiques.html',
   '/apercu.html',
   '/contamination.html',
