@@ -40,7 +40,7 @@ Ce dépôt GitHub constitue la source de vérité publique hébergeant le site o
 ## 🔒 Contact & Canaux Sécurisés
 
 - **Site web officiel & Formulaire sécurisé** : [https://williamguindon.me/#contact](https://williamguindon.me/#contact)
-- **Session (Messagerie anonyme & chiffrée)** : `05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072`
+- **Session (Messagerie anonyme & chiffrée, web ou app)** : [Session Web](https://sessionweb.org/app) · ID : `05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072`
 - **Réseaux officiels** :
   - LinkedIn : [william-guindon](https://www.linkedin.com/in/william-guindon/)
   - YouTube : [@william-guindon](https://www.youtube.com/@william-guindon)
