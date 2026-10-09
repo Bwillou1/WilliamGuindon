@@ -160,6 +160,19 @@
     if (clean.startsWith('blob:')) {
       return clean;
     }
+    // Mappage instantané des pièces phares hébergées localement sur williamguindon.me
+    if (clean.includes('26-3-rsub_fr_redacted')) {
+      return 'assets/docs/26-3-rsub_fr_redacted.pdf';
+    }
+    if (clean.includes('26-3-det_fr') || clean.includes('26-3-det2_fr')) {
+      return 'assets/docs/26-3-det_fr.pdf';
+    }
+    if (clean.includes('26-2-det2_fr') || clean.includes('62-DET2_fr')) {
+      return 'assets/docs/26-2-det2_fr.pdf';
+    }
+    if (clean.includes('formal-deposition')) {
+      return 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf';
+    }
     // Validation sécurisée des URLs distantes d'archive probatoire avec support natif CORS
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
@@ -614,7 +627,29 @@
     } catch (error) {
       console.error("Erreur de chargement PDF:", error);
       hideLoading();
-      showToast("Erreur lors du chargement du document. Tentative de rechargement...", true);
+      if (dom.pagesContainer) {
+        const fileName = (safeUrl.split('/').pop() || 'document.pdf').split('?')[0];
+        dom.pagesContainer.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 420px; padding: 40px 20px; text-align: center; color: var(--text, #111); width: 100%;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(220, 38, 38, 0.1); color: #dc2626; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h3 style="margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 700; color: #064e3b;">Document temporairement indisponible en prévisualisation</h3>
+            <p style="margin: 0 0 18px 0; max-width: 480px; font-size: 0.92rem; color: var(--text-muted, #52796f); line-height: 1.5;">
+              Le serveur distant d'archivage (Internet Archive) est actuellement instable ou en maintenance. Vous pouvez télécharger le fichier original ou retenter le chargement.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+              <a href="${safeUrl}" download="${fileName}" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: #064e3b; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 0.88rem;">
+                📥 Télécharger le PDF original (${fileName})
+              </a>
+              <button type="button" onclick="window.location.reload()" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: var(--surface, #f4f4f4); border: 1px solid var(--border, #cbd7cf); color: var(--text, #111); cursor: pointer; font-weight: 600; font-size: 0.88rem;">
+                🔄 Réessayer
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      showToast("Serveur distant inaccessible — options de téléchargement direct disponibles", true);
     }
   }
 

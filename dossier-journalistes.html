@@ -2543,13 +2543,23 @@
         while (currentIndex < allValidFiles.length && !cancelCachingRequested) {
           const fileObj = allValidFiles[currentIndex++];
           const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
+          const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodeURI(fileObj.fullPath);
           const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
 
-          const alreadyCached = cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl);
+          const alreadyCached = cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(directStorageUrl) || cachedUrlsSet.has(rawUrl);
           if (!isSync || !alreadyCached) {
             try {
-              const res = await fetch(corsUrl, { mode: 'cors' });
-              if (res.ok) {
+              let res = null;
+              try {
+                res = await fetch(corsUrl, { mode: 'cors' });
+              } catch (_) {
+                res = null;
+              }
+              if (!res || !res.ok) {
+                res = await fetch(directStorageUrl, { mode: 'cors' });
+              }
+
+              if (res && res.ok) {
                 const blob = await res.blob();
 
                 // 1. Stockage CacheStorage pour accès instantané
@@ -2560,12 +2570,20 @@
                       'Content-Length': String(blob.size)
                     }
                   }));
+                  await cache.put(directStorageUrl, new Response(blob, {
+                    headers: {
+                      'Content-Type': 'application/pdf',
+                      'Content-Length': String(blob.size)
+                    }
+                  }));
                 }
 
                 // 2. Stockage dans le coffre persistant IndexedDB (survit aux purges de cache HTTP)
                 await saveDocToVault(corsUrl, blob, fileObj.name);
+                await saveDocToVault(directStorageUrl, blob, fileObj.name);
 
                 cachedUrlsSet.add(corsUrl);
+                cachedUrlsSet.add(directStorageUrl);
                 newCachedCount++;
               }
             } catch (err) {
@@ -2629,14 +2647,73 @@
   }
 
   async function resolveFileResource(fileObj) {
-    const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+    const rawName = fileObj.name || '';
+    const fullPath = fileObj.fullPath || '';
+
+    // 0. Détection des documents phares hébergés localement sur williamguindon.me
+    if (rawName.includes("26-3-rsub_fr_redacted") || fullPath.includes("26-3-rsub_fr_redacted")) {
+      const localPath = "assets/docs/26-3-rsub_fr_redacted.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+    if (rawName.includes("26-3-det_fr") || fullPath.includes("26-3-det_fr")) {
+      const localPath = "assets/docs/26-3-det_fr.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+    if (rawName.includes("26-2-det2_fr") || fullPath.includes("26-2-det2_fr") || rawName.includes("62-DET2_fr")) {
+      const localPath = "assets/docs/26-2-det2_fr.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+    if (rawName.includes("formal-deposition") || fullPath.includes("formal-deposition")) {
+      const localPath = "assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+
+    // URLs multi-serveurs pour résilience maximale contre les pannes Internet Archive
+    const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodeURI(fileObj.fullPath);
     const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
+    const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
 
     // 1. Essai prioritaire depuis CacheStorage
     if ('caches' in window) {
       try {
         const cache = await caches.open(LOCAL_CACHE_NAME);
-        const match = await cache.match(corsPdfUrl) || await cache.match(fileUrl);
+        const match = await cache.match(corsPdfUrl) || await cache.match(directStorageUrl) || await cache.match(fileUrl);
         if (match) {
           const blob = await match.blob();
           if (currentActiveBlobUrl) {
@@ -2645,10 +2722,12 @@
           currentActiveBlobUrl = URL.createObjectURL(blob);
           return {
             isLocal: true,
+            isSiteAsset: false,
             blob: blob,
             blobUrl: currentActiveBlobUrl,
             rawUrl: fileUrl,
             corsUrl: corsPdfUrl,
+            directStorageUrl: directStorageUrl,
             effectiveUrl: currentActiveBlobUrl
           };
         }
@@ -2657,33 +2736,22 @@
       }
     }
 
-    // 2. Filet de sécurité indestructible : Récupération depuis le coffre-fort IndexedDB
+    // 2. Filet de sécurité IndexedDB
     try {
-      const vaultBlob = await getDocFromVault(corsPdfUrl) || await getDocFromVault(fileUrl);
+      const vaultBlob = await getDocFromVault(corsPdfUrl) || await getDocFromVault(directStorageUrl) || await getDocFromVault(fileUrl);
       if (vaultBlob) {
-        // Restauration immédiate dans CacheStorage en tâche de fond
-        if ('caches' in window) {
-          try {
-            const cache = await caches.open(LOCAL_CACHE_NAME);
-            await cache.put(corsPdfUrl, new Response(vaultBlob, {
-              headers: {
-                'Content-Type': 'application/pdf',
-                'Content-Length': String(vaultBlob.size)
-              }
-            }));
-          } catch (_) {}
-        }
-
         if (currentActiveBlobUrl) {
           URL.revokeObjectURL(currentActiveBlobUrl);
         }
         currentActiveBlobUrl = URL.createObjectURL(vaultBlob);
         return {
           isLocal: true,
+          isSiteAsset: false,
           blob: vaultBlob,
           blobUrl: currentActiveBlobUrl,
           rawUrl: fileUrl,
           corsUrl: corsPdfUrl,
+          directStorageUrl: directStorageUrl,
           effectiveUrl: currentActiveBlobUrl
         };
       }
@@ -2693,11 +2761,13 @@
 
     return {
       isLocal: false,
+      isSiteAsset: false,
       blob: null,
       blobUrl: null,
-      rawUrl: fileUrl,
+      rawUrl: directStorageUrl,
       corsUrl: corsPdfUrl,
-      effectiveUrl: fileUrl
+      directStorageUrl: directStorageUrl,
+      effectiveUrl: directStorageUrl
     };
   }
 
@@ -2889,7 +2959,7 @@
 
         item.innerHTML = `
           <span style="display:inline-flex;align-items:center;flex-shrink:0;">${svgIcon}</span>
-          <a href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(fileObj.fullPath)}" class="drive-item-name" title="${fileObj.name}" target="_blank" rel="noopener">${fileObj.name}</a>
+          <a href="https://ia601409.us.archive.org/1/items/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(fileObj.fullPath)}" class="drive-item-name" title="${fileObj.name}" target="_blank" rel="noopener">${fileObj.name}</a>
         `;
 
         item.addEventListener("click", async (e) => {
@@ -2915,14 +2985,18 @@
 
           if (directLink) {
             const formattedDownloadName = formatDocumentFileName(fileObj.fullPath);
-            if (res.isLocal) {
+            if (res.isLocal && res.blobUrl && !res.isSiteAsset) {
               directLink.href = res.blobUrl;
               directLink.setAttribute("download", formattedDownloadName);
               directLink.title = `Enregistrer une copie du fichier (${formattedDownloadName}) sur votre ordinateur`;
+            } else if (res.isSiteAsset) {
+              directLink.href = res.rawUrl;
+              directLink.setAttribute("download", formattedDownloadName);
+              directLink.title = `Télécharger le document certifié (${formattedDownloadName})`;
             } else {
               directLink.href = res.rawUrl;
               directLink.setAttribute("download", formattedDownloadName);
-              directLink.title = `Télécharger le fichier original (${formattedDownloadName}) depuis le cloud`;
+              directLink.title = `Télécharger le fichier original (${formattedDownloadName})`;
             }
             directLink.style.display = "inline-flex";
           }
@@ -2937,6 +3011,11 @@
               img.src = res.effectiveUrl;
               img.className = "preview-image";
               img.alt = fileObj.name;
+              img.onerror = () => {
+                if (img.src !== res.corsUrl && !img.src.includes('/cors/')) {
+                  img.src = res.corsUrl;
+                }
+              };
               stage.appendChild(img);
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
@@ -2946,10 +3025,15 @@
               video.controls = true;
               video.autoplay = true;
               video.className = "preview-video";
+              video.onerror = () => {
+                if (video.src !== res.corsUrl && !video.src.includes('/cors/')) {
+                  video.src = res.corsUrl;
+                }
+              };
               stage.appendChild(video);
             } else if (lower.endsWith(".pdf")) {
               stage.classList.remove("is-media");
-              const targetPdfUrl = res.isLocal ? res.blobUrl : res.corsUrl;
+              const targetPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
               const viewerUrl = "viewer.html?file=" + encodeURIComponent(targetPdfUrl);
               if (fsViewerLink) {
                 fsViewerLink.href = viewerUrl;
@@ -2965,7 +3049,7 @@
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.remove("is-media");
 
-              if (res.isLocal) {
+              if (res.isLocal && res.blob) {
                 if (typeof Papa === "undefined") {
                   stage.classList.add("is-media");
                   stage.innerHTML = `<div class="no-preview"><h4>PapaParse non disponible</h4></div>`;
@@ -2986,7 +3070,8 @@
                   </div>
                 `;
 
-                fetch(res.corsUrl)
+                fetch(res.directStorageUrl)
+                  .catch(() => fetch(res.corsUrl))
                   .then(r => {
                     if (!r.ok) throw new Error("Erreur réseau HTTP " + r.status);
                     return r.text();
