@@ -124,11 +124,11 @@
         // Échantillonnage de la carte de profondeur (1.0 = premier plan arbres & mousse, 0.0 = horizon lointain & ciel)
         float depth = texture2D(uDepth, coverUv).r;
 
-        // Plan focal centré : 0.20 (l'horizon reste stable, la tourbière et les arbres avancent en 3D stéréoscopique)
-        float depthFactor = depth - 0.20;
+        // Plan focal centré : 0.38 (la tourbière médiane reste stable, les arbres au premier plan avancent en 3D stéréoscopique)
+        float depthFactor = depth - 0.38;
 
         // Déplacement parallaxe physique fluide sans cisaillement
-        vec2 parallax = -uMouse * vec2(0.038, 0.024) * depthFactor;
+        vec2 parallax = -uMouse * vec2(0.040, 0.026) * depthFactor;
         vec2 finalUv = clamp(coverUv + parallax, 0.001, 0.999);
 
         // Rendu à la pleine netteté native avec filtre anti-flou
@@ -209,8 +209,8 @@
     const photoTexture = createTexture(gl, 0);
     const depthTexture = createTexture(gl, 1);
 
-    let imgWidth = 4096;
-    let imgHeight = 2048;
+    let imgWidth = 2048;
+    let imgHeight = 1152;
     let imagesLoaded = 0;
 
     function uploadImageTexture(img, unit, tex) {
@@ -246,13 +246,13 @@
       }
     }
 
-    const CACHE_KEY = 'v=20261009-v12-classic3d';
+    const CACHE_KEY = 'v=20261009-v13-aerial3d';
 
     const imgPhoto = new Image();
     imgPhoto.crossOrigin = 'anonymous';
     imgPhoto.onload = () => {
-      imgWidth = imgPhoto.naturalWidth || 4096;
-      imgHeight = imgPhoto.naturalHeight || 2048;
+      imgWidth = imgPhoto.naturalWidth || 2048;
+      imgHeight = imgPhoto.naturalHeight || 1152;
       uploadImageTexture(imgPhoto, 0, photoTexture);
     };
     imgPhoto.onerror = () => {
