@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v97';
+const CACHE_NAME = 'wg-pwa-v98';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -34,6 +34,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/signature.svg',
   '/assets/media/tourbiere-hero-3d.webp',
   '/assets/media/tourbiere-hero-depth.webp',
+  '/assets/media/tourbiere-photosphere-fast.webp',
   '/assets/media/tourbiere-photosphere-360.webp',
   '/assets/media/moteur-recherche-pieces.jpg',
   '/assets/media/moteur-recherche-pieces.webp',

@@ -169,17 +169,14 @@
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([11, 15, 20, 255]));
 
     let panoLoaded = false;
-    const imgPano = new Image();
-    imgPano.crossOrigin = 'anonymous';
-    imgPano.onload = () => {
+
+    function applyTextureImage(imgElement) {
       try {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, panoTex);
-        // UNPACK_FLIP_Y_WEBGL = true pour orientation endroit (ciel en haut, sol en bas)
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgPano);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgElement);
 
-        // Mipmapping et filtrage anisotropique haute résolution pour netteté cristalline
         try {
           gl.generateMipmap(gl.TEXTURE_2D);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -200,18 +197,52 @@
         heroSection.classList.add('has-webgl-3d');
         resize();
       } catch (err) {
-        console.warn('Erreur chargement texture photosphère:', err);
+        console.warn('Erreur application texture photosphère:', err);
       }
+    }
+
+    // Phase 1 : Chargement rapide et léger au premier rendu (2K rapide ~140 Ko)
+    const imgFast = new Image();
+    imgFast.crossOrigin = 'anonymous';
+    imgFast.onload = () => {
+      applyTextureImage(imgFast);
     };
-    imgPano.onerror = () => {
-      if (imgPano.src.endsWith('.webp')) {
-        imgPano.src = 'assets/media/tourbiere-photosphere-360.jpg';
-      }
+    imgFast.onerror = () => {
+      // Repli immédiat si fast non disponible
+      loadFullTexture();
     };
-    // Chargement différé et haute résolution
-    imgPano.src = 'assets/media/tourbiere-photosphere-360.webp';
-    if (imgPano.complete && imgPano.naturalWidth) {
-      imgPano.onload();
+    imgFast.src = 'assets/media/tourbiere-photosphere-fast.webp';
+    if (imgFast.complete && imgFast.naturalWidth) {
+      imgFast.onload();
+    }
+
+    // Phase 2 : Décompression totale Ultra-HD 4K (pleine résolution non-compressée)
+    // Se charge en tâche de fond 6 à 8 secondes après le chargement complet de la page
+    let fullTextureLoaded = false;
+    function loadFullTexture() {
+      if (fullTextureLoaded) return;
+      fullTextureLoaded = true;
+
+      const imgFull = new Image();
+      imgFull.crossOrigin = 'anonymous';
+      imgFull.onload = () => {
+        applyTextureImage(imgFull);
+      };
+      imgFull.onerror = () => {
+        if (imgFull.src.endsWith('.webp')) {
+          imgFull.src = 'assets/media/tourbiere-photosphere-360.jpg';
+        }
+      };
+      imgFull.src = 'assets/media/tourbiere-photosphere-360.webp';
+    }
+
+    // Déclenchement temporisé après chargement complet de la page (5 à 8 secondes)
+    if (document.readyState === 'complete') {
+      setTimeout(loadFullTexture, 6500);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(loadFullTexture, 6500);
+      });
     }
 
     // Paramètres optiques et navigation 360° interactive
