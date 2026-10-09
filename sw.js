@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v105';
+const CACHE_NAME = 'wg-pwa-v106';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -50,6 +50,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/memoire-autochtone-tourbiere.jpg',
   '/assets/media/memoire-autochtone-tourbiere.webp',
   '/assets/media/umap-preview.webp',
+  '/assets/media/carte-blainville-milieux-naturels.webp',
+  '/assets/media/carte-blainville-milieux-naturels.jpg',
   '/assets/media/lapresse-logo.png',
   '/assets/media/ledevoir-logo.png',
   '/assets/media/cbc-logo.jpg',
