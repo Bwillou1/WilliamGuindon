@@ -68,8 +68,7 @@
       }
     `;
 
-    // Fragment Shader : Projection de sphère 360° équirectangulaire haute fidélité
-    const fsSource = `
+    const FS_SOURCE = `
       #ifdef GL_FRAGMENT_PRECISION_HIGH
         precision highp float;
       #else
@@ -84,29 +83,29 @@
       uniform float uAspect;
 
       const float PI = 3.141592653589793;
+      const float TWO_PI = 6.283185307179586;
 
       void main() {
         // Rayon optique projeté depuis la caméra dans la sphère 3D
         vec2 screen = (vUv - 0.5) * 2.0;
         float tanFov = tan(uFov * 0.5);
-        vec3 ray = normalize(vec3(screen.x * tanFov * uAspect, screen.y * tanFov, 1.0));
+        vec3 d = normalize(vec3(screen.x * tanFov * uAspect, screen.y * tanFov, 1.0));
 
         // 1. Rotation Pitch (inclinaison verticale naturelle : haut = ciel, bas = sol)
         float cp = cos(uPitch);
         float sp = sin(uPitch);
-        vec3 r1 = vec3(ray.x, ray.y * cp + ray.z * sp, -ray.y * sp + ray.z * cp);
+        vec3 r1 = vec3(d.x, d.y * cp + d.z * sp, -d.y * sp + d.z * cp);
 
         // 2. Rotation Yaw (azimut / orientation panoramique)
         float cy = cos(uYaw);
         float sy = sin(uYaw);
         vec3 r2 = vec3(r1.x * cy + r1.z * sy, r1.y, -r1.x * sy + r1.z * cy);
 
-        // Conversion cartésienne vers coordonnées UV équirectangulaires sphériques
-        float theta = atan(r2.x, r2.z);
-        float phi = asin(clamp(r2.y, -0.9999, 0.9999));
-
-        float u = fract((theta / (2.0 * PI)) + 0.5);
-        float v = clamp((phi / PI) + 0.5, 0.001, 0.999);
+        // Projection équirectangulaire standard :
+        // u = 0.5 + atan(d.x, -d.z) / 2π
+        // v = 0.5 + asin(clamp(d.y, -1, 1)) / π
+        float u = 0.5 + atan(r2.x, -r2.z) / TWO_PI;
+        float v = 0.5 + asin(clamp(r2.y, -1.0, 1.0)) / PI;
 
         gl_FragColor = texture2D(uPanoTex, vec2(u, v));
       }
@@ -125,7 +124,7 @@
     }
 
     const vs = compileShader(gl.VERTEX_SHADER, vsSource);
-    const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+    const fs = compileShader(gl.FRAGMENT_SHADER, FS_SOURCE);
     if (!vs || !fs) return;
 
     const program = gl.createProgram();
@@ -179,7 +178,26 @@
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, panoTex);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgElement);
+
+        // Protection MAX_TEXTURE_SIZE
+        const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096;
+        let uploadSource = imgElement;
+        const nw = imgElement.naturalWidth || imgElement.width;
+        const nh = imgElement.naturalHeight || imgElement.height;
+
+        if (nw > maxTexSize || nh > maxTexSize) {
+          const scale = maxTexSize / Math.max(nw, nh);
+          const targetW = Math.floor(nw * scale);
+          const targetH = Math.floor(nh * scale);
+          const canvasRescale = document.createElement('canvas');
+          canvasRescale.width = targetW;
+          canvasRescale.height = targetH;
+          const ctx = canvasRescale.getContext('2d');
+          ctx.drawImage(imgElement, 0, 0, targetW, targetH);
+          uploadSource = canvasRescale;
+        }
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, uploadSource);
 
         try {
           gl.generateMipmap(gl.TEXTURE_2D);
