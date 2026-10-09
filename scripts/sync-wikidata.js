@@ -283,8 +283,8 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 832237 }, 'Domaine: Protection de l’environnement (Q832237)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P101', 'value', { 'entity-type': 'item', 'numeric-id': 1479527 }, 'Domaine: Justice environnementale (Q1479527)');
 
-    // 6. Décrit par la source (P1343) : La Presse (Q1337424) & Le Devoir (Q1504424)
-    await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1337424 }, 'Source: La Presse (Q1337424)');
+    // 6. Décrit par la source (P1343) : La Presse (Q3083289) & Le Devoir (Q1504424)
+    await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 3083289 }, 'Source: La Presse (Q3083289)');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1343', 'value', { 'entity-type': 'item', 'numeric-id': 1504424 }, 'Source: Le Devoir (Q1504424)');
 
     // 7. Décrit à l'URL (P973) - Articles de presse et sources documentaires officielles (Schema.org subjectOf)
