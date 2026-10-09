@@ -158,6 +158,14 @@
     try {
       gl.generateMipmap(gl.TEXTURE_2D);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      const extAniso = gl.getExtension('EXT_texture_filter_anisotropic') ||
+                       gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') ||
+                       gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
+      if (extAniso) {
+        const maxAniso = gl.getParameter(extAniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT) || 4;
+        gl.texParameterf(gl.TEXTURE_2D, extAniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(maxAniso, 16));
+      }
     } catch (e) {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }

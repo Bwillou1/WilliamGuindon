@@ -179,10 +179,11 @@
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imgPano);
 
-        // Mipmapping et filtrage anisotropique pour netteté maximale
+        // Mipmapping et filtrage anisotropique haute résolution pour netteté cristalline
         try {
           gl.generateMipmap(gl.TEXTURE_2D);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         } catch (e) {
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         }
@@ -192,7 +193,7 @@
                          gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
         if (extAniso) {
           const maxAniso = gl.getParameter(extAniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT) || 4;
-          gl.texParameterf(gl.TEXTURE_2D, extAniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(maxAniso, 8));
+          gl.texParameterf(gl.TEXTURE_2D, extAniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(maxAniso, 16));
         }
 
         panoLoaded = true;
@@ -207,16 +208,18 @@
         imgPano.src = 'assets/media/tourbiere-photosphere-360.jpg';
       }
     };
+    // Chargement différé et haute résolution
     imgPano.src = 'assets/media/tourbiere-photosphere-360.webp';
     if (imgPano.complete && imgPano.naturalWidth) {
       imgPano.onload();
     }
 
-    // Paramètres optiques équilibrés et cinématiques
+    // Paramètres optiques et navigation 360° interactive
     const DEG2RAD = Math.PI / 180;
-    let baseYaw = -0.35; // Orientation sur le paysage naturel
-    let basePitch = -0.04; // Légère inclinaison esthétique vers le sol
-    let baseFov = 78 * DEG2RAD; // Champ de vision naturel et net
+    const TWO_PI = Math.PI * 2;
+    let baseYaw = -0.35; // Orientation initiale sur le cœur de la tourbière
+    let basePitch = -0.04;
+    let baseFov = 75 * DEG2RAD; // FOV équilibré et net
 
     let currentYaw = baseYaw;
     let currentPitch = basePitch;
@@ -226,8 +229,12 @@
     let targetPitch = basePitch;
     let targetFov = baseFov;
 
-    let mouseOffsetX = 0;
-    let mouseOffsetY = 0;
+    let isDragging = false;
+    let startPointerX = 0;
+    let startPointerY = 0;
+    let startYaw = baseYaw;
+    let startPitch = basePitch;
+    let lastUserActionTime = Date.now();
     let isRendering = true;
 
     function resize() {
@@ -249,18 +256,19 @@
         return;
       }
 
-      // Dérive panoramique automatique ultra-douce et lente (~4.5x plus lente)
-      if (!prefersReducedMotion) {
-        baseYaw += 0.00008;
+      const now = Date.now();
+      // Reprise douce de l'autotour après 2.5s d'inactivité
+      if (!isDragging && !prefersReducedMotion && (now - lastUserActionTime > 2500)) {
+        targetYaw += 0.00012;
       }
 
-      targetYaw = baseYaw + mouseOffsetX;
-      targetPitch = Math.max(-45 * DEG2RAD, Math.min(45 * DEG2RAD, basePitch + mouseOffsetY));
+      // Normalisation du Yaw sur [0, 2PI] pour rotation continue infinie à 360°
+      targetPitch = Math.max(-65 * DEG2RAD, Math.min(65 * DEG2RAD, targetPitch));
 
-      // Amortissement cinématique fluide
-      currentYaw += (targetYaw - currentYaw) * 0.035;
-      currentPitch += (targetPitch - currentPitch) * 0.035;
-      currentFov += (targetFov - currentFov) * 0.05;
+      // Amortissement cinématique fluide (lerp)
+      currentYaw += (targetYaw - currentYaw) * (isDragging ? 0.15 : 0.04);
+      currentPitch += (targetPitch - currentPitch) * (isDragging ? 0.15 : 0.04);
+      currentFov += (targetFov - currentFov) * 0.08;
 
       gl.uniform1f(uYawLoc, currentYaw);
       gl.uniform1f(uPitchLoc, currentPitch);
@@ -272,32 +280,58 @@
       requestAnimationFrame(render);
     }
 
-    // Réactivité à la souris subtile et agréable (effet parallaxe doux)
-    function onPointerMove(clientX, clientY) {
-      if (!window.innerWidth || !window.innerHeight) return;
-      const x = (clientX / window.innerWidth) * 2 - 1;
-      const y = (clientY / window.innerHeight) * 2 - 1;
-      // Parallaxe subtile et stable
-      mouseOffsetX = x * 0.22;
-      mouseOffsetY = y * 0.10;
+    // Gestion de l'exploration interactive 360° (Glisser / Drag pour tourner dans toutes les directions)
+    function isInteractiveElement(target) {
+      if (!target) return false;
+      return target.closest('a, button, input, textarea, select, .card, .btn, .interactive, [role="button"]');
     }
 
-    window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
-    window.addEventListener('pointermove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
+    heroSection.style.cursor = 'grab';
 
-    document.addEventListener('mouseleave', () => {
-      mouseOffsetX = 0;
-      mouseOffsetY = 0;
-    });
+    heroSection.addEventListener('pointerdown', (e) => {
+      if (isInteractiveElement(e.target)) return;
+      isDragging = true;
+      startPointerX = e.clientX;
+      startPointerY = e.clientY;
+      startYaw = targetYaw;
+      startPitch = targetPitch;
+      lastUserActionTime = Date.now();
+      heroSection.style.cursor = 'grabbing';
+      if (e.target.setPointerCapture) {
+        try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+    }, { passive: true });
 
-    // Support gyroscope / inclinaison sur appareils mobiles
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', (e) => {
-        if (e.gamma === null || e.beta === null) return;
-        mouseOffsetX = Math.max(-1.2, Math.min(1.2, (e.gamma / 25)));
-        mouseOffsetY = Math.max(-0.6, Math.min(0.6, ((e.beta - 40) / 30)));
-      }, { passive: true });
+    window.addEventListener('pointermove', (e) => {
+      if (isDragging) {
+        const deltaX = e.clientX - startPointerX;
+        const deltaY = e.clientY - startPointerY;
+        const speed = (currentFov / window.innerWidth) * 1.5;
+        targetYaw = startYaw - deltaX * speed;
+        targetPitch = startPitch + deltaY * speed;
+        lastUserActionTime = Date.now();
+      }
+    }, { passive: true });
+
+    function stopDrag(e) {
+      if (isDragging) {
+        isDragging = false;
+        heroSection.style.cursor = 'grab';
+        lastUserActionTime = Date.now();
+      }
     }
+
+    window.addEventListener('pointerup', stopDrag, { passive: true });
+    window.addEventListener('pointercancel', stopDrag, { passive: true });
+
+    // Zoom molette fluide sur la photosphère
+    heroSection.addEventListener('wheel', (e) => {
+      if (isInteractiveElement(e.target)) return;
+      if (Math.abs(e.deltaY) > 5) {
+        targetFov = Math.max(45 * DEG2RAD, Math.min(95 * DEG2RAD, targetFov + Math.sign(e.deltaY) * 0.05));
+        lastUserActionTime = Date.now();
+      }
+    }, { passive: true });
 
     // Détection de visibilité (IntersectionObserver pour économiser GPU/CPU hors écran)
     if ('IntersectionObserver' in window) {
