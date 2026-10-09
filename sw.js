@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v107';
+const CACHE_NAME = 'wg-pwa-v109';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -109,8 +109,8 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 2. Exclure les requêtes dynamiques d'API et les pages privées protégées par Zero Trust
-  if (url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
+  // 2. Exclure les requêtes dynamiques d'API, images satellites et les pages privées protégées par Zero Trust
+  if (url.pathname === '/blainville_latest.png' || url.pathname === '/meta.json' || url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
     return false;
   }
 

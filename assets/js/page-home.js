@@ -688,6 +688,21 @@
         }
       }
     }
+
+    // 7. Actualisation automatique de la capture satellite en direct
+    const satImg = document.getElementById('satellite-live-img');
+    const satLabel = document.getElementById('satellite-live-label');
+    if (satImg) {
+      fetch('meta.json?_t=' + Date.now())
+        .then(res => res.json())
+        .then(meta => {
+          satImg.src = 'blainville_latest.png?_t=' + Date.now();
+          if (meta.updated_at && satLabel) {
+            satLabel.textContent = 'Capture Sentinel-2 · ' + meta.updated_at;
+          }
+        })
+        .catch(() => {});
+    }
   }
 
   if (document.readyState === 'loading') {
