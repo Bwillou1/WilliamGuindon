@@ -260,6 +260,104 @@
   line-height: 1.5;
   flex: 1;
 }
+
+/* Transcriptions textuelles & Verbatim des vidéos */
+.video-transcripts-section {
+  margin: 44px 0;
+  background: var(--bg-card);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+}
+.video-transcripts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.transcript-card {
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--canvas, rgba(0, 0, 0, 0.02));
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.transcript-card[open] {
+  border-color: var(--accent);
+  background: var(--bg-card);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+.transcript-summary {
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  list-style: none;
+}
+.transcript-summary::-webkit-details-marker {
+  display: none;
+}
+.transcript-summary:hover {
+  background: rgba(5, 150, 105, 0.05);
+}
+.transcript-body {
+  padding: 20px 24px;
+  border-top: 1px solid var(--line);
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+.quote-item {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.02);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+}
+[data-theme="dark"] .quote-item {
+  background: rgba(255, 255, 255, 0.02);
+}
+.quote-item:last-child {
+  margin-bottom: 0;
+}
+.quote-speaker {
+  font-weight: 800;
+  color: var(--accent-deep, #059669);
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+  display: block;
+}
+.quote-text {
+  font-style: italic;
+  color: var(--text);
+  margin: 0;
+}
+.press-card-transcript {
+  margin-top: 12px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.015);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+.press-card-transcript summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent);
+  user-select: none;
+}
 </style>
 
 <script src="assets/js/theme-core.js?v=20261004-v77" defer></script>
@@ -938,6 +1036,13 @@
         </div>
         <div class="press-card-footer">
           <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" class="press-read-link">Visionner l'entrevue TVBL (12 min) ↗</a>
+          <details class="press-card-transcript" style="margin-top: 10px;">
+            <summary>📄 Transcription / Citation clé ▾</summary>
+            <div style="margin-top: 8px; font-style: italic; color: var(--text);">
+              « On applique le projet de loi 93, on rejette les appels, on n'écoute pas les citoyens et on va tout simplement de l'avant rapidement avec ce projet d'agrandissement. »<br>
+              <strong style="font-style: normal; color: var(--accent); font-size: 0.8rem; display: block; margin-top: 4px;">— William Guindon (Entrevue TVBL)</strong>
+            </div>
+          </details>
         </div>
       </article>
 
@@ -961,6 +1066,13 @@
         </div>
         <div class="press-card-footer">
           <a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer" class="press-read-link">Voir la vidéo sur YouTube ↗</a>
+          <details class="press-card-transcript" style="margin-top: 10px;">
+            <summary>📄 Transcription / Citation clé ▾</summary>
+            <div style="margin-top: 8px; font-style: italic; color: var(--text);">
+              « Je me suis dit qu'on devait faire quelque chose. »<br>
+              <strong style="font-style: normal; color: var(--accent); font-size: 0.8rem; display: block; margin-top: 4px;">— William Guindon (Conseil municipal de Blainville)</strong>
+            </div>
+          </details>
         </div>
       </article>
 
@@ -1148,6 +1260,95 @@
         </div>
       </article>
 
+    </section>
+
+    <!-- SECTION TRANSCRIPTIONS & VERBATIM DES REPORTAGES VIDÉO -->
+    <section class="video-transcripts-section" id="transcriptions-videos" aria-label="Transcriptions textuelles &amp; Verbatim des reportages vidéo">
+      <div class="video-transcripts-header">
+        <div>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: var(--accent-deep, #059669); border: 1px solid var(--accent); margin-bottom: 6px; display: inline-block;">
+            Transcriptions &amp; Verbatim Certifiés
+          </span>
+          <h3 style="margin: 4px 0 6px 0; font-size: 1.4rem; font-weight: 800; color: var(--text);">
+            📜 Déclarations textuelles des reportages d'enquête et entrevues vidéo
+          </h3>
+          <p style="margin: 0; font-size: 0.94rem; color: var(--text-muted); line-height: 1.5;">
+            Retranscription fidèle des déclarations intégrales de William Guindon, des scientifiques et des directeurs de la Commission de coopération environnementale (CCE).
+          </p>
+        </div>
+      </div>
+
+      <!-- ACCORDÉON 1 : WILLIAM GUINDON -->
+      <details class="transcript-card" open>
+        <summary class="transcript-summary">
+          <span>🌿 William Guindon (Auteur de la soumission SEM-26-003)</span>
+          <span style="font-size: 0.85rem; color: var(--accent);">Afficher / Masquer ▾</span>
+        </summary>
+        <div class="transcript-body">
+          <div class="quote-item">
+            <span class="quote-speaker">William Guindon — Déclaration d'engagement :</span>
+            <p class="quote-text">« Je me suis dit qu'on devait faire quelque chose. »</p>
+          </div>
+          <div class="quote-item">
+            <span class="quote-speaker">William Guindon — Sur l'adoption de la Loi 93 et le contournement citoyen :</span>
+            <p class="quote-text">« On applique le projet de loi 93, on rejette les appels, on n'écoute pas les citoyens et on va tout simplement de l'avant rapidement avec ce projet d'agrandissement. »</p>
+          </div>
+        </div>
+      </details>
+
+      <!-- ACCORDÉON 2 : DR SONJA BEHMEL -->
+      <details class="transcript-card" open>
+        <summary class="transcript-summary">
+          <span>💧 Dr Sonja Behmel (Spécialiste des eaux et chercheuse, WaterShed Monitoring)</span>
+          <span style="font-size: 0.85rem; color: var(--accent);">Afficher / Masquer ▾</span>
+        </summary>
+        <div class="transcript-body">
+          <div class="quote-item">
+            <span class="quote-speaker">Dr Sonja Behmel — Migration des contaminants et valeur des milieux humides :</span>
+            <p class="quote-text">« Il y a des zones où nous sommes pratiquement certains que les contaminants quittent le site, soit par voie aérienne, par les eaux souterraines ou par le ruissellement des eaux de surface. Les milieux humides sont notre plus précieuse source de biodiversité. Pour nous assurer de les avoir lorsque de fortes pluies entraînent des risques d'inondation, et pour les zones qui réinjectent l'eau dans l'environnement en période de sécheresse, et pour les écosystèmes qui filtrent nos contaminants, c'est comme si nous nous détruisions nous-mêmes. »</p>
+          </div>
+          <div class="quote-item">
+            <span class="quote-speaker">Dr Sonja Behmel — Inquiétudes citoyennes et gouvernance environnementale :</span>
+            <p class="quote-text">« J'ai l'impression que les gens de Blainville sont extrêmement inquiets et qu'ils veulent des réponses. Je pense qu'au-delà de vouloir des réponses, mon sentiment est qu'ils veulent vraiment que le gouvernement se plie aux mécanismes qu'il est censé mettre en place. Nous savons que nous avons besoin d'industrie, nous avons besoin d'endroits où nous pouvons éliminer nos déchets et tout le reste, mais cela devrait être fait selon les mécanismes de gouvernance, et nous devrions les respecter à chaque étape, car autrement, nous allons détruire notre environnement. »</p>
+          </div>
+        </div>
+      </details>
+
+      <!-- ACCORDÉON 3 : JORGE DANIEL TAILLANT (CCE) -->
+      <details class="transcript-card" open>
+        <summary class="transcript-summary">
+          <span>🏛️ Jorge Daniel Taillant (Directeur exécutif sortant de la CCE / ACEUM)</span>
+          <span style="font-size: 0.85rem; color: var(--accent);">Afficher / Masquer ▾</span>
+        </summary>
+        <div class="transcript-body">
+          <div class="quote-item">
+            <span class="quote-speaker">Jorge Daniel Taillant — Force obligatoire du traité et intégrité de l'ACEUM :</span>
+            <p class="quote-text">« C'était une surprise, au début on s'est dit, bon, c'est peut-être une erreur, peut-être qu'on ne devrait pas être sur cette liste, et plus on regarde, peut-être que c'était une erreur. Nous sommes fondés sur un traité. Nous faisons partie de l'ACEUM. On ne peut pas se retirer ou cesser de participer à une partie du traité sans miner l'ensemble du traité. »</p>
+          </div>
+          <div class="quote-item">
+            <span class="quote-speaker">Jorge Daniel Taillant — Contexte de financement tripartite et transition :</span>
+            <p class="quote-text">« Nous n'avons pas reçu de nouveaux fonds des États-Unis pour 2026, ce qui a créé des problèmes parce que sans financement, la CCE ne peut pas fonctionner. Le Canada et le Mexique, bien qu'ils demeurent engagés envers la CCE, ont également suspendu leur soutien financier. Nous sommes dans une période de transition, en attente de précisions sur la façon dont cela va se dérouler. »</p>
+          </div>
+          <div class="quote-item">
+            <span class="quote-speaker">Jorge Daniel Taillant — Urgence écologique et pouvoir d'action citoyen :</span>
+            <p class="quote-text">« Les choses les plus importantes sont les défis auxquels nous faisons face aujourd'hui, l'urgence de lutter contre les changements climatiques et l'urgence de ce qui est peut-être la sixième extinction de la biodiversité qui se déroule sous nos yeux. Les gens veulent savoir, veulent s'engager et ont plus que jamais leur mot à dire sur leur environnement. La survie de la CCE est essentielle à notre travail de coopération, mais plus important encore, les politiques publiques doivent être attentives aux communautés, et les communautés demanderont des actions de plus en plus. »</p>
+          </div>
+        </div>
+      </details>
+
+      <!-- ACCORDÉON 4 : PAOLO SOLANO (CCE) -->
+      <details class="transcript-card" open>
+        <summary class="transcript-summary">
+          <span>⚖️ Paolo Solano (Directeur des affaires juridiques de la CCE)</span>
+          <span style="font-size: 0.85rem; color: var(--accent);">Afficher / Masquer ▾</span>
+        </summary>
+        <div class="transcript-body">
+          <div class="quote-item">
+            <span class="quote-speaker">Paolo Solano — Fonctionnement et ressources de l'unité juridique :</span>
+            <p class="quote-text">« L'année dernière, nous avions une équipe de quatre personnes ; un membre du personnel est parti. Sur le plan structurel, il y a un poste pour quelqu'un d'autre, mais dans les circonstances actuelles, nous n'embauchons pas davantage ; c'est une question de budget. »</p>
+          </div>
+        </div>
+      </details>
     </section>
 
     <!-- SECTION 2 : CHAÎNE YOUTUBE OFFICIELLE (PLUS BAS) -->
