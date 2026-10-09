@@ -69,8 +69,8 @@
       }
     `;
 
-    // Fragment Shader : Parallaxe stéréoscopique par occlusion de relief (Depth Occlusion)
-    const fsSource = `
+      // Fragment Shader : Parallaxe stéréoscopique fluide sans déformation ni cisaillement
+      const fsSource = `
       #ifdef GL_FRAGMENT_PRECISION_HIGH
         precision highp float;
       #else
@@ -101,39 +101,43 @@
         return newUv;
       }
 
-      // Échantillonnage adaptatif haute netteté (Contrast Adaptive Sharpening - Zéro Flou)
-      vec4 sampleCrisp(sampler2D tex, vec2 uv, vec2 texRes) {
-        vec2 step = 1.0 / texRes;
-        vec4 c = texture2D(tex, uv);
-        vec4 n = texture2D(tex, uv + vec2(0.0, step.y));
-        vec4 s = texture2D(tex, uv - vec2(0.0, step.y));
-        vec4 e = texture2D(tex, uv + vec2(step.x, 0.0));
-        vec4 w = texture2D(tex, uv - vec2(step.x, 0.0));
-
-        vec4 minVal = min(c, min(min(n, s), min(e, w)));
-        vec4 maxVal = max(c, max(max(n, s), max(e, w)));
-
-        vec4 sharp = c * 1.55 - (n + s + e + w) * 0.1375;
-        return clamp(sharp, minVal, maxVal);
+      // Échantillonnage adouci de la carte de profondeur (élimine les aspérités et gels de pixels)
+      float getSmoothDepth(sampler2D depthTex, vec2 uv) {
+        vec2 dStep = vec2(0.0018, 0.0018);
+        float d0 = texture2D(depthTex, uv).r;
+        float d1 = texture2D(depthTex, uv + vec2(dStep.x, 0.0)).r;
+        float d2 = texture2D(depthTex, uv - vec2(dStep.x, 0.0)).r;
+        float d3 = texture2D(depthTex, uv + vec2(0.0, dStep.y)).r;
+        float d4 = texture2D(depthTex, uv - vec2(0.0, dStep.y)).r;
+        return (d0 * 2.0 + d1 + d2 + d3 + d4) / 6.0;
       }
 
       void main() {
         vec2 coverUv = getCoverUv(vUv, uResolution, uImageResolution);
-        coverUv = clamp(coverUv, 0.001, 0.999);
+        coverUv = clamp(coverUv, 0.002, 0.998);
 
-        // Échantillonnage de la carte de profondeur (1.0 = premier plan arbres & mousse, 0.0 = horizon lointain & ciel)
-        float depth = texture2D(uDepth, coverUv).r;
+        // Amortissement doux aux bordures pour éviter tout étirement sur les côtés
+        vec2 edgeDist = min(coverUv, 1.0 - coverUv);
+        float edgeFade = smoothstep(0.0, 0.05, min(edgeDist.x, edgeDist.y));
 
-        // Plan focal centré : 0.38 (la tourbière médiane reste stable, les arbres au premier plan avancent en 3D stéréoscopique)
-        float depthFactor = depth - 0.38;
+        // Étape 1 : Lecture douce de la profondeur
+        float depth1 = getSmoothDepth(uDepth, coverUv);
+        float depthFactor1 = depth1 - 0.40;
 
-        // Déplacement parallaxe physique fluide sans cisaillement
-        vec2 parallax = -uMouse * vec2(0.040, 0.026) * depthFactor;
-        vec2 finalUv = clamp(coverUv + parallax, 0.001, 0.999);
+        // Déplacement parallaxe calibré (zéro déchirure / zéro distorsion)
+        vec2 maxOffset = vec2(0.016, 0.010) * edgeFade;
+        vec2 offset1 = -uMouse * maxOffset * depthFactor1;
 
-        // Rendu à la pleine netteté native avec filtre anti-flou
-        vec4 color = sampleCrisp(uPhoto, finalUv, uImageResolution);
-        gl_FragColor = color;
+        // Étape 2 : Raffinement stéréoscopique à 2 passes
+        vec2 refinedUv = clamp(coverUv + offset1 * 0.5, 0.002, 0.998);
+        float depth2 = getSmoothDepth(uDepth, refinedUv);
+        float depthFactor2 = mix(depthFactor1, depth2 - 0.40, 0.5);
+
+        vec2 finalOffset = -uMouse * maxOffset * depthFactor2;
+        vec2 finalUv = clamp(coverUv + finalOffset, 0.001, 0.999);
+
+        // Rendu net et naturel de l'image haute définition
+        gl_FragColor = texture2D(uPhoto, finalUv);
       }
     `;
 
