@@ -467,12 +467,25 @@
     btnExportRis: document.getElementById('btn-export-ris')
   };
 
+  function broadcastThemeChange(themeName) {
+    try {
+      localStorage.setItem('wg_theme', themeName);
+      localStorage.setItem('william-guindon-theme', themeName);
+      sessionStorage.setItem('william-guindon-theme', themeName);
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'wg_theme_change', theme: themeName }, '*');
+      }
+    } catch (_) {}
+  }
+
   /**
    * Initialisation générale
    */
   async function init() {
-    // 1. Initialiser le thème (sync avec site) — mode clair par défaut pour la lecture documentaire
-    const savedTheme = localStorage.getItem('wg_theme') || 'light';
+    // 1. Initialiser le thème (sync avec site et paramètre d'URL)
+    const urlParamsObj = new URLSearchParams(window.location.search);
+    const themeFromUrl = urlParamsObj.get('theme');
+    const savedTheme = themeFromUrl || localStorage.getItem('wg_theme') || localStorage.getItem('william-guindon-theme') || sessionStorage.getItem('william-guindon-theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     if (savedTheme === 'dark') {
       state.readingMode = 'dark';
@@ -483,6 +496,28 @@
       dom.app.classList.remove('mode-dark', 'mode-sepia', 'mode-contrast');
       if (dom.selectReadingMode) dom.selectReadingMode.value = 'normal';
     }
+
+    // Écouteur de synchronisation de thème depuis la page parente
+    window.addEventListener('message', (e) => {
+      if (e.data && (e.data.type === 'wg_theme_change' || e.data.type === 'theme_change')) {
+        const nextTheme = e.data.theme;
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        if (nextTheme === 'dark') {
+          if (state.readingMode === 'normal') {
+            state.readingMode = 'dark';
+            dom.app.classList.remove('mode-sepia', 'mode-contrast');
+            dom.app.classList.add('mode-dark');
+            if (dom.selectReadingMode) dom.selectReadingMode.value = 'dark';
+          }
+        } else if (nextTheme === 'light') {
+          if (state.readingMode === 'dark') {
+            state.readingMode = 'normal';
+            dom.app.classList.remove('mode-dark', 'mode-sepia', 'mode-contrast');
+            if (dom.selectReadingMode) dom.selectReadingMode.value = 'normal';
+          }
+        }
+      }
+    });
 
     // Détection mode intégré (iFrame) pour adapter l'interface
     if (window.self !== window.top) {
@@ -1895,12 +1930,12 @@ ER  -
         const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
         const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('wg_theme', nextTheme);
+        broadcastThemeChange(nextTheme);
 
         if (nextTheme === 'dark') {
-          if (state.readingMode === 'normal') setReadingMode('dark');
+          if (state.readingMode === 'normal') setReadingMode('dark', true);
         } else {
-          if (state.readingMode === 'dark') setReadingMode('normal');
+          if (state.readingMode === 'dark') setReadingMode('normal', true);
           dom.app.classList.remove('mode-dark');
         }
       });
@@ -2316,13 +2351,24 @@ ER  -
     if (printContainer) printContainer.innerHTML = '';
   });
 
-  function setReadingMode(mode) {
+  function setReadingMode(mode, fromThemeToggle = false) {
     state.readingMode = mode;
     dom.app.classList.remove('mode-dark', 'mode-sepia', 'mode-contrast');
     if (mode !== 'normal') {
       dom.app.classList.add(`mode-${mode}`);
     }
     if (dom.selectReadingMode) dom.selectReadingMode.value = mode;
+
+    if (!fromThemeToggle) {
+      if (mode === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        broadcastThemeChange('dark');
+      } else if (mode === 'normal') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        broadcastThemeChange('light');
+      }
+    }
+
     showToast(`Mode lecture : ${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
   }
 
