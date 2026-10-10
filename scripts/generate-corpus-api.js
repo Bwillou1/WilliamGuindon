@@ -323,6 +323,87 @@ const blogData = fs.existsSync(path.join(ROOT, 'data/blog.json')) ? JSON.parse(f
 const communiquesData = fs.existsSync(path.join(ROOT, 'data/communiques.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'data/communiques.json'), 'utf8')) : [];
 const mirrorsData = fs.existsSync(path.join(ROOT, 'data/mirrors.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'data/mirrors.json'), 'utf8')) : {};
 
+// Extraction dynamique des dictionnaires de titres de dossier-journalistes.html
+const djHtml = fs.readFileSync(path.join(ROOT, 'dossier-journalistes.html'), 'utf8');
+let specificTitles = {};
+let folderTitles = {};
+const specMatch = djHtml.match(/const SPECIFIC_TITLES = (\{[\s\S]*?\});/);
+if (specMatch) {
+  try { specificTitles = JSON.parse(specMatch[1]); } catch (_) {}
+}
+const foldMatch = djHtml.match(/const FOLDER_TITLES = (\{[\s\S]*?\});/);
+if (foldMatch) {
+  try { folderTitles = JSON.parse(foldMatch[1]); } catch (_) {}
+}
+
+function getCleanFolderName(folderName) {
+  if (!folderName) return "";
+  return folderTitles[folderName] || folderName.replace(/_/g, " ");
+}
+
+function getCleanDisplayName(fullPath) {
+  if (!fullPath) return "";
+  let cleanPath = fullPath;
+  if (cleanPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")) {
+    cleanPath = cleanPath.replace("00_DOSSIER_POUR_JOURNALISTES_BIFFE/", "");
+  }
+
+  if (specificTitles[cleanPath]) {
+    return specificTitles[cleanPath];
+  }
+
+  const filename = cleanPath.split("/").pop();
+
+  const finMatch = cleanPath.match(/Capture d’écran, le 2026-07-14 à (\d\d)\.(\d\d)\.(\d\d)\.png/);
+  if (finMatch) {
+    return `Capture registre financier (${finMatch[1]}:${finMatch[2]}:${finMatch[3]})`;
+  }
+
+  if (cleanPath.includes("Sealosafe/seal")) {
+    const num = filename.match(/\d+/);
+    return "Archive Sealosafe — Schéma technique #" + (num ? num[0] : "");
+  }
+  if (cleanPath.toLowerCase().includes("britishnewspaperarchive")) {
+    return "Archive de presse britannique (1989) — Procédé Sealosafe";
+  }
+
+  if (cleanPath.includes("H11_Recueil_Preuves_Visuelles_Fuites_Terrain")) {
+    const h11Match = cleanPath.match(/Capture d’écran, le 2026-07-15 à (\d\d)\.(\d\d)\.(\d\d)\.png/);
+    if (h11Match) {
+      return `Constat visuel de terrain (${h11Match[1]}:${h11Match[2]}:${h11Match[3]})`;
+    }
+    if (filename.includes("10mars_CCBC6S")) {
+      return "Prise de vue 10 mars 2026 — Fuite Cellule 6 (CCBC6S" + (filename.includes("_2") ? " - 2" : "") + ")";
+    }
+    if (filename.includes("18_juin_fuite_CCBC6S")) {
+      const idx = filename.match(/CCBC6S_?(\d*)/);
+      return "Prise de vue 18 juin 2026 — Fuite active Cellule 6" + (idx && idx[1] ? " (#" + idx[1] + ")" : "");
+    }
+    if (filename.includes("8_oct_fuite_CCBC6S")) {
+      return "Prise de vue 8 oct. 2026 — Rejet observé Cellule 6";
+    }
+    if (filename.includes("CCBC6S_")) {
+      const idx = filename.match(/CCBC6S_(\d+)/);
+      return "Photographie probatoire de terrain — Échantillon CCBC6S #" + (idx ? idx[1] : "");
+    }
+    if (filename.match(/^\d+_\d+_\d+/)) {
+      return "Cliché photographique probatoire — Constat de terrain";
+    }
+  }
+
+  let name = filename
+    .replace(/_BIFFE_AUDIT/g, "")
+    .replace(/_BIFFE/g, "")
+    .replace(/_AUDIT/g, "")
+    .replace(/_redacted/g, "")
+    .replace(/_fr_redacted/g, "")
+    .replace(/\s*\(\d+\)/g, "")
+    .replace(/\.[^.]+$/, "");
+
+  name = name.replace(/_/g, " ").replace(/\s+/g, " ").trim();
+  return name;
+}
+
 const documentsArchive = FALLBACK_DOCS.map((docPath, index) => {
   const parts = docPath.split('/');
   const folder = parts.length > 1 ? parts[0] : 'Documents_Generaux';
@@ -337,12 +418,17 @@ const documentsArchive = FALLBACK_DOCS.map((docPath, index) => {
   else if (['kml', 'geojson'].includes(ext)) typeLabel = 'Vecteur Géographique (SIG)';
   else if (['sha256', 'md', 'txt'].includes(ext)) typeLabel = 'Audit & Chaîne de Garde';
 
+  const cleanTitle = getCleanDisplayName(docPath);
+  const cleanFolder = getCleanFolderName(folder);
+
   return {
     index: index + 1,
     id: `doc-${String(index + 1).padStart(3, '0')}`,
+    title: cleanTitle,
     filename: filename,
     path: docPath,
-    category: folder.replace(/_/g, ' '),
+    category: cleanFolder,
+    raw_category: folder.replace(/_/g, ' '),
     type: typeLabel,
     format: ext,
     archive_url: `https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(docPath)}`,
