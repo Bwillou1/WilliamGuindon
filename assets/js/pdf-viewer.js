@@ -376,7 +376,9 @@
     searchResults: [],
     currentSearchIndex: -1,
     isSearching: false,
-    sidebarOpen: false
+    sidebarOpen: false,
+    translationMode: false,
+    translatedPagesCache: new Map() // pageNum -> html string
   };
 
   // Éléments du DOM
@@ -423,6 +425,8 @@
     paneExplorer: document.getElementById('pane-explorer'),
     paneAi: document.getElementById('pane-ai'),
     paneInfo: document.getElementById('pane-info'),
+    btnToggleDocTranslation: document.getElementById('btn-toggle-doc-translation'),
+    btnToggleDocTranslationText: document.getElementById('btn-toggle-doc-translation-text'),
     btnTranslateCurrentPage: document.getElementById('btn-translate-current-page'),
     btnOpenGoogleDocsMode: document.getElementById('btn-open-google-docs-mode'),
     btnCopyTranslation: document.getElementById('btn-copy-translation'),
@@ -526,6 +530,8 @@
             if (dom.selectReadingMode) dom.selectReadingMode.value = 'normal';
           }
         }
+      } else if (e.data && (e.data.type === 'wg_toggle_translation' || e.data.type === 'toggle_translation')) {
+        toggleTranslationMode(e.data.force);
       }
     });
 
@@ -563,7 +569,10 @@
     await loadPDF(targetFile, targetPage);
 
     const initialTab = urlParams.get('tab') || hashParams.get('tab');
-    if (initialTab && ['thumbnails', 'outline', 'translation', 'search', 'explorer', 'info'].includes(initialTab)) {
+    if (initialTab === 'translation') {
+      toggleTranslationMode(true);
+      switchSidebarTab('translation');
+    } else if (initialTab && ['thumbnails', 'outline', 'search', 'explorer', 'info'].includes(initialTab)) {
       switchSidebarTab(initialTab);
     }
   }
@@ -690,10 +699,12 @@
             </p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
               <a href="${safeUrl}" download="${fileName}" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: #064e3b; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 0.88rem;">
-                📥 Télécharger le PDF original (${fileName})
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Télécharger le PDF original (${fileName})</span>
               </a>
               <button type="button" onclick="window.location.reload()" class="btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: var(--surface, #f4f4f4); border: 1px solid var(--border, #cbd7cf); color: var(--text, #111); cursor: pointer; font-weight: 600; font-size: 0.88rem;">
-                🔄 Réessayer
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                <span>Réessayer</span>
               </button>
             </div>
           </div>
@@ -728,6 +739,30 @@
       textLayer.className = 'textLayer';
       textLayer.id = `text-layer-${i}`;
       pageWrapper.appendChild(textLayer);
+
+      const translationLayer = document.createElement('div');
+      translationLayer.className = 'translation-layer';
+      translationLayer.id = `translation-layer-${i}`;
+      translationLayer.style.display = 'none';
+      pageWrapper.appendChild(translationLayer);
+
+      const restoreBtn = document.createElement('button');
+      restoreBtn.type = 'button';
+      restoreBtn.className = 'btn-restore-translation-badge';
+      restoreBtn.id = `btn-restore-trans-${i}`;
+      restoreBtn.style.display = 'none';
+      restoreBtn.title = 'Afficher la traduction de cette page';
+      restoreBtn.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span>Traduction (EN)</span>
+      `;
+      restoreBtn.addEventListener('click', () => {
+        translationLayer.style.display = 'block';
+        canvas.style.display = 'none';
+        if (textLayer) textLayer.style.display = 'none';
+        restoreBtn.style.display = 'none';
+      });
+      pageWrapper.appendChild(restoreBtn);
 
       dom.pagesContainer.appendChild(pageWrapper);
     }
@@ -841,6 +876,10 @@
 
       await textLayerInstance.render();
       state.textLayerRenderingQueue.delete(pageNum);
+
+      if (state.translationMode) {
+        applyTranslationToPage(pageNum);
+      }
     } catch (err) {
       if (err.name !== 'RenderingCancelledException') {
         console.warn(`Rendu annulé ou erreur page ${pageNum}:`, err);
@@ -1405,6 +1444,208 @@
     }
   }
 
+  async function applyTranslationToPage(pageNum, targetLang = 'en') {
+    const layer = document.getElementById(`translation-layer-${pageNum}`);
+    const canvas = document.getElementById(`canvas-page-${pageNum}`);
+    const textLayer = document.getElementById(`text-layer-${pageNum}`);
+    const restoreBtn = document.getElementById(`btn-restore-trans-${pageNum}`);
+    if (!layer) return;
+
+    if (canvas) canvas.style.display = 'none';
+    if (textLayer) textLayer.style.display = 'none';
+    if (restoreBtn) restoreBtn.style.display = 'none';
+    layer.style.display = 'block';
+
+    const cacheKey = `${pageNum}_${targetLang}`;
+    if (state.translatedPagesCache.has(cacheKey)) {
+      layer.innerHTML = state.translatedPagesCache.get(cacheKey);
+      wireToggleOriginal(layer, pageNum);
+      return;
+    }
+
+    layer.innerHTML = `
+      <div class="translation-layer-header">
+        <span class="translation-layer-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Page ${pageNum} / ${state.totalPages} · Traduction en cours...
+        </span>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; padding: 48px 20px; color:#064e3b; gap:12px; font-weight:600;">
+        <div class="spinner" style="width:22px; height:22px; border-width:2.5px;"></div>
+        <span>Traduction en direct vers l'anglais...</span>
+      </div>
+    `;
+
+    try {
+      const page = await state.pdfDoc.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      
+      let fullText = '';
+      let prevY = null;
+      textContent.items.forEach(it => {
+        if (!it.str || !it.str.trim()) return;
+        const y = it.transform ? Math.round(it.transform[5]) : null;
+        if (prevY !== null && y !== null) {
+          const diff = Math.abs(prevY - y);
+          if (diff > 20) {
+            fullText += '\n\n';
+          } else if (diff > 8) {
+            fullText += '\n';
+          } else {
+            fullText += ' ';
+          }
+        }
+        fullText += it.str.trim();
+        if (y !== null) prevY = y;
+      });
+
+      if (!fullText.trim()) {
+        layer.innerHTML = `
+          <div class="translation-layer-header">
+            <span class="translation-layer-title">Page ${pageNum} / ${state.totalPages} · Aucun texte détecté</span>
+            <button type="button" class="btn-toggle-original-btn">Voir original (FR)</button>
+          </div>
+          <p class="translation-layer-p" style="color:#6b7280; font-style:italic;">Cette page ne contient pas de texte vectoriel extractible (illustration ou scan graphique).</p>
+        `;
+        wireToggleOriginal(layer, pageNum);
+        return;
+      }
+
+      const rawParagraphs = fullText.split(/\n\n+/);
+      const chunks = [];
+      let currentChunk = '';
+      for (const p of rawParagraphs) {
+        if (!p.trim()) continue;
+        if (currentChunk.length + p.length > 1800) {
+          if (currentChunk.trim()) chunks.push(currentChunk.trim());
+          currentChunk = p + '\n\n';
+        } else {
+          currentChunk += p + '\n\n';
+        }
+      }
+      if (currentChunk.trim()) chunks.push(currentChunk.trim());
+
+      const translatedChunks = [];
+      for (const chunk of chunks) {
+        try {
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(chunk)}`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          if (data && Array.isArray(data[0])) {
+            const piece = data[0].map(s => s[0]).join('');
+            translatedChunks.push(piece);
+          } else {
+            translatedChunks.push(chunk);
+          }
+        } catch (_) {
+          translatedChunks.push(chunk);
+        }
+      }
+
+      const allTranslatedText = translatedChunks.join('\n\n');
+      const paragraphs = allTranslatedText.split(/\n\n+/).filter(p => p.trim().length > 0);
+      const pTags = paragraphs.map(p => {
+        const safeLines = p.split('\n').map(line => escapeHTML(line.trim())).filter(Boolean).join('<br>');
+        return `<p class="translation-layer-p">${safeLines}</p>`;
+      }).join('');
+
+      const fullHtml = `
+        <div class="translation-layer-header">
+          <span class="translation-layer-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            Page ${pageNum} / ${state.totalPages} · Traduit en anglais (${targetLang.toUpperCase()})
+          </span>
+          <button type="button" class="btn-toggle-original-btn" title="Afficher la page originale en français">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Voir original (FR)
+          </button>
+        </div>
+        <div class="translation-layer-body">
+          ${pTags}
+        </div>
+      `;
+
+      state.translatedPagesCache.set(cacheKey, fullHtml);
+      layer.innerHTML = fullHtml;
+      wireToggleOriginal(layer, pageNum);
+    } catch (e) {
+      layer.innerHTML = `
+        <div class="translation-layer-header">
+          <span class="translation-layer-title">Page ${pageNum} / ${state.totalPages} · Erreur</span>
+          <button type="button" class="btn-toggle-original-btn">Voir original (FR)</button>
+        </div>
+        <p class="translation-layer-p" style="color:#dc2626;">Impossible de traduire automatiquement cette page.</p>
+      `;
+      wireToggleOriginal(layer, pageNum);
+    }
+  }
+
+  function wireToggleOriginal(layer, pageNum) {
+    const btn = layer.querySelector('.btn-toggle-original-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const canvas = document.getElementById(`canvas-page-${pageNum}`);
+      const textLayer = document.getElementById(`text-layer-${pageNum}`);
+      const restoreBtn = document.getElementById(`btn-restore-trans-${pageNum}`);
+      
+      layer.style.display = 'none';
+      if (canvas) canvas.style.display = 'block';
+      if (textLayer) textLayer.style.display = 'block';
+      if (restoreBtn) restoreBtn.style.display = 'inline-flex';
+    });
+  }
+
+  function toggleTranslationMode(forceState) {
+    state.translationMode = (typeof forceState === 'boolean') ? forceState : !state.translationMode;
+    
+    if (dom.btnTranslateDoc) {
+      dom.btnTranslateDoc.classList.toggle('active', state.translationMode);
+      dom.btnTranslateDoc.title = state.translationMode 
+        ? "Revenir au document original (FR)" 
+        : "Traduire ce document en direct (EN)";
+    }
+
+    if (dom.btnToggleDocTranslationText) {
+      dom.btnToggleDocTranslationText.textContent = state.translationMode 
+        ? "Revenir à l'original (FR)" 
+        : "Traduire le document sur la page";
+    }
+
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.postMessage({ type: 'wg_translation_status', active: state.translationMode }, '*');
+      } catch (_) {}
+    }
+
+    const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+
+    if (state.translationMode) {
+      showToast("Traduction activée : document affiché en direct");
+      
+      const current = state.currentPage || 1;
+      applyTranslationToPage(current, targetLang);
+      
+      for (let i = 1; i <= state.totalPages; i++) {
+        if (i !== current) {
+          applyTranslationToPage(i, targetLang);
+        }
+      }
+    } else {
+      showToast("Affichage du document original en français");
+      for (let i = 1; i <= state.totalPages; i++) {
+        const layer = document.getElementById(`translation-layer-${i}`);
+        const canvas = document.getElementById(`canvas-page-${i}`);
+        const textLayer = document.getElementById(`text-layer-${i}`);
+        const restoreBtn = document.getElementById(`btn-restore-trans-${i}`);
+        if (layer) layer.style.display = 'none';
+        if (canvas) canvas.style.display = 'block';
+        if (textLayer) textLayer.style.display = 'block';
+        if (restoreBtn) restoreBtn.style.display = 'none';
+      }
+    }
+  }
+
   function openGoogleDocsTranslationMode() {
     let absUrl = state.pdfUrl || '';
     if (absUrl && !absUrl.startsWith('http://') && !absUrl.startsWith('https://')) {
@@ -1421,7 +1662,7 @@
       document.body.removeChild(a);
     }
     
-    alert(`📥 Le document « ${downloadName} » a été téléchargé dans vos Téléchargements.\n\n👉 Glissez-le simplement dans la zone de dépôt de Google Traduction qui vient de s'ouvrir pour obtenir le document traduit dans sa mise en page d'origine !`);
+    alert(`Le document « ${downloadName} » a été téléchargé dans vos Téléchargements.\n\nGlissez-le simplement dans la zone de dépôt de Google Traduction qui vient de s'ouvrir pour obtenir le document traduit dans sa mise en page d'origine.`);
     window.open('https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs', '_blank', 'noopener,noreferrer');
   }
 
@@ -1696,15 +1937,27 @@
     if (dom.tabInfo) dom.tabInfo.addEventListener('click', () => switchSidebarTab('info'));
 
     // Actions du volet de traduction
+    if (dom.btnToggleDocTranslation) {
+      dom.btnToggleDocTranslation.addEventListener('click', () => {
+        toggleTranslationMode();
+      });
+    }
     if (dom.btnTranslateCurrentPage) {
       dom.btnTranslateCurrentPage.addEventListener('click', () => {
         const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
         translateCurrentPage(targetLang);
+        applyTranslationToPage(state.currentPage || 1, targetLang);
       });
     }
     if (dom.selectTranslateLang) {
       dom.selectTranslateLang.addEventListener('change', () => {
-        translateCurrentPage(dom.selectTranslateLang.value);
+        const lang = dom.selectTranslateLang.value;
+        translateCurrentPage(lang);
+        if (state.translationMode) {
+          for (let i = 1; i <= state.totalPages; i++) {
+            applyTranslationToPage(i, lang);
+          }
+        }
       });
     }
     if (dom.btnOpenGoogleDocsMode) {
@@ -2085,11 +2338,10 @@ ER  -
       });
     }
 
-    // Traduction automatique du document via le volet de traduction intégré
+    // Traduction automatique du document
     if (dom.btnTranslateDoc) {
       dom.btnTranslateDoc.addEventListener('click', () => {
-        switchSidebarTab('translation');
-        showToast("Volet de traduction ouvert");
+        toggleTranslationMode();
       });
     }
 
