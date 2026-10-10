@@ -665,39 +665,6 @@
     }
 
 
-    // 8. Chargement différé et éco-conçu du badge Website Carbon (non bloquant)
-    const carbonContainer = document.getElementById('wcb');
-    if (carbonContainer) {
-      let carbonLoaded = false;
-      function loadCarbonBadge() {
-        if (carbonLoaded || document.querySelector('script[src*="website-carbon-badges"]')) return;
-        carbonLoaded = true;
-        const s = document.createElement('script');
-        s.src = 'https://unpkg.com/website-carbon-badges@1.1.3/b.min.js';
-        s.integrity = 'sha384-5Sivu2UajgUNg6Sxu3UHsZKjZlq9v6/slTAhA0/s21XcfNcrkSZRRO9K/0Cg14iP';
-        s.crossOrigin = 'anonymous';
-        s.defer = true;
-        document.body.appendChild(s);
-      }
-
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              loadCarbonBadge();
-              observer.disconnect();
-            }
-          });
-        }, { rootMargin: '200px' });
-        observer.observe(carbonContainer);
-      } else {
-        if ('requestIdleCallback' in window) {
-          window.requestIdleCallback(loadCarbonBadge, { timeout: 4000 });
-        } else {
-          window.addEventListener('load', () => setTimeout(loadCarbonBadge, 2000), { once: true });
-        }
-      }
-    }
 
     // 7. Actualisation automatique de la capture satellite en direct
     const satImg = document.getElementById('satellite-live-img');

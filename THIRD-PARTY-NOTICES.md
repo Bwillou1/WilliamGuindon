@@ -514,9 +514,6 @@ limitations under the License.
 
 ## 3. Ressources et services tiers
 
-- **Website Carbon Badge :** Copyright © Wholegrain Digital — Licence GNU GPLv3 / MIT (calcul d'empreinte carbone).
-  - *Intégrité des sous-ressources (SRI) :* Chargé dynamiquement depuis `unpkg.com` avec contrôle cryptographique `integrity="sha384-5Sivu2UajgUNg6Sxu3UHsZKjZlq9v6/slTAhA0/s21XcfNcrkSZRRO9K/0Cg14iP" crossorigin="anonymous"`.
-  - *Non auto-hébergement :* Ce script n'est pas distribué localement dans `assets/` ni pré-mis en cache dans le Service Worker en raison de la clause copyleft de la GPL-3.0, incompatible avec la licence CC BY-NC-ND 4.0 du site.
 - **Umami Analytics :** Licence MIT (mesure d'audience sans traceurs publicitaires ni collecte de données personnelles nominatives).
 - **Google Traduction :** Outil de traduction automatique fourni par Google à titre d'accessibilité internationale multilingue. Seul le texte original français fait foi juridique.
 - **Cal.com :** Plateforme de prise de rendez-vous avec la presse (conditions d'utilisation : [cal.com/terms](https://cal.com/terms)).
