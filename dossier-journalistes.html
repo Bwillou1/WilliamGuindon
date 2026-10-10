@@ -2217,6 +2217,7 @@
         <span id="current-filename" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">Sélectionnez un document</span>
         <div class="preview-header-actions" id="preview-header-actions" style="display: none;">
           <a id="btn-fullscreen-viewer" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Consulter dans le lecteur officiel grand écran">Plein écran ↗</a>
+          <a id="btn-translate-preview" href="https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs" target="_blank" rel="noopener noreferrer" class="btn-preview-action" style="display: none;" title="Traduire ce document avec Google Traduction Documents">🌐 Traduire ↗</a>
           <a id="direct-file-link" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Télécharger le fichier original">Télécharger original ↗</a>
         </div>
       </div>
@@ -3464,6 +3465,7 @@
 
           const directLink = document.getElementById("direct-file-link");
           const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
+          const translateLink = document.getElementById("btn-translate-preview");
 
           const res = await resolveFileResource(fileObj);
 
@@ -3490,6 +3492,7 @@
 
             if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
+              if (translateLink) translateLink.style.display = "none";
               stage.classList.add("is-media");
               const img = document.createElement("img");
               img.src = res.effectiveUrl;
@@ -3503,6 +3506,7 @@
               stage.appendChild(img);
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
+              if (translateLink) translateLink.style.display = "none";
               stage.classList.add("is-media");
               const video = document.createElement("video");
               video.src = res.effectiveUrl;
@@ -3524,6 +3528,16 @@
                 fsViewerLink.href = viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
               }
+              if (translateLink) {
+                const publicPdfUrl = res.isSiteAsset ? (window.location.origin + (res.rawUrl.startsWith('/') ? res.rawUrl : '/' + res.rawUrl)) : res.rawUrl;
+                translateLink.href = "https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs";
+                translateLink.onclick = () => {
+                  if (navigator.clipboard && navigator.clipboard.writeText && publicPdfUrl) {
+                    navigator.clipboard.writeText(publicPdfUrl);
+                  }
+                };
+                translateLink.style.display = "inline-flex";
+              }
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
               iframe.title = fileObj.name;
@@ -3532,6 +3546,7 @@
               stage.appendChild(iframe);
             } else if (lower.endsWith(".csv")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
+              if (translateLink) translateLink.style.display = "none";
               stage.classList.remove("is-media");
 
               if (res.isLocal && res.blob) {
@@ -3975,6 +3990,7 @@
     const currentFilename = document.getElementById("current-filename");
     const actions = document.getElementById("preview-header-actions");
     const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
+    const translateLink = document.getElementById("btn-translate-preview");
     const directLink = document.getElementById("direct-file-link");
 
     document.querySelectorAll(".drive-item.active").forEach(el => el.classList.remove("active"));
@@ -3984,6 +4000,7 @@
     }
     if (actions) actions.style.display = "inline-flex";
     if (fsViewerLink) fsViewerLink.style.display = "none";
+    if (translateLink) translateLink.style.display = "none";
     if (directLink) {
       directLink.href = "https://youtube.com/shorts/WbJj7S6M4Ic?si=mNZ8IlDWraSfEVkX";
       directLink.setAttribute("target", "_blank");

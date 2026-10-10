@@ -400,6 +400,7 @@
     btnRotate: document.getElementById('btn-rotate'),
     btnFullscreen: document.getElementById('btn-fullscreen'),
     btnDownload: document.getElementById('btn-download'),
+    btnTranslateDoc: document.getElementById('btn-translate-doc'),
     btnPrint: document.getElementById('btn-print'),
     btnShare: document.getElementById('btn-share'),
     btnShortcuts: document.getElementById('btn-shortcuts'),
@@ -1940,6 +1941,110 @@ ER  -
         }
       });
     }
+
+    // Traduction de document via Google Traduction Documents
+    if (dom.btnTranslateDoc) {
+      dom.btnTranslateDoc.addEventListener('click', () => {
+        let absUrl = state.pdfUrl || '';
+        if (absUrl && !absUrl.startsWith('http://') && !absUrl.startsWith('https://')) {
+          absUrl = window.location.origin + (absUrl.startsWith('/') ? absUrl : '/' + absUrl);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText && absUrl) {
+          navigator.clipboard.writeText(absUrl).then(() => {
+            showToast("Lien direct copié · Google Traduction Documents ouvert");
+          }).catch(() => {
+            showToast("Ouverture de Google Traduction Documents");
+          });
+        } else {
+          showToast("Ouverture de Google Traduction Documents");
+        }
+        window.open('https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs', '_blank', 'noopener,noreferrer');
+      });
+    }
+
+    // Infobulle flottante de traduction de sélection de texte
+    const setupSelectionTranslator = () => {
+      let translateBadge = document.getElementById('viewer-selection-translate-btn');
+      if (!translateBadge) {
+        translateBadge = document.createElement('button');
+        translateBadge.id = 'viewer-selection-translate-btn';
+        translateBadge.className = 'viewer-selection-translate-btn';
+        translateBadge.type = 'button';
+        translateBadge.setAttribute('aria-label', 'Traduire le texte sélectionné avec Google Traduction');
+        translateBadge.innerHTML = `
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <span>Traduire la sélection</span>
+        `;
+        document.body.appendChild(translateBadge);
+      }
+
+      let activeSelectedText = '';
+
+      const hideBadge = () => {
+        if (translateBadge) translateBadge.style.display = 'none';
+        activeSelectedText = '';
+      };
+
+      const handleSelection = () => {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !sel.rangeCount) {
+          hideBadge();
+          return;
+        }
+        const text = sel.toString().trim();
+        if (!text || text.length < 2) {
+          hideBadge();
+          return;
+        }
+
+        const range = sel.getRangeAt(0);
+        const container = dom.pagesContainer || dom.viewport;
+        if (!container || !container.contains(range.commonAncestorContainer)) {
+          hideBadge();
+          return;
+        }
+
+        const rect = range.getBoundingClientRect();
+        if (!rect || (rect.width === 0 && rect.height === 0)) {
+          hideBadge();
+          return;
+        }
+
+        activeSelectedText = text;
+        const top = Math.max(10, window.scrollY + rect.top - 38);
+        const left = Math.min(window.innerWidth - 180, Math.max(10, window.scrollX + rect.left + (rect.width / 2) - 80));
+
+        translateBadge.style.top = `${top}px`;
+        translateBadge.style.left = `${left}px`;
+        translateBadge.style.display = 'inline-flex';
+      };
+
+      document.addEventListener('mouseup', () => {
+        setTimeout(handleSelection, 80);
+      });
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') hideBadge();
+        else setTimeout(handleSelection, 80);
+      });
+      document.addEventListener('mousedown', (e) => {
+        if (translateBadge && !translateBadge.contains(e.target)) {
+          hideBadge();
+        }
+      });
+
+      translateBadge.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeSelectedText) {
+          const targetUrl = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(activeSelectedText)}`;
+          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          showToast("Extrait ouvert dans Google Traduction");
+          hideBadge();
+        }
+      });
+    };
+
+    setupSelectionTranslator();
 
     // Recherche
     if (dom.inputSearch) {

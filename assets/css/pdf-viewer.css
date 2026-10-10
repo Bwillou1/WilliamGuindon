@@ -870,6 +870,55 @@ body.is-embedded .pdf-app {
   opacity: 1;
 }
 
+.viewer-selection-translate-btn {
+  position: absolute;
+  z-index: 180;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card, #ffffff);
+  color: var(--primary, #064e3b);
+  border: 1px solid var(--line, #dce5df);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.viewer-selection-translate-btn:hover {
+  background: var(--primary, #0d652d);
+  color: #ffffff;
+  border-color: var(--primary, #0d652d);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.viewer-selection-translate-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[data-theme="dark"] .viewer-selection-translate-btn {
+  background: #1e2621;
+  color: #a3e635;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .viewer-selection-translate-btn:hover {
+  background: #15803d;
+  color: #ffffff;
+  border-color: #15803d;
+}
 
 .mobile-quick-bar {
   display: none;
