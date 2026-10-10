@@ -1373,6 +1373,225 @@
     }
   }
 
+  function normalizeTextString(str) {
+    if (!str) return '';
+    let s = str.replace(/\u00A0/g, ' ');
+    // Fusionner les lettres capitales artificiellement espacées dans les titres (ex: "M É M O I R E" -> "MÉMOIRE", "S N A P" -> "SNAP")
+    s = s.replace(/(?<=[\p{Lu}]) (?=[\p{Lu}](?: |$))/gu, '');
+    s = s.replace(/[ \t]+/g, ' ');
+    // Normaliser les unités métriques et indices (km 2 -> km², m 2 -> m²)
+    s = s.replace(/\b(km|m|cm|mm)\s*2\b/gi, '$1²').replace(/\b(km|m|cm|mm)\s*3\b/gi, '$1³');
+    return s;
+  }
+
+  function finalizeParagraph(para, pw, ph) {
+    const lines = para.lines;
+    const firstLine = lines[0];
+    const lastLine = lines[lines.length - 1];
+    const left = Math.min(...lines.map(l => l.left));
+    const right = Math.max(...lines.map(l => l.right));
+    const top = firstLine.top;
+    const bottom = lastLine.bottom;
+    const width = Math.max(10, right - left);
+    const height = Math.max(12, bottom - top);
+
+    // Reconnecter les césures de fin de ligne : "environne-" + "ment" -> "environnement"
+    let fullText = '';
+    for (let i = 0; i < lines.length; i++) {
+      const cur = lines[i].text;
+      if (i > 0) {
+        const prev = lines[i - 1].text;
+        if (/(\p{L}+)-\s*$/u.test(prev) && /^\s*(\p{Ll}+)/u.test(cur)) {
+          fullText = fullText.replace(/-$/, '') + cur;
+          continue;
+        } else {
+          fullText += ' ';
+        }
+      }
+      fullText += cur;
+    }
+    fullText = fullText.trim();
+
+    const isSerif = lines.some(l => l.isSerif);
+    const isBold = lines.some(l => l.isBold);
+    const avgFontSize = lines.reduce((acc, l) => acc + l.fontSize, 0) / lines.length;
+    const isNumeric = para.isNumeric || /^\s*\d+([\.,]\d+)?\s*$/.test(fullText) || /^\s*Page\s+\d+(\s*\/\s*\d+)?\s*$/i.test(fullText);
+
+    return {
+      text: fullText,
+      translatedText: isNumeric ? fullText : '',
+      isNumeric,
+      leftPct: Math.max(0, (left / pw) * 100),
+      topPct: Math.max(0, (top / ph) * 100),
+      widthPct: Math.min(100, Math.max(2, (width / pw) * 100)),
+      heightPct: Math.max(1, (height / ph) * 100),
+      baseFontSize: Math.max(8, Math.min(32, Math.round(avgFontSize * 10) / 10)),
+      fontFamily: isSerif ? 'Georgia, "Times New Roman", "Liberation Serif", serif' : '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontWeight: isBold ? '700' : '400',
+      lineCount: lines.length
+    };
+  }
+
+  async function extractStructuredPageBlocks(page) {
+    const vp = page.getViewport({ scale: 1 });
+    const pw = vp.width;
+    const ph = vp.height;
+    const textContent = await page.getTextContent();
+    const rawItems = (textContent.items || []).filter(it => it.str && it.str.trim());
+    if (rawItems.length === 0) {
+      return [];
+    }
+
+    // 1. Extraire les coordonnées et typographies de chaque segment
+    const items = rawItems.map(it => {
+      const tx = it.transform[4];
+      const ty = it.transform[5];
+      const fs = Math.hypot(it.transform[0], it.transform[1]) || 11;
+      const w = it.width || (it.str.length * fs * 0.55);
+      const h = it.height || fs;
+      const top = ph - ty - (fs * 0.85);
+      const str = normalizeTextString(it.str);
+      const fontName = (it.fontName || '').toLowerCase();
+      const isSerif = fontName.includes('times') || fontName.includes('serif') || fontName.includes('georgia') || fontName.includes('minion') || fontName.includes('cambria') || !fontName.includes('sans');
+      const isBold = fontName.includes('bold') || fontName.includes('black') || fontName.includes('heavy') || fontName.includes('b1') || fontName.includes('b2');
+
+      return {
+        str,
+        x: tx,
+        top,
+        baseline: ty,
+        width: w,
+        height: h,
+        fontSize: fs,
+        fontName,
+        isSerif,
+        isBold
+      };
+    }).filter(it => it.str.length > 0);
+
+    // 2. Regrouper par lignes géométriques horizontales (tolérance 3.5px sur la ligne de base)
+    const lineTolerance = 3.5;
+    const rawLines = [];
+    items.forEach(it => {
+      let foundLine = null;
+      for (const line of rawLines) {
+        if (Math.abs(line.baseline - it.baseline) <= lineTolerance) {
+          foundLine = line;
+          break;
+        }
+      }
+      if (foundLine) {
+        foundLine.items.push(it);
+        foundLine.minY = Math.min(foundLine.minY, it.top);
+        foundLine.maxY = Math.max(foundLine.maxY, it.top + it.height);
+        foundLine.baseline = (foundLine.baseline + it.baseline) / 2;
+      } else {
+        rawLines.push({
+          baseline: it.baseline,
+          minY: it.top,
+          maxY: it.top + it.height,
+          items: [it]
+        });
+      }
+    });
+
+    // Trier les lignes par position verticale réelle (du haut vers le bas)
+    rawLines.sort((a, b) => a.minY - b.minY);
+
+    // 3. Pour chaque ligne, trier les fragments de gauche à droite
+    const structuredLines = rawLines.map(l => {
+      l.items.sort((a, b) => a.x - b.x);
+      const first = l.items[0];
+      const last = l.items[l.items.length - 1];
+      const left = first.x;
+      const right = last.x + last.width;
+      const width = Math.max(1, right - left);
+      const fontSize = l.items.reduce((acc, it) => acc + it.fontSize, 0) / l.items.length;
+      const isBold = l.items.some(it => it.isBold);
+      const isSerif = l.items.some(it => it.isSerif);
+
+      let text = '';
+      for (let i = 0; i < l.items.length; i++) {
+        const cur = l.items[i];
+        if (i > 0) {
+          const prev = l.items[i - 1];
+          const gap = cur.x - (prev.x + prev.width);
+          if (gap > 2) text += ' ';
+        }
+        text += cur.str;
+      }
+      text = text.trim();
+
+      return {
+        text,
+        left,
+        right,
+        width,
+        top: l.minY,
+        bottom: l.maxY,
+        fontSize,
+        isBold,
+        isSerif
+      };
+    }).filter(l => l.text.length > 0);
+
+    // 4. Fusionner les lignes adjacentes en paragraphes cohérents
+    const paragraphs = [];
+    let curPara = null;
+
+    for (let i = 0; i < structuredLines.length; i++) {
+      const line = structuredLines[i];
+      const isPureNumber = /^\s*\d+([\.,]\d+)?\s*$/.test(line.text);
+      const isPageFooter = (line.top / ph > 0.88) && (isPureNumber || /^\s*Page\s+\d+(\s*\/\s*\d+)?\s*$/i.test(line.text));
+      const isPageHeader = (line.top / ph < 0.08) && line.width < (pw * 0.5);
+
+      // Si c'est un pied de page, en-tête ou numéro isolé : ne pas mélanger aux paragraphes
+      if (isPageFooter || isPageHeader || isPureNumber) {
+        if (curPara) {
+          paragraphs.push(finalizeParagraph(curPara, pw, ph));
+          curPara = null;
+        }
+        paragraphs.push(finalizeParagraph({
+          lines: [line],
+          isIsolated: true,
+          isNumeric: isPureNumber || isPageFooter
+        }, pw, ph));
+        continue;
+      }
+
+      if (!curPara) {
+        curPara = { lines: [line] };
+        continue;
+      }
+
+      const prevLine = curPara.lines[curPara.lines.length - 1];
+      const verticalGap = line.top - prevLine.bottom;
+      const leftDiff = Math.abs(line.left - prevLine.left);
+      const sizeDiff = Math.abs(line.fontSize - prevLine.fontSize);
+      const prevEndsSentence = /[.!?:]\s*$/.test(prevLine.text);
+      const prevIsShort = prevLine.width < (pw * 0.45);
+
+      const canMerge = (
+        verticalGap <= Math.max(12, prevLine.fontSize * 0.95) &&
+        leftDiff <= 28 &&
+        sizeDiff <= 2.5 &&
+        !(prevEndsSentence && prevIsShort)
+      );
+
+      if (canMerge) {
+        curPara.lines.push(line);
+      } else {
+        paragraphs.push(finalizeParagraph(curPara, pw, ph));
+        curPara = { lines: [line] };
+      }
+    }
+    if (curPara) {
+      paragraphs.push(finalizeParagraph(curPara, pw, ph));
+    }
+
+    return paragraphs;
+  }
+
   async function translateCurrentPage(targetLang = 'en') {
     if (!state.pdfDoc) {
       showToast("Document non chargé", true);
@@ -1380,71 +1599,58 @@
     }
     const pageNum = state.currentPage || 1;
     if (dom.translationPageBadge) dom.translationPageBadge.textContent = `Page ${pageNum}`;
-    if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:var(--brand-primary, #0d652d);">⏳ Extraction du texte de la page ${pageNum} et traduction...</span>`;
+    if (dom.translationStatus) {
+      dom.translationStatus.innerHTML = `<span style="color:var(--brand-primary, #0d652d);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Extraction du texte et traduction...</span>`;
+    }
     if (dom.translationOutput) dom.translationOutput.textContent = "Extraction et traduction du texte en cours...";
 
     try {
-      const page = await state.pdfDoc.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      const textPieces = [];
-      let lastY = null;
-      let currentBlock = '';
+      const cacheKey = `${pageNum}_${targetLang}`;
+      let pageData = state.translatedPagesCache.get(cacheKey);
 
-      textContent.items.forEach(item => {
-        if (!item.str) return;
-        const y = item.transform ? Math.round(item.transform[5]) : null;
-        if (lastY !== null && y !== null && Math.abs(y - lastY) > 14) {
-          if (currentBlock.trim()) {
-            textPieces.push(currentBlock.trim());
-            currentBlock = '';
-          }
+      if (!pageData) {
+        const page = await state.pdfDoc.getPage(pageNum);
+        const paragraphs = await extractStructuredPageBlocks(page);
+
+        if (paragraphs.length === 0) {
+          if (dom.translationStatus) dom.translationStatus.textContent = "Aucun texte extractible sur cette page.";
+          if (dom.translationOutput) dom.translationOutput.textContent = "Cette page ne contient pas de texte vectoriel indexé (ou est un scan d'image pur).";
+          return;
         }
-        currentBlock += item.str + ' ';
-        if (y !== null) lastY = y;
-      });
-      if (currentBlock.trim()) textPieces.push(currentBlock.trim());
 
-      const validLines = textPieces.filter(l => l.length > 0);
-      if (validLines.length === 0) {
-        if (dom.translationStatus) dom.translationStatus.textContent = "Aucun texte extractible sur cette page.";
-        if (dom.translationOutput) dom.translationOutput.textContent = "Cette page ne contient pas de texte vectoriel indexé (ou est un scan d'image pur).";
-        return;
+        const toTranslate = paragraphs.filter(b => !b.isNumeric && b.text.trim().length > 0);
+        await Promise.all(toTranslate.map(async (block) => {
+          try {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(block.text)}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (data && Array.isArray(data[0])) {
+              block.translatedText = data[0].map(s => s[0]).join('');
+            } else {
+              block.translatedText = block.text;
+            }
+          } catch (_) {
+            block.translatedText = block.text;
+          }
+        }));
+
+        paragraphs.forEach(b => {
+          if (!b.translatedText) b.translatedText = b.text;
+        });
+
+        pageData = {
+          flatBlocks: paragraphs,
+          fluidParagraphs: paragraphs.map(b => b.translatedText || b.text).filter(Boolean)
+        };
+        state.translatedPagesCache.set(cacheKey, pageData);
       }
 
-      // Regrouper par blocs cohérents de taille optimale
-      const paragraphs = [];
-      let temp = '';
-      validLines.forEach(line => {
-        if (temp.length + line.length > 450) {
-          paragraphs.push(temp.trim());
-          temp = line + ' ';
-        } else {
-          temp += line + ' ';
-        }
-      });
-      if (temp.trim()) paragraphs.push(temp.trim());
-
-      const translatedParagraphs = [];
-      for (const p of paragraphs) {
-        try {
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(p)}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          const data = await res.json();
-          if (data && Array.isArray(data[0])) {
-            const piece = data[0].map(s => s[0]).join('');
-            translatedParagraphs.push(piece);
-          } else {
-            translatedParagraphs.push(p);
-          }
-        } catch (e) {
-          translatedParagraphs.push(p);
-        }
-      }
-
-      const resultText = translatedParagraphs.join('\n\n');
+      const resultText = pageData.fluidParagraphs.join('\n\n');
       if (dom.translationOutput) dom.translationOutput.textContent = resultText;
-      if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:#059669; font-weight:600;">✔ Traduction de la page ${pageNum} prête (${targetLang.toUpperCase()}) !</span>`;
+      if (dom.translationStatus) {
+        dom.translationStatus.innerHTML = `<span style="color:#059669; font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Traduction de la page ${pageNum} prête (${targetLang.toUpperCase()})</span>`;
+      }
     } catch (err) {
       if (dom.translationStatus) dom.translationStatus.textContent = "Erreur lors de la traduction.";
       if (dom.translationOutput) dom.translationOutput.textContent = "Impossible d'extraire ou de traduire cette page automatiquement.";
@@ -1454,6 +1660,7 @@
   function renderTranslatedPageContent(layer, pageData, pageNum, targetLang) {
     const isOverlay = (state.translationLayout === 'overlay');
     layer.className = `translation-layer ${isOverlay ? 'layout-overlay' : 'layout-fluid'}`;
+    layer.style.setProperty('--scale-factor', state.zoomScale || 1);
     
     const canvas = document.getElementById(`canvas-page-${pageNum}`);
     if (canvas) {
@@ -1464,7 +1671,7 @@
       layer.innerHTML = `
         <div class="translation-layer-toolbar">
           <span class="translation-layer-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
             Page ${pageNum} / ${state.totalPages} &middot; Aucun texte d&eacute;tect&eacute;
           </span>
           <div class="translation-layer-actions">
@@ -1482,11 +1689,11 @@
     const toolbarHtml = `
       <div class="translation-layer-toolbar">
         <span class="translation-layer-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
           Page ${pageNum} / ${state.totalPages} &middot; Traduit (${targetLang.toUpperCase()})
         </span>
         <div class="translation-layer-actions">
-          <button type="button" class="btn-layout-toggle" title="Basculer entre la mise en page exacte et le texte continu">
+          <button type="button" class="btn-layout-toggle" title="Basculer entre la superposition exacte et le mode texte continu">
             ${isOverlay ? 'Mode texte continu' : 'Superposition exacte'}
           </button>
           <button type="button" class="btn-toggle-original-btn" title="Afficher la page originale en fran&ccedil;ais">
@@ -1500,8 +1707,10 @@
     if (isOverlay) {
       const blocksHtml = pageData.flatBlocks.map(b => {
         const text = escapeHTML(b.translatedText || b.text);
-        const style = `top:${b.topPct.toFixed(3)}%; left:${b.leftPct.toFixed(3)}%; width:${b.widthPct.toFixed(3)}%; font-size:calc(${b.baseFontSize}px * var(--scale-factor, 1)); font-family:${b.fontFamily}; font-weight:${b.fontWeight};`;
-        return `<div class="translated-block" style="${style}">${text}</div>`;
+        const textAlign = b.isNumeric ? 'center' : 'inherit';
+        const style = `top:${b.topPct.toFixed(3)}%; left:${b.leftPct.toFixed(3)}%; width:${b.widthPct.toFixed(3)}%; font-size:calc(${b.baseFontSize}px * var(--scale-factor, 1)); font-family:${b.fontFamily}; font-weight:${b.fontWeight}; text-align:${textAlign};`;
+        const extraClass = b.isNumeric ? ' is-numeric' : '';
+        return `<div class="translated-block${extraClass}" style="${style}">${text}</div>`;
       }).join('');
       layer.innerHTML = toolbarHtml + blocksHtml;
     } else {
@@ -1571,148 +1780,44 @@
 
     try {
       const page = await state.pdfDoc.getPage(pageNum);
-      const vp = page.getViewport({ scale: 1 });
-      const pw = vp.width;
-      const ph = vp.height;
-      const textContent = await page.getTextContent();
-      
-      const items = (textContent.items || []).filter(it => it.str && it.str.trim());
-      if (items.length === 0) {
+      const paragraphs = await extractStructuredPageBlocks(page);
+
+      if (paragraphs.length === 0) {
         const pageData = { flatBlocks: [], fluidParagraphs: [] };
         state.translatedPagesCache.set(cacheKey, pageData);
         renderTranslatedPageContent(layer, pageData, pageNum, targetLang);
         return;
       }
 
-      const lineTolerance = 4;
-      const lines = [];
+      // Filtrer les blocs nécessitant une traduction (ignorer numéros purs et codes)
+      const toTranslate = paragraphs.filter(b => !b.isNumeric && b.text.trim().length > 0);
 
-      items.forEach(it => {
-        const tx = it.transform[4];
-        const ty = it.transform[5];
-        const fs = Math.hypot(it.transform[0], it.transform[1]) || 11;
-        const w = it.width || (it.str.length * fs * 0.55);
-        const h = it.height || fs;
-        const top = ph - ty - (fs * 0.85);
-
-        let foundLine = null;
-        for (const line of lines) {
-          if (Math.abs(line.baseline - ty) <= lineTolerance) {
-            foundLine = line;
-            break;
-          }
-        }
-
-        const itemObj = { str: it.str, x: tx, baseline: ty, top, width: w, height: h, fontSize: fs, fontName: it.fontName };
-        if (foundLine) {
-          foundLine.items.push(itemObj);
-          foundLine.minY = Math.min(foundLine.minY, top);
-          foundLine.maxY = Math.max(foundLine.maxY, top + h);
-          foundLine.baseline = (foundLine.baseline + ty) / 2;
-        } else {
-          lines.push({ baseline: ty, minY: top, maxY: top + h, items: [itemObj] });
-        }
-      });
-
-      lines.sort((a, b) => a.minY - b.minY);
-
-      const rawBlocks = [];
-      lines.forEach(l => {
-        l.items.sort((a, b) => a.x - b.x);
-        let currentCell = [l.items[0]];
-
-        for (let i = 1; i < l.items.length; i++) {
-          const prev = l.items[i - 1];
-          const cur = l.items[i];
-          const gap = cur.x - (prev.x + prev.width);
-          if (gap > 20) {
-            rawBlocks.push(currentCell);
-            currentCell = [cur];
-          } else {
-            currentCell.push(cur);
-          }
-        }
-        if (currentCell.length) rawBlocks.push(currentCell);
-      });
-
-      const flatBlocks = rawBlocks.map(cell => {
-        const text = cell.map(c => c.str).join(' ');
-        const first = cell[0];
-        const last = cell[cell.length - 1];
-        const totalW = (last.x + last.width) - first.x;
-        const fontName = (first.fontName || '').toLowerCase();
-        const isSerif = fontName.includes('times') || fontName.includes('serif') || fontName.includes('georgia') || fontName.includes('minion') || fontName.includes('cambria') || !fontName.includes('sans');
-        const isBold = fontName.includes('bold') || fontName.includes('black') || fontName.includes('heavy') || fontName.includes('b1') || fontName.includes('b2');
-
-        return {
-          text,
-          translatedText: '',
-          leftPct: Math.max(0, (first.x / pw) * 100),
-          topPct: Math.max(0, (first.top / ph) * 100),
-          widthPct: Math.min(100, Math.max(2, (totalW / pw) * 100)),
-          baseFontSize: Math.max(8, Math.min(28, Math.round(first.fontSize * 10) / 10)),
-          fontFamily: isSerif ? 'Georgia, "Times New Roman", "Liberation Serif", serif' : '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          fontWeight: isBold ? '700' : '400'
-        };
-      });
-
-      const DELIM = '\n\n---§---\n\n';
-      const BATCH_CHAR_LIMIT = 1500;
-      const batches = [];
-      let currentBatch = [];
-      let currentLen = 0;
-
-      for (const block of flatBlocks) {
-        const blockLen = block.text.length + DELIM.length;
-        if (currentLen + blockLen > BATCH_CHAR_LIMIT && currentBatch.length > 0) {
-          batches.push(currentBatch);
-          currentBatch = [block];
-          currentLen = blockLen;
-        } else {
-          currentBatch.push(block);
-          currentLen += blockLen;
-        }
-      }
-      if (currentBatch.length > 0) batches.push(currentBatch);
-
-      for (const batch of batches) {
-        const joined = batch.map(b => b.text).join(DELIM);
+      // Traduction parallèle directe (zéro délimiteur fragile, zéro décalage d'indices)
+      await Promise.all(toTranslate.map(async (block) => {
         try {
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(joined)}`;
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(block.text)}`;
           const res = await fetch(url);
           if (!res.ok) throw new Error('HTTP ' + res.status);
           const data = await res.json();
           if (data && Array.isArray(data[0])) {
-            const fullOutput = data[0].map(s => s[0]).join('');
-            const translatedPieces = fullOutput.split(/\s*---§---\s*/);
-            batch.forEach((block, idx) => {
-              block.translatedText = (translatedPieces[idx] && translatedPieces[idx].trim()) ? translatedPieces[idx].trim() : block.text;
-            });
+            block.translatedText = data[0].map(s => s[0]).join('');
           } else {
-            batch.forEach(block => { block.translatedText = block.text; });
+            block.translatedText = block.text;
           }
         } catch (_) {
-          batch.forEach(block => { block.translatedText = block.text; });
+          block.translatedText = block.text;
         }
-      }
+      }));
 
-      let fluidText = '';
-      let prevBaseline = null;
-      lines.forEach(l => {
-        const lineText = l.items.map(it => it.str).join(' ');
-        if (prevBaseline !== null && Math.abs(prevBaseline - l.baseline) > 22) {
-          fluidText += '\n\n';
-        } else if (prevBaseline !== null) {
-          fluidText += '\n';
-        }
-        fluidText += lineText;
-        prevBaseline = l.baseline;
+      // Les blocs numériques conservent leur texte original
+      paragraphs.forEach(b => {
+        if (!b.translatedText) b.translatedText = b.text;
       });
 
-      const fluidParagraphs = flatBlocks.map(b => b.translatedText || b.text).filter(Boolean);
+      const fluidParagraphs = paragraphs.map(b => b.translatedText || b.text).filter(Boolean);
 
       const pageData = {
-        flatBlocks,
+        flatBlocks: paragraphs,
         fluidParagraphs
       };
 

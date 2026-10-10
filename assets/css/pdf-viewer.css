@@ -941,24 +941,34 @@ body.is-embedded .pdf-app {
 
 .translated-block {
   position: absolute;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
   color: #111827;
-  line-height: 1.25;
-  padding: 1px 3px;
+  line-height: 1.35;
+  padding: 2px 5px;
   box-sizing: border-box;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  border-radius: 2px;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   transition: background-color 0.15s ease, color 0.15s ease;
   z-index: 4;
 }
 
+.translated-block.is-numeric {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: none;
+  text-align: center;
+}
+
 [data-theme="dark"] .translated-block {
-  background: #141b17;
+  background: rgba(18, 24, 21, 0.96);
   color: #e5e7eb;
-  box-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .translated-block.is-numeric {
+  background: rgba(18, 24, 21, 0.88);
 }
 
 /* Mode 2 : Mise en page continue / fluide (Lecture type document éditorial) */
