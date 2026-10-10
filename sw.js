@@ -58,6 +58,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/the-rover-logo.jpg',
   '/assets/media/educaloi-logo.png',
   '/assets/media/educaloi-logo.webp',
+  '/assets/media/fcqged-logo.png',
+  '/assets/media/fcqged-logo.webp',
   '/assets/media/sgtb-medaillon.png',
   '/assets/media/sgtb-medaillon.webp',
   '/assets/media/logo-areq-csq.png',
