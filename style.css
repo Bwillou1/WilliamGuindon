@@ -3960,50 +3960,60 @@ body.dark-theme .notif-link-ghost {
 
 @media (max-width: 768px) {
   .tracker-row-wide {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
     margin-top: 14px !important;
   }
   .tracker-row-wide .tracker-card-compact {
-    padding: 10px 6px !important;
+    padding: 16px 14px !important;
+    border-radius: 10px !important;
   }
   .tracker-row-wide .tracker-card-head {
-    gap: 4px !important;
-    margin-bottom: 2px !important;
+    gap: 6px !important;
+    margin-bottom: 6px !important;
   }
   .tracker-row-wide .tracker-icon-sm {
-    width: 14px !important;
-    height: 14px !important;
+    width: 18px !important;
+    height: 18px !important;
   }
   .tracker-row-wide .counter-lbl {
-    font-size: 10px !important;
-    letter-spacing: 0.02em !important;
+    font-size: 12px !important;
+    letter-spacing: 0.04em !important;
+    font-weight: 700 !important;
   }
   .tracker-row-wide .counter-num {
-    font-size: clamp(14px, 3.8vw, 18px) !important;
-    margin: 2px 0 !important;
+    font-size: clamp(24px, 5.5vw, 32px) !important;
+    margin: 4px 0 !important;
+    font-weight: 800 !important;
   }
   .tracker-row-wide .counter-desc {
-    font-size: 10px !important;
-    line-height: 1.25 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
   }
   .tracker-row-wide .precision-countdown-compact {
-    gap: 2px !important;
-    margin: 2px 0 4px !important;
+    gap: 6px !important;
+    margin: 8px 0 10px !important;
   }
   .tracker-row-wide .precision-time-unit {
-    padding: 2px 1px !important;
+    padding: 6px 6px !important;
+    border-radius: 6px !important;
   }
   .tracker-row-wide .precision-time-val {
-    font-size: 12px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
   }
   .tracker-row-wide .precision-time-lbl {
-    font-size: 8px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
   }
   .tracker-row-wide .btn-full-compact {
-    padding: 4px 6px !important;
-    font-size: 10px !important;
-    margin-top: 2px !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    margin-top: 8px !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   .steps-strip-grid {
     grid-template-columns: 1fr !important;
@@ -4095,30 +4105,30 @@ body.dark-theme .notif-link-ghost {
 
 @media (max-width: 480px) {
   .tracker-row-wide {
-    gap: 4px !important;
+    gap: 10px !important;
   }
   .tracker-row-wide .tracker-card-compact {
-    padding: 8px 4px !important;
+    padding: 14px 12px !important;
   }
   .tracker-row-wide .counter-lbl {
-    font-size: 8.5px !important;
+    font-size: 11.5px !important;
   }
   .tracker-row-wide .counter-num {
-    font-size: 13px !important;
+    font-size: 24px !important;
   }
   .tracker-row-wide .counter-desc {
-    font-size: 8.5px !important;
-    line-height: 1.2 !important;
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
   }
   .tracker-row-wide .precision-time-val {
-    font-size: 11px !important;
+    font-size: 15px !important;
   }
   .tracker-row-wide .precision-time-lbl {
-    font-size: 7.5px !important;
+    font-size: 9.5px !important;
   }
   .tracker-row-wide .btn-full-compact {
-    font-size: 8.5px !important;
-    padding: 3px 2px !important;
+    font-size: 12.5px !important;
+    padding: 9px 12px !important;
   }
   .tracker-card {
     padding: 14px 8px;
@@ -10342,9 +10352,175 @@ body[data-page="policy"] .floating-ai-btn {
 }
 
 /* ==========================================================================
-   Protections Mobiles Globales (Boutons, Pilules & Débordements)
+   Optimisation Mobile & iPhone iOS (Dynamic Island, Safe Areas, Touch Targets)
    ========================================================================== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 320px;
+}
+
+@media (max-width: 768px) {
+  /* Safe area pour iPhone / notch / barre d'accueil */
+  body {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Cartes comparatives et cartes SIG */
+  .map-comparison-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .map-facade-container {
+    height: 380px !important;
+    min-height: 300px !important;
+  }
+
+  /* Barres et listes de documents */
+  .annexes-horizontal-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center !important;
+    gap: 10px !important;
+  }
+  .btn-annexes-link {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .docs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .doc-proof-strip {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .doc-proof-strip > div {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}
+
 @media (max-width: 640px) {
+  /* Conteneur et espacements généraux */
+  .wrap {
+    padding-left: max(14px, env(safe-area-inset-left, 14px)) !important;
+    padding-right: max(14px, env(safe-area-inset-right, 14px)) !important;
+  }
+
+  /* Bannière supérieure de décompte */
+  .site-deadline-topbar {
+    padding-top: calc(5px + env(safe-area-inset-top, 0px)) !important;
+    padding-left: max(8px, env(safe-area-inset-left, 8px)) !important;
+    padding-right: max(8px, env(safe-area-inset-right, 8px)) !important;
+  }
+  .site-deadline-topbar-wrap {
+    justify-content: center !important;
+    gap: 6px 10px !important;
+  }
+  .site-deadline-clock {
+    font-size: 12px !important;
+    font-variant-numeric: tabular-nums !important;
+    white-space: nowrap !important;
+  }
+
+  /* Navigation tiroir mobile avec safe area */
+  header.site nav,
+  .site nav,
+  header nav,
+  nav {
+    padding-top: calc(18px + env(safe-area-inset-top, 0px)) !important;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(16px, env(safe-area-inset-left, 16px)) !important;
+    padding-right: max(16px, env(safe-area-inset-right, 16px)) !important;
+  }
+  .nav-dropdown-btn,
+  header.site nav a,
+  .site nav a {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Point focal Hero Crise & Échéance 16 Octobre */
+  .hero-immersive {
+    padding: clamp(20px, 3.5vh, 32px) 0 16px !important;
+    min-height: auto !important;
+  }
+  .hero-crisis-card {
+    padding: 14px 12px 14px !important;
+    border-radius: 14px !important;
+    margin: 6px auto 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .hero-crisis-eyebrow {
+    font-size: clamp(9px, 2.6vw, 10.5px) !important;
+    padding: 4px 10px !important;
+    max-width: 100% !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    letter-spacing: 0.05em !important;
+  }
+  .hero-crisis-title {
+    font-size: clamp(16px, 4.8vw, 21px) !important;
+    line-height: 1.25 !important;
+    margin: 6px 0 !important;
+  }
+  .hero-crisis-subtitle {
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+    margin: 0 auto 10px !important;
+    padding: 0 4px !important;
+  }
+
+  /* Compteur dynamique Hero : anti-débordement garanti */
+  .hero-countdown-box {
+    padding: 8px 6px 8px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+    margin: 0 auto 12px !important;
+  }
+  .hero-countdown-grid {
+    display: flex !important;
+    gap: 3px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+  .hero-countdown-unit {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 5px 2px 4px !important;
+    border-radius: 6px !important;
+  }
+  .hero-countdown-val {
+    font-size: clamp(18px, 5.6vw, 25px) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .hero-countdown-sep {
+    font-size: clamp(14px, 3.8vw, 19px) !important;
+    margin: 0 !important;
+    padding: 0 1px !important;
+    flex-shrink: 0 !important;
+  }
+  .hero-countdown-lbl {
+    font-size: clamp(8px, 2.2vw, 9.5px) !important;
+    letter-spacing: 0.04em !important;
+    margin-top: 3px !important;
+  }
+
+  /* Pilules et boutons d'action du hero */
   .hero-pills-row,
   .hero-actions-row,
   .hero-press-actions,
@@ -10354,13 +10530,138 @@ body[data-page="policy"] .floating-ai-btn {
     max-width: 100% !important;
     gap: 6px !important;
   }
+  .hero-pills-row {
+    justify-content: center !important;
+    margin-bottom: 12px !important;
+  }
+  .hero-pill {
+    font-size: 12px !important;
+    padding: 6px 11px !important;
+    border-radius: 9999px !important;
+  }
+  .hero-actions-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
   .hero-btn-primary,
   .hero-btn-outline,
   .hero-pill-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 11px 16px !important;
+    font-size: 13.5px !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
     white-space: normal !important;
-    text-align: center;
-    max-width: 100%;
-    box-sizing: border-box;
+  }
+
+  /* Accordéon média dans le hero */
+  .special-press-accordion {
+    border-radius: 10px !important;
+  }
+  .special-press-summary {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+  .special-press-summary-text strong {
+    font-size: 12.5px !important;
+    line-height: 1.3 !important;
+  }
+  .special-press-summary-text small {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+  .special-press-email-btn,
+  .special-press-link-pill {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    box-sizing: border-box !important;
+  }
+  .special-press-id-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  /* Section Contact & Canaux Officiels */
+  .contact-hero-card {
+    padding: 16px 12px !important;
+    border-radius: 12px !important;
+  }
+  .contact-hero-action-box {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+  .contact-hero-main-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+  }
+  .contact-hero-address-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+  .contact-hero-meta-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Abonnement Agenda */
+  .agenda-subscribe-card {
+    padding: 16px 12px !important;
+  }
+  .agenda-subscribe-header {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .agenda-subscribe-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .agenda-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Pied de page et bouton IA flottant */
+  footer {
+    padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .floating-ai-btn {
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(16px + env(safe-area-inset-right, 0px)) !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  /* Écrans compacts iPhone 12/13/mini / SE (360-390px) */
+  .hero-crisis-card {
+    padding: 12px 10px 12px !important;
+  }
+  .hero-countdown-val {
+    font-size: 18px !important;
+  }
+  .hero-countdown-lbl {
+    font-size: 8px !important;
+  }
+  .hero-btn-primary,
+  .hero-btn-outline {
+    font-size: 13px !important;
+    padding: 10px 14px !important;
   }
 }
 
