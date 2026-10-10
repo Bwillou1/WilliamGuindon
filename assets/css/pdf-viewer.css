@@ -937,6 +937,17 @@ body.is-embedded .pdf-app {
 .translation-layer.layout-overlay {
   background: transparent;
   overflow: hidden;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.translation-layer.layout-overlay .translated-block {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
 }
 
 .translated-block {
@@ -971,7 +982,7 @@ body.is-embedded .pdf-app {
   background: rgba(18, 24, 21, 0.88);
 }
 
-/* Mode 2 : Mise en page continue / fluide (Lecture type document éditorial) */
+/* Mode 2 : Mise en page continue / fluide (Lecture type document éditorial - sélection et copie autorisées) */
 .translation-layer.layout-fluid {
   background: var(--bg-card, #ffffff);
   color: var(--text-primary, #111827);
@@ -981,6 +992,45 @@ body.is-embedded .pdf-app {
   line-height: 1.65;
   font-size: 14px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  user-select: text !important;
+}
+
+.translation-layer.layout-fluid .translation-layer-p,
+.translation-layer.layout-fluid .translation-layer-body {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Floutage et protection Anti-Capture (Même style que l'assistant IA) */
+.translation-layer.anticapture-blurred {
+  filter: blur(28px) !important;
+  opacity: 0.04 !important;
+  pointer-events: none !important;
+  transition: filter 0.08s ease-in-out, opacity 0.08s ease-in-out !important;
+}
+
+#translation-shield-overlay {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 999999 !important;
+  cursor: pointer;
+  animation: wgShieldFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes wgShieldFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 [data-theme="dark"] .translation-layer.layout-fluid {
@@ -1845,6 +1895,8 @@ kbd {
   .viewer-loading,
   .scroll-progress-bar,
   .bg-blob-container,
+  .translation-layer,
+  #translation-shield-overlay,
   #pdf-print-iframe {
     display: none !important;
   }

@@ -1852,6 +1852,189 @@
     });
   }
 
+  // =========================================================================
+  // BOUCLIER DE CONFIDENTIALITÉ & ANTI-CAPTURE (MODE TRADUCTION UNIQUEMENT)
+  // Même style de floutage et bouclier de sécurité que l'assistant Chat IA
+  // =========================================================================
+
+  let translationAnticaptureTimer = null;
+
+  function triggerTranslationAnticapture(reason) {
+    if (!state.translationMode) return;
+
+    // 1. Appliquer le floutage haute intensité sur toutes les couches de traduction
+    const translationLayers = document.querySelectorAll('.translation-layer');
+    translationLayers.forEach(layer => {
+      layer.classList.add('anticapture-blurred');
+    });
+
+    // 2. Vider le presse-papiers si capture ou devtools tenté
+    if ((reason === 'screenshot' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        navigator.clipboard.writeText('');
+      } catch (_) {}
+    }
+
+    // 3. Afficher la carte bouclier anticapture au centre du visualiseur
+    let shield = document.getElementById('translation-shield-overlay');
+    if (!shield) {
+      shield = document.createElement('div');
+      shield.id = 'translation-shield-overlay';
+      shield.className = 'anticapture-shield-card';
+      shield.innerHTML = `
+        <div class="anticapture-shield-badge">Protection active contre la capture</div>
+        <div class="anticapture-shield-title">Traduction documentaire masquée temporairement</div>
+        <p class="anticapture-shield-text">
+          La traduction automatique en direct est un outil d'assistance non officiel. Pour préserver l'authenticité probatoire du dossier SEM-26-003, les captures d'écran, l'inspection F12 et le téléchargement des traductions sont restreints.
+        </p>
+        <div class="anticapture-shield-hint">Cliquez ou revenez sur la page pour réafficher la traduction</div>
+      `;
+      shield.addEventListener('click', () => {
+        clearTranslationAnticapture();
+      });
+      document.body.appendChild(shield);
+    }
+    shield.style.display = 'block';
+
+    // 4. Toast informatif
+    if (reason === 'screenshot') {
+      showToast("Protection anti-capture : capture d'écran interdite sur la traduction", true);
+    } else if (reason === 'devtools') {
+      showToast("Inspection (F12) désactivée sur la traduction documentaire", true);
+    }
+
+    if (translationAnticaptureTimer) {
+      clearTimeout(translationAnticaptureTimer);
+      translationAnticaptureTimer = null;
+    }
+
+    // Réactivation automatique après 3s pour un événement ponctuel (raccourci)
+    if (reason === 'screenshot' || reason === 'devtools') {
+      translationAnticaptureTimer = setTimeout(() => {
+        clearTranslationAnticapture();
+      }, 3000);
+    }
+  }
+
+  function clearTranslationAnticapture() {
+    if (translationAnticaptureTimer) {
+      clearTimeout(translationAnticaptureTimer);
+      translationAnticaptureTimer = null;
+    }
+    const shield = document.getElementById('translation-shield-overlay');
+    if (shield) shield.style.display = 'none';
+
+    document.querySelectorAll('.translation-layer').forEach(layer => {
+      layer.classList.remove('anticapture-blurred');
+    });
+  }
+
+  function setupTranslationAnticaptureListeners() {
+    // 1. Interception de la perte de focus de la fenêtre (uniquement en mode traduction)
+    window.addEventListener('blur', () => {
+      if (state.translationMode) {
+        triggerTranslationAnticapture('blur');
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      if (state.translationMode) {
+        clearTranslationAnticapture();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (state.translationMode) {
+        if (document.hidden) {
+          triggerTranslationAnticapture('blur');
+        } else {
+          clearTranslationAnticapture();
+        }
+      }
+    });
+
+    // 2. Blocage des raccourcis F12, DevTools et Capture d'écran (uniquement en mode traduction)
+    window.addEventListener('keydown', (e) => {
+      if (!state.translationMode) return; // En français : libre et sans restriction
+
+      // F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerTranslationAnticapture('devtools');
+        return;
+      }
+
+      // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Cmd+Option+I, Cmd+Option+J, Cmd+Option+C
+      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
+      const isInspectKey = ['i', 'I', 'j', 'J', 'c', 'C'].includes(e.key);
+      if (isCmdOrCtrl && (e.shiftKey || e.altKey) && isInspectKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerTranslationAnticapture('devtools');
+        return;
+      }
+
+      // Ctrl+U (code source)
+      if (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerTranslationAnticapture('devtools');
+        return;
+      }
+
+      // PrintScreen
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerTranslationAnticapture('screenshot');
+        return;
+      }
+
+      // Raccourcis capture d'écran macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5) et Windows (Win+Shift+S)
+      if (isCmdOrCtrl && e.shiftKey && ['3', '4', '5', 's', 'S'].includes(e.key)) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerTranslationAnticapture('screenshot');
+        return;
+      }
+    }, true);
+
+    // 3. Gestion du copier-coller :
+    // - Pas de copier-coller pour la traduction imbriquée (overlay)
+    // - Texte suivi (fluid) OK
+    // - Document original français OK
+    document.addEventListener('copy', (e) => {
+      if (!state.translationMode) return; // Document français : copie autorisée
+
+      if (state.translationLayout === 'overlay') {
+        e.preventDefault();
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', '');
+        }
+        showToast("Copie interdite sur la traduction superposée · Basculez en mode texte continu pour copier");
+      }
+    });
+
+    document.addEventListener('cut', (e) => {
+      if (!state.translationMode) return;
+      if (state.translationLayout === 'overlay') {
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('contextmenu', (e) => {
+      if (!state.translationMode) return;
+      if (state.translationLayout === 'overlay') {
+        const target = e.target;
+        if (target && target.closest('.translation-layer.layout-overlay')) {
+          e.preventDefault();
+          showToast("Menu contextuel restreint sur la traduction superposée");
+        }
+      }
+    });
+  }
+
   function toggleTranslationMode(forceState) {
     state.translationMode = (typeof forceState === 'boolean') ? forceState : !state.translationMode;
     
@@ -1866,6 +2049,26 @@
       dom.btnToggleDocTranslationText.textContent = state.translationMode 
         ? "Revenir à l'original (FR)" 
         : "Traduire le document sur la page";
+    }
+
+    if (dom.btnDownload) {
+      if (state.translationMode) {
+        dom.btnDownload.title = "Téléchargement désactivé en mode traduction (disponible sur l'original FR)";
+        dom.btnDownload.classList.add('translation-active');
+      } else {
+        dom.btnDownload.title = "Télécharger le document PDF";
+        dom.btnDownload.classList.remove('translation-active');
+      }
+    }
+
+    if (dom.btnPrint) {
+      if (state.translationMode) {
+        dom.btnPrint.title = "Impression désactivée en mode traduction (disponible sur l'original FR)";
+        dom.btnPrint.classList.add('translation-active');
+      } else {
+        dom.btnPrint.title = "Imprimer le document";
+        dom.btnPrint.classList.remove('translation-active');
+      }
     }
 
     if (window.parent && window.parent !== window) {
@@ -1888,6 +2091,7 @@
         }
       }
     } else {
+      clearTranslationAnticapture();
       showToast("Affichage du document original en français");
       for (let i = 1; i <= state.totalPages; i++) {
         const layer = document.getElementById(`translation-layer-${i}`);
@@ -2153,6 +2357,9 @@
    * Configuration de tous les écouteurs d'événements
    */
   function setupEventListeners() {
+    // Initialisation du bouclier anticapture (actif uniquement en mode traduction)
+    setupTranslationAnticaptureListeners();
+
     // Changement de document
     if (dom.docSelect) {
       dom.docSelect.addEventListener('change', () => {
@@ -2381,7 +2588,13 @@
 
     // Téléchargement du binaire : la licence CC BY-NC-ND 4.0 ne s'affiche que sur la soumission de William
     if (dom.btnDownload) {
-      dom.btnDownload.addEventListener('click', () => {
+      dom.btnDownload.addEventListener('click', (e) => {
+        if (state.translationMode) {
+          e.preventDefault();
+          e.stopPropagation();
+          showToast("Téléchargement désactivé en mode traduction · Revenez au document original en français pour télécharger la pièce officielle certifiée", true);
+          return;
+        }
         if (isAuthorSubmission(state.currentFile)) {
           openLicenseDialog('download');
         } else {
@@ -2392,7 +2605,15 @@
 
     // Impression Haute Fidélité
     if (dom.btnPrint) {
-      dom.btnPrint.addEventListener('click', printDocument);
+      dom.btnPrint.addEventListener('click', (e) => {
+        if (state.translationMode) {
+          e.preventDefault();
+          e.stopPropagation();
+          showToast("L'impression est désactivée sur la traduction automatique · Disponible sur le document original en français", true);
+          return;
+        }
+        printDocument();
+      });
     }
 
     // Partage
@@ -2413,6 +2634,10 @@
     // Gestionnaires de la modale de notice & téléchargement
     if (dom.btnConfirmDownload) {
       dom.btnConfirmDownload.addEventListener('click', () => {
+        if (state.translationMode) {
+          showToast("Téléchargement désactivé en mode traduction · Revenez au document original en français pour télécharger la pièce officielle certifiée", true);
+          return;
+        }
         const docInfo = resolveDocInfo(state.currentFile);
 
         if (dom.licenseCheckbox && !dom.licenseCheckbox.checked) {
