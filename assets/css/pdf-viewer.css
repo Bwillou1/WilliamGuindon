@@ -927,41 +927,131 @@ body.is-embedded .pdf-app {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 32px 40px;
-  background: var(--bg-card, #ffffff);
-  color: var(--text-primary, #111827);
   z-index: 5;
-  overflow-y: auto;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.7;
-  font-size: 14px;
   user-select: text;
   -webkit-user-select: text;
+  pointer-events: auto;
+}
+
+/* Mode 1 : Superposition exacte sur le document original (Garde la géométrie, colonnes, marges, polices) */
+.translation-layer.layout-overlay {
+  background: transparent;
+  overflow: hidden;
+}
+
+.translated-block {
+  position: absolute;
+  background: #ffffff;
+  color: #111827;
+  line-height: 1.25;
+  padding: 1px 3px;
+  box-sizing: border-box;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  border-radius: 2px;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  z-index: 4;
+}
+
+[data-theme="dark"] .translated-block {
+  background: #141b17;
+  color: #e5e7eb;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Mode 2 : Mise en page continue / fluide (Lecture type document éditorial) */
+.translation-layer.layout-fluid {
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #111827);
+  padding: 48px 56px;
+  overflow-y: auto;
+  font-family: Georgia, "Times New Roman", "Liberation Serif", serif;
+  line-height: 1.65;
+  font-size: 14px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="dark"] .translation-layer {
+[data-theme="dark"] .translation-layer.layout-fluid {
   background: #121815;
   color: #e5e7eb;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.translation-layer-header {
+/* Barre d'outils flottante de la page traduite */
+.translation-layer-toolbar {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid var(--line, #dce5df);
-  padding-bottom: 10px;
-  margin-bottom: 18px;
-  font-size: 11px;
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 5px 12px;
+  border-radius: 20px;
+  z-index: 10;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  font-size: 11.5px;
+  font-weight: 600;
   color: #064e3b;
-  text-transform: uppercase;
+  pointer-events: auto;
 }
 
-[data-theme="dark"] .translation-layer-header {
+[data-theme="dark"] .translation-layer-toolbar {
+  background: rgba(18, 24, 21, 0.96);
+  border-color: rgba(255, 255, 255, 0.15);
   color: #34d399;
-  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+.translation-layer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.translation-layer-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-layout-toggle {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-layout-toggle:hover {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+[data-theme="dark"] .btn-layout-toggle {
+  background: #14281e;
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] .btn-layout-toggle:hover {
+  background: #1c3b2d;
+  border-color: rgba(52, 211, 153, 0.5);
 }
 
 .translation-layer-p {
