@@ -263,7 +263,7 @@ async function checkDeadlineNotification() {
     if (!alreadySent) {
       await cache.put(notifFlagKey, new Response('sent', { headers: { 'Content-Type': 'text/plain' } }));
       if (self.registration && self.registration.showNotification) {
-        await self.registration.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
+        await self.registration.showNotification("[ALERTE] ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
           body: "Le délai officiel de 60 jours imposé au gouvernement du Canada pour répondre dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu. Consultez les documents officiels.",
           icon: "/icon-192.png",
           badge: "/favicon.svg",
@@ -293,7 +293,7 @@ self.addEventListener('message', (event) => {
   }
   if (event.data?.action === 'showLocalNotification') {
     const d = event.data;
-    const title = d.title || "🚨 Dossier CCE SEM-26-003 — Alerte Officielle";
+    const title = d.title || "[ALERTE] Dossier CCE SEM-26-003 — Alerte Officielle";
     const options = {
       body: d.subtitle || d.body || "Mise à jour importante concernant le dossier de la Grande Tourbière de Blainville.",
       icon: d.image || "/icon-192.png",
@@ -315,7 +315,7 @@ self.addEventListener('push', (event) => {
   } catch (_) {
     payload = { body: event.data ? event.data.text() : '' };
   }
-  const title = payload.title || "🚨 Dossier CCE SEM-26-003 — Alerte Officielle";
+  const title = payload.title || "[ALERTE] Dossier CCE SEM-26-003 — Alerte Officielle";
   const options = {
     body: payload.body || payload.subtitle || "Mise à jour importante concernant le dossier de la Grande Tourbière de Blainville.",
     icon: payload.icon || "/icon-192.png",

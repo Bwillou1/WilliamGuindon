@@ -2109,73 +2109,245 @@
       }
     });
 
+    // ==========================================================================
     // Web Push / Notifications de l'échéance CCE du 16 octobre 2026
-    const notifButtons = document.querySelectorAll('#btn-enable-push, .btn-enable-push, [data-action="enable-cce-push"]');
+    // ==========================================================================
+    const NOTIF_BTN_SELECTOR = '#btn-enable-push, .btn-enable-push, #btn-enable-notifications, .notif-toggle-btn, [data-action="enable-cce-push"]';
     const TARGET_16_OCT = new Date("2026-10-16T00:00:00-04:00").getTime();
+
+    function showNotifToast(msg, isSuccess = true) {
+      let toast = document.getElementById('cce-notif-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'cce-notif-toast';
+        toast.className = 'cce-notif-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${isSuccess ? '#4ade80' : '#f87171'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${isSuccess ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'}</svg> <span>${msg}</span></span>`;
+      toast.classList.add('visible');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 4200);
+    }
+
+    function showNotifModal(title, intro, bodyHtml) {
+      let overlay = document.getElementById('cce-notif-modal-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'cce-notif-modal-overlay';
+        overlay.className = 'cce-notif-dialog-overlay';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.innerHTML = `
+          <div class="cce-notif-dialog-card">
+            <div class="cce-notif-dialog-header">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <h3 id="cce-notif-modal-title" style="margin:0;font-size:16px;font-family:var(--font-heading);color:var(--text,#ffffff);"></h3>
+              </div>
+              <button type="button" class="cce-notif-dialog-close" aria-label="Fermer la boîte de dialogue">&times;</button>
+            </div>
+            <p id="cce-notif-modal-intro" style="margin:12px 0 8px;font-size:13.5px;color:var(--text-muted,#cbd5e1);line-height:1.45;"></p>
+            <div id="cce-notif-modal-body"></div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay || e.target.classList.contains('cce-notif-dialog-close')) {
+            closeNotifModal();
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeNotifModal();
+          }
+        });
+      }
+
+      document.getElementById('cce-notif-modal-title').textContent = title;
+      document.getElementById('cce-notif-modal-intro').textContent = intro;
+      document.getElementById('cce-notif-modal-body').innerHTML = bodyHtml;
+      overlay.classList.add('active');
+      document.body.classList.add('cce-modal-open');
+    }
+
+    function closeNotifModal() {
+      const overlay = document.getElementById('cce-notif-modal-overlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+      }
+      document.body.classList.remove('cce-modal-open');
+    }
+
+    async function sendImmediateNotifTest() {
+      const title = "Dossier SEM-26-003 · CCE / ACEUM";
+      const options = {
+        body: "Alertes activées : vous recevrez les alertes prioritaires et le suivi officiel du 16 octobre 2026.",
+        icon: "/icon-192.png",
+        badge: "/favicon.svg",
+        tag: "cce-confirm-subscription",
+        data: { url: "/live.html" }
+      };
+      try {
+        if ('serviceWorker' in navigator) {
+          const reg = await navigator.serviceWorker.ready;
+          if (reg && reg.showNotification) {
+            await reg.showNotification(title, options);
+            if (navigator.serviceWorker.controller) {
+              navigator.serviceWorker.controller.postMessage('CHECK_DEADLINE');
+            }
+            return;
+          }
+        }
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          new Notification(title, options);
+        }
+      } catch (_) {}
+    }
 
     function updateNotifButtonsState() {
       const supported = 'Notification' in window;
-      notifButtons.forEach(btn => {
-        if (!supported) {
-          btn.disabled = true;
-          btn.textContent = 'Push non supporté';
-          return;
-        }
-        if (Notification.permission === 'granted') {
-          btn.classList.add('subscribed');
-          btn.innerHTML = '<span aria-hidden="true">✓</span> Alerte 16 oct. activée';
-        } else if (Notification.permission === 'denied') {
-          btn.disabled = true;
-          btn.innerHTML = 'Bloqué par le navigateur';
-        } else {
-          btn.classList.remove('subscribed');
-          btn.innerHTML = '<span aria-hidden="true">🔔</span> M\'alerter le 16 octobre 2026';
-        }
-      });
-    }
+      const isGranted = supported && Notification.permission === 'granted';
+      const isDenied = supported && Notification.permission === 'denied';
 
-    if (notifButtons.length > 0) {
-      updateNotifButtonsState();
-
-      notifButtons.forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!('Notification' in window)) return;
-          try {
-            const perm = await Notification.requestPermission();
-            updateNotifButtonsState();
-            if (perm === 'granted') {
-              // Notification de confirmation immédiate
-              if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
-                const reg = await navigator.serviceWorker.ready;
-                if (reg.showNotification) {
-                  reg.showNotification("Dossier SEM-26-003 · CCE / ACEUM", {
-                    body: "Alerte programmée avec succès : vous recevrez une notification le 16 octobre 2026 dès l'échéance officielle imposée au Canada.",
-                    icon: "/icon-192.png",
-                    badge: "/favicon.svg",
-                    tag: "cce-confirm-subscription"
-                  });
-                }
-                if (navigator.serviceWorker.controller) {
-                  navigator.serviceWorker.controller.postMessage('CHECK_DEADLINE');
-                }
-              }
-              // Si déjà le 16 octobre ou après
-              try {
-                if (Date.now() >= TARGET_16_OCT && !localStorage.getItem('wg_deadline_notif_fired')) {
-                  localStorage.setItem('wg_deadline_notif_fired', 'true');
-                  new Notification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
-                    body: "Le délai légal de 60 jours imposé au Canada pour répondre sur la Grande Tourbière de Blainville (SEM-26-003) est échu.",
-                    icon: "/icon-192.png"
-                  });
-                }
-              } catch (_) {}
-            }
-          } catch (err) {
-            if (DEBUG) console.warn('Erreur permission notification:', err);
+      const buttons = document.querySelectorAll(NOTIF_BTN_SELECTOR);
+      buttons.forEach(btn => {
+        if (isGranted) {
+          btn.classList.add('subscribed', 'active');
+          btn.setAttribute('aria-pressed', 'true');
+          if (btn.id === 'btn-enable-notifications' || btn.classList.contains('notif-toggle-btn')) {
+            btn.innerHTML = `<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> <span>Alertes CCE actives</span>`;
+          } else {
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> <span>Alerte 16 oct. activée</span>`;
           }
-        });
+        } else if (isDenied) {
+          btn.classList.remove('subscribed', 'active');
+          btn.setAttribute('aria-pressed', 'false');
+          btn.title = "Notifications bloquées dans les paramètres de votre navigateur";
+        } else {
+          btn.classList.remove('subscribed', 'active');
+          btn.setAttribute('aria-pressed', 'false');
+        }
       });
     }
+
+    async function handleNotificationButtonClick(btn) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+      // 1. Sur iOS (Safari iPhone / iPad) hors PWA autonome : Apple bloque l'API Notifications
+      if (isIOS && !isStandalone && (!('Notification' in window) || Notification.permission === 'default')) {
+        showNotifModal(
+          "Activer les alertes sur iPhone & iPad",
+          "Sur iOS (Safari), Apple exige d'ajouter ce site à l'écran d'accueil pour autoriser les notifications Web Push :",
+          `<ol style="margin: 12px 0 16px 20px; padding: 0; line-height: 1.6; font-size: 13.5px; color: var(--text, #f9fafb);">
+            <li style="margin-bottom: 8px;">Touchez l'icône de <strong>Partage</strong> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> (en bas de votre écran).</li>
+            <li style="margin-bottom: 8px;">Faites défiler et sélectionnez <strong>« Sur l'écran d'accueil »</strong> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>.</li>
+            <li>Ouvrez l'application ajoutée sur votre écran d'accueil, puis touchez <strong>Alertes CCE</strong> pour confirmer l'activation en un clic.</li>
+          </ol>
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 12px; margin-top: 14px;">
+            <strong style="color: var(--accent, #10b981); font-size: 13px; display: block; margin-bottom: 4px;">Alternative directe sans installation :</strong>
+            <p style="margin: 0 0 10px; font-size: 12.5px; color: var(--text-muted, #9ca3af); line-height: 1.4;">Recevez les alertes officielles directement par courriel sans configuration technique.</p>
+            <a href="#infolettre" class="btn btn-primary btn-sm" style="font-size: 12px; padding: 6px 14px;" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">S'abonner à l'infolettre officielle ↗</a>
+          </div>`
+        );
+        return;
+      }
+
+      // 2. Navigateur ne prenant pas en charge l'API Notifications
+      if (!('Notification' in window)) {
+        showNotifModal(
+          "Notifications non supportées",
+          "Votre navigateur actuel ne prend pas en charge l'API de notifications Web Push.",
+          `<p style="font-size: 13px; color: var(--text-muted, #9ca3af); line-height: 1.5; margin: 10px 0 14px;">
+            Pour être informé de l'échéance CCE du 16 octobre 2026, vous pouvez vous inscrire à l'infolettre officielle par courriel ou suivre les flux RSS publics.
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="#infolettre" class="btn btn-primary btn-sm" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">Infolettre officielle ↗</a>
+            <a href="feed.xml" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Flux RSS ↗</a>
+          </div>`
+        );
+        return;
+      }
+
+      // 3. Notifications bloquées (denied)
+      if (Notification.permission === 'denied') {
+        showNotifModal(
+          "Notifications bloquées dans votre navigateur",
+          "L'autorisation de notification est actuellement bloquée pour ce site dans les paramètres de votre navigateur.",
+          `<div style="font-size: 13px; line-height: 1.55; color: var(--text, #f9fafb); margin: 12px 0 14px;">
+            <p style="margin: 0 0 8px;"><strong>Pour les débloquer :</strong></p>
+            <ul style="margin: 0 0 12px 20px; padding: 0;">
+              <li>Sur ordinateur : cliquez sur l'icône de réglages / cadenas <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> à gauche de l'adresse du site dans votre barre d'URL.</li>
+              <li>Réglez « Notifications » sur <strong>« Autoriser »</strong>.</li>
+              <li>Rafraîchissez la page et cliquez à nouveau sur Alertes CCE.</li>
+            </ul>
+            <div style="margin-top: 10px;">
+              <a href="#infolettre" class="btn btn-primary btn-sm" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">Recevoir par courriel plutôt ↗</a>
+            </div>
+          </div>`
+        );
+        return;
+      }
+
+      // 4. Notifications déjà autorisées (granted)
+      if (Notification.permission === 'granted') {
+        showNotifToast("Alertes CCE déjà actives sur cet appareil", true);
+        sendImmediateNotifTest();
+        updateNotifButtonsState();
+        return;
+      }
+
+      // 5. Première demande d'autorisation (default)
+      try {
+        let perm = null;
+        try {
+          const p = Notification.requestPermission();
+          if (p && typeof p.then === 'function') {
+            perm = await p;
+          }
+        } catch (_) {}
+        if (!perm) {
+          perm = await new Promise(resolve => {
+            try {
+              Notification.requestPermission(resolve);
+            } catch (_) {
+              resolve(Notification.permission);
+            }
+          });
+        }
+
+        updateNotifButtonsState();
+
+        if (perm === 'granted') {
+          showNotifToast("Alertes CCE activées avec succès !", true);
+          sendImmediateNotifTest();
+        } else if (perm === 'denied') {
+          showNotifToast("Notifications refusées dans le navigateur", false);
+        }
+      } catch (err) {
+        if (DEBUG) console.warn('Erreur demande permission notification:', err);
+        showNotifToast("Impossible de demander l'autorisation", false);
+      }
+    }
+
+    // Gestion par délégation de tous les boutons de notification
+    document.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element ? e.target.closest(NOTIF_BTN_SELECTOR) : null;
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNotificationButtonClick(btn);
+      }
+    });
+
+    // Initialiser l'état visuel de tous les boutons dès le chargement
+    updateNotifButtonsState();
 
     // Vérification automatique au chargement si l'échéance du 16 octobre 2026 est atteinte
     if ('Notification' in window && Notification.permission === 'granted' && Date.now() >= TARGET_16_OCT) {
@@ -2184,19 +2356,19 @@
           localStorage.setItem('wg_deadline_notif_fired', 'true');
           if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
             navigator.serviceWorker.ready.then(reg => {
-              if (reg.showNotification) {
-                reg.showNotification("🚨 ÉCHÉANCE CCE ATTEINTE — 16 OCTOBRE 2026", {
-                body: "Le délai officiel de 60 jours accordé au Canada dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu.",
-                icon: "/icon-192.png",
-                badge: "/favicon.svg",
-                tag: "cce-deadline-16oct2026",
-                requireInteraction: true,
-                data: { url: "/live.html" }
-              });
-            }
-          });
+              if (reg && reg.showNotification) {
+                reg.showNotification("[ALERTE] Échéance CCE atteinte — 16 octobre 2026", {
+                  body: "Le délai officiel de 60 jours accordé au Canada dans le dossier SEM-26-003 (Grande Tourbière de Blainville / Stablex) est échu.",
+                  icon: "/icon-192.png",
+                  badge: "/favicon.svg",
+                  tag: "cce-deadline-16oct2026",
+                  requireInteraction: true,
+                  data: { url: "/live.html" }
+                });
+              }
+            });
+          }
         }
-      }
       } catch (_) {}
     }
 
