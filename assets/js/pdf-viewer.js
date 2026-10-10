@@ -1942,23 +1942,23 @@ ER  -
       });
     }
 
-    // Traduction de document via Google Traduction Documents
+    // Traduction automatique du document via Google Traduction
     if (dom.btnTranslateDoc) {
       dom.btnTranslateDoc.addEventListener('click', () => {
         let absUrl = state.pdfUrl || '';
         if (absUrl && !absUrl.startsWith('http://') && !absUrl.startsWith('https://')) {
           absUrl = window.location.origin + (absUrl.startsWith('/') ? absUrl : '/' + absUrl);
         }
-        if (navigator.clipboard && navigator.clipboard.writeText && absUrl) {
-          navigator.clipboard.writeText(absUrl).then(() => {
-            showToast("Lien direct copié · Google Traduction Documents ouvert");
-          }).catch(() => {
-            showToast("Ouverture de Google Traduction Documents");
-          });
-        } else {
-          showToast("Ouverture de Google Traduction Documents");
+        if (!absUrl) {
+          showToast("Aucun document à traduire", true);
+          return;
         }
-        window.open('https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs', '_blank', 'noopener,noreferrer');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(absUrl).catch(() => {});
+        }
+        const directTranslateUrl = `https://translate.google.com/translate?sl=auto&tl=en&u=${encodeURIComponent(absUrl)}`;
+        showToast("Traduction du document ouverte dans Google Traduction");
+        window.open(directTranslateUrl, '_blank', 'noopener,noreferrer');
       });
     }
 
