@@ -497,12 +497,130 @@
     }
   }
 
+  /**
+   * Gestionnaire unifié et robuste du défilement d'ancrage (Hash Navigation)
+   * Résout les décalages de mise en page causés par les chargements asynchrones
+   * (flux blog, cartes, polices, injection dynamique du menu navbar, sticky header).
+   */
+  function initHashScrollManager() {
+    function getHeaderOffset() {
+      const header = document.querySelector('header.site');
+      return header ? Math.max(64, header.offsetHeight) : 70;
+    }
+
+    function scrollToHash(hash, smooth = true) {
+      if (!hash || hash === '#' || hash === '') return false;
+      const targetId = decodeURIComponent(hash.replace(/^#/, ''));
+      if (!targetId) return false;
+      const targetEl = document.getElementById(targetId) || document.querySelector(`[name="${CSS.escape(targetId)}"]`);
+      if (!targetEl) return false;
+
+      const headerOffset = getHeaderOffset();
+      const rect = targetEl.getBoundingClientRect();
+      const targetTop = window.pageYOffset + rect.top - headerOffset - 16;
+
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+      return true;
+    }
+
+    window.__wg_scrollToHash = scrollToHash;
+
+    // Défilement automatique lors du chargement initial si un hash est présent
+    function handleInitialHash() {
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      // 1. Défilement immédiat (synchrone)
+      scrollToHash(hash, false);
+
+      // 2. Réalignement sur le frame suivant
+      requestAnimationFrame(() => {
+        scrollToHash(hash, false);
+      });
+
+      // 3. Réalignement après le chargement des composants asynchrones / fonts / navbar
+      setTimeout(() => {
+        scrollToHash(hash, false);
+      }, 100);
+
+      setTimeout(() => {
+        scrollToHash(hash, true);
+      }, 350);
+
+      setTimeout(() => {
+        scrollToHash(hash, true);
+      }, 800);
+    }
+
+    handleInitialHash();
+
+    // Réalignement après l'événement window.load (images complètes)
+    window.addEventListener('load', () => {
+      if (window.location.hash) {
+        setTimeout(() => scrollToHash(window.location.hash, true), 100);
+      }
+    }, { once: true });
+
+    // Réalignement lors de l'injection dynamique de la navbar
+    window.addEventListener('navbar:loaded', () => {
+      if (window.location.hash) {
+        setTimeout(() => scrollToHash(window.location.hash, false), 50);
+      }
+    });
+
+    // Écoute des changements de hash (navigation historique / liens internes)
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash) {
+        scrollToHash(window.location.hash, true);
+      }
+    });
+
+    // Interception fluide des clics sur les liens d'ancrage internes
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const el = e.target instanceof Element ? e.target : (e.target.parentElement || null);
+      if (!el || typeof el.closest !== 'function') return;
+      const anchor = el.closest('a');
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      // Détecter si le lien pointe vers un hash sur la page courante
+      const curPath = window.location.pathname.split('/').pop() || 'index.html';
+      try {
+        const targetUrl = new URL(anchor.href, window.location.href);
+
+        if (targetUrl.origin === window.location.origin) {
+          const targetPath = targetUrl.pathname.split('/').pop() || 'index.html';
+          const isSamePage = (targetPath === curPath) ||
+            ((curPath === 'index.html' || curPath === '' || curPath === 'index') &&
+             (targetPath === 'index.html' || targetPath === '' || targetPath === 'index' || targetPath === './'));
+
+          if (isSamePage && targetUrl.hash) {
+            const scrolled = scrollToHash(targetUrl.hash, true);
+            if (scrolled) {
+              e.preventDefault();
+              if (window.location.hash !== targetUrl.hash) {
+                history.pushState(null, '', targetUrl.hash);
+              }
+            }
+          }
+        }
+      } catch (_) {}
+    });
+  }
+
   function initApp() {
     // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
     let cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
 
     initDynamicDates();
     initLocalNavigationAccelerator();
+    initHashScrollManager();
     const currentPath = window.location.pathname.toLowerCase();
     const POLICY_FILES = [
       'politiques.html',

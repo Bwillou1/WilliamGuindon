@@ -293,6 +293,11 @@
                   </div>
                 </article>
               `).join('');
+
+              // Réalignement du scroll si la page a été chargée avec une ancre (#contact, etc.)
+              if (window.location.hash && typeof window.__wg_scrollToHash === 'function') {
+                setTimeout(() => window.__wg_scrollToHash(window.location.hash, false), 50);
+              }
             })
             .catch(err => { if (DEBUG) console.warn('Photos preview load:', err); });
         }
@@ -322,6 +327,11 @@
                   </div>
                 </article>
               `).join('');
+
+              // Réalignement immédiat du scroll si la page a été chargée avec une ancre (#contact, etc.)
+              if (window.location.hash && typeof window.__wg_scrollToHash === 'function') {
+                setTimeout(() => window.__wg_scrollToHash(window.location.hash, false), 50);
+              }
             })
             .catch(err => { if (DEBUG) console.warn('Blog preview load:', err); });
         }
