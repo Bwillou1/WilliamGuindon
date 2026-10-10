@@ -1340,34 +1340,36 @@
     try {
       const page = await state.pdfDoc.getPage(pageNum);
       const textContent = await page.getTextContent();
-      const rawLines = [];
-      let currentLine = '';
+      const textPieces = [];
+      let lastY = null;
+      let currentBlock = '';
 
       textContent.items.forEach(item => {
-        if (item.str) {
-          if (item.hasEOL) {
-            currentLine += item.str;
-            if (currentLine.trim()) rawLines.push(currentLine.trim());
-            currentLine = '';
-          } else {
-            currentLine += item.str + ' ';
+        if (!item.str) return;
+        const y = item.transform ? Math.round(item.transform[5]) : null;
+        if (lastY !== null && y !== null && Math.abs(y - lastY) > 14) {
+          if (currentBlock.trim()) {
+            textPieces.push(currentBlock.trim());
+            currentBlock = '';
           }
         }
+        currentBlock += item.str + ' ';
+        if (y !== null) lastY = y;
       });
-      if (currentLine.trim()) rawLines.push(currentLine.trim());
+      if (currentBlock.trim()) textPieces.push(currentBlock.trim());
 
-      const validLines = rawLines.filter(l => l.length > 0);
+      const validLines = textPieces.filter(l => l.length > 0);
       if (validLines.length === 0) {
         if (dom.translationStatus) dom.translationStatus.textContent = "Aucun texte extractible sur cette page.";
         if (dom.translationOutput) dom.translationOutput.textContent = "Cette page ne contient pas de texte vectoriel indexé (ou est un scan d'image pur).";
         return;
       }
 
-      // Regrouper par blocs cohérents
+      // Regrouper par blocs cohérents de taille optimale
       const paragraphs = [];
       let temp = '';
       validLines.forEach(line => {
-        if (temp.length + line.length > 350) {
+        if (temp.length + line.length > 450) {
           paragraphs.push(temp.trim());
           temp = line + ' ';
         } else {
@@ -1379,11 +1381,13 @@
       const translatedParagraphs = [];
       for (const p of paragraphs) {
         try {
-          const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(p)}&langpair=fr|${encodeURIComponent(targetLang)}`;
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(p)}`;
           const res = await fetch(url);
+          if (!res.ok) throw new Error("HTTP " + res.status);
           const data = await res.json();
-          if (data && data.responseData && data.responseData.translatedText) {
-            translatedParagraphs.push(data.responseData.translatedText);
+          if (data && Array.isArray(data[0])) {
+            const piece = data[0].map(s => s[0]).join('');
+            translatedParagraphs.push(piece);
           } else {
             translatedParagraphs.push(p);
           }
@@ -1394,7 +1398,7 @@
 
       const resultText = translatedParagraphs.join('\n\n');
       if (dom.translationOutput) dom.translationOutput.textContent = resultText;
-      if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:#059669; font-weight:600;">✔ Traduction de la page ${pageNum} prête !</span>`;
+      if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:#059669; font-weight:600;">✔ Traduction de la page ${pageNum} prête (${targetLang.toUpperCase()}) !</span>`;
     } catch (err) {
       if (dom.translationStatus) dom.translationStatus.textContent = "Erreur lors de la traduction.";
       if (dom.translationOutput) dom.translationOutput.textContent = "Impossible d'extraire ou de traduire cette page automatiquement.";
@@ -1417,7 +1421,7 @@
       document.body.removeChild(a);
     }
     
-    showToast("📥 Fichier téléchargé · Glissez-le dans Google Traduction Documents");
+    alert(`📥 Le document « ${downloadName} » a été téléchargé dans vos Téléchargements.\n\n👉 Glissez-le simplement dans la zone de dépôt de Google Traduction qui vient de s'ouvrir pour obtenir le document traduit dans sa mise en page d'origine !`);
     window.open('https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs', '_blank', 'noopener,noreferrer');
   }
 
