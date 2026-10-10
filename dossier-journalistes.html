@@ -3542,13 +3542,10 @@
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
-                const publicPdfUrl = res.isSiteAsset ? (window.location.origin + (res.rawUrl.startsWith('/') ? res.rawUrl : '/' + res.rawUrl)) : res.rawUrl;
-                translateLink.href = "https://translate.google.com/translate?sl=auto&tl=en&u=" + encodeURIComponent(publicPdfUrl);
-                translateLink.onclick = () => {
-                  if (navigator.clipboard && navigator.clipboard.writeText && publicPdfUrl) {
-                    navigator.clipboard.writeText(publicPdfUrl).catch(() => {});
-                  }
-                };
+                const translateViewerUrl = "viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme);
+                translateLink.href = translateViewerUrl;
+                translateLink.title = "Traduire ce document dans le lecteur officiel";
+                translateLink.onclick = null;
                 translateLink.style.display = "inline-flex";
               }
               const iframe = document.createElement("iframe");

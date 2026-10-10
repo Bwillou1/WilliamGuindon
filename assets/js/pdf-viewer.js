@@ -411,16 +411,25 @@
     // Sidebar panes
     tabThumbnails: document.getElementById('tab-thumbnails'),
     tabOutline: document.getElementById('tab-outline'),
+    tabTranslation: document.getElementById('tab-translation'),
     tabSearch: document.getElementById('tab-search'),
     tabExplorer: document.getElementById('tab-explorer'),
     tabAi: document.getElementById('tab-ai'),
     tabInfo: document.getElementById('tab-info'),
     paneThumbnails: document.getElementById('pane-thumbnails'),
     paneOutline: document.getElementById('pane-outline'),
+    paneTranslation: document.getElementById('pane-translation'),
     paneSearch: document.getElementById('pane-search'),
     paneExplorer: document.getElementById('pane-explorer'),
     paneAi: document.getElementById('pane-ai'),
     paneInfo: document.getElementById('pane-info'),
+    btnTranslateCurrentPage: document.getElementById('btn-translate-current-page'),
+    btnOpenGoogleDocsMode: document.getElementById('btn-open-google-docs-mode'),
+    btnCopyTranslation: document.getElementById('btn-copy-translation'),
+    selectTranslateLang: document.getElementById('select-translate-lang'),
+    translationStatus: document.getElementById('translation-status'),
+    translationOutput: document.getElementById('translation-output'),
+    translationPageBadge: document.getElementById('translation-page-badge'),
     inputExplorerSearch: document.getElementById('viewer-explorer-search'),
     explorerTree: document.getElementById('viewer-explorer-tree'),
     thumbnailsGrid: document.getElementById('thumbnails-grid'),
@@ -552,6 +561,11 @@
 
     // Charger le document PDF
     await loadPDF(targetFile, targetPage);
+
+    const initialTab = urlParams.get('tab') || hashParams.get('tab');
+    if (initialTab && ['thumbnails', 'outline', 'translation', 'search', 'explorer', 'info'].includes(initialTab)) {
+      switchSidebarTab(initialTab);
+    }
   }
 
   /**
@@ -1285,7 +1299,8 @@
   function switchSidebarTab(tabName) {
     const tabs = [
       { btn: dom.tabThumbnails, pane: dom.paneThumbnails, name: 'thumbnails' },
-      { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' }
+      { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' },
+      { btn: dom.tabTranslation, pane: dom.paneTranslation, name: 'translation' }
     ];
 
     tabs.forEach(t => {
@@ -1306,7 +1321,104 @@
       if (dom.inputExplorerSearch) setTimeout(() => dom.inputExplorerSearch.focus(), 150);
     } else if (tabName === 'info') {
       renderDocInfoPane();
+    } else if (tabName === 'translation') {
+      const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+      translateCurrentPage(targetLang);
     }
+  }
+
+  async function translateCurrentPage(targetLang = 'en') {
+    if (!state.pdfDoc) {
+      showToast("Document non chargé", true);
+      return;
+    }
+    const pageNum = state.currentPage || 1;
+    if (dom.translationPageBadge) dom.translationPageBadge.textContent = `Page ${pageNum}`;
+    if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:var(--brand-primary, #0d652d);">⏳ Extraction du texte de la page ${pageNum} et traduction...</span>`;
+    if (dom.translationOutput) dom.translationOutput.textContent = "Extraction et traduction du texte en cours...";
+
+    try {
+      const page = await state.pdfDoc.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const rawLines = [];
+      let currentLine = '';
+
+      textContent.items.forEach(item => {
+        if (item.str) {
+          if (item.hasEOL) {
+            currentLine += item.str;
+            if (currentLine.trim()) rawLines.push(currentLine.trim());
+            currentLine = '';
+          } else {
+            currentLine += item.str + ' ';
+          }
+        }
+      });
+      if (currentLine.trim()) rawLines.push(currentLine.trim());
+
+      const validLines = rawLines.filter(l => l.length > 0);
+      if (validLines.length === 0) {
+        if (dom.translationStatus) dom.translationStatus.textContent = "Aucun texte extractible sur cette page.";
+        if (dom.translationOutput) dom.translationOutput.textContent = "Cette page ne contient pas de texte vectoriel indexé (ou est un scan d'image pur).";
+        return;
+      }
+
+      // Regrouper par blocs cohérents
+      const paragraphs = [];
+      let temp = '';
+      validLines.forEach(line => {
+        if (temp.length + line.length > 350) {
+          paragraphs.push(temp.trim());
+          temp = line + ' ';
+        } else {
+          temp += line + ' ';
+        }
+      });
+      if (temp.trim()) paragraphs.push(temp.trim());
+
+      const translatedParagraphs = [];
+      for (const p of paragraphs) {
+        try {
+          const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(p)}&langpair=fr|${encodeURIComponent(targetLang)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data && data.responseData && data.responseData.translatedText) {
+            translatedParagraphs.push(data.responseData.translatedText);
+          } else {
+            translatedParagraphs.push(p);
+          }
+        } catch (e) {
+          translatedParagraphs.push(p);
+        }
+      }
+
+      const resultText = translatedParagraphs.join('\n\n');
+      if (dom.translationOutput) dom.translationOutput.textContent = resultText;
+      if (dom.translationStatus) dom.translationStatus.innerHTML = `<span style="color:#059669; font-weight:600;">✔ Traduction de la page ${pageNum} prête !</span>`;
+    } catch (err) {
+      if (dom.translationStatus) dom.translationStatus.textContent = "Erreur lors de la traduction.";
+      if (dom.translationOutput) dom.translationOutput.textContent = "Impossible d'extraire ou de traduire cette page automatiquement.";
+    }
+  }
+
+  function openGoogleDocsTranslationMode() {
+    let absUrl = state.pdfUrl || '';
+    if (absUrl && !absUrl.startsWith('http://') && !absUrl.startsWith('https://')) {
+      absUrl = window.location.origin + (absUrl.startsWith('/') ? absUrl : '/' + absUrl);
+    }
+    const downloadName = (state.currentFile && state.currentFile.name) ? state.currentFile.name : 'document.pdf';
+    
+    if (absUrl) {
+      const a = document.createElement('a');
+      a.href = absUrl;
+      a.download = downloadName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    
+    showToast("📥 Fichier téléchargé · Glissez-le dans Google Traduction Documents");
+    window.open('https://translate.google.com/?hl=fr&sl=auto&tl=en&op=docs', '_blank', 'noopener,noreferrer');
   }
 
   function renderDocInfoPane() {
@@ -1573,10 +1685,37 @@
     // Onglets Sidebar
     if (dom.tabThumbnails) dom.tabThumbnails.addEventListener('click', () => switchSidebarTab('thumbnails'));
     if (dom.tabOutline) dom.tabOutline.addEventListener('click', () => switchSidebarTab('outline'));
+    if (dom.tabTranslation) dom.tabTranslation.addEventListener('click', () => switchSidebarTab('translation'));
     if (dom.tabSearch) dom.tabSearch.addEventListener('click', () => switchSidebarTab('search'));
     if (dom.tabExplorer) dom.tabExplorer.addEventListener('click', () => switchSidebarTab('explorer'));
     if (dom.tabAi) dom.tabAi.addEventListener('click', () => switchSidebarTab('ai'));
     if (dom.tabInfo) dom.tabInfo.addEventListener('click', () => switchSidebarTab('info'));
+
+    // Actions du volet de traduction
+    if (dom.btnTranslateCurrentPage) {
+      dom.btnTranslateCurrentPage.addEventListener('click', () => {
+        const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+        translateCurrentPage(targetLang);
+      });
+    }
+    if (dom.selectTranslateLang) {
+      dom.selectTranslateLang.addEventListener('change', () => {
+        translateCurrentPage(dom.selectTranslateLang.value);
+      });
+    }
+    if (dom.btnOpenGoogleDocsMode) {
+      dom.btnOpenGoogleDocsMode.addEventListener('click', () => {
+        openGoogleDocsTranslationMode();
+      });
+    }
+    if (dom.btnCopyTranslation) {
+      dom.btnCopyTranslation.addEventListener('click', () => {
+        const text = dom.translationOutput ? dom.translationOutput.textContent : '';
+        if (text && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => showToast("Texte traduit copié dans le presse-papiers !"));
+        }
+      });
+    }
 
 
 
@@ -1942,23 +2081,11 @@ ER  -
       });
     }
 
-    // Traduction automatique du document via Google Traduction
+    // Traduction automatique du document via le volet de traduction intégré
     if (dom.btnTranslateDoc) {
       dom.btnTranslateDoc.addEventListener('click', () => {
-        let absUrl = state.pdfUrl || '';
-        if (absUrl && !absUrl.startsWith('http://') && !absUrl.startsWith('https://')) {
-          absUrl = window.location.origin + (absUrl.startsWith('/') ? absUrl : '/' + absUrl);
-        }
-        if (!absUrl) {
-          showToast("Aucun document à traduire", true);
-          return;
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(absUrl).catch(() => {});
-        }
-        const directTranslateUrl = `https://translate.google.com/translate?sl=auto&tl=en&u=${encodeURIComponent(absUrl)}`;
-        showToast("Traduction du document ouverte dans Google Traduction");
-        window.open(directTranslateUrl, '_blank', 'noopener,noreferrer');
+        switchSidebarTab('translation');
+        showToast("Volet de traduction ouvert");
       });
     }
 
