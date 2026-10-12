@@ -226,11 +226,13 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
+      max-width: min(480px, calc(100vw - 32px));
       background: #064e3b;
       color: #ffffff;
-      padding: 10px 18px;
+      padding: 12px 18px;
       border-radius: 8px;
       font-size: 12.5px;
+      line-height: 1.45;
       font-weight: 600;
       box-shadow: 0 4px 14px rgba(0,0,0,0.2);
       z-index: 9999;
@@ -1403,7 +1405,7 @@
           </button>
           <button type="button"
                   id="btn-download-zip"
-                  onclick="showDriveToast('Erreur : cette fonction a été désactivée temporairement. Revenez à 15h demain. Le téléchargement en local (en cache) marche toujours.', 'error')"
+                  onclick="notifyZipMaintenance()"
                   class="drive-actions-item item-zip"
                   role="menuitem"
                   title="Télécharger l'archive ZIP complète des pièces">
@@ -1835,7 +1837,7 @@
         Mailto ↗
       </a>
       <button type="button" 
-              onclick="showDriveToast('Erreur : cette fonction a été désactivée temporairement. Revenez à 15h demain. Le téléchargement en local (en cache) marche toujours.', 'error')"
+              onclick="notifyZipMaintenance()"
               style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; background: rgba(217, 119, 6, 0.1); color: #b45309; border: 1px solid rgba(217, 119, 6, 0.3); font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 4px;"
               title="Télécharger l'archive ZIP">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
@@ -2347,7 +2349,7 @@
   let cancelCachingRequested = false;
   let currentActiveBlobUrl = null;
 
-  function showDriveToast(message, type = 'info') {
+  function showDriveToast(message, type = 'info', durationMs = 4500) {
     let toast = document.getElementById("drive-toast");
     if (!toast) {
       toast = document.createElement("div");
@@ -2363,7 +2365,15 @@
     toast._timeout = setTimeout(() => {
       toast.classList.remove("visible");
       toast.classList.remove("show");
-    }, 4500);
+    }, durationMs);
+  }
+
+  function notifyZipMaintenance() {
+    showDriveToast(
+      "Mise à jour de l'archive documentaire : Le téléchargement du corpus complet est temporairement suspendu pour une révision des pièces et une opération de maintenance sur l'infrastructure d'hébergement. Les pièces vérifiées restent consultables via les fiches officielles et le cache local (hors ligne).",
+      'error',
+      8000
+    );
   }
 
   async function updateCacheTracking() {
