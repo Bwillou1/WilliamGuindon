@@ -1171,7 +1171,7 @@
       <!-- Contrôle du Mode Local / Hors-ligne -->
       <div id="local-mode-container" class="local-mode-container">
         <!-- Bouton d'activation initial -->
-        <button type="button" id="btn-enable-local" class="drive-btn-download" style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600;" title="Mettre en cache local les 222 pièces pour consultation directe 100% hors-ligne (sans cloud)">
+        <button type="button" id="btn-enable-local" class="drive-btn-download" style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600;" title="Mettre en cache local les pièces publiques pour consultation directe 100% hors-ligne (sans cloud)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span id="btn-enable-local-text"><span class="btn-label-full">Mode Local (Hors-ligne)</span><span class="btn-label-short">Hors-ligne</span></span>
         </button>
@@ -1179,7 +1179,7 @@
         <!-- Barre de progression de téléchargement -->
         <div id="local-progress-wrap" style="display: none; align-items: center; gap: 8px; background: #eaf5ee; border: 1px solid #c8e4d0; padding: 5px 12px; border-radius: 6px; font-size: 12px; color: #064e3b;">
           <div style="width: 14px; height: 14px; border: 2px solid #cbd7cf; border-top-color: #0d652d; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-          <span id="local-progress-text" style="font-weight: 600;">Mise en cache : 0/222 (0%)</span>
+          <span id="local-progress-text" style="font-weight: 600;">Mise en cache des pièces publiques...</span>
           <button type="button" id="btn-cancel-local" style="background: none; border: none; color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 4px;" title="Arrêter la mise en cache">✕</button>
         </div>
 
@@ -1221,23 +1221,14 @@
         <span class="btn-label-full">Pétition 546 (Canada.ca) ↗</span>
         <span class="btn-label-short">Pétition 546 ↗</span>
       </a>
-      <a id="btn-download-torrent" 
-         href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent" 
+      <a id="btn-request-archive" 
+         href="mailto:presse@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William%2C%0A%0AJe%20suis%20journaliste%20%2F%20recherchiste%20pour%20%5BNom%20du%20m%C3%A9dia%20ou%20de%20la%20r%C3%A9daction%5D.%0A%0AJe%20souhaite%20recevoir%20l'archive%20compl%C3%A8te%20et%20s%C3%A9curis%C3%A9e%20des%20plus%20de%20220%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20citoyenne%20SEM-26-003%20via%20SwissTransfer%20(Infomaniak).%0A%0ACoordonn%C3%A9es%20professionnelles%20%3A%0A-%20Nom%20et%20titre%20%3A%0A-%20M%C3%A9dia%20%3A%0A-%20T%C3%A9l%C3%A9phone%20%3A%0A%0AMerci." 
          class="drive-btn-download"
-         target="_blank"
-         rel="noopener"
-         style="background: rgba(37, 99, 235, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.35);"
-         title="Télécharger l'archive P2P complète via BitTorrent (.torrent)">
-        <span>Torrent</span>
-      </a>
-      <a id="btn-download-all" 
-         href="https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex" 
-         class="drive-btn-download"
-         target="_blank"
-         rel="noopener"
-         title="Télécharger l'ensemble des 222 pièces probatoires originales en ZIP">
-        <span class="btn-label-full">Télécharger tout (ZIP)</span>
-        <span class="btn-label-short">ZIP (222)</span>
+         style="background: rgba(14, 165, 233, 0.15); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.35); font-weight: 700;"
+         title="Demander l'accès complet aux 220+ pièces probatoires de l'enquête par SwissTransfer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="btn-label-full">Demander l'archive complète (220+ pièces · SwissTransfer) ↗</span>
+        <span class="btn-label-short">Archive 220+ pièces ↗</span>
       </a>
     </div>
   </div>
@@ -1246,7 +1237,7 @@
   <div class="mobile-tab-nav" id="mobile-tab-nav" role="tablist" aria-label="Navigation mobile du dossier">
     <button type="button" class="mobile-tab-btn active" id="tab-btn-tree" role="tab" aria-selected="true" aria-controls="drive-tree">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-      <span>Liste des pièces (222)</span>
+      <span>Pièces publiques d'enquête</span>
     </button>
     <button type="button" class="mobile-tab-btn" id="tab-btn-preview" role="tab" aria-selected="false" aria-controls="preview-stage">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
@@ -1257,7 +1248,7 @@
   <div class="drive-body">
     <div id="drive-tree" class="drive-tree-pane">
       <!-- Barre de recherche rapide de pièces probatoires -->
-      <div class="tree-search-bar" id="tree-search-bar" role="search" aria-label="Recherche rapide dans les 222 pièces probatoires">
+      <div class="tree-search-bar" id="tree-search-bar" role="search" aria-label="Recherche rapide dans les pièces probatoires">
         <div class="tree-search-input-wrap">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="tree-search-icon" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -2420,6 +2411,23 @@
             </div>
           </div>
 
+          <!-- Encart d'accès officiel à l'enquête intégrale pour les rédactions (SwissTransfer) -->
+          <div style="margin: 16px auto; padding: 16px 20px; border-radius: 10px; background: #ecfdf5; border: 1.5px solid #10b981; text-align: left; max-width: 640px; box-shadow: 0 4px 12px rgba(16,185,129,0.08);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: 1.2rem;">🗂️</span>
+              <strong style="color: #064e3b; font-size: 0.95rem;">Accès journalistique intégral aux 220+ pièces probatoires</strong>
+            </div>
+            <p style="font-size: 0.84rem; line-height: 1.5; color: #065f46; margin: 0 0 12px;">
+              Pour respecter scrupuleusement le droit d'auteur sur les œuvres et articles de tiers, cet explorateur web est restreint aux pièces publiques libres ou biffées. L'archive d'investigation intégrale et non caviardée (dépassant 220 pièces : rapports d'expertise complets, modélisations hydrogéologiques, pièces BAPE et correspondances ministérielles) est transmise exclusivement aux journalistes d'enquête et rédactions professionnelles par lien sécurisé SwissTransfer (Infomaniak, Suisse).
+            </p>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <a href="mailto:presse@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William,%0A%0AJe%20suis%20journaliste%20pour%20[Nom%20du%20m%C3%A9dia%20/%20R%C3%A9daction].%0A%0AJe%20souhaite%20recevoir%20le%20lien%20SwissTransfer%20s%C3%A9curis%C3%A9%20pour%20acc%C3%A9der%20%C3%A0%20l'archive%20compl%C3%A8te%20des%20220%2B%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20SEM-26-003.%0A%0ACoordonn%C3%A9es%20professionnelles%20:%0A-%20Nom%20:%0A-%20M%C3%A9dia%20:%0A-%20T%C3%A9l%C3%A9phone%20:%0A%0AMerci." style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 8px; background: #059669; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 800; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
+                ✉️ Demander l'archive complète (220+ pièces · SwissTransfer) ↗
+              </a>
+              <span style="font-size: 11px; color: #047857; font-weight: 600;">Transfert chiffré de bout en bout · Hébergement en Suisse</span>
+            </div>
+          </div>
+
           <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;">
             <a href="presse.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-decoration: none; font-size: 12px; font-weight: 700;">
               Kit Média &amp; Fiche de faits ↗
@@ -2447,7 +2455,7 @@
   const identifier = "dossier-journalistes-tourbiere-blainville-stablex";
   const apiUrl = "https://archive.org/metadata/" + identifier + "/files";
 
-  // Répertoire complet et vérifié des 222 pièces probatoires
+  // Répertoire des pièces probatoires publiques référencées
   const fallbackList = [
   "01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png",
   "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
@@ -3130,7 +3138,7 @@
 
     if (progressWrap) progressWrap.style.display = "none";
 
-    const totalFiles = allValidFiles.length || 222;
+    const totalFiles = allValidFiles.length || 0;
     let cachedCount = 0;
     allValidFiles.forEach(f => {
       const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(f.fullPath);
@@ -3173,7 +3181,7 @@
     if (isCachingProcessRunning) return;
 
     if (!isSync) {
-      const confirmLocal = confirm("Êtes-vous sûr de vouloir activer le mode local hors-ligne ?\n\nAttention : le téléchargement et la mise en mémoire locale sécurisée de l'ensemble des 222 pièces probatoires représentent environ 600 Mo d'espace sur votre appareil.\n\nCe stockage persistant est protégé contre les purges de cookies et les actualisations forcées.");
+      const confirmLocal = confirm("Êtes-vous sûr de vouloir activer le mode local hors-ligne ?\n\nCe stockage persistant mettra en mémoire locale les pièces publiques disponibles dans l'explorateur pour consultation hors-connexion.\n\nCe stockage est protégé contre les purges de cookies et les actualisations forcées.");
       if (!confirmLocal) return;
     }
 
@@ -3186,7 +3194,7 @@
     updateLocalModeUI();
 
     const progressText = document.getElementById("local-progress-text");
-    const total = allValidFiles.length || 222;
+    const total = allValidFiles.length || 0;
     let completed = 0;
     let newCachedCount = 0;
 
@@ -4087,27 +4095,7 @@
     window.dispatchEvent(new Event("resize"));
   }
 
-  // Confirmation avant téléchargement des archives complètes (~600 Mo)
-  const btnDownloadAll = document.getElementById("btn-download-all");
-  const btnDownloadTorrent = document.getElementById("btn-download-torrent");
 
-  if (btnDownloadAll) {
-    btnDownloadAll.addEventListener("click", (e) => {
-      const ok = confirm("Êtes-vous sûr de vouloir télécharger l'archive complète des 222 pièces ?\n\nAttention : ce téléchargement volumineux représente environ 600 Mo de données.");
-      if (!ok) {
-        e.preventDefault();
-      }
-    });
-  }
-
-  if (btnDownloadTorrent) {
-    btnDownloadTorrent.addEventListener("click", (e) => {
-      const ok = confirm("Êtes-vous sûr de vouloir télécharger le fichier BitTorrent du dossier ?\n\nAttention : l'archive complète des 222 pièces probatoires représente environ 600 Mo de données une fois récupérée.");
-      if (!ok) {
-        e.preventDefault();
-      }
-    });
-  }
 
   // Sur grand écran, restaurer l'état de la barre latérale
   if (window.innerWidth >= 769) {
@@ -4378,7 +4366,7 @@
   });
 
   // =========================================================
-  // RECHERCHE RAPIDE & FILTRAGE EN DIRECT DES 222 PIÈCES
+  // RECHERCHE RAPIDE & FILTRAGE EN DIRECT DES PIÈCES DU DOSSIER
   // =========================================================
   function initTreeSearch() {
     const searchInput = document.getElementById("tree-search-input");
