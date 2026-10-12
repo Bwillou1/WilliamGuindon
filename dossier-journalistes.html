@@ -1302,7 +1302,7 @@
 <div class="drive-container" data-mobile-view="tree">
   <div class="drive-header">
     <div class="drive-header-left">
-      <a href="index.html#dossier-cce" class="btn-back-home" title="Retour au portail officiel">
+      <a href="index.html" class="btn-back-home" title="Retour au portail officiel">
         <span>←</span>
         <span>Accueil</span>
       </a>
@@ -1365,14 +1365,15 @@
           <span>Actions ▾</span>
         </summary>
         <div class="drive-actions-menu" role="menu">
-          <a id="btn-request-archive" 
-             href="mailto:contact@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William%2C%0A%0AJe%20suis%20journaliste%20%2F%20recherchiste%20pour%20%5BNom%20du%20m%C3%A9dia%20ou%20de%20la%20r%C3%A9daction%5D.%0A%0AJe%20souhaite%20recevoir%20l'archive%20compl%C3%A8te%20et%20s%C3%A9curis%C3%A9e%20des%20plus%20de%20220%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20citoyenne%20SEM-26-003%20via%20SwissTransfer%20(Infomaniak).%0A%0ACoordonn%C3%A9es%20professionnelles%20%3A%0A-%20Nom%20et%20titre%20%3A%0A-%20M%C3%A9dia%20%3A%0A-%20T%C3%A9l%C3%A9phone%20%3A%0A%0AMerci." 
-             class="drive-actions-item item-archive"
-             role="menuitem"
-             title="Demander l'accès complet aux 220+ pièces probatoires de l'enquête par SwissTransfer">
+          <button type="button" 
+                  id="btn-request-archive"
+                  onclick="navigator.clipboard.writeText('contact@williamguindon.me').then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Courriel contact@williamguindon.me copié !';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3000);}})"
+                  class="drive-actions-item item-archive"
+                  role="menuitem"
+                  title="Copier l'adresse contact@williamguindon.me pour demander l'archive complète (SwissTransfer)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>Demander l'archive complète (SwissTransfer) ↗</span>
-          </a>
+            <span>Demander archive (contact@williamguindon.me)</span>
+          </button>
           <button id="btn-show-video"
                   type="button"
                   class="drive-actions-item item-video"
@@ -2468,10 +2469,24 @@
       </div>
 
   <div class="drive-tree-footer" style="margin-top: 18px; padding: 12px 10px; border-top: 1px solid #dce5df; background: rgba(6, 78, 59, 0.04); border-radius: 6px;">
-    <a href="mailto:contact@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William%2C%0A%0AJe%20suis%20journaliste%20%2F%20recherchiste%20pour%20%5BNom%20du%20m%C3%A9dia%20ou%20de%20la%20r%C3%A9daction%5D.%0A%0AJe%20souhaite%20recevoir%20l'archive%20compl%C3%A8te%20et%20s%C3%A9curis%C3%A9e%20des%20plus%20de%20220%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20citoyenne%20SEM-26-003%20via%20SwissTransfer%20(Infomaniak).%0A%0ACoordonn%C3%A9es%20professionnelles%20%3A%0A-%20Nom%20et%20titre%20%3A%0A-%20M%C3%A9dia%20%3A%0A-%20T%C3%A9l%C3%A9phone%20%3A%0A%0AMerci." 
-       style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 12px; background: #059669; color: #ffffff; text-decoration: none; font-size: 11.5px; font-weight: 700; border-radius: 6px; box-shadow: 0 2px 6px rgba(5,150,105,0.25); text-align: center; line-height: 1.35; margin-bottom: 10px;">
-      <span>✉️ Demander l'archive complète (220+ pièces · SwissTransfer) ↗</span>
-    </a>
+    <div style="font-size: 11px; font-weight: 700; color: #064e3b; margin-bottom: 5px;">
+      Demande d'archive intégrale (220+ pièces · SwissTransfer) :
+    </div>
+    <div style="font-size: 11px; color: #1e293b; line-height: 1.4; margin-bottom: 8px;">
+      Écrivez à <code style="font-weight: 700; color: #047857; background: #eaf5ee; padding: 2px 4px; border-radius: 4px; font-size: 10.5px;">contact@williamguindon.me</code>
+    </div>
+    <div style="display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;">
+      <button type="button" 
+              onclick="navigator.clipboard.writeText('contact@williamguindon.me').then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Courriel contact@williamguindon.me copié !';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3000);}})" 
+              style="flex: 1; min-width: 120px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 10px; background: #059669; color: #ffffff; border: none; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(5,150,105,0.2);">
+        📋 Copier le courriel
+      </button>
+      <a href="mailto:contact@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William%2C%0A%0AJe%20suis%20journaliste%20%2F%20recherchiste%20pour%20%5BNom%20du%20m%C3%A9dia%20ou%20de%20la%20r%C3%A9daction%5D.%0A%0AJe%20souhaite%20recevoir%20l'archive%20compl%C3%A8te%20et%20s%C3%A9curis%C3%A9e%20des%20plus%20de%20220%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20citoyenne%20SEM-26-003%20via%20SwissTransfer%20(Infomaniak).%0A%0ACoordonn%C3%A9es%20professionnelles%20%3A%0A-%20Nom%20et%20titre%20%3A%0A-%20M%C3%A9dia%20%3A%0A-%20T%C3%A9l%C3%A9phone%20%3A%0A%0AMerci." 
+         style="display: inline-flex; align-items: center; justify-content: center; padding: 7px 10px; background: #ffffff; color: #047857; border: 1px solid #10b981; font-size: 11px; font-weight: 700; border-radius: 6px; text-decoration: none;"
+         title="Ouvrir dans votre client de messagerie">
+        Mailto ↗
+      </a>
+    </div>
     <a href="protection-archive.html" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #064e3b; text-decoration: none; font-weight: 600;" title="Consulter la Politique de protection et de retrait de l'archive (Charte 12)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
       <span>Protection &amp; Retrait (Charte 12) ↗</span>
@@ -2580,9 +2595,22 @@
             <p style="font-size: 0.84rem; line-height: 1.5; color: #065f46; margin: 0 0 12px;">
               Pour respecter scrupuleusement le droit d'auteur sur les œuvres et articles de tiers, cet explorateur web est restreint aux pièces publiques libres ou biffées. L'archive d'investigation intégrale et non caviardée (dépassant 220 pièces : rapports d'expertise complets, modélisations hydrogéologiques, pièces BAPE et correspondances ministérielles) est transmise exclusivement aux journalistes d'enquête et rédactions professionnelles par lien sécurisé SwissTransfer (Infomaniak, Suisse).
             </p>
+            <div style="background: #ffffff; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: #065f46; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">
+                Pour demander l'archive complète par courriel :
+              </div>
+              <div style="font-size: 12px; color: #1e293b; line-height: 1.5;">
+                Écrivez à <strong style="color: #047857; font-family: monospace; font-size: 13px;">contact@williamguindon.me</strong> en mentionnant votre nom, média/rédaction et numéro de téléphone professionnel.
+              </div>
+            </div>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <a href="mailto:contact@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William,%0A%0AJe%20suis%20journaliste%20pour%20[Nom%20du%20m%C3%A9dia%20/%20R%C3%A9daction].%0A%0AJe%20souhaite%20recevoir%20le%20lien%20SwissTransfer%20s%C3%A9curis%C3%A9%20pour%20acc%C3%A9der%20%C3%A0%20l'archive%20compl%C3%A8te%20des%20220%2B%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20SEM-26-003.%0A%0ACoordonn%C3%A9es%20professionnelles%20:%0A-%20Nom%20:%0A-%20M%C3%A9dia%20:%0A-%20T%C3%A9l%C3%A9phone%20:%0A%0AMerci." style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 8px; background: #059669; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 800; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
-                ✉️ Demander l'archive complète (220+ pièces · SwissTransfer) ↗
+              <button type="button" 
+                      onclick="navigator.clipboard.writeText('contact@williamguindon.me').then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Courriel contact@williamguindon.me copié !';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3000);}})" 
+                      style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 8px; background: #059669; color: #ffffff; border: none; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 6px rgba(5,150,105,0.25);">
+                📋 Copier l'adresse courriel
+              </button>
+              <a href="mailto:contact@williamguindon.me?subject=Demande%20d'acc%C3%A8s%20int%C3%A9gral%20aux%20220%2B%20pi%C3%A8ces%20probatoires%20(SwissTransfer)&amp;body=Bonjour%20William,%0A%0AJe%20suis%20journaliste%20pour%20[Nom%20du%20m%C3%A9dia%20/%20R%C3%A9daction].%0A%0AJe%20souhaite%20recevoir%20le%20lien%20SwissTransfer%20s%C3%A9curis%C3%A9%20pour%20acc%C3%A9der%20%C3%A0%20l'archive%20compl%C3%A8te%20des%20220%2B%20pi%C3%A8ces%20probatoires%20de%20l'enqu%C3%AAte%20SEM-26-003.%0A%0ACoordonn%C3%A9es%20professionnelles%20:%0A-%20Nom%20:%0A-%20M%C3%A9dia%20:%0A-%20T%C3%A9l%C3%A9phone%20:%0A%0AMerci." style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; background: #ffffff; color: #047857; border: 1px solid #10b981; text-decoration: none; font-size: 11.5px; font-weight: 700;">
+                Ouvrir mon logiciel de messagerie ↗
               </a>
               <span style="font-size: 11px; color: #047857; font-weight: 600;">Transfert chiffré de bout en bout · Hébergement en Suisse</span>
             </div>
