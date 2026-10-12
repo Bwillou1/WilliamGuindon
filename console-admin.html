@@ -966,6 +966,42 @@
         </div>
       </div>
 
+      <!-- VERROUILLAGE BLINDÉ DU LECTEUR PDF & CONFINEMENT PROBATOIRE -->
+      <div class="terminal-card" style="border-left: 4px solid #ef4444; background: linear-gradient(180deg, rgba(239,68,68,0.08) 0%, rgba(15,23,42,0.7) 100%);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <div class="terminal-card-title" style="margin:0;">[LOCK] Verrouillage Blindé du Lecteur PDF (100% Infranchissable)</div>
+          <div id="pdf-lock-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid rgba(34,197,94,0.3);">
+            Accès Libre
+          </div>
+        </div>
+        <div class="terminal-card-desc">Bloque à 100% l'accès au visualisateur de PDF (anti-F12, anti-copie, écran d'excuse avec liens d'orientation vers l'accueil et le registre officiel CCE, neutralisation infinie des flux sans fuite de données). Inclut un minuteur/compte à rebours configurable et une option de purge forcée intégrale des caches locaux chez tous les visiteurs.</div>
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:12px;">
+          <div>
+            <label class="form-label" for="pdf-lock-duration">Durée du Verrouillage / Minuteur (en minutes) :</label>
+            <input type="text" id="pdf-lock-duration" class="form-control" value="120" placeholder="Ex: 60, 120, 1440, 0 pour permanent..." oninput="updatePdfLockdownTimePreview()">
+            <div id="pdf-lock-duration-preview" style="font-size:12px; color:#f87171; margin-top:4px; font-family:monospace;">[TIME] Fin calculée : 2 heures (120 min)</div>
+          </div>
+          <div>
+            <label class="form-label" for="pdf-lock-custom-msg">Message d'excuse / Communiqué officiel (optionnel) :</label>
+            <input type="text" id="pdf-lock-custom-msg" class="form-control" placeholder="Ex: Consultation documentaire temporairement suspendue pour mise à jour probatoire...">
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px; display:flex; align-items:center; gap:10px;">
+          <input type="checkbox" id="pdf-lock-force-purge" class="toggle-checkbox" style="width:20px; height:20px; cursor:pointer;" checked>
+          <label for="pdf-lock-force-purge" style="font-size:13px; color:#fca5a5; font-weight:600; cursor:pointer;">
+            Forcer la suppression intégrale silencieuse des caches locaux (CacheStorage, IndexedDB) chez tous les visiteurs
+          </label>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button type="button" class="btn" style="background:#ef4444; color:#fff; font-weight:900;" data-action="pdf-lock-on">[LOCK] Activer le Verrouillage Total PDF</button>
+          <button type="button" class="btn btn-ghost" data-action="pdf-lock-off" style="color:#4ade80; border-color:rgba(74,222,128,0.4);">[UNLOCK] Rétablir l'accès normal (Désactiver)</button>
+          <button type="button" class="btn" style="background:#7f1d1d; border:1px solid #ef4444; color:#fecaca; font-weight:700;" data-action="pdf-purge-instant">[PURGE] Forcer Purge Immédiate des Caches Clients</button>
+        </div>
+      </div>
+
       <!-- MATRICE DE COMMUTATEURS ON/OFF (35 COMMUTATEURS FONCTIONNELS) -->
       <div class="terminal-card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
@@ -1314,6 +1350,9 @@
           case 'broadcast-alert': sendBroadcastAlert(); break;
           case 'lock-messaging-on': triggerMessagingLock(true); break;
           case 'lock-messaging-off': triggerMessagingLock(false); break;
+          case 'pdf-lock-on': triggerPdfLockdown(true); break;
+          case 'pdf-lock-off': triggerPdfLockdown(false); break;
+          case 'pdf-purge-instant': forceClientCachePurge(); break;
           case 'reload-iframe-editor': {
             const f = document.getElementById('iframe-editor');
             if (f) f.src = 'editeur.html';
@@ -1813,10 +1852,32 @@
       }
     }
 
+    const pdfLockPill = document.getElementById("pdf-lock-status-pill");
+    if (pdfLockPill) {
+      const isLocked = Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || now < state.pdfLockdownUntil)) || state.disablePDF);
+      if (isLocked) {
+        if (state.pdfLockdownUntil && state.pdfLockdownUntil > now) {
+          const remainingMins = Math.max(1, Math.round((state.pdfLockdownUntil - now) / 60000));
+          pdfLockPill.textContent = `● VERROUILLÉ (${remainingMins} min)`;
+        } else {
+          pdfLockPill.textContent = `● VERROUILLAGE TOTAL`;
+        }
+        pdfLockPill.style.background = "rgba(239,68,68,0.25)";
+        pdfLockPill.style.color = "#f87171";
+        pdfLockPill.style.borderColor = "#ef4444";
+      } else {
+        pdfLockPill.textContent = "Accès Libre";
+        pdfLockPill.style.background = "rgba(34,197,94,0.1)";
+        pdfLockPill.style.color = "#4ade80";
+        pdfLockPill.style.borderColor = "rgba(34,197,94,0.3)";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
     updateRadical4TimePreview();
     updateRadical5TimePreview();
+    updatePdfLockdownTimePreview();
   }
 
   function updateRadical4TimePreview() {
@@ -1835,6 +1896,75 @@
     const mins = parseMinutes(el.value, 1440);
     const endDate = new Date(Date.now() + mins * 60000);
     preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
+  function updatePdfLockdownTimePreview() {
+    const el = document.getElementById("pdf-lock-duration");
+    const preview = document.getElementById("pdf-lock-duration-preview");
+    if (!el || !preview) return;
+    const raw = el.value.trim();
+    if (raw === "0" || raw.toLowerCase() === "permanent") {
+      preview.textContent = "[TIME] Verrouillage permanent (aucun compte à rebours)";
+      return;
+    }
+    const mins = parseMinutes(raw, 120);
+    const endDate = new Date(Date.now() + mins * 60000);
+    preview.textContent = `[TIME] Fin estimée : ${endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} (${formatDurationReadable(mins)})`;
+  }
+
+  async function triggerPdfLockdown(activate) {
+    if (activate) {
+      const confirmAction = confirm("[LOCK] CONFIRMATION VERROUILLAGE TOTAL PDF (100% Infranchissable) :\n\n• Bloquer totalement le visualisateur et les PDF\n• Neutraliser toute tentative d'inspection (Anti-F12 / Copie)\n• Afficher l'écran d'excuse avec liens d'orientation (Accueil + CCE)\n• Spinner infini en cas de tentative de contournement\n• Purge forcée des caches locaux chez tous les visiteurs\n\nConfirmer le verrouillage immédiat ?");
+      if (!confirmAction) return;
+
+      const durEl = document.getElementById("pdf-lock-duration");
+      const msgEl = document.getElementById("pdf-lock-custom-msg");
+      const purgeEl = document.getElementById("pdf-lock-force-purge");
+
+      const rawDur = durEl ? durEl.value.trim() : "120";
+      const customMsg = msgEl ? msgEl.value.trim() : "";
+      const forcePurge = purgeEl ? purgeEl.checked : true;
+
+      const mins = (rawDur === "0" || rawDur.toLowerCase() === "permanent") ? 0 : parseMinutes(rawDur, 120);
+
+      const state = getSiteState();
+      state.pdfLockdownActive = true;
+      state.pdfLockdownUntil = mins > 0 ? (Date.now() + (mins * 60000)) : 0;
+      state.pdfLockdownPurgeCache = forcePurge;
+      state.pdfLockdownMessage = customMsg;
+      state.disablePDF = true;
+
+      if (forcePurge) {
+        state.nukeCacheTrigger = Date.now();
+      }
+
+      await saveAndSyncSiteState(state);
+      alert("[LOCK] Verrouillage blindé du lecteur PDF activé avec succès sur tout le réseau !");
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la réouverture et le déverrouillage du visualisateur PDF");
+      if (!isAuthorized) return;
+
+      const state = getSiteState();
+      state.pdfLockdownActive = false;
+      state.pdfLockdownUntil = 0;
+      state.pdfLockdownPurgeCache = false;
+      state.pdfLockdownMessage = "";
+      state.disablePDF = false;
+
+      await saveAndSyncSiteState(state);
+      alert("[OK] Verrouillage PDF désactivé. Accès normal rétabli.");
+    }
+  }
+
+  async function forceClientCachePurge() {
+    const confirmAction = confirm("[PURGE] Forcer la purge intégrale immédiate du cache de documents chez TOUS les visiteurs connectés ?");
+    if (!confirmAction) return;
+
+    const state = getSiteState();
+    state.pdfLockdownPurgeCache = true;
+    state.nukeCacheTrigger = Date.now();
+    await saveAndSyncSiteState(state);
+    alert("[PURGE] Directive de purge de cache transmise à tous les clients distants !");
   }
 
   async function triggerRadical4(activate) {
@@ -2366,6 +2496,8 @@
   • screenshot-shield <on|off>    : Active/désactive le floutage anti-capture d'écran.
   • no-js <on|off>                : Active/désactive le mode statique sans JavaScript.
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
+  • pdf-lock <on|off> [m] [purge] : Verrouille totalement le lecteur PDF (100% infranchissable, chrono, anti-F12, CCE).
+  • pdf-purge                     : Force la purge immédiate des caches de documents chez les visiteurs.
   • msg <lock|unlock>             : Bloque ou réactive la messagerie instantanée (Protection créateur).
   • restore / reset               : Rétablit tous les commutateurs et modes à l'état normal.
 
@@ -2411,8 +2543,9 @@
           printCli(`  • Mode Radical 4 (Forteresse Juridique CCE) : ${isRad4 ? `[INFO] ACTIF (Fin: ${new Date(state.radical4Until).toLocaleTimeString()})` : "[ON] INACTIF"}`);
           printCli(`  • Mode Radical 5 (Bunker Air-Gap Protocole Alpha0) : ${isRad5 ? `[SHIELD] ACTIF (Fin: ${new Date(state.radical5Until).toLocaleTimeString()})` : "[ON] INACTIF"}`);
           printCli(`  • Protection Anti-Capture Écran : ${state.blockScreenshots ? "[OFF] ACTIVE (Flou + Nom)" : "[ON] INACTIVE"}`);
-          printCli(`  • Mode Sans JavaScript : ${state.disableSiteJS ? "[OFF] ACTIF (No-Script)" : "[ON] INACTIF"}`);
+          const isPdfLocked = Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || now < state.pdfLockdownUntil)) || state.disablePDF);
           printCli(`  • Visionnement PDF : ${state.disablePDF ? "[OFF] DÉSACTIVÉ" : "[ON] AUTORISÉ"}`);
+          printCli(`  • Verrouillage Blindé PDF : ${isPdfLocked ? `[LOCK] ACTIF (100% Infranchissable${state.pdfLockdownUntil ? `, Fin: ${new Date(state.pdfLockdownUntil).toLocaleTimeString()}` : ''})` : "[ON] LIBRE"}`);
           printCli(`  • Commutateurs actifs (${activeSwitches.length}/${ALL_SWITCH_KEYS.length}) : ${activeSwitches.length > 0 ? activeSwitches.join(", ") : "Aucun (Site 100% normal)"}`);
           printCli(`  • Dernière mise à jour mondiale : ${state.updatedAt || "N/A"}`);
           break;
@@ -2722,6 +2855,65 @@
           else state.disablePDF = !state.disablePDF;
           await saveAndSyncSiteState(state);
           printCli(`[FILE] Visionnement & Téléchargement PDF : [${state.disablePDF ? "BLOQUÉ" : "AUTORISÉ"}]`, "#4ade80");
+          break;
+        }
+
+        case "pdf-lock":
+        case "pdf-lockdown": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on") {
+            const rawMins = args[1] || "120";
+            const mins = (rawMins === "0" || rawMins.toLowerCase() === "permanent") ? 0 : parseMinutes(rawMins, 120);
+            let forcePurge = true;
+            let customMsg = "";
+            if (args.length > 2) {
+              if (args[2].toLowerCase() === "nopurge" || args[2].toLowerCase() === "false") {
+                forcePurge = false;
+                customMsg = args.slice(3).join(" ").replace(/^["']|["']$/g, '');
+              } else if (args[2].toLowerCase() === "purge" || args[2].toLowerCase() === "true") {
+                forcePurge = true;
+                customMsg = args.slice(3).join(" ").replace(/^["']|["']$/g, '');
+              } else {
+                customMsg = args.slice(2).join(" ").replace(/^["']|["']$/g, '');
+              }
+            }
+            const state = getSiteState();
+            state.pdfLockdownActive = true;
+            state.pdfLockdownUntil = mins > 0 ? (Date.now() + (mins * 60000)) : 0;
+            state.pdfLockdownPurgeCache = forcePurge;
+            state.pdfLockdownMessage = customMsg;
+            state.disablePDF = true;
+            if (forcePurge) state.nukeCacheTrigger = Date.now();
+            await saveAndSyncSiteState(state);
+            printCli(`[LOCK] VERROUILLAGE TOTAL DU LECTEUR PDF ACTIVÉ (100% Infranchissable)${mins > 0 ? ` pour ${mins} minutes (Fin: ${new Date(state.pdfLockdownUntil).toLocaleTimeString()})` : ' en mode permanent'}.`, "#ef4444");
+            printCli(`  • Purge forcée des caches : ${forcePurge ? "ACTIVÉE" : "DÉSACTIVÉE"}`, "#facc15");
+            if (customMsg) printCli(`  • Communiqué d'excuse : "${customMsg}"`, "#38bdf8");
+          } else if (action === "off") {
+            const isAuthorized = await verifyAdminPasswordPrompt("le déverrouillage du visualisateur PDF");
+            if (!isAuthorized) {
+              printCli("[ERR] Action refusée : mot de passe administrateur incorrect.", "#ef4444");
+              break;
+            }
+            const state = getSiteState();
+            state.pdfLockdownActive = false;
+            state.pdfLockdownUntil = 0;
+            state.pdfLockdownPurgeCache = false;
+            state.pdfLockdownMessage = "";
+            state.disablePDF = false;
+            await saveAndSyncSiteState(state);
+            printCli("[OK] Verrouillage PDF désactivé. Accès libre rétabli.", "#4ade80");
+          } else {
+            printCli("[ERR] Usage : pdf-lock <on|off> [durée_en_minutes] [purge|nopurge] [message_optionnel]", "#ef4444");
+          }
+          break;
+        }
+
+        case "pdf-purge": {
+          const state = getSiteState();
+          state.pdfLockdownPurgeCache = true;
+          state.nukeCacheTrigger = Date.now();
+          await saveAndSyncSiteState(state);
+          printCli("[PURGE] Directive de purge intégrale des caches PDF transmise à tous les visiteurs connectés.", "#ef4444");
           break;
         }
 

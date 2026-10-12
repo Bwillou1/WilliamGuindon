@@ -609,6 +609,11 @@
     if (state.radical4Active && state.radical4Until > now) return true;
     if (state.radical5Active && state.radical5Until > now) return true;
     if (state.ghostModeActive) return true;
+    if (Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || state.pdfLockdownUntil > now)) || state.disablePDF)) {
+      if (typeof window !== 'undefined' && window.location && (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html'))) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -634,6 +639,11 @@
                 }
                 if (state.radical5Active && state.radical5Until > now && !document.getElementById('radical5-wrapper')) {
                   renderRadical5Screen(state.radical5Until, state.radical5Message);
+                }
+                const isViewer = window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html');
+                const isPdfLocked = Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || now < state.pdfLockdownUntil)) || state.disablePDF);
+                if (isViewer && isPdfLocked && !document.getElementById('wg-pdf-blocked-overlay')) {
+                  renderPdfLockdownScreen(state.pdfLockdownUntil, state.pdfLockdownMessage);
                 }
                 if (!document.getElementById('wg-killswitch-styles')) {
                   applyKillSwitches(state);
@@ -661,6 +671,11 @@
               }
               if (state.radical5Active && state.radical5Until > now) {
                 if (!document.getElementById('radical5-wrapper')) renderRadical5Screen(state.radical5Until, state.radical5Message);
+              }
+              const isViewer = window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html');
+              const isPdfLocked = Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || now < state.pdfLockdownUntil)) || state.disablePDF);
+              if (isViewer && isPdfLocked && !document.getElementById('wg-pdf-blocked-overlay')) {
+                renderPdfLockdownScreen(state.pdfLockdownUntil, state.pdfLockdownMessage);
               }
               if (!document.getElementById('wg-killswitch-styles')) {
                 applyKillSwitches(state);
@@ -1059,6 +1074,107 @@
   function removeGhostModeScreen() {
     const el = document.getElementById('ghost-mode-wrapper');
     if (el) el.remove();
+  }
+
+  // --- MODE VERROUILLAGE BLINDÉ DU VISUALISATEUR PDF (100% INFRANCHISSABLE) ---
+  let pdfLockdownListenersAttached = false;
+  function attachPdfLockdownStrictSecurity() {
+    if (pdfLockdownListenersAttached) return;
+    pdfLockdownListenersAttached = true;
+
+    const blockEvent = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      return false;
+    };
+
+    window.addEventListener('contextmenu', blockEvent, true);
+    window.addEventListener('copy', blockEvent, true);
+    window.addEventListener('cut', blockEvent, true);
+    window.addEventListener('selectstart', blockEvent, true);
+    window.addEventListener('dragstart', blockEvent, true);
+
+    window.addEventListener('keydown', function(e) {
+      const key = e.key || '';
+      const isCtrlOrMeta = Boolean(e.ctrlKey || e.metaKey);
+      if (
+        key === 'F12' ||
+        (isCtrlOrMeta && (key === 'u' || key === 'U' || key === 's' || key === 'S' || key === 'p' || key === 'P')) ||
+        (isCtrlOrMeta && e.shiftKey && (key === 'i' || key === 'I' || key === 'j' || key === 'J' || key === 'c' || key === 'C' || key === 'k' || key === 'K')) ||
+        (isCtrlOrMeta && (key === 'c' || key === 'C' || key === 'x' || key === 'X' || key === 'a' || key === 'A'))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        return false;
+      }
+    }, true);
+  }
+
+  function renderPdfLockdownScreen(untilTimestamp, customMessage) {
+    attachPdfLockdownStrictSecurity();
+
+    const now = Date.now();
+    let timeLeftStr = '';
+    if (untilTimestamp && untilTimestamp > now) {
+      const totalSeconds = Math.max(1, Math.round((untilTimestamp - now) / 1000));
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      const endTime = new Date(untilTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      timeLeftStr = `Réouverture estimée dans environ <strong>${mins} min ${secs < 10 ? '0' : ''}${secs} s</strong> (Fin prévue : ${endTime})`;
+    }
+
+    let overlay = document.getElementById('wg-pdf-blocked-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'wg-pdf-blocked-overlay';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#070a10;color:#f8fafc;display:flex;align-items:center;justify-content:center;z-index:2147483647;padding:24px;text-align:center;box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;user-select:none;-webkit-user-select:none;overflow:auto;';
+      (document.body || document.documentElement).appendChild(overlay);
+    }
+
+    const defaultMsg = customMessage || "Nous vous prions de nous excuser pour ce désagrément temporaire. La consultation en direct et le visualisateur de documents PDF font l'objet d'une suspension temporaire pour révision documentaire et mise à jour probatoire.";
+
+    overlay.innerHTML = `
+      <div style="background:#0d1424;border:2px solid #ef4444;border-radius:20px;padding:36px;max-width:620px;width:100%;box-shadow:0 0 50px rgba(239,68,68,0.35),0 30px 80px rgba(0,0,0,0.95);box-sizing:border-box;">
+        <div style="margin-bottom:14px;display:flex;justify-content:center;">
+          <div style="width:68px;height:68px;border-radius:50%;background:rgba(239,68,68,0.12);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+        </div>
+        <div style="display:inline-block;background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid #ef4444;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">
+          VISUALISATEUR TEMPORAIREMENT INDISPONIBLE
+        </div>
+        <h1 style="color:#ffffff;font-size:22px;margin:0 0 12px;font-weight:800;letter-spacing:-0.4px;">Consultation des Pièces Suspendue</h1>
+        <p style="color:#cbd5e1;font-size:14.5px;line-height:1.65;margin:0 0 18px 0;">
+          ${defaultMsg}
+        </p>
+        ${timeLeftStr ? `<div style="background:rgba(245,158,11,0.1);border:1px solid #f59e0b;color:#fde68a;padding:10px 16px;border-radius:10px;font-size:13px;margin-bottom:20px;font-family:monospace;">${timeLeftStr}</div>` : ''}
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+          <a href="index.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#22c55e;color:#042f2e;font-weight:800;padding:12px 20px;border-radius:10px;text-decoration:none;font-size:14px;box-shadow:0 4px 14px rgba(34,197,94,0.35);transition:transform 0.15s ease;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Retourner au portail d'accueil
+          </a>
+          <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#1e293b;border:1.5px solid #38bdf8;color:#38bdf8;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none;font-size:13.5px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            Consulter le registre officiel CCE SEM-26-003 ↗
+          </a>
+        </div>
+
+        <p style="color:#64748b;font-size:12px;margin:0;line-height:1.5;">
+          Les pièces déposées demeurent protégées et certifiées au dossier public international de la Commission de coopération environnementale (CCE / ACEUM).
+        </p>
+      </div>
+    `;
+  }
+
+  function removePdfLockdownScreen() {
+    const overlay = document.getElementById('wg-pdf-blocked-overlay');
+    if (overlay) overlay.remove();
   }
 
   // --- ANTI-INSPECTION AGRESSIF (KILL DEVTOOLS) ---
@@ -1476,7 +1592,9 @@
       css.push('#msg-content, .msg-textarea { pointer-events: none !important; cursor: not-allowed !important; user-select: none !important; background: rgba(239,68,68,0.06) !important; border-color: #ef4444 !important; opacity: 0.7 !important; }');
       css.push('#btn-send-message, #file-drop-area, #btn-apply-restored-key, #btn-toggle-restore-box, #btn-inbox-login, #btn-reply-send { pointer-events: none !important; cursor: not-allowed !important; opacity: 0.3 !important; }');
     }
-    if (state.disablePDF) {
+    const nowTime = Date.now();
+    const isAnyPdfLockActive = Boolean((state.pdfLockdownActive && (!state.pdfLockdownUntil || nowTime < state.pdfLockdownUntil)) || state.disablePDF);
+    if (isAnyPdfLockActive) {
       css.push('a[href$=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"] { display: none !important; }');
     }
 
@@ -1558,30 +1676,40 @@
       css.push('* { -webkit-animation: none !important; animation: none !important; -webkit-transition: none !important; transition: none !important; }');
     }
 
-    // Mode Désactiver le Visionnement & Téléchargement des PDF
-    if (state.disablePDF) {
-      css.push('a[href$=".pdf"], a[href*=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"], iframe[src*="pdf"], iframe[src*="viewer"], .pdf-container, #pdf-viewer, #pdfModal { display: none !important; pointer-events: none !important; }');
-      
-      if (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html')) {
-        let pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
-        if (!pdfNotice) {
-          pdfNotice = document.createElement('div');
-          pdfNotice.id = 'wg-pdf-blocked-overlay';
-          pdfNotice.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0d1117;color:#f87171;display:flex;align-items:center;justify-content:center;z-index:99999999;padding:24px;text-align:center;box-sizing:border-box;font-family:system-ui,sans-serif;';
-          pdfNotice.innerHTML = `
-            <div style="background:#161b22;border:1.5px solid #ef4444;border-radius:14px;padding:32px;max-width:520px;box-shadow:0 15px 40px rgba(0,0,0,0.8);">
-              <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></div>
-              <h2 style="color:#ef4444;margin:0 0 10px 0;font-size:20px;">Visionnement des PDF Désactivé</h2>
-              <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin:0 0 18px 0;">La consultation et le téléchargement des documents PDF officiels ont été suspendus par l'administrateur.</p>
-              <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;background:#22c55e;color:#042f2e;font-weight:700;padding:10px 20px;border-radius:8px;text-decoration:none;"><svg class="svg-icon" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Retour à l'accueil</a>
-            </div>
-          `;
-          (document.body || document.documentElement).appendChild(pdfNotice);
+    // Mode Désactiver le Visionnement & Téléchargement des PDF (Verrouillage Blindé 100%)
+    const nowLockTime = Date.now();
+    const isPdfLocked = Boolean(
+      (state.pdfLockdownActive && (!state.pdfLockdownUntil || nowLockTime < state.pdfLockdownUntil)) ||
+      state.disablePDF
+    );
+
+    if (isPdfLocked) {
+      css.push('a[href$=".pdf"], a[href*=".pdf"], button[data-pdf], .pdf-download-btn, a[href*="viewer.html"], a[href*="lecteur.html"], iframe[src*="pdf"], iframe[src*="viewer"], .pdf-container, #pdf-viewer, #pdfModal, #viewer-root, .pdfViewer { display: none !important; pointer-events: none !important; }');
+
+      // Purge forcée des caches à distance si demandée
+      if (state.pdfLockdownPurgeCache) {
+        if ('caches' in window) {
+          caches.keys().then(names => { names.forEach(name => caches.delete(name)); }).catch(() => {});
         }
+        try { sessionStorage.clear(); } catch (_) {}
+        try {
+          if ('indexedDB' in window && indexedDB.databases) {
+            indexedDB.databases().then(dbs => {
+              dbs.forEach(db => { if (db.name) indexedDB.deleteDatabase(db.name); });
+            }).catch(() => {});
+          }
+        } catch (_) {}
+      }
+
+      const isViewer = window.location.pathname.includes('viewer.html') || 
+                       window.location.pathname.includes('lecteur.html') ||
+                       Boolean(document.getElementById('pdf-viewer')) ||
+                       Boolean(document.querySelector('.pdf-viewer-main'));
+      if (isViewer) {
+        renderPdfLockdownScreen(state.pdfLockdownUntil, state.pdfLockdownMessage);
       }
     } else {
-      const pdfNotice = document.getElementById('wg-pdf-blocked-overlay');
-      if (pdfNotice) pdfNotice.remove();
+      removePdfLockdownScreen();
     }
 
     // Verrouillage direct DOM de la messagerie

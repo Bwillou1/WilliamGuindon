@@ -633,10 +633,32 @@
     dom.docSelect.value = safePath;
   }
 
+  function isPdfViewerLockdown() {
+    try {
+      const raw = localStorage.getItem('wg_radical_site_state');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const now = Date.now();
+        if (parsed.pdfLockdownActive && (!parsed.pdfLockdownUntil || now < parsed.pdfLockdownUntil)) {
+          return true;
+        }
+        if (parsed.disablePDF) {
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
   /**
    * Charge un fichier PDF via PDF.js
    */
   async function loadPDF(url, startPage = 1) {
+    if (isPdfViewerLockdown()) {
+      showLoading("Vérification des autorisations documentaires...");
+      // Verrouillage probatoire absolu : suspension infinie (spinner permanent sans requête réseau ni blob)
+      return new Promise(() => {});
+    }
     showLoading("Chargement du document haute fidélité...");
     cachedDynamicSha256 = null;
     const safeUrl = getSafeDocUrl(url);
