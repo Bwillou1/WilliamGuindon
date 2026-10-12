@@ -381,7 +381,8 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'studio.html',
   'reload.html',
   'navbar.html',
-  '404.html'
+  '404.html',
+  'age.html'
 ]);
 
 let publicPagesAudited = 0;

@@ -2252,8 +2252,11 @@
           </ol>
           <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 12px; margin-top: 14px;">
             <strong style="color: var(--accent, #10b981); font-size: 13px; display: block; margin-bottom: 4px;">Alternative directe sans installation :</strong>
-            <p style="margin: 0 0 10px; font-size: 12.5px; color: var(--text-muted, #9ca3af); line-height: 1.4;">Recevez les alertes officielles directement par courriel sans configuration technique.</p>
-            <a href="#infolettre" class="btn btn-primary btn-sm" style="font-size: 12px; padding: 6px 14px;" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">S'abonner à l'infolettre officielle ↗</a>
+            <p style="margin: 0 0 10px; font-size: 12.5px; color: var(--text-muted, #9ca3af); line-height: 1.4;">Suivez les alertes officielles et les publications via le flux RSS ouvert sans configuration technique.</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <a href="feed.xml" class="btn btn-primary btn-sm" style="font-size: 12px; padding: 6px 14px;" target="_blank" rel="noopener">Flux RSS (feed.xml) ↗</a>
+              <a href="live.html" class="btn btn-ghost btn-sm" style="font-size: 12px; padding: 6px 14px;">Registre en direct ↗</a>
+            </div>
           </div>`
         );
         return;
@@ -2265,11 +2268,11 @@
           "Notifications non supportées",
           "Votre navigateur actuel ne prend pas en charge l'API de notifications Web Push.",
           `<p style="font-size: 13px; color: var(--text-muted, #9ca3af); line-height: 1.5; margin: 10px 0 14px;">
-            Pour être informé de l'échéance CCE du 16 octobre 2026, vous pouvez vous inscrire à l'infolettre officielle par courriel ou suivre les flux RSS publics.
+            Pour être informé de l'échéance CCE du 16 octobre 2026, vous pouvez suivre le flux RSS public ouvert ou consulter le registre interactif en direct.
           </p>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <a href="#infolettre" class="btn btn-primary btn-sm" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">Infolettre officielle ↗</a>
-            <a href="feed.xml" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Flux RSS ↗</a>
+            <a href="feed.xml" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Flux RSS officiel ↗</a>
+            <a href="live.html" class="btn btn-ghost btn-sm">Registre CCE (live.html) ↗</a>
           </div>`
         );
         return;
@@ -2287,8 +2290,9 @@
               <li>Réglez « Notifications » sur <strong>« Autoriser »</strong>.</li>
               <li>Rafraîchissez la page et cliquez à nouveau sur Alertes CCE.</li>
             </ul>
-            <div style="margin-top: 10px;">
-              <a href="#infolettre" class="btn btn-primary btn-sm" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">Recevoir par courriel plutôt ↗</a>
+            <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <a href="feed.xml" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Suivre via flux RSS ↗</a>
+              <a href="#contact" class="btn btn-ghost btn-sm" onclick="document.getElementById('cce-notif-modal-overlay')?.classList.remove('active');document.body.classList.remove('cce-modal-open');">Nous contacter ↗</a>
             </div>
           </div>`
         );
