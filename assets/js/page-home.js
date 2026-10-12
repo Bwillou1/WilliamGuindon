@@ -616,6 +616,31 @@
       btnLoadFb.addEventListener('click', loadFacebookEmbed);
     }
 
+    // 6b. Gestionnaire de consentement 2-clics pour le Reel d'alerte hero (zéro cookie en amont)
+    const btnLoadHeroReel = document.getElementById('btn-load-hero-reel');
+    function loadHeroReel() {
+      const container = document.getElementById('hero-reel-container');
+      if (!container) return;
+      container.innerHTML = `
+        <iframe 
+          src="https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1110838161416818%2F&amp;show_text=false&amp;width=267&amp;t=0" 
+          width="267" 
+          height="476" 
+          style="border:none;overflow:hidden;max-width:100%;border-radius:12px;display:block;" 
+          scrolling="no" 
+          frameborder="0" 
+          allowfullscreen="true" 
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+          loading="eager"
+          title="Alerte vidéo CCE — Échéance dans 5 jours (Facebook Reel)">
+        </iframe>`;
+    }
+    window.loadHeroReel = loadHeroReel;
+
+    if (btnLoadHeroReel) {
+      btnLoadHeroReel.addEventListener('click', loadHeroReel);
+    }
+
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');
     const mapPlaceholder = document.getElementById('map-placeholder');
