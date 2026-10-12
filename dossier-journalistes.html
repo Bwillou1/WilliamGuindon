@@ -239,7 +239,8 @@
       transform: translateY(10px);
       pointer-events: none;
     }
-    .drive-toast.visible {
+    .drive-toast.visible,
+    .drive-toast.show {
       opacity: 1;
       transform: translateY(0);
     }
@@ -342,6 +343,15 @@
     .drive-actions-item.item-petition:hover {
       background: rgba(16, 185, 129, 0.18);
       border-color: rgba(16, 185, 129, 0.35);
+    }
+    .drive-actions-item.item-zip {
+      color: #b45309;
+      background: rgba(217, 119, 6, 0.08);
+      border-color: rgba(217, 119, 6, 0.2);
+    }
+    .drive-actions-item.item-zip:hover {
+      background: rgba(217, 119, 6, 0.18);
+      border-color: rgba(217, 119, 6, 0.35);
     }
     .drive-actions-item svg {
       flex-shrink: 0;
@@ -1091,6 +1101,15 @@
       background: rgba(16, 185, 129, 0.25);
       border-color: rgba(16, 185, 129, 0.5);
     }
+    [data-theme="dark"] .drive-actions-item.item-zip {
+      color: #fbbf24;
+      background: rgba(217, 119, 6, 0.15);
+      border-color: rgba(217, 119, 6, 0.3);
+    }
+    [data-theme="dark"] .drive-actions-item.item-zip:hover {
+      background: rgba(217, 119, 6, 0.25);
+      border-color: rgba(217, 119, 6, 0.5);
+    }
     [data-theme="dark"] .drive-tree-pane {
       background: #0c1510;
       border-right-color: #1b2e22;
@@ -1381,6 +1400,15 @@
                   title="Visionner la déclaration vidéo officielle de William Guindon (Facebook Reel)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
             <span>Déclaration vidéo (Reel)</span>
+          </button>
+          <button type="button"
+                  id="btn-download-zip"
+                  onclick="showDriveToast('Erreur : cette fonction a été désactivée temporairement. Revenez à 15h demain. Le téléchargement en local (en cache) marche toujours.', 'error')"
+                  class="drive-actions-item item-zip"
+                  role="menuitem"
+                  title="Télécharger l'archive ZIP complète des pièces">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <span>Télécharger l'archive (ZIP)</span>
           </button>
           <a id="btn-petition-cedd"
              href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
@@ -1806,6 +1834,13 @@
          title="Ouvrir dans votre client de messagerie">
         Mailto ↗
       </a>
+      <button type="button" 
+              onclick="showDriveToast('Erreur : cette fonction a été désactivée temporairement. Revenez à 15h demain. Le téléchargement en local (en cache) marche toujours.', 'error')"
+              style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; background: rgba(217, 119, 6, 0.1); color: #b45309; border: 1px solid rgba(217, 119, 6, 0.3); font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 4px;"
+              title="Télécharger l'archive ZIP">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        <span>Télécharger l'archive (ZIP)</span>
+      </button>
     </div>
     <a href="protection-archive.html" target="_blank" rel="noopener" style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #064e3b; text-decoration: none; font-weight: 600;" title="Consulter la Politique de protection et de retrait de l'archive (Charte 12)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -2322,11 +2357,13 @@
     }
     toast.textContent = message;
     toast.style.background = type === 'error' ? '#991b1b' : (type === 'success' ? '#065f46' : '#064e3b');
+    toast.classList.add("visible");
     toast.classList.add("show");
     clearTimeout(toast._timeout);
     toast._timeout = setTimeout(() => {
+      toast.classList.remove("visible");
       toast.classList.remove("show");
-    }, 3800);
+    }, 4500);
   }
 
   async function updateCacheTracking() {
