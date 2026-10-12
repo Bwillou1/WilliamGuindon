@@ -335,6 +335,81 @@
       color: #ffffff;
       border-color: #064e3b;
     }
+    /* Barre de recherche rapide de pièces */
+    .tree-search-bar {
+      position: sticky;
+      top: -8px;
+      z-index: 15;
+      background: #f7faf7;
+      padding: 4px 2px 10px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #dce5df;
+    }
+    .tree-search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .tree-search-icon {
+      position: absolute;
+      left: 10px;
+      color: #52796f;
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+    .tree-search-input {
+      width: 100%;
+      height: 34px;
+      padding: 6px 28px 6px 30px;
+      font-size: 12.5px;
+      border: 1px solid #cbd7cf;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #1f2937;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .tree-search-input:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.15);
+    }
+    .tree-search-clear {
+      display: none;
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      padding: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+      border-radius: 4px;
+    }
+    .tree-search-clear:hover {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+    }
+    .tree-search-status {
+      display: none;
+      font-size: 11px;
+      color: #064e3b;
+      margin-top: 5px;
+      padding: 0 4px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .tree-highlight {
+      background: #fef08a;
+      color: #0f172a;
+      padding: 0 2px;
+      border-radius: 2px;
+      font-weight: 700;
+    }
     .tree-node {
       user-select: none;
       margin-bottom: 2px;
@@ -878,6 +953,35 @@
     [data-theme="dark"] .drive-splitter.is-dragging::after {
       background: #34d399;
     }
+    [data-theme="dark"] .tree-search-bar {
+      background: #111d16;
+      border-bottom-color: #1e3327;
+    }
+    [data-theme="dark"] .tree-search-input {
+      background: #15241b;
+      border-color: #244130;
+      color: #e2e8f0;
+    }
+    [data-theme="dark"] .tree-search-input:focus {
+      border-color: #34d399;
+      box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+    }
+    [data-theme="dark"] .tree-search-icon {
+      color: #6ee7b7;
+    }
+    [data-theme="dark"] .tree-search-clear {
+      color: #64748b;
+    }
+    [data-theme="dark"] .tree-search-clear:hover {
+      color: #f87171;
+    }
+    [data-theme="dark"] .tree-search-status {
+      color: #a7f3d0;
+    }
+    [data-theme="dark"] .tree-highlight {
+      background: #854d0e;
+      color: #fef08a;
+    }
     [data-theme="dark"] .tree-folder-header {
       color: #a7f3d0;
     }
@@ -1152,6 +1256,21 @@
 
   <div class="drive-body">
     <div id="drive-tree" class="drive-tree-pane">
+      <!-- Barre de recherche rapide de pièces probatoires -->
+      <div class="tree-search-bar" id="tree-search-bar" role="search" aria-label="Recherche rapide dans les 222 pièces probatoires">
+        <div class="tree-search-input-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="tree-search-icon" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="search" id="tree-search-input" class="tree-search-input" placeholder="Filtrer les pièces (ex: cadmium, BAPE)..." aria-label="Filtrer les pièces probatoires par mot-clé" autocomplete="off" spellcheck="false">
+          <button type="button" id="tree-search-clear" class="tree-search-clear" title="Effacer la recherche" aria-label="Effacer">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div id="tree-search-status" class="tree-search-status" aria-live="polite"></div>
+      </div>
+
+      <div id="tree-nodes-container" class="tree-nodes-container">
 <!--PRERENDER:pieces:START-->
 <div class="tree-node open">
   <div class="tree-folder-header">
@@ -2192,6 +2311,8 @@
   </div>
 </div>
 <!--PRERENDER:pieces:END-->
+      </div>
+
   <div class="drive-tree-footer" style="margin-top: 18px; padding: 12px 10px; border-top: 1px solid #dce5df; background: rgba(6, 78, 59, 0.04); border-radius: 6px;">
     <div style="font-size: 11px; font-weight: 700; color: #064e3b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em;">Dossiers d'enquête associés :</div>
     <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; font-size: 12px;">
@@ -3326,7 +3447,7 @@
   }
 
   function processFiles(filesData) {
-    const treeContainer = document.getElementById("drive-tree");
+    const treeContainer = document.getElementById("tree-nodes-container") || document.getElementById("drive-tree");
     if (!treeContainer) return;
     try {
       treeContainer.innerHTML = "";
@@ -3838,10 +3959,16 @@
         SHA256: 3209f9ea95dfc096ebcdf1ac0288c97872206af11a6e978a74761c03b3eba4d7
       </div>
     `;
-    treeContainer.appendChild(treeFooter);
+    if (!document.querySelector("#drive-tree > .drive-tree-footer") && !treeContainer.querySelector(".drive-tree-footer")) {
+      treeContainer.appendChild(treeFooter);
+    }
 
     // Initialisation du statut de cache sur l'arbre
     updateCacheTracking();
+
+    if (typeof window.applyTreeSearchFilter === "function") {
+      window.applyTreeSearchFilter();
+    }
 
     const defaultItem = targetItemToSelect || firstPdfItem;
     if (defaultItem) {
@@ -4173,6 +4300,180 @@
       applyTheme(newTheme, true);
     }
   });
+
+  // =========================================================
+  // RECHERCHE RAPIDE & FILTRAGE EN DIRECT DES 222 PIÈCES
+  // =========================================================
+  function initTreeSearch() {
+    const searchInput = document.getElementById("tree-search-input");
+    const clearBtn = document.getElementById("tree-search-clear");
+    const statusEl = document.getElementById("tree-search-status");
+    if (!searchInput) return;
+
+    function normalizeStr(str) {
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function escapeRegExp(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function applyFilter() {
+      const rawQuery = searchInput.value || "";
+      const queryNorm = normalizeStr(rawQuery);
+      const terms = queryNorm.split(/\s+/).filter(Boolean);
+
+      const treeContainer = document.getElementById("tree-nodes-container") || document.getElementById("drive-tree");
+      if (!treeContainer) return;
+
+      const items = treeContainer.querySelectorAll(".drive-item");
+      const folders = treeContainer.querySelectorAll(".tree-node");
+
+      if (terms.length === 0) {
+        if (clearBtn) clearBtn.style.display = "none";
+        if (statusEl) {
+          statusEl.style.display = "none";
+          statusEl.textContent = "";
+        }
+
+        items.forEach(item => {
+          item.style.display = "";
+          const link = item.querySelector(".drive-item-name");
+          if (link && item._origHtml !== undefined) {
+            link.innerHTML = item._origHtml;
+          }
+        });
+
+        folders.forEach((folder, idx) => {
+          folder.style.display = "";
+          if (idx === 0) {
+            folder.classList.add("open");
+          } else {
+            folder.classList.remove("open");
+          }
+        });
+        return;
+      }
+
+      if (clearBtn) clearBtn.style.display = "block";
+
+      let matchedCount = 0;
+      const matchedFolders = new Set();
+
+      const regexPatterns = rawQuery.trim().split(/\s+/).filter(Boolean).map(escapeRegExp);
+      const highlightRegex = regexPatterns.length > 0 ? new RegExp(`(${regexPatterns.join("|")})`, "gi") : null;
+
+      items.forEach(item => {
+        const link = item.querySelector(".drive-item-name");
+        if (!link) return;
+
+        if (item._origHtml === undefined) {
+          item._origHtml = link.innerHTML;
+          item._origText = link.textContent;
+        }
+
+        const fullPath = item.getAttribute("data-fullpath") || "";
+        const itemText = (item._origText || link.textContent) + " " + fullPath;
+        const itemTextNorm = normalizeStr(itemText);
+
+        const matchesAll = terms.every(term => itemTextNorm.includes(term));
+
+        if (matchesAll) {
+          item.style.display = "flex";
+          matchedCount++;
+
+          if (highlightRegex) {
+            link.innerHTML = item._origText.replace(highlightRegex, '<mark class="tree-highlight">$1</mark>');
+          } else {
+            link.innerHTML = item._origHtml;
+          }
+
+          let parent = item.parentElement;
+          while (parent && parent !== treeContainer) {
+            if (parent.classList && parent.classList.contains("tree-node")) {
+              matchedFolders.add(parent);
+              parent.classList.add("open");
+              parent.style.display = "";
+            }
+            parent = parent.parentElement;
+          }
+        } else {
+          item.style.display = "none";
+          link.innerHTML = item._origHtml;
+        }
+      });
+
+      folders.forEach(folder => {
+        const folderNameEl = folder.querySelector(".folder-name");
+        const folderName = folderNameEl ? folderNameEl.textContent : "";
+        const folderMatches = terms.every(term => normalizeStr(folderName).includes(term));
+
+        if (matchedFolders.has(folder) || folderMatches) {
+          folder.style.display = "";
+          folder.classList.add("open");
+          if (folderMatches) {
+            folder.querySelectorAll(".drive-item").forEach(fi => {
+              if (fi.style.display === "none") {
+                fi.style.display = "flex";
+                matchedCount++;
+              }
+            });
+          }
+        } else {
+          folder.style.display = "none";
+        }
+      });
+
+      if (statusEl) {
+        statusEl.style.display = "block";
+        if (matchedCount === 0) {
+          statusEl.textContent = "Aucune pièce correspondante";
+          statusEl.style.color = "#dc2626";
+        } else {
+          statusEl.textContent = `${matchedCount} pièce${matchedCount > 1 ? "s" : ""} trouvée${matchedCount > 1 ? "s" : ""}`;
+          statusEl.style.color = "";
+        }
+      }
+    }
+
+    let debounceTimer = null;
+    searchInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(applyFilter, 50);
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        applyFilter();
+        searchInput.focus();
+      });
+    }
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        searchInput.value = "";
+        applyFilter();
+        searchInput.blur();
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement !== searchInput && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    });
+
+    window.applyTreeSearchFilter = applyFilter;
+  }
+
+  initTreeSearch();
 
   if (btnShowVideo) {
     btnShowVideo.addEventListener("click", showVideoDeclaration);
