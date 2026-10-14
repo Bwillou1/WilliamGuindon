@@ -253,7 +253,7 @@ export default {
             const errJson = await groqResponse.json();
             errDetail = errJson?.error?.message ? ` (${errJson.error.message})` : '';
           } catch (_) {}
-          lastError = `HTTP ${groqResponse.status}${errDetail}`;
+          lastError = `HTTP ${groqResponse.status}`;
           continue; // Bascule immédiate vers le fallback (ex. modèle indisponible ou 429)
         }
 
@@ -266,7 +266,7 @@ export default {
         }
       } catch (err) {
         clearTimeout(timeoutId);
-        lastError = err?.name === 'AbortError' ? 'timeout' : (err?.message || 'fetch error');
+        lastError = err?.name === 'AbortError' ? 'timeout' : 'fetch error';
       }
     }
 

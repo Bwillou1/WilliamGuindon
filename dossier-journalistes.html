@@ -2069,6 +2069,11 @@
     return FOLDER_TITLES[folderName] || folderName.replace(/_/g, " ");
   }
 
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
   function getCleanDisplayName(fullPath) {
     if (!fullPath) return "";
     let cleanPath = fullPath;
@@ -2844,7 +2849,7 @@
         const cleanDisplayName = getCleanDisplayName(fileObj.fullPath);
         item.innerHTML = `
           <span style="display:inline-flex;align-items:center;flex-shrink:0;">${svgIcon}</span>
-          <a href="https://ia601409.us.archive.org/1/items/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(fileObj.fullPath)}" class="drive-item-name" title="${fileObj.name}" target="_blank" rel="noopener">${cleanDisplayName}</a>
+          <a href="https://ia601409.us.archive.org/1/items/dossier-journalistes-tourbiere-blainville-stablex/${encodeURI(fileObj.fullPath)}" class="drive-item-name" title="${fileObj.name}" target="_blank" rel="noopener">${escapeHtml(cleanDisplayName)}</a>
         `;
 
         item.addEventListener("click", async (e) => {
@@ -3018,7 +3023,7 @@
               box.className = "no-preview";
               box.innerHTML = `
                 <span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span>
-                <h4 style="margin: 0 0 8px 0; color: #064e3b;">${cleanDisplayName}</h4>
+                <h4 style="margin: 0 0 8px 0; color: #064e3b;">${escapeHtml(cleanDisplayName)}</h4>
                 <p>Ce document est disponible en consultation directe.</p>
                 <a href="${res.effectiveUrl}" class="btn-download-single" ${res.isLocal ? 'download="' + fileObj.name + '"' : 'target="_blank" rel="noopener"'}>Télécharger le document</a>
               `;

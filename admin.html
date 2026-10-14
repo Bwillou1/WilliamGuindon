@@ -1744,6 +1744,11 @@
   // ====================================================
   // GESTION DES LISTES & MODIFICATION
   // ====================================================
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
   async function loadManageList() {
     const blogList = document.getElementById("manage-blog-list");
     const photoList = document.getElementById("manage-photo-list");
@@ -1758,9 +1763,9 @@
         commList.innerHTML = cachedCommuniques.map(cm => `
           <div class="item-list-row">
             <div>
-              <strong style="color:var(--text); font-size:14px;">${cm.title}</strong>
+              <strong style="color:var(--text); font-size:14px;">${escapeHtml(cm.title)}</strong>
               <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
-                ${cm.date} · ${cm.location || "Blainville"} · <span style="color:var(--accent);">${cm.badge || "Officiel"}</span>
+                ${escapeHtml(cm.date)} · ${escapeHtml(cm.location || "Blainville")} · <span style="color:var(--accent);">${escapeHtml(cm.badge || "Officiel")}</span>
               </div>
             </div>
             <div class="btn-action-group">
@@ -1778,9 +1783,9 @@
         blogList.innerHTML = cachedBlogPosts.map(post => `
           <div class="item-list-row">
             <div>
-              <strong style="color:var(--text); font-size:14px;">${post.title}</strong>
+              <strong style="color:var(--text); font-size:14px;">${escapeHtml(post.title)}</strong>
               <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
-                ${post.date} · Catégorie: ${post.category} · ${(post.tags || []).join(", ")}
+                ${escapeHtml(post.date)} · Catégorie: ${escapeHtml(post.category)} · ${escapeHtml((post.tags || []).join(", "))}
               </div>
             </div>
             <div class="btn-action-group">
@@ -1798,11 +1803,11 @@
         photoList.innerHTML = cachedPhotos.map(ph => `
           <div class="item-list-row">
             <div style="display:flex; align-items:center; gap:12px;">
-              <img src="${ph.imageUrl}" class="admin-photo-thumb" width="48" height="48" alt="${ph.title || 'Photo'}" loading="lazy">
+              <img src="${escapeHtml(ph.imageUrl)}" class="admin-photo-thumb" width="48" height="48" alt="${escapeHtml(ph.title || 'Photo')}" loading="lazy">
               <div>
-                <strong style="color:var(--text); font-size:14px;">${ph.title}</strong>
+                <strong style="color:var(--text); font-size:14px;">${escapeHtml(ph.title)}</strong>
                 <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
-                  ${ph.date} · ${ph.location || ""} · <span style="color:#86efac; font-size:11px;">Licence : ${ph.license || "CC BY-NC-ND 4.0"}</span>
+                  ${escapeHtml(ph.date)} · ${escapeHtml(ph.location || "")} · <span style="color:#86efac; font-size:11px;">Licence : ${escapeHtml(ph.license || "CC BY-NC-ND 4.0")}</span>
                 </div>
               </div>
             </div>

@@ -2148,12 +2148,12 @@ function renderFbComments() {
   if (!container) return;
   var out = '';
   FB_COMMENTS.forEach(function(item) {
-    var author = item.author;
+    var author = esc(item.author);
     author = author.replace(/\[([^\]]+)\]/g, function(m, p1) {
       return '<span class="cx" title="Caviardé : ' + p1.replace(/"/g, '&quot;') + '">' + p1 + '</span>';
     });
 
-    var text = item.text;
+    var text = esc(item.text);
     text = text.replace(/\[Prénom et Nom\]/g, 'William Guindon');
     text = text.replace(/\[PRÉNOM\]/g, 'WILLIAM');
     text = text.replace(/\[Prénom\]/g, 'William');
