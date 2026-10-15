@@ -25,7 +25,7 @@
 <link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#064e3b">
-<link rel="stylesheet" href="style.css?v=20261006-v80">
+<link rel="stylesheet" href="style.css?v=20261015-v81">
 <link rel="preload" as="image" href="assets/media/william-guindon.webp" type="image/webp" fetchpriority="high">
 <meta name="google-site-verification" content="google57da095d83ebd58e">
 
@@ -966,7 +966,7 @@
 
 
 
-<script src="assets/js/theme-core.js?v=20261014-v128" defer></script>
+<script src="assets/js/theme-core.js?v=20261015-v131" defer></script>
 <script src="assets/js/page-home.js?v=20260923-v2" defer></script>
 </head>
 <body><a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -984,13 +984,13 @@
     </div>
     <div class="site-deadline-center">
       <div class="site-deadline-clock">
-        <span class="site-deadline-val js-cd-days">—</span><span class="site-deadline-unit">j</span>
+        <span class="site-deadline-val js-cd-days">0</span><span class="site-deadline-unit">j</span>
         <span class="site-deadline-sep">:</span>
-        <span class="site-deadline-val js-cd-hours">—</span><span class="site-deadline-unit">h</span>
+        <span class="site-deadline-val js-cd-hours">06</span><span class="site-deadline-unit">h</span>
         <span class="site-deadline-sep">:</span>
-        <span class="site-deadline-val js-cd-mins">—</span><span class="site-deadline-unit">m</span>
+        <span class="site-deadline-val js-cd-mins">40</span><span class="site-deadline-unit">m</span>
         <span class="site-deadline-sep">:</span>
-        <span class="site-deadline-val js-cd-secs">—</span><span class="site-deadline-unit">s</span>
+        <span class="site-deadline-val js-cd-secs">00</span><span class="site-deadline-unit">s</span>
       </div>
     </div>
     <div class="site-deadline-right">
@@ -1001,6 +1001,52 @@
     </div>
   </div>
 </aside>
+<script>
+(function() {
+  function tickImmediateCountdown() {
+    var target = new Date('2026-10-16T00:00:00-04:00').getTime();
+    var now = Date.now();
+    var diff = target - now;
+    var isPast = diff <= 0;
+    var d = isPast ? 0 : Math.floor(diff / (1000 * 60 * 60 * 24));
+    var h = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var m = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    var s = isPast ? 0 : Math.floor((diff % (1000 * 60)) / 1000);
+    var pad = function(n) { return (n < 10 ? '0' : '') + n; };
+
+    document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) { el.textContent = d; });
+    document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(function(el) { el.textContent = pad(h); });
+    document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(function(el) { el.textContent = pad(m); });
+    document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(function(el) { el.textContent = pad(s); });
+
+    var heroBlock = document.getElementById('hero-countdown-block');
+    var heroStage2 = document.getElementById('hero-stage2-summary-block');
+    var trackerBlock = document.getElementById('tracker-countdown-state');
+    var trackerStage2 = document.getElementById('tracker-stage2-state');
+
+    if (isPast) {
+      if (heroBlock) heroBlock.style.display = 'none';
+      if (heroStage2) heroStage2.style.display = 'block';
+      if (trackerBlock) trackerBlock.style.display = 'none';
+      if (trackerStage2) trackerStage2.style.display = 'block';
+      document.querySelectorAll('.site-deadline-title').forEach(function(el) {
+        el.textContent = "Statut CCE · Échéance légale atteinte (16 oct.) :";
+      });
+      document.querySelectorAll('.site-deadline-clock').forEach(function(el) {
+        el.innerHTML = '<span style="color:#f59e0b; font-weight:800; font-size:12px; letter-spacing:0.04em;">DÉLAI ÉCHU · EN ATTENTE DU DÉPÔT DU CANADA</span>';
+      });
+    }
+  }
+  try {
+    tickImmediateCountdown();
+    window.__wg_tickDeadline = tickImmediateCountdown;
+    if (!window.__wg_deadlineTimer) {
+      window.__wg_deadlineTimer = setInterval(tickImmediateCountdown, 1000);
+    }
+    document.addEventListener('DOMContentLoaded', tickImmediateCountdown);
+  } catch (_) {}
+})();
+</script>
 
 <header class="site" aria-label="En-tête du site">
   <div id="ai-chat" aria-hidden="true"></div>
@@ -1348,28 +1394,29 @@
           <div class="hero-countdown-box notranslate" translate="no">
             <div class="hero-countdown-grid">
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-days">—</span>
+                <span class="hero-countdown-val js-cd-days">0</span>
                 <span class="hero-countdown-lbl">Jours</span>
               </div>
               <div class="hero-countdown-sep">:</div>
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-hours">—</span>
+                <span class="hero-countdown-val js-cd-hours">06</span>
                 <span class="hero-countdown-lbl">Heures</span>
               </div>
               <div class="hero-countdown-sep">:</div>
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-mins">—</span>
+                <span class="hero-countdown-val js-cd-mins">40</span>
                 <span class="hero-countdown-lbl">Minutes</span>
               </div>
               <div class="hero-countdown-sep">:</div>
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-secs">—</span>
+                <span class="hero-countdown-val js-cd-secs">00</span>
                 <span class="hero-countdown-lbl">Secondes</span>
               </div>
             </div>
           </div>
           <div class="hero-countdown-tz js-cd-tz-desc" aria-live="polite" style="display: none;"></div>
         </div>
+        <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
 
         <!-- Bloc Statut Étape 2 sobre dans la carte Hero (actif dès l'échéance atteinte) -->
         <div id="hero-stage2-summary-block" style="display: none;">
@@ -1691,7 +1738,7 @@
               </span>
               <span class="badge-historic">Premier mineur de l'histoire SEM</span>
             </div>
-            <span class="cce-sync-badge" style="border-color:#f59e0b; color:#fde68a;">Procédure Étape 2 (art. 24.28 ACEUM)</span>
+            <span class="stage2-sync-badge">Procédure Étape 2 (art. 24.28 ACEUM)</span>
           </div>
 
           <h3 style="font-size:22px; line-height:1.35; margin:14px 0 10px; font-weight:800;">
@@ -1723,16 +1770,16 @@
               <span>⚖️ 2. Les trois scénarios possibles dès aujourd'hui</span>
             </h4>
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px; margin-top:8px;">
-              <div style="background:rgba(0,0,0,0.06); padding:12px 14px; border-radius:8px; border-left:3px solid #16a34a;">
-                <div style="color:#15803d; font-weight:800; font-size:13px; margin-bottom:4px;">Scénario A — Dépôt complet</div>
+              <div class="stage2-scenario-card scenario-a">
+                <div class="scenario-title-a">Scénario A — Dépôt complet</div>
                 <div style="font-size:12.5px; line-height:1.5;">Le Canada dépose une réponse circonstanciée justifiant ses actions (ou l'application du projet de loi 93 et les rejets de cadmium mesurés jusqu'à 320x la norme). Le document sera immédiatement analysé et rendu public ici.</div>
               </div>
-              <div style="background:rgba(0,0,0,0.06); padding:12px 14px; border-radius:8px; border-left:3px solid #d97706;">
-                <div style="color:#b45309; font-weight:800; font-size:13px; margin-bottom:4px;">Scénario B — Demande de prolongation</div>
+              <div class="stage2-scenario-card scenario-b">
+                <div class="scenario-title-b">Scénario B — Demande de prolongation</div>
                 <div style="font-size:12.5px; line-height:1.5;">Le gouvernement peut avoir sollicité un délai additionnel exceptionnel pour motifs techniques ou juridiques, ce que le Secrétariat doit notifier publiquement.</div>
               </div>
-              <div style="background:rgba(0,0,0,0.06); padding:12px 14px; border-radius:8px; border-left:3px solid #dc2626;">
-                <div style="color:#b91c1c; font-weight:800; font-size:13px; margin-bottom:4px;">Scénario C — Absence de réponse</div>
+              <div class="stage2-scenario-card scenario-c">
+                <div class="scenario-title-c">Scénario C — Absence de réponse</div>
                 <div style="font-size:12.5px; line-height:1.5;">Si aucune réponse n'est transmise, le Secrétariat poursuit automatiquement la procédure en se basant exclusivement sur les preuves fournies dans la soumission citoyenne révisée.</div>
               </div>
             </div>
@@ -1753,9 +1800,9 @@
           </div>
 
           <!-- Preuve officielle CCE : Premier mineur de l'histoire SEM depuis 1994 -->
-          <div style="background: rgba(37, 99, 235, 0.06); border: 1.5px solid rgba(37, 99, 235, 0.25); border-radius: 10px; padding: 16px; margin: 16px 0 18px; text-align: left;">
+          <div class="stage2-minor-proof-box">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-              <strong style="color: #60a5fa; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+              <strong class="stage2-minor-proof-title">
                 <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Preuve officielle du Secrétariat CCE : Premier mineur de l'histoire SEM (depuis 1994)
               </strong>
               <span style="font-size: 11.5px; background: #2563eb; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">25 sept. 2026</span>
@@ -1778,16 +1825,16 @@
               </a>
             </div>
 
-            <blockquote style="margin: 0 0 10px 0; padding: 8px 14px; border-left: 3px solid #3b82f6; background: rgba(0, 0, 0, 0.4); font-style: italic; font-size: 12.5px; color: #e2e8f0; line-height: 1.5;">
+            <blockquote class="stage2-quote">
               « Nous ne recueillons pas l'âge des auteurs des communications SEM. Toutefois, depuis 1994, c'est la première fois qu'un auteur nous indique être mineur au moment de soumettre un dossier à la CCE. »
-              <div style="font-style: normal; font-weight: 700; font-size: 11.5px; color: #93c5fd; margin-top: 4px;">
+              <div class="stage2-quote-author">
                 — Unité SEM (SEM Unit), Secrétariat de la Commission de coopération environnementale (sem@cec.org)
               </div>
             </blockquote>
 
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <a href="statut-mineur.html" class="btn btn-outline-sm" style="font-size: 12px; border-color:rgba(255,255,255,0.3); color:#ffffff;">Consulter le Statut Juridique &amp; Protection Déontologique ↗</a>
-              <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="font-size: 12px; color:#93c5fd;">Preuve HD Plein Écran ↗</a>
+              <a href="statut-mineur.html" class="stage2-minor-btn-primary">Consulter le Statut Juridique &amp; Protection Déontologique ↗</a>
+              <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="stage2-minor-btn-ghost">Preuve HD Plein Écran ↗</a>
             </div>
           </div>
 
@@ -1796,13 +1843,13 @@
             <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background:#f59e0b; border-color:#d97706; color:#0f172a; font-weight:800; box-shadow:0 4px 14px rgba(245,158,11,0.35);">
               🌐 Registre officiel CCE en direct ↗
             </a>
-            <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.3); color:#ffffff; font-weight:700;">
+            <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-sm stage2-banner-btn-secondary">
               📄 Détermination DET-26-003 ↗
             </a>
-            <a href="agir.html" class="btn btn-primary btn-sm" style="background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.3); color:#ffffff; font-weight:700;">
+            <a href="agir.html" class="btn btn-sm stage2-banner-btn-secondary">
               Comment Agir ↗
             </a>
-            <a href="presse.html" class="btn btn-primary btn-sm" style="background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.3); color:#ffffff; font-weight:700;">
+            <a href="presse.html" class="btn btn-sm stage2-banner-btn-secondary">
               📁 Espace presse &amp; Kit média ↗
             </a>
             <button type="button" class="notif-toggle-btn notif-toggle-sm" aria-label="Activer les alertes de suivi CCE"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Alertes CCE</button>
@@ -1836,11 +1883,12 @@
             <span class="tracker-tz-pill js-cd-tz-badge" style="display: none;"></span>
           </div>
           <div class="precision-countdown-grid precision-countdown-compact notranslate" translate="no" aria-live="off" role="timer" aria-label="Décompte jusqu'à l'échéance du 16 octobre 2026">
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-days">—</span><span class="precision-time-lbl">J</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-hours">—</span><span class="precision-time-lbl">H</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-mins">—</span><span class="precision-time-lbl">M</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-secs">—</span><span class="precision-time-lbl">S</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-days">0</span><span class="precision-time-lbl">J</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-hours">06</span><span class="precision-time-lbl">H</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-mins">40</span><span class="precision-time-lbl">M</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-secs">00</span><span class="precision-time-lbl">S</span></div>
           </div>
+          <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
           <div style="margin-top: 10px; display: flex; justify-content: center; min-height: 42px;">
             <add-to-calendar-button 
               name="Échéance CCE — Réponse officielle du Canada (Dossier Stablex SEM-26-003)"

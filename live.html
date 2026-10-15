@@ -573,22 +573,41 @@
       <div class="tracker-card live-tracker-card notranslate" translate="no">
         <div class="precision-countdown-grid live-precision-grid notranslate" translate="no" aria-live="off" role="timer" aria-label="Décompte en direct jusqu'à l'échéance du 16 octobre 2026">
           <div class="precision-time-unit live-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-days">—</div>
+            <div class="precision-time-val live-time-val" id="cd-days">0</div>
             <div class="precision-time-lbl live-time-lbl">Jours</div>
           </div>
           <div class="precision-time-unit live-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-hours">—</div>
+            <div class="precision-time-val live-time-val" id="cd-hours">06</div>
             <div class="precision-time-lbl live-time-lbl">Heures</div>
           </div>
           <div class="precision-time-unit live-time-unit">
-            <div class="precision-time-val live-time-val" id="cd-mins">—</div>
+            <div class="precision-time-val live-time-val" id="cd-mins">40</div>
             <div class="precision-time-lbl live-time-lbl">Minutes</div>
           </div>
           <div class="precision-time-unit live-time-unit">
-            <div class="precision-time-val live-time-val-secs" id="cd-secs">—</div>
+            <div class="precision-time-val live-time-val-secs" id="cd-secs">00</div>
             <div class="precision-time-lbl live-time-lbl">Secondes</div>
           </div>
         </div>
+        <script>
+        (function() {
+          var target = new Date("2026-10-16T00:00:00-04:00").getTime();
+          var diff = Math.max(0, target - Date.now());
+          var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          var s = Math.floor((diff % (1000 * 60)) / 1000);
+          var pad = function(n) { return (n < 10 ? '0' : '') + n; };
+          var dEl = document.getElementById("cd-days");
+          var hEl = document.getElementById("cd-hours");
+          var mEl = document.getElementById("cd-mins");
+          var sEl = document.getElementById("cd-secs");
+          if (dEl) dEl.textContent = d;
+          if (hEl) hEl.textContent = pad(h);
+          if (mEl) mEl.textContent = pad(m);
+          if (sEl) sEl.textContent = pad(s);
+        })();
+        </script>
 
         <div class="counter-lbl live-total-minutes" id="live-total-minutes-label">
           Calcul du nombre total de minutes en cours...

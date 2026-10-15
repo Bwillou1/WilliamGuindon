@@ -618,6 +618,13 @@
     // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
     let cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
 
+    try {
+      updatePrecisionCountdown();
+      if (!window.__wg_deadlineTimer) {
+        window.__wg_deadlineTimer = setInterval(updatePrecisionCountdown, 1000);
+      }
+    } catch (_) {}
+
     initDynamicDates();
     initLocalNavigationAccelerator();
     initHashScrollManager();
@@ -1966,9 +1973,11 @@
       document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = String(secs).padStart(2, '0'));
     }
 
-    if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days') || document.getElementById('hero-stage2-panel')) {
+    if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days') || document.getElementById('hero-stage2-panel') || document.getElementById('hero-countdown-block')) {
       updatePrecisionCountdown();
-      setInterval(updatePrecisionCountdown, 1000);
+      if (!window.__wg_deadlineTimer) {
+        window.__wg_deadlineTimer = setInterval(updatePrecisionCountdown, 1000);
+      }
     }
 
     // PWA & Service Worker avec vérification instantanée des mises à jour
