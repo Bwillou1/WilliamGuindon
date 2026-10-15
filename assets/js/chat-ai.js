@@ -56,6 +56,7 @@
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;
+    let currentGroqMode = 'fast';
 
     if (!floatingBtn) {
       floatingBtn = document.createElement('button');
@@ -225,11 +226,14 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
     }
 
     async function callGroq(messages) {
+      // Économie drastique de tokens pour le service public : on ne conserve que les 4 derniers messages (2 tours d'échange)
+      const trimmed = messages.slice(-4);
       const resp = await fetch('/api/groq-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: messages.map(m => ({
+          mode: currentGroqMode || 'fast',
+          messages: trimmed.map(m => ({
             role: m.role === 'assistant' ? 'assistant' : 'user',
             content: m.content
           }))
@@ -771,6 +775,37 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   <button type="button" id="ai-clear-history-btn" class="ai-toolbar-btn secondary" title="Effacer l'historique des échanges mémorisé localement">Effacer l'historique</button>
                 </div>
               </div>
+
+              <!-- Sélecteur de mode (Rapide 8B vs Approfondi 70B) pour le modèle officiel -->
+              <div class="ai-mode-row" id="ai-mode-row">
+                <span class="ai-toolbar-label">
+                  <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  Mode :
+                </span>
+                <div class="ai-mode-btn-group">
+                  <button type="button" class="ai-mode-btn active" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota (Recommandé en période de forte affluence)">⚡ Rapide (8B · Par défaut)</button>
+                  <button type="button" class="ai-mode-btn" data-mode="expert" id="ai-mode-expert" title="Modèle 70B pour questions pointues (Quota journalier partagé)">🧠 Approfondi (70B)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Avis spécial forte affluence / Gestion des quotas (Échéance 16 au 21 oct.) -->
+            <div class="ai-traffic-alert" id="ai-traffic-alert">
+              <div class="ai-traffic-alert-badge">
+                <span class="ai-live-dot"></span>
+                <strong>Avis spécial — Échéance CCE du 16 octobre 2026 (Gestion du trafic)</strong>
+              </div>
+              <p class="ai-traffic-alert-msg">
+                En raison de l'échéance légale imposée au Canada ce 16 octobre 2026 et de la forte consultation attendue sur le dossier SEM-26-003, afin que l'assistance documentaire reste accessible et fluide pour tout le monde sans rupture de quota, William a pris la décision d'activer par défaut un modèle d'IA plus léger et rapide (Llama 8B). Ce modèle est très réactif et économique en bande passante, mais peut occasionnellement comporter de légères imprécisions ou omissions par rapport aux très grands modèles ; nous vous prions de nous en excuser.
+              </p>
+              <div class="ai-traffic-alert-foot">
+                <p><strong>💡 Recommandation (du vendredi 16 octobre au mercredi 21 octobre 2026) :</strong></p>
+                <ul>
+                  <li>Pour des analyses sans limite de quota, vous pouvez connecter votre propre clé (l'API <strong>Google Gemini</strong> est 100 % gratuite et s'active en 1 clic dans le sélecteur Moteur ci-dessus).</li>
+                  <li>Vous pouvez aussi basculer sur l'onglet <strong>« Liens IA »</strong> pour copier-coller directement le prompt documentaire complet dans votre assistant favori.</li>
+                  <li>Le bouton <strong>Mode Approfondi (70B)</strong> reste accessible pour les questions juridiques pointues dans la limite du quota partagé.</li>
+                </ul>
+              </div>
             </div>
 
             <!-- Conteneur Deep Chat (Web Component) -->
@@ -1003,6 +1038,16 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           noticeEl.style.display = 'block';
           noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Mode officiel :</span> ' + prov.notice;
         }
+
+        const modeRow = aiModal.querySelector('#ai-mode-row');
+        const trafficAlert = aiModal.querySelector('#ai-traffic-alert');
+        if (providerKey === 'default') {
+          if (modeRow) modeRow.style.display = 'flex';
+          if (trafficAlert) trafficAlert.style.display = 'block';
+        } else {
+          if (modeRow) modeRow.style.display = 'none';
+          if (trafficAlert) trafficAlert.style.display = 'none';
+        }
       }
 
       function mountDeepChat(providerKey) {
@@ -1079,6 +1124,21 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (deepChatInstance || customElements.get('deep-chat')) {
             mountDeepChat(currentProvider);
           }
+        });
+      }
+
+      const btnFast = aiModal.querySelector('#ai-mode-fast');
+      const btnExpert = aiModal.querySelector('#ai-mode-expert');
+      if (btnFast && btnExpert) {
+        btnFast.addEventListener('click', () => {
+          currentGroqMode = 'fast';
+          btnFast.classList.add('active');
+          btnExpert.classList.remove('active');
+        });
+        btnExpert.addEventListener('click', () => {
+          currentGroqMode = 'expert';
+          btnExpert.classList.add('active');
+          btnFast.classList.remove('active');
         });
       }
 
@@ -1486,6 +1546,10 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         openChat(q);
       }
     });
+
+    if (window.location.hash === '#ai-chat' || window.location.hash === '#chat-ai') {
+      setTimeout(openChat, 200);
+    }
   }
 
 
