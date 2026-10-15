@@ -181,6 +181,8 @@ export default {
       });
     }
 
+    const mode = (payload.mode === 'expert') ? 'expert' : 'fast';
+
     const safeMessages = messages
       .filter((message) => message && ['user', 'assistant'].includes(message.role))
       .map((message) => ({ role: message.role, content: String(message.content || '').slice(0, MAX_MESSAGE_CHARS) }))
@@ -193,7 +195,10 @@ export default {
       });
     }
 
-    const lastUserMessage = safeMessages.slice().reverse().find(m => m.role === 'user')?.content || '';
+    // Économie drastique de tokens pour le service public : on ne conserve que les 4 derniers messages (2 tours d'échange)
+    const trimmedSafeMessages = safeMessages.slice(-4);
+
+    const lastUserMessage = trimmedSafeMessages.slice().reverse().find(m => m.role === 'user')?.content || '';
     if (isPromptInjection(lastUserMessage)) {
       return new Response(JSON.stringify({
         answer: "Je suis l'assistant documentaire officiel du site de William Guindon, dédié exclusivement au dossier SEM-26-003 et à la protection de la Grande Tourbière de Blainville. Je ne peux répondre qu'aux questions factuelles relatives à ce dossier public."
@@ -203,14 +208,19 @@ export default {
       });
     }
 
-    const primaryModel = env?.GROQ_MODEL || env?.GROQ_MODEL_EXPERT || PRIMARY_MODEL;
-    const candidateModels = [
-      primaryModel,
-      env?.GROQ_MODEL_LOW,
-      env?.GROQ_MODEL_NORMAL,
-      env?.GROQ_MODEL_MEDIUM,
-      ...FALLBACK_MODELS
-    ].filter(Boolean).filter((m, idx, arr) => arr.indexOf(m) === idx);
+    let candidateModels = [];
+    if (mode === 'expert') {
+      candidateModels = [
+        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        'llama-3.1-8b-instant'
+      ];
+    } else {
+      candidateModels = [
+        env?.GROQ_MODEL_FAST || 'llama-3.1-8b-instant',
+        'llama-3.3-70b-versatile'
+      ];
+    }
+    candidateModels = candidateModels.filter(Boolean).filter((m, idx, arr) => arr.indexOf(m) === idx);
 
     let finalAnswer = null;
     let lastError = null;
@@ -223,13 +233,13 @@ export default {
         const requestBody = {
           model: model,
           temperature: 0.2,
-          max_tokens: 500,
+          max_tokens: mode === 'expert' ? 500 : 380,
           messages: [
             {
               role: 'system',
               content: SYSTEM_PROMPT.trim()
             },
-            ...safeMessages
+            ...trimmedSafeMessages
           ]
         };
 
