@@ -265,6 +265,318 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       if (banner) banner.remove();
     }
 
+    const AI_PROVIDERS = {
+      default: {
+        name: 'Assistant officiel du site (Gratuit / Par défaut)',
+        type: 'server',
+        placeholder: '',
+        notice: 'Assistant officiel hébergé (proxy Groq inclus). Prêt à répondre sans clé.'
+      },
+      gemini: {
+        name: 'Google Gemini (directConnection)',
+        type: 'key',
+        keyStorage: 'byo_gemini_key',
+        placeholder: 'Clé API Google Gemini (AIzaSy...)',
+        notice: 'Connexion directe à Google Gemini depuis votre navigateur. Votre clé reste strictement locale.'
+      },
+      openai: {
+        name: 'OpenAI (GPT-4o / GPT-4o-mini)',
+        type: 'key',
+        keyStorage: 'byo_openai_key',
+        placeholder: 'Clé API OpenAI (sk-...)',
+        notice: 'Connexion directe client-side à l\'API OpenAI (GPT-4o / GPT-4o-mini).'
+      },
+      claude: {
+        name: 'Anthropic Claude',
+        type: 'key',
+        keyStorage: 'byo_claude_key',
+        placeholder: 'Clé API Anthropic Claude (sk-ant-...)',
+        notice: 'Connexion directe client-side à l\'API Anthropic (Claude 3.5 Sonnet).'
+      },
+      mistral: {
+        name: 'Mistral AI',
+        type: 'key',
+        keyStorage: 'byo_mistral_key',
+        placeholder: 'Clé API Mistral AI',
+        notice: 'Connexion directe client-side à l\'API Mistral AI (mistral-small).'
+      },
+      openrouter: {
+        name: 'OpenRouter (Modèles libres & propriétaires)',
+        type: 'key',
+        keyStorage: 'byo_openrouter_key',
+        placeholder: 'Clé API OpenRouter (sk-or-...)',
+        notice: 'Connexion directe client-side via OpenRouter (Llama 3.3 70B, etc.).'
+      },
+      huggingface: {
+        name: 'Hugging Face (Inference API)',
+        type: 'key',
+        keyStorage: 'byo_huggingface_key',
+        placeholder: 'Token Hugging Face (hf_...)',
+        notice: 'Connexion directe client-side via l\'API Inference de Hugging Face.'
+      },
+      ollama: {
+        name: 'Instance locale Ollama (localhost:11434)',
+        type: 'url',
+        urlStorage: 'byo_ollama_url',
+        defaultUrl: 'http://localhost:11434',
+        placeholder: 'http://localhost:11434',
+        notice: 'Instance locale Ollama. Démarrez Ollama avec OLLAMA_ORIGINS="*" pour autoriser les requêtes web.'
+      },
+      lmstudio: {
+        name: 'Instance locale LM Studio (localhost:1234)',
+        type: 'url',
+        urlStorage: 'byo_lmstudio_url',
+        defaultUrl: 'http://localhost:1234',
+        placeholder: 'http://localhost:1234',
+        notice: 'Serveur local LM Studio. Activez le serveur local et le support CORS dans LM Studio.'
+      },
+      webllm: {
+        name: 'WebLLM (100% dans le navigateur via WebGPU)',
+        type: 'none',
+        placeholder: '',
+        notice: 'Mode WebLLM : exécution 100% dans votre navigateur via WebGPU. Télécharge le modèle directement dans la mémoire graphique locale (aucun serveur, aucune clé requise).'
+      }
+    };
+
+    let deepChatScriptPromise = null;
+    function ensureDeepChatScript() {
+      if (customElements.get('deep-chat')) return Promise.resolve(true);
+      if (deepChatScriptPromise) return deepChatScriptPromise;
+      deepChatScriptPromise = new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'https://unpkg.com/deep-chat@2.5.1/dist/deepChat.bundle.js';
+        script.onload = () => resolve(true);
+        script.onerror = (e) => {
+          console.warn('Deep Chat non disponible via CDN, bascule sur interface native.', e);
+          resolve(false);
+        };
+        document.head.appendChild(script);
+      });
+      return deepChatScriptPromise;
+    }
+
+    const deepChatThemeConfig = {
+      style: {
+        borderRadius: '8px',
+        border: '1px solid var(--line, rgba(255, 255, 255, 0.12))',
+        backgroundColor: 'var(--bg, #0b0f14)',
+        color: 'var(--text, #f1f5f9)',
+        fontFamily: 'inherit',
+        height: '100%',
+        width: '100%'
+      },
+      textInput: {
+        styles: {
+          container: {
+            borderRadius: '8px',
+            border: '1px solid var(--line, rgba(255, 255, 255, 0.15))',
+            backgroundColor: 'var(--bg-card, #111827)',
+            color: 'var(--text, #f1f5f9)'
+          },
+          text: {
+            color: 'var(--text, #f1f5f9)',
+            fontSize: '13.5px'
+          }
+        },
+        placeholder: {
+          text: 'Posez une question sur le dossier...',
+          style: { color: 'var(--text-muted, #94a3b8)' }
+        }
+      },
+      submitButtonStyles: {
+        submit: {
+          container: {
+            default: {
+              backgroundColor: '#059669',
+              borderRadius: '6px'
+            },
+            hover: {
+              backgroundColor: '#10b981'
+            }
+          },
+          svg: {
+            styles: {
+              default: {
+                filter: 'brightness(0) invert(1)'
+              }
+            }
+          }
+        }
+      },
+      messageStyles: {
+        default: {
+          shared: {
+            bubble: {
+              fontSize: '13px',
+              lineHeight: '1.5',
+              borderRadius: '10px'
+            }
+          },
+          user: {
+            bubble: {
+              backgroundColor: '#059669',
+              color: '#ffffff'
+            }
+          },
+          ai: {
+            bubble: {
+              backgroundColor: 'var(--bg-card, #1e293b)',
+              color: 'var(--text, #f1f5f9)',
+              border: '1px solid var(--line, rgba(255, 255, 255, 0.1))'
+            }
+          }
+        }
+      },
+      introMessage: {
+        text: "Bonjour ! Je suis l'assistant documentaire officiel du site de William Guindon. Posez-moi vos questions sur le dossier SEM-26-003, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville."
+      }
+    };
+
+    function configureDeepChatForProvider(deepChatEl, providerKey) {
+      if (!deepChatEl) return;
+      const prov = AI_PROVIDERS[providerKey] || AI_PROVIDERS.default;
+
+      // Réinitialiser les modes de connexion précédents
+      deepChatEl.directConnection = undefined;
+      deepChatEl.request = undefined;
+      deepChatEl.webModel = undefined;
+
+      // Intercepteur garantissant l'injection du contexte documentaire officiel
+      deepChatEl.requestInterceptor = (details) => {
+        if (details && details.body && Array.isArray(details.body.messages)) {
+          const hasSystem = details.body.messages.some(m => m.role === 'system');
+          if (!hasSystem) {
+            details.body.messages.unshift({ role: 'system', content: DOSSIER_CONTEXT });
+          }
+        }
+        return details;
+      };
+
+      if (providerKey === 'default') {
+        deepChatEl.request = {
+          handler: async (body, signals) => {
+            if (isChatBlockedByAdmin()) {
+              signals.onResponse({ error: "Le clavardage est actuellement verrouillé par l'administration." });
+              return;
+            }
+            if (isWebArchiveOrMirror()) {
+              signals.onResponse({ error: "L'envoi de requêtes est bloqué sur les copies et archives du web." });
+              return;
+            }
+            const lastMsg = body.messages && body.messages[body.messages.length - 1];
+            const q = (lastMsg && (lastMsg.text || lastMsg.content)) || '';
+            const messages = [
+              { role: 'system', content: DOSSIER_CONTEXT },
+              ...body.messages.map(m => ({
+                role: m.role === 'ai' ? 'assistant' : (m.role === 'assistant' ? 'assistant' : 'user'),
+                content: m.text || m.content || ''
+              }))
+            ];
+            try {
+              const reply = await callGroq(messages);
+              hideOfflineBanner();
+              signals.onResponse({ text: reply });
+            } catch (errPrimary) {
+              showOfflineBanner();
+              const localReply = generateLocalAnswer(q);
+              signals.onResponse({ text: localReply });
+            }
+          }
+        };
+      } else if (providerKey === 'gemini') {
+        const key = localStorage.getItem('byo_gemini_key') || '';
+        deepChatEl.directConnection = {
+          gemini: {
+            key: key,
+            chat: {
+              model: 'gemini-1.5-flash',
+              system_instruction: { parts: [{ text: DOSSIER_CONTEXT }] }
+            }
+          }
+        };
+      } else if (providerKey === 'openai') {
+        const key = localStorage.getItem('byo_openai_key') || '';
+        deepChatEl.directConnection = {
+          openAI: {
+            key: key,
+            chat: {
+              model: 'gpt-4o-mini',
+              system_prompt: DOSSIER_CONTEXT
+            }
+          }
+        };
+      } else if (providerKey === 'claude') {
+        const key = localStorage.getItem('byo_claude_key') || '';
+        deepChatEl.directConnection = {
+          claude: {
+            key: key,
+            chat: {
+              model: 'claude-3-5-sonnet-20240620',
+              system_prompt: DOSSIER_CONTEXT
+            }
+          }
+        };
+      } else if (providerKey === 'mistral') {
+        const key = localStorage.getItem('byo_mistral_key') || '';
+        deepChatEl.directConnection = {
+          mistral: {
+            key: key,
+            chat: {
+              model: 'mistral-small-latest'
+            }
+          }
+        };
+      } else if (providerKey === 'openrouter') {
+        const key = localStorage.getItem('byo_openrouter_key') || '';
+        deepChatEl.directConnection = {
+          openAI: {
+            key: key,
+            chat: {
+              model: 'meta-llama/llama-3.3-70b-instruct',
+              system_prompt: DOSSIER_CONTEXT
+            },
+            url: 'https://openrouter.ai/api/v1/chat/completions'
+          }
+        };
+      } else if (providerKey === 'huggingface') {
+        const key = localStorage.getItem('byo_huggingface_key') || '';
+        deepChatEl.directConnection = {
+          huggingFace: {
+            key: key
+          }
+        };
+      } else if (providerKey === 'ollama') {
+        const url = localStorage.getItem('byo_ollama_url') || 'http://localhost:11434';
+        deepChatEl.directConnection = {
+          ollama: {
+            url: url,
+            chat: {
+              model: 'llama3',
+              system_prompt: DOSSIER_CONTEXT
+            }
+          }
+        };
+      } else if (providerKey === 'lmstudio') {
+        const rawUrl = localStorage.getItem('byo_lmstudio_url') || 'http://localhost:1234';
+        const endpoint = rawUrl.replace(/\/+$/, '') + '/v1/chat/completions';
+        deepChatEl.directConnection = {
+          openAI: {
+            url: endpoint,
+            chat: {
+              system_prompt: DOSSIER_CONTEXT
+            }
+          }
+        };
+      } else if (providerKey === 'webllm') {
+        deepChatEl.webModel = {
+          model: 'Llama-3-8B-Instruct-q4f32_1-MLC'
+        };
+      }
+    }
+
+    let deepChatInstance = null;
+
     function initAiModal() {
       if (aiModal) return;
 
@@ -289,6 +601,46 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           <!-- Onglet 1 : Clavardage / Chat en direct -->
           <div class="ai-tab-content active" id="ai-tab-chat">
             <div class="ai-watermark-strip">[FILIGRANE : CONTENU GÉNÉRÉ PAR IA SANS VALIDATION OFFICIELLE • AUCUNE VALEUR JURIDIQUE]</div>
+
+            <!-- Barre de sélection multi-fournisseurs BYO-AI (Deep Chat) -->
+            <div class="ai-provider-toolbar" id="ai-provider-toolbar">
+              <div class="ai-toolbar-row">
+                <label for="ai-provider" class="ai-toolbar-label">
+                  <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  Moteur :
+                </label>
+                <select id="ai-provider" class="ai-provider-select">
+                  <option value="default">Assistant officiel (Inclus / Par défaut)</option>
+                  <option value="gemini">Google Gemini (directConnection)</option>
+                  <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
+                  <option value="claude">Anthropic Claude (3.5 Sonnet)</option>
+                  <option value="mistral">Mistral AI (mistral-small)</option>
+                  <option value="openrouter">OpenRouter (Modèles libres &amp; ouverts)</option>
+                  <option value="huggingface">Hugging Face (Inference API)</option>
+                  <option value="ollama">Instance locale Ollama (localhost:11434)</option>
+                  <option value="lmstudio">Instance locale LM Studio (localhost:1234)</option>
+                  <option value="webllm">WebLLM (100% navigateur WebGPU)</option>
+                </select>
+              </div>
+              <div class="ai-provider-config" id="ai-provider-config">
+                <div class="ai-config-field" id="ai-key-group" style="display:none;">
+                  <input type="password" id="ai-user-key" class="ai-toolbar-input" placeholder="Clé API" autocomplete="off">
+                </div>
+                <div class="ai-config-field" id="ai-url-group" style="display:none;">
+                  <input type="text" id="ai-custom-url" class="ai-toolbar-input" placeholder="http://localhost:11434" autocomplete="off">
+                </div>
+                <div class="ai-config-notice" id="ai-provider-notice" style="display:none;"></div>
+                <div class="ai-config-actions" id="ai-config-actions" style="display:none;">
+                  <button type="button" id="ai-apply-btn" class="ai-toolbar-btn primary">Connecter</button>
+                  <button type="button" id="ai-forget-btn" class="ai-toolbar-btn danger" title="Effacer la clé du navigateur">Oublier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conteneur Deep Chat (Web Component) -->
+            <div class="ai-deepchat-container" id="ai-deepchat-container" style="display:none;"></div>
+
+            <!-- Clavardage de secours natif (si Deep Chat indisponible) -->
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
                 <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span>
@@ -305,7 +657,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
               <button type="button" class="ai-pill-btn" data-q="Comment contacter William Guindon anonymement ?"><svg class="svg-icon" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Contact Session</button>
             </div>
 
-            <!-- Formulaire de saisie -->
+            <!-- Formulaire de saisie natif -->
             <form class="ai-chat-input-row" id="ai-chat-form">
               <input type="text" class="ai-chat-input" id="ai-user-input" placeholder="Posez une question sur le dossier..." autocomplete="off" maxlength="400">
               <button type="submit" class="ai-chat-send-btn" id="ai-send-btn" aria-label="Envoyer">Envoyer</button>
@@ -431,8 +783,150 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       const chatBox = document.getElementById('ai-chat-box');
       const userInput = document.getElementById('ai-user-input');
       const sendBtn = document.getElementById('ai-send-btn');
+      const providerSelect = aiModal.querySelector('#ai-provider');
+      const keyGroup = aiModal.querySelector('#ai-key-group');
+      const keyInput = aiModal.querySelector('#ai-user-key');
+      const urlGroup = aiModal.querySelector('#ai-url-group');
+      const urlInput = aiModal.querySelector('#ai-custom-url');
+      const noticeEl = aiModal.querySelector('#ai-provider-notice');
+      const actionsEl = aiModal.querySelector('#ai-config-actions');
+      const applyBtn = aiModal.querySelector('#ai-apply-btn');
+      const forgetBtn = aiModal.querySelector('#ai-forget-btn');
+      const deepChatContainer = aiModal.querySelector('#ai-deepchat-container');
+
       let isBusy = false;
       let cooldownInterval = null;
+
+      function updateToolbarUI(providerKey, isFeedback = false) {
+        const prov = AI_PROVIDERS[providerKey] || AI_PROVIDERS.default;
+        if (prov.type === 'key') {
+          keyGroup.style.display = 'block';
+          urlGroup.style.display = 'none';
+          actionsEl.style.display = 'flex';
+          noticeEl.style.display = 'block';
+          keyInput.placeholder = prov.placeholder || 'Clé API';
+          const savedKey = localStorage.getItem(prov.keyStorage) || '';
+          keyInput.value = savedKey;
+          if (isFeedback) {
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Clé API connectée et mémorisée localement.</span>';
+          } else if (savedKey) {
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Clé configurée en mémoire locale.</span> ' + prov.notice;
+          } else {
+            noticeEl.innerHTML = '<span style="color:#f59e0b;font-weight:600;">⚠ Clé requise :</span> ' + prov.notice;
+          }
+        } else if (prov.type === 'url') {
+          keyGroup.style.display = 'none';
+          urlGroup.style.display = 'block';
+          actionsEl.style.display = 'flex';
+          noticeEl.style.display = 'block';
+          urlInput.placeholder = prov.placeholder || 'http://localhost:11434';
+          const savedUrl = localStorage.getItem(prov.urlStorage) || prov.defaultUrl;
+          urlInput.value = savedUrl;
+          if (isFeedback) {
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Endpoint connecté et mémorisé.</span>';
+          } else {
+            noticeEl.innerHTML = prov.notice;
+          }
+        } else if (prov.type === 'none') {
+          keyGroup.style.display = 'none';
+          urlGroup.style.display = 'none';
+          actionsEl.style.display = 'none';
+          noticeEl.style.display = 'block';
+          noticeEl.innerHTML = '<span style="color:#38bdf8;font-weight:600;">⚡ WebLLM :</span> ' + prov.notice;
+        } else {
+          keyGroup.style.display = 'none';
+          urlGroup.style.display = 'none';
+          actionsEl.style.display = 'none';
+          noticeEl.style.display = 'block';
+          noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Mode officiel :</span> ' + prov.notice;
+        }
+      }
+
+      function mountDeepChat(providerKey) {
+        if (!deepChatContainer) return;
+        deepChatContainer.innerHTML = '';
+        const dc = document.createElement('deep-chat');
+        dc.id = 'ai-deepchat-widget';
+        Object.assign(dc, deepChatThemeConfig);
+        configureDeepChatForProvider(dc, providerKey);
+        deepChatContainer.appendChild(dc);
+        deepChatInstance = dc;
+        if (window.AntiCapture && window.AntiCapture.protect) {
+          window.AntiCapture.protect(dc, true);
+        }
+      }
+
+      let currentProvider = localStorage.getItem('byo_provider') || 'default';
+      if (!AI_PROVIDERS[currentProvider]) currentProvider = 'default';
+      if (providerSelect) {
+        providerSelect.value = currentProvider;
+        updateToolbarUI(currentProvider);
+      }
+
+      ensureDeepChatScript().then((available) => {
+        if (available && customElements.get('deep-chat')) {
+          if (chatBox) chatBox.style.display = 'none';
+          if (chatForm) chatForm.style.display = 'none';
+          if (deepChatContainer) deepChatContainer.style.display = 'flex';
+          mountDeepChat(currentProvider);
+        } else {
+          if (chatBox) chatBox.style.display = 'flex';
+          if (chatForm) chatForm.style.display = 'flex';
+          if (deepChatContainer) deepChatContainer.style.display = 'none';
+        }
+      });
+
+      if (providerSelect) {
+        providerSelect.addEventListener('change', () => {
+          currentProvider = providerSelect.value;
+          localStorage.setItem('byo_provider', currentProvider);
+          updateToolbarUI(currentProvider);
+          if (deepChatInstance || customElements.get('deep-chat')) {
+            mountDeepChat(currentProvider);
+          }
+        });
+      }
+
+      if (applyBtn) {
+        applyBtn.addEventListener('click', () => {
+          const prov = AI_PROVIDERS[currentProvider];
+          if (!prov) return;
+          if (prov.type === 'key') {
+            const val = (keyInput.value || '').trim();
+            if (!val) {
+              alert('Veuillez renseigner une clé API valide avant de connecter.');
+              return;
+            }
+            localStorage.setItem(prov.keyStorage, val);
+          } else if (prov.type === 'url') {
+            const val = (urlInput.value || '').trim() || prov.defaultUrl;
+            localStorage.setItem(prov.urlStorage, val);
+          }
+          localStorage.setItem('byo_provider', currentProvider);
+          updateToolbarUI(currentProvider, true);
+          if (deepChatInstance || customElements.get('deep-chat')) {
+            mountDeepChat(currentProvider);
+          }
+        });
+      }
+
+      if (forgetBtn) {
+        forgetBtn.addEventListener('click', () => {
+          const prov = AI_PROVIDERS[currentProvider];
+          if (!prov) return;
+          if (prov.type === 'key' && prov.keyStorage) {
+            localStorage.removeItem(prov.keyStorage);
+            if (keyInput) keyInput.value = '';
+          } else if (prov.type === 'url' && prov.urlStorage) {
+            localStorage.removeItem(prov.urlStorage);
+            if (urlInput) urlInput.value = prov.defaultUrl || '';
+          }
+          updateToolbarUI(currentProvider, false);
+          if (deepChatInstance || customElements.get('deep-chat')) {
+            mountDeepChat(currentProvider);
+          }
+        });
+      }
 
       function startCooldown(seconds = 4) {
         isBusy = true;
@@ -545,9 +1039,13 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
 
       aiModal.querySelectorAll('.ai-pill-btn').forEach(pill => {
         pill.addEventListener('click', () => {
-          if (isBusy) return;
           const q = pill.getAttribute('data-q');
-          sendChatMessage(q);
+          if (deepChatInstance && typeof deepChatInstance.submitUserMessage === 'function') {
+            deepChatInstance.submitUserMessage({ text: q });
+          } else {
+            if (isBusy) return;
+            sendChatMessage(q);
+          }
         });
       });
 
@@ -617,6 +1115,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           userInputEl.disabled = true;
           userInputEl.placeholder = "L'envoi de requêtes est bloqué sur les copies et archives du web.";
         }
+        if (providerSelect) providerSelect.disabled = true;
+        if (applyBtn) applyBtn.disabled = true;
+        if (forgetBtn) forgetBtn.disabled = true;
       }
     }
 
@@ -633,15 +1134,22 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       if (window.AntiCapture && window.AntiCapture.scan) {
         window.AntiCapture.scan();
       }
-      const userInput = document.getElementById('ai-user-input');
-      if (userInput) {
-        if (query && typeof query === 'string') {
-          userInput.value = query;
+      if (query && typeof query === 'string') {
+        if (deepChatInstance && typeof deepChatInstance.submitUserMessage === 'function') {
+          deepChatInstance.submitUserMessage({ text: query });
+        } else {
+          const userInput = document.getElementById('ai-user-input');
+          if (userInput) userInput.value = query;
         }
-        setTimeout(() => {
-          try { userInput.focus(); } catch (e) {}
-        }, 100);
       }
+      setTimeout(() => {
+        if (!deepChatInstance) {
+          const userInput = document.getElementById('ai-user-input');
+          if (userInput) {
+            try { userInput.focus(); } catch (e) {}
+          }
+        }
+      }, 100);
     }
 
     function closeChat() {
