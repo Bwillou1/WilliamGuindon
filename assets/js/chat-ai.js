@@ -773,12 +773,6 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
               </div>
             </div>
 
-            <!-- Note d'information sur la persistance locale de l'historique de clavardage -->
-            <div class="ai-storage-note" id="ai-storage-note">
-              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-              <span><strong>Mémoire locale (localStorage) :</strong> Les échanges restent confidentiels dans votre navigateur. L'historique des discussions est mémorisé localement sur votre appareil.</span>
-            </div>
-
             <!-- Conteneur Deep Chat (Web Component) -->
             <div class="ai-deepchat-container" id="ai-deepchat-container" style="display:none;"></div>
 
@@ -806,7 +800,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             </form>
 
             <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
-              <strong>Assistant Documentaire IA :</strong> Cet assistant automatisé est distinct de William Guindon et ne remplace aucun avis juridique. Ne soumettez aucune information confidentielle ou pièce sensible dans ce clavardage.
+              <strong>Assistant Documentaire IA :</strong> Cet assistant automatisé est distinct de William Guindon et ne remplace aucun avis juridique. Ne soumettez aucune information confidentielle ou pièce sensible dans ce clavardage. <a href="ia-ethique.html#exclusion-assistant-ia" target="_blank" rel="noopener noreferrer" style="color:var(--accent, #10b981); text-decoration:underline; font-weight:600;">Politique d'exclusion de responsabilité ↗</a>
             </p>
           </div>
 
