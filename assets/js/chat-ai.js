@@ -843,8 +843,8 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const isSurge = isCanadaTrafficSurgePeriod();
         deepChatEl.introMessage = {
           text: isSurge
-            ? "⚠️ Avis spécial (16 au 21 octobre 2026 — Échéance CCE du Canada) :\nPour que tout le monde puisse utiliser l'assistant sans épuiser le quota journalier partagé, le modèle 8B est activé d'office pendant 5 jours.\n\n💡 Recommandations de William Guindon :\n1. Onglet « Liens IA » : copiez le prompt documentaire et collez-le dans votre propre IA (ChatGPT, Claude, etc.).\n2. Menu Moteur : connectez votre propre clé API (l'API Google Gemini est 100 % gratuite).\n3. Écrivez directement à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !"
-            : "Bonjour ! Je suis l'assistant documentaire officiel du dossier SEM-26-003 (Modèle Approfondi 70B par défaut). Posez votre question sur la Grande Tourbière de Blainville, le rapport BAPE 371 ou l'échéance CCE."
+            ? "⚠️ Avis spécial (16 au 21 octobre 2026 — Échéance CCE du Canada) :\nPour que tout le monde puisse utiliser l'assistant sans épuiser le quota journalier partagé, le mode Rapide est activé d'office pendant 5 jours.\n\n💡 Recommandations de William Guindon :\n1. Onglet « Liens IA » : copiez le prompt documentaire et collez-le dans votre propre IA (ChatGPT, Claude, etc.).\n2. Menu Moteur : connectez votre propre clé API (l'API Google Gemini est 100 % gratuite).\n3. Écrivez directement à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !"
+            : "Bonjour ! Je suis l'assistant documentaire officiel du dossier SEM-26-003. Posez votre question sur la Grande Tourbière de Blainville, le rapport BAPE 371 ou l'échéance CCE."
         };
         deepChatEl.request = {
           handler: async (body, signals) => {
@@ -1180,8 +1180,8 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   Mode :
                 </span>
                 <div class="ai-mode-btn-group">
-                  <button type="button" class="ai-mode-btn ${isTrafficSurge ? 'active' : ''}" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota">⚡ Rapide (8B${isTrafficSurge ? ' · Actif d\'office' : ''})</button>
-                  <button type="button" class="ai-mode-btn ${!isTrafficSurge ? 'active' : ''}" data-mode="expert" id="ai-mode-expert" title="${isTrafficSurge ? 'Modèle 70B temporairement verrouillé pour préserver le quota collectif' : 'Modèle 70B pour questions pointues'}" style="${isTrafficSurge ? 'opacity:0.6;cursor:not-allowed;' : ''}">${isTrafficSurge ? '🔒 Approfondi (70B · Verrouillé affluence)' : '🧠 Approfondi (70B · Par défaut)'}</button>
+                  <button type="button" class="ai-mode-btn ${isTrafficSurge ? 'active' : ''}" data-mode="fast" id="ai-mode-fast" title="Mode ultra-rapide et économique en quota">⚡ Rapide${isTrafficSurge ? ' · Actif d\'office' : ' (Éco)'}</button>
+                  <button type="button" class="ai-mode-btn ${!isTrafficSurge ? 'active' : ''}" data-mode="expert" id="ai-mode-expert" title="${isTrafficSurge ? 'Mode Approfondi temporairement verrouillé pour préserver le quota collectif' : 'Mode haute précision pour questions pointues'}" style="${isTrafficSurge ? 'opacity:0.6;cursor:not-allowed;' : ''}">${isTrafficSurge ? '🔒 Approfondi (Verrouillé affluence)' : '🧠 Approfondi (Haute précision)'}</button>
                 </div>
               </div>
             </div>
@@ -1193,9 +1193,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 <strong>Avis spécial — Échéance CCE du Canada (16 au 21 octobre 2026 · 5 jours)</strong>
               </div>
               <p class="ai-traffic-alert-msg">
-                En raison de la forte augmentation des consultations liée à la réponse attendue du Canada auprès de la CCE pour le dossier SEM-26-003, William Guindon a pris la décision d'activer temporairement le modèle <strong>8B</strong> par défaut.
+                En raison de la forte augmentation des consultations liée à la réponse attendue du Canada auprès de la CCE pour le dossier SEM-26-003, William Guindon a pris la décision d'activer temporairement le mode <strong>Rapide</strong> par défaut.
                 <br><br>
-                <strong>Pourquoi ce choix ?</strong> William préfère que <em>tout le monde puisse utiliser l'IA</em> plutôt qu'une seule personne n'épuise tout le quota journalier partagé avec de lourdes requêtes 70B.
+                <strong>Pourquoi ce choix ?</strong> William préfère que <em>tout le monde puisse utiliser l'IA</em> plutôt qu'une seule personne n'épuise tout le quota journalier partagé avec de lourdes requêtes en mode Approfondi.
               </p>
               <div class="ai-traffic-alert-foot">
                 <p><strong>💡 Recommandation temporaire de William Guindon :</strong></p>
@@ -1216,7 +1216,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span>
                 ${isTrafficSurge ? `
                 <div style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:11.5px;line-height:1.45;color:var(--text);">
-                  <strong style="color:#d97706;">⚠️ Forte affluence CCE (16 au 21 oct. 2026) :</strong> Modèle 8B activé par défaut pendant 5 jours pour garantir l'accès à tous les citoyens sans rupture de quota. Pour des analyses sans limite, copiez le prompt dans l'onglet <strong>« Liens IA »</strong>, connectez une clé API gratuite (Google Gemini), ou écrivez directement à William Guindon à <a href="mailto:contact@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;">contact@williamguindon.me</a> (ça lui fera plaisir de répondre dans les plus brefs délais).
+                  <strong style="color:#d97706;">⚠️ Forte affluence CCE (16 au 21 oct. 2026) :</strong> Mode Rapide activé par défaut pendant 5 jours pour garantir l'accès à tous les citoyens sans rupture de quota. Pour des analyses sans limite, copiez le prompt dans l'onglet <strong>« Liens IA »</strong>, connectez une clé API gratuite (Google Gemini), ou écrivez directement à William Guindon à <a href="mailto:contact@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;">contact@williamguindon.me</a> (ça lui fera plaisir de répondre dans les plus brefs délais).
                 </div>` : ''}
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
@@ -1662,7 +1662,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         });
         btnExpert.addEventListener('click', () => {
           if (isCanadaTrafficSurgePeriod()) {
-            alert("⚠️ Mode Approfondi (70B) temporairement verrouillé (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B est actuellement verrouillé pour préserver le quota collectif du site suite à la réponse attendue du Canada.\nWilliam préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise tout le quota journalier partagé.\n\n💡 Recommandations de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Menu Moteur : ajoutez votre propre clé API gratuite (Google Gemini est 100 % gratuit et sans quota partagé).\n• Ou envoyez directement un courriel à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !");
+            alert("⚠️ Mode Approfondi temporairement verrouillé (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe mode Approfondi est actuellement verrouillé pour préserver le quota collectif du site suite à la réponse attendue du Canada.\nWilliam préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise tout le quota journalier partagé.\n\n💡 Recommandations de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Menu Moteur : ajoutez votre propre clé API gratuite (Google Gemini est 100 % gratuit et sans quota partagé).\n• Ou envoyez directement un courriel à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !");
             return; // Strictement bloqué pendant les 5 jours d'affluence
           }
           currentGroqMode = 'expert';

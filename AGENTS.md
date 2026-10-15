@@ -208,7 +208,7 @@ la fréquence du cron.
 
 ### 🐛 3 — README désynchronisé
 - Il liste `en.html` et `es.html` dans l'arborescence : **absentes**.
-- Il indique `GROQ_MODEL` par défaut `llama-3.3-70b-versatile` ; le code est aligné avec `llama-3.3-70b-versatile` (expert) et `llama-3.1-8b-instant` (rapide).
+- Il indique `GROQ_MODEL` par défaut `llama-3.3-70b-versatile` ; le code utilise les modèles actifs vérifiés sur Groq (`openai/gpt-oss-120b` en mode expert et `openai/gpt-oss-20b` en mode rapide, avec secours sur `qwen/qwen3.8-27b`).
 - Il ne mentionne ni `console-admin.html`, ni `messagerie.html`, ni `editeur.html`, ni
   `kg-monitor.py`, ni `sw.js`.
 
@@ -255,8 +255,8 @@ réduit la charge de ~80 % sans changer le comportement.
 `workers/groq-chat.js` applique une politique stricte :
 
 - **Architecture à deux niveaux (Haute précision & Zéro panne)** :
-  1. Modèle principal : `llama-3.3-70b-versatile` (ou variable `GROQ_MODEL`) avec prompt documentaire complet (Loi 93, BAPE 371, échéance 16 octobre 2026, cadmium, CCE).
-  2. Filet de secours automatique (Fallback 429 / indisponibilité) : `llama-3.1-8b-instant` basculant instantanément sans interruption pour l'utilisateur.
+  1. Modèle principal (haute précision) : `openai/gpt-oss-120b` (ou variable `GROQ_MODEL`) avec prompt documentaire complet (Loi 93, BAPE 371, échéance 16 octobre 2026, cadmium, CCE).
+  2. Filet de secours automatique & Mode rapide affluence : `openai/gpt-oss-20b` (secours : `qwen/qwen3.8-27b`) basculant instantanément sans interruption pour l'utilisateur.
 - **Limites :** corps ≤ 32 Ko, ≤ 12 messages, ≤ 7 000 caractères/message, `max_tokens: 350`,
   `temperature: 0.2`.
 - **Protections d'interface :** `maxlength="400"` et délai anti-spam (cooldown) de 3 secondes.
