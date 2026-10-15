@@ -250,10 +250,11 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         content: m.content
       }));
 
-      // Ordre de tentative dynamique : tester le mode sélectionné (expert par défaut), puis basculer automatiquement sur l'autre en cas d'indisponibilité
-      const primaryMode = currentGroqMode || 'expert';
-      const secondaryMode = primaryMode === 'expert' ? 'fast' : 'expert';
-      const modesToTry = [primaryMode, secondaryMode];
+      // Si nous sommes dans la période d'affluence (16 au 21 oct. 2026), le mode Approfondi (70B) est strictement verrouillé
+      const isSurge = isCanadaTrafficSurgePeriod();
+      const primaryMode = isSurge ? 'fast' : (currentGroqMode || 'expert');
+      const secondaryMode = isSurge ? 'fast' : (primaryMode === 'expert' ? 'fast' : 'expert');
+      const modesToTry = isSurge ? ['fast'] : [primaryMode, secondaryMode];
 
       let lastErrMsg = 'Invalid API payload';
 
@@ -1160,7 +1161,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 </span>
                 <div class="ai-mode-btn-group">
                   <button type="button" class="ai-mode-btn ${isTrafficSurge ? 'active' : ''}" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota">⚡ Rapide (8B${isTrafficSurge ? ' · Actif d\'office' : ''})</button>
-                  <button type="button" class="ai-mode-btn ${!isTrafficSurge ? 'active' : ''}" data-mode="expert" id="ai-mode-expert" title="Modèle 70B pour questions pointues">${isTrafficSurge ? '🧠 Approfondi (70B · Quota restreint)' : '🧠 Approfondi (70B · Par défaut)'}</button>
+                  <button type="button" class="ai-mode-btn ${!isTrafficSurge ? 'active' : ''}" data-mode="expert" id="ai-mode-expert" title="${isTrafficSurge ? 'Modèle 70B temporairement verrouillé pour préserver le quota collectif' : 'Modèle 70B pour questions pointues'}" style="${isTrafficSurge ? 'opacity:0.6;cursor:not-allowed;' : ''}">${isTrafficSurge ? '🔒 Approfondi (70B · Verrouillé affluence)' : '🧠 Approfondi (70B · Par défaut)'}</button>
                 </div>
               </div>
             </div>
@@ -1571,7 +1572,8 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         });
         btnExpert.addEventListener('click', () => {
           if (isCanadaTrafficSurgePeriod()) {
-            alert("⚠️ Avis de forte affluence (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B consomme énormément de quota. William préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise le quota journalier partagé du site suite à la réponse du Canada.\n\n💡 Recommandations de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Menu Moteur : ajoutez votre propre clé API gratuite (Google Gemini est 100 % gratuit et sans quota partagé).\n• Ou envoyez directement un courriel à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !");
+            alert("⚠️ Mode Approfondi (70B) temporairement verrouillé (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B est actuellement verrouillé pour préserver le quota collectif du site suite à la réponse attendue du Canada.\nWilliam préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise tout le quota journalier partagé.\n\n💡 Recommandations de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Menu Moteur : ajoutez votre propre clé API gratuite (Google Gemini est 100 % gratuit et sans quota partagé).\n• Ou envoyez directement un courriel à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !");
+            return; // Strictement bloqué pendant les 5 jours d'affluence
           }
           currentGroqMode = 'expert';
           btnExpert.classList.add('active');
