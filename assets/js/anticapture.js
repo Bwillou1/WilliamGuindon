@@ -140,6 +140,7 @@
         chatTab.style.position = 'relative';
         chatTab.appendChild(aiOverlay);
       }
+      aiOverlay.style.zIndex = '999999';
       aiOverlay.style.display = 'block';
     }
 
@@ -344,7 +345,10 @@
       '#ai-chat-box',
       '.ai-chat-bubble.bot',
       '#ai-summary-output',
-      '.ai-summary-result'
+      '.ai-summary-result',
+      '#ai-deepchat-container',
+      '#ai-deepchat-widget',
+      'deep-chat'
     ];
     document.querySelectorAll(aiSelectors.join(', ')).forEach(el => {
       applyDeterrenceToElement(el, true);
@@ -577,6 +581,9 @@
         .ai-modal-overlay,
         .ai-modal-card,
         #ai-chat-box,
+        #ai-deepchat-container,
+        #ai-deepchat-widget,
+        deep-chat,
         .ai-chat-messages,
         .ai-chat-bubble,
         .ai-summary-output,

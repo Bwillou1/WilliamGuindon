@@ -1921,13 +1921,15 @@
 
       const countBlock = document.getElementById('hero-countdown-block');
       const stage2Summary = document.getElementById('hero-stage2-summary-block');
-      const stage2Panel = document.getElementById('hero-stage2-panel');
+      const trackerCountdown = document.getElementById('tracker-countdown-state');
+      const trackerStage2 = document.getElementById('tracker-stage2-state');
 
       if (isStage2) {
         document.body.classList.add('stage2-active');
         if (countBlock) countBlock.style.display = 'none';
         if (stage2Summary) stage2Summary.style.display = 'block';
-        if (stage2Panel) stage2Panel.style.display = 'block';
+        if (trackerCountdown) trackerCountdown.style.display = 'none';
+        if (trackerStage2) trackerStage2.style.display = 'block';
 
         // Adaptation de la topbar de décompte du site
         document.querySelectorAll('.site-deadline-title').forEach(el => {
@@ -1948,7 +1950,8 @@
       document.body.classList.remove('stage2-active');
       if (countBlock) countBlock.style.display = 'block';
       if (stage2Summary) stage2Summary.style.display = 'none';
-      if (stage2Panel) stage2Panel.style.display = 'none';
+      if (trackerCountdown) trackerCountdown.style.display = 'block';
+      if (trackerStage2) trackerStage2.style.display = 'none';
 
       const diff = Math.max(0, cceTargetDate - now);
 
