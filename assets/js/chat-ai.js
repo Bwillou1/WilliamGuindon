@@ -270,49 +270,63 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         name: 'Assistant officiel du site (Gratuit / Par défaut)',
         type: 'server',
         placeholder: '',
-        notice: 'Assistant officiel hébergé (proxy Groq inclus). Prêt à répondre sans clé.'
+        notice: 'Assistant officiel hébergé (proxy Groq inclus). Prêt à répondre sans clé.',
+        keyUrl: null,
+        keyLabel: null
       },
       gemini: {
         name: 'Google Gemini (directConnection)',
         type: 'key',
         keyStorage: 'byo_gemini_key',
         placeholder: 'Clé API Google Gemini (AIzaSy...)',
-        notice: 'Connexion directe à Google Gemini depuis votre navigateur. Votre clé reste strictement locale.'
+        notice: 'Connexion directe à Google Gemini depuis votre navigateur. Votre clé reste strictement locale.',
+        keyUrl: 'https://aistudio.google.com/api-keys',
+        keyLabel: 'Obtenir une clé API Google Gemini (Google AI Studio) ↗'
       },
       openai: {
         name: 'OpenAI (GPT-4o / GPT-4o-mini)',
         type: 'key',
         keyStorage: 'byo_openai_key',
         placeholder: 'Clé API OpenAI (sk-...)',
-        notice: 'Connexion directe client-side à l\'API OpenAI (GPT-4o / GPT-4o-mini).'
+        notice: 'Connexion directe client-side à l\'API OpenAI (GPT-4o / GPT-4o-mini).',
+        keyUrl: 'https://platform.openai.com/api-keys',
+        keyLabel: 'Obtenir une clé API OpenAI ↗'
       },
       claude: {
         name: 'Anthropic Claude',
         type: 'key',
         keyStorage: 'byo_claude_key',
         placeholder: 'Clé API Anthropic Claude (sk-ant-...)',
-        notice: 'Connexion directe client-side à l\'API Anthropic (Claude 3.5 Sonnet).'
+        notice: 'Connexion directe client-side à l\'API Anthropic (Claude 3.5 Sonnet).',
+        keyUrl: 'https://console.anthropic.com/settings/keys',
+        keyLabel: 'Obtenir une clé API Anthropic Claude ↗'
       },
       mistral: {
         name: 'Mistral AI',
         type: 'key',
         keyStorage: 'byo_mistral_key',
         placeholder: 'Clé API Mistral AI',
-        notice: 'Connexion directe client-side à l\'API Mistral AI (mistral-small).'
+        notice: 'Connexion directe client-side à l\'API Mistral AI (mistral-small).',
+        keyUrl: 'https://console.mistral.ai/api-keys/',
+        keyLabel: 'Obtenir une clé API Mistral AI ↗'
       },
       openrouter: {
         name: 'OpenRouter (Modèles libres & propriétaires)',
         type: 'key',
         keyStorage: 'byo_openrouter_key',
         placeholder: 'Clé API OpenRouter (sk-or-...)',
-        notice: 'Connexion directe client-side via OpenRouter (Llama 3.3 70B, etc.).'
+        notice: 'Connexion directe client-side via OpenRouter (Llama 3.3 70B, etc.).',
+        keyUrl: 'https://openrouter.ai/keys',
+        keyLabel: 'Obtenir une clé API OpenRouter ↗'
       },
       huggingface: {
         name: 'Hugging Face (Inference API)',
         type: 'key',
         keyStorage: 'byo_huggingface_key',
         placeholder: 'Token Hugging Face (hf_...)',
-        notice: 'Connexion directe client-side via l\'API Inference de Hugging Face.'
+        notice: 'Connexion directe client-side via l\'API Inference de Hugging Face.',
+        keyUrl: 'https://huggingface.co/settings/tokens',
+        keyLabel: 'Obtenir un token Hugging Face ↗'
       },
       ollama: {
         name: 'Instance locale Ollama (localhost:11434)',
@@ -320,7 +334,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         urlStorage: 'byo_ollama_url',
         defaultUrl: 'http://localhost:11434',
         placeholder: 'http://localhost:11434',
-        notice: 'Instance locale Ollama. Démarrez Ollama avec OLLAMA_ORIGINS="*" pour autoriser les requêtes web.'
+        notice: 'Instance locale Ollama. Démarrez Ollama avec OLLAMA_ORIGINS="*" pour autoriser les requêtes web.',
+        keyUrl: 'https://ollama.com/download',
+        keyLabel: 'Télécharger et installer Ollama ↗'
       },
       lmstudio: {
         name: 'Instance locale LM Studio (localhost:1234)',
@@ -328,13 +344,17 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         urlStorage: 'byo_lmstudio_url',
         defaultUrl: 'http://localhost:1234',
         placeholder: 'http://localhost:1234',
-        notice: 'Serveur local LM Studio. Activez le serveur local et le support CORS dans LM Studio.'
+        notice: 'Serveur local LM Studio. Activez le serveur local et le support CORS dans LM Studio.',
+        keyUrl: 'https://lmstudio.ai/',
+        keyLabel: 'Télécharger et installer LM Studio ↗'
       },
       webllm: {
         name: 'WebLLM (100% dans le navigateur via WebGPU)',
         type: 'none',
         placeholder: '',
-        notice: 'Mode WebLLM : exécution 100% dans votre navigateur via WebGPU. Télécharge le modèle directement dans la mémoire graphique locale (aucun serveur, aucune clé requise).'
+        notice: 'Mode WebLLM : exécution 100% dans votre navigateur via WebGPU. Télécharge le modèle directement dans la mémoire graphique locale (aucun serveur, aucune clé requise).',
+        keyUrl: 'https://webllm.mlc.ai/',
+        keyLabel: 'Documentation & modèles WebLLM ↗'
       }
     };
 
@@ -436,6 +456,12 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
     function configureDeepChatForProvider(deepChatEl, providerKey) {
       if (!deepChatEl) return;
       const prov = AI_PROVIDERS[providerKey] || AI_PROVIDERS.default;
+
+      // Persistance de l'historique dans le localStorage
+      deepChatEl.browserStorage = {
+        key: 'wg_ai_chat_history_' + providerKey,
+        maxMessages: 50
+      };
 
       // Réinitialiser les modes de connexion précédents
       deepChatEl.directConnection = undefined;
@@ -625,16 +651,25 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
               <div class="ai-provider-config" id="ai-provider-config">
                 <div class="ai-config-field" id="ai-key-group" style="display:none;">
                   <input type="password" id="ai-user-key" class="ai-toolbar-input" placeholder="Clé API" autocomplete="off">
+                  <div class="ai-key-help"><a id="ai-key-link" class="ai-key-link" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer">Obtenir une clé API ↗</a></div>
                 </div>
                 <div class="ai-config-field" id="ai-url-group" style="display:none;">
                   <input type="text" id="ai-custom-url" class="ai-toolbar-input" placeholder="http://localhost:11434" autocomplete="off">
+                  <div class="ai-key-help"><a id="ai-url-link" class="ai-key-link" href="https://ollama.com/download" target="_blank" rel="noopener noreferrer">Télécharger le logiciel ↗</a></div>
                 </div>
                 <div class="ai-config-notice" id="ai-provider-notice" style="display:none;"></div>
                 <div class="ai-config-actions" id="ai-config-actions" style="display:none;">
                   <button type="button" id="ai-apply-btn" class="ai-toolbar-btn primary">Connecter</button>
                   <button type="button" id="ai-forget-btn" class="ai-toolbar-btn danger" title="Effacer la clé du navigateur">Oublier</button>
+                  <button type="button" id="ai-clear-history-btn" class="ai-toolbar-btn secondary" title="Effacer l'historique des échanges mémorisé localement">Effacer l'historique</button>
                 </div>
               </div>
+            </div>
+
+            <!-- Note d'information sur la persistance locale de l'historique de clavardage -->
+            <div class="ai-storage-note" id="ai-storage-note">
+              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span><strong>Mémoire locale (localStorage) :</strong> Les échanges restent confidentiels dans votre navigateur. L'historique des discussions est mémorisé localement sur votre appareil.</span>
             </div>
 
             <!-- Conteneur Deep Chat (Web Component) -->
@@ -792,6 +827,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       const actionsEl = aiModal.querySelector('#ai-config-actions');
       const applyBtn = aiModal.querySelector('#ai-apply-btn');
       const forgetBtn = aiModal.querySelector('#ai-forget-btn');
+      const clearHistoryBtn = aiModal.querySelector('#ai-clear-history-btn');
       const deepChatContainer = aiModal.querySelector('#ai-deepchat-container');
 
       let isBusy = false;
@@ -799,14 +835,28 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
 
       function updateToolbarUI(providerKey, isFeedback = false) {
         const prov = AI_PROVIDERS[providerKey] || AI_PROVIDERS.default;
+        const keyLink = aiModal.querySelector('#ai-key-link');
+        const urlLink = aiModal.querySelector('#ai-url-link');
+        if (actionsEl) actionsEl.style.display = 'flex';
+
         if (prov.type === 'key') {
           keyGroup.style.display = 'block';
           urlGroup.style.display = 'none';
-          actionsEl.style.display = 'flex';
+          if (applyBtn) applyBtn.style.display = 'inline-block';
+          if (forgetBtn) forgetBtn.style.display = 'inline-block';
           noticeEl.style.display = 'block';
           keyInput.placeholder = prov.placeholder || 'Clé API';
           const savedKey = localStorage.getItem(prov.keyStorage) || '';
           keyInput.value = savedKey;
+          if (keyLink) {
+            if (prov.keyUrl) {
+              keyLink.href = prov.keyUrl;
+              keyLink.textContent = prov.keyLabel || 'Obtenir une clé API ↗';
+              keyLink.style.display = 'inline-flex';
+            } else {
+              keyLink.style.display = 'none';
+            }
+          }
           if (isFeedback) {
             noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Clé API connectée et mémorisée localement.</span>';
           } else if (savedKey) {
@@ -817,11 +867,21 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         } else if (prov.type === 'url') {
           keyGroup.style.display = 'none';
           urlGroup.style.display = 'block';
-          actionsEl.style.display = 'flex';
+          if (applyBtn) applyBtn.style.display = 'inline-block';
+          if (forgetBtn) forgetBtn.style.display = 'inline-block';
           noticeEl.style.display = 'block';
           urlInput.placeholder = prov.placeholder || 'http://localhost:11434';
           const savedUrl = localStorage.getItem(prov.urlStorage) || prov.defaultUrl;
           urlInput.value = savedUrl;
+          if (urlLink) {
+            if (prov.keyUrl) {
+              urlLink.href = prov.keyUrl;
+              urlLink.textContent = prov.keyLabel || 'Télécharger le logiciel ↗';
+              urlLink.style.display = 'inline-flex';
+            } else {
+              urlLink.style.display = 'none';
+            }
+          }
           if (isFeedback) {
             noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Endpoint connecté et mémorisé.</span>';
           } else {
@@ -830,13 +890,15 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         } else if (prov.type === 'none') {
           keyGroup.style.display = 'none';
           urlGroup.style.display = 'none';
-          actionsEl.style.display = 'none';
+          if (applyBtn) applyBtn.style.display = 'none';
+          if (forgetBtn) forgetBtn.style.display = 'none';
           noticeEl.style.display = 'block';
           noticeEl.innerHTML = '<span style="color:#38bdf8;font-weight:600;">⚡ WebLLM :</span> ' + prov.notice;
         } else {
           keyGroup.style.display = 'none';
           urlGroup.style.display = 'none';
-          actionsEl.style.display = 'none';
+          if (applyBtn) applyBtn.style.display = 'none';
+          if (forgetBtn) forgetBtn.style.display = 'none';
           noticeEl.style.display = 'block';
           noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Mode officiel :</span> ' + prov.notice;
         }
@@ -928,6 +990,64 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         });
       }
 
+      if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', () => {
+          if (confirm("Voulez-vous effacer l'historique des conversations mémorisé localement dans ce navigateur (localStorage) ?")) {
+            if (deepChatInstance && deepChatInstance.browserStorage && typeof deepChatInstance.browserStorage.clear === 'function') {
+              try { deepChatInstance.browserStorage.clear(); } catch (_) {}
+            }
+            localStorage.removeItem('wg_ai_chat_history_' + currentProvider);
+            localStorage.removeItem('wg_ai_chat_history_native');
+            if (chatBox) {
+              chatBox.innerHTML = `
+                <div class="ai-chat-bubble bot">
+                  <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span>
+                  <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
+                </div>
+              `;
+            }
+            if (deepChatInstance || customElements.get('deep-chat')) {
+              mountDeepChat(currentProvider);
+            }
+          }
+        });
+      }
+
+      const NATIVE_STORAGE_KEY = 'wg_ai_chat_history_native';
+      function loadNativeChatHistory() {
+        try {
+          const raw = localStorage.getItem(NATIVE_STORAGE_KEY);
+          if (!raw) return;
+          const history = JSON.parse(raw);
+          if (Array.isArray(history) && history.length > 0 && chatBox) {
+            chatBox.innerHTML = '';
+            history.forEach(item => {
+              const bubble = document.createElement('div');
+              bubble.className = item.role === 'user' ? 'ai-chat-bubble user' : 'ai-chat-bubble bot';
+              if (item.role === 'bot') {
+                bubble.innerHTML = '<span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span><div>' + item.text + '</div>';
+              } else {
+                bubble.textContent = item.text;
+              }
+              chatBox.appendChild(bubble);
+            });
+            scrollChatToBottom();
+          }
+        } catch (_) {}
+      }
+
+      function saveNativeChatMessage(role, text) {
+        try {
+          const raw = localStorage.getItem(NATIVE_STORAGE_KEY);
+          const history = raw ? JSON.parse(raw) : [];
+          history.push({ role, text, time: Date.now() });
+          if (history.length > 50) history.splice(0, history.length - 50);
+          localStorage.setItem(NATIVE_STORAGE_KEY, JSON.stringify(history));
+        } catch (_) {}
+      }
+
+      loadNativeChatHistory();
+
       function startCooldown(seconds = 4) {
         isBusy = true;
         if (sendBtn) {
@@ -989,6 +1109,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         userBubble.textContent = question;
         chatBox.appendChild(userBubble);
         scrollChatToBottom();
+        saveNativeChatMessage('user', question);
 
         const botBubble = document.createElement('div');
         botBubble.className = 'ai-chat-bubble bot';
@@ -1011,7 +1132,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             reply = generateLocalAnswer(question);
           }
 
-          botBubble.innerHTML = formatAiResponse(reply);
+          const formatted = formatAiResponse(reply);
+          botBubble.innerHTML = formatted;
+          saveNativeChatMessage('bot', formatted);
           scrollChatToBottom();
           if (window.AntiCapture && window.AntiCapture.protect) {
             window.AntiCapture.protect(botBubble, true);
@@ -1019,7 +1142,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         } catch (err) {
           showOfflineBanner();
           const fallbackReply = generateLocalAnswer(question);
-          botBubble.innerHTML = formatAiResponse(fallbackReply);
+          const formattedFallback = formatAiResponse(fallbackReply);
+          botBubble.innerHTML = formattedFallback;
+          saveNativeChatMessage('bot', formattedFallback);
           scrollChatToBottom();
           if (window.AntiCapture && window.AntiCapture.protect) {
             window.AntiCapture.protect(botBubble, true);

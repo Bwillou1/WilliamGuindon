@@ -1566,7 +1566,6 @@
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-      const isEn = document.documentElement.lang.startsWith('en');
       daysElement.textContent = isEn ? `${days}d ${hours}h ${mins}m` : `${days}j ${hours}h ${mins}m`;
     }
 
@@ -1873,8 +1872,13 @@
       });
     }
 
-    // Vérification du statut Étape 2 CCE (16 octobre 2026 ou forcé via site-state)
+    // Vérification du statut Étape 2 CCE (16 octobre 2026, paramètre URL ou forcé via site-state)
     function isStage2StatusActive(nowMs) {
+      if (typeof window !== 'undefined' && window.location && window.location.search) {
+        if (window.location.search.includes('stage2=1') || window.location.search.includes('etape2=1') || window.location.search.includes('preview=stage2')) {
+          return true;
+        }
+      }
       const now = typeof nowMs === 'number' ? nowMs : Date.now();
       if (cceTargetDate && now >= cceTargetDate) return true;
       try {
@@ -1890,6 +1894,23 @@
       return false;
     }
 
+    // Synchronisation rapide de site-state pour réactivité immédiate du statut
+    async function syncFastSiteState() {
+      try {
+        const res = await fetch('data/site-state.json?_t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data === 'object') {
+            window.__WG_SITE_STATE = data;
+            if (data.stage2StatusActive) {
+              updatePrecisionCountdown();
+            }
+          }
+        }
+      } catch (_) {}
+    }
+    syncFastSiteState();
+
     // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2
     function updatePrecisionCountdown() {
       if (!cceTargetDate || isNaN(cceTargetDate)) {
@@ -1899,10 +1920,13 @@
       const isStage2 = isStage2StatusActive(now);
 
       const countBlock = document.getElementById('hero-countdown-block');
+      const stage2Summary = document.getElementById('hero-stage2-summary-block');
       const stage2Panel = document.getElementById('hero-stage2-panel');
 
       if (isStage2) {
+        document.body.classList.add('stage2-active');
         if (countBlock) countBlock.style.display = 'none';
+        if (stage2Summary) stage2Summary.style.display = 'block';
         if (stage2Panel) stage2Panel.style.display = 'block';
 
         // Adaptation de la topbar de décompte du site
@@ -1921,7 +1945,9 @@
         return;
       }
 
+      document.body.classList.remove('stage2-active');
       if (countBlock) countBlock.style.display = 'block';
+      if (stage2Summary) stage2Summary.style.display = 'none';
       if (stage2Panel) stage2Panel.style.display = 'none';
 
       const diff = Math.max(0, cceTargetDate - now);
