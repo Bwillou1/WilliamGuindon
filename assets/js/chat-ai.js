@@ -830,7 +830,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const isSurge = isCanadaTrafficSurgePeriod();
         deepChatEl.introMessage = {
           text: isSurge
-            ? "⚠️ Avis spécial (16 au 21 octobre 2026 — Échéance CCE du Canada) :\nPour que tout le monde puisse utiliser l'assistant sans épuiser le quota journalier partagé, le modèle 8B est activé d'office pendant 5 jours.\n\n💡 Recommandations temporaires de William Guindon :\n1. Onglet « Liens IA » : copiez le prompt documentaire et collez-le dans votre propre IA (ChatGPT, Claude, etc.).\n2. Menu Moteur : connectez votre propre clé API (l'API Google Gemini est 100 % gratuite et sans quota partagé)."
+            ? "⚠️ Avis spécial (16 au 21 octobre 2026 — Échéance CCE du Canada) :\nPour que tout le monde puisse utiliser l'assistant sans épuiser le quota journalier partagé, le modèle 8B est activé d'office pendant 5 jours.\n\n💡 Recommandations de William Guindon :\n1. Onglet « Liens IA » : copiez le prompt documentaire et collez-le dans votre propre IA (ChatGPT, Claude, etc.).\n2. Menu Moteur : connectez votre propre clé API (l'API Google Gemini est 100 % gratuite).\n3. Écrivez directement à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !"
             : "Bonjour ! Je suis l'assistant documentaire officiel du dossier SEM-26-003 (Modèle Approfondi 70B par défaut). Posez votre question sur la Grande Tourbière de Blainville, le rapport BAPE 371 ou l'échéance CCE."
         };
         deepChatEl.request = {
@@ -1181,6 +1181,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 <ul>
                   <li><strong>Option 1 (Sans limite de quota) :</strong> Utilisez l'onglet <button type="button" class="ai-inline-action-btn js-nav-tab-models" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">« Liens IA »</button> pour copier le prompt documentaire complet et le coller directement dans votre propre assistant (ChatGPT, Claude, etc.).</li>
                   <li><strong>Option 2 :</strong> Renseignez votre propre clé API dans le menu <button type="button" class="ai-inline-action-btn js-nav-select-gemini" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">Moteur</button> ci-dessus (l'API <strong>Google Gemini</strong> est 100 % gratuite et s'active en 1 clic sans aucune restriction de quota partagé).</li>
+                  <li><strong>Option 3 (Contact direct) :</strong> Envoyez un courriel à William Guindon à <a href="mailto:contact@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;font-weight:600;">contact@williamguindon.me</a> — ça lui fera plaisir de vous répondre dans les plus brefs délais !</li>
                 </ul>
               </div>
             </div>
@@ -1194,7 +1195,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span>
                 ${isTrafficSurge ? `
                 <div style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:11.5px;line-height:1.45;color:var(--text);">
-                  <strong style="color:#d97706;">⚠️ Forte affluence CCE (16 au 21 oct. 2026) :</strong> Modèle 8B activé par défaut pendant 5 jours pour garantir l'accès à tous les citoyens sans rupture de quota. Pour des analyses sans limite, copiez le prompt dans l'onglet <strong>« Liens IA »</strong> ou connectez une clé API gratuite (Google Gemini).
+                  <strong style="color:#d97706;">⚠️ Forte affluence CCE (16 au 21 oct. 2026) :</strong> Modèle 8B activé par défaut pendant 5 jours pour garantir l'accès à tous les citoyens sans rupture de quota. Pour des analyses sans limite, copiez le prompt dans l'onglet <strong>« Liens IA »</strong>, connectez une clé API gratuite (Google Gemini), ou écrivez directement à William Guindon à <a href="mailto:contact@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;">contact@williamguindon.me</a> (ça lui fera plaisir de répondre dans les plus brefs délais).
                 </div>` : ''}
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
@@ -1570,7 +1571,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         });
         btnExpert.addEventListener('click', () => {
           if (isCanadaTrafficSurgePeriod()) {
-            alert("⚠️ Avis de forte affluence (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B consomme énormément de quota. William préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise le quota journalier partagé du site suite à la réponse du Canada.\n\n💡 Recommandation temporaire de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Ou ajoutez votre propre clé API gratuite dans le menu Moteur (Google Gemini est 100 % gratuit et sans quota partagé).");
+            alert("⚠️ Avis de forte affluence (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B consomme énormément de quota. William préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise le quota journalier partagé du site suite à la réponse du Canada.\n\n💡 Recommandations de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Menu Moteur : ajoutez votre propre clé API gratuite (Google Gemini est 100 % gratuit et sans quota partagé).\n• Ou envoyez directement un courriel à William Guindon à contact@williamguindon.me, il se fera un plaisir de vous répondre dans les plus brefs délais !");
           }
           currentGroqMode = 'expert';
           btnExpert.classList.add('active');
