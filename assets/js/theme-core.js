@@ -1885,19 +1885,39 @@
         if (window.location.search.includes('stage2=1') || window.location.search.includes('etape2=1') || window.location.search.includes('preview=stage2')) {
           return true;
         }
+        if (window.location.search.includes('stage2=0') || window.location.search.includes('etape2=0')) {
+          return false;
+        }
       }
-      const now = typeof nowMs === 'number' ? nowMs : Date.now();
-      if (cceTargetDate && now >= cceTargetDate) return true;
+
+      let forceDisabled = false;
+      let forceActive = false;
       try {
         const raw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && Boolean(parsed.stage2StatusActive)) return true;
+          if (parsed) {
+            if (Boolean(parsed.stage2ForceDisabled)) forceDisabled = true;
+            if (Boolean(parsed.stage2StatusActive)) forceActive = true;
+          }
         }
       } catch (_) {}
-      if (typeof window !== 'undefined' && window.__WG_SITE_STATE && Boolean(window.__WG_SITE_STATE.stage2StatusActive)) {
-        return true;
+
+      if (typeof window !== 'undefined' && window.__WG_SITE_STATE) {
+        if (Boolean(window.__WG_SITE_STATE.stage2ForceDisabled)) forceDisabled = true;
+        if (Boolean(window.__WG_SITE_STATE.stage2StatusActive)) forceActive = true;
       }
+
+      // Priorité 1 : si l'administrateur a explicitement désactivé l'Étape 2 dans la console
+      if (forceDisabled) return false;
+
+      // Priorité 2 : si l'administrateur a explicitement activé l'Étape 2 dans la console
+      if (forceActive) return true;
+
+      // Priorité 3 : basculement automatique dès minuit le 16 octobre 2026 (heure EDT)
+      const now = typeof nowMs === 'number' ? nowMs : Date.now();
+      if (cceTargetDate && now >= cceTargetDate) return true;
+
       return false;
     }
 
@@ -1909,9 +1929,7 @@
           const data = await res.json();
           if (data && typeof data === 'object') {
             window.__WG_SITE_STATE = data;
-            if (data.stage2StatusActive) {
-              updatePrecisionCountdown();
-            }
+            updatePrecisionCountdown();
           }
         }
       } catch (_) {}

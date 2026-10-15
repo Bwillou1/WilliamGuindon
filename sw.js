@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v131';
+const CACHE_NAME = 'wg-pwa-v136';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
   '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
+  '/assets/docs/declaration-appui-manfred-liebel-e7834.pdf',
   '/assets/js/pdf-viewer.js',
   '/assets/css/pdf-viewer.css',
   '/assets/vendor/pdfjs/pdf.min.js',
@@ -42,6 +43,10 @@ const ASSETS_TO_CACHE = [
   '/assets/media/clarification-independance.webp',
   '/assets/media/confirmation-cce-premier-mineur-1994.png',
   '/assets/media/confirmation-cce-premier-mineur-1994.webp',
+  '/assets/media/declaration-liebel-meade-preview.jpg',
+  '/assets/media/declaration-liebel-meade-preview.webp',
+  '/assets/media/signatures-liebel-meade.png',
+  '/assets/media/signatures-liebel-meade.webp',
   '/assets/media/sem-26-003-apercu-banniere.webp',
   '/assets/media/ndtr-banner-rcaanc.jpg',
   '/assets/media/ndtr-banner-rcaanc.webp',

@@ -1422,6 +1422,16 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             <span>Pétition 546 (Canada.ca) ↗</span>
           </a>
+          <a id="btn-academic-support"
+             href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf"
+             class="drive-actions-item item-academic"
+             target="_blank"
+             rel="noopener noreferrer"
+             role="menuitem"
+             title="Consulter la déclaration d'appui académique officielle (Berlin, 14 oct. 2026)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+            <span>Appui scientifique Liebel &amp; Meade (PDF) ↗</span>
+          </a>
         </div>
       </details>
     </div>
@@ -1725,9 +1735,13 @@
     <span class="folder-chevron">▶</span>
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
     <span class="folder-name" title="07_Lettres_Appui_Communications_CCE">07 · Dossier CCE (SEM-26-003) & Lettres d'appui</span>
-    <span class="folder-count">3</span>
+    <span class="folder-count">4</span>
   </div>
   <div class="tree-children">
+  <div class="drive-item" data-fullpath="assets/docs/declaration-appui-manfred-liebel-e7834.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" class="drive-item-name" title="declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener">Déclaration d'appui scientifique · Prof. Dr. Manfred Liebel &amp; Philip Meade (Berlin, 14 oct. 2026)</a>
+  </div>
   <div class="drive-item" data-fullpath="00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf">
     <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
     <a href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf" class="drive-item-name" title="09-l-appui-sem-26-003_fr_redacted.pdf" target="_blank" rel="noopener">09 · Lettre d'appui conjointe au dossier SEM-26-003 (Caviardée)</a>
@@ -2526,6 +2540,19 @@
     const fullPath = fileObj.fullPath || '';
 
     // 0. Détection des documents phares hébergés localement sur williamguindon.me
+    if (rawName.includes("declaration-appui-manfred-liebel") || fullPath.includes("declaration-appui-manfred-liebel")) {
+      const localPath = "assets/docs/declaration-appui-manfred-liebel-e7834.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
     if (rawName.includes("26-3-rsub_fr_redacted") || fullPath.includes("26-3-rsub_fr_redacted")) {
       const localPath = "assets/docs/26-3-rsub_fr_redacted.pdf";
       return {

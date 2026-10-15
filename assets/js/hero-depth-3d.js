@@ -39,6 +39,9 @@
 
     curtainsContainer.innerHTML = '';
     curtainsContainer.appendChild(canvas);
+    const overlay = document.createElement('div');
+    overlay.className = 'hero-curtains-overlay';
+    curtainsContainer.appendChild(overlay);
 
     const glOptions = {
       alpha: true,

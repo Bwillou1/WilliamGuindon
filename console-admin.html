@@ -377,10 +377,10 @@
         </div>
       </div>
 
-      <!-- Rubrique 3 : Autonomie & Âgisme -->
+      <!-- Rubrique 3 : Autonomie & Adultisme -->
       <div class="nav-dropdown">
         <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>Autonomie &amp; Âgisme ▾</span>
+          <span>Autonomie &amp; Adultisme ▾</span>
         </button>
         <div class="nav-dropdown-menu">
           <a href="age.html" class="nav-dropdown-item">Wmail — Annexe publique caviardée</a>
@@ -1892,13 +1892,18 @@
 
     const stage2Pill = document.getElementById("stage2-status-pill");
     if (stage2Pill) {
-      if (state.stage2StatusActive) {
+      if (state.stage2ForceDisabled) {
+        stage2Pill.textContent = "● FORCÉ DÉSACTIVÉ (Décompte maintenu)";
+        stage2Pill.style.background = "rgba(239,68,68,0.15)";
+        stage2Pill.style.color = "#ef4444";
+        stage2Pill.style.borderColor = "#ef4444";
+      } else if (state.stage2StatusActive) {
         stage2Pill.textContent = "● ÉTAPE 2 FORCÉE / ACTIVE";
         stage2Pill.style.background = "rgba(245,158,11,0.25)";
         stage2Pill.style.color = "#f59e0b";
         stage2Pill.style.borderColor = "#f59e0b";
       } else {
-        stage2Pill.textContent = "Inactif (Bascule auto 16 oct.)";
+        stage2Pill.textContent = "Inactif (Bascule auto minuit 16 oct.)";
         stage2Pill.style.background = "rgba(245,158,11,0.1)";
         stage2Pill.style.color = "#f59e0b";
         stage2Pill.style.borderColor = "rgba(245,158,11,0.3)";
@@ -2006,6 +2011,7 @@
 
       const state = getSiteState();
       state.stage2StatusActive = true;
+      state.stage2ForceDisabled = false;
       await saveAndSyncSiteState(state);
       alert("[OK] Statut Officiel Étape 2 CCE activé avec succès sur tout le réseau !");
     } else {
@@ -2014,6 +2020,7 @@
 
       const state = getSiteState();
       state.stage2StatusActive = false;
+      state.stage2ForceDisabled = true;
       await saveAndSyncSiteState(state);
       alert("[OK] Statut Étape 2 désactivé. Décompte CCE rétabli.");
     }
@@ -2726,6 +2733,7 @@
           if (action === "on" || action === "true" || action === "1") {
             const state = getSiteState();
             state.stage2StatusActive = true;
+            state.stage2ForceDisabled = false;
             await saveAndSyncSiteState(state);
             printCli("[STAGE-2] Statut Officiel Étape 2 CCE activé sur tout le site (Échéance 16 oct. atteinte).", "#f59e0b");
           } else if (action === "off" || action === "false" || action === "0") {
@@ -2736,13 +2744,16 @@
             }
             const state = getSiteState();
             state.stage2StatusActive = false;
+            state.stage2ForceDisabled = true;
             await saveAndSyncSiteState(state);
             printCli("[OK] Statut Étape 2 désactivé. Décompte CCE rétabli.", "#4ade80");
           } else if (action === "toggle") {
             const state = getSiteState();
-            state.stage2StatusActive = !state.stage2StatusActive;
+            const nextActive = !Boolean(state.stage2StatusActive);
+            state.stage2StatusActive = nextActive;
+            state.stage2ForceDisabled = !nextActive;
             await saveAndSyncSiteState(state);
-            printCli(`[STAGE-2] Statut Étape 2 basculé à : ${state.stage2StatusActive ? 'ACTIF' : 'INACTIF'}.`, "#f59e0b");
+            printCli(`[STAGE-2] Statut Étape 2 basculé à : ${nextActive ? 'ACTIF' : 'DÉSACTIVÉ (Décompte rétabli)'}.`, "#f59e0b");
           } else {
             printCli("[STAGE-2] Usage : stage2 <on|off|toggle>", "#f59e0b");
           }
