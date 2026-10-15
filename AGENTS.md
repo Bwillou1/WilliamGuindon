@@ -208,9 +208,7 @@ la fréquence du cron.
 
 ### 🐛 3 — README désynchronisé
 - Il liste `en.html` et `es.html` dans l'arborescence : **absentes**.
-- Il indique `GROQ_MODEL` par défaut `llama-3.3-70b-versatile` ; le code utilise quatre modèles
-  (`GROQ_MODEL_LOW`, `GROQ_MODEL_NORMAL`, `GROQ_MODEL_MEDIUM`, `GROQ_MODEL_EXPERT`) avec
-  `openai/gpt-oss-20b` / `groq/compound-mini` / `qwen/qwen3.8-27b` / `openai/gpt-oss-120b`.
+- Il indique `GROQ_MODEL` par défaut `llama-3.3-70b-versatile` ; le code est aligné avec `llama-3.3-70b-versatile` (expert) et `llama-3.1-8b-instant` (rapide).
 - Il ne mentionne ni `console-admin.html`, ni `messagerie.html`, ni `editeur.html`, ni
   `kg-monitor.py`, ni `sw.js`.
 

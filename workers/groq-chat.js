@@ -66,12 +66,8 @@ RÈGLES DE LANGUE ET DE RÉDACTION :
 - Reste courtois, neutre et précis sans inventer de faits non documentés.
 `;
 
-const PRIMARY_MODEL = 'openai/gpt-oss-120b';
+const PRIMARY_MODEL = 'llama-3.3-70b-versatile';
 const FALLBACK_MODELS = [
-  'openai/gpt-oss-20b',
-  'qwen/qwen3.8-27b',
-  'groq/compound-mini',
-  'llama-3.3-70b-versatile',
   'llama-3.1-8b-instant'
 ];
 
@@ -211,18 +207,12 @@ export default {
     let candidateModels = [];
     if (mode === 'expert') {
       candidateModels = [
-        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'openai/gpt-oss-120b',
-        env?.GROQ_MODEL_NORMAL || 'groq/compound-mini',
-        env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b',
-        'llama-3.3-70b-versatile',
+        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'llama-3.3-70b-versatile',
         'llama-3.1-8b-instant'
       ];
     } else {
       candidateModels = [
-        env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b',
-        env?.GROQ_MODEL_NORMAL || 'groq/compound-mini',
-        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'openai/gpt-oss-120b',
-        'llama-3.1-8b-instant',
+        env?.GROQ_MODEL_FAST || 'llama-3.1-8b-instant',
         'llama-3.3-70b-versatile'
       ];
     }
@@ -248,11 +238,6 @@ export default {
             ...trimmedSafeMessages
           ]
         };
-
-        if (model.includes('gpt-oss')) {
-          requestBody.reasoning_effort = 'low';
-          requestBody.reasoning_format = 'hidden';
-        }
 
         const groqResponse = await fetch(GROQ_ENDPOINT, {
           method: 'POST',
