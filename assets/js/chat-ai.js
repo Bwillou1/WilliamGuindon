@@ -56,7 +56,7 @@
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;
-    let currentGroqMode = 'fast';
+    let currentGroqMode = 'expert';
 
     if (!floatingBtn) {
       floatingBtn = document.createElement('button');
@@ -228,30 +228,48 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
     async function callGroq(messages) {
       // Économie drastique de tokens pour le service public : on ne conserve que les 4 derniers messages (2 tours d'échange)
       const trimmed = messages.slice(-4);
-      const resp = await fetch('/api/groq-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mode: currentGroqMode || 'fast',
-          messages: trimmed.map(m => ({
-            role: m.role === 'assistant' ? 'assistant' : 'user',
-            content: m.content
-          }))
-        })
-      });
-      if (!resp.ok) {
-        let errMsg = `HTTP ${resp.status}`;
+      const formattedMessages = trimmed.map(m => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: m.content
+      }));
+
+      // Ordre de tentative dynamique : tester le mode sélectionné (expert par défaut), puis basculer automatiquement sur l'autre en cas d'indisponibilité
+      const primaryMode = currentGroqMode || 'expert';
+      const secondaryMode = primaryMode === 'expert' ? 'fast' : 'expert';
+      const modesToTry = [primaryMode, secondaryMode];
+
+      let lastErrMsg = 'Invalid API payload';
+
+      for (const modeToAttempt of modesToTry) {
         try {
-          const errBody = await resp.json();
-          if (errBody && errBody.error) errMsg = errBody.error;
-        } catch (_) {}
-        throw new Error(errMsg);
+          const resp = await fetch('/api/groq-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mode: modeToAttempt,
+              messages: formattedMessages
+            })
+          });
+
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data && data.answer && data.answer.trim()) {
+              return data.answer.trim();
+            }
+          } else {
+            let errMsg = `HTTP ${resp.status}`;
+            try {
+              const errBody = await resp.json();
+              if (errBody && errBody.error) errMsg = errBody.error;
+            } catch (_) {}
+            lastErrMsg = errMsg;
+          }
+        } catch (fetchErr) {
+          lastErrMsg = fetchErr.message || 'Réseau indisponible';
+        }
       }
-      const data = await resp.json();
-      if (data && data.answer && data.answer.trim()) {
-        return data.answer.trim();
-      }
-      throw new Error('Invalid API payload');
+
+      throw new Error(lastErrMsg);
     }
 
     function showOfflineBanner() {
@@ -1118,8 +1136,8 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   Mode :
                 </span>
                 <div class="ai-mode-btn-group">
-                  <button type="button" class="ai-mode-btn active" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota (Recommandé en période de forte affluence)">⚡ Rapide (8B · Par défaut)</button>
-                  <button type="button" class="ai-mode-btn" data-mode="expert" id="ai-mode-expert" title="Modèle 70B pour questions pointues (Quota journalier partagé)">🧠 Approfondi (70B)</button>
+                  <button type="button" class="ai-mode-btn" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota">⚡ Rapide (8B)</button>
+                  <button type="button" class="ai-mode-btn active" data-mode="expert" id="ai-mode-expert" title="Modèle haute précision pour questions pointues (Recommandé · Par défaut)">🧠 Haute précision (120B · Par défaut)</button>
                 </div>
               </div>
             </div>
