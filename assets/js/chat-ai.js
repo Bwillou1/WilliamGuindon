@@ -773,7 +773,16 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
 
       // Intercepteur garantissant l'injection du contexte documentaire officiel
       deepChatEl.requestInterceptor = (details) => {
-        if (details && details.body && Array.isArray(details.body.messages)) {
+        if (!details || !details.body) return details;
+        if (providerKey === 'gemini') {
+          if (!details.body.system_instruction) {
+            details.body.system_instruction = { parts: [{ text: DOSSIER_CONTEXT }] };
+          }
+        } else if (providerKey === 'claude') {
+          if (!details.body.system) {
+            details.body.system = DOSSIER_CONTEXT;
+          }
+        } else if (Array.isArray(details.body.messages)) {
           const hasSystem = details.body.messages.some(m => m.role === 'system');
           if (!hasSystem) {
             details.body.messages.unshift({ role: 'system', content: DOSSIER_CONTEXT });
@@ -825,7 +834,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const key = AiVault.get(prov.keyStorage);
         if (!key) {
           deepChatEl.introMessage = {
-            text: "Pour clavarder avec Google Gemini, veuillez entrer votre clé API dans le champ en haut (« Clé API ») puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste 100 % locale et est conservée durablement dans votre navigateur (résiste au nettoyage des cookies)."
+            text: "Pour clavarder avec Google Gemini, veuillez entrer votre clé API dans le champ en haut (« Clé API ») puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste 100 % locale, protégée dans votre navigateur et jamais transmise à William Guindon."
           };
           deepChatEl.request = {
             handler: async (_body, signals) => {
@@ -841,10 +850,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           deepChatEl.directConnection = {
             gemini: {
               key: key,
-              chat: {
-                model: 'gemini-1.5-flash',
-                system_instruction: { parts: [{ text: DOSSIER_CONTEXT }] }
-              }
+              model: 'gemini-2.5-flash'
             }
           };
         }
@@ -852,7 +858,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const key = AiVault.get(prov.keyStorage);
         if (!key) {
           deepChatEl.introMessage = {
-            text: "Pour clavarder avec OpenAI (GPT-4o), veuillez saisir votre clé API (sk-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé est mémorisée de façon persistante dans votre navigateur."
+            text: "Pour clavarder avec OpenAI (GPT-4o), veuillez saisir votre clé API (sk-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé est mémorisée de façon persistante dans votre navigateur et jamais transmise à William Guindon."
           };
           deepChatEl.request = {
             handler: async (_body, signals) => {
@@ -869,8 +875,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             openAI: {
               key: key,
               chat: {
-                model: 'gpt-4o-mini',
-                system_prompt: DOSSIER_CONTEXT
+                model: 'gpt-4o-mini'
               }
             }
           };
@@ -879,7 +884,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const key = AiVault.get(prov.keyStorage);
         if (!key) {
           deepChatEl.introMessage = {
-            text: "Pour clavarder avec Anthropic Claude, veuillez saisir votre clé API (sk-ant-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste locale et sécurisée."
+            text: "Pour clavarder avec Anthropic Claude, veuillez saisir votre clé API (sk-ant-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste locale, protégée dans votre navigateur et jamais transmise à William Guindon."
           };
           deepChatEl.request = {
             handler: async (_body, signals) => {
@@ -895,10 +900,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           deepChatEl.directConnection = {
             claude: {
               key: key,
-              chat: {
-                model: 'claude-3-5-sonnet-20240620',
-                system_prompt: DOSSIER_CONTEXT
-              }
+              model: 'claude-3-5-sonnet-20241022'
             }
           };
         }
@@ -906,7 +908,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const key = AiVault.get(prov.keyStorage);
         if (!key) {
           deepChatEl.introMessage = {
-            text: "Pour clavarder avec Mistral AI, veuillez renseigner votre clé API dans le champ en haut puis cliquer sur « Connecter »."
+            text: "Pour clavarder avec Mistral AI, veuillez renseigner votre clé API dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste locale, protégée dans votre navigateur et jamais transmise à William Guindon."
           };
           deepChatEl.request = {
             handler: async (_body, signals) => {
@@ -922,9 +924,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           deepChatEl.directConnection = {
             mistral: {
               key: key,
-              chat: {
-                model: 'mistral-small-latest'
-              }
+              model: 'mistral-small-latest'
             }
           };
         }
@@ -932,7 +932,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const key = AiVault.get(prov.keyStorage);
         if (!key) {
           deepChatEl.introMessage = {
-            text: "Pour clavarder avec OpenRouter, veuillez renseigner votre clé API (sk-or-...) dans le champ en haut puis cliquer sur « Connecter »."
+            text: "Pour clavarder avec OpenRouter, veuillez renseigner votre clé API (sk-or-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste locale, protégée dans votre navigateur et jamais transmise à William Guindon."
           };
           deepChatEl.request = {
             handler: async (_body, signals) => {
@@ -946,13 +946,9 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             text: "OpenRouter connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
           };
           deepChatEl.directConnection = {
-            openAI: {
+            openRouter: {
               key: key,
-              chat: {
-                model: 'meta-llama/llama-3.3-70b-instruct',
-                system_prompt: DOSSIER_CONTEXT
-              },
-              url: 'https://openrouter.ai/api/v1/chat/completions'
+              model: 'meta-llama/llama-3.3-70b-instruct'
             }
           };
         }
@@ -1009,25 +1005,39 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         };
       } else if (providerKey === 'webllm') {
         const noticeEl = aiModal ? aiModal.querySelector('#ai-provider-notice') : document.getElementById('ai-provider-notice');
-        if (typeof navigator !== 'undefined' && !navigator.gpu) {
+        const hasGpu = typeof navigator !== 'undefined' && Boolean(navigator.gpu);
+
+        deepChatEl.introMessage = {
+          text: "⚡ Mode WebLLM (100 % navigateur sans serveur) :\nCe mode télécharge le modèle Llama-3.2-1B (~1,5 Go) directement dans la mémoire de votre carte graphique (WebGPU).\n\n💡 Si votre navigateur affiche une erreur (« Service error » ou blocage de mémoire), consultez le guide de dépannage WebGPU (https://deepchat.dev/docs/webModel/#troubleshooting) ou passez sur Google Gemini (100 % gratuit et instantané)."
+        };
+
+        if (!hasGpu) {
           if (noticeEl) {
-            noticeEl.innerHTML = '<span style="color:#ef4444;font-weight:700;">⚠ WebGPU non disponible :</span> Votre navigateur ou appareil ne supporte pas l\'accélération matérielle WebGPU (nécessaire pour exécuter un LLM localement dans le navigateur). Utilisez Google Chrome ou Edge avec accélération matérielle activée, ou choisissez un autre modèle.';
+            noticeEl.innerHTML = '<span style="color:#ef4444;font-weight:700;">⚠ WebGPU non détecté :</span> Votre appareil ou navigateur ne supporte pas l\'accélération matérielle WebGPU requise pour exécuter un LLM en local. Consultez le <a href="https://deepchat.dev/docs/webModel/#troubleshooting" target="_blank" rel="noopener noreferrer" style="color:#ef4444;text-decoration:underline;">guide de dépannage WebModel ↗</a> ou choisissez Google Gemini.';
           }
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "WebGPU n'est pas activé ou supporté sur ce navigateur. Activez WebGPU dans les paramètres de votre navigateur ou sélectionnez Google Gemini dans le menu Moteur en haut."
+              });
+            }
+          };
+        } else {
+          ensureWebLLM().then((mod) => {
+            if (mod) {
+              deepChatEl.webModel = {
+                model: 'Llama-3.2-1B-Instruct-q4f16_1-MLC'
+              };
+              if (noticeEl) {
+                noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">⚡ Moteur WebGPU prêt :</span> Modèle Llama-3.2-1B activé. Il s\'exécute 100% dans votre navigateur sans serveur. En cas de lenteur ou d\'erreur mémoire, voir le <a href="https://deepchat.dev/docs/webModel/#troubleshooting" target="_blank" rel="noopener noreferrer" style="color:#10b981;text-decoration:underline;">dépannage WebLLM ↗</a>.';
+              }
+            } else {
+              if (noticeEl) {
+                noticeEl.innerHTML = '<span style="color:#ef4444;font-weight:700;">⚠ Module WebLLM indisponible :</span> Impossible de charger la bibliothèque WebGPU. Veuillez choisir Google Gemini ou un autre fournisseur.';
+              }
+            }
+          });
         }
-        ensureWebLLM().then((mod) => {
-          if (mod) {
-            deepChatEl.webModel = {
-              model: 'Llama-3.2-1B-Instruct-q4f16_1-MLC'
-            };
-            if (noticeEl && navigator.gpu) {
-              noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">⚡ Moteur WebGPU prêt :</span> Modèle Llama-3.2-1B configuré. Il sera exécuté 100% dans votre navigateur sans aucun serveur.';
-            }
-          } else {
-            if (noticeEl) {
-              noticeEl.innerHTML = '<span style="color:#ef4444;font-weight:700;">⚠ Module WebLLM indisponible :</span> Impossible de charger la bibliothèque WebGPU via CDN. Veuillez choisir un autre fournisseur.';
-            }
-          }
-        });
       }
     }
 
@@ -1080,8 +1090,14 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
               </div>
               <div class="ai-provider-config" id="ai-provider-config">
                 <div class="ai-config-field" id="ai-key-group" style="display:none;">
-                  <input type="password" id="ai-user-key" class="ai-toolbar-input" placeholder="Clé API" autocomplete="off">
-                  <div class="ai-key-help"><a id="ai-key-link" class="ai-key-link" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer">Obtenir une clé API ↗</a></div>
+                  <div class="ai-key-input-wrapper" style="position:relative; display:flex; align-items:center;">
+                    <input type="password" id="ai-user-key" class="ai-toolbar-input" placeholder="Clé API" autocomplete="off" style="padding-right:38px; width:100%;">
+                    <button type="button" id="ai-toggle-key-visibility" class="ai-key-toggle-btn" aria-label="Afficher ou masquer la clé API" title="Afficher la clé" style="position:absolute; right:8px; background:none; border:none; cursor:pointer; color:var(--text-muted, #94a3b8); font-size:16px; padding:2px; display:flex; align-items:center; justify-content:center; line-height:1;">👁️</button>
+                  </div>
+                  <div class="ai-key-help">
+                    <a id="ai-key-link" class="ai-key-link" href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer">Obtenir une clé API ↗</a>
+                    <span class="ai-key-privacy-badge" style="display:block; font-size:11px; color:#10b981; margin-top:4px;">🔒 Garantie de confidentialité : William Guindon n'a aucun accès et ne voit jamais votre clé API (stockage 100 % local dans votre navigateur).</span>
+                  </div>
                 </div>
                 <div class="ai-config-field" id="ai-url-group" style="display:none;">
                   <input type="text" id="ai-custom-url" class="ai-toolbar-input" placeholder="http://localhost:11434" autocomplete="off">
@@ -1154,7 +1170,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             </form>
 
             <p class="ai-disclaimer" style="font-size: 11px; color: var(--text-muted, #64748b); margin-top: 10px; text-align: center; line-height: 1.4; border-top: 1px solid var(--line, #e2e8f0); padding-top: 8px;">
-              <strong>Assistant Documentaire IA :</strong> Cet assistant automatisé est distinct de William Guindon et ne remplace aucun avis juridique. Ne soumettez aucune information confidentielle ou pièce sensible dans ce clavardage. <a href="ia-ethique.html#exclusion-assistant-ia" target="_blank" rel="noopener noreferrer" style="color:var(--accent, #10b981); text-decoration:underline; font-weight:600;">Politique d'exclusion de responsabilité ↗</a>
+              <strong>Assistant Documentaire IA :</strong> Cet assistant automatisé est distinct de William Guindon et ne remplace aucun avis juridique. William Guindon ne voit jamais vos clés API personnelles (conservées à 100 % dans votre navigateur). <a href="ia-ethique.html#confidentialite-cles-api" target="_blank" rel="noopener noreferrer" style="color:var(--accent, #10b981); text-decoration:underline; font-weight:600;">Politique de confidentialité des clés API ↗</a>
             </p>
           </div>
 
@@ -1479,6 +1495,21 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             if (val) {
               AiVault.set(prov.urlStorage, val);
             }
+          }
+        });
+      }
+
+      const toggleKeyBtn = aiModal.querySelector('#ai-toggle-key-visibility');
+      if (toggleKeyBtn && keyInput) {
+        toggleKeyBtn.addEventListener('click', () => {
+          if (keyInput.type === 'password') {
+            keyInput.type = 'text';
+            toggleKeyBtn.textContent = '🙈';
+            toggleKeyBtn.setAttribute('title', 'Masquer la clé');
+          } else {
+            keyInput.type = 'password';
+            toggleKeyBtn.textContent = '👁️';
+            toggleKeyBtn.setAttribute('title', 'Afficher la clé');
           }
         });
       }
