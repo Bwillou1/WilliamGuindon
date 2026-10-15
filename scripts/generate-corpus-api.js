@@ -445,6 +445,7 @@ const docsPayload = {
   total_documents: documentsArchive.length,
   internet_archive_id: "dossier-journalistes-tourbiere-blainville-stablex",
   download_zip_url: "https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex/formats=PNG,COMMA-SEPARATED%20VALUES,TEXT%20PDF,UNKNOWN,ANIMATED%20GIF,MPEG4,TEXT,JPEG,ITEM%20TILE,ARCHIVE%20BITTORRENT,METADATA",
+  download_torrent_url: "https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent",
   metadata_url: "https://archive.org/metadata/dossier-journalistes-tourbiere-blainville-stablex",
   documents: documentsArchive
 };
@@ -660,6 +661,10 @@ const apisJsonSpec = {
         {
           type: "Archive",
           url: "https://archive.org/details/dossier-journalistes-tourbiere-blainville-stablex"
+        },
+        {
+          type: "BitTorrent",
+          url: "https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
         }
       ]
     },
