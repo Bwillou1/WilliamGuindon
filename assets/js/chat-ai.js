@@ -52,8 +52,18 @@
 
   function isCanadaTrafficSurgePeriod() {
     try {
-      if (typeof window !== 'undefined' && window.location && window.location.search.includes('surge=1')) {
-        return true;
+      if (typeof window !== 'undefined' && window.location) {
+        if (window.location.search.includes('surge=1') || window.location.search.includes('preview=tomorrow')) {
+          return true;
+        }
+        if (window.location.search.includes('surge=0') || window.location.search.includes('preview=today')) {
+          return false;
+        }
+        // Sur localhost / 127.0.0.1, simulation de demain (16 oct.) active par défaut pour prévisualiser l'affluence
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocal) {
+          return true;
+        }
       }
       if (typeof localStorage !== 'undefined' && localStorage.getItem('wg_force_surge') === 'true') {
         return true;
@@ -257,10 +267,12 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       const modesToTry = isSurge ? ['fast'] : [primaryMode, secondaryMode];
 
       let lastErrMsg = 'Invalid API payload';
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      const apiEndpoint = isLocal ? 'https://williamguindon.me/api/groq-chat' : '/api/groq-chat';
 
       for (const modeToAttempt of modesToTry) {
         try {
-          const resp = await fetch('/api/groq-chat', {
+          const resp = await fetch(apiEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
