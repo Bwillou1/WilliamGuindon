@@ -50,13 +50,30 @@
     return policyFiles.some(f => path.endsWith(f)) || path.includes('viewer.html') || path.includes('lecteur.html') || path.includes('dossier-journalistes.html');
   }
 
+  function isCanadaTrafficSurgePeriod() {
+    try {
+      if (typeof window !== 'undefined' && window.location && window.location.search.includes('surge=1')) {
+        return true;
+      }
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('wg_force_surge') === 'true') {
+        return true;
+      }
+    } catch (_) {}
+    const now = new Date();
+    // Période spéciale de 5 jours : du 16 octobre 2026 à 00:00:00 au 21 octobre 2026 à 23:59:59 (échéance réponse du Canada CCE)
+    const start = new Date(2026, 9, 16, 0, 0, 0); // 9 = octobre
+    const end = new Date(2026, 9, 21, 23, 59, 59);
+    return now >= start && now <= end;
+  }
+
   function initFloatingAiHub() {
     if (isPolicyPage()) return;
 
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;
-    let currentGroqMode = 'expert';
+    const isTrafficSurge = isCanadaTrafficSurgePeriod();
+    let currentGroqMode = isTrafficSurge ? 'fast' : 'expert';
 
     if (!floatingBtn) {
       floatingBtn = document.createElement('button');
@@ -810,6 +827,12 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       };
 
       if (providerKey === 'default') {
+        const isSurge = isCanadaTrafficSurgePeriod();
+        deepChatEl.introMessage = {
+          text: isSurge
+            ? "⚠️ Avis spécial (16 au 21 octobre 2026 — Échéance CCE du Canada) :\nPour que tout le monde puisse utiliser l'assistant sans épuiser le quota journalier partagé, le modèle 8B est activé d'office pendant 5 jours.\n\n💡 Recommandations temporaires de William Guindon :\n1. Onglet « Liens IA » : copiez le prompt documentaire et collez-le dans votre propre IA (ChatGPT, Claude, etc.).\n2. Menu Moteur : connectez votre propre clé API (l'API Google Gemini est 100 % gratuite et sans quota partagé)."
+            : "Bonjour ! Je suis l'assistant documentaire officiel du dossier SEM-26-003 (Modèle Approfondi 70B par défaut). Posez votre question sur la Grande Tourbière de Blainville, le rapport BAPE 371 ou l'échéance CCE."
+        };
         deepChatEl.request = {
           handler: async (body, signals) => {
             if (isChatBlockedByAdmin()) {
@@ -1136,27 +1159,28 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   Mode :
                 </span>
                 <div class="ai-mode-btn-group">
-                  <button type="button" class="ai-mode-btn" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota">⚡ Rapide (8B)</button>
-                  <button type="button" class="ai-mode-btn active" data-mode="expert" id="ai-mode-expert" title="Modèle haute précision pour questions pointues (Recommandé · Par défaut)">🧠 Haute précision (120B · Par défaut)</button>
+                  <button type="button" class="ai-mode-btn ${isTrafficSurge ? 'active' : ''}" data-mode="fast" id="ai-mode-fast" title="Modèle 8B ultra-rapide et économique en quota">⚡ Rapide (8B${isTrafficSurge ? ' · Actif d\'office' : ''})</button>
+                  <button type="button" class="ai-mode-btn ${!isTrafficSurge ? 'active' : ''}" data-mode="expert" id="ai-mode-expert" title="Modèle 70B pour questions pointues">${isTrafficSurge ? '🧠 Approfondi (70B · Quota restreint)' : '🧠 Approfondi (70B · Par défaut)'}</button>
                 </div>
               </div>
             </div>
 
             <!-- Avis spécial forte affluence / Gestion des quotas (Échéance 16 au 21 oct.) -->
-            <div class="ai-traffic-alert" id="ai-traffic-alert">
+            <div class="ai-traffic-alert" id="ai-traffic-alert" style="${isTrafficSurge ? 'display:block;' : 'display:none;'}">
               <div class="ai-traffic-alert-badge">
                 <span class="ai-live-dot"></span>
-                <strong>Avis spécial — Échéance CCE du 16 octobre 2026 (Gestion du trafic)</strong>
+                <strong>Avis spécial — Échéance CCE du Canada (16 au 21 octobre 2026 · 5 jours)</strong>
               </div>
               <p class="ai-traffic-alert-msg">
-                En raison de l'échéance légale imposée au Canada ce 16 octobre 2026 et de la forte consultation attendue sur le dossier SEM-26-003, afin que l'assistance documentaire reste accessible et fluide pour tout le monde sans rupture de quota, William a pris la décision d'activer par défaut un modèle d'IA plus léger et rapide (Llama 8B). Ce modèle est très réactif et économique en bande passante, mais peut occasionnellement comporter de légères imprécisions ou omissions par rapport aux très grands modèles ; nous vous prions de nous en excuser.
+                En raison de la forte augmentation des consultations liée à la réponse attendue du Canada auprès de la CCE pour le dossier SEM-26-003, William Guindon a pris la décision d'activer temporairement le modèle <strong>8B</strong> par défaut.
+                <br><br>
+                <strong>Pourquoi ce choix ?</strong> William préfère que <em>tout le monde puisse utiliser l'IA</em> plutôt qu'une seule personne n'épuise tout le quota journalier partagé avec de lourdes requêtes 70B.
               </p>
               <div class="ai-traffic-alert-foot">
-                <p><strong>💡 Recommandation (du vendredi 16 octobre au mercredi 21 octobre 2026) :</strong></p>
+                <p><strong>💡 Recommandation temporaire de William Guindon :</strong></p>
                 <ul>
-                  <li>Pour des analyses sans limite de quota, vous pouvez connecter votre propre clé (l'API <strong>Google Gemini</strong> est 100 % gratuite et s'active en 1 clic dans le sélecteur Moteur ci-dessus).</li>
-                  <li>Vous pouvez aussi basculer sur l'onglet <strong>« Liens IA »</strong> pour copier-coller directement le prompt documentaire complet dans votre assistant favori.</li>
-                  <li>Le bouton <strong>Mode Approfondi (70B)</strong> reste accessible pour les questions juridiques pointues dans la limite du quota partagé.</li>
+                  <li><strong>Option 1 (Sans limite de quota) :</strong> Utilisez l'onglet <button type="button" class="ai-inline-action-btn js-nav-tab-models" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">« Liens IA »</button> pour copier le prompt documentaire complet et le coller directement dans votre propre assistant (ChatGPT, Claude, etc.).</li>
+                  <li><strong>Option 2 :</strong> Renseignez votre propre clé API dans le menu <button type="button" class="ai-inline-action-btn js-nav-select-gemini" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">Moteur</button> ci-dessus (l'API <strong>Google Gemini</strong> est 100 % gratuite et s'active en 1 clic sans aucune restriction de quota partagé).</li>
                 </ul>
               </div>
             </div>
@@ -1168,6 +1192,10 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             <div class="ai-chat-messages" id="ai-chat-box">
               <div class="ai-chat-bubble bot">
                 <span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span>
+                ${isTrafficSurge ? `
+                <div style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:11.5px;line-height:1.45;color:var(--text);">
+                  <strong style="color:#d97706;">⚠️ Forte affluence CCE (16 au 21 oct. 2026) :</strong> Modèle 8B activé par défaut pendant 5 jours pour garantir l'accès à tous les citoyens sans rupture de quota. Pour des analyses sans limite, copiez le prompt dans l'onglet <strong>« Liens IA »</strong> ou connectez une clé API gratuite (Google Gemini).
+                </div>` : ''}
                 <div>Bonjour ! Posez-moi vos questions sur le dossier <strong>SEM-26-003</strong>, la décision CCE, le rapport du BAPE 371, la Loi 93 ou les faits scientifiques sur la Grande Tourbière de Blainville.</div>
               </div>
             </div>
@@ -1396,7 +1424,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         const trafficAlert = aiModal.querySelector('#ai-traffic-alert');
         if (providerKey === 'default') {
           if (modeRow) modeRow.style.display = 'flex';
-          if (trafficAlert) trafficAlert.style.display = 'block';
+          if (trafficAlert) trafficAlert.style.display = isCanadaTrafficSurgePeriod() ? 'block' : 'none';
         } else {
           if (modeRow) modeRow.style.display = 'none';
           if (trafficAlert) trafficAlert.style.display = 'none';
@@ -1541,9 +1569,28 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           btnExpert.classList.remove('active');
         });
         btnExpert.addEventListener('click', () => {
+          if (isCanadaTrafficSurgePeriod()) {
+            alert("⚠️ Avis de forte affluence (16 au 21 octobre 2026 — Échéance CCE du Canada) :\n\nLe modèle 70B consomme énormément de quota. William préfère que tout le monde puisse utiliser l'IA plutôt qu'une seule personne n'épuise le quota journalier partagé du site suite à la réponse du Canada.\n\n💡 Recommandation temporaire de William Guindon :\n• Onglet « Liens IA » : copiez le prompt complet et collez-le directement dans votre propre assistant (ChatGPT, Claude, etc.).\n• Ou ajoutez votre propre clé API gratuite dans le menu Moteur (Google Gemini est 100 % gratuit et sans quota partagé).");
+          }
           currentGroqMode = 'expert';
           btnExpert.classList.add('active');
           btnFast.classList.remove('active');
+        });
+      }
+
+      const linkNavModels = aiModal.querySelector('.js-nav-tab-models');
+      if (linkNavModels) {
+        linkNavModels.addEventListener('click', () => {
+          const tabBtn = aiModal.querySelector('.ai-tab-btn[data-tab="models"]');
+          if (tabBtn) tabBtn.click();
+        });
+      }
+
+      const linkNavGemini = aiModal.querySelector('.js-nav-select-gemini');
+      if (linkNavGemini && providerSelect) {
+        linkNavGemini.addEventListener('click', () => {
+          providerSelect.value = 'gemini';
+          providerSelect.dispatchEvent(new Event('change'));
         });
       }
 
