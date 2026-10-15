@@ -1556,8 +1556,9 @@
       const now = new Date().getTime();
       const diff = cceTargetDate - now;
 
-      if (diff <= 0) {
-        daysElement.textContent = "Échéance atteinte";
+      const isEn = document.documentElement.lang.startsWith('en');
+      if (diff <= 0 || (typeof isStage2StatusActive === 'function' && isStage2StatusActive(now))) {
+        daysElement.textContent = isEn ? "Deadline reached · Pending response" : "Échéance atteinte · En attente de la réponse";
         return;
       }
 
@@ -1872,12 +1873,57 @@
       });
     }
 
-    // Décompte de précision (secondes)
+    // Vérification du statut Étape 2 CCE (16 octobre 2026 ou forcé via site-state)
+    function isStage2StatusActive(nowMs) {
+      const now = typeof nowMs === 'number' ? nowMs : Date.now();
+      if (cceTargetDate && now >= cceTargetDate) return true;
+      try {
+        const raw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Boolean(parsed.stage2StatusActive)) return true;
+        }
+      } catch (_) {}
+      if (typeof window !== 'undefined' && window.__WG_SITE_STATE && Boolean(window.__WG_SITE_STATE.stage2StatusActive)) {
+        return true;
+      }
+      return false;
+    }
+
+    // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2
     function updatePrecisionCountdown() {
       if (!cceTargetDate || isNaN(cceTargetDate)) {
         cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
       }
       const now = new Date().getTime();
+      const isStage2 = isStage2StatusActive(now);
+
+      const countBlock = document.getElementById('hero-countdown-block');
+      const stage2Panel = document.getElementById('hero-stage2-panel');
+
+      if (isStage2) {
+        if (countBlock) countBlock.style.display = 'none';
+        if (stage2Panel) stage2Panel.style.display = 'block';
+
+        // Adaptation de la topbar de décompte du site
+        document.querySelectorAll('.site-deadline-title').forEach(el => {
+          el.textContent = "Statut CCE · Échéance légale atteinte (16 oct.) :";
+        });
+        document.querySelectorAll('.site-deadline-clock').forEach(el => {
+          el.innerHTML = '<span style="color:#f59e0b; font-weight:800; font-size:12px; letter-spacing:0.04em;">DÉLAI ÉCHU · EN ATTENTE DU DÉPÔT DU CANADA</span>';
+        });
+
+        // Les compteurs restent calés à 0
+        document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = '0');
+        document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = '00');
+        document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = '00');
+        document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = '00');
+        return;
+      }
+
+      if (countBlock) countBlock.style.display = 'block';
+      if (stage2Panel) stage2Panel.style.display = 'none';
+
       const diff = Math.max(0, cceTargetDate - now);
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -1891,7 +1937,7 @@
       document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = String(secs).padStart(2, '0'));
     }
 
-    if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days')) {
+    if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days') || document.getElementById('hero-stage2-panel')) {
       updatePrecisionCountdown();
       setInterval(updatePrecisionCountdown, 1000);
     }

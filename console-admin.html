@@ -934,6 +934,21 @@
         </div>
       </div>
 
+      <!-- STATUT OFFICIEL ÉTAPE 2 CCE (16 OCTOBRE 2026) -->
+      <div class="terminal-card" style="border-left: 4px solid #f59e0b; background: linear-gradient(180deg, rgba(30,20,5,0.6) 0%, rgba(15,10,3,0.7) 100%);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <div class="terminal-card-title" style="margin:0;">[STAGE-2] Statut Officiel Étape 2 CCE (Échéance 16 Octobre 2026)</div>
+          <div id="stage2-status-pill" style="font-size:12px; font-weight:700; padding:4px 10px; border-radius:12px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3);">
+            Inactif (Bascule automatique le 16 oct.)
+          </div>
+        </div>
+        <div class="terminal-card-desc">Bascule instantanément l'affichage du site (accueil et live) vers le statut solennel d'attente officielle de la réponse du Canada (Art. 24.28 CCE / ACEUM). Activé automatiquement dès minuit le 16 octobre 2026 ou manuellement ci-dessous pour prévisualisation et pilotage immédiat.</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button type="button" class="btn" style="background:#f59e0b; color:#0f172a; font-weight:800;" data-action="stage2-on">[STAGE-2] Activer Statut Étape 2</button>
+          <button type="button" class="btn btn-ghost" data-action="stage2-off">[RESTORE] Désactiver (Rétablir Décompte)</button>
+        </div>
+      </div>
+
       <!-- BOÎTE NOIRE D'URGENCE & OUTILS TACTIQUES FORENSIC -->
       <div class="terminal-card" style="border-left: 4px solid #a855f7; background: linear-gradient(180deg, rgba(20,10,30,0.6) 0%, rgba(8,3,15,0.7) 100%);">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
@@ -1353,6 +1368,8 @@
           case 'pdf-lock-on': triggerPdfLockdown(true); break;
           case 'pdf-lock-off': triggerPdfLockdown(false); break;
           case 'pdf-purge-instant': forceClientCachePurge(); break;
+          case 'stage2-on': triggerStage2Status(true); break;
+          case 'stage2-off': triggerStage2Status(false); break;
           case 'reload-iframe-editor': {
             const f = document.getElementById('iframe-editor');
             if (f) f.src = 'editeur.html';
@@ -1873,6 +1890,21 @@
       }
     }
 
+    const stage2Pill = document.getElementById("stage2-status-pill");
+    if (stage2Pill) {
+      if (state.stage2StatusActive) {
+        stage2Pill.textContent = "● ÉTAPE 2 FORCÉE / ACTIVE";
+        stage2Pill.style.background = "rgba(245,158,11,0.25)";
+        stage2Pill.style.color = "#f59e0b";
+        stage2Pill.style.borderColor = "#f59e0b";
+      } else {
+        stage2Pill.textContent = "Inactif (Bascule auto 16 oct.)";
+        stage2Pill.style.background = "rgba(245,158,11,0.1)";
+        stage2Pill.style.color = "#f59e0b";
+        stage2Pill.style.borderColor = "rgba(245,158,11,0.3)";
+      }
+    }
+
     updateMaintTimePreview();
     updatePanicTimePreview();
     updateRadical4TimePreview();
@@ -1965,6 +1997,26 @@
     state.nukeCacheTrigger = Date.now();
     await saveAndSyncSiteState(state);
     alert("[PURGE] Directive de purge de cache transmise à tous les clients distants !");
+  }
+
+  async function triggerStage2Status(activate) {
+    if (activate) {
+      const confirmAction = confirm("[STAGE-2] CONFIRMATION BASCULEMENT STATUT ÉTAPE 2 CCE :\n\n• Masquer le décompte en direct\n• Déployer le panneau officiel : 'Le délai imparti au Canada est échu : où en est la réponse fédérale ?'\n• Afficher les 3 scénarios et le passage à l'art. 24.28 de l'ACEUM\n\nActiver immédiatement le statut Étape 2 sur le site ?");
+      if (!confirmAction) return;
+
+      const state = getSiteState();
+      state.stage2StatusActive = true;
+      await saveAndSyncSiteState(state);
+      alert("[OK] Statut Officiel Étape 2 CCE activé avec succès sur tout le réseau !");
+    } else {
+      const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Statut Étape 2 et le retour au décompte CCE");
+      if (!isAuthorized) return;
+
+      const state = getSiteState();
+      state.stage2StatusActive = false;
+      await saveAndSyncSiteState(state);
+      alert("[OK] Statut Étape 2 désactivé. Décompte CCE rétabli.");
+    }
   }
 
   async function triggerRadical4(activate) {
@@ -2498,6 +2550,7 @@
   • no-pdf <on|off>               : Active/désactive le visionnement & téléchargement PDF.
   • pdf-lock <on|off> [m] [purge] : Verrouille totalement le lecteur PDF (100% infranchissable, chrono, anti-F12, CCE).
   • pdf-purge                     : Force la purge immédiate des caches de documents chez les visiteurs.
+  • stage2 <on|off|toggle>        : Bascule le statut officiel Étape 2 CCE (16 oct. 2026).
   • msg <lock|unlock>             : Bloque ou réactive la messagerie instantanée (Protection créateur).
   • restore / reset               : Rétablit tous les commutateurs et modes à l'état normal.
 
@@ -2663,6 +2716,35 @@
             printCli("[OK] Mode Chambre Probatoire CCE désactivé.", "#4ade80");
           } else {
             printCli("[CCE] Dossier CCE : SEM-26-003 (ACEUM Chapitre 24). Tapez `cce-vault on` pour activer la chambre probatoire.", "#38bdf8");
+          }
+          break;
+        }
+
+        case "stage2":
+        case "etape2": {
+          const action = (args[0] || "").toLowerCase();
+          if (action === "on" || action === "true" || action === "1") {
+            const state = getSiteState();
+            state.stage2StatusActive = true;
+            await saveAndSyncSiteState(state);
+            printCli("[STAGE-2] Statut Officiel Étape 2 CCE activé sur tout le site (Échéance 16 oct. atteinte).", "#f59e0b");
+          } else if (action === "off" || action === "false" || action === "0") {
+            const isAuthorized = await verifyAdminPasswordPrompt("la désactivation du Statut Étape 2 CCE");
+            if (!isAuthorized) {
+              printCli("[ERR] Action refusée : mot de passe incorrect.", "#ef4444");
+              break;
+            }
+            const state = getSiteState();
+            state.stage2StatusActive = false;
+            await saveAndSyncSiteState(state);
+            printCli("[OK] Statut Étape 2 désactivé. Décompte CCE rétabli.", "#4ade80");
+          } else if (action === "toggle") {
+            const state = getSiteState();
+            state.stage2StatusActive = !state.stage2StatusActive;
+            await saveAndSyncSiteState(state);
+            printCli(`[STAGE-2] Statut Étape 2 basculé à : ${state.stage2StatusActive ? 'ACTIF' : 'INACTIF'}.`, "#f59e0b");
+          } else {
+            printCli("[STAGE-2] Usage : stage2 <on|off|toggle>", "#f59e0b");
           }
           break;
         }
