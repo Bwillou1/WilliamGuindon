@@ -1004,9 +1004,9 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
               <svg class="svg" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
               Télécharger le PDF original (273 Ko)
             </a>
-            <a href="https://www.noscommunes.ca/petitions/fr/Petition/Details?Petition=e-7834" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:700;color:#b3261e;background:#ffebee;border:1px solid #ffcdd2;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+            <a href="#petition-e7834-parrainage" class="js-petition-pending" data-petition="e-7834" onclick="showPetitionPendingNotice(event); return false;" style="font-size:13px;font-weight:700;color:#b3261e;background:#ffebee;border:1px solid #ffcdd2;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px" title="En attente de parrainage parlementaire">
               <svg class="svg" viewBox="0 0 24 24" style="width:16px;height:16px"><path fill="#b3261e" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              Signer la Pétition e-7834 (Parlement du Canada) ↗
+              Pétition e-7834 (En parrainage) ↗
             </a>
           </div>
         </div>
@@ -2381,6 +2381,91 @@ function showShareToast(msg){
   clearTimeout(toast._timer);
   toast._timer = setTimeout(function(){ toast.classList.remove('show'); }, 2800);
 }
+
+/* ===== Notification de Pétition e-7834 (En cours de parrainage) ===== */
+function showPetitionPendingNotice(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  if (e && e.stopPropagation) e.stopPropagation();
+
+  var overlay = document.getElementById('petition-pending-modal-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'petition-pending-modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'petition-pending-title');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:10005;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;opacity:0;pointer-events:none;transition:opacity 0.25s ease;';
+
+    overlay.innerHTML = 
+      '<div style="background:var(--card,#1c1b1f);border:1.5px solid #d97706;border-radius:14px;max-width:520px;width:100%;padding:22px 20px;box-shadow:0 14px 44px rgba(0,0,0,0.65);color:var(--text,#f9fafb);box-sizing:border-box;text-align:left;transform:translateY(12px) scale(0.98);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);font-family:system-ui,-apple-system,sans-serif;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(217,119,6,0.3);padding-bottom:12px;">' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:rgba(217,119,6,0.15);color:#d97706;flex-shrink:0;">' +
+              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>' +
+            '</span>' +
+            '<div>' +
+              '<h3 id="petition-pending-title" style="margin:0;font-size:16px;font-weight:700;color:var(--text,#ffffff);line-height:1.3;">Pétition e-7834 — En cours de parrainage</h3>' +
+              '<span style="font-size:11.5px;color:#d97706;font-weight:600;">Parlement du Canada · Chambre des communes</span>' +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="btn-close-pending" aria-label="Fermer" style="background:transparent;border:none;font-size:26px;line-height:1;color:var(--muted,#94a3b8);cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>' +
+        '</div>' +
+        '<div style="margin:16px 0 14px;font-size:13.5px;line-height:1.6;color:var(--text,#f9fafb);">' +
+          '<div style="background:rgba(217,119,6,0.12);border-left:4px solid #d97706;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;color:var(--text,#ffffff);">' +
+            '<strong>Statut parlementaire :</strong> Pétition en attente d\'approbation.' +
+          '</div>' +
+          '<p style="margin:0 0 10px;">' +
+            'La pétition <strong>e-7834</strong> est enregistrée auprès du greffe de la Chambre des communes du Canada. <strong>Elle est toujours en cours de parrainage</strong> : William attend actuellement l\'approbation officielle de la députée marraine pour procéder à l\'ouverture publique des signatures sur <em>NosCommunes.ca</em>.' +
+          '</p>' +
+          '<p style="margin:0;font-size:12.5px;color:var(--muted,#94a3b8);">' +
+            'Conformément aux règles parlementaires fédérales, l\'accès public pour signer en ligne débutera dès le dépôt officiel du parrainage par un député de la Chambre.' +
+          '</p>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;margin-top:16px;">' +
+          '<a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">Déclaration d\'appui (Berlin) ↗</a>' +
+          '<button type="button" class="btn-close-pending" style="font-size:12px;padding:7px 18px;border-radius:6px;background:#d97706;border:1px solid #b45309;font-weight:700;color:#ffffff;cursor:pointer;">Compris</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    function closeModal() {
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      var card = overlay.firstElementChild;
+      if (card) card.style.transform = 'translateY(12px) scale(0.98)';
+      document.body.classList.remove('cce-modal-open');
+    }
+
+    overlay.addEventListener('click', function(evt) {
+      if (evt.target === overlay || evt.target.classList.contains('btn-close-pending')) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', function(evt) {
+      if (evt.key === 'Escape' && overlay.style.pointerEvents === 'auto') {
+        closeModal();
+      }
+    });
+  }
+
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'auto';
+  var card = overlay.firstElementChild;
+  if (card) card.style.transform = 'translateY(0) scale(1)';
+  document.body.classList.add('cce-modal-open');
+}
+window.showPetitionPendingNotice = showPetitionPendingNotice;
+
+document.addEventListener('click', function(e) {
+  var petitionLink = e.target && e.target.closest ? e.target.closest('a[href*="Petition=e-7834"], [data-petition="e-7834"], .js-petition-pending') : null;
+  if (petitionLink) {
+    e.preventDefault();
+    e.stopPropagation();
+    showPetitionPendingNotice(e);
+  }
+}, true);
 
 /* ===== Copie de lien direct et mise à jour URL ===== */
 async function copyDirectLink(tag, btn){
