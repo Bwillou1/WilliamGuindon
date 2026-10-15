@@ -271,6 +271,209 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       if (banner) banner.remove();
     }
 
+    // Coffre-fort persistant multi-niveaux pour les clés et configurations d'IA
+    // Résiste au nettoyage des cookies grâce à la synchronisation croisée :
+    // 1. Mémoire interne synchrone (_mem)
+    // 2. localStorage (instantané)
+    // 3. IndexedDB (base transactionnelle indépendante des cookies de session)
+    // 4. CacheStorage (fichiers caches indépendants des cookies)
+    // 5. navigator.storage.persist() pour interdire l'éviction par le navigateur
+    const AiVault = {
+      _mem: {},
+      _dbPromise: null,
+      _dbName: 'wg_ai_vault_v1',
+      _storeName: 'credentials',
+      _cacheName: 'wg-ai-persistent-keys-v1',
+      _cacheUrl: 'https://williamguindon.me/_ai_vault_backup.json',
+
+      _getDb: function () {
+        if (this._dbPromise) return this._dbPromise;
+        if (typeof indexedDB === 'undefined') return Promise.resolve(null);
+        this._dbPromise = new Promise((resolve) => {
+          try {
+            const req = indexedDB.open(this._dbName, 1);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains(this._storeName)) {
+                db.createObjectStore(this._storeName, { keyPath: 'key' });
+              }
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = () => resolve(null);
+          } catch (_) {
+            resolve(null);
+          }
+        });
+        return this._dbPromise;
+      },
+
+      init: async function (onRestoredCallback) {
+        try {
+          if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist().catch(() => {});
+          }
+        } catch (_) {}
+
+        const knownKeys = [
+          'byo_provider',
+          'byo_gemini_key',
+          'byo_openai_key',
+          'byo_claude_key',
+          'byo_mistral_key',
+          'byo_openrouter_key',
+          'byo_huggingface_key',
+          'byo_ollama_url',
+          'byo_lmstudio_url'
+        ];
+        knownKeys.forEach((k) => {
+          try {
+            const val = localStorage.getItem(k);
+            if (val) this._mem[k] = val;
+          } catch (_) {}
+        });
+
+        let restoredAny = false;
+
+        // 1. Restaurer depuis IndexedDB si localStorage a été vidé
+        try {
+          const db = await this._getDb();
+          if (db) {
+            await new Promise((res) => {
+              try {
+                const tx = db.transaction([this._storeName], 'readonly');
+                const store = tx.objectStore(this._storeName);
+                const req = store.getAll();
+                req.onsuccess = () => {
+                  const items = req.result || [];
+                  items.forEach((item) => {
+                    if (item && item.key && item.val) {
+                      if (!this._mem[item.key]) {
+                        this._mem[item.key] = item.val;
+                        try { localStorage.setItem(item.key, item.val); } catch (_) {}
+                        restoredAny = true;
+                      }
+                    }
+                  });
+                  res();
+                };
+                req.onerror = () => res();
+              } catch (_) {
+                res();
+              }
+            });
+          }
+        } catch (_) {}
+
+        // 2. Restaurer depuis CacheStorage en complément
+        try {
+          if (typeof caches !== 'undefined') {
+            const cache = await caches.open(this._cacheName);
+            const resp = await cache.match(this._cacheUrl);
+            if (resp) {
+              const data = await resp.json();
+              if (data && typeof data === 'object') {
+                Object.keys(data).forEach((k) => {
+                  if (data[k] && !this._mem[k]) {
+                    this._mem[k] = data[k];
+                    try { localStorage.setItem(k, data[k]); } catch (_) {}
+                    restoredAny = true;
+                  }
+                });
+              }
+            }
+          }
+        } catch (_) {}
+
+        this._syncDeep();
+
+        if (restoredAny && typeof onRestoredCallback === 'function') {
+          try { onRestoredCallback(); } catch (_) {}
+        }
+      },
+
+      get: function (key) {
+        if (!key) return '';
+        if (this._mem[key]) return this._mem[key];
+        try {
+          const v = localStorage.getItem(key);
+          if (v) {
+            this._mem[key] = v;
+            return v;
+          }
+        } catch (_) {}
+        return '';
+      },
+
+      set: function (key, val) {
+        if (!key) return;
+        val = (val || '').trim();
+        this._mem[key] = val;
+        try {
+          localStorage.setItem(key, val);
+        } catch (_) {}
+        this._syncDeep();
+      },
+
+      remove: function (key) {
+        if (!key) return;
+        delete this._mem[key];
+        try {
+          localStorage.removeItem(key);
+        } catch (_) {}
+        this._removeFromDeep(key);
+      },
+
+      _syncDeep: async function () {
+        try {
+          const db = await this._getDb();
+          if (db) {
+            const tx = db.transaction([this._storeName], 'readwrite');
+            const store = tx.objectStore(this._storeName);
+            Object.keys(this._mem).forEach((k) => {
+              if (this._mem[k]) {
+                store.put({ key: k, val: this._mem[k], updated: Date.now() });
+              }
+            });
+          }
+        } catch (_) {}
+
+        try {
+          if (typeof caches !== 'undefined' && typeof Response !== 'undefined') {
+            const cache = await caches.open(this._cacheName);
+            const blob = new Blob([JSON.stringify(this._mem)], { type: 'application/json' });
+            const resp = new Response(blob, {
+              status: 200,
+              headers: { 'Content-Type': 'application/json', 'X-Saved-At': new Date().toISOString() }
+            });
+            await cache.put(this._cacheUrl, resp);
+          }
+        } catch (_) {}
+      },
+
+      _removeFromDeep: async function (key) {
+        try {
+          const db = await this._getDb();
+          if (db) {
+            const tx = db.transaction([this._storeName], 'readwrite');
+            const store = tx.objectStore(this._storeName);
+            store.delete(key);
+          }
+        } catch (_) {}
+
+        try {
+          if (typeof caches !== 'undefined' && typeof Response !== 'undefined') {
+            const cache = await caches.open(this._cacheName);
+            const blob = new Blob([JSON.stringify(this._mem)], { type: 'application/json' });
+            const resp = new Response(blob, {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+            await cache.put(this._cacheUrl, resp);
+          }
+        } catch (_) {}
+      }
+    };
+
     const AI_PROVIDERS = {
       default: {
         name: 'Assistant officiel du site (Gratuit / Par défaut)',
@@ -462,6 +665,20 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           user-select: auto !important;
           -webkit-touch-callout: default !important;
         }
+        /* Masquer strictement tout dialogue ou champ de saisie de clé interne à Deep Chat */
+        deep-chat-key-modal,
+        .key-modal,
+        [class*="key-modal"],
+        .direct-connection-modal,
+        .key-verification-view,
+        .connection-modal {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          height: 0 !important;
+          overflow: hidden !important;
+        }
       `,
       style: {
         borderRadius: '8px',
@@ -605,69 +822,168 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           }
         };
       } else if (providerKey === 'gemini') {
-        const key = localStorage.getItem('byo_gemini_key') || '';
-        deepChatEl.directConnection = {
-          gemini: {
-            key: key,
-            chat: {
-              model: 'gemini-1.5-flash',
-              system_instruction: { parts: [{ text: DOSSIER_CONTEXT }] }
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour clavarder avec Google Gemini, veuillez entrer votre clé API dans le champ en haut (« Clé API ») puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste 100 % locale et est conservée durablement dans votre navigateur (résiste au nettoyage des cookies)."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre clé API Google Gemini dans le champ en haut puis cliquer sur « Connecter »."
+              });
             }
-          }
-        };
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "Google Gemini connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
+          };
+          deepChatEl.directConnection = {
+            gemini: {
+              key: key,
+              chat: {
+                model: 'gemini-1.5-flash',
+                system_instruction: { parts: [{ text: DOSSIER_CONTEXT }] }
+              }
+            }
+          };
+        }
       } else if (providerKey === 'openai') {
-        const key = localStorage.getItem('byo_openai_key') || '';
-        deepChatEl.directConnection = {
-          openAI: {
-            key: key,
-            chat: {
-              model: 'gpt-4o-mini',
-              system_prompt: DOSSIER_CONTEXT
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour clavarder avec OpenAI (GPT-4o), veuillez saisir votre clé API (sk-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé est mémorisée de façon persistante dans votre navigateur."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre clé API OpenAI dans le champ en haut puis cliquer sur « Connecter »."
+              });
             }
-          }
-        };
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "OpenAI connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
+          };
+          deepChatEl.directConnection = {
+            openAI: {
+              key: key,
+              chat: {
+                model: 'gpt-4o-mini',
+                system_prompt: DOSSIER_CONTEXT
+              }
+            }
+          };
+        }
       } else if (providerKey === 'claude') {
-        const key = localStorage.getItem('byo_claude_key') || '';
-        deepChatEl.directConnection = {
-          claude: {
-            key: key,
-            chat: {
-              model: 'claude-3-5-sonnet-20240620',
-              system_prompt: DOSSIER_CONTEXT
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour clavarder avec Anthropic Claude, veuillez saisir votre clé API (sk-ant-...) dans le champ en haut puis cliquer sur « Connecter ».\n\n🔒 Votre clé reste locale et sécurisée."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre clé API Anthropic Claude dans le champ en haut puis cliquer sur « Connecter »."
+              });
             }
-          }
-        };
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "Anthropic Claude connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
+          };
+          deepChatEl.directConnection = {
+            claude: {
+              key: key,
+              chat: {
+                model: 'claude-3-5-sonnet-20240620',
+                system_prompt: DOSSIER_CONTEXT
+              }
+            }
+          };
+        }
       } else if (providerKey === 'mistral') {
-        const key = localStorage.getItem('byo_mistral_key') || '';
-        deepChatEl.directConnection = {
-          mistral: {
-            key: key,
-            chat: {
-              model: 'mistral-small-latest'
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour clavarder avec Mistral AI, veuillez renseigner votre clé API dans le champ en haut puis cliquer sur « Connecter »."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre clé API Mistral AI dans le champ en haut puis cliquer sur « Connecter »."
+              });
             }
-          }
-        };
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "Mistral AI connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
+          };
+          deepChatEl.directConnection = {
+            mistral: {
+              key: key,
+              chat: {
+                model: 'mistral-small-latest'
+              }
+            }
+          };
+        }
       } else if (providerKey === 'openrouter') {
-        const key = localStorage.getItem('byo_openrouter_key') || '';
-        deepChatEl.directConnection = {
-          openAI: {
-            key: key,
-            chat: {
-              model: 'meta-llama/llama-3.3-70b-instruct',
-              system_prompt: DOSSIER_CONTEXT
-            },
-            url: 'https://openrouter.ai/api/v1/chat/completions'
-          }
-        };
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour clavarder avec OpenRouter, veuillez renseigner votre clé API (sk-or-...) dans le champ en haut puis cliquer sur « Connecter »."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre clé API OpenRouter dans le champ en haut puis cliquer sur « Connecter »."
+              });
+            }
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "OpenRouter connecté. Posez vos questions sur le dossier SEM-26-003, la Grande Tourbière de Blainville ou la Loi 93."
+          };
+          deepChatEl.directConnection = {
+            openAI: {
+              key: key,
+              chat: {
+                model: 'meta-llama/llama-3.3-70b-instruct',
+                system_prompt: DOSSIER_CONTEXT
+              },
+              url: 'https://openrouter.ai/api/v1/chat/completions'
+            }
+          };
+        }
       } else if (providerKey === 'huggingface') {
-        const key = localStorage.getItem('byo_huggingface_key') || '';
-        deepChatEl.directConnection = {
-          huggingFace: {
-            key: key
-          }
-        };
+        const key = AiVault.get(prov.keyStorage);
+        if (!key) {
+          deepChatEl.introMessage = {
+            text: "Pour utiliser l'Inference API de Hugging Face, veuillez saisir votre token (hf_...) dans le champ en haut puis cliquer sur « Connecter »."
+          };
+          deepChatEl.request = {
+            handler: async (_body, signals) => {
+              signals.onResponse({
+                error: "Veuillez renseigner votre token Hugging Face dans le champ en haut puis cliquer sur « Connecter »."
+              });
+            }
+          };
+        } else {
+          deepChatEl.introMessage = {
+            text: "Hugging Face Inference connecté. Posez vos questions sur le dossier SEM-26-003."
+          };
+          deepChatEl.directConnection = {
+            huggingFace: {
+              key: key
+            }
+          };
+        }
       } else if (providerKey === 'ollama') {
-        const url = localStorage.getItem('byo_ollama_url') || 'http://localhost:11434';
+        const url = AiVault.get(prov.urlStorage) || prov.defaultUrl;
+        deepChatEl.introMessage = {
+          text: `Instance Ollama locale ciblée sur ${url}.\n\nAssurez-vous qu'Ollama est lancé avec OLLAMA_ORIGINS="*".`
+        };
         deepChatEl.directConnection = {
           ollama: {
             url: url,
@@ -678,8 +994,11 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           }
         };
       } else if (providerKey === 'lmstudio') {
-        const rawUrl = localStorage.getItem('byo_lmstudio_url') || 'http://localhost:1234';
+        const rawUrl = AiVault.get(prov.urlStorage) || prov.defaultUrl;
         const endpoint = rawUrl.replace(/\/+$/, '') + '/v1/chat/completions';
+        deepChatEl.introMessage = {
+          text: `Instance LM Studio locale ciblée sur ${rawUrl}.\n\nAssurez-vous que le serveur local LM Studio et le support CORS sont activés.`
+        };
         deepChatEl.directConnection = {
           openAI: {
             url: endpoint,
@@ -982,7 +1301,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (forgetBtn) forgetBtn.style.display = 'inline-block';
           noticeEl.style.display = 'block';
           keyInput.placeholder = prov.placeholder || 'Clé API';
-          const savedKey = localStorage.getItem(prov.keyStorage) || '';
+          const savedKey = AiVault.get(prov.keyStorage) || '';
           keyInput.value = savedKey;
           if (keyLink) {
             if (prov.keyUrl) {
@@ -994,11 +1313,11 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             }
           }
           if (isFeedback) {
-            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Clé API connectée et mémorisée localement.</span>';
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Clé API connectée et enregistrée en mémoire permanente.</span>';
           } else if (savedKey) {
-            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Clé configurée en mémoire locale.</span> ' + prov.notice;
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Clé configurée et protégée en mémoire permanente.</span> ' + prov.notice;
           } else {
-            noticeEl.innerHTML = '<span style="color:#f59e0b;font-weight:600;">⚠ Clé requise :</span> ' + prov.notice;
+            noticeEl.innerHTML = '<span style="color:#f59e0b;font-weight:600;">⚠ Clé requise ci-dessus :</span> ' + prov.notice;
           }
         } else if (prov.type === 'url') {
           keyGroup.style.display = 'none';
@@ -1007,7 +1326,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (forgetBtn) forgetBtn.style.display = 'inline-block';
           noticeEl.style.display = 'block';
           urlInput.placeholder = prov.placeholder || 'http://localhost:11434';
-          const savedUrl = localStorage.getItem(prov.urlStorage) || prov.defaultUrl;
+          const savedUrl = AiVault.get(prov.urlStorage) || prov.defaultUrl;
           urlInput.value = savedUrl;
           if (urlLink) {
             if (prov.keyUrl) {
@@ -1019,7 +1338,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
             }
           }
           if (isFeedback) {
-            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Endpoint connecté et mémorisé.</span>';
+            noticeEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Endpoint connecté et mémorisé en mémoire permanente.</span>';
           } else {
             noticeEl.innerHTML = prov.notice;
           }
@@ -1096,12 +1415,25 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
         }, true);
       }
 
-      let currentProvider = localStorage.getItem('byo_provider') || 'default';
+      let currentProvider = AiVault.get('byo_provider') || 'default';
       if (!AI_PROVIDERS[currentProvider]) currentProvider = 'default';
       if (providerSelect) {
         providerSelect.value = currentProvider;
         updateToolbarUI(currentProvider);
       }
+
+      // Initialiser le coffre multi-stockage persistant avec auto-restauration
+      AiVault.init(() => {
+        const restoredProvider = AiVault.get('byo_provider');
+        if (restoredProvider && AI_PROVIDERS[restoredProvider]) {
+          currentProvider = restoredProvider;
+          if (providerSelect) providerSelect.value = currentProvider;
+        }
+        updateToolbarUI(currentProvider);
+        if (deepChatInstance || customElements.get('deep-chat')) {
+          mountDeepChat(currentProvider);
+        }
+      });
 
       ensureDeepChatScript().then((available) => {
         if (available && customElements.get('deep-chat')) {
@@ -1119,10 +1451,34 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       if (providerSelect) {
         providerSelect.addEventListener('change', () => {
           currentProvider = providerSelect.value;
-          localStorage.setItem('byo_provider', currentProvider);
+          AiVault.set('byo_provider', currentProvider);
           updateToolbarUI(currentProvider);
           if (deepChatInstance || customElements.get('deep-chat')) {
             mountDeepChat(currentProvider);
+          }
+        });
+      }
+
+      // Mémorisation immédiate en cours de frappe ou collage dans le champ en haut
+      if (keyInput) {
+        keyInput.addEventListener('input', () => {
+          const prov = AI_PROVIDERS[currentProvider];
+          if (prov && prov.type === 'key' && prov.keyStorage) {
+            const val = (keyInput.value || '').trim();
+            if (val) {
+              AiVault.set(prov.keyStorage, val);
+            }
+          }
+        });
+      }
+      if (urlInput) {
+        urlInput.addEventListener('input', () => {
+          const prov = AI_PROVIDERS[currentProvider];
+          if (prov && prov.type === 'url' && prov.urlStorage) {
+            const val = (urlInput.value || '').trim();
+            if (val) {
+              AiVault.set(prov.urlStorage, val);
+            }
           }
         });
       }
@@ -1149,15 +1505,15 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (prov.type === 'key') {
             const val = (keyInput.value || '').trim();
             if (!val) {
-              alert('Veuillez renseigner une clé API valide avant de connecter.');
+              alert('Veuillez renseigner une clé API dans le champ en haut avant de connecter.');
               return;
             }
-            localStorage.setItem(prov.keyStorage, val);
+            AiVault.set(prov.keyStorage, val);
           } else if (prov.type === 'url') {
             const val = (urlInput.value || '').trim() || prov.defaultUrl;
-            localStorage.setItem(prov.urlStorage, val);
+            AiVault.set(prov.urlStorage, val);
           }
-          localStorage.setItem('byo_provider', currentProvider);
+          AiVault.set('byo_provider', currentProvider);
           updateToolbarUI(currentProvider, true);
           if (deepChatInstance || customElements.get('deep-chat')) {
             mountDeepChat(currentProvider);
@@ -1170,10 +1526,10 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           const prov = AI_PROVIDERS[currentProvider];
           if (!prov) return;
           if (prov.type === 'key' && prov.keyStorage) {
-            localStorage.removeItem(prov.keyStorage);
+            AiVault.remove(prov.keyStorage);
             if (keyInput) keyInput.value = '';
           } else if (prov.type === 'url' && prov.urlStorage) {
-            localStorage.removeItem(prov.urlStorage);
+            AiVault.remove(prov.urlStorage);
             if (urlInput) urlInput.value = prov.defaultUrl || '';
           }
           updateToolbarUI(currentProvider, false);
