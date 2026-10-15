@@ -18,14 +18,24 @@ const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
 const ALL_URLS = [
   `https://${HOST}/`,
-  `https://${HOST}/enquete-partis.html`,
+  `https://${HOST}/live.html`,
+  `https://${HOST}/dossier-journalistes.html`,
   `https://${HOST}/communiques.html`,
   `https://${HOST}/presse.html`,
   `https://${HOST}/stablex.html`,
   `https://${HOST}/contamination.html`,
   `https://${HOST}/loi-93.html`,
   `https://${HOST}/registre.html`,
-  `https://${HOST}/live.html`,
+  `https://${HOST}/enquete-partis.html`,
+  `https://${HOST}/apparitions-publiques.html`,
+  `https://${HOST}/apercu.html`,
+  `https://${HOST}/autochtone.html`,
+  `https://${HOST}/edition-speciale-reconciliation.html`,
+  `https://${HOST}/agir.html`,
+  `https://${HOST}/statut-mineur.html`,
+  `https://${HOST}/age.html`,
+  `https://${HOST}/adultisme.html`,
+  `https://${HOST}/vie-privee-parents.html`,
   `https://${HOST}/politiques.html`,
   `https://${HOST}/deontologie.html`,
   `https://${HOST}/independance.html`,
@@ -35,28 +45,25 @@ const ALL_URLS = [
   `https://${HOST}/experts.html`,
   `https://${HOST}/tracabilite.html`,
   `https://${HOST}/opsec.html`,
-  `https://${HOST}/statut-mineur.html`,
-  `https://${HOST}/vie-privee-parents.html`,
+  `https://${HOST}/dependances-licences.html`,
   `https://${HOST}/netiquette.html`,
   `https://${HOST}/ai.html`,
   `https://${HOST}/txt.html`,
+  `https://${HOST}/status.json`,
   `https://${HOST}/llms.txt`,
   `https://${HOST}/llms-full.txt`,
   `https://${HOST}/feed.xml`,
   `https://${HOST}/sitemap.xml`,
-  `https://${HOST}/sitemap-news.xml`
+  `https://${HOST}/sitemap-news.xml`,
+  `https://${HOST}/.well-known/agent-skills/index.json`
 ];
 
 const WAYBACK_URLS = [
   `https://${HOST}/`,
-  `https://${HOST}/stablex.html`,
-  `https://${HOST}/contamination.html`,
-  `https://${HOST}/loi-93.html`,
-  `https://${HOST}/enquete-partis.html`,
-  `https://${HOST}/communiques.html`,
-  `https://${HOST}/presse.html`,
-  `https://${HOST}/llms.txt`,
+  `https://${HOST}/live.html`,
+  `https://${HOST}/dossier-journalistes.html`,
   `https://${HOST}/llms-full.txt`,
+  `https://${HOST}/status.json`,
   `https://${HOST}/feed.xml`
 ];
 
@@ -150,9 +157,15 @@ async function main() {
   const bingIndexNow = await pingIndexNow('https://www.bing.com/indexnow');
   console.log(`   ➜ bing.com/indexnow : HTTP ${bingIndexNow.status} ${bingIndexNow.error ? `(${bingIndexNow.error})` : ''}`);
 
+  const yandexIndexNow = await pingIndexNow('https://yandex.com/indexnow');
+  console.log(`   ➜ yandex.com/indexnow : HTTP ${yandexIndexNow.status} ${yandexIndexNow.error ? `(${yandexIndexNow.error})` : ''}`);
+
   console.log('\n📰 [2/4] Notification WebSub / PubSubHubbub (Google News, agrégateurs temps réel)...');
   const googleHub = await pingWebSub('https://pubsubhubbub.appspot.com/publish', `https://${HOST}/feed.xml`);
-  console.log(`   ➜ Google WebSub Hub (pubsubhubbub.appspot.com) : HTTP ${googleHub.status} ${googleHub.error ? `(${googleHub.error})` : ''}`);
+  console.log(`   ➜ Google WebSub Hub (feed.xml) : HTTP ${googleHub.status} ${googleHub.error ? `(${googleHub.error})` : ''}`);
+
+  const googleNewsHub = await pingWebSub('https://pubsubhubbub.appspot.com/publish', `https://${HOST}/sitemap-news.xml`);
+  console.log(`   ➜ Google WebSub Hub (sitemap-news.xml) : HTTP ${googleNewsHub.status} ${googleNewsHub.error ? `(${googleNewsHub.error})` : ''}`);
 
   const superfeedrHub = await pingWebSub('https://pubsubhubbub.superfeedr.com/hub/publish', `https://${HOST}/feed.xml`);
   console.log(`   ➜ Superfeedr Hub (pubsubhubbub.superfeedr.com) : HTTP ${superfeedrHub.status} ${superfeedrHub.error ? `(${superfeedrHub.error})` : ''}`);
@@ -163,9 +176,11 @@ async function main() {
 
   console.log('\n🏛️ [4/4] Archivage Wayback Machine (Instantanés pour Common Crawl / Datasets IA)...');
   for (const pageUrl of WAYBACK_URLS) {
-    const wb = await saveWayback(pageUrl);
-    console.log(`   ➜ ${pageUrl.replace(`https://${HOST}`, '') || '/'} : HTTP ${wb.status} ${wb.error ? `(${wb.error})` : ''}`);
-    await delay(1200); // Respect du rate limit de l'Archive
+    try {
+      const wb = await saveWayback(pageUrl);
+      console.log(`   ➜ ${pageUrl.replace(`https://${HOST}`, '') || '/'} : HTTP ${wb.status} ${wb.error ? `(${wb.error})` : ''}`);
+    } catch (_) {}
+    await delay(1000); // Respect du rate limit de l'Archive
   }
 
   console.log('\n✅ Toutes les notifications IA, Google Actualités et moteurs ont été transmises avec succès.');

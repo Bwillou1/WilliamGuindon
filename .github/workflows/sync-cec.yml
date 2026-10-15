@@ -29,4 +29,9 @@ jobs:
           git config --global user.name "CCE Sync Bot"
           git config --global user.email "bot@github-actions.local"
           git add status.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(sync): mise à jour automatique du statut CCE [skip ci]" && git push)
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "chore(sync): mise à jour automatique du statut CCE [skip ci]"
+            git push
+            echo "Statut CCE modifié : notification immédiate des IA et moteurs..."
+            node scripts/ping-search-ai.js
+          fi

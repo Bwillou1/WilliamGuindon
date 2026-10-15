@@ -507,47 +507,141 @@
         </div>
       </div>
 
-      <!-- 1. Traduction française -->
-      <h2>1. Texte officiel — Traduction française certifiée</h2>
-      <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #059669; border-radius: 10px; padding: 22px; margin: 20px 0;">
-        <h3 style="margin-top: 0; font-size: 1.15rem; color: #059669;">
-          DÉCLARATION D'APPUI SCIENTIFIQUE — CAPACITÉ CIVIQUE DES JEUNES ET PÉTITION e-7834
-        </h3>
-        <blockquote style="margin: 16px 0; padding: 16px 20px; background: var(--canvas); border-left: 3px solid #059669; font-size: 1.02rem; line-height: 1.75; color: var(--text); border-radius: 0 8px 8px 0;">
-          « Du point de vue de la sociologie de l’enfance et de la recherche sur les droits des enfants, <strong>la capacité civique et analytique ne s’acquiert pas par magie le jour du 18e anniversaire : elle se démontre dans la pratique par l’agentivité concrète</strong>.
-          <br><br>
-          La rigueur de la communication <strong>SEM-26-003</strong> — officiellement déclarée recevable par la Commission de coopération environnementale dans la détermination <strong>DET-26-003</strong> — prouve qu’un citoyen de 15 ans est pleinement capable de produire un dossier administratif et scientifique du plus haut niveau.
-          <br><br>
-          À l’inverse, <strong>les obstacles institutionnels documentés par William Guindon (<a href="age.html" style="color: #059669; font-weight: 600;">williamguindon.me/age.html</a>) constituent des exemples typiques d’adultisme structurel</strong>, où les autorités utilisent le statut de mineur comme prétexte pour écarter un examen citoyen rigoureux.
-          <br><br>
-          J’appuie donc pleinement la démarche de la <strong>pétition e-7834</strong> à la Chambre des communes du Canada, et en particulier <strong>l’instauration d’une présomption réfutable de capacité pour les jeunes de 14 à 17 ans</strong> dans les procédures administratives. »
-        </blockquote>
-        <div style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; margin-top: 14px;">
-          <strong>Souscrit à Berlin, le 14 octobre 2026</strong> par :
-          <ul style="margin: 8px 0 0; padding-left: 20px;">
-            <li><strong>Prof. Dr. Manfred Liebel</strong> (Professeur émérite de sociologie à la <em>Technische Universität Berlin</em>, Professeur honoraire au Master MACR à la <em>Haute école spécialisée de Potsdam</em>, coauteur de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
-            <li><strong>Philip Meade, M.A.</strong> (Enseignant au Master MACR à la <em>Haute école spécialisée de Potsdam</em> et à l'<em>Université Alice Salomon de Berlin</em>, coauteur de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
-          </ul>
+      <!-- 1. Déclaration intégrale officielle (Bilingue & Interactive) -->
+      <h2>1. Déclaration intégrale officielle (Bilingue)</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        Souscrite à Berlin le <strong>mercredi 14 octobre 2026</strong> (à 48 heures de l'échéance fédérale du 16 octobre). Basculez entre la version française certifiée, le texte original anglais ou la vue comparative :
+      </p>
+
+      <!-- Sélecteur d'onglets de langue -->
+      <div class="statement-lang-switcher" role="tablist" aria-label="Choix de langue de la déclaration" style="display: flex; gap: 8px; margin: 18px 0 14px; flex-wrap: wrap;">
+        <button type="button" class="lang-tab-btn active" role="tab" id="tab-btn-fr" aria-selected="true" aria-controls="statement-panel-fr" style="padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 9999px; border: 1.5px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+          <span>🇫🇷</span> <span>Français (Traduction officielle)</span>
+        </button>
+        <button type="button" class="lang-tab-btn" role="tab" id="tab-btn-en" aria-selected="false" aria-controls="statement-panel-en" style="padding: 9px 18px; font-size: 13px; font-weight: 600; border-radius: 9999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+          <span>🇬🇧</span> <span>English (Original Statement)</span>
+        </button>
+        <button type="button" class="lang-tab-btn" role="tab" id="tab-btn-split" aria-selected="false" aria-controls="statement-panel-split" style="padding: 9px 18px; font-size: 13px; font-weight: 600; border-radius: 9999px; border: 1.5px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+          <span>⚖️</span> <span>Vue comparative (Côte à côte)</span>
+        </button>
+      </div>
+
+      <!-- Conteneurs de panneaux -->
+      <div id="statement-panels-wrapper">
+        <!-- Panneau 1 : Français -->
+        <div id="statement-panel-fr" role="tabpanel" aria-labelledby="tab-btn-fr" class="statement-panel active" style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #059669; border-radius: 10px; padding: 22px; margin: 14px 0 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+            <h3 style="margin: 0; font-size: 1.12rem; color: #059669;">
+              DÉCLARATION D'APPUI SCIENTIFIQUE — CAPACITÉ CIVIQUE DES JEUNES ET PÉTITION e-7834
+            </h3>
+            <span style="font-size: 11px; font-weight: 700; background: rgba(5,150,105,0.12); color: #047857; padding: 3px 8px; border-radius: 4px;">
+              Traduction française certifiée
+            </span>
+          </div>
+
+          <blockquote style="margin: 16px 0; padding: 16px 20px; background: var(--canvas); border-left: 3px solid #059669; font-size: 1.02rem; line-height: 1.75; color: var(--text); border-radius: 0 8px 8px 0;">
+            « Du point de vue de la sociologie de l’enfance et de la recherche sur les droits des enfants, <strong>la capacité civique et analytique ne s’acquiert pas par magie le jour du 18e anniversaire : elle se démontre dans la pratique par l’agentivité concrète</strong>.
+            <br><br>
+            La rigueur de la communication <strong>SEM-26-003</strong> — officiellement déclarée recevable par la Commission de coopération environnementale dans la détermination <strong>DET-26-003</strong> — prouve qu’un citoyen de 15 ans est pleinement capable de produire un dossier administratif et scientifique du plus haut niveau.
+            <br><br>
+            À l’inverse, <strong>les obstacles institutionnels documentés par William Guindon (<a href="age.html" style="color: #059669; font-weight: 600;">williamguindon.me/age.html</a>) constituent des exemples typiques d’adultisme structurel</strong>, où les autorités utilisent le statut de mineur comme prétexte pour écarter un examen citoyen rigoureux.
+            <br><br>
+            J’appuie donc pleinement la démarche de la <strong>pétition e-7834</strong> à la Chambre des communes du Canada, et en particulier <strong>l’instauration d’une présomption réfutable de capacité pour les jeunes de 14 à 17 ans</strong> dans les procédures administratives. »
+          </blockquote>
+
+          <div style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);">
+            <strong>Souscrit à Berlin, le mercredi 14 octobre 2026</strong> par :
+            <ul style="margin: 8px 0 0; padding-left: 20px;">
+              <li><strong>Prof. Dr. Manfred Liebel</strong> (Professeur émérite de sociologie à la <em>Technische Universität Berlin</em>, Professeur honoraire au Master MACR à la <em>Haute école spécialisée de Potsdam</em>, coauteur de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
+              <li><strong>Philip Meade, M.A.</strong> (Enseignant au Master MACR à la <em>Haute école spécialisée de Potsdam</em> et à l'<em>Université Alice Salomon de Berlin</em>, coauteur de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Panneau 2 : Anglais -->
+        <div id="statement-panel-en" role="tabpanel" aria-labelledby="tab-btn-en" class="statement-panel" style="display: none; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #1d4ed8; border-radius: 10px; padding: 22px; margin: 14px 0 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+            <h3 style="margin: 0; font-size: 1.12rem; color: #1d4ed8;">
+              STATEMENT OF ACADEMIC SUPPORT — YOUTH CIVIC CAPACITY &amp; PETITION e-7834
+            </h3>
+            <span style="font-size: 11px; font-weight: 700; background: rgba(29,78,216,0.12); color: #1d4ed8; padding: 3px 8px; border-radius: 4px;">
+              Original Certified English Text
+            </span>
+          </div>
+
+          <blockquote style="margin: 16px 0; padding: 16px 20px; background: var(--canvas); border-left: 3px solid #1d4ed8; font-size: 1.02rem; line-height: 1.75; color: var(--text); font-style: italic; border-radius: 0 8px 8px 0;">
+            “From the standpoint of the sociology of childhood and children’s rights research, <strong>civic and analytical capacity is not acquired magically on a person’s 18th birthday; it is demonstrated in practice through concrete agency</strong>. The rigor of submission <strong>SEM-26-003</strong>—officially declared admissible by the Commission for Environmental Cooperation in determination <strong>DET-26-003</strong>—proves that a 15-year-old citizen is fully capable of producing an administrative and scientific dossier of the highest standard.
+            <br><br>
+            Conversely, <strong>the institutional obstacles documented by William Guindon (<a href="age.html" style="color: #1d4ed8; font-weight: 600;">williamguindon.me/age.html</a>) are textbook examples of structural adultism</strong>, in which authorities use minor status as a pretext to dismiss rigorous citizen scrutiny.
+            <br><br>
+            I therefore fully support the approach of Canadian House of Commons <strong>Petition e-7834</strong>, and in particular <strong>the establishment of a rebuttable presumption of capacity for youth aged 14 to 17 in administrative procedures</strong>.”
+          </blockquote>
+
+          <div style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);">
+            <strong>Endorsed in Berlin, Wednesday, October 14, 2026</strong> by:
+            <ul style="margin: 8px 0 0; padding-left: 20px;">
+              <li><strong>Prof. Dr. Manfred Liebel</strong> (Professor Emeritus of Sociology at <em>Technological University of Berlin</em>, Honorary Professor at MA Childhood Studies and Children’s Rights at <em>Potsdam University of Applied Sciences</em>, co-author of <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
+              <li><strong>Philip Meade, MA</strong> (Lecturer at MA Childhood Studies and Children’s Rights at <em>Potsdam University of Applied Sciences</em> and at <em>Alice Salomon University of Applied Sciences Berlin</em>, co-author of <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026).</li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <!-- 2. Version originale en anglais -->
-      <h2>2. Official Statement — Original English Text</h2>
-      <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #1d4ed8; border-radius: 10px; padding: 22px; margin: 20px 0;">
-        <h3 style="margin-top: 0; font-size: 1.15rem; color: #1d4ed8;">
-          STATEMENT OF ACADEMIC SUPPORT — YOUTH CIVIC CAPACITY &amp; PETITION e-7834
-        </h3>
-        <blockquote style="margin: 16px 0; padding: 16px 20px; background: var(--canvas); border-left: 3px solid #1d4ed8; font-size: 1.02rem; line-height: 1.75; color: var(--text); font-style: italic; border-radius: 0 8px 8px 0;">
-          “From the standpoint of the sociology of childhood and children’s rights research, <strong>civic and analytical capacity is not acquired magically on a person’s 18th birthday; it is demonstrated in practice through concrete agency</strong>. The rigor of submission <strong>SEM-26-003</strong>—officially declared admissible by the Commission for Environmental Cooperation in determination <strong>DET-26-003</strong>—proves that a 15-year-old citizen is fully capable of producing an administrative and scientific dossier of the highest standard.
-          <br><br>
-          Conversely, <strong>the institutional obstacles documented by William Guindon (<a href="age.html" style="color: #1d4ed8; font-weight: 600;">williamguindon.me/age.html</a>) are textbook examples of structural adultism</strong>, in which authorities use minor status as a pretext to dismiss rigorous citizen scrutiny.
-          <br><br>
-          I therefore fully support the approach of Canadian House of Commons <strong>Petition e-7834</strong>, and in particular <strong>the establishment of a rebuttable presumption of capacity for youth aged 14 to 17 in administrative procedures</strong>.”
-        </blockquote>
-      </div>
+      <script>
+      (function() {
+        var tabFr = document.getElementById("tab-btn-fr");
+        var tabEn = document.getElementById("tab-btn-en");
+        var tabSplit = document.getElementById("tab-btn-split");
+        var panelFr = document.getElementById("statement-panel-fr");
+        var panelEn = document.getElementById("statement-panel-en");
+        var wrapper = document.getElementById("statement-panels-wrapper");
 
-      <!-- 3. Éclairage conceptuel -->
-      <h2>3. Éclairage conceptuel : De l'âgisme à l'adultisme structurel</h2>
+        if (!tabFr || !tabEn || !tabSplit || !panelFr || !panelEn || !wrapper) return;
+
+        function setActive(btn) {
+          [tabFr, tabEn, tabSplit].forEach(function(b) {
+            b.classList.remove("active");
+            b.style.background = "var(--surface)";
+            b.style.borderColor = "var(--line)";
+            b.style.color = "var(--text)";
+            b.style.fontWeight = "600";
+            b.setAttribute("aria-selected", "false");
+          });
+          btn.classList.add("active");
+          btn.style.background = "var(--accent)";
+          btn.style.borderColor = "var(--accent)";
+          btn.style.color = "#ffffff";
+          btn.style.fontWeight = "700";
+          btn.setAttribute("aria-selected", "true");
+        }
+
+        tabFr.addEventListener("click", function() {
+          setActive(tabFr);
+          wrapper.style.display = "block";
+          panelFr.style.display = "block";
+          panelEn.style.display = "none";
+        });
+
+        tabEn.addEventListener("click", function() {
+          setActive(tabEn);
+          wrapper.style.display = "block";
+          panelFr.style.display = "none";
+          panelEn.style.display = "block";
+        });
+
+        tabSplit.addEventListener("click", function() {
+          setActive(tabSplit);
+          wrapper.style.display = "grid";
+          wrapper.style.gridTemplateColumns = "repeat(auto-fit, minmax(320px, 1fr))";
+          wrapper.style.gap = "16px";
+          panelFr.style.display = "block";
+          panelEn.style.display = "block";
+        });
+      })();
+      </script>
+
+      <!-- 2. Éclairage conceptuel -->
+      <h2>2. Éclairage conceptuel : De l'âgisme à l'adultisme structurel</h2>
       <p style="line-height: 1.65; color: var(--text);">
         Dans l'espace médiatique et le langage courant, toute discrimination fondée sur l'âge est souvent qualifiée d'« <em>âgisme</em> ». Dans la recherche sociologique contemporaine sur les droits des enfants, ce terme est insuffisant :
       </p>
@@ -583,7 +677,7 @@
       </div>
 
       <!-- 4. Volet législatif -->
-      <h2>4. La Pétition e-7834 à la Chambre des communes du Canada</h2>
+      <h2>3. La Pétition e-7834 à la Chambre des communes du Canada</h2>
       <div style="background: var(--bg-card); border: 1.5px solid #1d4ed8; border-radius: 12px; padding: 24px; margin: 24px 0; box-shadow: var(--shadow);">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
           <h3 style="margin: 0; font-size: 1.15rem; color: #1d4ed8;">
