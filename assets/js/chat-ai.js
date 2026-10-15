@@ -1141,8 +1141,15 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   <option value="lmstudio">Instance locale LM Studio (localhost:1234)</option>
                   <option value="webllm">WebLLM (100% navigateur WebGPU)</option>
                 </select>
+                <button type="button" id="ai-config-toggle-btn" class="ai-toolbar-toggle-btn" style="display:none;" title="Afficher ou masquer les paramètres du moteur">
+                  <span id="ai-config-toggle-label">⚙️ Clé</span> <span id="ai-config-toggle-arrow">▾</span>
+                </button>
               </div>
-              <div class="ai-provider-config" id="ai-provider-config">
+              <div class="ai-provider-config" id="ai-provider-config" style="display:none;">
+                <div class="ai-config-header">
+                  <span class="ai-config-title">Paramètres du moteur</span>
+                  <button type="button" id="ai-config-close-x" class="ai-config-close-x" aria-label="Fermer ce panneau" title="Fermer ce panneau">✕ Fermer</button>
+                </div>
                 <div class="ai-config-field" id="ai-key-group" style="display:none;">
                   <div class="ai-key-input-wrapper" style="position:relative; display:flex; align-items:center;">
                     <input type="password" id="ai-user-key" class="ai-toolbar-input" placeholder="Clé API" autocomplete="off" style="padding-right:38px; width:100%;">
@@ -1160,6 +1167,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                 <div class="ai-config-notice" id="ai-provider-notice" style="display:none;"></div>
                 <div class="ai-config-actions" id="ai-config-actions" style="display:none;">
                   <button type="button" id="ai-apply-btn" class="ai-toolbar-btn primary">Connecter</button>
+                  <button type="button" id="ai-config-close-btn" class="ai-toolbar-btn secondary" title="Fermer ce panneau">Fermer ✕</button>
                   <button type="button" id="ai-forget-btn" class="ai-toolbar-btn danger" title="Effacer la clé du navigateur">Oublier</button>
                   <button type="button" id="ai-clear-history-btn" class="ai-toolbar-btn secondary" title="Effacer l'historique des échanges mémorisé localement">Effacer l'historique</button>
                 </div>
@@ -1350,6 +1358,13 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       const userInput = document.getElementById('ai-user-input');
       const sendBtn = document.getElementById('ai-send-btn');
       const providerSelect = aiModal.querySelector('#ai-provider');
+      const configPanel = aiModal.querySelector('#ai-provider-config');
+      const configToggleBtn = aiModal.querySelector('#ai-config-toggle-btn');
+      const configToggleLabel = aiModal.querySelector('#ai-config-toggle-label');
+      const configToggleArrow = aiModal.querySelector('#ai-config-toggle-arrow');
+      const configCloseX = aiModal.querySelector('#ai-config-close-x');
+      const configCloseBtn = aiModal.querySelector('#ai-config-close-btn');
+
       const keyGroup = aiModal.querySelector('#ai-key-group');
       const keyInput = aiModal.querySelector('#ai-user-key');
       const urlGroup = aiModal.querySelector('#ai-url-group');
@@ -1361,14 +1376,46 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       const clearHistoryBtn = aiModal.querySelector('#ai-clear-history-btn');
       const deepChatContainer = aiModal.querySelector('#ai-deepchat-container');
 
+      function closeConfigPanel() {
+        if (configPanel) configPanel.style.display = 'none';
+        if (configToggleArrow) configToggleArrow.textContent = '▾';
+      }
+
+      function openConfigPanel() {
+        if (configPanel) configPanel.style.display = 'flex';
+        if (configToggleArrow) configToggleArrow.textContent = '▴';
+      }
+
+      function toggleConfigPanel() {
+        if (!configPanel) return;
+        const isOpen = configPanel.style.display === 'flex' || configPanel.style.display === 'block';
+        if (isOpen) {
+          closeConfigPanel();
+        } else {
+          openConfigPanel();
+        }
+      }
+
+      if (configToggleBtn) {
+        configToggleBtn.addEventListener('click', toggleConfigPanel);
+      }
+      if (configCloseX) {
+        configCloseX.addEventListener('click', closeConfigPanel);
+      }
+      if (configCloseBtn) {
+        configCloseBtn.addEventListener('click', closeConfigPanel);
+      }
+
       let isBusy = false;
       let cooldownInterval = null;
 
-      function updateToolbarUI(providerKey, isFeedback = false) {
+      function updateToolbarUI(providerKey, isFeedback = false, forceOpen = false) {
         const prov = AI_PROVIDERS[providerKey] || AI_PROVIDERS.default;
         const keyLink = aiModal.querySelector('#ai-key-link');
         const urlLink = aiModal.querySelector('#ai-url-link');
         if (actionsEl) actionsEl.style.display = 'flex';
+
+        let hasSavedConfig = false;
 
         if (prov.type === 'key') {
           keyGroup.style.display = 'block';
@@ -1379,6 +1426,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           keyInput.placeholder = prov.placeholder || 'Clé API';
           const savedKey = AiVault.get(prov.keyStorage) || '';
           keyInput.value = savedKey;
+          hasSavedConfig = Boolean(savedKey);
           if (keyLink) {
             if (prov.keyUrl) {
               keyLink.href = prov.keyUrl;
@@ -1404,6 +1452,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           urlInput.placeholder = prov.placeholder || 'http://localhost:11434';
           const savedUrl = AiVault.get(prov.urlStorage) || prov.defaultUrl;
           urlInput.value = savedUrl;
+          hasSavedConfig = Boolean(savedUrl);
           if (urlLink) {
             if (prov.keyUrl) {
               urlLink.href = prov.keyUrl;
@@ -1425,6 +1474,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (forgetBtn) forgetBtn.style.display = 'none';
           noticeEl.style.display = 'block';
           noticeEl.innerHTML = '<span style="color:#38bdf8;font-weight:600;">⚡ WebLLM :</span> ' + prov.notice;
+          hasSavedConfig = true;
         } else {
           keyGroup.style.display = 'none';
           urlGroup.style.display = 'none';
@@ -1432,6 +1482,34 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (forgetBtn) forgetBtn.style.display = 'none';
           noticeEl.style.display = 'block';
           noticeEl.innerHTML = '<span style="color:#10b981;font-weight:600;">✓ Mode officiel :</span> ' + prov.notice;
+          hasSavedConfig = true;
+        }
+
+        // Affichage épuré par défaut : seul le menu déroulant est visible
+        if (providerKey === 'default') {
+          if (configToggleBtn) configToggleBtn.style.display = 'none';
+          closeConfigPanel();
+        } else {
+          if (configToggleBtn) {
+            configToggleBtn.style.display = 'inline-flex';
+            if (hasSavedConfig) {
+              configToggleBtn.className = 'ai-toolbar-toggle-btn has-key';
+              if (configToggleLabel) configToggleLabel.textContent = prov.type === 'key' ? '✓ Clé active' : '✓ Moteur actif';
+            } else {
+              configToggleBtn.className = 'ai-toolbar-toggle-btn needs-key';
+              if (configToggleLabel) configToggleLabel.textContent = '⚙️ Configurer';
+            }
+          }
+
+          if (isFeedback || forceOpen) {
+            openConfigPanel();
+          } else if (hasSavedConfig) {
+            // Par défaut, si configuré, on ne montre que le menu déroulant
+            closeConfigPanel();
+          } else {
+            // Première sélection sans clé : ouvrir pour inviter à la saisie
+            openConfigPanel();
+          }
         }
 
         const modeRow = aiModal.querySelector('#ai-mode-row');
@@ -1629,6 +1707,11 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
           if (deepChatInstance || customElements.get('deep-chat')) {
             mountDeepChat(currentProvider);
           }
+          // Après confirmation de la clé, replier pour laisser place au menu déroulant épuré
+          setTimeout(() => {
+            closeConfigPanel();
+            updateToolbarUI(currentProvider, false);
+          }, 1200);
         });
       }
 
