@@ -53,10 +53,11 @@
   function isCanadaTrafficSurgePeriod() {
     try {
       if (typeof window !== 'undefined' && window.location) {
-        if (window.location.search.includes('surge=1') || window.location.search.includes('preview=tomorrow')) {
+        const s = window.location.search || '';
+        if (s.includes('surge=1') || s.includes('preview=tomorrow') || s.includes('stage2=1') || s.includes('stage2=true') || s.includes('preview=stage2') || s.includes('etape2=1')) {
           return true;
         }
-        if (window.location.search.includes('surge=0') || window.location.search.includes('preview=today')) {
+        if (s.includes('surge=0') || s.includes('preview=today') || s.includes('stage2=0') || s.includes('etape2=0')) {
           return false;
         }
         // Sur localhost / 127.0.0.1, simulation de demain (16 oct.) active par défaut pour prévisualiser l'affluence
@@ -65,8 +66,22 @@
           return true;
         }
       }
-      if (typeof localStorage !== 'undefined' && localStorage.getItem('wg_force_surge') === 'true') {
-        return true;
+      if (typeof localStorage !== 'undefined') {
+        if (localStorage.getItem('wg_force_surge') === 'true' || localStorage.getItem('wg_stage2_active') === 'true') {
+          return true;
+        }
+        const radicalRaw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
+        if (radicalRaw) {
+          const parsed = JSON.parse(radicalRaw);
+          if (parsed && (parsed.stage2StatusActive || parsed.trafficSurgeActive)) {
+            return true;
+          }
+        }
+      }
+      if (typeof window !== 'undefined' && window.__WG_SITE_STATE) {
+        if (window.__WG_SITE_STATE.stage2StatusActive || window.__WG_SITE_STATE.trafficSurgeActive) {
+          return true;
+        }
       }
     } catch (_) {}
     const now = new Date();
@@ -82,7 +97,7 @@
     let floatingBtn = document.querySelector('.floating-ai-btn');
     let aiModal = null;
     let copyAlert = null;
-    const isTrafficSurge = isCanadaTrafficSurgePeriod();
+    let isTrafficSurge = isCanadaTrafficSurgePeriod();
     let currentGroqMode = isTrafficSurge ? 'fast' : 'expert';
 
     if (!floatingBtn) {
@@ -1099,6 +1114,8 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
 
     function initAiModal() {
       if (aiModal) return;
+      isTrafficSurge = isCanadaTrafficSurgePeriod();
+      currentGroqMode = isTrafficSurge ? 'fast' : 'expert';
 
       aiModal = document.createElement('div');
       aiModal.className = 'ai-modal-overlay';
