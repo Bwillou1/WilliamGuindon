@@ -1006,8 +1006,9 @@
   function tickImmediateCountdown() {
     var target = new Date('2026-10-16T00:00:00-04:00').getTime();
     var now = Date.now();
-    var diff = target - now;
-    var isPast = diff <= 0;
+    var sParams = (typeof window !== 'undefined' && window.location && window.location.search) ? window.location.search : '';
+    var isStage2Param = sParams.indexOf('stage2=1') !== -1 || sParams.indexOf('etape2=1') !== -1 || sParams.indexOf('preview=stage2') !== -1 || sParams.indexOf('preview=tomorrow') !== -1 || sParams.indexOf('surge=1') !== -1;
+    var isPast = diff <= 0 || isStage2Param;
     var d = isPast ? 0 : Math.floor(diff / (1000 * 60 * 60 * 24));
     var h = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var m = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
