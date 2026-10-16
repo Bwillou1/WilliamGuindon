@@ -6960,15 +6960,15 @@ html.nav-drawer-open .ai-modal-overlay,
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Avis spécial gestion trafic et économie de quota */
+/* Avis spécial gestion trafic et économie de quota (accordéon compact) */
 .ai-traffic-alert {
   background: rgba(234, 179, 8, 0.08);
   border: 1px solid rgba(234, 179, 8, 0.3);
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
   font-size: 11.5px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--text);
 }
 [data-theme="dark"] .ai-traffic-alert {
@@ -6976,19 +6976,47 @@ html.nav-drawer-open .ai-modal-overlay,
   border-color: rgba(234, 179, 8, 0.35);
   color: #fef3c7;
 }
-.ai-traffic-alert-badge {
+.ai-traffic-alert-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  user-select: none;
+  color: #d97706;
+}
+.ai-traffic-alert-summary::-webkit-details-marker {
+  display: none;
+}
+[data-theme="dark"] .ai-traffic-alert-summary {
+  color: #fbbf24;
+}
+.ai-traffic-summary-left {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 700;
-  color: #d97706;
-  margin-bottom: 4px;
 }
-[data-theme="dark"] .ai-traffic-alert-badge {
-  color: #fbbf24;
+.ai-traffic-toggle-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.ai-traffic-toggle-text::after {
+  content: "Détails ▾";
+}
+.ai-traffic-alert[open] .ai-traffic-toggle-text::after {
+  content: "Réduire ▴";
+}
+.ai-traffic-alert-content {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(234, 179, 8, 0.3);
 }
 .ai-traffic-alert-msg {
-  margin: 4px 0 6px;
+  margin: 2px 0 6px;
   color: var(--text);
 }
 [data-theme="dark"] .ai-traffic-alert-msg {
@@ -7117,7 +7145,56 @@ html.nav-drawer-open .ai-modal-overlay,
     max-height: 100dvh;
     max-height: -webkit-fill-available;
     border-left: none;
-    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)) 16px;
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;
+  }
+  .ai-modal-header {
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+  }
+  .ai-tabs {
+    margin-bottom: 6px;
+    padding: 3px;
+  }
+  .ai-tab-btn {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+  .ai-watermark-strip {
+    font-size: 9.5px;
+    padding: 3px 6px;
+    margin-bottom: 4px;
+    letter-spacing: 0;
+  }
+  .ai-provider-toolbar {
+    padding: 4px 6px;
+    margin-bottom: 4px;
+  }
+  .ai-toolbar-label {
+    font-size: 11px;
+  }
+  .ai-provider-select {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  .ai-mode-btn {
+    font-size: 10px;
+    padding: 4px 5px;
+  }
+  .ai-chat-messages {
+    padding: 6px 2px;
+    gap: 8px;
+  }
+  .ai-chat-bubble {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .ai-quick-pills {
+    margin: 4px 0;
+    gap: 4px;
+  }
+  .ai-pill-btn {
+    font-size: 10.5px;
+    padding: 3px 6px;
   }
 }
 
