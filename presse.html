@@ -637,8 +637,8 @@
             </div>
           </div>
 
-          <!-- Actions : Bouton Mailto direct + Bouton Copier -->
-          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+          <!-- Actions : Bouton Mailto direct + Boutons Copier -->
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
             <a href="mailto:contact@williamguindon.me?subject=%5BACC%C3%88S-PRESSE-SEM26003%5D%20Demande%20formelle%20d%27acc%C3%A8s%20aux%20pi%C3%A8ces%20de%20recherche&amp;body=Bonjour%20William%20Guindon%2C%0A%0APar%20la%20pr%C3%A9sente%2C%20je%20sollicite%20l%27acc%C3%A8s%20au%20coffre%20documentaire%20complet%20et%20aux%20pi%C3%A8ces%20de%20recherche%20relatives%20au%20dossier%20CCE%20SEM-26-003.%0A%0AENGAGEMENT%20PROFESSIONNEL%20%3A%0A1.%20Demande%20formul%C3%A9e%20depuis%20ma%20bo%C3%AEte%20de%20r%C3%A9daction%20aux%20fins%20exclusives%20de%20recherche%20journalistique%20et%20d%27int%C3%A9r%C3%AAt%20public.%0A2.%20Engagement%20formel%20%C3%A0%20ne%20pas%20redistribuer%20ces%20documents%20bruts%20sous%20droit%20d%27auteur%20au%20grand%20public%20%28art.%2029%20de%20la%20Loi%20sur%20le%20droit%20d%27auteur%29.%0A%0ANOTE%20SUR%20L%27ACC%C3%88S%20%3A%0A%E2%80%A2%20Domaines%20m%C3%A9dias%20reconnus%20%3A%20R%C3%A9ception%20automatique%20du%20lien%20s%C3%A9curis%C3%A9%20en%202%20%C3%A0%2030%20minutes.%0A%E2%80%A2%20Adresses%20personnelles%20%28%40gmail%2C%20%40yahoo%2C%20etc.%29%20%3A%20Aucun%20envoi%20automatique%20%28traitement%20manuel%20diff%C3%A9r%C3%A9%29.%0A%0A%5BNE%20RIEN%20MODIFIER%20%E2%80%94%20CL%C3%89%20DE%20ROUTAGE%5D%0ATOKEN%3A%20VERIF-MEDIA-SEM26-AUTOPASS-20261016" 
                class="btn btn-primary" 
                style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 18px; text-decoration: none; background: #059669; border-color: #059669; box-shadow: 0 2px 8px rgba(5,150,105,0.25);"
@@ -647,21 +647,39 @@
             </a>
             <button type="button" 
                     id="btn-copy-press-mail"
-                    onclick="navigator.clipboard.writeText('Objet : [ACCÈS-PRESSE-SEM26003] Demande formelle d\'accès aux pièces de recherche\n\nBonjour William Guindon,\n\nPar la présente, je sollicite l\'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d\'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d\'auteur au grand public (art. 29 de la Loi sur le droit d\'auteur).\n\nNOTE SUR L\'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016').then(()=>{const b=document.getElementById('btn-copy-press-mail');if(b){const orig=b.innerHTML;b.innerHTML='✅ Brouillon exact copié !';b.style.borderColor='#059669';b.style.color='#059669';setTimeout(()=>{b.innerHTML=orig;b.style.borderColor=\'\';b.style.color=\'\';},3000);}})" 
+                    onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Loi sur le droit d'auteur).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(()=>{const b=document.getElementById('btn-copy-press-mail');if(b){const orig=b.innerHTML;b.innerHTML='✅ Corps du message copié !';b.style.borderColor='#059669';b.style.color='#059669';setTimeout(()=>{b.innerHTML=orig;b.style.borderColor='';b.style.color='';},3000);}})" 
                     class="btn btn-ghost" 
                     style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; background: #ffffff; color: #065f46; border: 1.5px solid #10b981; font-size: 12px; font-weight: 700; cursor: pointer;"
-                    title="Copie l'intégralité du sujet et du corps du message si le lien mailto ne réagit pas">
-              📋 Copier le brouillon exact
+                    title="Copie le corps exact du message prêt à être collé">
+              📋 Copier le corps du courriel
+            </button>
+            <button type="button" 
+                    id="btn-copy-press-subj"
+                    onclick="navigator.clipboard.writeText('[ACCÈS-PRESSE-SEM26003] Demande formelle d\'accès aux pièces de recherche').then(()=>{const b=document.getElementById('btn-copy-press-subj');if(b){const orig=b.innerHTML;b.innerHTML='✅ Objet copié !';setTimeout(()=>{b.innerHTML=orig;},2500);}})" 
+                    class="btn btn-ghost" 
+                    style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 8px; background: rgba(5,150,105,0.06); color: #065f46; border: 1px solid rgba(5,150,105,0.25); font-size: 12px; font-weight: 600; cursor: pointer;"
+                    title="Copie l'objet exact du message">
+              🏷️ Copier l'objet
             </button>
           </div>
 
-          <!-- Prévisualisation du texte pour transparence -->
-          <details style="font-size: 11.5px; color: #065f46; background: rgba(255,255,255,0.7); border-radius: 6px; padding: 8px 12px; border: 1px dashed #a7f3d0;">
-            <summary style="cursor: pointer; font-weight: 700;">Afficher le texte exact du brouillon (Objet &amp; Corps)</summary>
-            <pre style="margin: 8px 0 0; white-space: pre-wrap; font-family: monospace; font-size: 11px; color: #1e293b; background: #ffffff; padding: 10px; border-radius: 4px; border: 1px solid #cbd5e1; user-select: all;"><strong>Destinataire :</strong> contact@williamguindon.me
-<strong>Objet :</strong> [ACCÈS-PRESSE-SEM26003] Demande formelle d'accès aux pièces de recherche
-
-Bonjour William Guindon,
+          <!-- Version à copier-coller manuellement -->
+          <details open style="font-size: 11.5px; color: #065f46; background: rgba(255,255,255,0.85); border-radius: 8px; padding: 10px 14px; border: 1.5px dashed #a7f3d0; margin-top: 10px;">
+            <summary style="cursor: pointer; font-weight: 800; font-size: 12px; color: #064e3b; margin-bottom: 8px;">📋 Version à copier-coller dans votre courriel (si le bouton Mailto ne s'ouvre pas) :</summary>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-top: 6px;">
+              <div style="margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>À :</strong> <code style="color: #047857; font-weight: 700;">contact@williamguindon.me</code></span>
+                <button type="button" onclick="navigator.clipboard.writeText('contact@williamguindon.me').then(e=>{this.textContent='Copié !';setTimeout(()=>this.textContent='Copier',2000)})" style="padding: 2px 8px; font-size: 10.5px; border-radius: 4px; border: 1px solid #94a3b8; background: #ffffff; cursor: pointer;">Copier</button>
+              </div>
+              <div style="margin-bottom: 8px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>Objet :</strong> <code style="color: #047857; font-weight: 700;">[ACCÈS-PRESSE-SEM26003] Demande formelle d'accès aux pièces de recherche</code></span>
+                <button type="button" onclick="navigator.clipboard.writeText('[ACCÈS-PRESSE-SEM26003] Demande formelle d\'accès aux pièces de recherche').then(e=>{this.textContent='Copié !';setTimeout(()=>this.textContent='Copier',2000)})" style="padding: 2px 8px; font-size: 10.5px; border-radius: 4px; border: 1px solid #94a3b8; background: #ffffff; cursor: pointer;">Copier</button>
+              </div>
+              <div style="font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                <span>Corps du message (texte exact à coller) :</span>
+                <button type="button" onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Loi sur le droit d'auteur).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(e=>{this.textContent='✅ Corps copié !';setTimeout(()=>this.textContent='Copier le corps',2500)})" style="padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 4px; border: 1px solid #059669; background: #059669; color: #ffffff; cursor: pointer;">Copier le corps</button>
+              </div>
+              <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; font-size: 11px; color: #1e293b; background: #ffffff; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0; user-select: all; line-height: 1.5;">Bonjour William Guindon,
 
 Par la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.
 
@@ -675,6 +693,7 @@ NOTE SUR L'ACCÈS :
 
 [NE RIEN MODIFIER — CLÉ DE ROUTAGE]
 TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
+            </div>
           </details>
         </div>
 
