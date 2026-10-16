@@ -297,11 +297,12 @@
     };
 
     let isRendering = true;
+    let animFrameId = null;
     let lastUserAction = Date.now();
 
     function resizeCanvas() {
       const rect = heroSection.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const displayWidth = Math.max(1, Math.round(rect.width * dpr));
       const displayHeight = Math.max(1, Math.round(rect.height * dpr));
 
@@ -316,9 +317,25 @@
       gl.uniform2f(uImageResolutionLoc, imgWidth, imgHeight);
     }
 
+    function startRendering() {
+      if (!isRendering || (typeof document !== 'undefined' && document.hidden)) {
+        return;
+      }
+      if (!animFrameId) {
+        animFrameId = requestAnimationFrame(render);
+      }
+    }
+
+    function stopRendering() {
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+    }
+
     function render() {
-      if (!isRendering) {
-        requestAnimationFrame(render);
+      if (!isRendering || (typeof document !== 'undefined' && document.hidden)) {
+        animFrameId = null;
         return;
       }
 
@@ -343,7 +360,7 @@
       gl.uniform2f(uMouseLoc, mouse.currentX, mouse.currentY);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      requestAnimationFrame(render);
+      animFrameId = requestAnimationFrame(render);
     }
 
     function onPointerMove(clientX, clientY) {
@@ -353,6 +370,9 @@
       mouse.targetX = Math.max(-1.5, Math.min(1.5, x));
       mouse.targetY = Math.max(-1.5, Math.min(1.5, -y));
       lastUserAction = Date.now();
+      if (!animFrameId && isRendering && (typeof document === 'undefined' || !document.hidden)) {
+        startRendering();
+      }
     }
 
     window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY), { passive: true });
@@ -379,15 +399,30 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           isRendering = entry.isIntersecting;
+          if (isRendering && (typeof document === 'undefined' || !document.hidden)) {
+            startRendering();
+          } else {
+            stopRendering();
+          }
         });
       }, { threshold: 0.05 });
       observer.observe(heroSection);
     }
 
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && isRendering) {
+          startRendering();
+        } else {
+          stopRendering();
+        }
+      });
+    }
+
     window.addEventListener('resize', resizeCanvas, { passive: true });
 
     resizeCanvas();
-    requestAnimationFrame(render);
+    startRendering();
   }
 
   function scheduleInit() {
