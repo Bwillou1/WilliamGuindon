@@ -54,6 +54,9 @@
     try {
       if (typeof window !== 'undefined' && window.location) {
         const s = window.location.search || '';
+        if (s.includes('stage3=1') || s.includes('stage=3') || s.includes('etape3=1') || s.includes('mode=sobre') || s.includes('mode=normal')) {
+          return false;
+        }
         if (s.includes('surge=1') || s.includes('preview=tomorrow') || s.includes('stage2=1') || s.includes('stage2=true') || s.includes('preview=stage2') || s.includes('etape2=1')) {
           return true;
         }
@@ -67,18 +70,24 @@
         }
       }
       if (typeof localStorage !== 'undefined') {
-        if (localStorage.getItem('wg_force_surge') === 'true' || localStorage.getItem('wg_stage2_active') === 'true') {
-          return true;
-        }
         const radicalRaw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
         if (radicalRaw) {
           const parsed = JSON.parse(radicalRaw);
+          if (parsed && Boolean(parsed.stage3StatusActive)) {
+            return false;
+          }
           if (parsed && (parsed.stage2StatusActive || parsed.trafficSurgeActive)) {
             return true;
           }
         }
+        if (localStorage.getItem('wg_force_surge') === 'true' || localStorage.getItem('wg_stage2_active') === 'true') {
+          return true;
+        }
       }
       if (typeof window !== 'undefined' && window.__WG_SITE_STATE) {
+        if (Boolean(window.__WG_SITE_STATE.stage3StatusActive)) {
+          return false;
+        }
         if (window.__WG_SITE_STATE.stage2StatusActive || window.__WG_SITE_STATE.trafficSurgeActive) {
           return true;
         }

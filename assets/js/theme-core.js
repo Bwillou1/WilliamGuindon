@@ -1879,6 +1879,34 @@
       });
     }
 
+    // Vérification du statut Étape 3 CCE (Mode sobre et pérenne post-échéance)
+    function isStage3StatusActive() {
+      if (typeof window !== 'undefined' && window.location && window.location.search) {
+        const s = window.location.search;
+        if (s.includes('stage3=1') || s.includes('stage=3') || s.includes('etape3=1') || s.includes('mode=sobre') || s.includes('mode=normal')) {
+          return true;
+        }
+        if (s.includes('stage3=0') || s.includes('etape3=0')) {
+          return false;
+        }
+      }
+
+      let forceActive = false;
+      try {
+        const raw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Boolean(parsed.stage3StatusActive)) forceActive = true;
+        }
+      } catch (_) {}
+
+      if (typeof window !== 'undefined' && window.__WG_SITE_STATE) {
+        if (Boolean(window.__WG_SITE_STATE.stage3StatusActive)) forceActive = true;
+      }
+
+      return forceActive;
+    }
+
     // Vérification du statut Étape 2 CCE (16 octobre 2026, paramètre URL ou forcé via site-state)
     function isStage2StatusActive(nowMs) {
       if (typeof window !== 'undefined' && window.location && window.location.search) {
@@ -1936,18 +1964,53 @@
     }
     syncFastSiteState();
 
-    // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2
+    // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2 ou 3
     function updatePrecisionCountdown() {
       if (!cceTargetDate || isNaN(cceTargetDate)) {
         cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
       }
       const now = new Date().getTime();
+      const isStage3 = isStage3StatusActive();
       const isStage2 = isStage2StatusActive(now);
 
+      const crisisCard = document.getElementById('echeance-16-octobre');
+      const stage3Card = document.getElementById('hero-stage3-card');
+      const bioLead = document.getElementById('hero-bio-lead');
       const countBlock = document.getElementById('hero-countdown-block');
       const stage2Summary = document.getElementById('hero-stage2-summary-block');
       const trackerCountdown = document.getElementById('tracker-countdown-state');
       const trackerStage2 = document.getElementById('tracker-stage2-state');
+
+      // Mode Étape 3 : Version légère et pérenne post-échéance
+      if (isStage3) {
+        document.body.classList.remove('stage2-active');
+        document.body.classList.add('stage3-active');
+        if (crisisCard) crisisCard.style.display = 'none';
+        if (stage3Card) stage3Card.style.display = 'block';
+        if (bioLead) bioLead.style.display = 'block';
+        if (trackerCountdown) trackerCountdown.style.display = 'none';
+        if (trackerStage2) trackerStage2.style.display = 'block';
+
+        // Adaptation sobre et apaisée de la topbar de décompte du site
+        document.querySelectorAll('.site-deadline-title').forEach(el => {
+          el.textContent = "Statut CCE · Suivi officiel post-échéance :";
+        });
+        document.querySelectorAll('.site-deadline-clock').forEach(el => {
+          el.innerHTML = '<span style="color:#38bdf8; font-weight:800; font-size:12px; letter-spacing:0.04em;">DOSSIER EN COURS D\'EXAMEN · ART. 24.28 ACEUM</span>';
+        });
+
+        // Les compteurs restent calés à 0
+        document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = '0');
+        document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = '00');
+        document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = '00');
+        document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = '00');
+        return;
+      }
+
+      document.body.classList.remove('stage3-active');
+      if (stage3Card) stage3Card.style.display = 'none';
+      if (bioLead) bioLead.style.display = 'none';
+      if (crisisCard) crisisCard.style.display = 'block';
 
       if (isStage2) {
         document.body.classList.add('stage2-active');
