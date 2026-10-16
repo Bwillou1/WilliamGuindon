@@ -1988,8 +1988,14 @@
         if (crisisCard) crisisCard.style.display = 'none';
         if (stage3Card) stage3Card.style.display = 'block';
         if (bioLead) bioLead.style.display = 'block';
-        if (trackerCountdown) trackerCountdown.style.display = 'none';
-        if (trackerStage2) trackerStage2.style.display = 'block';
+        if (trackerCountdown) trackerCountdown.style.display = 'block';
+        if (trackerStage2) trackerStage2.style.display = 'none';
+
+        // Adaptation du titre du tracker pour la phase post-échéance
+        const trackerTitle = document.querySelector('#tracker-countdown-state h3');
+        if (trackerTitle) {
+          trackerTitle.innerHTML = 'Procédure CCE SEM-26-003 : Phase d\'examen post-échéance (art. 24.28 ACEUM)';
+        }
 
         // Adaptation sobre et apaisée de la topbar de décompte du site
         document.querySelectorAll('.site-deadline-title').forEach(el => {
