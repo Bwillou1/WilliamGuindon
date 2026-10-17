@@ -88,6 +88,20 @@
       isOriginalWork: false,
       isCCE: true
     },
+    'petition-546-bvg-cedd': {
+      title: "Pétition environnementale no 0546 (CEDD / BVG) & Accusé officiel",
+      file: "assets/docs/petition-546-cedd-bvg.pdf",
+      badge: "Pétition 0546 · CEDD / BVG (Loi sur le vérificateur général)",
+      date: "13 juillet 2026",
+      pages: 7,
+      type: "Pétition environnementale statutaire (art. 22)",
+      sha256: "4f84c0e44495257dbe3b0756bbc8c224b6952cb2ef343b1b53d44051da9dd243",
+      author: "William Guindon (pétitionnaire) / Bureau du vérificateur général du Canada",
+      citation: "Guindon, W. & Bureau du vérificateur général du Canada. (2026). Pétition environnementale no 0546 : Application des lois environnementales fédérales au site Stablex à Blainville et accusé de réception officiel du CEDD. Ottawa : BVG.",
+      license: "Document officiel déposé en vertu de l'art. 22 de la Loi sur le vérificateur général",
+      isOriginalWork: true,
+      isCCE: false
+    },
     'decision-17-aout-2026': {
       title: "Détermination positive du Secrétariat CCE (17 août 2026)",
       file: "assets/docs/26-2-det2_fr.pdf",

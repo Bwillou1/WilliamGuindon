@@ -1424,14 +1424,24 @@
             <span>Télécharger l'archive (BitTorrent) ↗</span>
           </a>
           <a id="btn-petition-cedd"
-             href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
+             href="viewer.html?file=assets/docs/petition-546-cedd-bvg.pdf"
              class="drive-actions-item item-petition"
              target="_blank"
              rel="noopener noreferrer"
              role="menuitem"
-             title="Consulter la Pétition environnementale officielle no 546 au catalogue du Vérificateur général du Canada">
+             title="Consulter la Pétition environnementale officielle no 0546 et l'accusé formel du CEDD / BVG (PDF, 7 p.)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span>Pétition 546 (Canada.ca) ↗</span>
+            <span>Pétition 0546 (CEDD/BVG PDF) ↗</span>
+          </a>
+          <a id="btn-petition-canada-ca"
+             href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
+             class="drive-actions-item"
+             target="_blank"
+             rel="noopener noreferrer"
+             role="menuitem"
+             title="Consulter la fiche officielle de la Pétition no 546 au catalogue du Vérificateur général du Canada">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Fiche Canada.ca ↗</span>
           </a>
           <a id="btn-academic-support"
              href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf"
@@ -1478,6 +1488,7 @@
     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
       <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" style="color:#059669; font-weight:700; text-decoration:underline;">Réponse Canada (PDF) ↗</a>
       <a href="viewer.html?file=assets/docs/73-rec_fr.pdf" style="color:#059669; font-weight:700; text-decoration:underline;">Accusé CCE (PDF) ↗</a>
+      <a href="viewer.html?file=assets/docs/petition-546-cedd-bvg.pdf" style="color:#059669; font-weight:700; text-decoration:underline;">Pétition 0546 BVG (PDF) ↗</a>
       <a href="communiques.html#communique-2026-10-16-cce" style="color:#064e3b; font-weight:700; text-decoration:underline;">Communiqué ↗</a>
     </div>
   </div>
@@ -3119,6 +3130,19 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const fullPath = fileObj.fullPath || '';
 
     // 0. Détection des documents phares hébergés localement sur williamguindon.me
+    if (rawName.includes("petition-546") || rawName.includes("Lettre_CEDD_au_petitionnaire") || fullPath.includes("Lettre_CEDD_au_petitionnaire")) {
+      const localPath = "assets/docs/petition-546-cedd-bvg.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
     if (rawName.includes("declaration-appui-manfred-liebel") || fullPath.includes("declaration-appui-manfred-liebel")) {
       const localPath = "assets/docs/declaration-appui-manfred-liebel-e7834.pdf";
       return {

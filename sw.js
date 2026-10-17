@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v143';
+const CACHE_NAME = 'wg-pwa-v144';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -16,6 +16,7 @@ const ASSETS_TO_CACHE = [
   '/assets/docs/72-rsp_en.pdf',
   '/assets/docs/73-rec_fr.pdf',
   '/assets/docs/73-rec_en.pdf',
+  '/assets/docs/petition-546-cedd-bvg.pdf',
   '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
