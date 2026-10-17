@@ -362,6 +362,192 @@
     margin-bottom: 4px;
   }
 
+  /* Barre d'outils du vrai PDF */
+  .pdf-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 22px;
+  }
+
+  .pdf-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .btn-pdf-tool {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    border-radius: 6px;
+    padding: 6px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+
+  .btn-pdf-tool:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
+
+  .btn-pdf-tool:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-pdf-tool.active {
+    background: rgba(4, 120, 87, 0.15);
+    border-color: var(--seal-cce);
+    color: var(--seal-cce);
+  }
+
+  .btn-pdf-accent {
+    background: rgba(4, 120, 87, 0.1);
+    color: var(--seal-cce);
+    border-color: rgba(4, 120, 87, 0.35);
+    text-decoration: none;
+  }
+
+  .btn-pdf-accent:hover {
+    background: var(--seal-cce) !important;
+    color: #ffffff !important;
+  }
+
+  .pdf-page-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    padding: 0 4px;
+  }
+
+  .pdf-page-indicator input {
+    width: 44px;
+    text-align: center;
+    padding: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #0f172a;
+  }
+
+  .pdf-zoom-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+    min-width: 42px;
+    text-align: center;
+  }
+
+  /* Zone d'affichage du vrai PDF */
+  .pdf-view-area {
+    position: relative;
+    min-height: 520px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pdf-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 16px;
+  }
+
+  .pdf-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3.5px solid rgba(4, 120, 87, 0.2);
+    border-top-color: var(--seal-cce);
+    border-radius: 50%;
+    animation: pdfSpin 0.8s linear infinite;
+  }
+
+  @keyframes pdfSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pdf-pages-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .pdf-page-wrapper {
+    position: relative;
+    background: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pdf-page-canvas {
+    display: block;
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  .pdf-page-footer-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    padding: 6px 12px;
+    background: #f8fafc;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+    letter-spacing: 0.03em;
+  }
+
+  .pdf-summary-toggle {
+    margin-top: 24px;
+    width: 100%;
+    border: 1px solid var(--paper-line);
+    border-radius: 6px;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.02);
+  }
+
+  .pdf-summary-toggle summary {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--seal-cce);
+    cursor: pointer;
+    user-select: none;
+  }
+
   /* Pied de page du document */
   .doc-footer {
     margin-top: 32px;
@@ -507,6 +693,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <!-- BRANDKIT:END -->
+<link rel="stylesheet" href="assets/vendor/pdfjs/pdf_viewer.css">
+<script src="assets/vendor/pdfjs/pdf.min.js"></script>
 </head>
 <body>
 
@@ -522,13 +710,14 @@
       </a>
 
       <select id="doc-selector" class="doc-select" aria-label="Choisir une pièce d'archive">
+        <option value="observations-auteur" selected>Observations de William Guindon (17 oct. 2026) — 3 p.</option>
         <option value="reponse-canada">Réponse officielle du Canada (16 oct. 2026) — 72-RSP</option>
         <option value="accuse-cce">Accusé de réception CCE (16 oct. 2026) — 73-REC</option>
         <option value="petition-546">Pétition environnementale 0546 (CEDD/BVG) — 7 p.</option>
-        <option value="det-26-003">Détermination CCE (17 août 2026) — DET-26-003</option>
-        <option value="rsub-26-003">Mémoire révisé citoyen (16 juillet 2026) — SEM-26-003</option>
-        <option value="bape-371">Enquête BAPE 371 & Cadmium (Cellule 6 Stablex)</option>
-        <option value="wayback-stablex">Archive Wayback Machine (Site Stablex 2024-2026)</option>
+        <option value="det-26-003">Détermination positive CCE (17 août 2026) — DET-26-003</option>
+        <option value="rsub-26-003">Communication citoyenne révisée (16 juil. 2026) — SEM-26-003</option>
+        <option value="declaration-liebel">Déclaration scientifique internationale (14 oct. 2026) — 4 p.</option>
+        <option value="det1-26-003">Détermination initiale CCE (23 juin 2026) — 17 p.</option>
       </select>
     </div>
 
@@ -566,38 +755,61 @@
           </div>
         </header>
 
+        <!-- Barre de navigation et d'outils du vrai PDF -->
+        <div class="pdf-toolbar" role="toolbar" aria-label="Commandes de navigation du PDF original">
+          <div class="pdf-toolbar-group">
+            <button type="button" class="btn-pdf-tool" id="btn-prev-page" title="Page précédente (Flèche gauche)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <span>Précédente</span>
+            </button>
+            <div class="pdf-page-indicator">
+              <span>Page</span>
+              <input type="number" id="input-page-num" min="1" max="1" value="1" aria-label="Numéro de page">
+              <span>/ <span id="span-page-count">1</span></span>
+            </div>
+            <button type="button" class="btn-pdf-tool" id="btn-next-page" title="Page suivante (Flèche droite)">
+              <span>Suivante</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+
+          <div class="pdf-toolbar-group">
+            <button type="button" class="btn-pdf-tool" id="btn-zoom-out" title="Réduire la vue">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <span id="span-zoom-level" class="pdf-zoom-label">100%</span>
+            <button type="button" class="btn-pdf-tool" id="btn-zoom-in" title="Agrandir la vue">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button type="button" class="btn-pdf-tool" id="btn-toggle-continuous" title="Basculer en mode défilement continu (toutes les pages)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+              <span id="label-continuous">Toutes les pages</span>
+            </button>
+          </div>
+
+          <div class="pdf-toolbar-group">
+            <a id="btn-open-viewer-hd" href="viewer.html" target="_blank" rel="noopener noreferrer" class="btn-pdf-tool btn-pdf-accent" title="Ouvrir dans le Lecteur HD standard plein écran">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>Lecteur HD plein écran ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Zone de rendu haute fidélité du vrai document PDF original -->
         <section class="doc-body" id="doc-content">
-          <p>
-            Le Secrétariat de la Commission de coopération environnementale a examiné la communication révisée
-            déposée par l'auteur citoyen <strong>William Guindon</strong> le 16 juillet 2026, alléguant que le gouvernement
-            du Canada omet d'assurer l'application efficace de sa législation environnementale dans le cadre du projet
-            d'expansion de l'installation d'enfouissement de déchets industriels dangereux de <strong>Stablex Canada inc.</strong>
-          </p>
-
-          <div class="doc-highlight-box">
-            <strong>DÉCISION DU SECRÉTARIAT (Art. 24.27(3) de l'ACEUM) :</strong><br>
-            Le Secrétariat détermine que la communication citoyenne satisfait à l'ensemble des critères d'admissibilité.
-            Une réponse motivée est officiellement exigée du gouvernement du Canada dans un délai de soixante (60) jours,
-            soit au plus tard le <strong>16 octobre 2026</strong>.
+          <div class="pdf-view-area" id="pdf-view-area">
+            <div id="pdf-loading-state" class="pdf-loading-state">
+              <div class="pdf-spinner"></div>
+              <div id="pdf-loading-text">Rendu haute résolution du document officiel original...</div>
+            </div>
+            <div id="pdf-pages-container" class="pdf-pages-container"></div>
           </div>
 
-          <p>
-            Les allégations retenues portent sur la détérioration appréhendée de <strong>278 000 m²</strong> de la Grande Tourbière
-            de Blainville, milieu humide d'importance écologique majeure abritant des espèces vulnérables et menacées,
-            ainsi que les risques de lixiviation et de contamination par le <strong>cadmium</strong> mesurés jusqu'à
-            320 fois les normes de toxicité aquatique.
-          </p>
-
-          <div class="doc-legal-articles">
-            <div class="article-card">
-              <div class="article-title">Loi sur les pêches (art. 35 & 36(3))</div>
-              <div>Interdiction de détruire l'habitat du poisson et d'immerger des substances nocives dans les eaux réceptrices du bassin versant.</div>
-            </div>
-            <div class="article-card">
-              <div class="article-title">Loi sur les espèces en péril (LEP)</div>
-              <div>Protection obligatoire des habitats essentiels des espèces répertoriées (couleuvre tachetée, grèbe esclavon, monarque).</div>
-            </div>
-          </div>
+          <!-- Synthèse documentaire et fondements juridiques dépliables -->
+          <details class="pdf-summary-toggle" id="pdf-summary-box">
+            <summary id="summary-toggle-title">📋 Synthèse juridique &amp; points clés de la pièce</summary>
+            <div id="summary-content" style="margin-top: 14px; font-size: 13.5px; line-height: 1.65;"></div>
+          </details>
         </section>
 
         <footer class="doc-footer">
@@ -671,8 +883,35 @@
     (function() {
       'use strict';
 
-      // Base documentaire des pièces officielles
+      // Configuration officielle de PDF.js local
+      if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/vendor/pdfjs/pdf.worker.min.js';
+      }
+
+      // Base documentaire des 8 pièces officielles authentiques (PDF bruts certifiés)
       const DOCUMENTS_DATABASE = {
+        'observations-auteur': {
+          inst: 'William Guindon · Auteur de la communication citoyenne SEM-26-003',
+          title: "Observations sur la demande de fermeture ou de report du Canada (72-RSP)",
+          sub: "7 moyens juridiques et factuels réfutant l'art. 24.27(4)a) et demandant la poursuite vers un dossier factuel",
+          seal: 'OBS-2026-10-17',
+          date: '17 octobre 2026',
+          pdf: 'assets/docs/observations-reponse-canada-sem26003.pdf',
+          hash: 'b6f045810fdcf995acf5a6b5775cbaace353ba7f7eb3007003c0692a4e281da7',
+          source: 'Mémoire probatoire officiel transmis au Secrétariat de la CCE (M. Paolo Solano)',
+          summary: `
+            <p>Moins de 24 heures après la réponse du Canada, William Guindon a déposé auprès de Paolo Solano (directeur des affaires juridiques de la CCE) ses observations réfutant point par point la tentative d'évitement d'Ottawa :</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.6;">
+              <li><strong>1. Invocabilité absente de l'art. 24.27(4)a) :</strong> La pétition 0546 au BVG n'est pas une procédure engagée par la Partie, ni quasi judiciaire (aucun pouvoir de sanction).</li>
+              <li><strong>2. Ligne directrice 7.5 protectrice :</strong> Vise les recours privés de l'auteur, non une échappatoire pour la Partie. Les deux démarches sont complémentaires.</li>
+              <li><strong>3. Décision antérieure du Secrétariat :</strong> Les par. 66-79 du 17 août 2026 ont déjà tranché sur la coexistence et le délai raisonnable.</li>
+              <li><strong>4. Différence de portée :</strong> 17 dispositions dans 5 lois fédérales (CCE) vs 24 questions d'information (BVG).</li>
+              <li><strong>5. Fardeau disproportionné :</strong> Contraire à la pratique CCE et protectrice des citoyens mineurs agissant seuls.</li>
+              <li><strong>6. Report indéterminé :</strong> Délai du 10 novembre unilatéralement prorogeable par les ministres sous l'art. 22 de la Loi sur le vérificateur général.</li>
+              <li><strong>7. Zéro élément d'application :</strong> Le Canada ne démontre aucune mesure d'application pour la cellule 6.</li>
+            </ul>
+          `
+        },
         'reponse-canada': {
           inst: 'Gouvernement du Canada · Affaires Mondiales & Environnement et Changement Climatique Canada',
           title: "Réponse du Canada en vertu de l'article 24.27(4) de l'ACEUM",
@@ -682,17 +921,8 @@
           pdf: 'assets/docs/72-rsp_fr.pdf',
           hash: '31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2',
           source: 'Dépôt officiel du gouvernement du Canada au greffe CCE',
-          content: `
-            <p>Le gouvernement du Canada a transmis sa réponse officielle le 16 octobre 2026. La Partie défenderesse <strong>demande respectueusement au Secrétariat de mettre fin à la communication SEM-26-003, en tout ou en partie, ou de la reporter</strong>.</p>
-            <div class="doc-highlight-box">
-              <strong>ARGUMENT PRINCIPAL DU GOUVERNEMENT DU CANADA :</strong><br>
-              Le Canada soutient que la démarche est prématurée et entraînerait un dédoublement des efforts, au motif que l'auteur William Guindon a déposé le 29 juin 2026 la pétition environnementale no 0546 auprès du Bureau du vérificateur général du Canada (BVG / CEDD). Conformément à la Loi sur le vérificateur général, les ministres fédéraux doivent envoyer leur réponse d'ici le <strong>10 novembre 2026</strong>.
-            </div>
-            <p>Le Canada invoque la Ligne directrice 7.5 de la CCE concernant le chevauchement avec des recours internes. Le gouvernement ne conteste pas sur le fond les constats scientifiques de cadmium ou d'empiètement sur 278 000 m² de tourbière, mais sollicite le rejet procédural préalable.</p>
-            <div class="doc-legal-articles">
-              <div class="article-card"><div class="article-title">Pétition 0546 CEDD</div><div>24 questions adressées aux ministres fédéraux sur l'absence d'inspections et d'autorisations à la Cellule 6 de Stablex. Échéance de réponse : 10 novembre 2026.</div></div>
-              <div class="article-card"><div class="article-title">Ligne directrice 7.5 CCE</div><div>Évaluation par le Secrétariat des recours nationaux et du risque de chevauchement procédural.</div></div>
-            </div>
+          summary: `
+            <p>Le gouvernement du Canada a transmis sa réponse officielle le 16 octobre 2026. La Partie défenderesse demande au Secrétariat de mettre fin à la communication SEM-26-003 ou d'en suspendre l'examen, en invoquant la pétition environnementale no 0546 déposée auprès du Bureau du vérificateur général du Canada (BVG / CEDD) dont la réponse ministérielle est due le 10 novembre 2026.</p>
           `
         },
         'accuse-cce': {
@@ -704,13 +934,8 @@
           pdf: 'assets/docs/73-rec_fr.pdf',
           hash: 'c7a7498caab9176aa8b80367dedf4b6471dfff26236f4f76ff0d89209f2a7432',
           source: 'Lettre officielle de Paolo Solano (Directeur affaires juridiques CCE)',
-          content: `
-            <p>Lettre officielle adressée à M. Michael Bonser (Sous-ministre adjoint délégué, Environnement et Changement climatique Canada) avec copie conforme à l'auteur citoyen William Guindon ainsi qu'aux représentantes du Mexique et des États-Unis.</p>
-            <div class="doc-highlight-box">
-              <strong>NOTIFICATION DU SECRÉTARIAT :</strong><br>
-              « Nous accusons réception de la réponse du gouvernement du Canada à la communication SEM-26-003, reçue électroniquement le 16 octobre 2026. [...] Le Secrétariat examinera la notification transmise par la Partie conformément à l'alinéa 24.27(4)a) de l'ACEUM. »
-            </div>
-            <p>La procédure bascule formellement dans la phase d'examen de l'article 24.28 de l'ACEUM, où le Secrétariat déterminera si la réponse du Canada dissipe les allégations ou s'il convient de recommander l'ouverture d'un Dossier factuel indépendant.</p>
+          summary: `
+            <p>Accusé de réception officiel de la CCE confirmant que le Secrétariat examinera la notification du Canada conformément à l'alinéa 24.27(4)a) et à l'article 24.28 de l'ACEUM pour déterminer s'il convient de recommander la constitution d'un Dossier factuel.</p>
           `
         },
         'petition-546': {
@@ -722,93 +947,60 @@
           pdf: 'assets/docs/petition-546-cedd-bvg.pdf',
           hash: '4f84c0e44495257dbe3b0756bbc8c224b6952cb2ef343b1b53d44051da9dd243',
           source: 'Lettre officielle du BVG / CEDD (Émilie-Anne Duval) & Formulaire de pétition citoyenne',
-          content: `
-            <p>La pétition environnementale officielle <strong>no 0546</strong> a été déposée le <strong>29 juin 2026</strong> par William Guindon auprès du Commissaire à l'environnement et au développement durable (CEDD), Jerry V. DeMarco. Le <strong>13 juillet 2026</strong>, la directrice de liaison du BVG a accusé réception et transmis formellement la pétition aux ministres d'Environnement et Changement climatique Canada (ECCC) et de Pêches et Océans Canada (MPO).</p>
-            <div class="doc-highlight-box">
-              <strong>ÉCHÉANCE LÉGALE STRICTE (Loi sur le vérificateur général, art. 22) :</strong><br>
-              Les ministres fédéraux disposent d'un délai statutaire contraignant de <strong>120 jours civils</strong> pour répondre par écrit au pétitionnaire, soit au plus tard le <strong>10 novembre 2026</strong>.
-            </div>
-            <p>Cette pièce officielle est l'élément central invoqué par le gouvernement du Canada dans sa réponse 72-RSP du 16 octobre 2026 pour solliciter la fin de la communication citoyenne SEM-26-003 devant la CCE. Elle comprend 24 questions exhaustives sur le rejet de cadmium, l'absence d'évaluation d'impact environnemental fédérale et l'autorisation de destruction de l'habitat aquatique.</p>
-            <div class="doc-legal-articles">
-              <div class="article-card"><div class="article-title">Loi sur le vérificateur général (art. 22)</div><div>Obligation légale de réponse ministérielle dans les 120 jours suivant la transmission par le CEDD.</div></div>
-              <div class="article-card"><div class="article-title">Loi sur les pêches (art. 36(3))</div><div>Rejets toxiques et lixiviats mesurés jusqu'à 320 fois les critères de qualité aquatique dans les tributaires de la rivière des Mille Îles.</div></div>
-            </div>
+          summary: `
+            <p>Pétition environnementale officielle no 0546 déposée le 29 juin 2026 par William Guindon auprès du CEDD, transmise le 13 juillet 2026 aux ministres d'ECCC et du MPO. Comprend 24 questions sur les rejets de cadmium (320x les normes), l'absence d'évaluation d'impact et la destruction d'habitats aquatiques.</p>
           `
         },
         'det-26-003': {
           inst: 'Secrétariat de la Commission de Coopération Environnementale',
           title: "Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM",
-          sub: 'Dossier no : SEM-26-003 (Enfouissement de matières dangereuses à Blainville)',
+          sub: 'Dossier no : SEM-26-003 (Enfouissement de matières dangereuses à Blainville) — Détermination positive',
           seal: 'DET-26-003',
           date: '17 août 2026',
           pdf: 'assets/docs/26-2-det2_fr.pdf',
-          hash: '685d38a81648a86fa8869ff1ff4c6225ff326e58988ae43455ae0d7e671c6d3b',
+          hash: '33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c',
           source: 'Registre public CCE (Montréal, QC)',
-          content: `
-            <p>Le Secrétariat de la Commission de coopération environnementale a examiné la communication révisée déposée par l'auteur citoyen <strong>William Guindon</strong> le 16 juillet 2026, alléguant que le gouvernement du Canada omet d'assurer l'application efficace de sa législation environnementale dans le cadre du projet d'expansion de l'installation d'enfouissement de déchets industriels dangereux de <strong>Stablex Canada inc.</strong></p>
-            <div class="doc-highlight-box">
-              <strong>DÉCISION DU SECRÉTARIAT (Art. 24.27(3) de l'ACEUM) :</strong><br>
-              Le Secrétariat détermine que la communication citoyenne satisfait à l'ensemble des critères d'admissibilité. Une réponse motivée est officiellement exigée du gouvernement du Canada dans un délai de soixante (60) jours, soit au plus tard le <strong>16 octobre 2026</strong>.
-            </div>
-            <p>Les allégations retenues portent sur la détérioration appréhendée de <strong>278 000 m²</strong> de la Grande Tourbière de Blainville, milieu humide d'importance écologique majeure, ainsi que les risques de lixiviation et de contamination par le <strong>cadmium</strong> mesurés jusqu'à 320 fois les normes de toxicité aquatique.</p>
-            <div class="doc-legal-articles">
-              <div class="article-card"><div class="article-title">Loi sur les pêches (art. 35 & 36(3))</div><div>Interdiction de détruire l'habitat du poisson et d'immerger des substances nocives dans les eaux réceptrices.</div></div>
-              <div class="article-card"><div class="article-title">Loi sur les espèces en péril (LEP)</div><div>Protection obligatoire des habitats essentiels des espèces répertoriées (couleuvre tachetée, grèbe esclavon, monarque).</div></div>
-            </div>
+          summary: `
+            <p>Décision formelle de 28 pages de la CCE jugeant recevable la communication SEM-26-003 et exigeant une réponse du Canada sous 60 jours. Retient les allégations sur 278 000 m² de tourbière et le cadmium à 320x.</p>
           `
         },
         'rsub-26-003': {
-          inst: 'Commission de Coopération Environnementale · Greffe des communications citoyennes',
-          title: "Communication citoyenne révisée SEM-26-003",
-          sub: 'Dépôt formel en vertu de l\'article 24.27 de l\'Accord Canada-États-Unis-Mexique',
+          inst: 'William Guindon · Soumission citoyenne révisée SEM-26-003',
+          title: "Communication citoyenne révisée (Enfouissement de matières dangereuses à Blainville)",
+          sub: 'Texte officiel révisé en vertu de l\'article 24.27(2) de l\'ACEUM avec 222 preuves techniques',
           seal: 'SEM-26-003',
           date: '16 juillet 2026',
           pdf: 'assets/docs/26-3-rsub_fr_redacted.pdf',
-          hash: '6a422ea79493f0b2f1505c249449fbe79540c49cfc7fa6992d773fb2a201c107',
-          source: 'Pièce déposée par William Guindon devant la CCE',
-          content: `
-            <p>Mémoire juridique consolidé de 15 pages démontrant l'omission des autorités fédérales canadiennes (Environnement et Changement climatique Canada, Pêches et Océans Canada) d'intervenir pour empêcher la destruction d'un écosystème tourbeux exceptionnel au profit d'un dépôt de résidus de déchets industriels stabilisés.</p>
-            <div class="doc-highlight-box">
-              <strong>ÉLÉMENTS DE PREUVE SCIENTIFIQUE VERSÉS :</strong><br>
-              Analyses géochimiques indépendantes établissant des concentrations de cadmium excédant de 320 fois les critères pour la protection de la vie aquatique dans les tributaires de la rivière aux Chiens et de la rivière des Mille Îles.
-            </div>
-            <p>Le requérant invoque expressément la primauté du droit de l'environnement, l'obligation fiduciaire de l'État envers les générations futures et le respect des engagements internationaux en matière de biodiversité.</p>
+          hash: 'd8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710',
+          source: 'Registre officiel CCE · Soumissionnaire citoyen',
+          summary: `
+            <p>Mémoire juridique consolidé de 15 pages de William Guindon étayant le défaut d'application effective de 17 dispositions de 5 lois environnementales canadiennes dans le cadre de l'agrandissement de Stablex.</p>
           `
         },
-        'bape-371': {
-          inst: 'Bureau d\'audiences publiques sur l\'environnement (Québec)',
-          title: "Rapport d'enquête et d'audience publique no 371",
-          sub: 'Projet d\'agrandissement du lieu d\'enfouissement de déchets industriels dangereux de Stablex',
-          seal: 'BAPE 371',
-          date: '2023 / Pièce SEM-26-003',
-          pdf: 'assets/docs/26-2-det2_fr.pdf',
-          hash: '92c4fb712a4128509e5306d649abf284ec10b72183c5112521c7d3f82029ec23',
-          source: 'Rapport officiel d\'enquête d\'utilité publique',
-          content: `
-            <p>Conclusions accablantes de la commission d'enquête du BAPE soulignant la valeur écologique irremplaçable de la tourbière de Blainville et recommandant formellement d'éviter son empiètement par la Cellule 6.</p>
-            <div class="doc-highlight-box">
-              <strong>CONCLUSION DE LA COMMISSION :</strong><br>
-              « La destruction de 278 000 m² de tourbière pour l'aménagement d'une cellule de déchets dangereux ne saurait être considérée comme une solution acceptable sur le plan environnemental. »
-            </div>
-            <p>Ce rapport constitue le fondement probatoire attestant que les risques étaient connus des autorités gouvernementales préalablement à l'adoption de mesures dérogatoires.</p>
+        'declaration-liebel': {
+          inst: "International Children's Rights & Childhood Studies (Berlin / Potsdam)",
+          title: "Déclaration d'appui scientifique international (Liebel & Meade)",
+          sub: "Analyse de l'adultisme structurel en droit administratif et appui à la démarche SEM-26-003 / Pétition e-7834",
+          seal: 'BERLIN-2026',
+          date: '14 octobre 2026',
+          pdf: 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf',
+          hash: '1c57b371f0700b773b8ceedf467f876013c07252abbc7d4894aaf9c76000486f',
+          source: 'Prof. Dr. Manfred Liebel & Philip Meade, M.A.',
+          summary: `
+            <p>Déclaration d'appui scientifique certifiée du professeur Manfred Liebel et de Philip Meade soulignant le caractère historique de la démarche de William Guindon face aux barrières adultistes structurelles en droit administratif.</p>
           `
         },
-        'wayback-stablex': {
-          inst: 'Internet Archive · Wayback Machine (Certifié)',
-          title: "Archive Web immuable : Registre & Présentations Stablex (2024-2026)",
-          sub: 'Instantanés archivés de l\'historique des modifications de permis',
-          seal: 'ARCHIVE-ORG',
-          date: 'Horodatage certifié',
-          pdf: 'assets/docs/26-2-det2_fr.pdf',
-          hash: 'c891ff4e12059a4bb3876cdba13498b25126fce720a454817a5695a7f235b2e9',
-          source: 'https://web.archive.org/web/*/stablex.com',
-          content: `
-            <p>Capture documentaire certifiée via l'infrastructure Wayback Machine démontrant les déclarations publiques et techniques antérieures de l'exploitant quant à la durée de vie des cellules existantes et l'absence d'alternatives explorées hors tourbière.</p>
-            <div class="doc-highlight-box">
-              <strong>VALEUR PROBATOIRE :</strong><br>
-              Les instantanés Web scellés par Internet Archive garantissent l'inaltérabilité des pièces face à toute modification ou suppression ultérieure de contenus en ligne.
-            </div>
-            <p>Pièce associée aux constats d'huissier et aux dépôts de référence transmis au greffe de la CCE.</p>
+        'det1-26-003': {
+          inst: 'Secrétariat de la Commission de Coopération Environnementale',
+          title: "Détermination en vertu de l'article 24.27(1) de l'ACEUM",
+          sub: 'Examen initial de conformité de la communication citoyenne SEM-26-003',
+          seal: 'DET-26-001',
+          date: '23 juin 2026',
+          pdf: 'assets/docs/26-3-det_fr.pdf',
+          hash: '8f8998becc91e8398852a048a5472d498dd888e79874265fe86aa387422aad5b',
+          source: 'Registre public CCE (Montréal, QC)',
+          summary: `
+            <p>Première détermination du Secrétariat de la CCE invitant l'auteur à apporter des précisions techniques et procédurales complémentaires, auxquelles il a répondu par son mémoire consolidé du 16 juillet 2026.</p>
           `
         }
       };
@@ -832,7 +1024,7 @@
         techBadgeText.textContent = 'Mode 3D Haute Fidélité (Standard)';
       }
 
-      // Initialisation du Canvas si l'API est supportée
+      // Initialisation du Canvas passif
       let ctx = null;
       if (canvas && canvas.getContext) {
         try {
@@ -848,7 +1040,6 @@
           window.addEventListener('resize', resizeCanvas);
           resizeCanvas();
 
-          // Boucle onpaint si HTML-in-Canvas est actif
           if ('onpaint' in canvas) {
             canvas.onpaint = () => {
               if (ctx && ctx.drawElementImage) {
@@ -877,8 +1068,8 @@
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
-        rotY = (x / rect.width) * 14; // Max 14 degrés d'inclinaison
-        rotX = -(y / rect.height) * 14;
+        rotY = (x / rect.width) * 12; // Max 12 degrés d'inclinaison
+        rotX = -(y / rect.height) * 12;
 
         table.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
       });
@@ -890,77 +1081,343 @@
 
       // Bouton Toggle 3D
       const btnToggle3D = document.getElementById('btn-toggle-3d');
-      btnToggle3D.addEventListener('click', () => {
-        is3DActive = !is3DActive;
-        btnToggle3D.classList.toggle('active', is3DActive);
-        if (!is3DActive) {
-          table.style.transform = 'none';
-        }
-      });
+      if (btnToggle3D) {
+        btnToggle3D.addEventListener('click', () => {
+          is3DActive = !is3DActive;
+          btnToggle3D.classList.toggle('active', is3DActive);
+          if (!is3DActive) {
+            table.style.transform = 'none';
+          }
+        });
+      }
 
       // Bouton Centrer
-      document.getElementById('btn-reset-3d').addEventListener('click', () => {
-        table.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      });
+      const btnReset3D = document.getElementById('btn-reset-3d');
+      if (btnReset3D) {
+        btnReset3D.addEventListener('click', () => {
+          table.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+      }
 
       // Bouton Thème Papier (Sépia / Blanc)
       const btnThemePaper = document.getElementById('btn-theme-paper');
-      btnThemePaper.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const nextTheme = currentTheme === 'sepia' ? 'dark' : 'sepia';
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        btnThemePaper.classList.toggle('active', nextTheme === 'sepia');
-      });
+      if (btnThemePaper) {
+        btnThemePaper.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const nextTheme = currentTheme === 'sepia' ? 'dark' : 'sepia';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          btnThemePaper.classList.toggle('active', nextTheme === 'sepia');
+        });
+      }
 
       // Loupe probatoire virtuelle
       const loupe = document.getElementById('loupe-lens');
       const btnLoupe = document.getElementById('btn-toggle-loupe');
       let isLoupeActive = false;
 
-      btnLoupe.addEventListener('click', () => {
-        isLoupeActive = !isLoupeActive;
-        btnLoupe.classList.toggle('active', isLoupeActive);
-        loupe.style.display = isLoupeActive ? 'block' : 'none';
-      });
+      if (btnLoupe && loupe) {
+        btnLoupe.addEventListener('click', () => {
+          isLoupeActive = !isLoupeActive;
+          btnLoupe.classList.toggle('active', isLoupeActive);
+          loupe.style.display = isLoupeActive ? 'block' : 'none';
+        });
 
-      viewport.addEventListener('mousemove', (e) => {
-        if (!isLoupeActive) return;
-        loupe.style.left = e.clientX + 'px';
-        loupe.style.top = e.clientY + 'px';
-      });
+        viewport.addEventListener('mousemove', (e) => {
+          if (!isLoupeActive) return;
+          loupe.style.left = e.clientX + 'px';
+          loupe.style.top = e.clientY + 'px';
+        });
+      }
 
-      // Sélecteur de documents
+      // Éléments du DOM du document
       const selector = document.getElementById('doc-selector');
       const docInst = document.getElementById('doc-inst');
       const docTitle = document.getElementById('doc-title');
       const docSub = document.getElementById('doc-sub');
       const docSealId = document.getElementById('doc-seal-id');
       const docDate = document.getElementById('doc-date');
-      const docContent = document.getElementById('doc-content');
       const docHash = document.getElementById('doc-hash');
       const docSource = document.getElementById('doc-source');
       const btnDownloadPdf = document.getElementById('btn-download-pdf');
+      const btnOpenViewerHd = document.getElementById('btn-open-viewer-hd');
+      const summaryContent = document.getElementById('summary-content');
 
-      selector.addEventListener('change', (e) => {
-        const key = e.target.value;
+      // Commandes PDF.js
+      const btnPrevPage = document.getElementById('btn-prev-page');
+      const btnNextPage = document.getElementById('btn-next-page');
+      const inputPageNum = document.getElementById('input-page-num');
+      const spanPageCount = document.getElementById('span-page-count');
+      const btnZoomIn = document.getElementById('btn-zoom-in');
+      const btnZoomOut = document.getElementById('btn-zoom-out');
+      const spanZoomLevel = document.getElementById('span-zoom-level');
+      const btnToggleContinuous = document.getElementById('btn-toggle-continuous');
+      const labelContinuous = document.getElementById('label-continuous');
+      const pdfPagesContainer = document.getElementById('pdf-pages-container');
+      const pdfLoadingState = document.getElementById('pdf-loading-state');
+
+      // État de la liseuse PDF
+      let currentPdfDoc = null;
+      let currentPageNum = 1;
+      let totalPages = 1;
+      let currentZoom = 1.0;
+      let isContinuousMode = false;
+      let currentDocKey = 'observations-auteur';
+
+      function updatePaginationControls() {
+        if (inputPageNum) {
+          inputPageNum.value = currentPageNum;
+          inputPageNum.max = totalPages;
+          inputPageNum.disabled = isContinuousMode;
+        }
+        if (spanPageCount) {
+          spanPageCount.textContent = totalPages;
+        }
+        if (btnPrevPage) {
+          btnPrevPage.disabled = isContinuousMode || currentPageNum <= 1;
+        }
+        if (btnNextPage) {
+          btnNextPage.disabled = isContinuousMode || currentPageNum >= totalPages;
+        }
+        if (spanZoomLevel) {
+          spanZoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+        }
+      }
+
+      function renderSinglePage(pageNum, container) {
+        if (!currentPdfDoc) return;
+        currentPdfDoc.getPage(pageNum).then(function(page) {
+          const pageWrapper = document.createElement('div');
+          pageWrapper.className = 'pdf-page-wrapper';
+          pageWrapper.id = 'pdf-page-' + pageNum;
+
+          const canvasEl = document.createElement('canvas');
+          canvasEl.className = 'pdf-page-canvas';
+          pageWrapper.appendChild(canvasEl);
+
+          if (isContinuousMode) {
+            const footerTag = document.createElement('div');
+            footerTag.className = 'pdf-page-footer-tag';
+            footerTag.textContent = 'Page ' + pageNum + ' sur ' + totalPages;
+            pageWrapper.appendChild(footerTag);
+          }
+
+          container.appendChild(pageWrapper);
+
+          const containerWidth = container.clientWidth || 740;
+          const unscaledViewport = page.getViewport({ scale: 1 });
+          const targetWidth = Math.min(containerWidth, 800) - 10;
+          const baseScale = targetWidth / unscaledViewport.width;
+          const finalScale = Math.max(0.6, baseScale * currentZoom);
+          const viewport = page.getViewport({ scale: finalScale });
+
+          const dpr = window.devicePixelRatio || 1;
+          canvasEl.width = Math.floor(viewport.width * dpr);
+          canvasEl.height = Math.floor(viewport.height * dpr);
+          canvasEl.style.width = Math.floor(viewport.width) + 'px';
+          canvasEl.style.height = Math.floor(viewport.height) + 'px';
+
+          const ctxPage = canvasEl.getContext('2d');
+          ctxPage.scale(dpr, dpr);
+
+          const renderContext = {
+            canvasContext: ctxPage,
+            viewport: viewport
+          };
+
+          page.render(renderContext).promise.then(function() {
+            if (canvas && canvas.onpaint) {
+              canvas.onpaint();
+            }
+          });
+        });
+      }
+
+      function renderCurrentView() {
+        if (!currentPdfDoc || !pdfPagesContainer) return;
+        pdfPagesContainer.innerHTML = '';
+        updatePaginationControls();
+
+        if (isContinuousMode) {
+          for (let p = 1; p <= totalPages; p++) {
+            renderSinglePage(p, pdfPagesContainer);
+          }
+        } else {
+          renderSinglePage(currentPageNum, pdfPagesContainer);
+        }
+      }
+
+      function loadPdfDocument(pdfUrl) {
+        if (pdfLoadingState) {
+          pdfLoadingState.style.display = 'flex';
+          pdfLoadingState.innerHTML = '<div class="pdf-spinner"></div><div id="pdf-loading-text">Rendu haute résolution du document officiel original...</div>';
+        }
+        if (pdfPagesContainer) {
+          pdfPagesContainer.innerHTML = '';
+        }
+
+        const docOptions = {
+          url: pdfUrl,
+          cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+          enableXfa: true,
+          // Atténuation impérative CVE-2024-4367
+          isEvalSupported: false
+        };
+
+        pdfjsLib.getDocument(docOptions).promise.then(function(pdf) {
+          currentPdfDoc = pdf;
+          totalPages = pdf.numPages;
+          currentPageNum = 1;
+          if (pdfLoadingState) {
+            pdfLoadingState.style.display = 'none';
+          }
+          renderCurrentView();
+        }).catch(function(err) {
+          console.error('Erreur de chargement PDF:', err);
+          if (pdfLoadingState) {
+            pdfLoadingState.innerHTML = `
+              <div style="color:#b91c1c; font-weight:700;">Impossible de prévisualiser ce fichier directement.</div>
+              <div style="margin-top:8px;">
+                <a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="btn-pdf-tool btn-pdf-accent">Télécharger ou ouvrir le PDF brut certifié ↗</a>
+              </div>
+            `;
+          }
+        });
+      }
+
+      function switchDocument(key) {
         const data = DOCUMENTS_DATABASE[key];
         if (!data) return;
+        currentDocKey = key;
 
         docInst.textContent = data.inst;
         docTitle.textContent = data.title;
         docSub.textContent = data.sub;
         docSealId.textContent = data.seal;
         docDate.textContent = data.date;
-        docContent.innerHTML = data.content;
         docHash.textContent = data.hash;
         docSource.textContent = data.source;
-        btnDownloadPdf.href = data.pdf;
+        if (btnDownloadPdf) btnDownloadPdf.href = data.pdf;
+        if (btnOpenViewerHd) btnOpenViewerHd.href = 'viewer.html?file=' + encodeURIComponent(data.pdf);
+        if (summaryContent) summaryContent.innerHTML = data.summary || '';
 
-        // Déclencheur onpaint si actif
-        if (canvas && canvas.onpaint) {
-          canvas.onpaint();
+        loadPdfDocument(data.pdf);
+      }
+
+      // Événements de sélection de document
+      selector.addEventListener('change', function(e) {
+        switchDocument(e.target.value);
+      });
+
+      // Événements de pagination
+      if (btnPrevPage) {
+        btnPrevPage.addEventListener('click', function() {
+          if (currentPageNum > 1 && !isContinuousMode) {
+            currentPageNum--;
+            renderCurrentView();
+          }
+        });
+      }
+
+      if (btnNextPage) {
+        btnNextPage.addEventListener('click', function() {
+          if (currentPageNum < totalPages && !isContinuousMode) {
+            currentPageNum++;
+            renderCurrentView();
+          }
+        });
+      }
+
+      if (inputPageNum) {
+        inputPageNum.addEventListener('change', function(e) {
+          let num = parseInt(e.target.value, 10);
+          if (!isNaN(num) && num >= 1 && num <= totalPages) {
+            currentPageNum = num;
+            renderCurrentView();
+          } else {
+            inputPageNum.value = currentPageNum;
+          }
+        });
+      }
+
+      // Événements de zoom
+      if (btnZoomIn) {
+        btnZoomIn.addEventListener('click', function() {
+          if (currentZoom < 2.0) {
+            currentZoom = Math.min(2.0, +(currentZoom + 0.15).toFixed(2));
+            renderCurrentView();
+          }
+        });
+      }
+
+      if (btnZoomOut) {
+        btnZoomOut.addEventListener('click', function() {
+          if (currentZoom > 0.6) {
+            currentZoom = Math.max(0.6, +(currentZoom - 0.15).toFixed(2));
+            renderCurrentView();
+          }
+        });
+      }
+
+      // Bascule de mode continu
+      if (btnToggleContinuous) {
+        btnToggleContinuous.addEventListener('click', function() {
+          isContinuousMode = !isContinuousMode;
+          btnToggleContinuous.classList.toggle('active', isContinuousMode);
+          if (labelContinuous) {
+            labelContinuous.textContent = isContinuousMode ? 'Page par page' : 'Toutes les pages';
+          }
+          renderCurrentView();
+        });
+      }
+
+      // Clavier
+      window.addEventListener('keydown', function(e) {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
+        if (e.key === 'ArrowLeft') {
+          if (currentPageNum > 1 && !isContinuousMode) {
+            currentPageNum--;
+            renderCurrentView();
+          }
+        } else if (e.key === 'ArrowRight') {
+          if (currentPageNum < totalPages && !isContinuousMode) {
+            currentPageNum++;
+            renderCurrentView();
+          }
+        } else if (e.key === '+' || e.key === '=') {
+          if (currentZoom < 2.0) {
+            currentZoom = Math.min(2.0, +(currentZoom + 0.15).toFixed(2));
+            renderCurrentView();
+          }
+        } else if (e.key === '-') {
+          if (currentZoom > 0.6) {
+            currentZoom = Math.max(0.6, +(currentZoom - 0.15).toFixed(2));
+            renderCurrentView();
+          }
         }
       });
+
+      // Redimensionnement de fenêtre
+      let resizeTimeout = null;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          if (currentPdfDoc) {
+            renderCurrentView();
+          }
+        }, 200);
+      });
+
+      // Gestion des paramètres URL : ?doc=reponse-canada ou ?doc=observations-auteur
+      const urlParams = new URLSearchParams(window.location.search);
+      const docParam = urlParams.get('doc');
+      if (docParam && DOCUMENTS_DATABASE[docParam]) {
+        selector.value = docParam;
+        switchDocument(docParam);
+      } else {
+        switchDocument('observations-auteur');
+      }
 
     })();
   </script>

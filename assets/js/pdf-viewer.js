@@ -60,6 +60,20 @@
 
   // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
   const DOCS_CATALOG = {
+    'observations-reponse-canada-17-octobre-2026': {
+      title: "Observations de l'auteur sur la réponse du Canada (17 octobre 2026)",
+      file: "assets/docs/observations-reponse-canada-sem26003.pdf",
+      badge: "SEM-26-003 · Observations citoyennes (17 oct. 2026)",
+      date: "17 octobre 2026",
+      pages: 3,
+      type: "Observations formelles de l'auteur (Art. 24.28 ACEUM)",
+      sha256: "b6f045810fdcf995acf5a6b5775cbaace353ba7f7eb3007003c0692a4e281da7",
+      author: "William Tristan Logan Théo Guindon (Auteur SEM-26-003)",
+      citation: "Guindon, W. (2026). Communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville) — Observations sur la demande de fermeture ou de report formulée dans la réponse du Canada du 16 octobre 2026. Blainville : Secrétariat de la CCE.",
+      license: "Document officiel déposé auprès de la CCE (CC BY-NC-ND 4.0)",
+      isOriginalWork: true,
+      isCCE: true
+    },
     'reponse-canada-16-octobre-2026': {
       title: "Réponse officielle du gouvernement du Canada (16 octobre 2026)",
       file: "assets/docs/72-rsp_fr.pdf",
