@@ -136,10 +136,10 @@ a:hover {
 
 header.site { background: var(--bg); 
   border-bottom: 1px solid var(--line);
-  padding: 10px 0;
+  padding: 6px 0;
   position: sticky;
   top: 0;
-  min-height: 58px;
+  min-height: 52px;
   contain: layout;
   z-index: var(--z-header);
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -153,17 +153,17 @@ header.site .wrap {
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-  max-width: 1160px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0 20px;
-  gap: 16px;
+  padding: 0 16px;
+  gap: 10px;
 }
 
 .brand {
   font-family: var(--font-heading);
   font-weight: 800;
   letter-spacing: .02em;
-  font-size: 16px;
+  font-size: 14.5px;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--text);
@@ -4200,8 +4200,8 @@ body.dark-theme .notif-link-ghost {
   .site nav {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 4px;
+    flex-wrap: nowrap !important;
   }
   .mobile-flat-nav,
   .mobile-nav-backdrop,
@@ -4213,21 +4213,21 @@ body.dark-theme .notif-link-ghost {
 .nav-dropdown {
   position: relative;
   display: inline-block;
-  padding-bottom: 6px;
-  margin-bottom: -6px;
+  padding-bottom: 4px;
+  margin-bottom: -4px;
 }
 
 .nav-dropdown-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
+  gap: 3px;
+  padding: 5px 8px;
   background: transparent;
   color: var(--text);
   border: 1px solid transparent;
   border-radius: 6px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.15s ease;
@@ -8036,21 +8036,25 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   }
 }
 
-/* --- Quick Search (Cmd+K / Ctrl+K) --- */
 .nav-search-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: var(--bg-card);
   border: 1px solid var(--line);
   color: var(--text-muted);
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+}
+@media (max-width: 1220px) {
+  .nav-search-text {
+    display: none;
+  }
 }
 .nav-search-btn:hover {
   background: var(--accent-wash);
@@ -11941,9 +11945,9 @@ body.cce-modal-open {
 }
 
 /* BRANDKIT:START — identité visuelle William Guindon */
-.brand { display: inline-flex; align-items: center; gap: .5rem; }
-.brand-mark { display: block; width: 34px; height: auto; flex-shrink: 0; }
-.brand-text { white-space: nowrap; color: var(--text); }
+.brand { display: inline-flex; align-items: center; gap: 6px; }
+.brand-mark { display: block; width: 28px; height: auto; flex-shrink: 0; }
+.brand-text { white-space: nowrap; color: var(--text); font-size: 14px; letter-spacing: 0.02em; }
 .brand-text span { color: var(--accent); }
 .brand-mark--dark { display: none; }
 [data-theme="dark"] .brand-mark--light { display: none; }
