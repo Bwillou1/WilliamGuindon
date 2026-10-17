@@ -15,10 +15,6 @@
 <link rel="canonical" href="https://williamguindon.me/messagerie.html">
 <link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/messagerie.html">
 <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/messagerie.html">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#064e3b">
 
 <link rel="stylesheet" href="style.css?v=20261001-v75">
 <script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
@@ -237,14 +233,56 @@
   ]
 }
 </script>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg" color="#22c55e">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Militant écologiste">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png">
+<!-- BRANDKIT:END -->
 </head>
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
 <header class="site" aria-label="En-tête du site">
   <div id="ai-chat" aria-hidden="true"></div>
+  <div class="top-breaking-banner" id="nav-breaking-banner" role="alert" aria-label="Dernière heure CCE" style="background: linear-gradient(90deg, #064e3b 0%, #065f46 100%); color: #ffffff; border-bottom: 1px solid rgba(16,185,129,0.3); font-size: 12.5px; padding: 6px 0;">
+    <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="background: #10b981; color: #064e3b; font-weight: 800; font-size: 10.5px; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.04em;">Dernière heure · 16 oct. 2026</span>
+        <span><strong>Dossier CCE SEM-26-003 :</strong> Le gouvernement du Canada a déposé sa réponse officielle (72-RSP). Examen par le Secrétariat en cours.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" style="color: #6ee7b7; font-weight: 700; text-decoration: underline;">Lire la réponse ↗</a>
+        <a href="communiques.html#communique-2026-10-16-cce" style="color: #ffffff; font-weight: 600; text-decoration: underline;">Communiqué ↗</a>
+        <button type="button" onclick="document.getElementById('nav-breaking-banner').style.display='none'; try{sessionStorage.setItem('wg_dismiss_breaking_banner','1')}catch(_){};" aria-label="Fermer cette alerte" style="background: none; border: none; color: #cbd5e1; font-size: 16px; cursor: pointer; padding: 0 4px; line-height: 1;">&times;</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      try {
+        if (sessionStorage.getItem('wg_dismiss_breaking_banner') === '1') {
+          var b = document.getElementById('nav-breaking-banner');
+          if (b) b.style.display = 'none';
+        }
+      } catch(_){}
+    })();
+  </script>
   <div class="wrap">
-    <a class="brand" href="./">William <span>Guindon</span></a>
+    <a class="brand" href="./" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="34" height="21">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="34" height="21" aria-hidden="true">
+      <span class="brand-text">William <span>Guindon</span></span>
+    </a>
     <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navigation principale"><div class="mobile-nav-header">
           <span class="mobile-nav-title">Navigation</span>
           <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
@@ -281,7 +319,7 @@
               <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
               <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
               <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
-              <a href="dossier-journalistes.html" class="nav-dropdown-item">Explorateur documentaire (222 pièces)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Explorateur documentaire</a>
               <a href="miroirs.html" class="nav-dropdown-item">Miroirs Décentralisés (IPFS/Tor)</a>
             </div>
           </details>
@@ -292,7 +330,7 @@
             </summary>
             <div class="nav-submenu-items">
               <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Comment Agir &amp; Soutenir</a>
-              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Échéance 16 oct.</a>
+              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Réponse Canada (16 oct.)</a>
               <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
               <a href="index.html#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
               <a href="index.html#carte" class="nav-dropdown-item">Carte interactive SIG</a>
@@ -330,7 +368,7 @@
               <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
               <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
               <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
-              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes (222 pièces)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
               <a href="index.html#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
             </div>
           </details>
@@ -472,6 +510,15 @@
             <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
           </div>
           <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
+              <p class="notif-item-desc">Ottawa invoque sa propre pétition au BVG pour demander la fin ou le report de l'examen, sans contester les rejets critiques de cadmium (320x la norme) ni l'atteinte à la tourbière. Examen CCE en cours (art. 24.28).</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              </div>
+            </article>
             <article class="notif-item">
               <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
               <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>

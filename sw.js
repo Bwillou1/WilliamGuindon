@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v145';
+const CACHE_NAME = 'wg-pwa-v146';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -88,6 +88,11 @@ const ASSETS_TO_CACHE = [
   '/icon-192.png',
   '/icon-512.png',
   '/og-image.jpg',
+  '/assets/img/wg-monogram.svg',
+  '/assets/img/wg-monogram-reversed.svg',
+  '/assets/img/wg-monogram-mono.svg',
+  '/assets/img/og-image-1200x630.png',
+  '/assets/img/site.webmanifest',
   '/feed.xml',
   '/status.json'
 ];
