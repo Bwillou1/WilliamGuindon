@@ -663,6 +663,10 @@ const apisJsonSpec = {
           url: "https://archive.org/details/dossier-journalistes-tourbiere-blainville-stablex"
         },
         {
+          type: "Archive-Canada-Response",
+          url: "https://archive.org/details/sem-26-003-canada-response"
+        },
+        {
           type: "BitTorrent",
           url: "https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
         }
