@@ -1994,3 +1994,155 @@ kbd {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   BARRE DE RECHERCHE IN-DOCUMENT FLOTTANTE (FINDBAR) & SURBRILLANCE EXACTE
+   ========================================================================== */
+.pdf-findbar {
+  position: absolute;
+  top: 14px;
+  right: 24px;
+  z-index: 95;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.pdf-findbar.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
+.findbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.findbar-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.findbar-input {
+  height: 32px;
+  width: 220px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.findbar-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-wash);
+}
+
+.findbar-count {
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--text-muted);
+  min-width: 48px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.findbar-separator {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+  margin: 0 2px;
+}
+
+.findbar-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.findbar-btn:hover {
+  background: var(--accent-wash);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.findbar-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.findbar-btn-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Surbrillance in-document TextLayer */
+.textLayer .highlight {
+  background-color: rgba(250, 204, 21, 0.45) !important;
+  color: inherit !important;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.4);
+  transition: background-color 0.15s ease;
+}
+
+.textLayer .highlight.selected {
+  background-color: rgba(34, 197, 94, 0.75) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px #15803d, 0 2px 8px rgba(34, 197, 94, 0.4);
+}
+
+[data-theme="dark"] .textLayer .highlight {
+  background-color: rgba(234, 179, 8, 0.45) !important;
+  color: inherit !important;
+}
+
+[data-theme="dark"] .textLayer .highlight.selected {
+  background-color: rgba(34, 197, 94, 0.85) !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .pdf-findbar {
+    top: 56px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    justify-content: space-between;
+    padding: 6px 8px;
+  }
+  .findbar-input {
+    width: 130px;
+    flex: 1;
+  }
+  .findbar-btn.findbar-toggle-btn {
+    display: none;
+  }
+}
+

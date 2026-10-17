@@ -82,7 +82,10 @@
       pages: 2,
       type: "Réponse de la Partie (Art. 24.27(4) ACEUM)",
       sha256: "31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2",
-      author: "Gouvernement du Canada (ECCC / MPO)",
+      author: "Sanchez,Amenemhet (elle | she, her) (ECCC) — Pour le gouvernement du Canada",
+      internalTitle: "Microsoft Word - 04 - FR - Canada's Notification - Request to Terminate SEM-26-003.docx",
+      exportTimestamp: "16/10/2026 15:43:27 HAE (UTC-4)",
+      converterTool: "Microsoft: Print To PDF (PDF v1.7, 267 Ko)",
       citation: "Gouvernement du Canada. (2026). Réponse de la Partie à la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville) en vertu de l'article 24.27(4) de l'ACEUM. Ottawa / Montréal.",
       license: "Document officiel déposé auprès de la CCE (Domaine public probatoire)",
       isOriginalWork: false,
@@ -457,6 +460,9 @@
     searchResults: [],
     currentSearchIndex: -1,
     isSearching: false,
+    searchQuery: '',
+    matchCase: false,
+    matchWord: false,
     sidebarOpen: false,
     translationMode: false,
     translationLayout: 'overlay', // 'overlay' | 'fluid'
@@ -470,6 +476,19 @@
     pagesContainer: document.getElementById('pages-container'),
     sidebar: document.getElementById('viewer-sidebar'),
     btnSidebarToggle: document.getElementById('btn-sidebar-toggle'),
+    btnSearchToggle: document.getElementById('btn-search-toggle'),
+    // Barre de recherche in-document (Findbar)
+    findbar: document.getElementById('pdf-findbar'),
+    findbarInput: document.getElementById('findbar-input'),
+    findbarCount: document.getElementById('findbar-count'),
+    findbarBtnPrev: document.getElementById('findbar-btn-prev'),
+    findbarBtnNext: document.getElementById('findbar-btn-next'),
+    findbarBtnCase: document.getElementById('findbar-btn-case'),
+    findbarBtnWord: document.getElementById('findbar-btn-word'),
+    findbarBtnSidebar: document.getElementById('findbar-btn-sidebar'),
+    findbarBtnClose: document.getElementById('findbar-btn-close'),
+    checkMatchCase: document.getElementById('check-match-case'),
+    checkMatchWord: document.getElementById('check-match-word'),
     docSelect: document.getElementById('viewer-doc-select'),
     badge: document.getElementById('viewer-badge'),
     btnPrev: document.getElementById('btn-page-prev'),
@@ -1019,6 +1038,13 @@
       await textLayerInstance.render();
       state.textLayerRenderingQueue.delete(pageNum);
 
+      // Si une recherche est active, appliquer les surbrillances sur la nouvelle page rendue
+      if (state.searchQuery && state.searchQuery.trim() !== '') {
+        const activeItem = state.searchResults[state.currentSearchIndex];
+        const activeMatchInPage = (activeItem && activeItem.page === pageNum) ? activeItem.matchIndexInPage : -1;
+        highlightMatchesOnPage(pageNum, state.searchQuery, activeMatchInPage);
+      }
+
       if (state.translationMode) {
         applyTranslationToPage(pageNum);
       }
@@ -1372,25 +1398,187 @@
     return dStr;
   }
 
-  /**
-   * Recherche de texte dans l'intégralité du document
-   */
-  async function performSearch(query) {
-    if (!query || query.trim() === '' || !state.pdfDoc) {
-      dom.searchResultsList.innerHTML = '';
-      dom.searchCountLabel.textContent = '0 résultat';
-      state.searchResults = [];
-      state.currentSearchIndex = -1;
+  // Fonctions de surbrillance et recherche in-document
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function clearHighlightsOnPage(pageNum) {
+    const textLayer = document.getElementById(`text-layer-${pageNum}`);
+    if (!textLayer) return;
+    const marks = textLayer.querySelectorAll('.highlight');
+    marks.forEach(mark => {
+      const parent = mark.parentNode;
+      if (parent) {
+        parent.replaceChild(document.createTextNode(mark.textContent), mark);
+        parent.normalize();
+      }
+    });
+  }
+
+  function clearAllHighlights() {
+    for (let i = 1; i <= state.totalPages; i++) {
+      clearHighlightsOnPage(i);
+    }
+  }
+
+  function highlightMatchesOnPage(pageNum, query, activeMatchIndexInPage = -1) {
+    const textLayer = document.getElementById(`text-layer-${pageNum}`);
+    if (!textLayer) return;
+
+    clearHighlightsOnPage(pageNum);
+    if (!query || query.trim() === '') return;
+
+    let pattern = escapeRegExp(query.trim());
+    if (state.matchWord) pattern = `\\b${pattern}\\b`;
+    const flags = state.matchCase ? 'g' : 'gi';
+    let regex;
+    try {
+      regex = new RegExp(pattern, flags);
+    } catch (_) {
       return;
     }
 
-    query = query.trim();
-    dom.searchCountLabel.textContent = 'Recherche en cours...';
-    dom.searchResultsList.innerHTML = '';
+    const walker = document.createTreeWalker(textLayer, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      textNodes.push(node);
+    }
+
+    let matchCounter = 0;
+    textNodes.forEach(textNode => {
+      const parent = textNode.parentNode;
+      if (parent && parent.classList && parent.classList.contains('highlight')) return;
+      const text = textNode.nodeValue;
+      if (!text || !regex.test(text)) return;
+
+      regex.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let lastIdx = 0;
+      let match;
+
+      while ((match = regex.exec(text)) !== null) {
+        if (match.index > lastIdx) {
+          frag.appendChild(document.createTextNode(text.substring(lastIdx, match.index)));
+        }
+        const mark = document.createElement('span');
+        mark.className = 'highlight';
+        mark.dataset.page = pageNum;
+        mark.dataset.matchIdx = matchCounter;
+        if (matchCounter === activeMatchIndexInPage) {
+          mark.classList.add('selected');
+          setTimeout(() => {
+            mark.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+          }, 60);
+        }
+        mark.textContent = match[0];
+        frag.appendChild(mark);
+        lastIdx = regex.lastIndex;
+        matchCounter++;
+      }
+
+      if (lastIdx < text.length) {
+        frag.appendChild(document.createTextNode(text.substring(lastIdx)));
+      }
+
+      parent.replaceChild(frag, textNode);
+    });
+  }
+
+  function openFindbar(focusInput = true) {
+    if (!dom.findbar) return;
+    dom.findbar.classList.remove('hidden');
+    if (dom.btnSearchToggle) dom.btnSearchToggle.classList.add('active');
+
+    // Pré-remplir avec la sélection de texte si le champ est vide
+    const selection = window.getSelection().toString().trim();
+    if (selection && (!dom.findbarInput.value || dom.findbarInput.value.trim() === '')) {
+      dom.findbarInput.value = selection;
+      if (dom.inputSearch) dom.inputSearch.value = selection;
+      performSearch(selection);
+    }
+
+    if (focusInput && dom.findbarInput) {
+      setTimeout(() => {
+        dom.findbarInput.focus();
+        dom.findbarInput.select();
+      }, 50);
+    }
+  }
+
+  function closeFindbar() {
+    if (!dom.findbar) return;
+    dom.findbar.classList.add('hidden');
+    if (dom.btnSearchToggle) dom.btnSearchToggle.classList.remove('active');
+  }
+
+  function toggleFindbar() {
+    if (!dom.findbar) return;
+    if (dom.findbar.classList.contains('hidden')) {
+      openFindbar(true);
+    } else {
+      closeFindbar();
+    }
+  }
+
+  function updateSearchCounts() {
+    const total = state.searchResults.length;
+    const current = total > 0 ? (state.currentSearchIndex + 1) : 0;
+    const label = `${current}/${total}`;
+
+    if (dom.findbarCount) {
+      dom.findbarCount.textContent = label;
+      dom.findbarCount.style.color = (total === 0 && state.searchQuery) ? '#ef4444' : 'var(--text-muted)';
+    }
+    if (dom.searchCountLabel) {
+      dom.searchCountLabel.textContent = total === 0 
+        ? (state.searchQuery ? '0 résultat' : '0 résultat')
+        : `${current} / ${total} résultat${total > 1 ? 's' : ''}`;
+    }
+  }
+
+  /**
+   * Recherche de texte exacte dans l'intégralité du document
+   */
+  async function performSearch(query) {
+    state.searchQuery = (query || '').trim();
+
+    // Synchroniser les deux champs de saisie
+    if (dom.findbarInput && dom.findbarInput.value !== state.searchQuery) {
+      dom.findbarInput.value = state.searchQuery;
+    }
+    if (dom.inputSearch && dom.inputSearch.value !== state.searchQuery) {
+      dom.inputSearch.value = state.searchQuery;
+    }
+
+    if (!state.searchQuery || !state.pdfDoc) {
+      if (dom.searchResultsList) dom.searchResultsList.innerHTML = '';
+      state.searchResults = [];
+      state.currentSearchIndex = -1;
+      clearAllHighlights();
+      updateSearchCounts();
+      return;
+    }
+
+    if (dom.findbarCount) dom.findbarCount.textContent = '...';
+    if (dom.searchCountLabel) dom.searchCountLabel.textContent = 'Recherche en cours...';
+    if (dom.searchResultsList) dom.searchResultsList.innerHTML = '';
     state.searchResults = [];
     state.currentSearchIndex = -1;
+    clearAllHighlights();
 
-    const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    let pattern = escapeRegExp(state.searchQuery);
+    if (state.matchWord) pattern = `\\b${pattern}\\b`;
+    const flags = state.matchCase ? 'g' : 'gi';
+    let regex;
+    try {
+      regex = new RegExp(pattern, flags);
+    } catch (_) {
+      updateSearchCounts();
+      return;
+    }
+
     let totalMatches = 0;
 
     for (let i = 1; i <= state.totalPages; i++) {
@@ -1399,59 +1587,88 @@
       const pageText = textContent.items.map(it => it.str).join(' ');
 
       let match;
+      let pageMatchCount = 0;
       while ((match = regex.exec(pageText)) !== null) {
         totalMatches++;
         const startIndex = Math.max(0, match.index - 40);
-        const endIndex = Math.min(pageText.length, match.index + query.length + 40);
+        const endIndex = Math.min(pageText.length, match.index + state.searchQuery.length + 40);
         const rawSnippet = pageText.substring(startIndex, endIndex);
         const escapedSnippet = escapeHTML(rawSnippet);
         const markedSnippet = escapedSnippet.replace(regex, (m) => `<mark>${escapeHTML(m)}</mark>`);
 
         state.searchResults.push({
           page: i,
-          index: totalMatches - 1,
+          matchIndexInPage: pageMatchCount,
+          totalIndex: totalMatches - 1,
           snippet: `...${markedSnippet}...`
         });
+        pageMatchCount++;
       }
     }
 
-    dom.searchCountLabel.textContent = `${totalMatches} résultat${totalMatches > 1 ? 's' : ''}`;
+    updateSearchCounts();
 
     if (totalMatches === 0) {
-      dom.searchResultsList.innerHTML = `<p style="font-size:12px; color:var(--text-faint); padding:8px;">Aucune occurrence trouvée.</p>`;
+      if (dom.searchResultsList) {
+        dom.searchResultsList.innerHTML = `<p style="font-size:12px; color:var(--text-faint); padding:8px;">Aucune occurrence trouvée pour « ${escapeHTML(state.searchQuery)} ».</p>`;
+      }
       return;
     }
 
-    state.searchResults.forEach((res, idx) => {
-      const item = document.createElement('div');
-      item.className = 'search-result-item';
-      item.innerHTML = `
-        <div class="search-result-page">Page ${res.page}</div>
-        <div class="search-result-snippet">${res.snippet}</div>
-      `;
-      item.addEventListener('click', () => {
-        state.currentSearchIndex = idx;
-        scrollToPage(res.page);
-        if (window.innerWidth <= 900) toggleSidebar(false);
+    if (dom.searchResultsList) {
+      state.searchResults.forEach((res, idx) => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.dataset.index = idx;
+        item.innerHTML = `
+          <div class="search-result-page">Page ${res.page} · Résultat #${idx + 1}</div>
+          <div class="search-result-snippet">${res.snippet}</div>
+        `;
+        item.addEventListener('click', () => {
+          selectSearchResult(idx);
+          if (window.innerWidth <= 900) toggleSidebar(false);
+        });
+        dom.searchResultsList.appendChild(item);
       });
-      dom.searchResultsList.appendChild(item);
-    });
+    }
 
     if (state.searchResults.length > 0) {
-      state.currentSearchIndex = 0;
-      scrollToPage(state.searchResults[0].page);
+      selectSearchResult(0);
     }
   }
 
-  function navigateSearch(direction) {
-    if (state.searchResults.length === 0) return;
-    state.currentSearchIndex += direction;
-    if (state.currentSearchIndex < 0) state.currentSearchIndex = state.searchResults.length - 1;
-    if (state.currentSearchIndex >= state.searchResults.length) state.currentSearchIndex = 0;
+  function selectSearchResult(idx) {
+    if (idx < 0 || idx >= state.searchResults.length) return;
+    state.currentSearchIndex = idx;
+    const target = state.searchResults[idx];
 
-    const target = state.searchResults[state.currentSearchIndex];
+    // Mettre à jour l'élément actif dans la liste du volet
+    if (dom.searchResultsList) {
+      const items = dom.searchResultsList.querySelectorAll('.search-result-item');
+      items.forEach((it, i) => it.classList.toggle('active', i === idx));
+    }
+
+    updateSearchCounts();
+
+    // Défiler vers la page et surligner
     scrollToPage(target.page);
-    showToast(`Résultat ${state.currentSearchIndex + 1} sur ${state.searchResults.length} (Page ${target.page})`);
+
+    // Attendre le rendu de la page puis surligner l'occurrence active
+    setTimeout(() => {
+      highlightMatchesOnPage(target.page, state.searchQuery, target.matchIndexInPage);
+    }, 120);
+  }
+
+  function navigateSearch(direction) {
+    if (state.searchResults.length === 0) {
+      if (state.searchQuery) performSearch(state.searchQuery);
+      return;
+    }
+    let nextIdx = state.currentSearchIndex + direction;
+    if (nextIdx < 0) nextIdx = state.searchResults.length - 1;
+    if (nextIdx >= state.searchResults.length) nextIdx = 0;
+
+    selectSearchResult(nextIdx);
   }
 
   /**
@@ -1481,6 +1698,7 @@
     const tabs = [
       { btn: dom.tabThumbnails, pane: dom.paneThumbnails, name: 'thumbnails' },
       { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' },
+      { btn: dom.tabSearch, pane: dom.paneSearch, name: 'search' },
       { btn: dom.tabTranslation, pane: dom.paneTranslation, name: 'translation' }
     ];
 
@@ -3170,19 +3388,93 @@ ER  -
 
     setupSelectionTranslator();
 
-    // Recherche
+    // Recherche in-document (Bouton d'en-tête, Findbar flottante et Volet latéral)
+    if (dom.btnSearchToggle) {
+      dom.btnSearchToggle.addEventListener('click', () => toggleFindbar());
+    }
+    if (dom.mobileBtnSearch) {
+      dom.mobileBtnSearch.addEventListener('click', () => toggleFindbar());
+    }
+
+    if (dom.findbarInput) {
+      let debounceTimer = null;
+      dom.findbarInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          performSearch(dom.findbarInput.value);
+        }, 180);
+      });
+      dom.findbarInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (e.shiftKey) navigateSearch(-1);
+          else navigateSearch(1);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          closeFindbar();
+        }
+      });
+    }
+
+    if (dom.findbarBtnPrev) dom.findbarBtnPrev.addEventListener('click', () => navigateSearch(-1));
+    if (dom.findbarBtnNext) dom.findbarBtnNext.addEventListener('click', () => navigateSearch(1));
+    if (dom.findbarBtnClose) dom.findbarBtnClose.addEventListener('click', () => closeFindbar());
+
+    if (dom.findbarBtnCase) {
+      dom.findbarBtnCase.addEventListener('click', () => {
+        state.matchCase = !state.matchCase;
+        dom.findbarBtnCase.classList.toggle('active', state.matchCase);
+        if (dom.checkMatchCase) dom.checkMatchCase.checked = state.matchCase;
+        if (state.searchQuery) performSearch(state.searchQuery);
+      });
+    }
+
+    if (dom.findbarBtnWord) {
+      dom.findbarBtnWord.addEventListener('click', () => {
+        state.matchWord = !state.matchWord;
+        dom.findbarBtnWord.classList.toggle('active', state.matchWord);
+        if (dom.checkMatchWord) dom.checkMatchWord.checked = state.matchWord;
+        if (state.searchQuery) performSearch(state.searchQuery);
+      });
+    }
+
+    if (dom.findbarBtnSidebar) {
+      dom.findbarBtnSidebar.addEventListener('click', () => {
+        switchSidebarTab('search');
+      });
+    }
+
+    if (dom.checkMatchCase) {
+      dom.checkMatchCase.addEventListener('change', () => {
+        state.matchCase = dom.checkMatchCase.checked;
+        if (dom.findbarBtnCase) dom.findbarBtnCase.classList.toggle('active', state.matchCase);
+        if (state.searchQuery) performSearch(state.searchQuery);
+      });
+    }
+
+    if (dom.checkMatchWord) {
+      dom.checkMatchWord.addEventListener('change', () => {
+        state.matchWord = dom.checkMatchWord.checked;
+        if (dom.findbarBtnWord) dom.findbarBtnWord.classList.toggle('active', state.matchWord);
+        if (state.searchQuery) performSearch(state.searchQuery);
+      });
+    }
+
     if (dom.inputSearch) {
       let debounceTimer = null;
       dom.inputSearch.addEventListener('input', () => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           performSearch(dom.inputSearch.value);
-        }, 300);
+        }, 200);
       });
       dom.inputSearch.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
+          e.preventDefault();
           if (e.shiftKey) navigateSearch(-1);
           else navigateSearch(1);
+        } else if (e.key === 'Escape') {
+          dom.inputSearch.blur();
         }
       });
     }
@@ -3257,7 +3549,44 @@ ER  -
    * Gestionnaire de raccourcis clavier
    */
   function handleGlobalKeydown(e) {
-    // Si l'utilisateur tape dans un input, ignorer
+    // 1. Raccourci natif universel Ctrl+F (Windows/Linux) / Cmd+F (Mac)
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F' || e.keyCode === 70)) {
+      e.preventDefault();
+      e.stopPropagation();
+      openFindbar(true);
+      return;
+    }
+
+    // 2. F3 et Shift+F3 (recherche suivante / précédente universelle)
+    if (e.key === 'F3' || e.keyCode === 114) {
+      e.preventDefault();
+      e.stopPropagation();
+      navigateSearch(e.shiftKey ? -1 : 1);
+      return;
+    }
+
+    // 3. Touche Escape globale
+    if (e.key === 'Escape') {
+      if (dom.findbar && !dom.findbar.classList.contains('hidden')) {
+        e.preventDefault();
+        closeFindbar();
+        return;
+      }
+      if (dom.shortcutsDialog && dom.shortcutsDialog.open) {
+        dom.shortcutsDialog.close();
+        return;
+      }
+      if (dom.licenseDialog && dom.licenseDialog.open) {
+        dom.licenseDialog.close();
+        return;
+      }
+      if (state.sidebarOpen && window.innerWidth <= 900) {
+        toggleSidebar(false);
+        return;
+      }
+    }
+
+    // Si l'utilisateur tape dans un input, ignorer les autres raccourcis
     if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       if (e.key === 'Escape') document.activeElement.blur();
       return;
@@ -3314,7 +3643,7 @@ ER  -
         break;
       case 's':
         e.preventDefault();
-        switchSidebarTab('search');
+        openFindbar(true);
         break;
       case 't':
         e.preventDefault();
@@ -3414,7 +3743,20 @@ ER  -
         dom.licenseTermsCard.classList.add('card-cce');
         if (dom.licenseTermsTitle) dom.licenseTermsTitle.textContent = "Statut Juridique — Document Officiel du Registre Public CCE";
         if (dom.licenseTermsText) {
-          dom.licenseTermsText.innerHTML = "Ce document est une décision ou un acte officiel rendu par le Secrétariat de la <strong>Commission de coopération environnementale (CCE)</strong> en vertu du Chapitre 24 de l'Accord Canada–États-Unis–Mexique (ACEUM). Il appartient au dossier public international de la procédure SEM-26-003 et n'a pas été rédigé par William Guindon.";
+          dom.licenseTermsText.innerHTML = "Ce document est une décision ou un acte officiel rendu par le Secrétariat de la <strong>Commission de coopération environnementale (CCE)</strong> ou déposé par une Partie en vertu du Chapitre 24 de l'Accord Canada–États-Unis–Mexique (ACEUM). Il appartient au dossier public international de la procédure SEM-26-003.";
+          if (docInfo.internalTitle) {
+            dom.licenseTermsText.innerHTML += `
+              <div style="margin-top:10px; padding:10px; background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); border-radius:6px; font-size:11.5px; line-height:1.45;">
+                <strong style="color:#0284c7; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  Métadonnées forensiques certifiées du fichier (ECCC) :
+                </strong>
+                <div>• <strong>Fichier source Word interne :</strong> <code>${escapeHTML(docInfo.internalTitle)}</code></div>
+                <div>• <strong>Auteure numérique :</strong> ${escapeHTML(docInfo.author)}</div>
+                <div>• <strong>Génération :</strong> ${escapeHTML(docInfo.exportTimestamp)} via ${escapeHTML(docInfo.converterTool)}</div>
+              </div>
+            `;
+          }
         }
         if (dom.licenseAiClause) {
           dom.licenseAiClause.innerHTML = "<span><strong>Diffusion officielle &amp; Archivage :</strong> Document public accessible à tous les citoyens, chercheurs et journalistes. La citation officielle doit mentionner le Secrétariat de la CCE et la procédure SEM-26-003.</span>";
