@@ -16,8 +16,8 @@ const fs = require('fs');
 const path = require('path');
 
 function generateCountdownSvg() {
-  // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
-  const target = new Date('2026-10-16T00:00:00-04:00').getTime();
+  // Délai légal de 60 jours CCE SEM-26-003 pour la recommandation du Secrétariat (Dossier factuel, art. 24.28 ACEUM)
+  const target = new Date('2026-12-15T23:59:59-05:00').getTime();
   const now = Date.now();
   const diff = Math.max(0, target - now);
 
@@ -149,15 +149,15 @@ ${cssKeyframeDelays}  </style>
     <circle cx="134" cy="57" r="6" fill="#34d399" class="pulse-dot" />
     <text x="152" y="62" font-size="13" font-weight="700" fill="#a7f3d0" letter-spacing="0.08em">CCE / ACEUM · DOSSIER SEM-26-003 · EN DIRECT</text>
     
-    <text x="1090" y="62" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 16 OCTOBRE 2026</text>
+    <text x="1090" y="62" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 15 DÉCEMBRE 2026</text>
   </g>
 
   <!-- Titre Principal -->
   <text x="600" y="132" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
-    HORLOGE OFFICIELLE — RÉPONSE DU CANADA
+    HORLOGE OFFICIELLE — DOSSIER FACTUEL CCE
   </text>
   <text x="600" y="168" font-size="17" font-weight="500" fill="#93c5fd" text-anchor="middle">
-    Décompte en temps réel avant la réponse exigée au gouvernement fédéral (Art. 24.27 ACEUM)
+    Délai de 60 jours pour la recommandation du Secrétariat (Art. 24.28 ACEUM)
   </text>
 
   <!-- Grille du Décompte (4 Unités Principales) -->
@@ -197,7 +197,7 @@ ${cssSecsFrames}    </g>
   <g transform="translate(200, 415)">
     <rect width="800" height="54" rx="27" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
     <text x="400" y="34" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle" dominant-baseline="middle">
-      <tspan id="cd-total-mins" fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes au total avant la réponse officielle
+      <tspan id="cd-total-mins" fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes avant la recommandation du Secrétariat CCE
     </text>
   </g>
 
@@ -221,8 +221,8 @@ ${cssSecsFrames}    </g>
   <script type="text/javascript">
     <![CDATA[
     (function() {
-      // Date cible : Échéance officielle CCE SEM-26-003 (16 octobre 2026 à 00:00:00 UTC-4)
-      var targetTime = new Date('2026-10-16T00:00:00-04:00').getTime();
+      // Date cible : Délai de 60 jours CCE SEM-26-003 (15 décembre 2026 à 23:59:59 EST / UTC-5)
+      var targetTime = new Date('2026-12-15T23:59:59-05:00').getTime();
       function pad(n) { return (n < 10 ? '0' : '') + n; }
 
       function updateClock() {
