@@ -126,22 +126,82 @@ try:
     )
 
     if res.status_code == 200 and res.content:
+        # Rotation des 3 dernières captures
+        if os.path.exists("blainville_capture_2.png"):
+            if os.path.exists("blainville_capture_3.png"):
+                os.remove("blainville_capture_3.png")
+            os.replace("blainville_capture_2.png", "blainville_capture_3.png")
+
+        if os.path.exists("blainville_latest.png"):
+            import shutil
+            shutil.copyfile("blainville_latest.png", "blainville_capture_2.png")
+
         tmp_img = "blainville_latest.png.tmp"
         with open(tmp_img, "wb") as f:
             f.write(res.content)
         os.replace(tmp_img, "blainville_latest.png")
 
+        import shutil
+        shutil.copyfile("blainville_latest.png", "blainville_capture_1.png")
+
+        # Lecture de l'historique existant dans meta.json
+        existing_captures = []
+        if os.path.exists("meta.json"):
+            try:
+                with open("meta.json", "r", encoding="utf-8") as f_prev:
+                    prev_data = json.load(f_prev)
+                    existing_captures = prev_data.get("captures", [])
+            except Exception:
+                existing_captures = []
+
+        new_date_str = now.strftime("%Y-%m-%d %H:%M UTC")
+        new_label_date = now.strftime("%d %b")
+
+        new_captures = [
+            {
+                "id": "capture-1",
+                "file": "blainville_latest.png",
+                "date": new_date_str,
+                "label": f"{new_label_date} (Dernière)",
+                "source": "Copernicus Sentinel-2 L2A",
+                "cloud_coverage": "0%"
+            }
+        ]
+
+        # Décaler les captures précédentes
+        if existing_captures:
+            c1 = existing_captures[0]
+            new_captures.append({
+                "id": "capture-2",
+                "file": "blainville_capture_2.png",
+                "date": c1.get("date", ""),
+                "label": c1.get("label", "").replace(" (Dernière)", ""),
+                "source": "Copernicus Sentinel-2 L2A",
+                "cloud_coverage": "0%"
+            })
+            if len(existing_captures) > 1:
+                c2 = existing_captures[1]
+                new_captures.append({
+                    "id": "capture-3",
+                    "file": "blainville_capture_3.png",
+                    "date": c2.get("date", ""),
+                    "label": c2.get("label", "").replace(" (Dernière)", ""),
+                    "source": "Copernicus Sentinel-2 L2A",
+                    "cloud_coverage": "0%"
+                })
+
         tmp_meta = "meta.json.tmp"
         with open(tmp_meta, "w", encoding="utf-8") as f:
             json.dump({
-                "updated_at": now.strftime("%Y-%m-%d %H:%M UTC"),
+                "updated_at": new_date_str,
                 "status": "success",
                 "source": "Copernicus Sentinel-2 L2A",
                 "satellite": "Sentinel-2",
-                "coverage": "Grande Tourbière de Blainville"
+                "coverage": "Grande Tourbière de Blainville",
+                "captures": new_captures
             }, f, indent=2)
         os.replace(tmp_meta, "meta.json")
-        print("Image satellite blainville_latest.png et meta.json actualisées avec suppression et remplacement atomique.")
+        print("Images satellite et meta.json actualisées avec rotation des 3 dernières captures.")
     else:
         print(f"Erreur API Copernicus ({res.status_code}): {res.text}")
         sys.exit(1)

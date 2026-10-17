@@ -103,6 +103,37 @@
     accent-color: var(--accent);
     cursor: pointer;
   }
+  .capture-pills {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 3px;
+  }
+  .capture-pill {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+  .capture-pill:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .capture-pill.active {
+    background: #059669;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  }
 </style>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
@@ -467,13 +498,21 @@
       </div>
       <div class="satellite-controls">
         <div class="control-group">
+          <label style="font-weight:600; color:var(--text);">3 dernières captures :</label>
+          <div class="capture-pills" id="capture-pills" role="radiogroup" aria-label="3 dernières captures Sentinel-2">
+            <button type="button" class="capture-pill active" data-index="0" aria-checked="true" title="Dernière capture">17 oct. (Dernière)</button>
+            <button type="button" class="capture-pill" data-index="1" aria-checked="false" title="Capture précédente">16 oct.</button>
+            <button type="button" class="capture-pill" data-index="2" aria-checked="false" title="Capture antérieure">15 oct.</button>
+          </div>
+        </div>
+        <div class="control-group">
           <label for="opacity-slider" style="font-weight:600; color:var(--text);">Opacité Sentinel-2 :</label>
-          <input type="range" id="opacity-slider" min="0" max="100" value="95" style="width: 100px;">
-          <span id="opacity-val" style="font-family:monospace; min-width:35px;">95%</span>
+          <input type="range" id="opacity-slider" min="0" max="100" value="100" style="width: 90px;">
+          <span id="opacity-val" style="font-family:monospace; min-width:38px;">100%</span>
         </div>
         <div class="control-group">
           <label style="font-weight:600; color:var(--text); cursor:pointer;">
-            <input type="checkbox" id="toggle-polygon" checked style="margin-right:4px;">
+            <input type="checkbox" id="toggle-polygon" style="margin-right:4px;">
             Périmètre Tourbière
           </label>
         </div>
@@ -487,19 +526,28 @@
 
   <div class="satellite-info-grid">
     <div class="satellite-info-card">
-      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text);">🛰️ Programme Copernicus</h2>
+      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #10b981; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+        <span>Programme Copernicus</span>
+      </h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
         Les bandes spectrales B04 (Rouge), B03 (Vert) et B02 (Bleu) de Sentinel-2 L2A sont traitées pour un rendu naturel calibré avec un coefficient de réflectance optimisé pour l'observation des strates végétales et humides.
       </p>
     </div>
     <div class="satellite-info-card">
-      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text);">🌲 Intégrité Écologique</h2>
+      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #10b981; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;" aria-hidden="true"><path d="M12 2L4 12h5l-3 7h12l-3-7h5L12 2z"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+        <span>Intégrité Écologique</span>
+      </h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
         La Grande Tourbière de Blainville constitue le plus vaste milieu humide boisé des Basses-Laurentides et un réservoir majeur de carbone. L'enclave industrielle au centre est exploitée par Stablex depuis 1983.
       </p>
     </div>
     <div class="satellite-info-card">
-      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text);">⚖️ Dossier CCE SEM-26-003</h2>
+      <h2 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+        <svg class="svg-icon" viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #10b981; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+        <span>Dossier CCE SEM-26-003</span>
+      </h2>
       <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
         Cette couverture cartographique appuie le registre probatoire de la communication citoyenne relative à l'application efficace des lois environnementales (Articles 24.27 et 24.28 de l'ACEUM).
       </p>
@@ -566,27 +614,72 @@ document.addEventListener('DOMContentLoaded', function() {
     dashArray: '5, 5',
     fillColor: '#10b981',
     fillOpacity: 0.1
-  }).addTo(map);
+  });
 
   polygonLayer.bindPopup('<strong>Grande Tourbière de Blainville</strong><br>Périmètre d\'intérêt écologique sous surveillance (SEM-26-003).');
 
-  // 3. Emprise géographique et calage de l'image satellite blainville_latest.png
+  // 3. Emprise géographique et calage des images satellite
   var bounds = [
     [45.670084, -73.88134],
     [45.712173, -73.8115699]
   ];
 
+  // Liste des 3 dernières captures (par défaut ou chargées depuis meta.json)
+  var defaultCaptures = [
+    { id: 'capture-1', file: 'blainville_latest.png', label: '17 oct. (Dernière)', date: '2026-10-17 14:45 UTC' },
+    { id: 'capture-2', file: 'blainville_capture_2.png', label: '16 oct.', date: '2026-10-16 15:51 UTC' },
+    { id: 'capture-3', file: 'blainville_capture_3.png', label: '15 oct.', date: '2026-10-15 16:03 UTC' }
+  ];
+  var capturesList = defaultCaptures;
+  var currentCaptureIndex = 0;
+
   var imgTimestamp = Date.now();
   var satelliteOverlay = L.imageOverlay('blainville_latest.png?_t=' + imgTimestamp, bounds, {
-    opacity: 0.95,
+    opacity: 1.0,
     interactive: true
   }).addTo(map);
 
   satelliteOverlay.on('error', function() {
-    console.warn('Image blainville_latest.png non encore générée par GitHub Actions.');
+    console.warn('Image satellite non encore générée par GitHub Actions.');
   });
 
-  // 4. Contrôles d'opacité et de bascule du polygone
+  // 4. Fonction de bascule entre les 3 dernières captures
+  function switchCapture(index) {
+    if (index < 0 || index >= capturesList.length) return;
+    currentCaptureIndex = index;
+    var cap = capturesList[index];
+    var currentOpacity = slider ? (parseInt(slider.value, 10) / 100) : 1.0;
+
+    satelliteOverlay.setUrl(cap.file + '?_t=' + Date.now());
+    satelliteOverlay.setOpacity(currentOpacity);
+
+    var pills = document.querySelectorAll('.capture-pill');
+    pills.forEach(function(pill, idx) {
+      if (idx === index) {
+        pill.classList.add('active');
+        pill.setAttribute('aria-checked', 'true');
+      } else {
+        pill.classList.remove('active');
+        pill.setAttribute('aria-checked', 'false');
+      }
+    });
+
+    var statusText = document.getElementById('satellite-status-text');
+    if (statusText) {
+      statusText.innerHTML = 'Capture Sentinel-2 affichée : <strong>' + (cap.date || cap.label) + '</strong> (sans nuages)';
+    }
+  }
+
+  // Écouteurs sur les boutons de capture
+  var pills = document.querySelectorAll('.capture-pill');
+  pills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-index'), 10);
+      switchCapture(idx);
+    });
+  });
+
+  // 5. Contrôles d'opacité et de bascule du polygone (désactivé par défaut)
   var slider = document.getElementById('opacity-slider');
   var opacityVal = document.getElementById('opacity-val');
   if (slider && opacityVal) {
@@ -599,6 +692,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var togglePolygon = document.getElementById('toggle-polygon');
   if (togglePolygon) {
+    if (togglePolygon.checked) {
+      map.addLayer(polygonLayer);
+    }
     togglePolygon.addEventListener('change', function(e) {
       if (e.target.checked) {
         map.addLayer(polygonLayer);
@@ -608,18 +704,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 5. Chargement dynamique des métadonnées (meta.json)
+  // 6. Chargement dynamique des métadonnées (meta.json)
   fetch('meta.json?_t=' + Date.now())
     .then(function(res) { return res.json(); })
     .then(function(data) {
+      if (data.captures && Array.isArray(data.captures) && data.captures.length > 0) {
+        capturesList = data.captures;
+        pills.forEach(function(pill, idx) {
+          if (capturesList[idx]) {
+            pill.textContent = capturesList[idx].label || ('Capture ' + (idx + 1));
+            pill.title = 'Capture du ' + (capturesList[idx].date || capturesList[idx].label);
+          }
+        });
+      }
       var statusText = document.getElementById('satellite-status-text');
       if (statusText) {
+        var activeCap = capturesList[currentCaptureIndex] || data;
         if (data.status === 'success' && data.updated_at) {
-          statusText.innerHTML = 'Dernière capture Sentinel-2 : <strong>' + data.updated_at + '</strong> (sans nuages)';
+          statusText.innerHTML = 'Dernière capture Sentinel-2 : <strong>' + (activeCap.date || data.updated_at) + '</strong> (sans nuages)';
         } else if (data.status === 'pending_credentials') {
           statusText.innerHTML = 'En attente de configuration des clés Copernicus (CDSE_CLIENT_ID).';
         } else {
-          statusText.innerHTML = 'Acquisition : ' + (data.updated_at || 'Récente') + ' · ' + (data.source || 'Copernicus');
+          statusText.innerHTML = 'Acquisition : ' + (activeCap.date || data.updated_at || 'Récente') + ' · ' + (data.source || 'Copernicus');
         }
       }
     })
