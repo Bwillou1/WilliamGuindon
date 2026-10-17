@@ -966,7 +966,7 @@
 
 
 
-<script src="assets/js/theme-core.js?v=20261016-v133" defer></script>
+<script src="assets/js/theme-core.js?v=20261017-v134" defer></script>
 <script src="assets/js/page-home.js?v=20260923-v2" defer></script>
 </head>
 <body><a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -1006,13 +1006,14 @@
   function tickImmediateCountdown() {
     var target = new Date('2026-10-16T00:00:00-04:00').getTime();
     var now = Date.now();
+    var diff = target - now;
     var sParams = (typeof window !== 'undefined' && window.location && window.location.search) ? window.location.search : '';
     var isStage2Param = sParams.indexOf('stage2=1') !== -1 || sParams.indexOf('etape2=1') !== -1 || sParams.indexOf('preview=stage2') !== -1 || sParams.indexOf('preview=tomorrow') !== -1 || sParams.indexOf('surge=1') !== -1;
-    var isPast = diff <= 0 || isStage2Param;
-    var d = isPast ? 0 : Math.floor(diff / (1000 * 60 * 60 * 24));
-    var h = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var m = isPast ? 0 : Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    var s = isPast ? 0 : Math.floor((diff % (1000 * 60)) / 1000);
+    var isPast = now >= target || diff <= 0 || isStage2Param;
+    var d = 0;
+    var h = 0;
+    var m = 0;
+    var s = 0;
     var pad = function(n) { return (n < 10 ? '0' : '') + n; };
 
     document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) { el.textContent = d; });
@@ -1031,10 +1032,10 @@
       if (trackerBlock) trackerBlock.style.display = 'none';
       if (trackerStage2) trackerStage2.style.display = 'block';
       document.querySelectorAll('.site-deadline-title').forEach(function(el) {
-        el.textContent = "Statut CCE · Échéance légale atteinte (16 oct.) :";
+        el.textContent = "Statut CCE · Réponse officielle déposée :";
       });
       document.querySelectorAll('.site-deadline-clock').forEach(function(el) {
-        el.innerHTML = '<span style="color:#f59e0b; font-weight:800; font-size:12px; letter-spacing:0.04em;">DÉLAI ÉCHU · EN ATTENTE DU DÉPÔT DU CANADA</span>';
+        el.innerHTML = '<span style="color:#10b981; font-weight:800; font-size:12px; letter-spacing:0.04em;">RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN CCE (ART. 24.28)</span>';
       });
     }
   }
@@ -1390,8 +1391,8 @@
           <span class="hero-crisis-dot"></span>
           <span>DOSSIER CCE · SEM-26-003 · GRANDE TOURBIÈRE DE BLAINVILLE</span>
         </div>
-        <!-- Bloc Décompte dynamique en direct (actif avant l'échéance) -->
-        <div id="hero-countdown-block">
+        <!-- Bloc Décompte dynamique en direct (inactif car réponse officielle déposée) -->
+        <div id="hero-countdown-block" style="display: none;">
           <h2 class="hero-crisis-title">RÉPONSE DU CANADA : <span class="alert-highlight">16 OCTOBRE 2026</span></h2>
           <p class="hero-crisis-subtitle">Le gouvernement fédéral est officiellement sommé de répondre (art. 24.27(3) de l'ACEUM) :</p>
 
@@ -1403,12 +1404,12 @@
               </div>
               <div class="hero-countdown-sep">:</div>
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-hours">06</span>
+                <span class="hero-countdown-val js-cd-hours">00</span>
                 <span class="hero-countdown-lbl">Heures</span>
               </div>
               <div class="hero-countdown-sep">:</div>
               <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-mins">40</span>
+                <span class="hero-countdown-val js-cd-mins">00</span>
                 <span class="hero-countdown-lbl">Minutes</span>
               </div>
               <div class="hero-countdown-sep">:</div>
@@ -1422,8 +1423,8 @@
         </div>
         <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
 
-        <!-- Bloc Statut Étape 2 sobre dans la carte Hero (actif dès l'échéance atteinte) -->
-        <div id="hero-stage2-summary-block" style="display: none;">
+        <!-- Bloc Statut Étape 2 sobre dans la carte Hero (actif car réponse déposée) -->
+        <div id="hero-stage2-summary-block" style="display: block;">
           <div class="hero-stage2-pill-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #047857;">
             <span class="hero-stage2-dot" style="background: #10b981;"></span>
             <span>RÉPONSE DÉPOSÉE · 16 OCTOBRE 2026 · EXAMEN CCE EN COURS</span>
@@ -1696,8 +1697,8 @@
       </div>
 
       <aside class="cce-alert-banner" id="tracker-cce-banner" role="region" aria-label="Alerte CCE">
-        <!-- État Standard (avant échéance du 16 octobre) -->
-        <div id="tracker-countdown-state">
+        <!-- État Standard (masqué car réponse déposée) -->
+        <div id="tracker-countdown-state" style="display: none;">
           <div class="cce-banner-header">
             <div class="cce-badges-group">
               <span class="badge-positive">Décision positive CCE</span>
@@ -1780,8 +1781,8 @@
           </div>
         </div>
 
-        <!-- État Étape 2 (activé automatiquement le 16 octobre ou via console admin) -->
-        <div id="tracker-stage2-state" style="display: none;">
+        <!-- État Étape 2 (activé automatiquement car réponse déposée le 16 octobre) -->
+        <div id="tracker-stage2-state" style="display: block;">
           <div class="cce-banner-header">
             <div class="cce-badges-group">
               <span style="display:inline-flex; align-items:center; gap:6px; background:#10b981; color:#064e3b; font-size:12px; font-weight:800; padding:5px 14px; border-radius:9999px; text-transform:uppercase; letter-spacing:0.04em;">

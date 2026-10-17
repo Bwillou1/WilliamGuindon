@@ -615,8 +615,9 @@
   }
 
   function initApp() {
-    // Date calendaire de l'échéance CCE SEM-26-003 (début de journée 00:00:00, pas fin de journée)
-    let cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
+    // Date calendaire immuable de l'échéance CCE SEM-26-003 pour la réponse du Canada (16 octobre 2026)
+    const CCE_16_OCT_DEADLINE = new Date('2026-10-16T00:00:00-04:00').getTime();
+    let cceTargetDate = CCE_16_OCT_DEADLINE;
 
     try {
       updatePrecisionCountdown();
@@ -1561,11 +1562,11 @@
       if (!daysElement) return;
 
       const now = new Date().getTime();
-      const diff = cceTargetDate - now;
+      const diff = CCE_16_OCT_DEADLINE - now;
 
       const isEn = document.documentElement.lang.startsWith('en');
       if (diff <= 0 || (typeof isStage2StatusActive === 'function' && isStage2StatusActive(now))) {
-        daysElement.textContent = isEn ? "Deadline reached · Pending response" : "Échéance atteinte · En attente de la réponse";
+        daysElement.textContent = isEn ? "Party Response submitted · Secretariat Review (Art. 24.28)" : "Réponse déposée le 16 oct. · Examen CCE (art. 24.28)";
         return;
       }
 
@@ -1579,7 +1580,10 @@
     function applyStatusData(data) {
       if (!data) return;
       if (data.prochaine_echeance) {
-        cceTargetDate = new Date(data.prochaine_echeance).getTime();
+        window.__WG_NEXT_DEADLINE = new Date(data.prochaine_echeance).getTime();
+        window.__WG_NEXT_DEADLINE_LABEL = data.echeance_libelle_fr || '';
+        // Note : Ne pas écraser cceTargetDate (16 octobre 2026) pour que le statut officiel
+        // de la réponse déposée du Canada reste permanent et immuable.
         updateCountdown();
         updateTimezoneBadges();
         if (typeof updatePrecisionCountdown === 'function') {
@@ -1942,9 +1946,9 @@
       // Priorité 2 : si l'administrateur a explicitement activé l'Étape 2 dans la console
       if (forceActive) return true;
 
-      // Priorité 3 : basculement automatique dès minuit le 16 octobre 2026 (heure EDT)
+      // Priorité 3 : basculement automatique permanent dès le 16 octobre 2026 minuit (heure EDT)
       const now = typeof nowMs === 'number' ? nowMs : Date.now();
-      if (cceTargetDate && now >= cceTargetDate) return true;
+      if (now >= CCE_16_OCT_DEADLINE) return true;
 
       return false;
     }
@@ -1966,9 +1970,6 @@
 
     // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2 ou 3
     function updatePrecisionCountdown() {
-      if (!cceTargetDate || isNaN(cceTargetDate)) {
-        cceTargetDate = new Date('2026-10-16T00:00:00-04:00').getTime();
-      }
       const now = new Date().getTime();
       const isStage3 = isStage3StatusActive();
       const isStage2 = isStage2StatusActive(now);
@@ -1988,8 +1989,8 @@
         if (crisisCard) crisisCard.style.display = 'none';
         if (stage3Card) stage3Card.style.display = 'block';
         if (bioLead) bioLead.style.display = 'block';
-        if (trackerCountdown) trackerCountdown.style.display = 'block';
-        if (trackerStage2) trackerStage2.style.display = 'none';
+        if (trackerCountdown) trackerCountdown.style.display = 'none';
+        if (trackerStage2) trackerStage2.style.display = 'block';
 
         // Adaptation du titre du tracker pour la phase post-échéance
         const trackerTitle = document.querySelector('#tracker-countdown-state h3');
@@ -2027,10 +2028,10 @@
 
         // Adaptation de la topbar de décompte du site
         document.querySelectorAll('.site-deadline-title').forEach(el => {
-          el.textContent = "Statut CCE · Échéance légale atteinte (16 oct.) :";
+          el.textContent = "Statut CCE · Réponse officielle déposée :";
         });
         document.querySelectorAll('.site-deadline-clock').forEach(el => {
-          el.innerHTML = '<span style="color:#f59e0b; font-weight:800; font-size:12px; letter-spacing:0.04em;">DÉLAI ÉCHU · EN ATTENTE DU DÉPÔT DU CANADA</span>';
+          el.innerHTML = '<span style="color:#10b981; font-weight:800; font-size:12px; letter-spacing:0.04em;">RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN CCE EN COURS</span>';
         });
 
         // Les compteurs restent calés à 0
