@@ -60,6 +60,34 @@
 
   // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
   const DOCS_CATALOG = {
+    'reponse-canada-16-octobre-2026': {
+      title: "Réponse officielle du gouvernement du Canada (16 octobre 2026)",
+      file: "assets/docs/72-rsp_fr.pdf",
+      badge: "SEM-26-003 · Réponse du Canada (72-RSP)",
+      date: "16 octobre 2026",
+      pages: 2,
+      type: "Réponse de la Partie (Art. 24.27(4) ACEUM)",
+      sha256: "31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2",
+      author: "Gouvernement du Canada (ECCC / MPO)",
+      citation: "Gouvernement du Canada. (2026). Réponse de la Partie à la communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville) en vertu de l'article 24.27(4) de l'ACEUM. Ottawa / Montréal.",
+      license: "Document officiel déposé auprès de la CCE (Domaine public probatoire)",
+      isOriginalWork: false,
+      isCCE: true
+    },
+    'accuse-reception-cce-16-octobre-2026': {
+      title: "Accusé de réception du Secrétariat CCE (16 octobre 2026)",
+      file: "assets/docs/73-rec_fr.pdf",
+      badge: "SEM-26-003 · Greffe CCE (73-REC)",
+      date: "16 octobre 2026",
+      pages: 1,
+      type: "Accusé de réception officiel du greffe",
+      sha256: "c7a7498caab9176aa8b80367dedf4b6471dfff26236f4f76ff0d89209f2a7432",
+      author: "Secrétariat de la CCE (Paolo Solano)",
+      citation: "Secrétariat de la CCE. (2026). Accusé de réception de la réponse du Canada en vertu de l'article 24.27(4) de l'ACEUM (Dossier SEM-26-003). Montréal : CCE.",
+      license: "Document officiel du greffe de la CCE (Domaine public probatoire)",
+      isOriginalWork: false,
+      isCCE: true
+    },
     'decision-17-aout-2026': {
       title: "Détermination positive du Secrétariat CCE (17 août 2026)",
       file: "assets/docs/26-2-det2_fr.pdf",

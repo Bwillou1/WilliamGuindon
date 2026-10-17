@@ -512,6 +512,8 @@
       </a>
 
       <select id="doc-selector" class="doc-select" aria-label="Choisir une pièce d'archive">
+        <option value="reponse-canada">Réponse officielle du Canada (16 oct. 2026) — 72-RSP</option>
+        <option value="accuse-cce">Accusé de réception CCE (16 oct. 2026) — 73-REC</option>
         <option value="det-26-003">Détermination CCE (17 août 2026) — DET-26-003</option>
         <option value="rsub-26-003">Mémoire révisé citoyen (16 juillet 2026) — SEM-26-003</option>
         <option value="bape-371">Enquête BAPE 371 & Cadmium (Cellule 6 Stablex)</option>
@@ -660,6 +662,46 @@
 
       // Base documentaire des pièces officielles
       const DOCUMENTS_DATABASE = {
+        'reponse-canada': {
+          inst: 'Gouvernement du Canada · Affaires Mondiales & Environnement et Changement Climatique Canada',
+          title: "Réponse du Canada en vertu de l'article 24.27(4) de l'ACEUM",
+          sub: 'Demande formelle de mettre fin à la communication SEM-26-003 ou de la reporter',
+          seal: '72-RSP',
+          date: '16 octobre 2026',
+          pdf: 'assets/docs/72-rsp_fr.pdf',
+          hash: '31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2',
+          source: 'Dépôt officiel du gouvernement du Canada au greffe CCE',
+          content: `
+            <p>Le gouvernement du Canada a transmis sa réponse officielle le 16 octobre 2026. La Partie défenderesse <strong>demande respectueusement au Secrétariat de mettre fin à la communication SEM-26-003, en tout ou en partie, ou de la reporter</strong>.</p>
+            <div class="doc-highlight-box">
+              <strong>ARGUMENT PRINCIPAL DU GOUVERNEMENT DU CANADA :</strong><br>
+              Le Canada soutient que la démarche est prématurée et entraînerait un dédoublement des efforts, au motif que l'auteur William Guindon a déposé le 29 juin 2026 la pétition environnementale no 0546 auprès du Bureau du vérificateur général du Canada (BVG / CEDD). Conformément à la Loi sur le vérificateur général, les ministres fédéraux doivent envoyer leur réponse d'ici le <strong>10 novembre 2026</strong>.
+            </div>
+            <p>Le Canada invoque la Ligne directrice 7.5 de la CCE concernant le chevauchement avec des recours internes. Le gouvernement ne conteste pas sur le fond les constats scientifiques de cadmium ou d'empiètement sur 278 000 m² de tourbière, mais sollicite le rejet procédural préalable.</p>
+            <div class="doc-legal-articles">
+              <div class="article-card"><div class="article-title">Pétition 0546 CEDD</div><div>24 questions adressées aux ministres fédéraux sur l'absence d'inspections et d'autorisations à la Cellule 6 de Stablex. Échéance de réponse : 10 novembre 2026.</div></div>
+              <div class="article-card"><div class="article-title">Ligne directrice 7.5 CCE</div><div>Évaluation par le Secrétariat des recours nationaux et du risque de chevauchement procédural.</div></div>
+            </div>
+          `
+        },
+        'accuse-cce': {
+          inst: 'Secrétariat de la Commission de Coopération Environnementale · Direction des Affaires Juridiques',
+          title: "Accusé de réception formel de la réponse du Canada (Art. 24.27(4) ACEUM)",
+          sub: 'Dossier SEM-26-003 (Enfouissement de matières dangereuses à Blainville) · Greffe international',
+          seal: '73-REC',
+          date: '16 octobre 2026',
+          pdf: 'assets/docs/73-rec_fr.pdf',
+          hash: 'c7a7498caab9176aa8b80367dedf4b6471dfff26236f4f76ff0d89209f2a7432',
+          source: 'Lettre officielle de Paolo Solano (Directeur affaires juridiques CCE)',
+          content: `
+            <p>Lettre officielle adressée à M. Michael Bonser (Sous-ministre adjoint délégué, Environnement et Changement climatique Canada) avec copie conforme à l'auteur citoyen William Guindon ainsi qu'aux représentantes du Mexique et des États-Unis.</p>
+            <div class="doc-highlight-box">
+              <strong>NOTIFICATION DU SECRÉTARIAT :</strong><br>
+              « Nous accusons réception de la réponse du gouvernement du Canada à la communication SEM-26-003, reçue électroniquement le 16 octobre 2026. [...] Le Secrétariat examinera la notification transmise par la Partie conformément à l'alinéa 24.27(4)a) de l'ACEUM. »
+            </div>
+            <p>La procédure bascule formellement dans la phase d'examen de l'article 24.28 de l'ACEUM, où le Secrétariat déterminera si la réponse du Canada dissipe les allégations ou s'il convient de recommander l'ouverture d'un Dossier factuel indépendant.</p>
+          `
+        },
         'det-26-003': {
           inst: 'Secrétariat de la Commission de Coopération Environnementale',
           title: "Détermination en vertu des paragraphes 24.27(2) et (3) de l'ACEUM",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v142';
+const CACHE_NAME = 'wg-pwa-v143';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -12,6 +12,10 @@ const ASSETS_TO_CACHE = [
   '/dossier-journalistes.html',
   '/viewer.html',
   '/dependances-licences.html',
+  '/assets/docs/72-rsp_fr.pdf',
+  '/assets/docs/72-rsp_en.pdf',
+  '/assets/docs/73-rec_fr.pdf',
+  '/assets/docs/73-rec_en.pdf',
   '/assets/docs/26-2-det2_fr.pdf',
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
