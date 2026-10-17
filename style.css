@@ -171,8 +171,13 @@ header.site .wrap {
   flex-shrink: 0;
   transition: color 0.2s;
 }
-.brand span {
-  color: var(--accent);
+.brand span.accent,
+.brand .brand-text span {
+  color: var(--accent) !important;
+}
+.brand,
+.brand .brand-text {
+  color: var(--text) !important;
 }
 
 nav {
@@ -11947,11 +11952,11 @@ body.cce-modal-open {
 /* BRANDKIT:START — identité visuelle William Guindon */
 .brand { display: inline-flex; align-items: center; gap: 6px; }
 .brand-mark { display: block; width: 28px; height: auto; flex-shrink: 0; }
-.brand-text { white-space: nowrap; color: var(--text); font-size: 14px; letter-spacing: 0.02em; }
-.brand-text span { color: var(--accent); }
-.brand-mark--dark { display: none; }
-[data-theme="dark"] .brand-mark--light { display: none; }
-[data-theme="dark"] .brand-mark--dark { display: block; }
+.brand-mark--dark { display: none !important; }
+.brand-text { white-space: nowrap; color: var(--text) !important; font-size: 14px; letter-spacing: 0.02em; }
+.brand-text span { color: var(--accent) !important; }
+[data-theme="dark"] .brand-mark--light { display: none !important; }
+[data-theme="dark"] .brand-mark--dark { display: inline-block !important; }
 /* BRANDKIT:END */
 
 
