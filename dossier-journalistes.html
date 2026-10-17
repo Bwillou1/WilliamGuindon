@@ -1443,8 +1443,42 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
             <span>Appui scientifique Liebel &amp; Meade (PDF) ↗</span>
           </a>
+          <a id="btn-rsp-canada"
+             href="viewer.html?file=assets/docs/72-rsp_fr.pdf"
+             class="drive-actions-item"
+             target="_blank"
+             rel="noopener noreferrer"
+             role="menuitem"
+             style="color:#059669; font-weight:700;"
+             title="Consulter la réponse officielle du gouvernement du Canada (16 oct. 2026)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Réponse du Canada (72-RSP, 16 oct.) ↗</span>
+          </a>
+          <a id="btn-rec-cce"
+             href="viewer.html?file=assets/docs/73-rec_fr.pdf"
+             class="drive-actions-item"
+             target="_blank"
+             rel="noopener noreferrer"
+             role="menuitem"
+             title="Consulter l'accusé de réception officiel de la CCE (16 oct. 2026)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Accusé de réception CCE (73-REC) ↗</span>
+          </a>
         </div>
       </details>
+    </div>
+  </div>
+
+  <!-- Bandeau d'actualité juridique du 16 octobre 2026 -->
+  <div style="background: rgba(16, 185, 129, 0.12); border-bottom: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12.5px; flex-wrap: wrap;">
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+      <span style="background:#10b981; color:#064e3b; font-weight:800; font-size:10.5px; padding:2px 8px; border-radius:9999px; text-transform:uppercase;">Dernière mise à jour · 16 oct. 2026</span>
+      <span><strong>Réponse officielle du Canada (72-RSP)</strong> déposée devant la CCE · Accusé de réception CCE (73-REC) · Prochaine échéance : 10 nov. 2026 (Pétition 0546 BVG)</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+      <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" style="color:#059669; font-weight:700; text-decoration:underline;">Réponse Canada (PDF) ↗</a>
+      <a href="viewer.html?file=assets/docs/73-rec_fr.pdf" style="color:#059669; font-weight:700; text-decoration:underline;">Accusé CCE (PDF) ↗</a>
+      <a href="communiques.html#communique-2026-10-16-cce" style="color:#064e3b; font-weight:700; text-decoration:underline;">Communiqué ↗</a>
     </div>
   </div>
 
@@ -3100,6 +3134,34 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     }
     if (rawName.includes("26-3-rsub_fr_redacted") || fullPath.includes("26-3-rsub_fr_redacted")) {
       const localPath = "assets/docs/26-3-rsub_fr_redacted.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+    if (rawName.includes("72-rsp") || rawName.includes("72-RSP") || fullPath.includes("72-rsp")) {
+      const isEn = rawName.includes("_en") || fullPath.includes("_en");
+      const localPath = isEn ? "assets/docs/72-rsp_en.pdf" : "assets/docs/72-rsp_fr.pdf";
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: localPath,
+        rawUrl: localPath,
+        corsUrl: localPath,
+        directStorageUrl: localPath,
+        effectiveUrl: localPath
+      };
+    }
+    if (rawName.includes("73-rec") || rawName.includes("73-REC") || fullPath.includes("73-rec")) {
+      const isEn = rawName.includes("_en") || fullPath.includes("_en");
+      const localPath = isEn ? "assets/docs/73-rec_en.pdf" : "assets/docs/73-rec_fr.pdf";
       return {
         isLocal: true,
         isSiteAsset: true,

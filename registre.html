@@ -607,6 +607,151 @@
           </ul>
         </article>
 
+        <!-- Module interactif : Comparateur contradictoire & Calendrier des 120 jours -->
+        <article class="portal-prose-block" id="module-analyse-contradictoire" style="border: 1.5px solid var(--accent); background: rgba(34, 197, 94, 0.03);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
+            <div>
+              <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(34,197,94,0.15); color:var(--accent); font-weight:800; font-size:11px; padding:3px 10px; border-radius:9999px; text-transform:uppercase;">
+                Outil d'analyse juridique interactive
+              </span>
+              <h3 style="margin:8px 0 0; font-size:1.35rem; color:var(--text);">Analyse contradictoire &amp; Calendrier légal (SEM-26-003)</h3>
+            </div>
+            
+            <div style="display:inline-flex; background:var(--bg-bar); border:1px solid var(--line); border-radius:8px; padding:3px; gap:4px;">
+              <button type="button" id="tab-btn-compare" onclick="switchRegistryTab('compare')" style="padding:6px 14px; border-radius:6px; font-size:12px; font-weight:700; border:none; cursor:pointer; background:var(--accent); color:#064e3b; transition:all 0.15s;">
+                ⚖️ Preuves vs Réponse du Canada
+              </button>
+              <button type="button" id="tab-btn-timeline" onclick="switchRegistryTab('timeline')" style="padding:6px 14px; border-radius:6px; font-size:12px; font-weight:700; border:none; cursor:pointer; background:transparent; color:var(--text-muted); transition:all 0.15s;">
+                ⏱ Calendrier des 120 jours (BVG)
+              </button>
+            </div>
+          </div>
+
+          <!-- Onglet 1 : Comparateur contradictoire -->
+          <div id="tab-content-compare">
+            <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:16px;">
+              Mise en perspective point par point des allégations probatoires citoyennes et de la réponse officielle déposée par le gouvernement du Canada (pièce <strong>72-RSP</strong>) le 16 octobre 2026.
+            </p>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+              <!-- Carte 1 : Cadmium & Loi sur les pêches -->
+              <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:16px; border-top:3px solid #ef4444;">
+                <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#ef4444; margin-bottom:6px;">Loi sur les pêches (art. 36(3))</div>
+                <h4 style="font-size:1rem; margin:0 0 10px; color:var(--text);">Rejets critiques de cadmium (jusqu'à 320x la norme)</h4>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px;">
+                  <strong style="color:var(--accent);">Preuve citoyenne :</strong> Dépassements critiques mesurés dans les fossés et cours d'eau communicants, déversement certifié de 1 300 litres d'effluents (Bureau Veritas) et mortalité piscicole aux lacs Fauvel.
+                </div>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px; background:rgba(0,0,0,0.2); padding:8px 10px; border-radius:6px;">
+                  <strong style="color:#fde68a;">Réponse du Canada (72-RSP) :</strong> <em>Aucune contestation ni démenti.</em> Aucune mesure d'inspection ni contre-analyse produite par Ottawa.
+                </div>
+                <div style="font-size:0.8rem; font-weight:700; color:#86efac;">
+                  ➔ Statut juridique : Fait matériel non réfuté versé au dossier CCE.
+                </div>
+              </div>
+
+              <!-- Carte 2 : Tourbière & Loi 93 -->
+              <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:16px; border-top:3px solid #f59e0b;">
+                <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#f59e0b; margin-bottom:6px;">Loi sur les espèces en péril &amp; BAPE 371</div>
+                <h4 style="font-size:1rem; margin:0 0 10px; color:var(--text);">Destruction de 278 000 m² de la Grande Tourbière</h4>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px;">
+                  <strong style="color:var(--accent);">Preuve citoyenne :</strong> Empiètement de la Cellule 6 sur 278 000 m² de milieux humides réprouvé par le BAPE 371, 4 espèces protégées (LEP), expropriation sous bâillon (Loi 93).
+                </div>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px; background:rgba(0,0,0,0.2); padding:8px 10px; border-radius:6px;">
+                  <strong style="color:#fde68a;">Réponse du Canada (72-RSP) :</strong> <em>Silence complet sur la valeur écologique.</em> Aucune autorisation ministérielle fédérale préalable n'est invoquée.
+                </div>
+                <div style="font-size:0.8rem; font-weight:700; color:#86efac;">
+                  ➔ Statut juridique : Absence de justification écologique fédérale.
+                </div>
+              </div>
+
+              <!-- Carte 3 : Fin de non-recevoir procédurale -->
+              <div style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:16px; border-top:3px solid #3b82f6;">
+                <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#3b82f6; margin-bottom:6px;">Procédure ACEUM (art. 24.27/24.28)</div>
+                <h4 style="font-size:1rem; margin:0 0 10px; color:var(--text);">Demande de rejet invoquant la Pétition 0546 au BVG</h4>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px;">
+                  <strong style="color:var(--accent);">Démarche citoyenne :</strong> Recours exhaustifs exercés (Pétition 0546 auprès du CEDD, démarches ONU, signalements ministériels sans réponse).
+                </div>
+                <div style="font-size:0.85rem; line-height:1.55; margin-bottom:8px; background:rgba(0,0,0,0.2); padding:8px 10px; border-radius:6px;">
+                  <strong style="color:#fde68a;">Réponse du Canada (72-RSP) :</strong> Demande au Secrétariat de mettre fin à SEM-26-003 ou d'en suspendre le traitement avant l'échéance ministérielle du 10 novembre 2026.
+                </div>
+                <div style="font-size:0.8rem; font-weight:700; color:#93c5fd;">
+                  ➔ Statut juridique : En évaluation par le Secrétariat CCE (art. 24.28).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onglet 2 : Calendrier légal des 120 jours -->
+          <div id="tab-content-timeline" style="display:none;">
+            <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:16px;">
+              Chronologie légale et obligatoire régissant les recours fédéraux et la réponse ministérielle imposée par l'article 22 de la <em>Loi sur le vérificateur général</em>.
+            </p>
+
+            <div style="position:relative; padding-left:24px; border-left:2px solid var(--line); display:flex; flex-direction:column; gap:16px; margin-top:12px;">
+              <!-- Étape 1 -->
+              <div style="position:relative;">
+                <span style="position:absolute; left:-31px; top:3px; width:12px; height:12px; border-radius:50%; background:#059669; border:2px solid var(--bg);"></span>
+                <div style="font-size:11px; font-weight:700; color:#059669; text-transform:uppercase;">29 juin 2026 · Dépôt formel</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text);">Dépôt de la Pétition environnementale no 0546 au CEDD</div>
+                <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">William Guindon dépose la pétition officielle auprès du Commissaire à l'environnement et au développement durable (Bureau du vérificateur général du Canada).</div>
+              </div>
+
+              <!-- Étape 2 -->
+              <div style="position:relative;">
+                <span style="position:absolute; left:-31px; top:3px; width:12px; height:12px; border-radius:50%; background:#059669; border:2px solid var(--bg);"></span>
+                <div style="font-size:11px; font-weight:700; color:#059669; text-transform:uppercase;">13 juillet 2026 · Notification ministérielle</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text);">Réception par les ministères fédéraux (ECCC &amp; MPO)</div>
+                <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">Les ministres de l'Environnement et des Pêches reçoivent formellement la pétition, déclenchant le compte à rebours statutaire strict de 120 jours fixé par la loi.</div>
+              </div>
+
+              <!-- Étape 3 -->
+              <div style="position:relative;">
+                <span style="position:absolute; left:-31px; top:3px; width:12px; height:12px; border-radius:50%; background:#059669; border:2px solid var(--bg);"></span>
+                <div style="font-size:11px; font-weight:700; color:#059669; text-transform:uppercase;">17 août 2026 · Détermination CCE</div>
+                <div style="font-size:0.92rem; font-weight:700; color:var(--text);">Décision DET-26-003 du Secrétariat de la CCE</div>
+                <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">Le Secrétariat juge la communication SEM-26-003 recevable et fixe au Canada l'échéance internationale du 16 octobre 2026.</div>
+              </div>
+
+              <!-- Étape 4 (Atteinte) -->
+              <div style="position:relative;">
+                <span style="position:absolute; left:-31px; top:3px; width:12px; height:12px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981; border:2px solid var(--bg);"></span>
+                <div style="font-size:11px; font-weight:800; color:#10b981; text-transform:uppercase;">16 octobre 2026 · Jalon atteint</div>
+                <div style="font-size:0.95rem; font-weight:800; color:var(--text);">Dépôt de la Réponse du Canada (72-RSP) &amp; Accusé CCE (73-REC)</div>
+                <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">Le Canada dépose son mémoire demandant de mettre fin à la communication SEM-26-003 en invoquant la pétition au BVG. Le Secrétariat ouvre la phase d'examen art. 24.28.</div>
+              </div>
+
+              <!-- Étape 5 (Prochaine échéance légale) -->
+              <div style="position:relative; background:rgba(245,158,11,0.08); padding:10px 14px; border-radius:8px; border:1px solid rgba(245,158,11,0.3);">
+                <span style="position:absolute; left:-31px; top:12px; width:12px; height:12px; border-radius:50%; background:#f59e0b; box-shadow:0 0 8px #f59e0b; border:2px solid var(--bg);"></span>
+                <div style="font-size:11px; font-weight:800; color:#f59e0b; text-transform:uppercase;">10 novembre 2026 · Prochaine échéance légale obligatoire</div>
+                <div style="font-size:0.95rem; font-weight:800; color:#fde68a;">Réponse écrite obligatoire des ministres fédéraux au Parlement</div>
+                <div style="font-size:0.82rem; color:var(--text); line-height:1.5; margin-top:4px;">Expiration du délai de 120 jours (art. 22 de la Loi sur le vérificateur général). Les ministres Steven Guilbeault (ECCC) et Diane Lebouthillier (MPO) doivent rendre publiques leurs réponses officielles au Parlement du Canada.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <script>
+        function switchRegistryTab(tab) {
+          var btnCompare = document.getElementById('tab-btn-compare');
+          var btnTimeline = document.getElementById('tab-btn-timeline');
+          var contentCompare = document.getElementById('tab-content-compare');
+          var contentTimeline = document.getElementById('tab-content-timeline');
+
+          if (tab === 'compare') {
+            if (btnCompare) { btnCompare.style.background = 'var(--accent)'; btnCompare.style.color = '#064e3b'; }
+            if (btnTimeline) { btnTimeline.style.background = 'transparent'; btnTimeline.style.color = 'var(--text-muted)'; }
+            if (contentCompare) contentCompare.style.display = 'block';
+            if (contentTimeline) contentTimeline.style.display = 'none';
+          } else {
+            if (btnCompare) { btnCompare.style.background = 'transparent'; btnCompare.style.color = 'var(--text-muted)'; }
+            if (btnTimeline) { btnTimeline.style.background = 'var(--accent)'; btnTimeline.style.color = '#064e3b'; }
+            if (contentCompare) contentCompare.style.display = 'none';
+            if (contentTimeline) contentTimeline.style.display = 'block';
+          }
+        }
+        </script>
+
         <article class="portal-prose-block">
           <h3>Pièces maîtresses et ressources documentaires probatoires</h3>
           <p>L'ensemble des pièces versées au dossier international est consultable en libre accès sous formats numériques ouverts :</p>
