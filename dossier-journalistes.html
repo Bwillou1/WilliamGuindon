@@ -1452,12 +1452,12 @@
         </div>
       </div>
 
-      <!-- Bouton slide commutateur de format : Mon lecteur vs Natif -->
-      <div class="reader-mode-slide-container" title="Basculer le format des documents : Mon lecteur interactif ou Lecteur natif de l'appareil">
-        <button type="button" id="btn-reader-mode-slide" class="reader-mode-slide-btn" role="switch" aria-checked="false" aria-label="Format du lecteur de documents : Mon lecteur ou Natif">
+      <!-- Bouton slide commutateur de format : Intégré vs Navigateur -->
+      <div class="reader-mode-slide-container">
+        <button type="button" id="btn-reader-mode-slide" class="reader-mode-slide-btn" role="switch" aria-checked="false" aria-label="Format du lecteur : Intégré ou Navigateur">
           <span class="slide-indicator"></span>
-          <span class="slide-label slide-label-custom">Mon lecteur</span>
-          <span class="slide-label slide-label-native">Natif</span>
+          <span class="slide-label slide-label-custom" title="Lecteur intégré (affichage adapté au thème, compatible mobile)">Intégré</span>
+          <span class="slide-label slide-label-native" title="Moteur du navigateur (recommandé sur grand écran, recherche Cmd+F instantanée)">Navigateur</span>
         </button>
       </div>
 
@@ -4318,11 +4318,21 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   });
 
   // =========================================================
-  // GESTION DU FORMAT DE LECTEUR PDF (ENRICHI VS NATIF)
+  // GESTION DU FORMAT DE LECTEUR PDF (INTÉGRÉ VS NAVIGATEUR)
   // =========================================================
   function getPdfReaderPref() {
     try {
-      return localStorage.getItem('wg_pdf_reader_pref') || 'custom';
+      const stored = localStorage.getItem('wg_pdf_reader_pref');
+      if (stored === 'native' || stored === 'custom') return stored;
+    } catch (_) {}
+
+    // Détection automatique intelligente si aucun choix manuel n'a encore été enregistré :
+    // - Grand écran (Desktop / Ordinateur >= 1024px) : Navigateur (Chromium natif, zoom trackpad, recherche rapide)
+    // - Petit écran (Mobile / Tablette < 1024px ou tactile) : Intégré (évite les soucis de rendu iframe sous iOS/Android)
+    try {
+      const isLargeScreen = window.matchMedia && window.matchMedia('(min-width: 1024px)').matches;
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      return (isLargeScreen && !isTouch) ? 'native' : 'custom';
     } catch (_) {
       return 'custom';
     }
@@ -4341,8 +4351,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       slideBtn.classList.toggle('is-native', isNative);
       slideBtn.setAttribute('aria-checked', isNative ? 'true' : 'false');
       slideBtn.title = isNative 
-        ? 'Format actuel : Lecteur natif (appareil). Cliquer pour passer à « Mon lecteur ».' 
-        : 'Format actuel : Mon lecteur interactif. Cliquer pour passer au « Lecteur natif ».';
+        ? 'Mode Navigateur actif (moteur Chromium/Google). Cliquer pour passer au lecteur Intégré.' 
+        : 'Mode Intégré actif (thème sombre/clair adapté). Cliquer pour passer au moteur Navigateur.';
     }
 
     // Mise à jour des liens d'action PDF du menu
@@ -4380,8 +4390,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       const toast = document.getElementById('drive-toast');
       if (toast) {
         toast.textContent = isNative 
-          ? 'Mode natif activé : les documents s\'ouvrent directement dans le format natif du navigateur.' 
-          : 'Mon lecteur activé : les documents s\'ouvrent dans le lecteur interactif enrichi.';
+          ? 'Mode Navigateur activé : moteur natif rapide du navigateur (recherche Cmd+F, zoom fluide).' 
+          : 'Mode Intégré activé : lecteur haute fidélité adapté au thème et compatible mobile.';
         toast.classList.add('visible');
         setTimeout(() => toast.classList.remove('visible'), 3500);
       }

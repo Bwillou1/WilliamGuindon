@@ -752,9 +752,17 @@
 
     const targetFile = getSafeDocUrl(rawFile);
 
-    // Vérifier si l'utilisateur a défini le lecteur natif de l'appareil comme mode par défaut pour tous les documents
+    // Vérifier si l'utilisateur a défini le format Navigateur ou Intégré comme mode par défaut
     const readerPref = (function () {
-      try { return localStorage.getItem('wg_pdf_reader_pref'); } catch (_) { return null; }
+      try {
+        const stored = localStorage.getItem('wg_pdf_reader_pref');
+        if (stored === 'native' || stored === 'custom') return stored;
+        const isLargeScreen = window.matchMedia && window.matchMedia('(min-width: 1024px)').matches;
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        return (isLargeScreen && !isTouch) ? 'native' : 'custom';
+      } catch (_) {
+        return 'custom';
+      }
     })();
     const forceCustom = urlParams.get('mode') === 'custom' || urlParams.get('force') === 'custom' || hashParams.get('mode') === 'custom';
 
