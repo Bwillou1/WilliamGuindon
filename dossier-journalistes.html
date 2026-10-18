@@ -1305,6 +1305,75 @@
     [data-theme="dark"] .journalist-welcome-box {
       background: #0f1a14 !important;
     }
+    /* Bouton slide commutateur de format (Mon lecteur vs Natif) */
+    .reader-mode-slide-container {
+      display: inline-flex;
+      align-items: center;
+    }
+    .reader-mode-slide-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      background: #f1f5f9;
+      border: 1px solid var(--line, #cbd5e1);
+      border-radius: 9999px;
+      padding: 2px;
+      height: 31px;
+      cursor: pointer;
+      user-select: none;
+      box-sizing: border-box;
+      outline: none;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .reader-mode-slide-btn:focus-visible {
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+    }
+    .reader-mode-slide-btn .slide-indicator {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: calc(50% - 2px);
+      height: calc(100% - 4px);
+      border-radius: 9999px;
+      background: #059669;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+      transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s ease;
+      z-index: 1;
+    }
+    .reader-mode-slide-btn.is-native .slide-indicator {
+      transform: translateX(100%);
+      background: #2563eb;
+    }
+    .reader-mode-slide-btn .slide-label {
+      position: relative;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 10px;
+      line-height: 27px;
+      white-space: nowrap;
+      transition: color 0.18s ease;
+      color: #64748b;
+    }
+    .reader-mode-slide-btn:not(.is-native) .slide-label-custom {
+      color: #ffffff;
+    }
+    .reader-mode-slide-btn.is-native .slide-label-native {
+      color: #ffffff;
+    }
+    [data-theme="dark"] .reader-mode-slide-btn {
+      background: #152219;
+      border-color: #244130;
+    }
+    [data-theme="dark"] .reader-mode-slide-btn .slide-label {
+      color: #94a3b8;
+    }
+    [data-theme="dark"] .reader-mode-slide-btn:not(.is-native) .slide-label-custom {
+      color: #ffffff;
+    }
+    [data-theme="dark"] .reader-mode-slide-btn.is-native .slide-label-native {
+      color: #ffffff;
+    }
   </style>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
@@ -1381,6 +1450,15 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           </button>
         </div>
+      </div>
+
+      <!-- Bouton slide commutateur de format : Mon lecteur vs Natif -->
+      <div class="reader-mode-slide-container" title="Basculer le format des documents : Mon lecteur interactif ou Lecteur natif de l'appareil">
+        <button type="button" id="btn-reader-mode-slide" class="reader-mode-slide-btn" role="switch" aria-checked="false" aria-label="Format du lecteur de documents : Mon lecteur ou Natif">
+          <span class="slide-indicator"></span>
+          <span class="slide-label slide-label-custom">Mon lecteur</span>
+          <span class="slide-label slide-label-native">Natif</span>
+        </button>
       </div>
 
       <!-- Menu déroulant Actions rapides -->
@@ -1488,24 +1566,6 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             <span>Miroir Archive.org (72-RSP) ↗</span>
           </a>
-          <div class="drive-actions-divider" style="margin: 8px 0; border-top: 1px solid var(--line, rgba(0,0,0,0.1));"></div>
-          <div class="drive-reader-mode-box" style="padding: 8px 10px; background: rgba(0,0,0,0.03); border-radius: 6px;">
-            <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px; color: var(--text, #1e293b); display: flex; align-items: center; justify-content: space-between;">
-              <span>Format des documents :</span>
-              <span id="label-current-reader-pref" style="font-size: 10px; font-weight: 700; color: #059669; background: rgba(16,185,129,0.15); padding: 1px 6px; border-radius: 4px;">Mon lecteur</span>
-            </div>
-            <div style="display: flex; gap: 6px;">
-              <button type="button" id="btn-pref-custom" class="btn-toggle-reader-pref active" style="flex: 1; padding: 5px 6px; font-size: 10.5px; font-weight: 600; border-radius: 5px; border: 1.5px solid #059669; background: #ecfdf5; color: #047857; cursor: pointer; text-align: center;">
-                Mon lecteur
-              </button>
-              <button type="button" id="btn-pref-native" class="btn-toggle-reader-pref" style="flex: 1; padding: 5px 6px; font-size: 10.5px; font-weight: 600; border-radius: 5px; border: 1px solid var(--line, #cbd5e1); background: #ffffff; color: var(--text-muted, #64748b); cursor: pointer; text-align: center;">
-                Natif (appareil)
-              </button>
-            </div>
-            <p style="margin: 5px 0 0 0; font-size: 9.5px; color: var(--text-muted, #64748b); line-height: 1.25;">
-              Applique le format choisi à tous les documents du site.
-            </p>
-          </div>
         </div>
       </details>
     </div>
@@ -4275,25 +4335,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       window.dispatchEvent(new CustomEvent('wg_pdf_reader_pref_change', { detail: { pref: isNative ? 'native' : 'custom' } }));
     } catch (_) {}
 
-    // Mise à jour de l'affichage du sélecteur
-    const lbl = document.getElementById('label-current-reader-pref');
-    if (lbl) {
-      lbl.textContent = isNative ? 'Natif (appareil)' : 'Mon lecteur';
-      lbl.style.color = isNative ? '#2563eb' : '#059669';
-      lbl.style.background = isNative ? 'rgba(37,99,235,0.12)' : 'rgba(16,185,129,0.15)';
-    }
-
-    const btnCustom = document.getElementById('btn-pref-custom');
-    const btnNative = document.getElementById('btn-pref-native');
-    if (btnCustom && btnNative) {
-      btnCustom.classList.toggle('active', !isNative);
-      btnNative.classList.toggle('active', isNative);
-      btnCustom.style.border = !isNative ? '1.5px solid #059669' : '1px solid var(--line, #cbd5e1)';
-      btnCustom.style.background = !isNative ? '#ecfdf5' : '#ffffff';
-      btnCustom.style.color = !isNative ? '#047857' : 'var(--text-muted, #64748b)';
-      btnNative.style.border = isNative ? '1.5px solid #2563eb' : '1px solid var(--line, #cbd5e1)';
-      btnNative.style.background = isNative ? '#eff6ff' : '#ffffff';
-      btnNative.style.color = isNative ? '#1d4ed8' : 'var(--text-muted, #64748b)';
+    // Mise à jour de l'affichage du bouton slide
+    const slideBtn = document.getElementById('btn-reader-mode-slide');
+    if (slideBtn) {
+      slideBtn.classList.toggle('is-native', isNative);
+      slideBtn.setAttribute('aria-checked', isNative ? 'true' : 'false');
+      slideBtn.title = isNative 
+        ? 'Format actuel : Lecteur natif (appareil). Cliquer pour passer à « Mon lecteur ».' 
+        : 'Format actuel : Mon lecteur interactif. Cliquer pour passer au « Lecteur natif ».';
     }
 
     // Mise à jour des liens d'action PDF du menu
@@ -4331,7 +4380,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       const toast = document.getElementById('drive-toast');
       if (toast) {
         toast.textContent = isNative 
-          ? 'Mode natif activé : les documents s\'ouvrent directement dans le lecteur natif de l\'appareil.' 
+          ? 'Mode natif activé : les documents s\'ouvrent directement dans le format natif du navigateur.' 
           : 'Mon lecteur activé : les documents s\'ouvrent dans le lecteur interactif enrichi.';
         toast.classList.add('visible');
         setTimeout(() => toast.classList.remove('visible'), 3500);
@@ -4339,20 +4388,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     }
   }
 
-  const btnPrefCustom = document.getElementById('btn-pref-custom');
-  const btnPrefNative = document.getElementById('btn-pref-native');
-
-  if (btnPrefCustom) {
-    btnPrefCustom.addEventListener('click', (e) => {
+  // Écouteur de clic sur le bouton slide
+  const btnReaderModeSlide = document.getElementById('btn-reader-mode-slide');
+  if (btnReaderModeSlide) {
+    btnReaderModeSlide.addEventListener('click', (e) => {
       e.preventDefault();
-      applyPdfReaderPref('custom', true);
-    });
-  }
-
-  if (btnPrefNative) {
-    btnPrefNative.addEventListener('click', (e) => {
-      e.preventDefault();
-      applyPdfReaderPref('native', true);
+      const currentPref = getPdfReaderPref();
+      const nextPref = (currentPref === 'native') ? 'custom' : 'native';
+      applyPdfReaderPref(nextPref, true);
     });
   }
 
