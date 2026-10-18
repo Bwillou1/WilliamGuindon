@@ -724,7 +724,7 @@ body.is-embedded .pdf-app {
   box-shadow: var(--viewer-page-shadow);
   border: var(--viewer-page-border);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   transition: transform 0.2s ease, box-shadow 0.2s ease, width 0.15s ease, height 0.15s ease;
   flex-shrink: 0;
   box-sizing: content-box;
@@ -736,17 +736,20 @@ body.is-embedded .pdf-app {
   height: 100%;
   vertical-align: middle;
   background-color: #ffffff;
+  border-radius: 4px;
 }
 
-
+/* --- Couche de texte textLayer conforme spécifications Mozilla PDF.js --- */
 .page-wrapper .textLayer {
   position: absolute;
   text-align: initial;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   overflow: hidden;
   opacity: 1;
-  line-height: 1;
+  line-height: 1 !important;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   text-size-adjust: none;
@@ -756,16 +759,27 @@ body.is-embedded .pdf-app {
   pointer-events: auto;
   user-select: text !important;
   -webkit-user-select: text !important;
+  box-sizing: content-box !important;
 }
 
 .page-wrapper .textLayer :is(span, br) {
-  color: transparent;
-  position: absolute;
-  white-space: pre;
-  cursor: text;
-  transform-origin: 0% 0%;
+  color: transparent !important;
+  position: absolute !important;
+  white-space: pre !important;
+  cursor: text !important;
+  transform-origin: 0% 0% !important;
   user-select: text !important;
   -webkit-user-select: text !important;
+  box-sizing: content-box !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.page-wrapper .textLayer span.markedContent {
+  top: 0;
+  height: 0;
 }
 
 .page-wrapper .textLayer .endOfContent {
@@ -776,6 +790,7 @@ body.is-embedded .pdf-app {
   cursor: default;
   user-select: none !important;
   -webkit-user-select: none !important;
+  pointer-events: none;
 }
 
 .page-wrapper .textLayer .endOfContent.active {

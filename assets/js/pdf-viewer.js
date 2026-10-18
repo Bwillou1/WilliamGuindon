@@ -22,7 +22,9 @@
         }
 
         async render() {
+          // L'affectation de --scale-factor doit être faite avant renderTextLayer
           this.container.style.setProperty('--scale-factor', this.viewport.scale);
+          
           if (typeof pdfjsLib.setLayerDimensions === 'function') {
             pdfjsLib.setLayerDimensions(this.container, this.viewport);
           } else {
@@ -41,7 +43,7 @@
             await this._renderTask.promise;
           }
 
-          // Ajout de la balise .endOfContent pour la sélection multi-lignes fluide (spécification pdf.js)
+          // Ajout de la balise .endOfContent pour la sélection multi-lignes fluide (spécification Mozilla pdf.js)
           if (!this.container.querySelector('.endOfContent')) {
             const endDiv = document.createElement('div');
             endDiv.className = 'endOfContent';
