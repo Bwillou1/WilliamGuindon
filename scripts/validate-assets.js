@@ -122,6 +122,11 @@ const licenseChecks = [
   { file: 'assets/vendor/pdfjs/pdf.worker.min.js', required: 'Apache License' },
   { file: 'assets/vendor/pdfjs/pdf_viewer.css', required: 'Apache License' },
   { file: 'assets/vendor/embedpdf/embedpdf.js', required: 'MIT License' },
+  { file: 'assets/vendor/embedpdf/embedpdf-cl9qiF45.js', required: 'MIT License' },
+  { file: 'assets/vendor/embedpdf/worker-engine-BCCrxWYm.js', required: 'MIT License' },
+  { file: 'assets/vendor/embedpdf/direct-engine-DVLMOJWp.js', required: 'MIT License' },
+  { file: 'assets/vendor/embedpdf/browser-BKLM0ThC-BCLQGPD6.js', required: 'MIT License' },
+  { file: 'assets/vendor/embedpdf/LICENSE', required: 'MIT License' },
   { file: 'assets/js/nostr-bundle.js', required: 'Bundled license information' },
   { file: 'assets/vendor/curtains/curtains.umd.min.js', required: 'MIT License' },
   { file: 'assets/js/papaparse.min.js', required: 'License: MIT' }

@@ -167,7 +167,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     licenseMeta: document.getElementById('license-doc-meta'),
     licenseHash: document.getElementById('license-doc-hash'),
     licenseCitation: document.getElementById('license-citation-text'),
-    licenseBadgePill: document.getElementById('license-badge-pill')
+    licenseBadgePill: document.getElementById('license-badge-pill'),
+    btnAbout: document.getElementById('btn-viewer-about'),
+    aboutDialog: document.getElementById('viewer-about-dialog'),
+    btnAboutClose: document.getElementById('btn-viewer-about-close'),
+    btnAboutOk: document.getElementById('btn-viewer-about-ok')
   };
 
   let currentTargetFile = 'assets/docs/observations-reponse-canada-sem26003.pdf';
@@ -348,6 +352,27 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         dom.btnCopyShareLink.textContent = 'Lien copié !';
         setTimeout(() => dom.btnCopyShareLink.textContent = 'Copier le lien avec attribution', 2500);
       });
+    });
+  }
+
+  // À propos et Licences
+  if (dom.btnAbout && dom.aboutDialog) {
+    dom.btnAbout.addEventListener('click', () => {
+      if (typeof dom.aboutDialog.showModal === 'function') {
+        dom.aboutDialog.showModal();
+      }
+    });
+  }
+
+  if (dom.btnAboutClose && dom.aboutDialog) {
+    dom.btnAboutClose.addEventListener('click', () => {
+      dom.aboutDialog.close();
+    });
+  }
+
+  if (dom.btnAboutOk && dom.aboutDialog) {
+    dom.btnAboutOk.addEventListener('click', () => {
+      dom.aboutDialog.close();
     });
   }
 

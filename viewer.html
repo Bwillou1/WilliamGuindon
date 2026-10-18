@@ -213,6 +213,14 @@
         <button type="button" id="btn-theme-toggle" class="tool-btn" title="Basculer thème Clair/Sombre" aria-label="Changer de thème">
           <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
+
+        <button type="button" id="btn-viewer-about" class="tool-btn" title="À propos du lecteur &amp; Licences tierces (MIT)" aria-label="À propos et licences">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </button>
       </div>
 
     </header>
@@ -246,6 +254,53 @@
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
           <button type="button" id="btn-embedpdf-copy-translate" class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px;">Copier</button>
         </div>
+      </div>
+    </dialog>
+
+    <dialog id="viewer-about-dialog" class="license-dialog">
+      <div class="license-dialog-header">
+        <div class="license-header-title">
+          <span class="license-badge-pill">Logiciel Libre · Licence MIT</span>
+          <h3>À propos du Lecteur PDF &amp; Mentions Légales</h3>
+        </div>
+        <button type="button" id="btn-viewer-about-close" class="tool-btn" aria-label="Fermer la fenêtre">&times;</button>
+      </div>
+
+      <div class="license-dialog-body">
+        <div class="license-doc-summary">
+          <h4>Lecteur PDF haute fidélité (EmbedPDF v2.15.1)</h4>
+          <p class="license-doc-meta">Visualisation WebAssembly (PDFium) fluide et consultation documentaire probatoire</p>
+        </div>
+
+        <div class="license-terms-card">
+          <div class="license-terms-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <strong>Licence du logiciel tiers (Licence MIT)</strong>
+          </div>
+          <p class="license-terms-text">
+            Ce lecteur de documents est propulsé par <strong>EmbedPDF</strong> (© 2024-2026 EmbedPDF Contributors). Ce composant logiciel libre est distribué sous les termes de la <strong>Licence MIT</strong>.
+          </p>
+          <div class="license-ai-clause">
+            <span><strong>Attribution &amp; Transparence :</strong> Le code source original d'EmbedPDF est disponible sur <a href="https://github.com/embedpdf/embed-pdf-viewer" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline;">github.com/embedpdf/embed-pdf-viewer ↗</a>. Une copie locale de la licence est conservée dans <a href="assets/vendor/embedpdf/LICENSE" target="_blank" style="color:var(--accent);text-decoration:underline;">assets/vendor/embedpdf/LICENSE</a> et enregistrée sur notre registre public des <a href="dependances-licences.html" target="_blank" style="color:var(--accent);text-decoration:underline;">Dépendances et Licences ↗</a>.</span>
+          </div>
+        </div>
+
+        <div class="license-terms-card" style="margin-top: 12px; background: var(--bg-card); border-color: var(--line);">
+          <div class="license-terms-header">
+            <strong style="font-size: 13px;">Propriété intellectuelle des pièces consultées</strong>
+          </div>
+          <p class="license-terms-text" style="font-size: 12px; margin-top: 6px;">
+            Les documents PDF affichés dans ce lecteur proviennent du registre public de la communication citoyenne <strong>SEM-26-003</strong> (Commission de coopération environnementale). Le contenu éditorial original de William Guindon est mis à disposition sous licence <strong>CC BY-NC-ND 4.0</strong>, tandis que les décisions CCE et actes gouvernementaux relèvent du domaine public probatoire.
+          </p>
+        </div>
+      </div>
+
+      <div class="license-dialog-footer">
+        <a href="dependances-licences.html" class="btn btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <span>Registre des licences</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+        <button id="btn-viewer-about-ok" class="btn btn-ghost" type="button">Fermer</button>
       </div>
     </dialog>
 
