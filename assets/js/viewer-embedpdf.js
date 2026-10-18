@@ -219,15 +219,26 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     dom.container.innerHTML = '';
 
     const themePref = getCurrentTheme() === 'dark' ? 'dark' : 'light';
+    const origin = window.location.origin;
+    const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
+    const fullDocUrl = `${origin}/${currentTargetFile}`;
 
     try {
       embedViewerInstance = EmbedPDF.init({
         type: 'container',
         target: dom.container,
-        src: currentTargetFile,
-        wasmUrl: 'assets/vendor/embedpdf/pdfium.wasm',
+        src: fullDocUrl,
+        wasmUrl: fullWasmUrl,
         worker: true,
         tabBar: 'never',
+        fontFallback: null,
+        fonts: {
+          ui: null,
+          signature: null
+        },
+        stamp: {
+          manifests: []
+        },
         theme: {
           preference: themePref
         }
