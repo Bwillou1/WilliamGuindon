@@ -239,6 +239,22 @@
 
       <div class="viewer-header-right">
 
+        <button type="button" id="btn-split-toggle" class="tool-btn" title="Comparer 2 documents côte à côte" aria-label="Mode double document">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="12" y1="3" x2="12" y2="21"></line>
+          </svg>
+        </button>
+
+        <button type="button" id="btn-native-toggle" class="tool-btn btn-native-view-toggle" title="Passer au lecteur PDF normal de Google Chrome / Navigateur (fond sombre natif)" aria-label="Lecteur PDF normal de Google">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span class="btn-native-label">Lecteur normal Google</span>
+        </button>
+
         <button type="button" id="btn-search-toggle" class="tool-btn" title="Rechercher dans le document (Ctrl+F / Cmd+F)" aria-label="Rechercher">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
@@ -297,6 +313,18 @@
         </div>
       </div>
 
+      <!-- Bulle d'action flottante de surlignage lors de la sélection de texte -->
+      <div id="pdf-selection-tooltip" class="pdf-selection-tooltip hidden" aria-label="Options de surlignage">
+        <button type="button" class="hl-color-btn color-yellow" data-color="yellow" title="Surligner en jaune" aria-label="Jaune"></button>
+        <button type="button" class="hl-color-btn color-green" data-color="green" title="Surligner en vert" aria-label="Vert"></button>
+        <button type="button" class="hl-color-btn color-pink" data-color="pink" title="Surligner en rose" aria-label="Rose"></button>
+        <button type="button" class="hl-color-btn color-blue" data-color="blue" title="Surligner en bleu" aria-label="Bleu"></button>
+        <div class="hl-action-separator"></div>
+        <button type="button" id="btn-copy-selection" class="hl-action-btn" title="Copier le texte" aria-label="Copier">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+
       <div id="viewer-sidebar-backdrop" class="viewer-sidebar-backdrop" aria-hidden="true"></div>
 
       <aside id="viewer-sidebar" class="viewer-sidebar collapsed" aria-label="Panneau de navigation du document">
@@ -309,6 +337,10 @@
             <button type="button" id="tab-outline" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-outline" title="Sommaire et signets">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
               <span>Sommaire</span>
+            </button>
+            <button type="button" id="tab-highlights" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-highlights" title="Notes et surlignages sauvegardés">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 11-6 6v3h3l6-6"></path><path d="m22 7-4.5-4.5a1.5 1.5 0 0 0-2.12 0l-1.88 1.88 6.62 6.62 1.88-1.88a1.5 1.5 0 0 0 0-2.12z"></path></svg>
+              <span>Surlignages</span>
             </button>
             <button type="button" id="tab-search" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-search" title="Recherche dans le document (Ctrl+F)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -331,6 +363,15 @@
 
           <div id="pane-outline" class="sidebar-pane" role="tabpanel">
             <div id="outline-tree"></div>
+          </div>
+
+          <div id="pane-highlights" class="sidebar-pane" role="tabpanel" style="padding: 14px; display: none;">
+            <div style="font-weight: 700; font-size: 13px; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <span>Surlignages sauvegardés</span>
+              <span id="highlights-count-badge" style="font-size: 11px; font-weight: 600; background: var(--bg-card); padding: 2px 8px; border-radius: 12px; border: 1px solid var(--line);">0</span>
+            </div>
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">Sélectionnez du texte avec la souris dans le document pour le surligner. Les surlignages sont sauvegardés automatiquement sur votre appareil.</p>
+            <div id="highlights-list" class="highlights-list"></div>
           </div>
 
           <div id="pane-search" class="sidebar-pane" role="tabpanel" style="padding: 14px; display: none;">
@@ -415,6 +456,48 @@
 
         <div id="pages-container" class="pages-container"></div>
       </main>
+
+      <!-- Second conteneur autonome pour le mode comparatif 2 PDF côte à côte -->
+      <section id="split-viewport" class="split-viewport hidden" tabindex="0" aria-label="Deuxième document comparatif">
+        <div class="split-viewport-header">
+          <select id="split-doc-select" class="split-doc-select" aria-label="Choisir le document à comparer"></select>
+          <div class="split-header-actions">
+            <button type="button" id="btn-split-prev" class="tool-btn" title="Page précédente document comparatif" aria-label="Page précédente">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span id="split-page-counter" style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); min-width: 45px; text-align: center;">1 / 1</span>
+            <button type="button" id="btn-split-next" class="tool-btn" title="Page suivante document comparatif" aria-label="Page suivante">
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+            <button type="button" id="btn-split-close" class="split-btn-close" title="Fermer le mode comparatif" aria-label="Fermer la comparaison">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <span>Fermer</span>
+            </button>
+          </div>
+        </div>
+        <div id="split-loading" class="viewer-loading hidden" aria-live="polite">
+          <div class="spinner"></div>
+          <span class="viewer-loading-text">Chargement du document comparatif...</span>
+        </div>
+        <div id="split-pages-container" class="pages-container"></div>
+      </section>
+
+      <!-- Lecteur PDF natif du navigateur (fond sombre / zéro bogue) -->
+      <div id="native-viewer-container" class="native-viewer-container hidden" aria-label="Lecteur PDF natif du navigateur">
+        <div class="native-viewer-banner">
+          <div class="native-viewer-banner-left">
+            <span class="native-viewer-badge">GOOGLE / MOTEUR NATIF</span>
+            <span class="native-viewer-banner-title">Lecteur PDF standard du navigateur (moteur Chromium / Google)</span>
+          </div>
+          <button type="button" id="btn-return-enriched" class="btn-return-enriched" title="Revenir au lecteur haute fidélité">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Retour au lecteur enrichi</span>
+          </button>
+        </div>
+        <iframe id="native-viewer-frame" class="native-viewer-frame" title="Affichage PDF natif"></iframe>
+      </div>
+
+    </div>
 
     <div id="print-container" class="print-container" aria-hidden="true"></div>
 

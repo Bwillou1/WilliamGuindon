@@ -749,7 +749,7 @@ body.is-embedded .pdf-app {
   bottom: 0;
   overflow: hidden;
   opacity: 1;
-  line-height: 1 !important;
+  line-height: 1;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   text-size-adjust: none;
@@ -757,24 +757,17 @@ body.is-embedded .pdf-app {
   transform-origin: 0 0;
   z-index: 2;
   pointer-events: auto;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  box-sizing: content-box !important;
+  user-select: text;
+  -webkit-user-select: text;
+  box-sizing: content-box;
 }
 
 .page-wrapper .textLayer :is(span, br) {
-  color: transparent !important;
-  position: absolute !important;
-  white-space: pre !important;
-  cursor: text !important;
-  transform-origin: 0% 0% !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  box-sizing: content-box !important;
-  line-height: 1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
 }
 
 .page-wrapper .textLayer span.markedContent {
@@ -788,9 +781,8 @@ body.is-embedded .pdf-app {
   inset: 100% 0 0;
   z-index: -1;
   cursor: default;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .page-wrapper .textLayer .endOfContent.active {
@@ -798,18 +790,16 @@ body.is-embedded .pdf-app {
 }
 
 .page-wrapper .textLayer ::selection {
-  background: rgba(34, 197, 94, 0.45) !important;
-  color: transparent !important;
+  background: rgba(34, 197, 94, 0.45);
 }
 
 .page-wrapper .textLayer ::-moz-selection {
-  background: rgba(34, 197, 94, 0.45) !important;
-  color: transparent !important;
+  background: rgba(34, 197, 94, 0.45);
 }
 
 .page-wrapper .textLayer br::selection,
 .page-wrapper .textLayer br::-moz-selection {
-  background: transparent !important;
+  background: transparent;
 }
 
 
@@ -2160,4 +2150,410 @@ kbd {
     display: none;
   }
 }
+
+/* ==========================================================================
+   SURLIGNAGE PERMANENT & SAUVEGARDE LOCALE (USER HIGHLIGHTS)
+   ========================================================================== */
+.textLayer .user-highlight {
+  border-radius: 3px;
+  cursor: pointer;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.textLayer .user-highlight:hover {
+  filter: brightness(0.92);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.textLayer .user-highlight.color-yellow {
+  background-color: rgba(253, 224, 71, 0.55) !important;
+}
+.textLayer .user-highlight.color-green {
+  background-color: rgba(134, 239, 172, 0.55) !important;
+}
+.textLayer .user-highlight.color-pink {
+  background-color: rgba(249, 168, 212, 0.55) !important;
+}
+.textLayer .user-highlight.color-blue {
+  background-color: rgba(147, 197, 253, 0.55) !important;
+}
+
+[data-theme="dark"] .textLayer .user-highlight.color-yellow {
+  background-color: rgba(234, 179, 8, 0.55) !important;
+}
+[data-theme="dark"] .textLayer .user-highlight.color-green {
+  background-color: rgba(34, 197, 94, 0.55) !important;
+}
+[data-theme="dark"] .textLayer .user-highlight.color-pink {
+  background-color: rgba(244, 63, 94, 0.55) !important;
+}
+[data-theme="dark"] .textLayer .user-highlight.color-blue {
+  background-color: rgba(56, 189, 248, 0.55) !important;
+}
+
+/* Bulle d'action flottante de surlignage lors de la sélection de texte */
+.pdf-selection-tooltip {
+  position: absolute;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 5px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: tooltipFadeIn 0.15s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translate(-50%, -90%); }
+  to { opacity: 1; transform: translate(-50%, -100%); }
+}
+
+.pdf-selection-tooltip.hidden {
+  display: none !important;
+}
+
+.hl-color-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease;
+}
+
+.hl-color-btn:hover {
+  transform: scale(1.2);
+}
+
+.hl-color-btn.color-yellow { background: #fde047; }
+.hl-color-btn.color-green { background: #86efac; }
+.hl-color-btn.color-pink { background: #f9a8d4; }
+.hl-color-btn.color-blue { background: #93c5fd; }
+
+.hl-action-separator {
+  width: 1px;
+  height: 16px;
+  background: var(--line);
+  margin: 0 2px;
+}
+
+.hl-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.hl-action-btn:hover {
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* Liste des surlignages dans le volet latéral */
+.highlights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.highlight-item {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.highlight-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.highlight-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.highlight-item-color-tag {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.highlight-item-text {
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.highlight-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.highlight-item-del-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.highlight-item-del-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ==========================================================================
+   MODE DOUBLE PDF CÔTE À CÔTE (SPLIT-SCREEN COMPARISON)
+   ========================================================================== */
+.viewer-main.split-active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--line);
+}
+
+.viewer-main.split-active #viewer-viewport {
+  border-right: 1px solid var(--line);
+}
+
+.split-viewport {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: var(--viewer-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 80px 16px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.split-viewport-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--line);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.split-doc-select {
+  flex: 1;
+  max-width: 280px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  outline: none;
+}
+
+.split-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.split-btn-close {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.split-btn-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 900px) {
+  .viewer-main.split-active {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+/* ==========================================================================
+   LECTEUR PDF NATIF DU NAVIGATEUR (FOND NOIR / ZERO BOGUE)
+   ========================================================================== */
+.btn-native-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  min-width: auto;
+  font-weight: 600;
+  font-size: 11.5px;
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+
+.btn-native-view-toggle:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-native-view-toggle.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-native-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .btn-native-label {
+    display: none;
+  }
+  .btn-native-view-toggle {
+    padding: 0;
+    min-width: 30px;
+    justify-content: center;
+  }
+}
+
+.native-viewer-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: #323639; /* Couleur sombre standard des moteurs PDF natifs Chromium/Firefox/Safari */
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.native-viewer-container.hidden {
+  display: none !important;
+}
+
+.native-viewer-banner {
+  background: #202124;
+  color: #e8eaed;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #3c4043;
+  font-size: 12.5px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.native-viewer-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.native-viewer-badge {
+  background: #3c4043;
+  color: #8ab4f8;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.native-viewer-banner-title {
+  color: #f1f3f4;
+  font-weight: 600;
+}
+
+.btn-return-enriched {
+  background: #3c4043;
+  color: #ffffff;
+  border: 1px solid #5f6368;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-return-enriched:hover {
+  background: var(--accent, #10b981);
+  border-color: var(--accent, #10b981);
+  color: #ffffff;
+}
+
+.native-viewer-frame {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  border: none;
+  background: #323639;
+}
+
 

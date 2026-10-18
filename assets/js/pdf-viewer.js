@@ -43,12 +43,63 @@
             await this._renderTask.promise;
           }
 
-          // Ajout de la balise .endOfContent pour la sélection multi-lignes fluide (spécification Mozilla pdf.js)
-          if (!this.container.querySelector('.endOfContent')) {
-            const endDiv = document.createElement('div');
+          // Ajout et liaison de l'élément .endOfContent (spécification Mozilla PDF.js TextLayerBuilder)
+          let endDiv = this.container.querySelector('.endOfContent');
+          if (!endDiv) {
+            endDiv = document.createElement('div');
             endDiv.className = 'endOfContent';
             this.container.appendChild(endDiv);
           }
+
+          // Liaison des interactions de sélection souris et du presse-papier
+          this._bindMouse();
+        }
+
+        _bindMouse() {
+          const div = this.container;
+          if (div.dataset.mouseBound === 'true') return;
+          div.dataset.mouseBound = 'true';
+
+          div.addEventListener('mousedown', (evt) => {
+            const end = div.querySelector('.endOfContent');
+            if (!end) return;
+            let adjustTop = (evt.target !== div);
+            if (adjustTop) {
+              const divBounds = div.getBoundingClientRect();
+              if (divBounds.height > 0) {
+                const r = Math.max(0, (evt.clientY - divBounds.top) / divBounds.height);
+                end.style.top = (r * 100).toFixed(2) + '%';
+              }
+            }
+            end.classList.add('active');
+          });
+
+          div.addEventListener('mouseup', () => {
+            const end = div.querySelector('.endOfContent');
+            if (end) {
+              end.style.top = '';
+              end.classList.remove('active');
+            }
+          });
+
+          // Événement copy avec normalisation Unicode (suppression des césures et des caractères nuls)
+          div.addEventListener('copy', (event) => {
+            const selection = document.getSelection();
+            if (!selection || selection.isCollapsed) return;
+
+            let text = selection.toString();
+            if (text) {
+              // Nettoyer les caractères nuls et normaliser Unicode
+              text = text.replace(/\0/g, '');
+              if (typeof pdfjsLib.normalizeUnicode === 'function') {
+                text = pdfjsLib.normalizeUnicode(text);
+              }
+              if (event.clipboardData) {
+                event.clipboardData.setData('text/plain', text);
+                event.preventDefault();
+              }
+            }
+          });
         }
 
         cancel() {
@@ -468,16 +519,51 @@
     sidebarOpen: false,
     translationMode: false,
     translationLayout: 'overlay', // 'overlay' | 'fluid'
-    translatedPagesCache: new Map() // cacheKey -> pageData object
+    translatedPagesCache: new Map(), // cacheKey -> pageData object
+    // Surlignages persistants (User Highlights)
+    userHighlights: [], // [{ id, page, text, color, timestamp }]
+    // Comparateur double document côte à côte (Split-screen)
+    splitMode: false,
+    splitPdfDoc: null,
+    splitDocKey: 'observations-reponse-canada-17-octobre-2026',
+    splitCurrentPage: 1,
+    splitTotalPages: 0,
+    splitPageRenderingQueue: new Map(),
+    splitRenderedPages: new Set(),
+    // Lecteur PDF natif du navigateur (fond sombre / zéro bogue)
+    nativeMode: false
   };
 
   // Éléments du DOM
   const dom = {
     app: document.getElementById('pdf-app'),
+    main: document.querySelector('.viewer-main'),
     viewport: document.getElementById('viewer-viewport'),
     pagesContainer: document.getElementById('pages-container'),
     sidebar: document.getElementById('viewer-sidebar'),
     btnSidebarToggle: document.getElementById('btn-sidebar-toggle'),
+    btnSplitToggle: document.getElementById('btn-split-toggle'),
+    btnNativeToggle: document.getElementById('btn-native-toggle'),
+    btnReturnEnriched: document.getElementById('btn-return-enriched'),
+    nativeContainer: document.getElementById('native-viewer-container'),
+    nativeFrame: document.getElementById('native-viewer-frame'),
+    // Split Viewport Elements
+    splitViewport: document.getElementById('split-viewport'),
+    splitDocSelect: document.getElementById('split-doc-select'),
+    splitPagesContainer: document.getElementById('split-pages-container'),
+    splitLoading: document.getElementById('split-loading'),
+    splitPageCounter: document.getElementById('split-page-counter'),
+    btnSplitPrev: document.getElementById('btn-split-prev'),
+    btnSplitNext: document.getElementById('btn-split-next'),
+    btnSplitClose: document.getElementById('btn-split-close'),
+    // Bulle de sélection de surlignage
+    selectionTooltip: document.getElementById('pdf-selection-tooltip'),
+    btnCopySelection: document.getElementById('btn-copy-selection'),
+    // Volet surlignages
+    tabHighlights: document.getElementById('tab-highlights'),
+    paneHighlights: document.getElementById('pane-highlights'),
+    highlightsList: document.getElementById('highlights-list'),
+    highlightsCountBadge: document.getElementById('highlights-count-badge'),
     btnSearchToggle: document.getElementById('btn-search-toggle'),
     // Barre de recherche in-document (Findbar)
     findbar: document.getElementById('pdf-findbar'),
@@ -797,6 +883,9 @@
       // Générer les vignettes dans la barre latérale
       generateThumbnails();
 
+      // Charger les surlignages persistants du document
+      loadSavedHighlights();
+
       // Ajuster le zoom et rendre les pages visibles
       applyZoom();
 
@@ -1046,6 +1135,9 @@
         const activeMatchInPage = (activeItem && activeItem.page === pageNum) ? activeItem.matchIndexInPage : -1;
         highlightMatchesOnPage(pageNum, state.searchQuery, activeMatchInPage);
       }
+
+      // Appliquer les surlignages personnalisés de l'utilisateur
+      renderSavedHighlightsOnPage(pageNum);
 
       if (state.translationMode) {
         applyTranslationToPage(pageNum);
@@ -1408,7 +1500,7 @@
   function clearHighlightsOnPage(pageNum) {
     const textLayer = document.getElementById(`text-layer-${pageNum}`);
     if (!textLayer) return;
-    const marks = textLayer.querySelectorAll('.highlight');
+    const marks = textLayer.querySelectorAll('.highlight:not(.user-highlight)');
     marks.forEach(mark => {
       const parent = mark.parentNode;
       if (parent) {
@@ -1700,6 +1792,7 @@
     const tabs = [
       { btn: dom.tabThumbnails, pane: dom.paneThumbnails, name: 'thumbnails' },
       { btn: dom.tabOutline, pane: dom.paneOutline, name: 'outline' },
+      { btn: dom.tabHighlights, pane: dom.paneHighlights, name: 'highlights' },
       { btn: dom.tabSearch, pane: dom.paneSearch, name: 'search' },
       { btn: dom.tabTranslation, pane: dom.paneTranslation, name: 'translation' }
     ];
@@ -1715,7 +1808,9 @@
       toggleSidebar(true);
     }
 
-    if (tabName === 'search' && dom.inputSearch) {
+    if (tabName === 'highlights') {
+      renderHighlightsSidebarList();
+    } else if (tabName === 'search' && dom.inputSearch) {
       setTimeout(() => dom.inputSearch.focus(), 150);
     } else if (tabName === 'explorer') {
       renderExplorerInSidebar();
@@ -2850,6 +2945,9 @@
           const doc = DOCS_CATALOG[docKey];
           loadPDF(doc.file, 1);
           if (dom.badge) dom.badge.textContent = doc.badge;
+          if (state.nativeMode && dom.nativeFrame) {
+            dom.nativeFrame.src = doc.file;
+          }
         }
       });
     }
@@ -2871,6 +2969,7 @@
     // Onglets Sidebar
     if (dom.tabThumbnails) dom.tabThumbnails.addEventListener('click', () => switchSidebarTab('thumbnails'));
     if (dom.tabOutline) dom.tabOutline.addEventListener('click', () => switchSidebarTab('outline'));
+    if (dom.tabHighlights) dom.tabHighlights.addEventListener('click', () => switchSidebarTab('highlights'));
     if (dom.tabTranslation) dom.tabTranslation.addEventListener('click', () => switchSidebarTab('translation'));
     if (dom.tabSearch) dom.tabSearch.addEventListener('click', () => switchSidebarTab('search'));
     if (dom.tabExplorer) dom.tabExplorer.addEventListener('click', () => switchSidebarTab('explorer'));
@@ -3545,6 +3644,72 @@ ER  -
 
     // Raccourcis Clavier KOReader & PDFSlick
     window.addEventListener('keydown', handleGlobalKeydown);
+
+    // Événements du mode comparatif (Split-screen 2 PDF)
+    if (dom.btnSplitToggle) {
+      dom.btnSplitToggle.addEventListener('click', () => toggleSplitMode());
+    }
+    if (dom.btnNativeToggle) {
+      dom.btnNativeToggle.addEventListener('click', () => toggleNativeViewer());
+    }
+    if (dom.btnReturnEnriched) {
+      dom.btnReturnEnriched.addEventListener('click', () => toggleNativeViewer(false));
+    }
+    if (dom.btnSplitClose) {
+      dom.btnSplitClose.addEventListener('click', () => toggleSplitMode(false));
+    }
+    if (dom.btnSplitPrev) {
+      dom.btnSplitPrev.addEventListener('click', () => scrollSplitPage(state.splitCurrentPage - 1));
+    }
+    if (dom.btnSplitNext) {
+      dom.btnSplitNext.addEventListener('click', () => scrollSplitPage(state.splitCurrentPage + 1));
+    }
+    if (dom.splitDocSelect) {
+      dom.splitDocSelect.addEventListener('change', () => {
+        const val = dom.splitDocSelect.value;
+        if (DOCS_CATALOG[val]) {
+          state.splitDocKey = val;
+          loadSplitPDF(DOCS_CATALOG[val].file, 1);
+        }
+      });
+    }
+
+    // Événements de surlignage utilisateur (User Highlights)
+    if (dom.viewport) {
+      dom.viewport.addEventListener('mouseup', handleTextSelection);
+      dom.viewport.addEventListener('keyup', handleTextSelection);
+    }
+    document.addEventListener('selectionchange', debounce(() => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+        hideSelectionTooltip();
+      }
+    }, 200));
+
+    // Clic sur les pastilles de couleur de la bulle de surlignage
+    if (dom.selectionTooltip) {
+      dom.selectionTooltip.querySelectorAll('.hl-color-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const color = btn.dataset.color || 'yellow';
+          applyUserHighlight(color);
+        });
+      });
+    }
+
+    if (dom.btnCopySelection) {
+      dom.btnCopySelection.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sel = window.getSelection();
+        const text = sel ? sel.toString().trim() : '';
+        if (text && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast("Texte copié !");
+            hideSelectionTooltip();
+          });
+        }
+      });
+    }
   }
 
   /**
@@ -3990,6 +4155,507 @@ ER  -
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), wait);
     };
+  }
+
+  // ==========================================================================
+  // SYSTÈME DE SURLIGNAGE PERSISTANT (USER HIGHLIGHTS)
+  // ==========================================================================
+  function getDocStorageKey() {
+    const rawKey = dom.docSelect ? dom.docSelect.value : (state.currentFile || 'default');
+    const safeKey = rawKey.replace(/[^a-zA-Z0-9_\-]/g, '_');
+    return `wg_pdf_highlights_${safeKey}`;
+  }
+
+  function loadSavedHighlights() {
+    try {
+      const storageKey = getDocStorageKey();
+      const raw = localStorage.getItem(storageKey);
+      state.userHighlights = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(state.userHighlights)) state.userHighlights = [];
+    } catch (e) {
+      console.warn("Erreur chargement surlignages:", e);
+      state.userHighlights = [];
+    }
+    updateHighlightsBadge();
+  }
+
+  function persistHighlights() {
+    try {
+      const storageKey = getDocStorageKey();
+      localStorage.setItem(storageKey, JSON.stringify(state.userHighlights));
+    } catch (e) {
+      console.warn("Erreur sauvegarde surlignages:", e);
+    }
+    updateHighlightsBadge();
+  }
+
+  function updateHighlightsBadge() {
+    if (dom.highlightsCountBadge) {
+      dom.highlightsCountBadge.textContent = state.userHighlights.length;
+    }
+  }
+
+  function renderHighlightsSidebarList() {
+    if (!dom.highlightsList) return;
+    dom.highlightsList.innerHTML = '';
+
+    if (state.userHighlights.length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.style.cssText = 'padding: 24px 12px; text-align: center; color: var(--text-muted); font-size: 12px; font-style: italic;';
+      emptyMsg.textContent = "Aucun surlignage enregistré pour ce document. Sélectionnez du texte avec votre curseur pour commencer !";
+      dom.highlightsList.appendChild(emptyMsg);
+      return;
+    }
+
+    // Trier du plus récent au plus ancien
+    const sorted = [...state.userHighlights].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    sorted.forEach(hl => {
+      const item = document.createElement('div');
+      item.className = 'highlight-item';
+
+      const colorMap = {
+        yellow: '#fde047',
+        green: '#86efac',
+        pink: '#f9a8d4',
+        blue: '#93c5fd'
+      };
+
+      item.innerHTML = `
+        <div class="highlight-item-header">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="highlight-item-color-tag" style="background:${colorMap[hl.color] || '#fde047'};"></span>
+            <span>Page ${hl.page}</span>
+          </span>
+          <span style="font-size:10px; color:var(--text-muted);">${hl.date || ''}</span>
+        </div>
+        <div class="highlight-item-text">« ${escapeHtml(hl.text)} »</div>
+        <div class="highlight-item-actions">
+          <button type="button" class="highlight-item-del-btn" data-id="${hl.id}">Supprimer</button>
+        </div>
+      `;
+
+      item.addEventListener('click', (e) => {
+        if (e.target.classList.contains('highlight-item-del-btn')) return;
+        scrollToPage(hl.page);
+        // Faire clignoter ou scroller vers le surlignage
+        setTimeout(() => {
+          const el = document.querySelector(`.user-highlight[data-highlight-id="${hl.id}"]`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.filter = 'brightness(0.7)';
+            setTimeout(() => el.style.filter = '', 600);
+          }
+        }, 150);
+      });
+
+      const delBtn = item.querySelector('.highlight-item-del-btn');
+      if (delBtn) {
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteHighlight(hl.id);
+        });
+      }
+
+      dom.highlightsList.appendChild(item);
+    });
+  }
+
+  function deleteHighlight(highlightId) {
+    state.userHighlights = state.userHighlights.filter(h => h.id !== highlightId);
+    persistHighlights();
+    // Retirer du DOM si affiché
+    document.querySelectorAll(`.user-highlight[data-highlight-id="${highlightId}"]`).forEach(el => {
+      const parent = el.parentNode;
+      if (parent) {
+        parent.replaceChild(document.createTextNode(el.textContent), el);
+        parent.normalize();
+      }
+    });
+    renderHighlightsSidebarList();
+    showToast("Surlignage supprimé");
+  }
+
+  function handleTextSelection(e) {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    const text = sel.toString().trim();
+    if (!text || text.length < 2) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    const range = sel.getRangeAt(0);
+    // Vérifier si la sélection provient bien d'un textLayer
+    const startTextLayer = range.startContainer.parentElement?.closest('.textLayer');
+    const endTextLayer = range.endContainer.parentElement?.closest('.textLayer');
+
+    if (!startTextLayer && !endTextLayer) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    const rect = range.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    showSelectionTooltip(rect.left + rect.width / 2, rect.top);
+  }
+
+  function showSelectionTooltip(clientX, clientY) {
+    if (!dom.selectionTooltip) return;
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    dom.selectionTooltip.style.left = `${clientX + scrollX}px`;
+    dom.selectionTooltip.style.top = `${clientY + scrollY}px`;
+    dom.selectionTooltip.classList.remove('hidden');
+  }
+
+  function hideSelectionTooltip() {
+    if (!dom.selectionTooltip) return;
+    dom.selectionTooltip.classList.add('hidden');
+  }
+
+  function applyUserHighlight(color = 'yellow') {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    const text = sel.toString().trim();
+    if (!text) {
+      hideSelectionTooltip();
+      return;
+    }
+
+    const range = sel.getRangeAt(0);
+    const container = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+      ? range.commonAncestorContainer
+      : range.commonAncestorContainer.parentElement;
+
+    const pageWrapper = container.closest('.page-wrapper');
+    const pageNum = pageWrapper ? parseInt(pageWrapper.dataset.pageNum, 10) : (state.currentPage || 1);
+
+    const highlightId = 'hl_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const newHl = {
+      id: highlightId,
+      page: pageNum,
+      text: text,
+      color: color,
+      timestamp: Date.now(),
+      date: new Date().toLocaleDateString('fr-CA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    };
+
+    // Insérer visuellement dans la page
+    const textLayer = document.getElementById(`text-layer-${pageNum}`);
+    if (textLayer) {
+      highlightTextInPageNode(textLayer, text, highlightId, color);
+    }
+
+    state.userHighlights.push(newHl);
+    persistHighlights();
+    renderHighlightsSidebarList();
+    hideSelectionTooltip();
+    sel.removeAllRanges();
+    showToast(`Surligné en ${color === 'yellow' ? 'jaune' : color === 'green' ? 'vert' : color === 'pink' ? 'rose' : 'bleu'} & sauvegardé !`);
+  }
+
+  function renderSavedHighlightsOnPage(pageNum) {
+    const textLayer = document.getElementById(`text-layer-${pageNum}`);
+    if (!textLayer) return;
+
+    const pageHighlights = state.userHighlights.filter(h => h.page === pageNum);
+    if (pageHighlights.length === 0) return;
+
+    pageHighlights.forEach(hl => {
+      highlightTextInPageNode(textLayer, hl.text, hl.id, hl.color);
+    });
+  }
+
+  function highlightTextInPageNode(textLayer, queryText, hlId, color) {
+    if (!textLayer || !queryText) return;
+
+    // Éviter de doubler le surlignage s'il est déjà injecté
+    if (textLayer.querySelector(`.user-highlight[data-highlight-id="${hlId}"]`)) {
+      return;
+    }
+
+    const pattern = escapeRegExp(queryText.trim());
+    let regex;
+    try {
+      regex = new RegExp(pattern, 'i');
+    } catch (_) {
+      return;
+    }
+
+    const walker = document.createTreeWalker(textLayer, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      textNodes.push(node);
+    }
+
+    for (const textNode of textNodes) {
+      const parent = textNode.parentNode;
+      if (parent && parent.classList && parent.classList.contains('user-highlight')) continue;
+      const text = textNode.nodeValue;
+      if (!text || !regex.test(text)) continue;
+
+      const match = regex.exec(text);
+      if (match) {
+        const frag = document.createDocumentFragment();
+        if (match.index > 0) {
+          frag.appendChild(document.createTextNode(text.substring(0, match.index)));
+        }
+        const span = document.createElement('span');
+        span.className = `user-highlight color-${color}`;
+        span.dataset.highlightId = hlId;
+        span.textContent = match[0];
+        span.title = "Surlignage utilisateur · Cliquer pour supprimer";
+        span.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm("Supprimer ce surlignage ?")) {
+            deleteHighlight(hlId);
+          }
+        });
+        frag.appendChild(span);
+        if (match.index + match[0].length < text.length) {
+          frag.appendChild(document.createTextNode(text.substring(match.index + match[0].length)));
+        }
+        parent.replaceChild(frag, textNode);
+        break; // Traité
+      }
+    }
+  }
+
+  // ==========================================================================
+  // MODE DOUBLE PDF CÔTE À CÔTE (SPLIT-SCREEN COMPARISON)
+  // ==========================================================================
+  function toggleSplitMode(forceState) {
+    state.splitMode = (typeof forceState === 'boolean') ? forceState : !state.splitMode;
+
+    if (dom.main) {
+      dom.main.classList.toggle('split-active', state.splitMode);
+    }
+    if (dom.splitViewport) {
+      dom.splitViewport.classList.toggle('hidden', !state.splitMode);
+    }
+    if (dom.btnSplitToggle) {
+      dom.btnSplitToggle.classList.toggle('active', state.splitMode);
+    }
+
+    if (state.splitMode) {
+      initSplitViewer();
+      showToast("Mode comparatif 2 PDF activé");
+    } else {
+      showToast("Mode comparatif fermé");
+    }
+
+    // Réajuster le zoom du document principal pour la demi-largeur
+    setTimeout(() => {
+      applyZoom();
+    }, 200);
+  }
+
+  function initSplitViewer() {
+    if (!dom.splitDocSelect) return;
+
+    // Remplir le sélecteur du 2e document s'il est vide
+    if (dom.splitDocSelect.children.length === 0) {
+      for (const [key, doc] of Object.entries(DOCS_CATALOG)) {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = `${doc.badge} · ${doc.title}`;
+        dom.splitDocSelect.appendChild(opt);
+      }
+      dom.splitDocSelect.value = state.splitDocKey;
+    }
+
+    const currentKey = dom.splitDocSelect.value || state.splitDocKey;
+    if (DOCS_CATALOG[currentKey]) {
+      loadSplitPDF(DOCS_CATALOG[currentKey].file, 1);
+    }
+  }
+
+  async function loadSplitPDF(url, startPage = 1) {
+    if (dom.splitLoading) dom.splitLoading.classList.remove('hidden');
+    if (dom.splitPagesContainer) dom.splitPagesContainer.innerHTML = '';
+
+    try {
+      const safeUrl = getSafeDocUrl(url);
+      const docOptions = {
+        url: safeUrl,
+        cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+        cMapPacked: true,
+        standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+        enableXfa: true,
+        isEvalSupported: false
+      };
+
+      const task = pdfjsLib.getDocument(docOptions);
+      state.splitPdfDoc = await task.promise;
+      state.splitTotalPages = state.splitPdfDoc.numPages;
+      state.splitCurrentPage = Math.min(Math.max(1, startPage), state.splitTotalPages);
+      state.splitRenderedPages.clear();
+
+      updateSplitPageCounter();
+      setupSplitPageContainers();
+      renderSplitPage(state.splitCurrentPage);
+
+      if (dom.splitLoading) dom.splitLoading.classList.add('hidden');
+    } catch (err) {
+      console.error("Erreur chargement PDF comparatif:", err);
+      if (dom.splitLoading) dom.splitLoading.classList.add('hidden');
+      if (dom.splitPagesContainer) {
+        dom.splitPagesContainer.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            Impossible de charger le document comparatif.<br>
+            <button type="button" class="btn" style="margin-top:10px; padding:6px 14px; font-size:12px;" onclick="loadSplitPDF('${url}', 1)">Réessayer</button>
+          </div>
+        `;
+      }
+    }
+  }
+
+  function setupSplitPageContainers() {
+    if (!dom.splitPagesContainer || !state.splitPdfDoc) return;
+    dom.splitPagesContainer.innerHTML = '';
+
+    for (let i = 1; i <= state.splitTotalPages; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.id = `split-page-wrapper-${i}`;
+      wrapper.className = 'page-wrapper';
+      wrapper.dataset.pageNum = i;
+      wrapper.style.minHeight = '360px';
+
+      const canvas = document.createElement('canvas');
+      canvas.id = `split-canvas-page-${i}`;
+      canvas.className = 'pdf-canvas';
+
+      const textLayer = document.createElement('div');
+      textLayer.id = `split-text-layer-${i}`;
+      textLayer.className = 'textLayer';
+
+      wrapper.appendChild(canvas);
+      wrapper.appendChild(textLayer);
+      dom.splitPagesContainer.appendChild(wrapper);
+    }
+  }
+
+  async function renderSplitPage(pageNum) {
+    if (!state.splitPdfDoc || pageNum < 1 || pageNum > state.splitTotalPages) return;
+    if (state.splitRenderedPages.has(pageNum)) return;
+
+    try {
+      const page = await state.splitPdfDoc.getPage(pageNum);
+      const wrapper = document.getElementById(`split-page-wrapper-${pageNum}`);
+      const canvas = document.getElementById(`split-canvas-page-${pageNum}`);
+      const textLayer = document.getElementById(`split-text-layer-${pageNum}`);
+      if (!wrapper || !canvas || !textLayer) return;
+
+      const viewportWidth = (dom.splitViewport.clientWidth || 400) - 40;
+      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      const targetScale = Math.min(2.0, Math.max(0.4, viewportWidth / unscaledViewport.width));
+      const viewport = page.getViewport({ scale: targetScale });
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = Math.floor(viewport.width * dpr);
+      canvas.height = Math.floor(viewport.height * dpr);
+      canvas.style.width = `${Math.floor(viewport.width)}px`;
+      canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+      wrapper.style.width = `${Math.floor(viewport.width)}px`;
+      wrapper.style.height = `${Math.floor(viewport.height)}px`;
+
+      const ctx = canvas.getContext('2d', { alpha: false });
+      ctx.scale(dpr, dpr);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, viewport.width, viewport.height);
+
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      state.splitRenderedPages.add(pageNum);
+
+      // TextLayer pour sélection dans le comparatif
+      textLayer.innerHTML = '';
+      textLayer.style.setProperty('--scale-factor', viewport.scale);
+      textLayer.style.width = `${Math.floor(viewport.width)}px`;
+      textLayer.style.height = `${Math.floor(viewport.height)}px`;
+
+      const textContent = await page.getTextContent();
+      const textLayerInstance = new pdfjsLib.TextLayer({
+        textContentSource: textContent,
+        container: textLayer,
+        viewport: viewport
+      });
+      await textLayerInstance.render();
+    } catch (err) {
+      console.warn(`Erreur rendu split page ${pageNum}:`, err);
+    }
+  }
+
+  function scrollSplitPage(pageNum) {
+    if (!state.splitPdfDoc || pageNum < 1 || pageNum > state.splitTotalPages) return;
+    state.splitCurrentPage = pageNum;
+    updateSplitPageCounter();
+
+    const targetWrapper = document.getElementById(`split-page-wrapper-${pageNum}`);
+    if (targetWrapper) {
+      targetWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    renderSplitPage(pageNum);
+    if (pageNum > 1) renderSplitPage(pageNum - 1);
+    if (pageNum < state.splitTotalPages) renderSplitPage(pageNum + 1);
+  }
+
+  function updateSplitPageCounter() {
+    if (dom.splitPageCounter) {
+      dom.splitPageCounter.textContent = `${state.splitCurrentPage} / ${state.splitTotalPages}`;
+    }
+  }
+
+  // ==========================================================================
+  // MODE LECTEUR PDF NATIF DU NAVIGATEUR (FOND NOIR / ZERO BOGUE)
+  // ==========================================================================
+  function toggleNativeViewer(forceState) {
+    state.nativeMode = (typeof forceState === 'boolean') ? forceState : !state.nativeMode;
+
+    if (dom.nativeContainer) {
+      dom.nativeContainer.classList.toggle('hidden', !state.nativeMode);
+    }
+    if (dom.btnNativeToggle) {
+      dom.btnNativeToggle.classList.toggle('active', state.nativeMode);
+      dom.btnNativeToggle.title = state.nativeMode
+        ? "Revenir au lecteur enrichi haute fidélité"
+        : "Afficher dans le lecteur PDF natif du navigateur (fond sombre / zéro bogue)";
+    }
+
+    if (state.nativeMode && dom.nativeFrame) {
+      const fileUrl = state.currentFile || (dom.docSelect && DOCS_CATALOG[dom.docSelect.value]?.file) || 'assets/docs/observations-reponse-canada-sem26003.pdf';
+      const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
+      dom.nativeFrame.src = `${fileUrl}${pageHash}`;
+      showToast("Lecteur PDF natif activé (fond sombre)");
+    } else {
+      showToast("Lecteur haute fidélité réactivé");
+    }
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>"']/g, m => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    })[m]);
   }
 
   // Lancement automatique au chargement du DOM

@@ -523,6 +523,16 @@
         top: Math.max(0, targetTop),
         behavior: smooth ? 'smooth' : 'auto'
       });
+
+      // Double vérification par scrollIntoView natif après défilement si décalage résiduel
+      if (!smooth) {
+        try {
+          targetEl.scrollIntoView({ block: 'start' });
+          if (headerOffset > 0) {
+            window.scrollBy(0, -(headerOffset + 16));
+          }
+        } catch (_) {}
+      }
       return true;
     }
 
@@ -536,23 +546,17 @@
       // 1. Défilement immédiat (synchrone)
       scrollToHash(hash, false);
 
-      // 2. Réalignement sur le frame suivant
+      // 2. Réalignement sur les frames suivants
       requestAnimationFrame(() => {
         scrollToHash(hash, false);
       });
 
-      // 3. Réalignement après le chargement des composants asynchrones / fonts / navbar
-      setTimeout(() => {
-        scrollToHash(hash, false);
-      }, 100);
-
-      setTimeout(() => {
-        scrollToHash(hash, true);
-      }, 350);
-
-      setTimeout(() => {
-        scrollToHash(hash, true);
-      }, 800);
+      // 3. Réalignements successifs après le rendu asynchrone des flux (blog, cartes, photos)
+      [50, 150, 350, 700, 1200, 2000].forEach((delay) => {
+        setTimeout(() => {
+          scrollToHash(hash, false);
+        }, delay);
+      });
     }
 
     handleInitialHash();
@@ -560,7 +564,8 @@
     // Réalignement après l'événement window.load (images complètes)
     window.addEventListener('load', () => {
       if (window.location.hash) {
-        setTimeout(() => scrollToHash(window.location.hash, true), 100);
+        setTimeout(() => scrollToHash(window.location.hash, false), 50);
+        setTimeout(() => scrollToHash(window.location.hash, true), 300);
       }
     }, { once: true });
 
