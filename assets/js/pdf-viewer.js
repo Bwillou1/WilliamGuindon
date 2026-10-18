@@ -542,10 +542,6 @@
     btnSidebarToggle: document.getElementById('btn-sidebar-toggle'),
     btnSplitToggle: document.getElementById('btn-split-toggle'),
     btnNativeToggle: document.getElementById('btn-native-toggle'),
-    btnReaderModeMenu: document.getElementById('btn-reader-mode-menu'),
-    readerModeDropdown: document.getElementById('reader-mode-menu'),
-    optReaderCustom: document.getElementById('opt-reader-custom'),
-    optReaderNative: document.getElementById('opt-reader-native'),
     // Split Viewport Elements
     splitViewport: document.getElementById('split-viewport'),
     splitDocSelect: document.getElementById('split-doc-select'),
@@ -773,7 +769,6 @@
 
     // Initialiser les événements UI
     setupEventListeners();
-    updateReaderPreferenceUI(readerPref);
 
     // Charger le document PDF
     await loadPDF(targetFile, targetPage);
@@ -3674,43 +3669,6 @@ ER  -
         openNativeViewer();
       });
     }
-
-    if (dom.btnReaderModeMenu && dom.readerModeDropdown) {
-      dom.btnReaderModeMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isHidden = dom.readerModeDropdown.classList.contains('hidden');
-        dom.readerModeDropdown.classList.toggle('hidden', !isHidden);
-        dom.btnReaderModeMenu.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!dom.readerModeDropdown.contains(e.target) && e.target !== dom.btnReaderModeMenu) {
-          dom.readerModeDropdown.classList.add('hidden');
-          dom.btnReaderModeMenu.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
-
-    if (dom.optReaderCustom) {
-      dom.optReaderCustom.addEventListener('click', () => {
-        setGlobalReaderPreference('custom');
-        if (dom.readerModeDropdown) {
-          dom.readerModeDropdown.classList.add('hidden');
-          if (dom.btnReaderModeMenu) dom.btnReaderModeMenu.setAttribute('aria-expanded', 'false');
-        }
-      });
-    }
-
-    if (dom.optReaderNative) {
-      dom.optReaderNative.addEventListener('click', () => {
-        setGlobalReaderPreference('native');
-        if (dom.readerModeDropdown) {
-          dom.readerModeDropdown.classList.add('hidden');
-          if (dom.btnReaderModeMenu) dom.btnReaderModeMenu.setAttribute('aria-expanded', 'false');
-        }
-        openNativeViewer();
-      });
-    }
     if (dom.btnSplitClose) {
       dom.btnSplitClose.addEventListener('click', () => toggleSplitMode(false));
     }
@@ -4686,26 +4644,7 @@ ER  -
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
     const targetUrl = `${fileUrl}${pageHash}`;
     window.location.replace(targetUrl);
-  }
 
-  function setGlobalReaderPreference(pref) {
-    try {
-      localStorage.setItem('wg_pdf_reader_pref', pref);
-      window.dispatchEvent(new CustomEvent('wg_pdf_reader_pref_change', { detail: { pref } }));
-    } catch (_) {}
-    updateReaderPreferenceUI(pref);
-  }
-
-  function updateReaderPreferenceUI(pref) {
-    const currentPref = pref || (function() {
-      try { return localStorage.getItem('wg_pdf_reader_pref'); } catch (_) { return 'custom'; }
-    })() || 'custom';
-
-    if (dom.optReaderCustom) dom.optReaderCustom.classList.toggle('active', currentPref !== 'native');
-    if (dom.optReaderNative) dom.optReaderNative.classList.toggle('active', currentPref === 'native');
-  }
-
-  function updateNativeViewerLink() {
     if (!dom.btnNativeToggle) return;
     const fileUrl = state.currentFile || (dom.docSelect && DOCS_CATALOG[dom.docSelect.value]?.file) || 'assets/docs/observations-reponse-canada-sem26003.pdf';
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';

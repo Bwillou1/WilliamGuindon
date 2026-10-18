@@ -2304,21 +2304,14 @@ kbd {
 /* ==========================================================================
    LECTEUR PDF NATIF DU NAVIGATEUR (FOND NOIR / ZERO BOGUE)
    ========================================================================== */
-.native-view-group {
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  flex-shrink: 0;
-}
-
 .btn-native-view-toggle,
 a.btn-native-view-toggle,
 button.btn-native-view-toggle {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
-  padding: 0 8px !important;
+  gap: 6px !important;
+  padding: 0 10px !important;
   height: 30px !important;
   min-height: 30px !important;
   min-width: fit-content !important;
@@ -2327,7 +2320,7 @@ button.btn-native-view-toggle {
   font-weight: 600 !important;
   font-size: 11px !important;
   line-height: 1 !important;
-  border-radius: 6px 0 0 6px !important;
+  border-radius: 7px !important;
   border: 1px solid var(--line) !important;
   background: var(--bg-card) !important;
   color: var(--text-muted) !important;
@@ -2368,101 +2361,29 @@ button.btn-native-view-toggle:hover {
   font-weight: 600 !important;
 }
 
-/* Bouton déclencheur d'options de lecture */
-.btn-reader-mode-trigger {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 20px !important;
-  min-width: 20px !important;
-  height: 30px !important;
-  padding: 0 !important;
-  border-radius: 0 6px 6px 0 !important;
-  border: 1px solid var(--line) !important;
-  border-left: none !important;
-  background: var(--bg-card) !important;
-  color: var(--text-muted) !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
+@media (max-width: 1024px) {
+  .btn-native-label {
+    display: none !important;
+  }
+  .btn-native-view-toggle,
+  a.btn-native-view-toggle,
+  button.btn-native-view-toggle {
+    padding: 0 !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    justify-content: center !important;
+  }
 }
 
-.btn-reader-mode-trigger:hover {
-  background: var(--accent-wash) !important;
-  color: var(--text) !important;
-  border-color: var(--accent) !important;
-}
-
-/* Menu déroulant des préférences de lecteur */
-.reader-mode-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
-  min-width: 260px;
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--line, #e2e8f0);
-  border-radius: 8px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
-  padding: 8px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.reader-mode-dropdown-menu.hidden {
+.is-embedded .btn-native-label {
   display: none !important;
 }
 
-.reader-mode-menu-header {
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted, #64748b);
-  padding: 4px 6px 6px 6px;
-  border-bottom: 1px solid var(--line, #e2e8f0);
-  margin-bottom: 2px;
-}
-
-.reader-mode-option-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text, #1e293b);
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.reader-mode-option-btn:hover {
-  background: var(--accent-wash, rgba(16, 185, 129, 0.08));
-  border-color: var(--line, #e2e8f0);
-}
-
-.reader-mode-option-btn.active {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.4);
-  font-weight: 700;
-  color: #047857;
-}
-
-.reader-mode-option-icon {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-}
-
-.reader-mode-option-desc {
-  font-size: 10px;
-  color: var(--text-muted, #64748b);
-  display: block;
-  font-weight: normal;
+.is-embedded .btn-native-view-toggle {
+  padding: 0 !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  justify-content: center !important;
 }
 
 @media (max-width: 1024px) {
