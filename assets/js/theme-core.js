@@ -634,6 +634,7 @@
     initDynamicDates();
     initLocalNavigationAccelerator();
     initHashScrollManager();
+    applyPdfReaderPrefUI();
     const currentPath = window.location.pathname.toLowerCase();
     const POLICY_FILES = [
       'politiques.html',
@@ -3327,6 +3328,117 @@
       window.location.replace('txt.html');
     }
   }
+
+  // ==========================================================================
+  // GESTIONNAIRE UNIVERSEL DE FORMAT DE LECTEUR PDF (ENRICHI VS NATIF)
+  // ==========================================================================
+  function getPdfReaderPref() {
+    try {
+      return localStorage.getItem('wg_pdf_reader_pref') || 'custom';
+    } catch (_) {
+      return 'custom';
+    }
+  }
+
+  function setPdfReaderPref(pref) {
+    try {
+      localStorage.setItem('wg_pdf_reader_pref', pref);
+      window.dispatchEvent(new CustomEvent('wg_pdf_reader_pref_change', { detail: { pref } }));
+    } catch (_) {}
+    applyPdfReaderPrefUI(pref);
+  }
+
+  window.getPdfReaderPref = getPdfReaderPref;
+  window.setPdfReaderPref = setPdfReaderPref;
+
+  function applyPdfReaderPrefUI(pref) {
+    const current = pref || getPdfReaderPref();
+    const isNative = current === 'native';
+
+    // Mise à jour des boutons dans la page d'accueil
+    document.querySelectorAll('.btn-switch-reader-pref').forEach(btn => {
+      const p = btn.getAttribute('data-pref');
+      if (p === 'native') {
+        btn.classList.toggle('active', isNative);
+        btn.style.background = isNative ? '#ecfdf5' : 'transparent';
+        btn.style.color = isNative ? '#047857' : 'var(--text-muted, #64748b)';
+      } else {
+        btn.classList.toggle('active', !isNative);
+        btn.style.background = !isNative ? '#ecfdf5' : 'transparent';
+        btn.style.color = !isNative ? '#047857' : 'var(--text-muted, #64748b)';
+      }
+    });
+
+    // Mise à jour des boutons dans dossier-journalistes.html
+    const lblJournalistes = document.getElementById('label-current-reader-pref');
+    if (lblJournalistes) {
+      lblJournalistes.textContent = isNative ? 'Natif (appareil)' : 'Mon lecteur';
+      lblJournalistes.style.color = isNative ? '#2563eb' : '#059669';
+      lblJournalistes.style.background = isNative ? 'rgba(37,99,235,0.12)' : 'rgba(16,185,129,0.15)';
+    }
+    const btnCustomJ = document.getElementById('btn-pref-custom');
+    const btnNativeJ = document.getElementById('btn-pref-native');
+    if (btnCustomJ && btnNativeJ) {
+      btnCustomJ.classList.toggle('active', !isNative);
+      btnNativeJ.classList.toggle('active', isNative);
+      btnCustomJ.style.border = !isNative ? '1.5px solid #059669' : '1px solid var(--line, #cbd5e1)';
+      btnCustomJ.style.background = !isNative ? '#ecfdf5' : '#ffffff';
+      btnCustomJ.style.color = !isNative ? '#047857' : 'var(--text-muted, #64748b)';
+      btnNativeJ.style.border = isNative ? '1.5px solid #2563eb' : '1px solid var(--line, #cbd5e1)';
+      btnNativeJ.style.background = isNative ? '#eff6ff' : '#ffffff';
+      btnNativeJ.style.color = isNative ? '#1d4ed8' : 'var(--text-muted, #64748b)';
+    }
+  }
+
+  // Interception universelle des clics sur les boutons de préférence et liens PDF
+  document.addEventListener('click', (e) => {
+    if (!e.target) return;
+    const el = e.target instanceof Element ? e.target : (e.target.parentElement || null);
+    if (!el || typeof el.closest !== 'function') return;
+
+    // Détection d'un commutateur de préférence
+    const switchBtn = el.closest('.btn-switch-reader-pref, .btn-toggle-reader-pref');
+    if (switchBtn) {
+      e.preventDefault();
+      const targetPref = switchBtn.getAttribute('data-pref') || (switchBtn.id === 'btn-pref-native' ? 'native' : 'custom');
+      setPdfReaderPref(targetPref);
+      return;
+    }
+
+    // Détection d'un lien vers un document PDF dans viewer.html
+    const link = el.closest('a[href*="viewer.html?file="]');
+    if (link) {
+      const pref = getPdfReaderPref();
+      if (pref === 'native') {
+        const href = link.getAttribute('href');
+        try {
+          const u = new URL(href, window.location.href);
+          const file = u.searchParams.get('file');
+          if (file) {
+            e.preventDefault();
+            const page = u.searchParams.get('page');
+            const targetUrl = file + (page && parseInt(page, 10) > 1 ? '#page=' + page : '');
+            if (link.getAttribute('target') === '_blank') {
+              window.open(targetUrl, '_blank', 'noopener,noreferrer');
+            } else {
+              window.location.href = targetUrl;
+            }
+          }
+        } catch (_) {}
+      }
+    }
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'wg_pdf_reader_pref') {
+      applyPdfReaderPrefUI(e.newValue);
+    }
+  });
+  window.addEventListener('wg_pdf_reader_pref_change', (e) => {
+    if (e.detail && e.detail.pref) {
+      applyPdfReaderPrefUI(e.detail.pref);
+    }
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
