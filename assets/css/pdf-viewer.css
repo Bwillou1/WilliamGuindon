@@ -2398,15 +2398,20 @@ button.btn-native-view-toggle:hover {
     min-width: 28px !important;
     justify-content: center !important;
   }
-/* Conteneur EmbedPDF moderne (Plein écran sous la barre compacte) */
+}
+
+/* Conteneur EmbedPDF moderne (Plein écran centré sous la barre compacte) */
 .embedpdf-viewport-container {
   flex: 1 1 auto;
   width: 100%;
-  height: calc(100vh - 48px);
-  height: calc(100dvh - 48px);
+  height: calc(100vh - var(--viewer-header-h, 58px));
+  height: calc(100dvh - var(--viewer-header-h, 58px));
   position: relative;
   overflow: hidden;
-  background-color: var(--viewer-bg);
+  background-color: var(--viewer-bg, #1a1e24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .embedpdf-viewport-container embedpdf-container {

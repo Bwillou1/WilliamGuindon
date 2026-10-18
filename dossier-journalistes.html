@@ -4326,16 +4326,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       if (stored === 'native' || stored === 'custom') return stored;
     } catch (_) {}
 
-    // Détection automatique intelligente si aucun choix manuel n'a encore été enregistré :
-    // - Grand écran (Desktop / Ordinateur >= 1024px) : Navigateur (Chromium natif, zoom trackpad, recherche rapide)
-    // - Petit écran (Mobile / Tablette < 1024px ou tactile) : Intégré (évite les soucis de rendu iframe sous iOS/Android)
-    try {
-      const isLargeScreen = window.matchMedia && window.matchMedia('(min-width: 1024px)').matches;
-      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-      return (isLargeScreen && !isTouch) ? 'native' : 'custom';
-    } catch (_) {
-      return 'custom';
-    }
+    // EmbedPDF (moteur C++/Wasm) par défaut pour tout le monde (ordinateur, tablette, mobile)
+    return 'custom';
   }
 
   function applyPdfReaderPref(pref, showToast = false) {
