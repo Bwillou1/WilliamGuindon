@@ -4644,7 +4644,9 @@ ER  -
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
     const targetUrl = `${fileUrl}${pageHash}`;
     window.location.replace(targetUrl);
+  }
 
+  function updateNativeViewerLink() {
     if (!dom.btnNativeToggle) return;
     const fileUrl = state.currentFile || (dom.docSelect && DOCS_CATALOG[dom.docSelect.value]?.file) || 'assets/docs/observations-reponse-canada-sem26003.pdf';
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
