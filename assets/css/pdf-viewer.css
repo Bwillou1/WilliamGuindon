@@ -2339,6 +2339,12 @@ kbd {
   background: rgba(239, 68, 68, 0.15);
 }
 
+/* Règle utilitaire générique de masquage */
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
 /* ==========================================================================
    MODE DOUBLE PDF CÔTE À CÔTE (SPLIT-SCREEN COMPARISON)
    ========================================================================== */
@@ -2366,6 +2372,11 @@ kbd {
   padding: 0 16px 80px 16px;
   box-sizing: border-box;
   outline: none;
+}
+
+.split-viewport.hidden,
+.viewer-main:not(.split-active) .split-viewport {
+  display: none !important;
 }
 
 .split-viewport-header {
@@ -2438,19 +2449,21 @@ kbd {
 .btn-native-view-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  min-width: auto;
+  gap: 5px;
+  padding: 0 8px;
+  height: 30px;
+  min-width: 30px;
   font-weight: 600;
-  font-size: 11.5px;
-  border-color: var(--accent);
-  background: var(--accent-wash);
-  color: var(--accent);
+  font-size: 11px;
+  border-color: var(--line);
+  background: var(--bg-card);
+  color: var(--text-muted);
 }
 
 .btn-native-view-toggle:hover {
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--accent-wash);
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 .btn-native-view-toggle.active {
@@ -2464,15 +2477,27 @@ kbd {
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .btn-native-label {
     display: none;
   }
   .btn-native-view-toggle {
     padding: 0;
+    width: 30px;
     min-width: 30px;
     justify-content: center;
   }
+}
+
+.is-embedded .btn-native-label {
+  display: none;
+}
+
+.is-embedded .btn-native-view-toggle {
+  padding: 0;
+  width: 30px;
+  min-width: 30px;
+  justify-content: center;
 }
 
 .native-viewer-container {

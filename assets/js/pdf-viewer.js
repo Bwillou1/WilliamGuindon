@@ -732,6 +732,15 @@
       if (dom.btnSidebarToggle) dom.btnSidebarToggle.classList.remove('active');
     }
 
+    // Sécurisation stricte de l'état initial des modes secondaires (Split & Natif fermés par défaut)
+    state.splitMode = false;
+    state.nativeMode = false;
+    if (dom.main) dom.main.classList.remove('split-active');
+    if (dom.splitViewport) dom.splitViewport.classList.add('hidden');
+    if (dom.btnSplitToggle) dom.btnSplitToggle.classList.remove('active');
+    if (dom.nativeContainer) dom.nativeContainer.classList.add('hidden');
+    if (dom.btnNativeToggle) dom.btnNativeToggle.classList.remove('active');
+
     // 2. Extraire et assainir les paramètres de l'URL (query string et hash)
     const urlParams = new URLSearchParams(window.location.search);
     const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
