@@ -3599,7 +3599,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
               stage.classList.remove("is-media");
               const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
               const targetPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
-              const viewerUrl = "viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&theme=" + encodeURIComponent(currentTheme);
+              const isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
+              const viewerUrl = isNative ? targetPdfUrl : ("viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&theme=" + encodeURIComponent(currentTheme));
               if (fsViewerLink) {
                 fsViewerLink.href = viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
@@ -3611,18 +3612,21 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
                 translateLink.classList.remove("active");
                 const span = translateLink.querySelector("span");
                 if (span) span.textContent = "Traduire";
-                translateLink.style.display = "inline-flex";
+                translateLink.style.display = isNative ? "none" : "inline-flex";
               }
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
               iframe.title = fileObj.name;
               iframe.setAttribute("allow", "fullscreen");
+              iframe.setAttribute("data-raw-pdf", targetPdfUrl);
               iframe.src = viewerUrl;
               iframe.onload = () => {
-                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                try {
-                  iframe.contentWindow.postMessage({ type: 'wg_theme_change', theme: isDark ? 'dark' : 'light' }, '*');
-                } catch (_) {}
+                if (!isNative) {
+                  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                  try {
+                    iframe.contentWindow.postMessage({ type: 'wg_theme_change', theme: isDark ? 'dark' : 'light' }, '*');
+                  } catch (_) {}
+                }
               };
               stage.appendChild(iframe);
             } else if (lower.endsWith(".csv")) {
@@ -4248,8 +4252,112 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     if (e.key === 'wg_theme' || e.key === 'william-guindon-theme') {
       const newTheme = e.newValue || 'light';
       applyTheme(newTheme, true);
+    } else if (e.key === 'wg_pdf_reader_pref') {
+      applyPdfReaderPref(e.newValue || 'custom', false);
     }
   });
+
+  // =========================================================
+  // GESTION DU FORMAT DE LECTEUR PDF (ENRICHI VS NATIF)
+  // =========================================================
+  function getPdfReaderPref() {
+    try {
+      return localStorage.getItem('wg_pdf_reader_pref') || 'custom';
+    } catch (_) {
+      return 'custom';
+    }
+  }
+
+  function applyPdfReaderPref(pref, showToast = false) {
+    const isNative = (pref === 'native');
+    try {
+      localStorage.setItem('wg_pdf_reader_pref', isNative ? 'native' : 'custom');
+      window.dispatchEvent(new CustomEvent('wg_pdf_reader_pref_change', { detail: { pref: isNative ? 'native' : 'custom' } }));
+    } catch (_) {}
+
+    // Mise à jour de l'affichage du sélecteur
+    const lbl = document.getElementById('label-current-reader-pref');
+    if (lbl) {
+      lbl.textContent = isNative ? 'Natif (appareil)' : 'Mon lecteur';
+      lbl.style.color = isNative ? '#2563eb' : '#059669';
+      lbl.style.background = isNative ? 'rgba(37,99,235,0.12)' : 'rgba(16,185,129,0.15)';
+    }
+
+    const btnCustom = document.getElementById('btn-pref-custom');
+    const btnNative = document.getElementById('btn-pref-native');
+    if (btnCustom && btnNative) {
+      btnCustom.classList.toggle('active', !isNative);
+      btnNative.classList.toggle('active', isNative);
+      btnCustom.style.border = !isNative ? '1.5px solid #059669' : '1px solid var(--line, #cbd5e1)';
+      btnCustom.style.background = !isNative ? '#ecfdf5' : '#ffffff';
+      btnCustom.style.color = !isNative ? '#047857' : 'var(--text-muted, #64748b)';
+      btnNative.style.border = isNative ? '1.5px solid #2563eb' : '1px solid var(--line, #cbd5e1)';
+      btnNative.style.background = isNative ? '#eff6ff' : '#ffffff';
+      btnNative.style.color = isNative ? '#1d4ed8' : 'var(--text-muted, #64748b)';
+    }
+
+    // Mise à jour des liens d'action PDF du menu
+    const actionPdfLinks = [
+      { id: 'btn-petition-cedd', file: 'assets/docs/petition-546-cedd-bvg.pdf' },
+      { id: 'btn-academic-support', file: 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf' },
+      { id: 'btn-rsp-canada', file: 'assets/docs/72-rsp_fr.pdf' },
+      { id: 'btn-rec-cce', file: 'assets/docs/73-rec_fr.pdf' }
+    ];
+    actionPdfLinks.forEach(({ id, file }) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.href = isNative ? file : `viewer.html?file=${encodeURIComponent(file)}`;
+      }
+    });
+
+    // Si un aperçu PDF est actuellement affiché dans l'iframe, le recharger dans le format choisi
+    const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
+    if (currentIframe && currentIframe.getAttribute('data-raw-pdf')) {
+      const rawPdf = currentIframe.getAttribute('data-raw-pdf');
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const targetViewerUrl = isNative ? rawPdf : `viewer.html?file=${encodeURIComponent(rawPdf)}&theme=${encodeURIComponent(currentTheme)}`;
+      currentIframe.src = targetViewerUrl;
+      const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
+      if (fsViewerLink) {
+        fsViewerLink.href = targetViewerUrl;
+      }
+      const translateLink = document.getElementById('btn-translate-preview');
+      if (translateLink) {
+        translateLink.style.display = isNative ? 'none' : 'inline-flex';
+      }
+    }
+
+    if (showToast) {
+      const toast = document.getElementById('drive-toast');
+      if (toast) {
+        toast.textContent = isNative 
+          ? 'Mode natif activé : les documents s\'ouvrent directement dans le lecteur natif de l\'appareil.' 
+          : 'Mon lecteur activé : les documents s\'ouvrent dans le lecteur interactif enrichi.';
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 3500);
+      }
+    }
+  }
+
+  const btnPrefCustom = document.getElementById('btn-pref-custom');
+  const btnPrefNative = document.getElementById('btn-pref-native');
+
+  if (btnPrefCustom) {
+    btnPrefCustom.addEventListener('click', (e) => {
+      e.preventDefault();
+      applyPdfReaderPref('custom', true);
+    });
+  }
+
+  if (btnPrefNative) {
+    btnPrefNative.addEventListener('click', (e) => {
+      e.preventDefault();
+      applyPdfReaderPref('native', true);
+    });
+  }
+
+  // Initialisation au chargement
+  applyPdfReaderPref(getPdfReaderPref(), false);
 
   // =========================================================
   // RECHERCHE RAPIDE & FILTRAGE EN DIRECT DES PIÈCES DU DOSSIER
