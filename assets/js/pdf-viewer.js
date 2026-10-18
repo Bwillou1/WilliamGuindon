@@ -736,9 +736,15 @@
     state.splitMode = false;
     state.nativeMode = false;
     if (dom.main) dom.main.classList.remove('split-active');
-    if (dom.splitViewport) dom.splitViewport.classList.add('hidden');
+    if (dom.splitViewport) {
+      dom.splitViewport.classList.add('hidden');
+      dom.splitViewport.style.setProperty('display', 'none', 'important');
+    }
     if (dom.btnSplitToggle) dom.btnSplitToggle.classList.remove('active');
-    if (dom.nativeContainer) dom.nativeContainer.classList.add('hidden');
+    if (dom.nativeContainer) {
+      dom.nativeContainer.classList.add('hidden');
+      dom.nativeContainer.style.setProperty('display', 'none', 'important');
+    }
     if (dom.btnNativeToggle) dom.btnNativeToggle.classList.remove('active');
 
     // 2. Extraire et assainir les paramètres de l'URL (query string et hash)
@@ -4456,6 +4462,7 @@ ER  -
     }
     if (dom.splitViewport) {
       dom.splitViewport.classList.toggle('hidden', !state.splitMode);
+      dom.splitViewport.style.setProperty('display', state.splitMode ? 'flex' : 'none', 'important');
     }
     if (dom.btnSplitToggle) {
       dom.btnSplitToggle.classList.toggle('active', state.splitMode);
@@ -4638,6 +4645,7 @@ ER  -
 
     if (dom.nativeContainer) {
       dom.nativeContainer.classList.toggle('hidden', !state.nativeMode);
+      dom.nativeContainer.style.setProperty('display', state.nativeMode ? 'flex' : 'none', 'important');
     }
     if (dom.btnNativeToggle) {
       dom.btnNativeToggle.classList.toggle('active', state.nativeMode);
