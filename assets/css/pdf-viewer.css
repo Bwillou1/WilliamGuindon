@@ -2398,19 +2398,82 @@ button.btn-native-view-toggle:hover {
     min-width: 28px !important;
     justify-content: center !important;
   }
+/* Conteneur EmbedPDF moderne (Plein écran sous la barre compacte) */
+.embedpdf-viewport-container {
+  flex: 1 1 auto;
+  width: 100%;
+  height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--viewer-bg);
 }
 
-.is-embedded .btn-native-label {
-  display: none !important;
+.embedpdf-viewport-container embedpdf-container {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.is-embedded .btn-native-view-toggle {
-  padding: 0 !important;
-  width: 28px !important;
-  min-width: 28px !important;
-  justify-content: center !important;
+.is-embedded .embedpdf-viewport-container {
+  height: 100vh;
+  height: 100dvh;
 }
 
+/* Modal de traduction intégrée */
+.embedpdf-translate-dialog {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 0;
+  max-width: 650px;
+  width: 90vw;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
 
+.embedpdf-translate-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
 
+.embedpdf-translate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+}
 
+.embedpdf-translate-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.embedpdf-translate-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.embedpdf-translate-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.embedpdf-translate-output {
+  min-height: 140px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}

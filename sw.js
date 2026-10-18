@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v160';
+const CACHE_NAME = 'wg-pwa-v161';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -21,6 +21,13 @@ const ASSETS_TO_CACHE = [
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
   '/assets/docs/declaration-appui-manfred-liebel-e7834.pdf',
+  '/assets/vendor/embedpdf/embedpdf.js',
+  '/assets/vendor/embedpdf/embedpdf-cl9qiF45.js',
+  '/assets/vendor/embedpdf/worker-engine-BCCrxWYm.js',
+  '/assets/vendor/embedpdf/direct-engine-DVLMOJWp.js',
+  '/assets/vendor/embedpdf/browser-BKLM0ThC-BCLQGPD6.js',
+  '/assets/vendor/embedpdf/pdfium.wasm',
+  '/assets/js/viewer-embedpdf.js',
   '/assets/js/pdf-viewer.js',
   '/assets/css/pdf-viewer.css',
   '/assets/vendor/pdfjs/pdf.min.js',
