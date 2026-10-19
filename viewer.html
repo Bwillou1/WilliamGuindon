@@ -52,7 +52,7 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
 
   <link rel="stylesheet" href="style.css?v=20261018-v87">
-  <link rel="stylesheet" href="assets/css/pdf-viewer.css?v=20261018-v93">
+  <link rel="stylesheet" href="assets/css/pdf-viewer.css?v=20261019-v94">
 
   <!-- Speculation Rules API : Préchargement instantané de l'expérience immersive et du registre -->
   <script type="speculationrules">
@@ -240,38 +240,65 @@
       <div class="embedpdf-translate-header">
         <h3 style="margin: 0; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: #059669;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          Traduction du document officiel
+          Traduction &amp; Versions multilingues
         </h3>
         <button type="button" id="btn-embedpdf-translate-close" class="tool-btn" aria-label="Fermer la fenêtre">&times;</button>
       </div>
       <div class="embedpdf-translate-body">
-        <div id="embedpdf-bilingual-box" style="display:none; margin-bottom: 12px; padding: 10px 14px; background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); border-radius: 8px;">
-          <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 4px;">Version officielle bilingue disponible</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Une version anglaise officielle déposée au dossier CCE est directement accessible :</div>
-          <button type="button" id="btn-open-official-english" class="btn btn-primary" style="background: #059669; border-color: #059669; font-size: 12px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px;">
-            Consulter la version anglaise officielle (English PDF) ↗
+        <!-- Bannière si version officielle bilingue disponible -->
+        <div id="embedpdf-bilingual-box" style="display:none; margin-bottom: 8px; padding: 12px 14px; background: rgba(5, 150, 105, 0.1); border: 1.5px solid #059669; border-radius: 8px;">
+          <div style="font-size: 12.5px; font-weight: 700; color: #059669; margin-bottom: 4px;">Version officielle bilingue certifiée CCE disponible</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Ce mémoire possède une version officielle en anglais déposée à la Commission de coopération environnementale :</div>
+          <button type="button" id="btn-open-official-english" class="btn btn-primary" style="background: #059669; border-color: #059669; font-size: 12px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+            📖 Ouvrir la version anglaise officielle (English PDF) ↗
           </button>
         </div>
 
-        <div class="embedpdf-translate-actions">
-          <label for="select-embedpdf-translate-lang" style="font-size: 12px; font-weight: 600;">Langue cible :</label>
-          <select id="select-embedpdf-translate-lang" class="zoom-select" style="padding: 4px 8px; font-size: 12px; font-weight: 600;">
-            <option value="en">Anglais (English)</option>
-            <option value="es">Espagnol (Español)</option>
-            <option value="de">Allemand (Deutsch)</option>
-            <option value="it">Italien (Italiano)</option>
-            <option value="pt">Portugais (Português)</option>
-          </select>
-          <button type="button" id="btn-embedpdf-do-translate" class="btn btn-primary" style="background:#059669; border-color:#059669; padding: 4px 14px; font-size: 12px;">Traduire la notice</button>
-          <a id="btn-full-doc-translate-external" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="padding: 4px 12px; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; color:#059669;">
-            Traduire tout le document (Google) ↗
+        <div class="embedpdf-translate-controls" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="select-embedpdf-translate-lang" style="font-size: 12px; font-weight: 600;">Langue cible :</label>
+            <select id="select-embedpdf-translate-lang" class="zoom-select" style="padding: 5px 10px; font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text);">
+              <option value="en" selected>Anglais (English)</option>
+              <option value="es">Espagnol (Español)</option>
+              <option value="de">Allemand (Deutsch)</option>
+            </select>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-muted);" id="embedpdf-translate-doc-label"></div>
+        </div>
+
+        <!-- Zone de texte source sélectionné ou notice -->
+        <div style="margin-top: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label for="embedpdf-text-to-translate" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted);">Texte à traduire (sélectionné dans le PDF ou notice du document) :</label>
+            <button type="button" id="btn-use-selection" style="background: transparent; border: none; color: #059669; font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline;">Récupérer ma sélection</button>
+          </div>
+          <textarea id="embedpdf-text-to-translate" style="width: 100%; min-height: 70px; max-height: 120px; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-family: inherit; font-size: 12px; line-height: 1.4; box-sizing: border-box; resize: vertical;"></textarea>
+        </div>
+
+        <!-- Résultat de la traduction -->
+        <div style="margin-top: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-size: 11.5px; font-weight: 700; color: #059669;">Traduction officielle &amp; Notice :</span>
+            <div id="embedpdf-translate-status" style="font-size: 11px; color: var(--text-muted);"></div>
+          </div>
+          <div id="embedpdf-translate-output" class="embedpdf-translate-output" style="min-height: 120px; max-height: 220px; overflow-y: auto; padding: 10px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); font-size: 12.5px; line-height: 1.55; white-space: pre-wrap;"></div>
+        </div>
+      </div>
+
+      <!-- Liens et outils d'ouverture externes 100% fonctionnels -->
+      <div class="embedpdf-translate-footer" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--line); background: var(--bg);">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <a id="btn-google-translate-web" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background: #059669; border-color: #059669; padding: 6px 12px; font-size: 11.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+            <span>Traduire sur Google Traduction ↗</span>
+          </a>
+          <a id="btn-deepl-translate-web" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="padding: 6px 12px; font-size: 11.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line);">
+            <span>DeepL ↗</span>
+          </a>
+          <a id="btn-full-doc-translate-external" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="padding: 6px 12px; font-size: 11.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line);">
+            <span>Traduire un PDF entier (Google Docs) ↗</span>
           </a>
         </div>
-        <div id="embedpdf-translate-status" style="font-size: 11px; color: var(--text-muted); min-height: 16px;"></div>
-        <div id="embedpdf-translate-output" class="embedpdf-translate-output">Sélectionnez la langue cible pour afficher le sommaire traduit ou cliquez sur « Traduire tout le document » pour l'ouvrir dans Google Traduction.</div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" id="btn-embedpdf-copy-translate" class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px;">Copier</button>
-        </div>
+        <button type="button" id="btn-embedpdf-copy-translate" class="btn btn-ghost" style="padding: 6px 14px; font-size: 11.5px; border: 1px solid var(--line);">Copier la traduction</button>
       </div>
     </dialog>
 
@@ -390,7 +417,7 @@
 
   </div>
 
-  <script type="module" src="assets/js/viewer-embedpdf.js?v=20261018-v1"></script>
+  <script type="module" src="assets/js/viewer-embedpdf.js?v=20261019-v2"></script>
   <script>
     (function() {
       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;

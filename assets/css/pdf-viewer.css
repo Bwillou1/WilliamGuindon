@@ -2483,8 +2483,13 @@ button.btn-native-view-toggle:hover {
   color: var(--text);
   padding: 0;
   max-width: 650px;
-  width: 90vw;
+  width: 92vw;
+  max-height: 90vh;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  margin: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .embedpdf-translate-dialog::backdrop {
@@ -2498,6 +2503,7 @@ button.btn-native-view-toggle:hover {
   justify-content: space-between;
   padding: 14px 18px;
   border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 .embedpdf-translate-header h3 {
@@ -2512,6 +2518,20 @@ button.btn-native-view-toggle:hover {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.embedpdf-translate-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  flex-shrink: 0;
 }
 
 .embedpdf-translate-actions {

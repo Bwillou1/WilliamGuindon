@@ -175,7 +175,12 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     btnDocDark: document.getElementById('btn-doc-dark-toggle'),
     bilingualBox: document.getElementById('embedpdf-bilingual-box'),
     btnOpenOfficialEnglish: document.getElementById('btn-open-official-english'),
-    btnFullDocTranslateExternal: document.getElementById('btn-full-doc-translate-external')
+    btnFullDocTranslateExternal: document.getElementById('btn-full-doc-translate-external'),
+    btnGoogleTranslateWeb: document.getElementById('btn-google-translate-web'),
+    btnDeeplTranslateWeb: document.getElementById('btn-deepl-translate-web'),
+    translateDocLabel: document.getElementById('embedpdf-translate-doc-label'),
+    textToTranslate: document.getElementById('embedpdf-text-to-translate'),
+    btnUseSelection: document.getElementById('btn-use-selection')
   };
 
   const BILINGUAL_PAIRS = {
@@ -183,6 +188,64 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     'assets/docs/72-rsp_en.pdf': 'assets/docs/72-rsp_fr.pdf',
     'assets/docs/73-rec_fr.pdf': 'assets/docs/73-rec_en.pdf',
     'assets/docs/73-rec_en.pdf': 'assets/docs/73-rec_fr.pdf'
+  };
+
+  const DOCS_TRANSLATIONS = {
+    'assets/docs/observations-reponse-canada-sem26003.pdf': {
+      en: "Guindon, W. (2026). Citizen Submission SEM-26-003 (Hazardous Waste Landfill in Blainville) — Formal observations on Canada's request to terminate or defer proceedings under CUSMA Article 24.28.\n\nSummary:\nCitizen submission author William Guindon formally opposes Canada's request of October 16, 2026 to dismiss or defer the proceedings. The observations demonstrate that municipal expropriation litigation does not enforce federal environmental law (Fisheries Act, Species at Risk Act) and that the CEC Secretariat must prepare a factual record.",
+      es: "Guindon, W. (2026). Comunicación ciudadana SEM-26-003 (Confinamiento de residuos peligrosos en Blainville) — Observaciones formales sobre la solicitud de terminación o aplazamiento formulada en la respuesta de Canadá del 16 de octubre de 2026.\n\nResumen:\nWilliam Guindon se opone formalmente a la solicitud de Canadá de archivar o aplazar el procedimiento. Demuestra que los litigios locales sobre expropiación municipal no equivalen a la aplicación del derecho ambiental federal canadiense y que la Secretaría de la CCA debe preparar un expediente de hechos.",
+      de: "Guindon, W. (2026). Bürgereingabe SEM-26-003 (Sondermülldeponie in Blainville) — Formelle Stellungnahme zum Ersuchen Kanadas auf Verfahrensbeendigung oder -aussetzung nach Art. 24.28 CUSMA/USMCA.\n\nZusammenfassung:\nWilliam Guindon widerspricht dem Antrag der kanadischen Regierung vom 16. Oktober 2026 auf Einstellung des Verfahrens. Er legt dar, dass kommunale Enteignungsverfahren keine Durchsetzung der Bundesumweltgesetze darstellen und das CCE-Sekretariat die Ausarbeitung eines Tatsachenberichts veranlassen muss."
+    },
+    'assets/docs/72-rsp_fr.pdf': {
+      en: "Government of Canada (2026). Party Response to SEM-26-003 (Hazardous Waste Landfill in Blainville) under CUSMA Article 24.27(4).\n\nSummary:\nOfficial response submitted by Environment and Climate Change Canada (Amenemhet Sanchez) requesting the CEC Secretariat to dismiss or defer examination of submission SEM-26-003, citing ongoing judicial proceedings in Quebec courts concerning Stablex.\n\n💡 An official certified English version of this filing is available directly: click 'Ouvrir la version anglaise officielle' above.",
+      es: "Gobierno de Canadá (2026). Respuesta de la Parte a la comunicación SEM-26-003 en virtud del Artículo 24.27(4) del T-MEC.\n\nResumen:\nRespuesta oficial de Medio Ambiente y Cambio Climático de Canadá solicitando la terminación o el aplazamiento del expediente ante la CCA, invocando litigios judiciales pendientes en Quebec relativos a Stablex.\n\n💡 La versión oficial en inglés está disponible directamente haciendo clic arriba.",
+      de: "Regierung von Kanada (2026). Erwiderung der Vertragspartei auf die Eingabe SEM-26-003 gemäß Art. 24.27(4) CUSMA/USMCA.\n\nZusammenfassung:\nOffizielle Stellungnahme von Environment and Climate Change Canada mit dem Antrag an das CCE-Sekretariat, das Prüfverfahren im Hinblick auf anhängige Gerichtsverfahren in Québec auszusetzen oder einzustellen.\n\n💡 Eine offizielle englische Fassung steht direkt über die Schaltfläche oben bereit."
+    },
+    'assets/docs/72-rsp_en.pdf': {
+      en: "Government of Canada (2026). Party Response to SEM-26-003 (Hazardous Waste Landfill in Blainville) under CUSMA Article 24.27(4).\n\nOfficial English version filed by Environment and Climate Change Canada (Sanchez, Amenemhet) requesting dismissal or deferral under Article 24.27(4)(a).",
+      es: "Gobierno de Canadá (2026). Respuesta de la Parte a SEM-26-003 en virtud del Artículo 24.27(4) del T-MEC (Versión oficial en inglés).",
+      de: "Regierung von Kanada (2026). Offizielle englische Erwiderung der Vertragspartei auf die Eingabe SEM-26-003 gemäß Art. 24.27(4) CUSMA."
+    },
+    'assets/docs/73-rec_fr.pdf': {
+      en: "CEC Secretariat (2026). Formal Acknowledgement of Receipt of Canada's Response under CUSMA Article 24.27(4) (File SEM-26-003).\n\nSummary:\nOfficial notification issued by the Secretariat of the Commission for Environmental Cooperation confirming the timely filing of the Government of Canada's response.\n\n💡 An official certified English version of this registry notice is available directly: click 'Ouvrir la version anglaise officielle' above.",
+      es: "Secretariado de la CCA (2026). Acuse de recibo de la respuesta de Canadá de conformidad con el Artículo 24.27(4) del T-MEC (Expediente SEM-26-003).\n\nResumen:\nNotificación formal del registro de la CCA confirmando la recepción en plazo de la respuesta gubernamental canadiense.",
+      de: "CCE-Sekretariat (2026). Empfangsbestätigung der Erwiderung Kanadas gemäß Art. 24.27(4) CUSMA (Akte SEM-26-003).\n\nZusammenfassung:\nFormelle Bestätigung des CCE-Registers über den Eingang der Erwiderung der kanadischen Regierung."
+    },
+    'assets/docs/73-rec_en.pdf': {
+      en: "CEC Secretariat (2026). Formal Acknowledgement of Receipt of Canada's Response under CUSMA Article 24.27(4) (Official English Filing).",
+      es: "Secretariado de la CCA (2026). Acuse oficial de recibo en inglés de la respuesta de Canadá (SEM-26-003).",
+      de: "CCE-Sekretariat (2026). Offizielle englische Empfangsbestätigung der Erwiderung Kanadas (SEM-26-003)."
+    },
+    'assets/docs/petition-546-cedd-bvg.pdf': {
+      en: "William Guindon & Office of the Auditor General of Canada (2026). Environmental Petition No. 0546: Application of Federal Environmental Laws to the Stablex Site in Blainville (Fisheries Act, SARA, MBCA).\n\nSummary:\nStatutory environmental petition filed pursuant to Section 22 of the Auditor General Act with the Commissioner of the Environment and Sustainable Development (CESD), requesting federal ministers to enforce aquatic habitat and migratory bird protections.",
+      es: "William Guindon y Auditoría General de Canadá (2026). Petición ambiental no 0546: Aplicación de leyes ambientales federales en el sitio Stablex en Blainville.\n\nResumen:\nPetición estatutaria presentada bajo el art. 22 de la Ley del Auditor General ante el Comisionado de Medio Ambiente y Desarrollo Sostenible (CEDD).",
+      de: "William Guindon & Büro des Generalauditors von Kanada (2026). Umweltpetition Nr. 0546: Vollzug der Bundesumweltgesetze am Standort Stablex in Blainville.\n\nZusammenfassung:\nGesetzliche Umweltpetition nach Art. 22 des Generalauditorgesetzes an den Beauftragten für Umwelt und nachhaltige Entwicklung (CESD)."
+    },
+    'assets/docs/26-2-det2_fr.pdf': {
+      en: "CEC Secretariat (2026). Positive Determination under CUSMA Articles 24.27(2) & 24.27(3) on Submission SEM-26-003 (28 pages).\n\nSummary:\nThe CEC Secretariat concludes that the submission by William Guindon satisfies all requirements of the North American Agreement on Environmental Cooperation and formally instructs Canada to submit its official response within 60 days.",
+      es: "Secretariado de la CCA (2026). Determinación favorable de conformidad con los Artículos 24.27(2) y (3) del T-MEC sobre la petición SEM-26-003 (28 páginas).\n\nResumen:\nLa CCA determina que la petición ciudadana cumple con todos los criterios y solicita una respuesta formal al gobierno de Canadá en un plazo de 60 días.",
+      de: "CCE-Sekretariat (2026). Positive Feststellung nach Art. 24.27(2) und (3) CUSMA zur Eingabe SEM-26-003 (28 Seiten).\n\nZusammenfassung:\nDas CCE-Sekretariat stellt die Zulässigkeit fest und fordert die kanadische Regierung auf, binnen 60 Tagen eine formelle Antwort einzureichen."
+    },
+    'assets/docs/26-3-rsub_fr_redacted.pdf': {
+      en: "William Guindon (2026). Revised Submission SEM-26-003: Protection of the Grande Tourbière de Blainville and CUSMA environmental compliance (15 pages).\n\nSummary:\nDetailed citizen submission documenting assertions of failure to enforce the federal Fisheries Act and Species at Risk Act in relation to the industrial expansion of hazardous waste disposal cells in Blainville.",
+      es: "William Guindon (2026). Petición revisada SEM-26-003: Protección de la Gran Turbera de Blainville y cumplimiento ambiental bajo el T-MEC (15 páginas).\n\nResumen:\nPetición ciudadana revisada que detalla las omisiones en la aplicación efectiva de la legislación ambiental federal canadiense.",
+      de: "William Guindon (2026). Überarbeitete Bürgereingabe SEM-26-003: Schutz des Großen Moores von Blainville und Einhaltung des CUSMA (15 Seiten).\n\nZusammenfassung:\nAusführliche Dokumentation der Nichtvollziehung von Bundesumweltgesetzen hinsichtlich der Erweiterung der Sondermülldeponie Stablex."
+    },
+    'assets/docs/26-3-det_fr.pdf': {
+      en: "CEC Secretariat (2026). Preliminary Determination on Submission SEM-26-003 under CUSMA Article 24.27(1) (17 pages).\n\nSummary:\nFirst procedural review determining that the initial citizen submission met basic requirements while setting out the timeline for filing the revised submission.",
+      es: "Secretariado de la CCA (2026). Determinación preliminar sobre la petición SEM-26-003 bajo el Artículo 24.27(1) del T-MEC (17 páginas).\n\nResumen:\nDictamen preliminar que establece el calendario procedimental para la versión revisada de la petición.",
+      de: "CCE-Sekretariat (2026). Vorläufige Feststellung zur Eingabe SEM-26-003 gemäß Art. 24.27(1) CUSMA (17 Seiten).\n\nZusammenfassung:\nVerfahrensentscheidung des CCE-Sekretariats zur Fristsetzung für die überarbeitete Eingabe."
+    },
+    'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf': {
+      en: "William Guindon (2026). Urgent Appeal and Formal Deposition: Environmental and human rights violations regarding toxic waste expansion in Blainville (Geneva: UN / OHCHR, 14 pages).\n\nSummary:\nFormal submission addressed to United Nations Special Rapporteurs on toxics and human rights, highlighting toxic exposure risks, youth environmental rights, and international commitments.",
+      es: "William Guindon (2026). Llamamiento urgente y deposición formal ante relatores especiales de la ONU (14 páginas).\n\nResumen:\nDenuncia ante los Procedimientos Especiales de la ONU sobre violaciones de derechos ambientales y de la juventud en Blainville.",
+      de: "William Guindon (2026). Dringlichkeitsappell und formelle Eingabe an UN-Sonderberichterstatter (Genf: UN / OHCHR, 14 Seiten).\n\nZusammenfassung:\nFormelle Eingabe an die Sonderberichterstatter der Vereinten Nationen bezüglich giftiger Abfälle und Jugendrechte."
+    },
+    'assets/docs/declaration-appui-manfred-liebel-e7834.pdf': {
+      en: "Prof. Dr. Manfred Liebel (TU Berlin) & Philip Meade, M.A. (2026). International Scientific Declaration of Support: Civic Capacity, Youth Agency, and Anti-Adultism.\n\nSummary:\nCertified expert declaration recognizing the legal and civic agency of minor petition authors, and validating William Guindon's leadership in international environmental proceedings.",
+      es: "Prof. Dr. Manfred Liebel (TU Berlín) y Philip Meade, M.A. (2026). Declaración científica internacional de apoyo: Capacidad cívica, agencia juvenil y anti-adultismo.\n\nResumen:\nDictamen académico que respalda la plena legitimidad y capacidad jurídica de autores menores de edad en procedimientos ambientales.",
+      de: "Prof. Dr. Manfred Liebel (TU Berlin) & Philip Meade, M.A. (2026). Internationale wissenschaftliche Unterstützungserklärung: Bürgerliche Handlungsfähigkeit, Jugend-Agency und Anti-Adultismus.\n\nZusammenfassung:\nWissenschaftliches Gutachten zur Bestätigung der bürgerlichen Handlungsfähigkeit von Minderjährigen im Umwelt- und Völkerrecht."
+    }
   };
 
   let currentTargetFile = 'assets/docs/observations-reponse-canada-sem26003.pdf';
@@ -641,8 +704,25 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
+  function getSelectedDocText() {
+    try {
+      if (window.getSelection) {
+        const sel = window.getSelection().toString().trim();
+        if (sel) return sel;
+      }
+    } catch (_) {}
+    return '';
+  }
+
   function updateTranslateModal() {
     const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+    const meta = getDocMeta(currentTargetFile);
+
+    if (dom.translateDocLabel) {
+      dom.translateDocLabel.textContent = meta.title || currentTargetFile;
+    }
+
+    // Version officielle bilingue si disponible
     const pair = BILINGUAL_PAIRS[currentTargetFile];
     if (pair && dom.bilingualBox) {
       dom.bilingualBox.style.display = 'block';
@@ -656,6 +736,42 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       dom.bilingualBox.style.display = 'none';
     }
 
+    // Texte source
+    const textVal = dom.textToTranslate ? dom.textToTranslate.value.trim() : '';
+    const defaultMetaText = `${meta.title}\n\n${meta.citation || ''}\n\nType : ${meta.type || ''}`.trim();
+
+    // Traduction officielle ou extrait
+    const docTrans = DOCS_TRANSLATIONS[currentTargetFile];
+    const officialSummary = (docTrans && docTrans[lang]) ? docTrans[lang] : null;
+
+    if (!textVal || textVal === defaultMetaText) {
+      if (officialSummary) {
+        if (dom.translateOutput) dom.translateOutput.textContent = officialSummary;
+        if (dom.translateStatus) dom.translateStatus.textContent = `Traduction officielle certifiée (${lang.toUpperCase()})`;
+      } else {
+        if (dom.translateOutput) {
+          dom.translateOutput.textContent = `Titre : ${meta.title}\n\nCitation : ${meta.citation || 'SEM-26-003'}\n\n💡 Cliquez sur « Traduire sur Google Traduction ↗ » ci-dessous pour traduire ce document ou un extrait sélectionné.`;
+        }
+        if (dom.translateStatus) dom.translateStatus.textContent = `Notice (${lang.toUpperCase()})`;
+      }
+    } else {
+      // Extrait sélectionné personnalisé
+      if (dom.translateOutput) {
+        dom.translateOutput.textContent = `Extrait sélectionné (${textVal.length} caractères) :\n"${textVal}"\n\n👉 Cliquez ci-dessous sur « Traduire sur Google Traduction ↗ » ou « DeepL ↗ » pour ouvrir la traduction instantanée de ce passage sans aucune limite de taille.\n\n${officialSummary ? ('---\nNotice officielle du document :\n' + officialSummary) : ''}`;
+      }
+      if (dom.translateStatus) dom.translateStatus.textContent = `Extrait personnalisé (${lang.toUpperCase()})`;
+    }
+
+    // Mise à jour des liens externes sécurisés
+    const textForExternal = textVal || defaultMetaText;
+    if (dom.btnGoogleTranslateWeb) {
+      dom.btnGoogleTranslateWeb.href = `https://translate.google.com/?sl=auto&tl=${encodeURIComponent(lang)}&text=${encodeURIComponent(textForExternal)}&op=translate`;
+    }
+
+    if (dom.btnDeeplTranslateWeb) {
+      dom.btnDeeplTranslateWeb.href = `https://www.deepl.com/translator#fr/${encodeURIComponent(lang)}/${encodeURIComponent(textForExternal.slice(0, 1500))}`;
+    }
+
     const fullDocUrl = `https://williamguindon.me/${currentTargetFile}`;
     if (dom.btnFullDocTranslateExternal) {
       dom.btnFullDocTranslateExternal.href = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(lang)}&u=${encodeURIComponent(fullDocUrl)}`;
@@ -666,9 +782,44 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     dom.selectTranslateLang.addEventListener('change', updateTranslateModal);
   }
 
-  // Traduction automatique via Google Traduction (modale dédiée)
+  if (dom.textToTranslate) {
+    dom.textToTranslate.addEventListener('input', updateTranslateModal);
+  }
+
+  if (dom.btnUseSelection) {
+    dom.btnUseSelection.addEventListener('click', () => {
+      const sel = getSelectedDocText();
+      if (sel) {
+        if (dom.textToTranslate) {
+          dom.textToTranslate.value = sel;
+          updateTranslateModal();
+        }
+      } else {
+        if (dom.translateStatus) {
+          dom.translateStatus.textContent = 'Aucun texte sélectionné au curseur';
+          setTimeout(() => {
+            updateTranslateModal();
+          }, 2000);
+        }
+      }
+    });
+  }
+
+  // Ouverture de la modale Traduction
   if (dom.btnTranslateDoc) {
     dom.btnTranslateDoc.addEventListener('click', () => {
+      const sel = getSelectedDocText();
+      const meta = getDocMeta(currentTargetFile);
+      const defaultMetaText = `${meta.title}\n\n${meta.citation || ''}\n\nType : ${meta.type || ''}`.trim();
+
+      if (dom.textToTranslate) {
+        if (sel) {
+          dom.textToTranslate.value = sel;
+        } else if (!dom.textToTranslate.value.trim()) {
+          dom.textToTranslate.value = defaultMetaText;
+        }
+      }
+
       updateTranslateModal();
       if (dom.translateDialog && typeof dom.translateDialog.showModal === 'function') {
         dom.translateDialog.showModal();
@@ -682,37 +833,12 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
-  if (dom.btnTranslateAction) {
-    dom.btnTranslateAction.addEventListener('click', () => {
-      const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
-      const meta = getDocMeta(currentTargetFile);
-      if (dom.translateStatus) dom.translateStatus.textContent = 'Traduction en cours...';
-
-      const textToTranslate = `${meta.title}\n\n${meta.citation || ''}\n\n${meta.type || ''}`;
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(lang)}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
-
-      fetch(url)
-        .then(r => r.json())
-        .then(data => {
-          const translated = data[0].map(s => s[0]).join('');
-          if (dom.translateOutput) dom.translateOutput.textContent = translated;
-          if (dom.translateStatus) dom.translateStatus.textContent = `Traduction prête (${lang.toUpperCase()})`;
-        })
-        .catch(err => {
-          console.error('Erreur traduction:', err);
-          if (dom.translateStatus) dom.translateStatus.textContent = 'Ouverture directe dans Google Traduction...';
-          const fullDocUrl = `https://williamguindon.me/${currentTargetFile}`;
-          window.open(`https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(lang)}&u=${encodeURIComponent(fullDocUrl)}`, '_blank');
-        });
-    });
-  }
-
   if (dom.btnTranslateCopy) {
     dom.btnTranslateCopy.addEventListener('click', () => {
       if (!dom.translateOutput || !dom.translateOutput.textContent) return;
       navigator.clipboard.writeText(dom.translateOutput.textContent).then(() => {
         dom.btnTranslateCopy.textContent = 'Copié !';
-        setTimeout(() => dom.btnTranslateCopy.textContent = 'Copier', 2000);
+        setTimeout(() => dom.btnTranslateCopy.textContent = 'Copier la traduction', 2000);
       });
     });
   }
