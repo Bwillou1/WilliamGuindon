@@ -171,11 +171,146 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     btnAbout: document.getElementById('btn-viewer-about'),
     aboutDialog: document.getElementById('viewer-about-dialog'),
     btnAboutClose: document.getElementById('btn-viewer-about-close'),
-    btnAboutOk: document.getElementById('btn-viewer-about-ok')
+    btnAboutOk: document.getElementById('btn-viewer-about-ok'),
+    btnDocDark: document.getElementById('btn-doc-dark-toggle'),
+    bilingualBox: document.getElementById('embedpdf-bilingual-box'),
+    btnOpenOfficialEnglish: document.getElementById('btn-open-official-english'),
+    btnFullDocTranslateExternal: document.getElementById('btn-full-doc-translate-external')
+  };
+
+  const BILINGUAL_PAIRS = {
+    'assets/docs/72-rsp_fr.pdf': 'assets/docs/72-rsp_en.pdf',
+    'assets/docs/72-rsp_en.pdf': 'assets/docs/72-rsp_fr.pdf',
+    'assets/docs/73-rec_fr.pdf': 'assets/docs/73-rec_en.pdf',
+    'assets/docs/73-rec_en.pdf': 'assets/docs/73-rec_fr.pdf'
   };
 
   let currentTargetFile = 'assets/docs/observations-reponse-canada-sem26003.pdf';
   let embedViewerInstance = null;
+  let isDocDark = false;
+  try {
+    isDocDark = localStorage.getItem('wg_pdf_doc_dark') === 'true';
+  } catch (_) {}
+
+  let saveAnnotationTimeout = null;
+  function debounceSaveAnnotations(annotationApi, file) {
+    clearTimeout(saveAnnotationTimeout);
+    saveAnnotationTimeout = setTimeout(() => {
+      try {
+        if (!annotationApi || typeof annotationApi.exportAnnotations !== 'function') return;
+        annotationApi.exportAnnotations().wait((items) => {
+          if (items && Array.isArray(items)) {
+            const key = `wg_embedpdf_annotations_${encodeURIComponent(file)}`;
+            localStorage.setItem(key, JSON.stringify(items));
+          }
+        }, (err) => console.warn('Erreur export annotations:', err));
+      } catch (e) {
+        console.warn('Erreur sauvegarde annotations:', e);
+      }
+    }, 400);
+  }
+
+  function getEmbedPdfShadowRoot() {
+    const hostEl = embedViewerInstance || (dom.container ? dom.container.querySelector('embedpdf-container') : null);
+    return hostEl ? (hostEl.shadowRoot || hostEl.root) : null;
+  }
+
+  function injectEmbedPDFStyles() {
+    const s = getEmbedPdfShadowRoot();
+    if (!s) return;
+
+    let style = s.getElementById('wg-embedpdf-custom-ui-rules');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'wg-embedpdf-custom-ui-rules';
+      s.appendChild(style);
+    }
+    style.textContent = `
+      /* 1. Surlignage et sélection de texte en vert émeraude */
+      ::selection {
+        background: rgba(16, 185, 129, 0.45) !important;
+        color: inherit !important;
+      }
+      ::-moz-selection {
+        background: rgba(16, 185, 129, 0.45) !important;
+        color: inherit !important;
+      }
+
+      /* 2. Cacher Form, Insert, Redact, Shapes (onglets et menus) */
+      [data-epdf-i="shapes-mode"],
+      [data-epdf-i="insert-mode"],
+      [data-epdf-i="form-mode"],
+      [data-epdf-i="redact-mode"],
+      [data-epdf-i="mode:shapes"],
+      [data-epdf-i="mode:insert"],
+      [data-epdf-i="mode:form"],
+      [data-epdf-i="mode:redact"],
+      [data-epdf-i="overflow-tabs-button"],
+      [data-epdf-cat~="annotation-shape"],
+      [data-epdf-cat~="mode-shapes"],
+      [data-epdf-cat~="mode-insert"],
+      [data-epdf-cat~="mode-form"],
+      [data-epdf-cat~="mode-redact"],
+      [data-epdf-cat~="redaction"],
+      [data-epdf-cat~="form"],
+
+      /* 3. Cacher le menu Document (Open, Close, Security / Protect) et empêcher l'import */
+      [data-epdf-i="document-menu-button"],
+      [data-epdf-i="document:open"],
+      [data-epdf-i="document:close"],
+      [data-epdf-i="document:protect"],
+      [data-epdf-cat~="document-menu"],
+      [data-epdf-i="divider-1"] {
+        display: none !important;
+      }
+
+      /* 4. Fond vert pâle derrière le document */
+      :host, .embedpdf-snippet-root, [data-epdf-i="main-viewport"], .bg-bg-app {
+        background-color: var(--viewer-bg, #f0fdf4) !important;
+      }
+    `;
+
+    applyDocDarkMode(isDocDark);
+  }
+
+  function applyDocDarkMode(enabled) {
+    isDocDark = enabled;
+    try {
+      localStorage.setItem('wg_pdf_doc_dark', enabled ? 'true' : 'false');
+    } catch (_) {}
+    if (dom.btnDocDark) {
+      dom.btnDocDark.classList.toggle('doc-dark-active', enabled);
+      dom.btnDocDark.title = enabled
+        ? 'Couleur du document : Rétablir clair'
+        : 'Couleur du document : Inverser en mode sombre';
+    }
+    const s = getEmbedPdfShadowRoot();
+    if (s) {
+      let style = s.getElementById('wg-doc-dark-mode-style');
+      if (enabled) {
+        if (!style) {
+          style = document.createElement('style');
+          style.id = 'wg-doc-dark-mode-style';
+          s.appendChild(style);
+        }
+        style.textContent = `
+          .bg-bg-app img,
+          [data-epdf-i="main-viewport"] img,
+          canvas {
+            filter: invert(0.88) hue-rotate(180deg) brightness(0.95) contrast(1.1) !important;
+          }
+          .bg-bg-app div[style*="rgb(255, 255, 255)"],
+          .bg-bg-app div[style*="#ffffff"],
+          [data-epdf-i="main-viewport"] div[style*="rgb(255, 255, 255)"],
+          [data-epdf-i="main-viewport"] div[style*="#ffffff"] {
+            background-color: #181c24 !important;
+          }
+        `;
+      } else if (style) {
+        style.remove();
+      }
+    }
+  }
 
   function getCurrentTheme() {
     return document.documentElement.getAttribute('data-theme') || 'light';
@@ -191,6 +326,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (embedViewerInstance && typeof embedViewerInstance.setTheme === 'function') {
       embedViewerInstance.setTheme(theme);
     }
+    setTimeout(injectEmbedPDFStyles, 50);
   }
 
   function syncDocSelect(targetFile) {
@@ -239,16 +375,118 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         stamp: {
           manifests: []
         },
+        disabledCategories: [
+          'form',
+          'mode-form',
+          'insert',
+          'mode-insert',
+          'redaction',
+          'mode-redact',
+          'annotation-shape',
+          'mode-shapes',
+          'shape',
+          'document-open',
+          'document-close',
+          'security',
+          'document-protect'
+        ],
         theme: {
-          preference: themePref
+          preference: themePref,
+          light: {
+            accent: {
+              primary: '#059669',
+              primaryHover: '#047857',
+              primaryActive: '#065f46',
+              primaryLight: 'rgba(16, 185, 129, 0.15)',
+              primaryForeground: '#ffffff'
+            },
+            background: {
+              app: '#f0fdf4',
+              surface: '#ffffff',
+              surfaceAlt: '#f8fafc'
+            }
+          },
+          dark: {
+            accent: {
+              primary: '#10b981',
+              primaryHover: '#34d399',
+              primaryActive: '#059669',
+              primaryLight: 'rgba(16, 185, 129, 0.25)',
+              primaryForeground: '#ffffff'
+            },
+            background: {
+              app: '#0c1612',
+              surface: '#15241e',
+              surfaceAlt: '#0c1612'
+            }
+          }
         }
       });
+
+      // Configuration de la persistance des annotations
+      if (embedViewerInstance && embedViewerInstance.registry) {
+        embedViewerInstance.registry.then(registry => {
+          const annotationApi = registry.getPlugin('annotation')?.provides();
+          if (!annotationApi) return;
+
+          // 1. Restaurer annotations existantes pour ce document
+          try {
+            const key = `wg_embedpdf_annotations_${encodeURIComponent(currentTargetFile)}`;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+              const items = JSON.parse(saved);
+              if (Array.isArray(items) && items.length > 0) {
+                annotationApi.importAnnotations(items);
+              }
+            }
+          } catch (err) {
+            console.warn('Erreur restauration annotations:', err);
+          }
+
+          // 2. Écouter les événements d'annotation et sauvegarder
+          if (typeof annotationApi.onAnnotationEvent === 'function') {
+            annotationApi.onAnnotationEvent(() => {
+              debounceSaveAnnotations(annotationApi, currentTargetFile);
+            });
+          }
+        }).catch(err => {
+          console.warn('Erreur registre EmbedPDF:', err);
+        });
+      }
+
+      // Observation et injection continue des styles personnalisés
+      const s = getEmbedPdfShadowRoot();
+      if (s) {
+        injectEmbedPDFStyles();
+        try {
+          const obs = new MutationObserver(() => {
+            if (!s.getElementById('wg-embedpdf-custom-ui-rules')) {
+              injectEmbedPDFStyles();
+            }
+          });
+          obs.observe(s, { childList: true });
+        } catch (_) {}
+      }
+      setTimeout(injectEmbedPDFStyles, 80);
+      setTimeout(injectEmbedPDFStyles, 300);
+      setTimeout(injectEmbedPDFStyles, 800);
+      setTimeout(injectEmbedPDFStyles, 1800);
+
     } catch (err) {
       console.error('Erreur initialisation EmbedPDF:', err);
       // Secours immédiat : lecteur natif si échec de chargement WebAssembly
       dom.container.innerHTML = `<iframe src="${currentTargetFile}" style="width:100%;height:100%;border:none;"></iframe>`;
     }
   }
+
+  // Empêcher l'importation de fichiers PDF externes par glisser-déposer
+  window.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  }, false);
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, false);
 
   function openDocument(fileUrl) {
     const safeFile = getSafeDocUrl(fileUrl);
@@ -387,9 +625,42 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
+  // Bascule du mode Document Sombre / Inversion
+  if (dom.btnDocDark) {
+    dom.btnDocDark.addEventListener('click', () => {
+      applyDocDarkMode(!isDocDark);
+    });
+  }
+
+  function updateTranslateModal() {
+    const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+    const pair = BILINGUAL_PAIRS[currentTargetFile];
+    if (pair && dom.bilingualBox) {
+      dom.bilingualBox.style.display = 'block';
+      if (dom.btnOpenOfficialEnglish) {
+        dom.btnOpenOfficialEnglish.onclick = () => {
+          openDocument(pair);
+          if (dom.translateDialog) dom.translateDialog.close();
+        };
+      }
+    } else if (dom.bilingualBox) {
+      dom.bilingualBox.style.display = 'none';
+    }
+
+    const fullDocUrl = `https://williamguindon.me/${currentTargetFile}`;
+    if (dom.btnFullDocTranslateExternal) {
+      dom.btnFullDocTranslateExternal.href = `https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(lang)}&u=${encodeURIComponent(fullDocUrl)}`;
+    }
+  }
+
+  if (dom.selectTranslateLang) {
+    dom.selectTranslateLang.addEventListener('change', updateTranslateModal);
+  }
+
   // Traduction automatique via Google Traduction (modale dédiée)
   if (dom.btnTranslateDoc) {
     dom.btnTranslateDoc.addEventListener('click', () => {
+      updateTranslateModal();
       if (dom.translateDialog && typeof dom.translateDialog.showModal === 'function') {
         dom.translateDialog.showModal();
       }
@@ -406,7 +677,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     dom.btnTranslateAction.addEventListener('click', () => {
       const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
       const meta = getDocMeta(currentTargetFile);
-      if (dom.translateStatus) dom.translateStatus.textContent = 'Traduction de la description et du sommaire en cours...';
+      if (dom.translateStatus) dom.translateStatus.textContent = 'Traduction en cours...';
 
       const textToTranslate = `${meta.title}\n\n${meta.citation || ''}\n\n${meta.type || ''}`;
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(lang)}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
@@ -420,8 +691,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         })
         .catch(err => {
           console.error('Erreur traduction:', err);
-          if (dom.translateStatus) dom.translateStatus.textContent = 'Traduction externe indisponible. Ouverture dans Google Traduction...';
-          const fullDocUrl = `${window.location.origin}/${currentTargetFile}`;
+          if (dom.translateStatus) dom.translateStatus.textContent = 'Ouverture directe dans Google Traduction...';
+          const fullDocUrl = `https://williamguindon.me/${currentTargetFile}`;
           window.open(`https://translate.google.com/translate?sl=auto&tl=${encodeURIComponent(lang)}&u=${encodeURIComponent(fullDocUrl)}`, '_blank');
         });
     });
@@ -432,7 +703,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       if (!dom.translateOutput || !dom.translateOutput.textContent) return;
       navigator.clipboard.writeText(dom.translateOutput.textContent).then(() => {
         dom.btnTranslateCopy.textContent = 'Copié !';
-        setTimeout(() => dom.btnTranslateCopy.textContent = 'Copier la traduction', 2000);
+        setTimeout(() => dom.btnTranslateCopy.textContent = 'Copier', 2000);
       });
     });
   }

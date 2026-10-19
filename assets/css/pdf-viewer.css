@@ -3,13 +3,13 @@
 :root {
   --viewer-header-h: 58px;
   --viewer-sidebar-w: 320px;
-  --viewer-bg: #edf2ee;
+  --viewer-bg: #f0fdf4;
   --viewer-page-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --viewer-page-border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] {
-  --viewer-bg: #090d0a;
+  --viewer-bg: #0c1612;
   --viewer-page-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.1);
   --viewer-page-border: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -2409,10 +2409,14 @@ button.btn-native-view-toggle:hover {
   height: calc(100dvh - var(--viewer-header-h, 58px));
   position: relative;
   overflow: hidden;
-  background-color: var(--viewer-bg, #1a1e24);
+  background-color: var(--viewer-bg, #f0fdf4);
   display: flex;
   align-items: stretch;
   justify-content: center;
+}
+
+[data-theme="dark"] .embedpdf-viewport-container {
+  background-color: #0c1612;
 }
 
 .embedpdf-viewport-container embedpdf-container {
@@ -2427,6 +2431,48 @@ button.btn-native-view-toggle:hover {
 .is-embedded .embedpdf-viewport-container {
   height: 100vh;
   height: 100dvh;
+}
+
+/* Bouton Traduire officiel en vert distinctif */
+.tool-btn.btn-translate-green {
+  background: rgba(5, 150, 105, 0.12) !important;
+  color: #059669 !important;
+  border: 1px solid rgba(5, 150, 105, 0.3) !important;
+}
+
+[data-theme="dark"] .tool-btn.btn-translate-green {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+
+.tool-btn.btn-translate-green:hover {
+  background: #059669 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .tool-btn.btn-translate-green:hover {
+  background: #10b981 !important;
+  color: #064e3b !important;
+}
+
+/* Bouton Document Sombre actif */
+.tool-btn.doc-dark-active {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border-color: #059669 !important;
+}
+
+[data-theme="dark"] .tool-btn.doc-dark-active {
+  background: #10b981 !important;
+  color: #064e3b !important;
+  border-color: #10b981 !important;
+}
+
+/* Surlignage et sélection de texte en vert naturel */
+::selection {
+  background: rgba(16, 185, 129, 0.35) !important;
+  color: inherit !important;
 }
 
 /* Modal de traduction intégrée */
