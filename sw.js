@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v174';
+const CACHE_NAME = 'wg-pwa-v175';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -153,6 +153,7 @@ function isCacheable(request, response) {
     const isOfflineAllowedHtml = url.pathname === '/apercu.html' || 
                                  url.pathname === '/dossier-journalistes.html' || 
                                  url.pathname === '/viewer.html' || 
+                                 url.pathname === '/lecteur.html' || 
                                  url.pathname === '/dependances-licences.html';
     if (!isOfflineAllowedHtml) {
       return false;
@@ -245,6 +246,7 @@ self.addEventListener('fetch', (event) => {
     const isOfflineAllowed = url.pathname === '/apercu.html' || 
                              url.pathname === '/dossier-journalistes.html' || 
                              url.pathname === '/viewer.html' || 
+                             url.pathname === '/lecteur.html' || 
                              url.pathname === '/dependances-licences.html';
     if (!isOfflineAllowed) {
       return;
