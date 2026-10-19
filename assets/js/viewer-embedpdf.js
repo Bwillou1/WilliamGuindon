@@ -373,7 +373,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       }
     `;
 
-    applyDocDarkMode(isDocDark);
+    applyDocDarkMode(getCurrentTheme() === 'dark' || isDocDark);
   }
 
   function applyDocDarkMode(enabled) {
@@ -397,16 +397,42 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           s.appendChild(style);
         }
         style.textContent = `
-          .bg-bg-app img,
-          [data-epdf-i="main-viewport"] img,
-          canvas {
-            filter: invert(0.88) hue-rotate(180deg) brightness(0.95) contrast(1.1) !important;
+          /* Inversion sombre automatique du document PDF */
+          canvas,
+          [data-epdf-i="page-canvas"],
+          .embedpdf-page-canvas {
+            filter: invert(0.90) hue-rotate(180deg) brightness(0.96) contrast(1.08) !important;
           }
+
+          /* Protection stricte : les images, photos, logos et signatures restent normales (non inversées en négatif) */
+          img,
+          picture,
+          svg image,
+          [data-epdf-i="thumbnail"] img,
+          [data-epdf-i="image"],
+          [data-epdf-cat~="image"],
+          .embedpdf-image-layer,
+          .pdf-image,
+          .document-image {
+            filter: none !important;
+          }
+
+          /* Si une image est contenue dans un élément inversé, ré-inverser pour annuler le filtre et préserver les couleurs normales */
+          canvas ~ img,
+          .canvas-container img,
+          [data-epdf-i="page-canvas"] img,
+          .embedpdf-snippet-root [style*="invert"] img,
+          [data-epdf-i="main-viewport"] [style*="filter"] img {
+            filter: invert(1) hue-rotate(180deg) !important;
+          }
+
+          /* Fonds neutres sombres pour éliminer les éclats blancs */
           .bg-bg-app div[style*="rgb(255, 255, 255)"],
           .bg-bg-app div[style*="#ffffff"],
           [data-epdf-i="main-viewport"] div[style*="rgb(255, 255, 255)"],
-          [data-epdf-i="main-viewport"] div[style*="#ffffff"] {
-            background-color: #181c24 !important;
+          [data-epdf-i="main-viewport"] div[style*="#ffffff"],
+          [data-epdf-i="document-viewport"] {
+            background-color: #121815 !important;
           }
         `;
       } else if (style) {
@@ -429,6 +455,10 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (embedViewerInstance && typeof embedViewerInstance.setTheme === 'function') {
       embedViewerInstance.setTheme(theme);
     }
+
+    // Filtre automatique pour le document : sombre si theme === 'dark', clair sinon
+    applyDocDarkMode(theme === 'dark');
+
     setTimeout(injectEmbedPDFStyles, 50);
   }
 
@@ -1208,8 +1238,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (dom.container) dom.container.style.height = '100vh';
   }
 
-  // Démarrage initial
+  // Démarrage initial avec synchronisation du thème et assombrissement automatique
   const urlParams = new URLSearchParams(window.location.search);
+  const urlTheme = urlParams.get('theme');
+  const storedTheme = (function() {
+    try {
+      return localStorage.getItem('wg_theme') || localStorage.getItem('william-guindon-theme');
+    } catch (_) { return null; }
+  })();
+  const initialTheme = urlTheme || storedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyViewerTheme(initialTheme);
+
   const rawFile = urlParams.get('file') || urlParams.get('doc');
   const targetDocKey = urlParams.get('id');
 
