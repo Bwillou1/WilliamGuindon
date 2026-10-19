@@ -135,9 +135,25 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   function getSafeDocUrl(rawUrl) {
     if (!rawUrl) return 'assets/docs/observations-reponse-canada-sem26003.pdf';
-    let clean = rawUrl.trim().replace(/^(\.\/|\/)/, '');
-    if (ALLOWED_DOCS.includes(clean)) return clean;
-    if (clean.startsWith('assets/docs/') && clean.endsWith('.pdf') && !clean.includes('..')) {
+    let clean = rawUrl.trim();
+    if (clean.includes('williamguindon.me/assets/docs/')) {
+      clean = clean.split('williamguindon.me/')[1];
+    }
+    const cleanRel = clean.replace(/^(\.\/|\/)/, '');
+    if (ALLOWED_DOCS.includes(cleanRel)) return cleanRel;
+    if (cleanRel.startsWith('assets/docs/') && cleanRel.endsWith('.pdf') && !cleanRel.includes('..')) {
+      return cleanRel;
+    }
+    // Archives officielles (archive.org, Internet Archive)
+    if (/^https:\/\/(?:[a-zA-Z0-9-]+\.)?archive\.org\/.+\.pdf(?:[?#].*)?$/i.test(clean)) {
+      return clean;
+    }
+    // Objets blobs locaux (ex. ouverts depuis dossier-journalistes.html)
+    if (clean.startsWith('blob:') || clean.startsWith('data:application/pdf')) {
+      return clean;
+    }
+    // URLs absolues HTTPS directes vers un PDF
+    if (/^https:\/\/[a-zA-Z0-9.-]+\/.*\.pdf(?:[?#].*)?$/i.test(clean) && !clean.includes('..')) {
       return clean;
     }
     return 'assets/docs/observations-reponse-canada-sem26003.pdf';
@@ -317,6 +333,30 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       [data-epdf-cat~="redaction"],
       [data-epdf-cat~="form"],
 
+      /* Cacher les outils d'insertion et modification de texte direct sur le document (Tt, T->, T↩, Callout) */
+      [data-epdf-i="annotation:add-text"],
+      [data-epdf-i="annotation:add-callout"],
+      [data-epdf-i="annotation:add-insert-text"],
+      [data-epdf-i="annotation:add-replace-text"],
+      [data-epdf-i="add-text"],
+      [data-epdf-i="add-callout"],
+      [data-epdf-i="add-insert-text"],
+      [data-epdf-i="add-replace-text"],
+      [data-epdf-cat~="annotation-text"],
+      [data-epdf-cat~="annotation-callout"],
+      [data-epdf-cat~="annotation-insert-text"],
+      [data-epdf-cat~="annotation-replace-text"],
+      button[title*="Texte" i],
+      button[title*="Text" i],
+      button[title*="Callout" i],
+      button[title*="Insert" i],
+      button[title*="Replace" i],
+      button[aria-label*="Texte" i],
+      button[aria-label*="Text" i],
+      button[aria-label*="Callout" i],
+      button[aria-label*="Insert" i],
+      button[aria-label*="Replace" i],
+
       /* 3. Cacher le menu Document (Open, Close, Security / Protect) et empêcher l'import */
       [data-epdf-i="document-menu-button"],
       [data-epdf-i="document:open"],
@@ -401,13 +441,24 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         return;
       }
     }
-    // Si document hors catalogue, créer option personnalisée
-    const customOpt = document.createElement('option');
-    const filename = targetFile.split('/').pop();
-    customOpt.value = targetFile;
-    customOpt.textContent = filename;
-    dom.docSelect.appendChild(customOpt);
+    // Si document hors catalogue (ex: archive web, mémoire d'expert, etc.)
+    const filename = decodeURIComponent(targetFile.split('/').pop().split('?')[0]);
+    const cleanLabel = filename.replace(/\.pdf$/i, '').replace(/[-_]/g, ' ');
+    let foundOption = null;
+    for (let opt of dom.docSelect.options) {
+      if (opt.value === targetFile) {
+        foundOption = opt;
+        break;
+      }
+    }
+    if (!foundOption) {
+      foundOption = document.createElement('option');
+      foundOption.value = targetFile;
+      dom.docSelect.appendChild(foundOption);
+    }
+    foundOption.textContent = `Pièce d'archive : ${cleanLabel}`;
     dom.docSelect.value = targetFile;
+    document.title = `${cleanLabel} — Archive SEM-26-003 · William Guindon`;
   }
 
   function initEmbedPDF(fileUrl) {
@@ -420,7 +471,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const themePref = getCurrentTheme() === 'dark' ? 'dark' : 'light';
     const origin = window.location.origin;
     const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
-    const fullDocUrl = `${origin}/${currentTargetFile}`;
+    const fullDocUrl = (currentTargetFile.startsWith('http://') || currentTargetFile.startsWith('https://') || currentTargetFile.startsWith('blob:') || currentTargetFile.startsWith('data:'))
+      ? currentTargetFile
+      : `${origin}/${currentTargetFile}`;
 
     try {
       embedViewerInstance = EmbedPDF.init({
@@ -438,6 +491,59 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         stamp: {
           manifests: []
         },
+        i18n: {
+          defaultLocale: 'fr',
+          locales: [
+            {
+              code: 'fr',
+              name: 'Français',
+              translations: {
+                commands: {
+                  zoom: {
+                    in: "Zoom avant",
+                    out: "Zoom arrière",
+                    fitWidth: "Ajuster à la largeur",
+                    fitPage: "Ajuster à la page",
+                    automatic: "Automatique",
+                    level: "Niveau de zoom ({level}%)",
+                    inArea: "Zoomer sur une zone"
+                  },
+                  fullscreen: {
+                    enter: "Plein écran",
+                    exit: "Quitter le plein écran"
+                  },
+                  rotate: {
+                    clockwise: "Pivoter vers la droite",
+                    counterclockwise: "Pivoter vers la gauche"
+                  },
+                  menu: "Menu",
+                  sidebar: "Volet latéral",
+                  search: "Rechercher",
+                  comment: "Commentaires",
+                  download: "Télécharger",
+                  print: "Imprimer",
+                  openFile: "Ouvrir PDF",
+                  save: "Sauvegarder",
+                  settings: "Paramètres",
+                  view: "Affichage",
+                  annotate: "Annoter",
+                  shapes: "Formes",
+                  redact: "Biffer",
+                  fillAndSign: "Remplir et signer",
+                  form: "Formulaire",
+                  pan: "Déplacer la vue (Main)",
+                  pointer: "Sélection (Curseur)",
+                  undo: "Annuler",
+                  redo: "Rétablir",
+                  copy: "Copier",
+                  screenshot: "Capture d'écran",
+                  nextPage: "Page suivante",
+                  previousPage: "Page précédente"
+                }
+              }
+            }
+          ]
+        },
         disabledCategories: [
           'form',
           'mode-form',
@@ -451,7 +557,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           'document-open',
           'document-close',
           'security',
-          'document-protect'
+          'document-protect',
+          'annotation-text',
+          'annotation-callout',
+          'annotation-insert-text',
+          'annotation-replace-text'
         ],
         theme: {
           preference: themePref,
@@ -517,23 +627,67 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         });
       }
 
-      // Observation et injection continue des styles personnalisés
+  function localizeEmbedPdfUI() {
+    const s = getEmbedPdfShadowRoot();
+    if (!s) return;
+    const FR_LABELS = {
+      'Hand Tool': 'Main (Déplacer la vue)',
+      'Select Text': 'Sélectionner le texte',
+      'Highlight': 'Surligner (Vert naturel)',
+      'Underline': 'Souligner',
+      'Strikeout': 'Barrer',
+      'Squiggly': 'Onduler',
+      'Ink': 'Dessiner / Stylet',
+      'Ink Highlighter': 'Feutre surligneur',
+      'Note': 'Note en marge',
+      'Comment': 'Commentaire',
+      'Zoom In': 'Zoom avant',
+      'Zoom Out': 'Zoom arrière',
+      'Fit to Width': 'Ajuster à la largeur',
+      'Fit to Page': 'Ajuster à la page',
+      'Automatic': 'Automatique',
+      'Full Screen': 'Plein écran',
+      'Thumbnails': 'Vignettes des pages',
+      'Outline': 'Plan du document',
+      'Search': 'Rechercher dans le document',
+      'Print': 'Imprimer',
+      'Download': 'Télécharger le PDF',
+      'Rotate Clockwise': 'Pivoter vers la droite',
+      'Rotate Counterclockwise': 'Pivoter vers la gauche',
+      'Settings': 'Paramètres',
+      'Annotate': 'Annoter'
+    };
+    s.querySelectorAll('button, [title], [aria-label]').forEach(el => {
+      const title = el.getAttribute('title');
+      if (title && FR_LABELS[title]) {
+        el.setAttribute('title', FR_LABELS[title]);
+      }
+      const aria = el.getAttribute('aria-label');
+      if (aria && FR_LABELS[aria]) {
+        el.setAttribute('aria-label', FR_LABELS[aria]);
+      }
+    });
+  }
+
+      // Observation et injection continue des styles personnalisés et traductions
       const s = getEmbedPdfShadowRoot();
       if (s) {
         injectEmbedPDFStyles();
+        localizeEmbedPdfUI();
         try {
           const obs = new MutationObserver(() => {
             if (!s.getElementById('wg-embedpdf-custom-ui-rules')) {
               injectEmbedPDFStyles();
             }
+            localizeEmbedPdfUI();
           });
-          obs.observe(s, { childList: true });
+          obs.observe(s, { childList: true, subtree: true });
         } catch (_) {}
       }
-      setTimeout(injectEmbedPDFStyles, 80);
-      setTimeout(injectEmbedPDFStyles, 300);
-      setTimeout(injectEmbedPDFStyles, 800);
-      setTimeout(injectEmbedPDFStyles, 1800);
+      setTimeout(() => { injectEmbedPDFStyles(); localizeEmbedPdfUI(); }, 80);
+      setTimeout(() => { injectEmbedPDFStyles(); localizeEmbedPdfUI(); }, 300);
+      setTimeout(() => { injectEmbedPDFStyles(); localizeEmbedPdfUI(); }, 800);
+      setTimeout(() => { injectEmbedPDFStyles(); localizeEmbedPdfUI(); }, 1800);
 
     } catch (err) {
       console.error('Erreur initialisation EmbedPDF:', err);

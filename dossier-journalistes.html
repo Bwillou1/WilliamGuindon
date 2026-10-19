@@ -236,6 +236,29 @@
       transform: translateY(0);
     }
 
+    .drive-archive-locked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #059669;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    [data-theme="dark"] .drive-archive-locked-badge {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    @media (max-width: 900px) {
+      .drive-archive-locked-badge { display: none; }
+    }
+
     /* Menu déroulant compact pour les actions d'en-tête */
     .drive-actions-dropdown {
       position: relative;
@@ -1414,6 +1437,7 @@
       </button>
       <div class="drive-title">
         <h1 id="title-count" style="font-size:inherit;font-weight:inherit;margin:0;display:inline;line-height:inherit;">Dossier pour Journalistes · Archive SEM-26-003</h1>
+        <span class="drive-archive-locked-badge" title="Registre public scellé et authentifié : consultation et téléchargement des pièces officielles uniquement. Téléversement externe non autorisé.">🔒 Archive Scellée (Lecture Seule)</span>
       </div>
     </div>
     
@@ -4600,6 +4624,21 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       });
     });
   }
+
+  // Interdiction absolue d'importer des fichiers externes (archive publique verrouillée en lecture seule)
+  window.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "none";
+  }, false);
+  window.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const t = document.getElementById("drive-toast");
+    if (t) {
+      t.textContent = "Archive scellée : consultation et téléchargement uniquement (aucun téléversement externe autorisé).";
+      t.classList.add("visible");
+      setTimeout(() => t.classList.remove("visible"), 4000);
+    }
+  }, false);
 })();
 </script>
 
