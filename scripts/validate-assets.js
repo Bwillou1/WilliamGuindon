@@ -40,6 +40,8 @@ const CORE_FILES = [
   'age.html',
   'vie-privee-parents.html',
   'dependances-licences.html',
+  'licence-et-charte.html',
+  'liens.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
   'sitemap-news.xml',
