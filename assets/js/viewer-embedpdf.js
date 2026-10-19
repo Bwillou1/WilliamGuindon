@@ -1187,7 +1187,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   closeTranslateModal();
 
   if (dom.btnTranslateDoc) {
-    dom.btnTranslateDoc.addEventListener('click', openTranslateModal);
+    dom.btnTranslateDoc.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const targetDoc = currentTargetFile || 'assets/docs/observations-reponse-canada-sem26003.pdf';
+      window.location.href = `lecteur.html?file=${encodeURIComponent(targetDoc)}&tab=translation&theme=${encodeURIComponent(currentTheme)}`;
+    });
   }
 
   if (dom.btnTranslateClose) {
@@ -1277,9 +1281,5 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   initEmbedPDF(initialFile);
-
-  if (urlParams.get('tab') === 'translation') {
-    openTranslateModal();
-  }
 
 })();

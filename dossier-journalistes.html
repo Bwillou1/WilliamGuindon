@@ -3868,7 +3868,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
-                const translateViewerUrl = "viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme);
+                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme);
                 translateLink.href = translateViewerUrl;
                 translateLink.title = "Traduire ce document en direct (anglais)";
                 translateLink.classList.remove("active");
@@ -4500,9 +4500,17 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   if (translatePreviewLink) {
     translatePreviewLink.addEventListener('click', (e) => {
       const iframe = stage ? stage.querySelector('.preview-iframe') : null;
-      if (iframe && iframe.contentWindow) {
+      if (iframe) {
         e.preventDefault();
-        iframe.contentWindow.postMessage({ type: 'wg_toggle_translation' }, '*');
+        const currentSrc = iframe.getAttribute('src') || '';
+        const rawPdf = iframe.getAttribute('data-raw-pdf') || '';
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        if (currentSrc.includes('viewer.html')) {
+          // Bascule instantanée de la prévisualisation vers lecteur.html avec traduction active
+          iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&theme=${encodeURIComponent(currentTheme)}`;
+        } else if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ type: 'wg_toggle_translation' }, '*');
+        }
       }
     });
   }
