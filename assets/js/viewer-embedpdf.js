@@ -374,7 +374,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       }
     `;
 
-    applyDocDarkMode(getCurrentTheme() === 'dark' || isDocDark);
+    applyDocDarkMode(isDocDark);
   }
 
   function applyDocDarkMode(enabled) {
@@ -398,42 +398,53 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           s.appendChild(style);
         }
         style.textContent = `
-          /* Inversion sombre automatique du document PDF */
-          canvas,
+          /* Inversion sombre haute précision des pages PDF et des tuiles de rendu */
+          .bg-bg-app img,
+          .bg-bg-app canvas,
+          div[style*="transform-origin"] img,
+          div[style*="matrix"] img,
+          img[src^="blob:"],
+          [data-epdf-i="thumbnail"] img,
+          .thumbnail-item img,
           [data-epdf-i="page-canvas"],
           .embedpdf-page-canvas {
-            filter: invert(0.90) hue-rotate(180deg) brightness(0.96) contrast(1.08) !important;
+            filter: invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(1.15) !important;
+            background-color: transparent !important;
+            transition: filter 0.2s ease-in-out;
           }
 
-          /* Protection stricte : les images, photos, logos et signatures restent normales (non inversées en négatif) */
-          img,
-          picture,
-          svg image,
-          [data-epdf-i="thumbnail"] img,
-          [data-epdf-i="image"],
-          [data-epdf-cat~="image"],
-          .embedpdf-image-layer,
-          .pdf-image,
-          .document-image {
-            filter: none !important;
+          /* Fond sombre pour les conteneurs de page (élimination complète de la feuille blanche) */
+          div[style*="background-color: rgb(255, 255, 255)"],
+          div[style*="background-color: #fff"],
+          div[style*="background-color:#fff"],
+          div[style*="background-color: #ffffff"],
+          div[style*="background-color:#ffffff"],
+          div[style*="backgroundColor: rgb(255, 255, 255)"],
+          div[style*="backgroundColor: #fff"],
+          div[style*="position: absolute"][style*="transform-origin"],
+          div[style*="position:absolute"][style*="transform-origin"],
+          div[style*="position: absolute"][style*="matrix"],
+          div[style*="position:absolute"][style*="matrix"] {
+            background-color: #141a17 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
           }
 
-          /* Si une image est contenue dans un élément inversé, ré-inverser pour annuler le filtre et préserver les couleurs normales */
-          canvas ~ img,
-          .canvas-container img,
-          [data-epdf-i="page-canvas"] img,
-          .embedpdf-snippet-root [style*="invert"] img,
-          [data-epdf-i="main-viewport"] [style*="filter"] img {
-            filter: invert(1) hue-rotate(180deg) !important;
-          }
-
-          /* Fonds neutres sombres pour éliminer les éclats blancs */
-          .bg-bg-app div[style*="rgb(255, 255, 255)"],
-          .bg-bg-app div[style*="#ffffff"],
-          [data-epdf-i="main-viewport"] div[style*="rgb(255, 255, 255)"],
-          [data-epdf-i="main-viewport"] div[style*="#ffffff"],
+          /* Fond sombre du viewport de lecture et des zones de défilement */
+          :host,
+          .bg-bg-app,
+          [data-epdf-i="main-viewport"],
           [data-epdf-i="document-viewport"] {
-            background-color: #121815 !important;
+            background-color: #0c1612 !important;
+          }
+
+          /* Sélection de texte et surlignage lisibles en mode sombre */
+          ::selection {
+            background: rgba(16, 185, 129, 0.45) !important;
+            color: #ffffff !important;
+          }
+          ::-moz-selection {
+            background: rgba(16, 185, 129, 0.45) !important;
+            color: #ffffff !important;
           }
         `;
       } else if (style) {
@@ -513,6 +524,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         src: fullDocUrl,
         wasmUrl: fullWasmUrl,
         worker: true,
+        theme: { preference: themePref },
         tabBar: 'never',
         fontFallback: null,
         fonts: {
@@ -843,6 +855,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           const obs = new MutationObserver(() => {
             if (!s.getElementById('wg-embedpdf-custom-ui-rules')) {
               injectEmbedPDFStyles();
+            }
+            if (isDocDark && !s.getElementById('wg-doc-dark-mode-style')) {
+              applyDocDarkMode(true);
             }
             localizeEmbedPdfUI();
           });
