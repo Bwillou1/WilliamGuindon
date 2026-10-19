@@ -591,6 +591,7 @@
     btnShare: document.getElementById('btn-share'),
     btnShortcuts: document.getElementById('btn-shortcuts'),
     btnThemeToggle: document.getElementById('btn-theme-toggle'),
+    btnSwitchEmbedpdf: document.getElementById('btn-switch-embedpdf'),
     loadingOverlay: document.getElementById('viewer-loading'),
     loadingText: document.getElementById('loading-text'),
     toast: document.getElementById('viewer-toast'),
@@ -2063,7 +2064,63 @@
       paragraphs.push(finalizeParagraph(curPara, pw, ph));
     }
 
-    return paragraphs;
+  async function requestRobustTranslation(text, targetLang) {
+    if (!text || !text.trim()) return text;
+    const cleanText = text.trim();
+
+    // 1. Appel principal : Google Translate GTX
+    try {
+      const c1 = new AbortController();
+      const t1 = setTimeout(() => c1.abort(), 3500);
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(cleanText)}`;
+      const res = await fetch(url, { signal: c1.signal });
+      clearTimeout(t1);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data[0])) {
+          const trans = data[0].map(s => s[0]).join('');
+          if (trans && trans.trim()) return trans;
+        }
+      }
+    } catch (_) {}
+
+    // 2. Secours alternatif : Google Translate TE
+    try {
+      const c2 = new AbortController();
+      const t2 = setTimeout(() => c2.abort(), 3500);
+      const url2 = `https://translate.googleapis.com/translate_a/t?client=te&format=html&v=1.0&sl=auto&tl=${encodeURIComponent(targetLang)}&q=${encodeURIComponent(cleanText)}`;
+      const res2 = await fetch(url2, { signal: c2.signal });
+      clearTimeout(t2);
+      if (res2.ok) {
+        const data2 = await res2.json();
+        if (typeof data2 === 'string' && data2.trim()) return data2;
+        if (Array.isArray(data2) && data2[0] && typeof data2[0] === 'string') return data2[0];
+      }
+    } catch (_) {}
+
+    // 3. Secours automatique vers notre fonction serveur (/api/groq-chat) (Garantie 0 blocage)
+    try {
+      const c3 = new AbortController();
+      const t3 = setTimeout(() => c3.abort(), 5500);
+      const res3 = await fetch('/api/groq-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'translate',
+          targetLang: targetLang,
+          text: cleanText
+        }),
+        signal: c3.signal
+      });
+      clearTimeout(t3);
+      if (res3.ok) {
+        const json3 = await res3.json();
+        const t3 = json3?.translatedText || json3?.answer;
+        if (t3 && t3.trim()) return t3.trim();
+      }
+    } catch (_) {}
+
+    return cleanText;
   }
 
   async function translateCurrentPage(targetLang = 'en') {
@@ -2094,19 +2151,7 @@
 
         const toTranslate = paragraphs.filter(b => !b.isNumeric && b.text.trim().length > 0);
         await Promise.all(toTranslate.map(async (block) => {
-          try {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(block.text)}`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-            if (data && Array.isArray(data[0])) {
-              block.translatedText = data[0].map(s => s[0]).join('');
-            } else {
-              block.translatedText = block.text;
-            }
-          } catch (_) {
-            block.translatedText = block.text;
-          }
+          block.translatedText = await requestRobustTranslation(block.text, targetLang);
         }));
 
         paragraphs.forEach(b => {
@@ -2351,21 +2396,9 @@
       // Filtrer les blocs nécessitant une traduction (ignorer numéros purs et codes)
       const toTranslate = paragraphs.filter(b => !b.isNumeric && b.text.trim().length > 0);
 
-      // Traduction parallèle directe (zéro délimiteur fragile, zéro décalage d'indices)
+      // Traduction parallèle directe avec secours automatique serveur
       await Promise.all(toTranslate.map(async (block) => {
-        try {
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(block.text)}`;
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          const data = await res.json();
-          if (data && Array.isArray(data[0])) {
-            block.translatedText = data[0].map(s => s[0]).join('');
-          } else {
-            block.translatedText = block.text;
-          }
-        } catch (_) {
-          block.translatedText = block.text;
-        }
+        block.translatedText = await requestRobustTranslation(block.text, targetLang);
       }));
 
       // Les blocs numériques conservent leur texte original
@@ -3417,6 +3450,16 @@ ER  -
           if (state.readingMode === 'dark') setReadingMode('normal', true);
           dom.app.classList.remove('mode-dark');
         }
+      });
+    }
+
+    // Commutateur instantané vers le moteur EmbedPDF (annotations et lecture rapide)
+    if (dom.btnSwitchEmbedpdf) {
+      dom.btnSwitchEmbedpdf.addEventListener('click', (e) => {
+        e.preventDefault();
+        const currentFile = state.targetFile || 'assets/docs/observations-reponse-canada-sem26003.pdf';
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        window.location.href = `viewer.html?file=${encodeURIComponent(currentFile)}&theme=${encodeURIComponent(currentTheme)}`;
       });
     }
 

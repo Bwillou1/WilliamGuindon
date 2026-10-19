@@ -196,7 +196,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     btnDeeplTranslateWeb: document.getElementById('btn-deepl-translate-web'),
     translateDocLabel: document.getElementById('embedpdf-translate-doc-label'),
     textToTranslate: document.getElementById('embedpdf-text-to-translate'),
-    btnUseSelection: document.getElementById('btn-use-selection')
+    btnUseSelection: document.getElementById('btn-use-selection'),
+    btnSwitchToPageTranslation: document.getElementById('btn-switch-to-page-translation')
   };
 
   const BILINGUAL_PAIRS = {
@@ -1223,10 +1224,22 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
+  if (dom.btnSwitchToPageTranslation) {
+    dom.btnSwitchToPageTranslation.addEventListener('click', () => {
+      const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+      const theme = getCurrentTheme();
+      window.location.href = `lecteur.html?file=${encodeURIComponent(currentTargetFile)}&lang=${encodeURIComponent(lang)}&theme=${encodeURIComponent(theme)}&tab=translation`;
+    });
+  }
+
   // Écoute des messages cross-fenêtres (ex: depuis dossier-journalistes.html)
   window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'wg_theme_change') {
       applyViewerTheme(e.data.theme || 'light');
+    } else if (e.data && e.data.type === 'wg_toggle_translation') {
+      const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
+      const theme = getCurrentTheme();
+      window.location.href = `lecteur.html?file=${encodeURIComponent(currentTargetFile)}&lang=${encodeURIComponent(lang)}&theme=${encodeURIComponent(theme)}&tab=translation`;
     }
   });
 

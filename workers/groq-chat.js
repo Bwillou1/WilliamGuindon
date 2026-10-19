@@ -170,6 +170,57 @@ export default {
       });
     }
 
+    // Secours automatique de traduction juridique in-document (0 échec, haute vitesse)
+    if (payload.action === 'translate') {
+      const targetLang = String(payload.targetLang || 'en').slice(0, 5);
+      const textToTranslate = String(payload.text || payload.messages?.[0]?.content || '').slice(0, MAX_MESSAGE_CHARS).trim();
+      if (!textToTranslate) {
+        return new Response(JSON.stringify({ error: 'Texte à traduire vide.' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      const translateModel = env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b';
+      const prompt = `Tu es un traducteur juridique officiel de haute fidélité. Traduis fidèlement le texte suivant vers la langue "${targetLang}". Ne renvoie STRICTEMENT QUE le texte traduit, sans commentaire, sans introduction, sans guillemets :\n${textToTranslate}`;
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        const groqRes = await fetch(GROQ_ENDPOINT, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: translateModel,
+            temperature: 0.1,
+            max_tokens: 450,
+            messages: [
+              { role: 'system', content: 'Tu es un traducteur officiel. Ne renvoie que le texte traduit sans aucune introduction ni explication.' },
+              { role: 'user', content: prompt }
+            ]
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (groqRes.ok) {
+          const resJson = await groqRes.json();
+          const translated = cleanModelOutput(resJson?.choices?.[0]?.message?.content || '');
+          if (translated) {
+            return new Response(JSON.stringify({ translatedText: translated, answer: translated }), {
+              status: 200,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        }
+      } catch (_) {}
+
+      return new Response(JSON.stringify({ error: 'Échec de la traduction de secours.' }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const messages = Array.isArray(payload.messages) ? payload.messages : [];
     if (!messages.length || messages.length > MAX_MESSAGES) {
       return new Response(JSON.stringify({ error: 'Messages invalides.' }), {
