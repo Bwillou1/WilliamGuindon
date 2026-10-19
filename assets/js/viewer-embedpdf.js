@@ -144,16 +144,21 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (cleanRel.startsWith('assets/docs/') && cleanRel.endsWith('.pdf') && !cleanRel.includes('..')) {
       return cleanRel;
     }
+    // Fichiers images locaux autorisés (documentation de terrain, cartes, rapports)
+    if ((cleanRel.startsWith('assets/media/') || cleanRel.startsWith('assets/uploads/') || cleanRel.startsWith('assets/docs/') || cleanRel.startsWith('assets/img/')) &&
+        /\.(jpe?g|png|webp|tiff?|gif|bmp|svg)$/i.test(cleanRel) && !cleanRel.includes('..')) {
+      return cleanRel;
+    }
     // Archives officielles (archive.org, Internet Archive)
     if (/^https:\/\/(?:[a-zA-Z0-9-]+\.)?archive\.org\/.+\.pdf(?:[?#].*)?$/i.test(clean)) {
       return clean;
     }
     // Objets blobs locaux (ex. ouverts depuis dossier-journalistes.html)
-    if (clean.startsWith('blob:') || clean.startsWith('data:application/pdf')) {
+    if (clean.startsWith('blob:') || clean.startsWith('data:application/pdf') || clean.startsWith('data:image/')) {
       return clean;
     }
-    // URLs absolues HTTPS directes vers un PDF
-    if (/^https:\/\/[a-zA-Z0-9.-]+\/.*\.pdf(?:[?#].*)?$/i.test(clean) && !clean.includes('..')) {
+    // URLs absolues HTTPS directes vers un PDF ou une image probatoire
+    if (/^https:\/\/[a-zA-Z0-9.-]+\/.*\.(pdf|jpe?g|png|webp|tiff?|gif|bmp|svg)(?:[?#].*)?$/i.test(clean) && !clean.includes('..')) {
       return clean;
     }
     return 'assets/docs/observations-reponse-canada-sem26003.pdf';
@@ -388,6 +393,10 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         ? 'Couleur du document : Rétablir clair'
         : 'Couleur du document : Inverser en mode sombre';
     }
+    const imgViewerEl = document.getElementById('viewer-image-el');
+    if (imgViewerEl) {
+      imgViewerEl.classList.toggle('doc-dark-inverted', enabled);
+    }
     const s = getEmbedPdfShadowRoot();
     if (s) {
       let style = s.getElementById('wg-doc-dark-mode-style');
@@ -503,6 +512,185 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     document.title = `${cleanLabel} — Archive SEM-26-003 · William Guindon`;
   }
 
+  const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|tiff?|gif|bmp|svg)(\?.*)?$/i;
+
+  function initImageViewer(targetFile, fullDocUrl) {
+    if (!dom.container) return;
+    dom.container.innerHTML = '';
+    embedViewerInstance = null;
+
+    const filename = decodeURIComponent(targetFile.split('/').pop().split('?')[0]);
+    const cleanLabel = filename.replace(/\.[a-zA-Z0-9]+$/i, '').replace(/[-_]/g, ' ');
+
+    const wrap = document.createElement('div');
+    wrap.className = 'viewer-image-workspace';
+    wrap.id = 'viewer-image-workspace';
+    wrap.innerHTML = `
+      <div class="viewer-image-toolbar" id="viewer-image-toolbar" role="toolbar" aria-label="Commandes de zoom et déplacement">
+        <button type="button" class="tool-btn" id="viewer-img-zoom-out" title="Zoom arrière (- ou Molette bas)" aria-label="Zoom arrière">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </button>
+        <button type="button" class="viewer-image-zoom-badge" id="viewer-img-zoom-reset" title="Réinitialiser l'affichage (Double-clic)" aria-label="Niveau de zoom actuel">
+          <span id="viewer-img-zoom-val">100%</span>
+        </button>
+        <button type="button" class="tool-btn" id="viewer-img-zoom-in" title="Zoom avant (+ ou Molette haut)" aria-label="Zoom avant">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </button>
+        <button type="button" class="tool-btn" id="viewer-img-pan-toggle" title="Mode Déplacer (Main / Glisser)" aria-label="Mode déplacement">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+        </button>
+        <button type="button" class="tool-btn" id="viewer-img-rotate" title="Pivoter de 90°" aria-label="Pivoter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+      </div>
+      <div class="viewer-image-stage" id="viewer-image-stage">
+        <img src="${fullDocUrl}" alt="${cleanLabel}" id="viewer-image-el" class="viewer-image-el${isDocDark ? ' doc-dark-inverted' : ''}">
+      </div>
+    `;
+    dom.container.appendChild(wrap);
+
+    const stage = wrap.querySelector('#viewer-image-stage');
+    const imgEl = wrap.querySelector('#viewer-image-el');
+    const zoomVal = wrap.querySelector('#viewer-img-zoom-val');
+    const panBtn = wrap.querySelector('#viewer-img-pan-toggle');
+
+    let zScale = 1;
+    let pX = 0;
+    let pY = 0;
+    let rot = 0;
+    let isDrag = false;
+    let dStartX = 0;
+    let dStartY = 0;
+    let panActive = false;
+    let pDist = 0;
+    let pScale = 1;
+
+    function applyImgTransform() {
+      if (!imgEl) return;
+      imgEl.style.transform = `translate(${pX}px, ${pY}px) scale(${zScale}) rotate(${rot}deg)`;
+      if (zoomVal) zoomVal.textContent = `${Math.round(zScale * 100)}%`;
+      if (stage) stage.classList.toggle('can-pan', zScale > 1 || panActive);
+      if (panBtn) panBtn.classList.toggle('active', panActive);
+      imgEl.classList.toggle('doc-dark-inverted', isDocDark);
+    }
+
+    function setImgZoom(newScale, cX, cY) {
+      const clamped = Math.min(Math.max(newScale, 0.4), 6);
+      if (clamped === zScale) return;
+      if (cX !== undefined && cY !== undefined && stage) {
+        const r = stage.getBoundingClientRect();
+        const ox = cX - r.left - r.width / 2;
+        const oy = cY - r.top - r.height / 2;
+        const f = clamped / zScale;
+        pX = ox - (ox - pX) * f;
+        pY = oy - (oy - pY) * f;
+      }
+      zScale = clamped;
+      if (zScale <= 1 && !panActive) {
+        pX = 0;
+        pY = 0;
+      }
+      applyImgTransform();
+    }
+
+    function resetImg() {
+      zScale = 1;
+      pX = 0;
+      pY = 0;
+      rot = 0;
+      panActive = false;
+      isDrag = false;
+      if (stage) stage.classList.remove('is-panning');
+      applyImgTransform();
+    }
+
+    wrap.querySelector('#viewer-img-zoom-in').onclick = () => setImgZoom(zScale * 1.3);
+    wrap.querySelector('#viewer-img-zoom-out').onclick = () => setImgZoom(zScale / 1.3);
+    wrap.querySelector('#viewer-img-zoom-reset').onclick = resetImg;
+    wrap.querySelector('#viewer-img-pan-toggle').onclick = () => {
+      panActive = !panActive;
+      applyImgTransform();
+    };
+    wrap.querySelector('#viewer-img-rotate').onclick = () => {
+      rot = (rot + 90) % 360;
+      applyImgTransform();
+    };
+
+    stage.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const f = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      setImgZoom(zScale * f, e.clientX, e.clientY);
+    }, { passive: false });
+
+    stage.addEventListener('mousedown', (e) => {
+      if (e.target.closest('#viewer-image-toolbar')) return;
+      if (zScale > 1 || panActive) {
+        isDrag = true;
+        dStartX = e.clientX - pX;
+        dStartY = e.clientY - pY;
+        stage.classList.add('is-panning');
+        e.preventDefault();
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDrag) return;
+      pX = e.clientX - dStartX;
+      pY = e.clientY - dStartY;
+      applyImgTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDrag) {
+        isDrag = false;
+        if (stage) stage.classList.remove('is-panning');
+      }
+    });
+
+    stage.addEventListener('dblclick', (e) => {
+      if (e.target.closest('#viewer-image-toolbar')) return;
+      e.preventDefault();
+      if (zScale > 1.2) {
+        resetImg();
+      } else {
+        setImgZoom(2.5, e.clientX, e.clientY);
+      }
+    });
+
+    stage.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#viewer-image-toolbar')) return;
+      if (e.touches.length === 1 && (zScale > 1 || panActive)) {
+        isDrag = true;
+        dStartX = e.touches[0].clientX - pX;
+        dStartY = e.touches[0].clientY - pY;
+      } else if (e.touches.length === 2) {
+        isDrag = false;
+        pDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        pScale = zScale;
+      }
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDrag) {
+        e.preventDefault();
+        pX = e.touches[0].clientX - dStartX;
+        pY = e.touches[0].clientY - dStartY;
+        applyImgTransform();
+      } else if (e.touches.length === 2 && pDist > 0) {
+        e.preventDefault();
+        const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        setImgZoom(pScale * (dist / pDist));
+      }
+    }, { passive: false });
+
+    stage.addEventListener('touchend', () => {
+      isDrag = false;
+      pDist = 0;
+    });
+
+    applyImgTransform();
+  }
+
   function initEmbedPDF(fileUrl) {
     currentTargetFile = getSafeDocUrl(fileUrl);
     syncDocSelect(currentTargetFile);
@@ -512,10 +700,15 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
     const themePref = getCurrentTheme() === 'dark' ? 'dark' : 'light';
     const origin = window.location.origin;
-    const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
     const fullDocUrl = (currentTargetFile.startsWith('http://') || currentTargetFile.startsWith('https://') || currentTargetFile.startsWith('blob:') || currentTargetFile.startsWith('data:'))
       ? currentTargetFile
       : `${origin}/${currentTargetFile}`;
+
+    // Si le document est un format image (JPG, PNG, WEBP, TIFF, SVG, etc.)
+    if (IMAGE_EXTENSIONS.test(currentTargetFile)) {
+      initImageViewer(currentTargetFile, fullDocUrl);
+      return;
+    }
 
     try {
       embedViewerInstance = EmbedPDF.init({
@@ -887,7 +1080,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   function openDocument(fileUrl) {
     const safeFile = getSafeDocUrl(fileUrl);
-    if (safeFile === currentTargetFile && embedViewerInstance) return;
+    if (safeFile === currentTargetFile && (embedViewerInstance || document.getElementById('viewer-image-el'))) return;
 
     // Mise à jour de l'URL sans rechargement
     const newUrl = new URL(window.location.href);

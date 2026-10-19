@@ -232,6 +232,76 @@
     min-height: 260px;
     width: 100%;
     max-height: 72vh;
+    overflow: hidden;
+    touch-action: none;
+    cursor: default;
+    border-radius: 8px;
+  }
+  .lightbox-media-container.can-pan {
+    cursor: grab;
+  }
+  .lightbox-media-container.is-panning {
+    cursor: grabbing;
+  }
+  .lightbox-toolbar {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(15, 23, 19, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 30px;
+    padding: 3px 8px;
+    z-index: 15;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .lightbox-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    color: #e2e8f0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    padding: 0;
+  }
+  .lightbox-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+  }
+  .lightbox-tool-btn:active {
+    transform: scale(0.92);
+  }
+  .lightbox-tool-btn.active {
+    background: #059669;
+    color: #ffffff;
+  }
+  .lightbox-zoom-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #a7f3d0;
+    min-width: 44px;
+    text-align: center;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    transition: background 0.15s ease;
+  }
+  .lightbox-zoom-badge:hover {
+    background: rgba(16, 185, 129, 0.35);
   }
   .lightbox-spinner {
     position: absolute;
@@ -259,7 +329,11 @@
     border-radius: 8px;
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.75);
     background: #111813;
-    transition: opacity 0.2s ease, filter 0.2s ease;
+    transition: opacity 0.2s ease, filter 0.2s ease, transform 0.08s ease-out;
+    transform-origin: center center;
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: auto;
   }
   .lightbox-img.loading {
     opacity: 0.7;
@@ -1123,6 +1197,23 @@
     </button>
 
     <div class="lightbox-media-container" id="lightbox-media-container">
+      <div class="lightbox-toolbar" id="lightbox-toolbar" role="toolbar" aria-label="Commandes de zoom et déplacement">
+        <button type="button" class="lightbox-tool-btn" id="lightbox-zoom-out" title="Zoom arrière (- ou Molette bas)" aria-label="Zoom arrière">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </button>
+        <button type="button" class="lightbox-zoom-badge" id="lightbox-zoom-reset" title="Réinitialiser l'affichage (Double-clic)" aria-label="Niveau de zoom actuel, cliquer pour réinitialiser">
+          <span id="lightbox-zoom-val">100%</span>
+        </button>
+        <button type="button" class="lightbox-tool-btn" id="lightbox-zoom-in" title="Zoom avant (+ ou Molette haut)" aria-label="Zoom avant">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </button>
+        <button type="button" class="lightbox-tool-btn" id="lightbox-pan-toggle" title="Mode Déplacer (Main / Glisser)" aria-label="Activer le mode déplacement de l'image">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>
+        </button>
+        <button type="button" class="lightbox-tool-btn" id="lightbox-rotate" title="Pivoter de 90°" aria-label="Faire pivoter l'image de 90 degrés">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+      </div>
       <div class="lightbox-spinner" id="lightbox-spinner" aria-hidden="true"></div>
       <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Photographie agrandie" id="lightbox-img" class="lightbox-img">
     </div>
@@ -1277,6 +1368,7 @@
 
   function showLightboxItem(item) {
     if (!item) return;
+    if (typeof resetZoomAndPan === "function") resetZoomAndPan();
     const img = document.getElementById("lightbox-img");
     const spinner = document.getElementById("lightbox-spinner");
     const caption = document.getElementById("lightbox-caption");
@@ -1420,19 +1512,231 @@
     }
   }
 
+  // Système interactif Pan & Zoom
+  let zoomScale = 1;
+  let panX = 0;
+  let panY = 0;
+  let rotation = 0;
+  let isDragging = false;
+  let wasDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let panModeActive = false;
+  let initialPinchDist = 0;
+  let initialPinchScale = 1;
+  let touchStartMidX = 0;
+  let touchStartMidY = 0;
+
+  const mediaContainer = document.getElementById("lightbox-media-container");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const zoomValEl = document.getElementById("lightbox-zoom-val");
+  const panToggleBtn = document.getElementById("lightbox-pan-toggle");
+
+  function updateTransform() {
+    if (!lightboxImg) return;
+    lightboxImg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale}) rotate(${rotation}deg)`;
+    if (zoomValEl) {
+      zoomValEl.textContent = `${Math.round(zoomScale * 100)}%`;
+    }
+    if (mediaContainer) {
+      mediaContainer.classList.toggle("can-pan", zoomScale > 1 || panModeActive);
+    }
+    if (panToggleBtn) {
+      panToggleBtn.classList.toggle("active", panModeActive);
+    }
+  }
+
+  function setZoom(newScale, centerX, centerY) {
+    const minZoom = 0.5;
+    const maxZoom = 5;
+    const clamped = Math.min(Math.max(newScale, minZoom), maxZoom);
+    if (clamped === zoomScale) return;
+
+    if (centerX !== undefined && centerY !== undefined && mediaContainer) {
+      const rect = mediaContainer.getBoundingClientRect();
+      const ox = centerX - rect.left - rect.width / 2;
+      const oy = centerY - rect.top - rect.height / 2;
+      const factor = clamped / zoomScale;
+      panX = ox - (ox - panX) * factor;
+      panY = oy - (oy - panY) * factor;
+    }
+
+    zoomScale = clamped;
+    if (zoomScale <= 1 && !panModeActive) {
+      panX = 0;
+      panY = 0;
+    }
+    updateTransform();
+  }
+
+  function resetZoomAndPan() {
+    zoomScale = 1;
+    panX = 0;
+    panY = 0;
+    rotation = 0;
+    panModeActive = false;
+    isDragging = false;
+    wasDragging = false;
+    initialPinchDist = 0;
+    if (mediaContainer) {
+      mediaContainer.classList.remove("is-panning", "can-pan");
+    }
+    updateTransform();
+  }
+
+  if (document.getElementById("lightbox-zoom-in")) {
+    document.getElementById("lightbox-zoom-in").onclick = (e) => {
+      e.stopPropagation();
+      setZoom(zoomScale * 1.3);
+    };
+  }
+  if (document.getElementById("lightbox-zoom-out")) {
+    document.getElementById("lightbox-zoom-out").onclick = (e) => {
+      e.stopPropagation();
+      setZoom(zoomScale / 1.3);
+    };
+  }
+  if (document.getElementById("lightbox-zoom-reset")) {
+    document.getElementById("lightbox-zoom-reset").onclick = (e) => {
+      e.stopPropagation();
+      resetZoomAndPan();
+    };
+  }
+  if (document.getElementById("lightbox-pan-toggle")) {
+    document.getElementById("lightbox-pan-toggle").onclick = (e) => {
+      e.stopPropagation();
+      panModeActive = !panModeActive;
+      updateTransform();
+    };
+  }
+  if (document.getElementById("lightbox-rotate")) {
+    document.getElementById("lightbox-rotate").onclick = (e) => {
+      e.stopPropagation();
+      rotation = (rotation + 90) % 360;
+      updateTransform();
+    };
+  }
+
+  if (mediaContainer) {
+    mediaContainer.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      setZoom(zoomScale * factor, e.clientX, e.clientY);
+    }, { passive: false });
+
+    mediaContainer.addEventListener("mousedown", (e) => {
+      if (e.target.closest("#lightbox-toolbar")) return;
+      if (zoomScale > 1 || panModeActive) {
+        isDragging = true;
+        wasDragging = false;
+        dragStartX = e.clientX - panX;
+        dragStartY = e.clientY - panY;
+        mediaContainer.classList.add("is-panning");
+        e.preventDefault();
+      }
+    });
+
+    mediaContainer.addEventListener("dblclick", (e) => {
+      if (e.target.closest("#lightbox-toolbar")) return;
+      e.preventDefault();
+      if (zoomScale > 1.2) {
+        resetZoomAndPan();
+      } else {
+        setZoom(2.5, e.clientX, e.clientY);
+      }
+    });
+
+    mediaContainer.addEventListener("touchstart", (e) => {
+      if (e.target.closest("#lightbox-toolbar")) return;
+      if (e.touches.length === 1 && (zoomScale > 1 || panModeActive)) {
+        isDragging = true;
+        wasDragging = false;
+        dragStartX = e.touches[0].clientX - panX;
+        dragStartY = e.touches[0].clientY - panY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        initialPinchScale = zoomScale;
+        touchStartMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        touchStartMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      }
+    }, { passive: true });
+
+    mediaContainer.addEventListener("touchmove", (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        const newX = e.touches[0].clientX - dragStartX;
+        const newY = e.touches[0].clientY - dragStartY;
+        if (Math.abs(newX - panX) > 4 || Math.abs(newY - panY) > 4) {
+          wasDragging = true;
+        }
+        panX = newX;
+        panY = newY;
+        updateTransform();
+      } else if (e.touches.length === 2 && initialPinchDist > 0) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        const ratio = dist / initialPinchDist;
+        setZoom(initialPinchScale * ratio, touchStartMidX, touchStartMidY);
+      }
+    }, { passive: false });
+
+    mediaContainer.addEventListener("touchend", (e) => {
+      if (e.touches.length === 0) {
+        isDragging = false;
+        initialPinchDist = 0;
+      } else if (e.touches.length === 1) {
+        initialPinchDist = 0;
+        if (zoomScale > 1 || panModeActive) {
+          isDragging = true;
+          dragStartX = e.touches[0].clientX - panX;
+          dragStartY = e.touches[0].clientY - panY;
+        }
+      }
+    });
+  }
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    const newX = e.clientX - dragStartX;
+    const newY = e.clientY - dragStartY;
+    if (Math.abs(newX - panX) > 4 || Math.abs(newY - panY) > 4) {
+      wasDragging = true;
+    }
+    panX = newX;
+    panY = newY;
+    updateTransform();
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      if (mediaContainer) mediaContainer.classList.remove("is-panning");
+    }
+  });
+
   function closeLightbox() {
+    resetZoomAndPan();
     const modal = document.getElementById("lightbox-modal");
     modal.classList.remove("open");
     document.body.classList.remove("modal-open");
   }
 
   function nextPhoto() {
+    resetZoomAndPan();
     if (!currentPhotosList || currentPhotosList.length === 0) return;
     currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotosList.length;
     showLightboxItem(currentPhotosList[currentPhotoIndex]);
   }
 
   function prevPhoto() {
+    resetZoomAndPan();
     if (!currentPhotosList || currentPhotosList.length === 0) return;
     currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotosList.length) % currentPhotosList.length;
     showLightboxItem(currentPhotosList[currentPhotoIndex]);
@@ -1443,6 +1747,11 @@
   document.getElementById("lightbox-prev").onclick = prevPhoto;
 
   document.getElementById("lightbox-modal").onclick = (e) => {
+    if (wasDragging) {
+      wasDragging = false;
+      return;
+    }
+    if (e.target.closest("#lightbox-toolbar") || e.target.closest(".lightbox-nav")) return;
     if (e.target.id === "lightbox-modal" || e.target.id === "lightbox-media-container") {
       closeLightbox();
     }
@@ -1452,8 +1761,33 @@
     const modal = document.getElementById("lightbox-modal");
     if (!modal.classList.contains("open")) return;
     if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowRight") nextPhoto();
-    if (e.key === "ArrowLeft") prevPhoto();
+    if (e.key === "+" || e.key === "=") setZoom(zoomScale * 1.25);
+    if (e.key === "-" || e.key === "_") setZoom(zoomScale / 1.25);
+    if (e.key === "0") resetZoomAndPan();
+    if (e.key === "ArrowRight") {
+      if (zoomScale > 1.05) {
+        panX -= 40;
+        updateTransform();
+      } else {
+        nextPhoto();
+      }
+    }
+    if (e.key === "ArrowLeft") {
+      if (zoomScale > 1.05) {
+        panX += 40;
+        updateTransform();
+      } else {
+        prevPhoto();
+      }
+    }
+    if (e.key === "ArrowUp" && zoomScale > 1.05) {
+      panY += 40;
+      updateTransform();
+    }
+    if (e.key === "ArrowDown" && zoomScale > 1.05) {
+      panY -= 40;
+      updateTransform();
+    }
   });
 
   document.querySelectorAll(".category-pill").forEach(btn => {
