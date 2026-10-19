@@ -2064,6 +2064,9 @@
       paragraphs.push(finalizeParagraph(curPara, pw, ph));
     }
 
+    return paragraphs;
+  }
+
   async function requestRobustTranslation(text, targetLang) {
     if (!text || !text.trim()) return text;
     const cleanText = text.trim();
