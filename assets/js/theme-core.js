@@ -3360,12 +3360,12 @@
       const p = btn.getAttribute('data-pref');
       if (p === 'native') {
         btn.classList.toggle('active', isNative);
-        btn.style.background = isNative ? '#ecfdf5' : 'transparent';
-        btn.style.color = isNative ? '#047857' : 'var(--text-muted, #64748b)';
+        btn.style.background = isNative ? 'var(--accent)' : 'transparent';
+        btn.style.color = isNative ? '#ffffff' : 'var(--text-muted)';
       } else {
         btn.classList.toggle('active', !isNative);
-        btn.style.background = !isNative ? '#ecfdf5' : 'transparent';
-        btn.style.color = !isNative ? '#047857' : 'var(--text-muted, #64748b)';
+        btn.style.background = !isNative ? 'var(--accent)' : 'transparent';
+        btn.style.color = !isNative ? '#ffffff' : 'var(--text-muted)';
       }
     });
 
