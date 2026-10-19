@@ -1450,7 +1450,6 @@
       </button>
       <div class="drive-title">
         <h1 id="title-count" style="font-size:inherit;font-weight:inherit;margin:0;display:inline;line-height:inherit;">Dossier pour Journalistes · Archive SEM-26-003</h1>
-        <span class="drive-archive-locked-badge" title="Registre public scellé et authentifié : consultation et téléchargement des pièces officielles uniquement. Téléversement externe non autorisé.">🔒 Archive Scellée (Lecture Seule)</span>
       </div>
     </div>
     
@@ -4141,15 +4140,30 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       localStorage.setItem("wg_drive_tree_w", Math.round(newW));
     }, { passive: true });
 
-    window.addEventListener("touchend", () => {
+    const stopTouchDragging = () => {
       if (isDragging) {
         isDragging = false;
         splitter.classList.remove("is-dragging");
         treePane.classList.remove("is-resizing");
         window.dispatchEvent(new Event("resize"));
       }
-    });
+    };
+    window.addEventListener("touchend", stopTouchDragging);
+    window.addEventListener("touchcancel", stopTouchDragging);
   }
+
+  // Actualisation profonde et purge du cache local
+  window.forceActualiserDossier = async function() {
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(k => k.includes('drive') || k.includes('wg-')).map(k => caches.delete(k)));
+      }
+      localStorage.removeItem('wg_drive_tree_w');
+      localStorage.removeItem('wg_drive_collapsed');
+    } catch (_) {}
+    window.location.reload(true);
+  };
 
   // Gestion du bouton Déclaration vidéo officielle (Facebook Reel)
   const btnShowVideo = document.getElementById("btn-show-video");

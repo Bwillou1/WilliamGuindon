@@ -449,9 +449,13 @@
         
         warnBanner.innerHTML = `
           <span><strong>Connexion très lente détectée (3G/LoRa) :</strong> Le lecteur interactif peut être lent. Vous pouvez <a href="assets/docs/26-2-det2_fr.pdf" download>télécharger le PDF directement</a> ou consulter la <a href="txt.html">version texte</a>.</span>
-          <button type="button" class="btn-close-banner-msg" id="btn-close-banner-msg">&times;</button>
+          <button type="button" class="btn-close-banner-msg" id="btn-close-banner-msg" aria-label="Fermer le message">&times;</button>
         `;
         document.body.appendChild(warnBanner);
+        const closeBtn = warnBanner.querySelector('#btn-close-banner-msg');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => warnBanner.remove());
+        }
       }
     })();
   </script>
