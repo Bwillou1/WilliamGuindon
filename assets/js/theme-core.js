@@ -2105,13 +2105,11 @@
           .catch((err) => { if (DEBUG) console.log('SW registration skipped:', err); });
       });
 
-      // Rechargement transparent sans cache lors du déploiement d'une nouvelle version
-      let isRefreshing = false;
+      // Gestion transparente du cycle de vie du Service Worker SANS rechargement forcé intempestif
+      // Lorsqu'un visiteur arrive ou navigue, on ne recharge JAMAIS brutalement la page en cours de lecture
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          window.location.reload();
-        }
+        // La nouvelle version est active en arrière-plan sans interrompre la session active de l'utilisateur
+        if (DEBUG) console.log('[SW] Nouveau Service Worker activé sans rechargement brutal.');
       });
 
       // Re-vérifier l'état du site dès que l'utilisateur revient sur l'onglet
