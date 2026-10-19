@@ -500,6 +500,15 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     initEmbedPDF(safeFile);
   }
 
+  // Bouton Retour : redirection directe et propre vers la racine (williamguindon.me)
+  const backBtn = document.querySelector('.viewer-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '/';
+    });
+  }
+
   // Configuration du sélecteur de documents
   if (dom.docSelect) {
     dom.docSelect.addEventListener('change', () => {
