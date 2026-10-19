@@ -255,8 +255,20 @@
       border-color: rgba(16, 185, 129, 0.4);
       color: #34d399;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1024px) {
       .drive-archive-locked-badge { display: none; }
+      .drive-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 12px;
+      }
+      .drive-header-left {
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .drive-title {
+        font-size: 13.5px;
+      }
     }
 
     /* Menu déroulant compact pour les actions d'en-tête */
@@ -1415,6 +1427,7 @@
 <!-- BRANDKIT:END -->
 </head>
 <body>
+<div id="drive-toast" class="drive-toast" role="status" aria-live="polite"></div>
 
 <div class="drive-container" data-mobile-view="tree">
   <div class="drive-header">

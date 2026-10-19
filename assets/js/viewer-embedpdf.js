@@ -498,48 +498,153 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
               code: 'fr',
               name: 'Français',
               translations: {
-                commands: {
-                  zoom: {
-                    in: "Zoom avant",
-                    out: "Zoom arrière",
-                    fitWidth: "Ajuster à la largeur",
-                    fitPage: "Ajuster à la page",
-                    automatic: "Automatique",
-                    level: "Niveau de zoom ({level}%)",
-                    inArea: "Zoomer sur une zone"
-                  },
-                  fullscreen: {
-                    enter: "Plein écran",
-                    exit: "Quitter le plein écran"
-                  },
-                  rotate: {
-                    clockwise: "Pivoter vers la droite",
-                    counterclockwise: "Pivoter vers la gauche"
-                  },
-                  menu: "Menu",
+                page: {
+                  spreadMode: "Disposition des pages",
+                  single: "Une page",
+                  twoOdd: "Deux pages (reliure impaire)",
+                  twoEven: "Deux pages (reliure paire)",
+                  scrollLayout: "Sens de défilement",
+                  vertical: "Défilement vertical",
+                  horizontal: "Défilement horizontal",
+                  rotation: "Rotation des pages",
+                  settings: "Options d'affichage",
+                  next: "Page suivante",
+                  previous: "Page précédente"
+                },
+                "page.spreadMode": "Disposition des pages",
+                "page.single": "Une page",
+                "page.twoOdd": "Deux pages (reliure impaire)",
+                "page.twoEven": "Deux pages (reliure paire)",
+                "page.scrollLayout": "Sens de défilement",
+                "page.vertical": "Défilement vertical",
+                "page.horizontal": "Défilement horizontal",
+                "page.rotation": "Rotation des pages",
+                "page.settings": "Options d'affichage",
+                "page.next": "Page suivante",
+                "page.previous": "Page précédente",
+
+                rotate: {
+                  clockwise: "Pivoter vers la droite",
+                  counterClockwise: "Pivoter vers la gauche",
+                  counterclockwise: "Pivoter vers la gauche"
+                },
+                "rotate.clockwise": "Pivoter vers la droite",
+                "rotate.counterClockwise": "Pivoter vers la gauche",
+                "rotate.counterclockwise": "Pivoter vers la gauche",
+
+                document: {
+                  fullscreen: "Plein écran",
+                  open: "Ouvrir",
+                  close: "Fermer",
+                  export: "Exporter",
+                  print: "Imprimer",
+                  menu: "Menu du document"
+                },
+                "document.fullscreen": "Plein écran",
+                "document.open": "Ouvrir",
+                "document.close": "Fermer",
+                "document.export": "Exporter",
+                "document.print": "Imprimer",
+                "document.menu": "Menu du document",
+
+                zoom: {
+                  in: "Zoom avant",
+                  out: "Zoom arrière",
+                  fitWidth: "Ajuster à la largeur",
+                  fitPage: "Ajuster à la page",
+                  automatic: "Automatique",
+                  level: "Niveau de zoom ({level}%)",
+                  marquee: "Zoomer sur une zone",
+                  menu: "Menu zoom"
+                },
+                "zoom.in": "Zoom avant",
+                "zoom.out": "Zoom arrière",
+                "zoom.fitWidth": "Ajuster à la largeur",
+                "zoom.fitPage": "Ajuster à la page",
+                "zoom.automatic": "Automatique",
+                "zoom.level": "Niveau de zoom ({level}%)",
+                "zoom.marquee": "Zoomer sur une zone",
+
+                pan: {
+                  toggle: "Déplacer la page (Main)"
+                },
+                "pan.toggle": "Déplacer la page (Main)",
+
+                pointer: {
+                  toggle: "Sélectionner du texte (Curseur)"
+                },
+                "pointer.toggle": "Sélectionner du texte (Curseur)",
+
+                history: {
+                  undo: "Annuler",
+                  redo: "Rétablir"
+                },
+                "history.undo": "Annuler",
+                "history.redo": "Rétablir",
+
+                selection: {
+                  copy: "Copier",
+                  copyToClipboard: "Copier dans le presse-papier"
+                },
+                "selection.copy": "Copier",
+                "selection.copyToClipboard": "Copier dans le presse-papier",
+
+                capture: {
+                  screenshot: "Capture d'écran"
+                },
+                "capture.screenshot": "Capture d'écran",
+
+                menu: {
+                  moreOptions: "Plus d'options",
+                  viewControls: "Contrôles d'affichage",
+                  zoomControls: "Contrôles du zoom"
+                },
+                "menu.moreOptions": "Plus d'options",
+                "menu.viewControls": "Contrôles d'affichage",
+                "menu.zoomControls": "Contrôles du zoom",
+
+                mode: {
+                  view: "Mode lecture",
+                  annotate: "Mode annotation"
+                },
+                "mode.view": "Mode lecture",
+                "mode.annotate": "Mode annotation",
+
+                panel: {
                   sidebar: "Volet latéral",
+                  thumbnails: "Vignettes des pages",
+                  outline: "Plan du document",
                   search: "Rechercher",
                   comment: "Commentaires",
-                  download: "Télécharger",
-                  print: "Imprimer",
-                  openFile: "Ouvrir PDF",
-                  save: "Sauvegarder",
-                  settings: "Paramètres",
-                  view: "Affichage",
-                  annotate: "Annoter",
-                  shapes: "Formes",
-                  redact: "Biffer",
-                  fillAndSign: "Remplir et signer",
-                  form: "Formulaire",
-                  pan: "Déplacer la vue (Main)",
-                  pointer: "Sélection (Curseur)",
-                  undo: "Annuler",
-                  redo: "Rétablir",
-                  copy: "Copier",
-                  screenshot: "Capture d'écran",
-                  nextPage: "Page suivante",
-                  previousPage: "Page précédente"
-                }
+                  annotationStyle: "Style d'annotation"
+                },
+                "panel.sidebar": "Volet latéral",
+                "panel.thumbnails": "Vignettes des pages",
+                "panel.outline": "Plan du document",
+                "panel.search": "Rechercher",
+                "panel.comment": "Commentaires",
+                "panel.annotationStyle": "Style d'annotation",
+
+                annotation: {
+                  highlight: "Surligner",
+                  underline: "Souligner",
+                  strikeout: "Biffer",
+                  squiggly: "Soulignement ondulé",
+                  ink: "Dessin à main levée",
+                  inkHighlighter: "Feutre surligneur",
+                  comment: "Note / Commentaire",
+                  deleteSelected: "Supprimer la sélection",
+                  deleteAllSelected: "Tout supprimer"
+                },
+                "annotation.highlight": "Surligner",
+                "annotation.underline": "Souligner",
+                "annotation.strikeout": "Biffer",
+                "annotation.squiggly": "Soulignement ondulé",
+                "annotation.ink": "Dessin à main levée",
+                "annotation.inkHighlighter": "Feutre surligneur",
+                "annotation.comment": "Note / Commentaire",
+                "annotation.deleteSelected": "Supprimer la sélection",
+                "annotation.deleteAllSelected": "Tout supprimer"
               }
             }
           ]
@@ -665,6 +770,35 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       const aria = el.getAttribute('aria-label');
       if (aria && FR_LABELS[aria]) {
         el.setAttribute('aria-label', FR_LABELS[aria]);
+      }
+    });
+
+    const TEXT_MAP = {
+      'page.spreadmode': 'Disposition des pages',
+      'page.single': 'Une page',
+      'page.twoodd': 'Deux pages (reliure impaire)',
+      'page.twoeven': 'Deux pages (reliure paire)',
+      'page.scrolllayout': 'Sens de défilement',
+      'page.vertical': 'Défilement vertical',
+      'page.horizontal': 'Défilement horizontal',
+      'page.rotation': 'Rotation des pages',
+      'rotate.clockwise': 'Pivoter vers la droite',
+      'rotate.counterclockwise': 'Pivoter vers la gauche',
+      'document.fullscreen': 'Plein écran',
+      'document.open': 'Ouvrir',
+      'document.close': 'Fermer',
+      'document.print': 'Imprimer',
+      'spread mode': 'Disposition des pages',
+      'scroll layout': 'Sens de défilement',
+      'page rotation': 'Rotation des pages'
+    };
+
+    s.querySelectorAll('*').forEach(el => {
+      if (el.children.length === 0 && el.textContent) {
+        const raw = el.textContent.trim().toLowerCase();
+        if (TEXT_MAP[raw]) {
+          el.textContent = TEXT_MAP[raw];
+        }
       }
     });
   }
