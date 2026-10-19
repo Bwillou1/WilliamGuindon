@@ -851,6 +851,24 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
+  if (dom.licenseDialog) {
+    dom.licenseDialog.addEventListener('click', (e) => {
+      const rect = dom.licenseDialog.getBoundingClientRect();
+      const isIn = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      if (!isIn) dom.licenseDialog.close();
+    });
+  }
+
+  if (dom.aboutDialog) {
+    dom.aboutDialog.addEventListener('click', (e) => {
+      const rect = dom.aboutDialog.getBoundingClientRect();
+      const isIn = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      if (!isIn) dom.aboutDialog.close();
+    });
+  }
+
   // Bascule du mode Document Sombre / Inversion
   if (dom.btnDocDark) {
     dom.btnDocDark.addEventListener('click', () => {
@@ -959,31 +977,75 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
-  // Ouverture de la modale Traduction
-  if (dom.btnTranslateDoc) {
-    dom.btnTranslateDoc.addEventListener('click', () => {
-      const sel = getSelectedDocText();
-      const meta = getDocMeta(currentTargetFile);
-      const defaultMetaText = `${meta.title}\n\n${meta.citation || ''}\n\nType : ${meta.type || ''}`.trim();
-
-      if (dom.textToTranslate) {
-        if (sel) {
-          dom.textToTranslate.value = sel;
-        } else if (!dom.textToTranslate.value.trim()) {
-          dom.textToTranslate.value = defaultMetaText;
+  // Gestion de la modale de Traduction (Ouverture & Fermeture sécurisée)
+  const closeTranslateModal = () => {
+    if (dom.translateDialog) {
+      try {
+        if (typeof dom.translateDialog.close === 'function') {
+          dom.translateDialog.close();
         }
-      }
+      } catch (err) {}
+      dom.translateDialog.removeAttribute('open');
+      dom.translateDialog.style.display = 'none';
+    }
+  };
 
-      updateTranslateModal();
-      if (dom.translateDialog && typeof dom.translateDialog.showModal === 'function') {
-        dom.translateDialog.showModal();
+  const openTranslateModal = () => {
+    const sel = getSelectedDocText();
+    const meta = getDocMeta(currentTargetFile);
+    const defaultMetaText = `${meta.title}\n\n${meta.citation || ''}\n\nType : ${meta.type || ''}`.trim();
+
+    if (dom.textToTranslate) {
+      if (sel) {
+        dom.textToTranslate.value = sel;
+      } else if (!dom.textToTranslate.value.trim()) {
+        dom.textToTranslate.value = defaultMetaText;
       }
-    });
+    }
+
+    updateTranslateModal();
+    if (dom.translateDialog) {
+      dom.translateDialog.style.display = '';
+      if (typeof dom.translateDialog.showModal === 'function') {
+        try {
+          dom.translateDialog.showModal();
+        } catch (e) {
+          dom.translateDialog.setAttribute('open', '');
+        }
+      } else {
+        dom.translateDialog.setAttribute('open', '');
+      }
+    }
+  };
+
+  // Fermé obligatoirement par défaut
+  closeTranslateModal();
+
+  if (dom.btnTranslateDoc) {
+    dom.btnTranslateDoc.addEventListener('click', openTranslateModal);
   }
 
   if (dom.btnTranslateClose) {
-    dom.btnTranslateClose.addEventListener('click', () => {
-      if (dom.translateDialog) dom.translateDialog.close();
+    dom.btnTranslateClose.addEventListener('click', closeTranslateModal);
+  }
+
+  const btnFooterTranslateClose = document.getElementById('btn-embedpdf-translate-footer-close');
+  if (btnFooterTranslateClose) {
+    btnFooterTranslateClose.addEventListener('click', closeTranslateModal);
+  }
+
+  if (dom.translateDialog) {
+    dom.translateDialog.addEventListener('click', (e) => {
+      const rect = dom.translateDialog.getBoundingClientRect();
+      const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      if (!isInDialog) {
+        closeTranslateModal();
+      }
+    });
+    dom.translateDialog.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeTranslateModal();
     });
   }
 
@@ -1029,5 +1091,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   initEmbedPDF(initialFile);
+
+  if (urlParams.get('tab') === 'translation') {
+    openTranslateModal();
+  }
 
 })();

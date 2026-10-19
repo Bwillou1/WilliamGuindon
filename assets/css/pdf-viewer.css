@@ -2475,26 +2475,65 @@ button.btn-native-view-toggle:hover {
   color: inherit !important;
 }
 
+/* Règle absolue pour tous les dialogues : masqués par défaut */
+dialog:not([open]) {
+  display: none !important;
+}
+
 /* Modal de traduction intégrée */
-.embedpdf-translate-dialog {
+dialog.embedpdf-translate-dialog:not([open]) {
+  display: none !important;
+}
+
+dialog.embedpdf-translate-dialog[open] {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--bg-card);
   color: var(--text);
   padding: 0;
   max-width: 650px;
-  width: 92vw;
-  max-height: 90vh;
+  width: min(92vw, 650px);
+  max-height: 85vh;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   margin: auto;
   overflow: hidden;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
 }
 
 .embedpdf-translate-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.btn-dialog-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.btn-dialog-close:hover,
+.btn-dialog-close:focus {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .embedpdf-translate-header {
