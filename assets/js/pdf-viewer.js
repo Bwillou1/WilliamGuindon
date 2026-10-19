@@ -616,6 +616,7 @@
     btnOpenGoogleDocsMode: document.getElementById('btn-open-google-docs-mode'),
     btnCopyTranslation: document.getElementById('btn-copy-translation'),
     selectTranslateLang: document.getElementById('select-translate-lang'),
+    headerSelectLang: document.getElementById('header-select-lang'),
     translationStatus: document.getElementById('translation-status'),
     translationOutput: document.getElementById('translation-output'),
     translationPageBadge: document.getElementById('translation-page-badge'),
@@ -781,6 +782,12 @@
 
     // Charger le document PDF
     await loadPDF(targetFile, targetPage);
+
+    const targetLangParam = urlParams.get('lang') || urlParams.get('tl') || hashParams.get('lang') || hashParams.get('tl');
+    if (targetLangParam && ['en', 'es', 'de', 'it', 'pt'].includes(targetLangParam)) {
+      if (dom.selectTranslateLang) dom.selectTranslateLang.value = targetLangParam;
+      if (dom.headerSelectLang) dom.headerSelectLang.value = targetLangParam;
+    }
 
     const initialTab = urlParams.get('tab') || hashParams.get('tab');
     if (initialTab === 'translation') {
@@ -2671,11 +2678,13 @@
   function toggleTranslationMode(forceState) {
     state.translationMode = (typeof forceState === 'boolean') ? forceState : !state.translationMode;
     
+    const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en');
+    
     if (dom.btnTranslateDoc) {
       dom.btnTranslateDoc.classList.toggle('active', state.translationMode);
       dom.btnTranslateDoc.title = state.translationMode 
         ? "Revenir au document original (FR)" 
-        : "Traduire ce document en direct (EN)";
+        : `Traduire ce document en direct (${targetLang.toUpperCase()})`;
     }
 
     if (dom.btnToggleDocTranslationText) {
@@ -2710,7 +2719,6 @@
       } catch (_) {}
     }
 
-    const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
 
     if (state.translationMode) {
       showToast("Traduction activée : document affiché en direct");
@@ -3047,14 +3055,32 @@
         applyTranslationToPage(state.currentPage || 1, targetLang);
       });
     }
+    const handleLangChange = (lang) => {
+      if (dom.selectTranslateLang && dom.selectTranslateLang.value !== lang) {
+        dom.selectTranslateLang.value = lang;
+      }
+      if (dom.headerSelectLang && dom.headerSelectLang.value !== lang) {
+        dom.headerSelectLang.value = lang;
+      }
+      translateCurrentPage(lang);
+      if (state.translationMode) {
+        for (let i = 1; i <= state.totalPages; i++) {
+          applyTranslationToPage(i, lang);
+        }
+      }
+    };
+
     if (dom.selectTranslateLang) {
       dom.selectTranslateLang.addEventListener('change', () => {
-        const lang = dom.selectTranslateLang.value;
-        translateCurrentPage(lang);
-        if (state.translationMode) {
-          for (let i = 1; i <= state.totalPages; i++) {
-            applyTranslationToPage(i, lang);
-          }
+        handleLangChange(dom.selectTranslateLang.value);
+      });
+    }
+
+    if (dom.headerSelectLang) {
+      dom.headerSelectLang.addEventListener('change', () => {
+        handleLangChange(dom.headerSelectLang.value);
+        if (!state.translationMode) {
+          toggleTranslationMode(true);
         }
       });
     }

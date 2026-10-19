@@ -261,13 +261,22 @@
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         </button>
 
-        <button type="button" id="btn-translate-doc" class="tool-btn" title="Traduire ce document avec Google Traduction" aria-label="Traduire le document">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-        </button>
+        <div class="header-translate-group" style="display:inline-flex; align-items:center; gap:2px; background:var(--bg-card); border:1px solid var(--line); border-radius:7px; padding:1px 3px;">
+          <button type="button" id="btn-translate-doc" class="tool-btn" style="border:none; background:transparent;" title="Traduire ce document en direct sur la page" aria-label="Traduire le document">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </button>
+          <select id="header-select-lang" class="zoom-select" style="padding:2px 4px; font-size:11.5px; font-weight:700; border:none; background:transparent; cursor:pointer;" aria-label="Choisir la langue de traduction">
+            <option value="en">EN</option>
+            <option value="es">ES (Español)</option>
+            <option value="de">DE</option>
+            <option value="it">IT</option>
+            <option value="pt">PT</option>
+          </select>
+        </div>
 
         <button type="button" id="btn-download" class="tool-btn" title="Télécharger le PDF original" aria-label="Télécharger">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -577,7 +586,7 @@
   </div>
 
   <script src="assets/vendor/pdfjs/pdf.min.js"></script>
-  <script src="assets/js/pdf-viewer.js?v=20261019-v99"></script>
+  <script src="assets/js/pdf-viewer.js?v=20261019-v100"></script>
   <script>
     (function() {
       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
