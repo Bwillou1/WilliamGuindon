@@ -538,11 +538,6 @@
                 c.removeAttribute('onkeydown');
                 c.innerHTML = '<iframe src="https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0" width="267" height="476" style="border:none;overflow:hidden;width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="eager" title="Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)"></iframe>';
               };
-              try {
-                if (sessionStorage.getItem('wg_fb_consent') === 'granted') {
-                  window.loadPresseReel();
-                }
-              } catch(e) {}
             </script>
           </div>
 
@@ -1100,13 +1095,34 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
       <div class="cal-embed-wrapper">
         <div class="cal-inline-box" id="my-cal-inline-media">
-          <iframe src="https://cal.com/william-guindon/media?embed=1&amp;layout=month_view" 
-                  title="Calendrier officiel de réservation d'entrevues — William Guindon"
-                  style="width: 100%; height: 680px; min-height: 600px; border: none; border-radius: 8px; background: #ffffff;"
-                  allow="camera; microphone; autoplay; fullscreen" 
-                  loading="lazy">
-          </iframe>
+          <div id="cal-consent-shield" style="min-height: 520px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px 24px; background: linear-gradient(135deg, rgba(6, 95, 70, 0.04) 0%, rgba(5, 150, 105, 0.08) 100%); border: 1.5px dashed rgba(5, 150, 105, 0.35); border-radius: 8px;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #059669; color: #ffffff; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(5,150,105,0.3);">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <h3 style="margin: 0 0 8px; font-size: 1.25rem; color: #065f46; font-weight: 700;">Module interactif Cal.com bloqué par défaut</h3>
+            <p style="margin: 0 0 20px; max-width: 540px; font-size: 0.95rem; color: var(--text-muted); line-height: 1.55;">
+              Pour protéger votre vie privée et empêcher le dépôt de témoins (cookies) par la plateforme externe <strong>Cal.com</strong> sans votre action volontaire, ce module interactif est bloqué tant que vous ne cliquez pas.
+            </p>
+            <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap;">
+              <button type="button" onclick="window.loadCalEmbed &amp;&amp; window.loadCalEmbed()" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 12px 22px; border-radius: 8px; box-shadow: 0 4px 12px rgba(5,150,105,0.3); border: none; cursor: pointer; font-size: 0.95rem;">
+                <span>📅 Activer et charger le calendrier Cal.com</span>
+              </button>
+              <a href="https://cal.com/william-guindon/media" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px; padding: 11px 18px; border-radius: 8px; border: 1.5px solid #a7f3d0; background: #ffffff; color: #065f46; text-decoration: none; font-weight: 600; font-size: 0.92rem;">
+                <span>Ouvrir sur Cal.com (Plein écran) ↗</span>
+              </a>
+            </div>
+            <span style="display: inline-block; margin-top: 16px; font-size: 0.8rem; color: #047857; background: rgba(5,150,105,0.1); padding: 4px 12px; border-radius: 9999px;">
+              🛡️ Zéro traceur Cal.com avant clic · Conformité stricte Loi 25
+            </span>
+          </div>
         </div>
+        <script>
+          window.loadCalEmbed = function() {
+            var b = document.getElementById('my-cal-inline-media');
+            if (!b) return;
+            b.innerHTML = '<iframe src="https://cal.com/william-guindon/media?embed=1&amp;layout=month_view" title="Calendrier officiel de réservation d\'entrevues — William Guindon" style="width: 100%; height: 680px; min-height: 600px; border: none; border-radius: 8px; background: #ffffff;" allow="camera; microphone; autoplay; fullscreen" loading="eager"></iframe>';
+          };
+        </script>
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: var(--text-muted);">
           <span>💡 Si le calendrier intégré ne s'affiche pas (bloqueur de cookies tiers ou Safari/Brave), <a href="https://cal.com/william-guindon/media" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 700;">ouvrez la réservation directement sur Cal.com ↗</a>.</span>
           <a href="mailto:contact@williamguindon.me" style="color: var(--accent); font-weight: 600; text-decoration: none;">contact@williamguindon.me ↗</a>

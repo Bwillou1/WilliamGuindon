@@ -618,13 +618,6 @@
       btnLoadFb.addEventListener('click', loadFacebookEmbed);
     }
 
-    // Restauration de session : si consenti dans le même onglet, affichage sans re-clic (sessionStorage effacé à la fermeture)
-    try {
-      if (sessionStorage.getItem('wg_fb_consent') === 'granted') {
-        loadFacebookEmbed();
-      }
-    } catch (e) {}
-
     // 6b. Gestionnaire de consentement 2-clics pour le Reel d'alerte hero (sessionStorage uniquement)
     const btnLoadHeroReel = document.getElementById('btn-load-hero-reel');
     function loadHeroReel() {
@@ -711,12 +704,6 @@
     if (btnLoadYt) {
       btnLoadYt.addEventListener('click', loadYouTubeEmbed);
     }
-
-    try {
-      if (sessionStorage.getItem('wg_yt_consent') === 'granted') {
-        loadYouTubeEmbed();
-      }
-    } catch (e) {}
 
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');

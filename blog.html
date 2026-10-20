@@ -1643,9 +1643,7 @@
     };
 
     if (post.video && post.video.embedUrl) {
-      const hasConsent = (function() {
-        try { return sessionStorage.getItem('wg_yt_consent') === 'granted'; } catch(e) { return false; }
-      })();
+      const hasConsent = false;
 
       videoSection = `
         <div class="blog-video-box" style="margin:28px 0;padding:20px;border-radius:12px;background:rgba(11,87,208,0.05);border:1px solid rgba(11,87,208,0.18);">
