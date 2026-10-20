@@ -1,24 +1,26 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;0,6..72,800;1,6..72,400&display=swap');
+
 :root {
-  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: "Newsreader", serif;
+  --font-body: "Inter", sans-serif;
   
   --primary-h: 146;
   --primary-s: 48%;
 
-  --bg: #f7f9f7;
+  --bg: #f4f1eb;
   --bg-card: #ffffff;
   --text: #131715;
   --text-muted: #3c4940;
   --text-faint: #6c7c72;
-  --accent: #22c55e;
+  --accent: #15803d;
   --accent-deep: #166534;
-  --accent-wash: #f0fdf4;
+  --accent-wash: #dcfce7;
   --earth: #a85507;
   --earth-wash: #fef3c7;
   --line: #e2e8f0;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --max-w: 800px;
   
   /* Z-Index Hierarchy */
@@ -33,13 +35,13 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0b0f0c;
-  --bg-card: #121814;
+  --bg: #1e1e1e;
+  --bg-card: #2d2d2d;
   --text: #f0f4f1;
   --text-muted: #9bb0a2;
   --text-faint: #63776a;
   --accent: #22c55e;
-  --accent-deep: #4ade80;
+  --accent-deep: #16a34a;
   --accent-wash: rgba(34, 197, 94, 0.08);
   --earth: #f59e0b;
   --earth-wash: rgba(245, 158, 11, 0.08);
@@ -131,7 +133,7 @@ a:hover {
 .wrap {
   max-width: var(--max-w);
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 32px;
 }
 
 header.site { background: var(--bg); 
@@ -223,7 +225,7 @@ nav a:hover {
 }
 
 section {
-  padding: 80px 0;
+  padding: 100px 0;
   border-bottom: 1px solid var(--line);
   transition: border-color 0.3s ease;
 }
@@ -323,10 +325,10 @@ a.accent-link:hover {
   border: 1px solid var(--line);
   border-radius: 6px;
   box-shadow: var(--shadow);
-  
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .factgrid div:hover {
-  transform: none;
+  transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
   border-color: var(--accent);
 }
@@ -961,10 +963,10 @@ footer a:hover {
   text-decoration: none;
   font-size: 15px;
   font-weight: 600;
-  border-radius: 9999px;
+  border-radius: 8px;
   padding: 13px 28px;
   box-shadow: var(--shadow);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 .btn-primary {
   background: var(--accent);
@@ -974,7 +976,7 @@ footer a:hover {
 .btn-primary:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
-  transform: none;
+  transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 .btn-ghost {
@@ -984,7 +986,7 @@ footer a:hover {
 }
 .btn-ghost:hover {
   background: var(--accent-wash);
-  transform: none;
+  transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 .btn-copied {
@@ -1339,6 +1341,11 @@ footer a:hover {
   padding: 16px 14px;
   text-align: center;
   box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tracker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
 }
 
 .tracker-card-compact {
@@ -5883,6 +5890,12 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.press-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
 }
 
 [data-theme="dark"] .press-card,
