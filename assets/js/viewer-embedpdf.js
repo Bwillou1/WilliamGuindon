@@ -543,14 +543,19 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         </button>
       </div>
-      <div class="viewer-image-stage" id="viewer-image-stage">
-        <img src="${fullDocUrl}" alt="${cleanLabel}" id="viewer-image-el" class="viewer-image-el${isDocDark ? ' doc-dark-inverted' : ''}">
-      </div>
+      <div class="viewer-image-stage" id="viewer-image-stage"></div>
     `;
-    dom.container.appendChild(wrap);
 
     const stage = wrap.querySelector('#viewer-image-stage');
-    const imgEl = wrap.querySelector('#viewer-image-el');
+    const imgEl = document.createElement('img');
+    imgEl.id = 'viewer-image-el';
+    imgEl.className = 'viewer-image-el' + (isDocDark ? ' doc-dark-inverted' : '');
+    imgEl.alt = cleanLabel;
+    imgEl.src = fullDocUrl;
+    stage.appendChild(imgEl);
+
+    dom.container.appendChild(wrap);
+
     const zoomVal = wrap.querySelector('#viewer-img-zoom-val');
     const panBtn = wrap.querySelector('#viewer-img-pan-toggle');
 
@@ -1065,7 +1070,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } catch (err) {
       console.error('Erreur initialisation EmbedPDF:', err);
       // Secours immédiat : lecteur natif si échec de chargement WebAssembly
-      dom.container.innerHTML = `<iframe src="${currentTargetFile}" style="width:100%;height:100%;border:none;"></iframe>`;
+      dom.container.textContent = '';
+      const fallbackIframe = document.createElement('iframe');
+      fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
+      fallbackIframe.src = fullDocUrl;
+      dom.container.appendChild(fallbackIframe);
     }
   }
 
@@ -1166,8 +1175,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   if (dom.btnConfirmDownload) {
     dom.btnConfirmDownload.addEventListener('click', () => {
       const a = document.createElement('a');
-      a.href = currentTargetFile;
-      a.download = currentTargetFile.split('/').pop();
+      const safeTarget = getSafeDocUrl(currentTargetFile);
+      const safeDownloadUrl = new URL(safeTarget, window.location.origin);
+      if (safeDownloadUrl.origin === window.location.origin || safeDownloadUrl.hostname.endsWith('archive.org')) {
+        a.href = safeDownloadUrl.href;
+      } else {
+        a.href = '/' + 'assets/docs/observations-reponse-canada-sem26003.pdf';
+      }
+      a.download = safeTarget.split('/').pop().split('?')[0];
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1394,11 +1409,20 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   // Fermé obligatoirement par défaut
   closeTranslateModal();
 
+  function redirectToLecteur(doc, lang, theme) {
+    const safeDoc = getSafeDocUrl(doc);
+    const safeUrl = new URL('lecteur.html', window.location.origin);
+    safeUrl.searchParams.set('file', safeDoc);
+    if (lang) safeUrl.searchParams.set('lang', lang);
+    if (theme) safeUrl.searchParams.set('theme', theme);
+    safeUrl.searchParams.set('tab', 'translation');
+    window.location.href = safeUrl.pathname + safeUrl.search;
+  }
+
   if (dom.btnTranslateDoc) {
     dom.btnTranslateDoc.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const targetDoc = currentTargetFile || 'assets/docs/observations-reponse-canada-sem26003.pdf';
-      window.location.href = `lecteur.html?file=${encodeURIComponent(targetDoc)}&tab=translation&theme=${encodeURIComponent(currentTheme)}`;
+      redirectToLecteur(currentTargetFile, null, currentTheme);
     });
   }
 
@@ -1440,7 +1464,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     dom.btnSwitchToPageTranslation.addEventListener('click', () => {
       const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
       const theme = getCurrentTheme();
-      window.location.href = `lecteur.html?file=${encodeURIComponent(currentTargetFile)}&lang=${encodeURIComponent(lang)}&theme=${encodeURIComponent(theme)}&tab=translation`;
+      redirectToLecteur(currentTargetFile, lang, theme);
     });
   }
 
@@ -1451,7 +1475,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } else if (e.data && e.data.type === 'wg_toggle_translation') {
       const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
       const theme = getCurrentTheme();
-      window.location.href = `lecteur.html?file=${encodeURIComponent(currentTargetFile)}&lang=${encodeURIComponent(lang)}&theme=${encodeURIComponent(theme)}&tab=translation`;
+      redirectToLecteur(currentTargetFile, lang, theme);
     }
   });
 

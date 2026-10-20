@@ -97,14 +97,23 @@ function verifyWordCountThreshold() {
     }
 
     const html = fs.readFileSync(filePath, "utf8");
-    const textOnly = html
-      .replace(/<script[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    const words = textOnly.split(" ").filter(Boolean).length;
+    // Découpage lexical pour comptage textuel sans regex vulnérable (conforme CodeQL js/bad-tag-filter)
+    let cleanText = "";
+    let skipBlock = false;
+    const parts = html.split(/(<[^>]*>)/);
+    for (const part of parts) {
+      if (part.startsWith("<")) {
+        const lower = part.toLowerCase();
+        if (lower.startsWith("<script") || lower.startsWith("<style")) {
+          skipBlock = true;
+        } else if (lower.startsWith("</script>") || lower.startsWith("</style>")) {
+          skipBlock = false;
+        }
+      } else if (!skipBlock) {
+        cleanText += " " + part;
+      }
+    }
+    const words = cleanText.replace(/&[a-zA-Z0-9#]+;/g, " ").split(/\s+/).filter(Boolean).length;
     if (words < 400) {
       console.error(`❌ [ÉCHEC] ${pageName} : ${words} mots (< 400 mots requis pour indexation IA)`);
       hasError = true;

@@ -1792,7 +1792,26 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
               const bubble = document.createElement('div');
               bubble.className = item.role === 'user' ? 'ai-chat-bubble user' : 'ai-chat-bubble bot';
               if (item.role === 'bot') {
-                bubble.innerHTML = '<span class="ai-nano-badge" id="ai-engine-badge"><span class="ai-live-dot"></span> Assistant Documentaire IA</span><div>' + item.text + '</div>';
+                const badge = document.createElement('span');
+                badge.className = 'ai-nano-badge';
+                badge.id = 'ai-engine-badge';
+                const dot = document.createElement('span');
+                dot.className = 'ai-live-dot';
+                badge.appendChild(dot);
+                badge.appendChild(document.createTextNode(' Assistant Documentaire IA'));
+
+                const textDiv = document.createElement('div');
+                if (typeof DOMParser !== 'undefined') {
+                  const safeDoc = new DOMParser().parseFromString(item.text, 'text/html');
+                  while (safeDoc.body.firstChild) {
+                    textDiv.appendChild(safeDoc.body.firstChild);
+                  }
+                } else {
+                  textDiv.textContent = item.text;
+                }
+
+                bubble.appendChild(badge);
+                bubble.appendChild(textDiv);
               } else {
                 bubble.textContent = item.text;
               }

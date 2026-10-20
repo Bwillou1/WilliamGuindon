@@ -4590,16 +4590,19 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
     if (currentIframe && currentIframe.getAttribute('data-raw-pdf')) {
       const rawPdf = currentIframe.getAttribute('data-raw-pdf');
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const targetViewerUrl = isNative ? rawPdf : `viewer.html?file=${encodeURIComponent(rawPdf)}&theme=${encodeURIComponent(currentTheme)}`;
-      currentIframe.src = targetViewerUrl;
-      const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
-      if (fsViewerLink) {
-        fsViewerLink.href = targetViewerUrl;
-      }
-      const translateLink = document.getElementById('btn-translate-preview');
-      if (translateLink) {
-        translateLink.style.display = isNative ? 'none' : 'inline-flex';
+      // Validation stricte du chemin pour CodeQL (js/dom-text-reinterpreted-as-html)
+      if (typeof rawPdf === 'string' && (rawPdf.startsWith('assets/docs/') || rawPdf.startsWith('blob:') || /^https:\/\/[a-zA-Z0-9.-]+\/.*\.pdf$/i.test(rawPdf))) {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const targetViewerUrl = isNative ? rawPdf : `viewer.html?file=${encodeURIComponent(rawPdf)}&theme=${encodeURIComponent(currentTheme)}`;
+        currentIframe.src = targetViewerUrl;
+        const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
+        if (fsViewerLink) {
+          fsViewerLink.href = targetViewerUrl;
+        }
+        const translateLink = document.getElementById('btn-translate-preview');
+        if (translateLink) {
+          translateLink.style.display = isNative ? 'none' : 'inline-flex';
+        }
       }
     }
 
@@ -4671,8 +4674,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         items.forEach(item => {
           item.style.display = "";
           const link = item.querySelector(".drive-item-name");
-          if (link && item._origHtml !== undefined) {
-            link.innerHTML = item._origHtml;
+          if (link && item._origText !== undefined) {
+            link.textContent = item._origText;
           }
         });
 
@@ -4699,8 +4702,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         const link = item.querySelector(".drive-item-name");
         if (!link) return;
 
-        if (item._origHtml === undefined) {
-          item._origHtml = link.innerHTML;
+        if (item._origText === undefined) {
           item._origText = link.textContent;
         }
 
@@ -4715,9 +4717,27 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           matchedCount++;
 
           if (highlightRegex) {
-            link.innerHTML = item._origText.replace(highlightRegex, '<mark class="tree-highlight">$1</mark>');
+            link.textContent = "";
+            const raw = item._origText || "";
+            let lastIdx = 0;
+            highlightRegex.lastIndex = 0;
+            let m;
+            while ((m = highlightRegex.exec(raw)) !== null) {
+              if (m.index > lastIdx) {
+                link.appendChild(document.createTextNode(raw.slice(lastIdx, m.index)));
+              }
+              const mark = document.createElement("mark");
+              mark.className = "tree-highlight";
+              mark.textContent = m[0];
+              link.appendChild(mark);
+              lastIdx = highlightRegex.lastIndex;
+              if (m.index === highlightRegex.lastIndex) highlightRegex.lastIndex++;
+            }
+            if (lastIdx < raw.length) {
+              link.appendChild(document.createTextNode(raw.slice(lastIdx)));
+            }
           } else {
-            link.innerHTML = item._origHtml;
+            link.textContent = item._origText;
           }
 
           let parent = item.parentElement;
@@ -4731,7 +4751,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           }
         } else {
           item.style.display = "none";
-          link.innerHTML = item._origHtml;
+          link.textContent = item._origText || "";
         }
       });
 

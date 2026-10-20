@@ -281,6 +281,22 @@
   /**
    * Validation et sanitisation stricte des chemins et URLs de documents
    */
+  function getSafeRedirectUrl(targetPath, hash) {
+    const safeBase = 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    const cleanHash = (typeof hash === 'string' && /^#page=\d+$/.test(hash)) ? hash : '';
+    if (typeof targetPath !== 'string') return '/' + safeBase + cleanHash;
+    const clean = targetPath.trim();
+    if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(clean) && !clean.includes('..') && !clean.includes('//')) {
+      try {
+        const safeUrl = new URL(clean, window.location.origin);
+        if (safeUrl.origin === window.location.origin) {
+          return safeUrl.pathname + cleanHash;
+        }
+      } catch (_) {}
+    }
+    return '/' + safeBase + cleanHash;
+  }
+
   function getSafeDocUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') {
       return DOCS_CATALOG['decision-17-aout-2026'].file;
@@ -770,7 +786,8 @@
 
     if (readerPref === 'native' && !forceCustom) {
       const pageHash = targetPage > 1 ? `#page=${targetPage}` : '';
-      window.location.replace(`${targetFile}${pageHash}`);
+      const safeRedirect = getSafeRedirectUrl(targetFile, pageHash);
+      window.location.replace(safeRedirect);
       return;
     }
 
@@ -4722,8 +4739,8 @@ ER  -
   function openNativeViewer() {
     const fileUrl = state.currentFile || (dom.docSelect && DOCS_CATALOG[dom.docSelect.value]?.file) || 'assets/docs/observations-reponse-canada-sem26003.pdf';
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
-    const targetUrl = `${fileUrl}${pageHash}`;
-    window.location.replace(targetUrl);
+    const safeRedirect = getSafeRedirectUrl(fileUrl, pageHash);
+    window.location.replace(safeRedirect);
   }
 
   function updateNativeViewerLink() {
@@ -4731,7 +4748,8 @@ ER  -
     const fileUrl = state.currentFile || (dom.docSelect && DOCS_CATALOG[dom.docSelect.value]?.file) || 'assets/docs/observations-reponse-canada-sem26003.pdf';
     const pageHash = (state.currentPage && state.currentPage > 1) ? `#page=${state.currentPage}` : '';
     if (dom.btnNativeToggle.tagName === 'A') {
-      dom.btnNativeToggle.setAttribute('href', `${fileUrl}${pageHash}`);
+      const safeRedirect = getSafeRedirectUrl(fileUrl, pageHash);
+      dom.btnNativeToggle.setAttribute('href', safeRedirect);
     }
   }
 
