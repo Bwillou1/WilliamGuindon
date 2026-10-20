@@ -705,6 +705,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
     const themePref = getCurrentTheme() === 'dark' ? 'dark' : 'light';
     const origin = window.location.origin;
+    const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
     const fullDocUrl = (currentTargetFile.startsWith('http://') || currentTargetFile.startsWith('https://') || currentTargetFile.startsWith('blob:') || currentTargetFile.startsWith('data:'))
       ? currentTargetFile
       : `${origin}/${currentTargetFile}`;
