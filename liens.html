@@ -78,7 +78,7 @@
     }
 
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --page: #091510;
         --ink: #edf5ef;
         --muted: #a6b8ac;
@@ -91,6 +91,20 @@
         --shadow: 0 20px 60px rgba(0, 0, 0, .24);
         --focus: #a4e4b7;
       }
+    }
+
+    :root[data-theme="dark"] {
+      --page: #091510;
+      --ink: #edf5ef;
+      --muted: #a6b8ac;
+      --line: rgba(224, 245, 230, .11);
+      --panel: rgba(17, 31, 24, .88);
+      --panel-solid: #111f18;
+      --panel-hover: #17281e;
+      --accent: #9be0b1;
+      --accent-soft: rgba(106, 175, 130, .15);
+      --shadow: 0 20px 60px rgba(0, 0, 0, .24);
+      --focus: #a4e4b7;
     }
 
     * { box-sizing: border-box; }
@@ -160,20 +174,27 @@
       text-transform: uppercase;
     }
     .monogram {
-      display: grid;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 36px;
       height: 36px;
       flex: 0 0 36px;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.16);
+      border: 1px solid var(--line);
       border-radius: 12px;
-      background: linear-gradient(145deg, #1d7754, #0c402e);
-      box-shadow: 0 7px 18px rgba(19, 84, 54, .18);
-      color: #f4fff4;
-      font-size: .76rem;
-      font-weight: 850;
-      letter-spacing: -.06em;
+      background: var(--panel);
+      box-shadow: 0 4px 14px rgba(19, 84, 54, .08);
+      padding: 3px;
+      overflow: hidden;
     }
+    .brand-mark { width: 28px; height: auto; display: block; }
+    .brand-mark--dark { display: none !important; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .brand-mark--light { display: none !important; }
+      :root:not([data-theme="light"]) .brand-mark--dark { display: block !important; }
+    }
+    :root[data-theme="dark"] .brand-mark--light { display: none !important; }
+    :root[data-theme="dark"] .brand-mark--dark { display: block !important; }
     .top-link {
       display: inline-flex;
       align-items: center;
@@ -569,13 +590,26 @@
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
   </style>
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem('wg_theme') || localStorage.getItem('william-guindon-theme');
+        if (stored === 'dark' || stored === 'light') {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Aller au contenu</a>
   <main class="page" id="main">
     <nav class="topbar" aria-label="Navigation principale">
       <a class="brand" href="/" aria-label="William Guindon, site officiel">
-        <span class="monogram" aria-hidden="true">WG</span>
+        <span class="monogram" aria-hidden="true">
+          <img class="brand-mark brand-mark--light" src="assets/img/wg-monogram.svg" alt="WG" width="28" height="17">
+          <img class="brand-mark brand-mark--dark" src="assets/img/wg-monogram-reversed.svg" alt="WG" width="28" height="17" aria-hidden="true">
+        </span>
         <span>William Guindon</span>
       </a>
       <a class="top-link" href="/">
@@ -687,6 +721,13 @@
             <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <span class="explore-copy"><span class="explore-title">Galerie photos</span><span class="explore-desc">Images du territoire et du terrain avec zoom interactif.</span></span>
+        </a>
+        <a class="explore-card" href="apparitions-publiques.html">
+          <span class="explore-card-top">
+            <span class="explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" stroke="currentColor" stroke-width="1.5"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="explore-copy"><span class="explore-title">Apparitions médias</span><span class="explore-desc">Interventions radio, télévision, presse et prises de parole.</span></span>
         </a>
         <a class="explore-card" href="agir.html">
           <span class="explore-card-top">
