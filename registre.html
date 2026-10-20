@@ -731,14 +731,36 @@
     </header>
 
     <main class="portal-frame-wrapper" id="portal-view-iframe">
-      <iframe 
-        id="cce-registry-iframe"
-        class="portal-iframe"
-        src="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/"
-        title="Registre officiel de la Commission de coopération environnementale (CCE) — Dossier SEM-26-003"
-        loading="eager"
-        allowfullscreen>
-      </iframe>
+      <div id="cce-iframe-shield" style="width: 100%; height: 100%; min-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; background: var(--bg-card, #ffffff);">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: #059669; color: #ffffff; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(5,150,105,0.3);">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 style="margin: 0 0 10px; font-size: 1.4rem; color: var(--text-color); font-weight: 800;">Visualisation externe du serveur CCE (cec.org) bloquée par défaut</h3>
+        <p style="margin: 0 0 24px; max-width: 580px; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;">
+          Le serveur externe de la Commission de coopération environnementale (<strong>cec.org</strong>) utilise des traceurs tiers (Google Tag Manager). Afin de respecter strictement votre vie privée et d'empêcher tout dépôt de témoin (cookie) sans votre action volontaire, ce module interactif est bloqué tant que vous ne cliquez pas.
+        </p>
+        <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap;">
+          <button type="button" onclick="window.loadCceIframe &amp;&amp; window.loadCceIframe()" class="portal-btn portal-btn-primary" style="padding: 12px 24px; font-size: 0.95rem; cursor: pointer;">
+            <span>🌐 Activer et charger le registre CCE en direct</span>
+          </button>
+          <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="portal-btn" style="padding: 12px 20px; font-size: 0.95rem;">
+            <span>Ouvrir sur cec.org ↗</span>
+          </a>
+          <button type="button" onclick="switchPortalView('summary')" class="portal-btn" style="padding: 12px 20px; font-size: 0.95rem;">
+            <span>Consulter la synthèse locale (Sans aucun cookie)</span>
+          </button>
+        </div>
+        <span style="display: inline-block; margin-top: 20px; font-size: 0.82rem; color: #047857; background: rgba(5,150,105,0.1); padding: 5px 14px; border-radius: 9999px;">
+          🛡️ Zéro traceur CCE/Google avant clic · Conformité stricte Loi 25
+        </span>
+      </div>
+      <script>
+        window.loadCceIframe = function() {
+          var wrapper = document.getElementById('portal-view-iframe');
+          if (!wrapper) return;
+          wrapper.innerHTML = '<iframe id="cce-registry-iframe" class="portal-iframe" src="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" title="Registre officiel de la Commission de coopération environnementale (CCE) — Dossier SEM-26-003" loading="eager" allowfullscreen></iframe>';
+        };
+      </script>
     </main>
 
     <!-- Synthèse textuelle officielle du dossier pour agents IA, robots d'exploration et accessibilité -->
