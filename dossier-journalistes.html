@@ -2733,10 +2733,11 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 (function() {
   'use strict';
 
-  // Gestionnaire de consentement 2-clics pour les Reels journalistes (zéro cookie en amont)
+  // Gestionnaire de consentement 2-clics pour les Reels journalistes (sessionStorage uniquement, zéro cookie en amont)
   window.loadJournoReel = function(id, url, title) {
     var c = document.getElementById(id);
     if (!c) return;
+    try { sessionStorage.setItem('wg_fb_consent', 'granted'); } catch(e){}
     c.style.background = '#000000';
     c.style.backgroundImage = 'none';
     c.style.backgroundColor = '#000000';

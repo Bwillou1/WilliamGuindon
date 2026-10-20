@@ -523,6 +523,7 @@
               window.loadPresseReel = function() {
                 var c = document.getElementById('presse-reel-container');
                 if (!c) return;
+                try { sessionStorage.setItem('wg_fb_consent', 'granted'); } catch(e){}
                 c.style.background = '#000000';
                 c.style.backgroundImage = 'none';
                 c.style.backgroundColor = '#000000';
@@ -537,6 +538,11 @@
                 c.removeAttribute('onkeydown');
                 c.innerHTML = '<iframe src="https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0" width="267" height="476" style="border:none;overflow:hidden;width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="eager" title="Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)"></iframe>';
               };
+              try {
+                if (sessionStorage.getItem('wg_fb_consent') === 'granted') {
+                  window.loadPresseReel();
+                }
+              } catch(e) {}
             </script>
           </div>
 

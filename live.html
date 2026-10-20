@@ -1034,10 +1034,11 @@
 </footer>
 
 <script>
-  // Gestionnaire de consentement 2-clics pour le Reel vidéo (zéro cookie en amont)
+  // Gestionnaire de consentement 2-clics pour le Reel vidéo (sessionStorage uniquement, zéro cookie en amont)
   function loadLiveReel() {
     const container = document.getElementById('live-reel-container');
     if (!container) return;
+    try { sessionStorage.setItem('wg_fb_consent', 'granted'); } catch(e){}
     container.style.background = '#000000';
     container.style.backgroundImage = 'none';
     container.style.backgroundColor = '#000000';
@@ -1065,6 +1066,11 @@
       </iframe>`;
   }
   window.loadLiveReel = loadLiveReel;
+  try {
+    if (sessionStorage.getItem('wg_fb_consent') === 'granted') {
+      loadLiveReel();
+    }
+  } catch(e) {}
 
   // Gestion du décompte en direct à la seconde près
   document.addEventListener('DOMContentLoaded', () => {

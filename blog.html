@@ -1629,20 +1629,52 @@
     }
 
     let videoSection = "";
+    // Gestionnaire de consentement 2-clics pour la vidéo du blogue (sessionStorage uniquement)
+    window.loadBlogVideo = function(embedUrl, title) {
+      var s = document.getElementById('blog-video-stage');
+      if (!s) return;
+      try { sessionStorage.setItem('wg_yt_consent', 'granted'); } catch(e){}
+      s.style.cursor = 'default';
+      s.removeAttribute('role');
+      s.removeAttribute('tabindex');
+      s.removeAttribute('aria-label');
+      s.removeAttribute('onclick');
+      s.innerHTML = '<iframe src="' + embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1" title="' + title + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="eager"></iframe>';
+    };
+
     if (post.video && post.video.embedUrl) {
+      const hasConsent = (function() {
+        try { return sessionStorage.getItem('wg_yt_consent') === 'granted'; } catch(e) { return false; }
+      })();
+
       videoSection = `
         <div class="blog-video-box" style="margin:28px 0;padding:20px;border-radius:12px;background:rgba(11,87,208,0.05);border:1px solid rgba(11,87,208,0.18);">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:8px;">
-              <span style="display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#0b57d0;color:#fff;">
+              <span style="display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#cc0000;color:#fff;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               </span>
               <strong style="font-size:15px;color:var(--text, #1f1f1f);">${post.video.title || "Enregistrement vidéo officiel"}</strong>
             </div>
             ${post.video.duration ? `<span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,0.06);color:var(--muted,#666);">${post.video.duration}</span>` : ""}
           </div>
-          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:#000;">
-            <iframe src="${post.video.embedUrl}" title="${post.video.title || 'Vidéo'}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+          <div id="blog-video-stage" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:#0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat;cursor:${hasConsent ? 'default' : 'pointer'};" ${hasConsent ? '' : `onclick="window.loadBlogVideo && window.loadBlogVideo('${post.video.embedUrl}', '${(post.video.title || 'Vidéo').replace(/'/g, "\\'")}')" role="button" tabindex="0" aria-label="Lancer la vidéo"`}>
+            ${hasConsent ? `
+              <iframe src="${post.video.embedUrl}" title="${post.video.title || 'Vidéo'}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+            ` : `
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.85) 100%);pointer-events:none;"></div>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;">
+                <div style="width:58px;height:58px;border-radius:50%;background:#cc0000;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(204,0,0,0.6), 0 0 0 4px rgba(255,255,255,0.25);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff" style="margin-left:2px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <span style="background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);color:#ffffff;padding:6px 16px;border-radius:9999px;font-size:12.5px;font-weight:800;border:1px solid rgba(255,255,255,0.25);">
+                  Visionner la vidéo (YouTube)
+                </span>
+                <span style="font-size:10.5px;color:#cbd5e1;background:rgba(0,0,0,0.75);padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);">
+                  1 clic pour lancer · Zéro traceur avant clic
+                </span>
+              </div>
+            `}
           </div>
           ${post.video.caption ? `<p style="margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted,#555);">${post.video.caption}</p>` : ""}
           ${post.video.transcriptUrl ? `

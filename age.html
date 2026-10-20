@@ -1136,9 +1136,38 @@ body.dvopen .sheet{box-shadow:none;width:100%;min-height:0;margin:0;page-break-a
   </div>
 </div>
 <div class="video-view-container" style="max-width:960px;margin:20px auto 30px auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.05)">
-  <div style="position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;box-shadow:0 4px 20px rgba(0,0,0,0.25)">
-    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" width="560" height="315" src="https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?si=qL9QjKl1tg3omcZH&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <div id="age-video-stage" style="position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat;box-shadow:0 4px 20px rgba(0,0,0,0.25);cursor:pointer;" onclick="window.loadAgeVideo &amp;&amp; window.loadAgeVideo()" role="button" tabindex="0" aria-label="Lancer la vidéo de la séance du conseil">
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.85) 100%);pointer-events:none;"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;">
+      <div style="width:68px;height:68px;border-radius:50%;background:#cc0000;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(204,0,0,0.7), 0 0 0 5px rgba(255,255,255,0.25);transition:transform 0.2s ease;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" style="margin-left:3px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <span style="background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);color:#ffffff;padding:8px 18px;border-radius:9999px;font-size:13px;font-weight:800;border:1px solid rgba(255,255,255,0.25);">
+        Visionner la vidéo du conseil (YouTube)
+      </span>
+      <span style="font-size:11px;color:#cbd5e1;background:rgba(0,0,0,0.75);padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);">
+        1 clic pour lancer · Zéro traceur avant clic
+      </span>
+    </div>
   </div>
+  <script>
+    window.loadAgeVideo = function() {
+      var s = document.getElementById('age-video-stage');
+      if (!s) return;
+      try { sessionStorage.setItem('wg_yt_consent', 'granted'); } catch(e){}
+      s.style.cursor = 'default';
+      s.removeAttribute('role');
+      s.removeAttribute('tabindex');
+      s.removeAttribute('aria-label');
+      s.removeAttribute('onclick');
+      s.innerHTML = '<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" width="560" height="315" src="https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?si=qL9QjKl1tg3omcZH&amp;controls=0&amp;autoplay=1" title="Séance publique du conseil municipal" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="eager"></iframe>';
+    };
+    try {
+      if (sessionStorage.getItem('wg_yt_consent') === 'granted') {
+        window.loadAgeVideo();
+      }
+    } catch(e) {}
+  </script>
   <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
     <div>
       <h3 style="margin:0 0 6px 0;font-size:17px;font-weight:700;color:var(--text)">Séance publique du conseil municipal — Période de questions citoyennes</h3>

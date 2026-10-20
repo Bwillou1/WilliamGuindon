@@ -591,13 +591,15 @@
       tabYt.addEventListener('click', () => selectSocialTab('youtube'));
     }
 
-    // 6. Gestionnaire de consentement 2-clics pour le fil Facebook (zéro requête ni cookie en arrière-plan)
+    // 6. Gestionnaire de consentement 2-clics pour le fil Facebook (sessionStorage uniquement, zéro traceur sans clic)
     const btnLoadFb = document.getElementById('btn-load-fb-embed');
-    const fbContainer = document.getElementById('fb-embed-container');
 
     function loadFacebookEmbed() {
       const container = document.getElementById('fb-embed-container');
       if (!container) return;
+      try {
+        sessionStorage.setItem('wg_fb_consent', 'granted');
+      } catch (e) {}
       container.innerHTML = `
         <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fwilliamguindon.officiel&amp;tabs=timeline&amp;width=500&amp;height=580&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true" 
                 width="500" 
@@ -616,11 +618,21 @@
       btnLoadFb.addEventListener('click', loadFacebookEmbed);
     }
 
-    // 6b. Gestionnaire de consentement 2-clics pour le Reel d'alerte hero (zéro cookie en amont)
+    // Restauration de session : si consenti dans le même onglet, affichage sans re-clic (sessionStorage effacé à la fermeture)
+    try {
+      if (sessionStorage.getItem('wg_fb_consent') === 'granted') {
+        loadFacebookEmbed();
+      }
+    } catch (e) {}
+
+    // 6b. Gestionnaire de consentement 2-clics pour le Reel d'alerte hero (sessionStorage uniquement)
     const btnLoadHeroReel = document.getElementById('btn-load-hero-reel');
     function loadHeroReel() {
       const container = document.getElementById('hero-reel-container');
       if (!container) return;
+      try {
+        sessionStorage.setItem('wg_fb_consent', 'granted');
+      } catch (e) {}
       container.style.background = '#000000';
       container.style.backgroundImage = 'none';
       container.style.backgroundColor = '#000000';
@@ -652,6 +664,59 @@
     if (btnLoadHeroReel) {
       btnLoadHeroReel.addEventListener('click', loadHeroReel);
     }
+
+    // 6c. Gestionnaire de consentement 2-clics pour le fil YouTube (sessionStorage uniquement, zéro traceur sans clic)
+    const btnLoadYt = document.getElementById('btn-load-yt-embed');
+    function loadYouTubeEmbed() {
+      const container = document.getElementById('yt-embed-container');
+      if (!container) return;
+      try {
+        sessionStorage.setItem('wg_yt_consent', 'granted');
+      } catch (e) {}
+      container.innerHTML = `
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: stretch;">
+          <div class="youtube-player-wrap" style="position: relative; aspect-ratio: 16/9; min-height: 240px; width: 100%; background: #000; border-radius: 8px; overflow: hidden;">
+            <iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=UUwyMQWt9CHN12kkWmzIiogw&amp;autoplay=1"
+                    title="Dernière vidéo officielle — Chaîne YouTube William Guindon"
+                    width="560"
+                    height="315"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    loading="eager">
+            </iframe>
+          </div>
+          <div class="yt-info-card" style="width: 100%; margin-top: 14px; text-align: left;">
+            <div class="yt-info-title">Prises de parole citoyennes &amp; entrevues</div>
+            <p class="yt-info-text">Retrouvez les vidéos documentaires, prises de parole publiques et entrevues consacrées au dossier SEM-26-003 et à la préservation de la Grande Tourbière de Blainville.</p>
+            <div class="yt-quick-links">
+              <a href="https://youtube.com/shorts/WbJj7S6M4Ic?si=mNZ8IlDWraSfEVkX" target="_blank" rel="noopener noreferrer" class="yt-quick-item" style="border-left: 3px solid #dc2626;">
+                <span class="yt-quick-title" style="font-weight: 700; color: #dc2626;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Déclaration aux journalistes (Short)</span>
+                <span class="yt-quick-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" class="yt-quick-item">
+                <span class="yt-quick-title">Entrevue TVBL — Dossier Stablex</span>
+                <span class="yt-quick-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer" class="yt-quick-item">
+                <span class="yt-quick-title">Conseil de Blainville — Période de questions</span>
+                <span class="yt-quick-arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>`;
+    }
+    window.loadYouTubeEmbed = loadYouTubeEmbed;
+
+    if (btnLoadYt) {
+      btnLoadYt.addEventListener('click', loadYouTubeEmbed);
+    }
+
+    try {
+      if (sessionStorage.getItem('wg_yt_consent') === 'granted') {
+        loadYouTubeEmbed();
+      }
+    } catch (e) {}
 
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');
