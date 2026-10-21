@@ -2614,6 +2614,102 @@
       }
     }, true);
 
+    // Boîte de dialogue de sécurité pour Session Web (client tiers)
+    function showSessionWebWarningNotice(targetUrl) {
+      const destUrl = targetUrl || 'https://sessionweb.org/app';
+      let overlay = document.getElementById('session-web-warning-modal-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'session-web-warning-modal-overlay';
+        overlay.className = 'cce-notif-dialog-overlay';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-labelledby', 'session-web-warning-title');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:10006;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;opacity:0;pointer-events:none;transition:opacity 0.25s ease;';
+
+        overlay.innerHTML = `
+          <div class="cce-notif-dialog-card" style="background:var(--bg-card,#111813);border:1.5px solid #f59e0b;border-radius:14px;max-width:540px;width:100%;padding:22px 20px;box-shadow:0 14px 44px rgba(0,0,0,0.7);color:var(--text,#f9fafb);box-sizing:border-box;text-align:left;transform:translateY(12px) scale(0.98);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);font-family:system-ui,-apple-system,sans-serif;">
+            <div class="cce-notif-dialog-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(245,158,11,0.3);padding-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(245,158,11,0.15);color:#f59e0b;flex-shrink:0;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </span>
+                <div>
+                  <h3 id="session-web-warning-title" style="margin:0;font-size:16px;font-weight:700;color:var(--text,#ffffff);line-height:1.3;">Avis de sécurité — Client Session Web (Tiers)</h3>
+                  <span style="font-size:11.5px;color:#f59e0b;font-weight:600;">Information de confidentialité · Messagerie Session</span>
+                </div>
+              </div>
+              <button type="button" class="cce-notif-dialog-close" aria-label="Fermer la boîte de dialogue" style="background:transparent;border:none;font-size:26px;line-height:1;color:var(--text-muted,#94a3b8);cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
+            </div>
+            <div style="margin:16px 0 14px;font-size:13.5px;line-height:1.6;color:var(--text,#f9fafb);">
+              <div style="background:rgba(245,158,11,0.12);border-left:4px solid #f59e0b;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;color:var(--text,#ffffff);">
+                <strong>Attention :</strong> Ce client web n'est pas édité par la <em>Session Technology Foundation</em>.
+              </div>
+              <p style="margin:0 0 10px;">
+                Vous vous apprêtez à ouvrir <strong>sessionweb.org</strong>, un client web expérimental tiers non audité. Il transite par un serveur proxy intermédiaire et charge des traceurs publicitaires externes (Google AdSense).
+              </p>
+              <p style="margin:0;font-size:12.5px;color:var(--text-muted,#94a3b8);">
+                Pour tout échange sensible, confidentiel ou dans le cadre d'un signalement citoyen (lanceur d'alerte), nous vous recommandons vivement de télécharger l'<strong>application officielle native</strong> qui intègre le routage en oignon décentralisé (Lokinet) sans aucun traceur.
+              </p>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;margin-top:16px;">
+              <button type="button" class="btn-close-session-modal" style="font-size:12px;padding:8px 14px;border-radius:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);cursor:pointer;">Annuler</button>
+              <a href="${destUrl}" target="_blank" rel="noopener noreferrer" class="btn-proceed-session-web" style="font-size:12px;padding:8px 14px;border-radius:6px;border:1px solid rgba(245,158,11,0.5);color:#f59e0b;text-decoration:none;display:inline-flex;align-items:center;background:rgba(245,158,11,0.1);">Continuer vers Session Web quand même ↗</a>
+              <a href="https://getsession.org/download" target="_blank" rel="noopener noreferrer" style="font-size:12px;padding:8px 16px;border-radius:6px;background:#059669;border:1px solid #047857;font-weight:700;color:#ffffff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,0.4);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Télécharger l'application officielle ↗</span>
+              </a>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const closeModal = () => {
+          overlay.style.opacity = '0';
+          overlay.style.pointerEvents = 'none';
+          const card = overlay.querySelector('.cce-notif-dialog-card');
+          if (card) card.style.transform = 'translateY(12px) scale(0.98)';
+          document.body.classList.remove('cce-modal-open');
+        };
+
+        overlay.addEventListener('click', (evt) => {
+          if (evt.target === overlay || evt.target.classList.contains('cce-notif-dialog-close') || evt.target.classList.contains('btn-close-session-modal')) {
+            closeModal();
+          }
+          if (evt.target.classList.contains('btn-proceed-session-web')) {
+            closeModal();
+          }
+        });
+
+        document.addEventListener('keydown', (evt) => {
+          if (evt.key === 'Escape' && overlay.style.pointerEvents === 'auto') {
+            closeModal();
+          }
+        });
+      } else {
+        const proceedBtn = overlay.querySelector('.btn-proceed-session-web');
+        if (proceedBtn) proceedBtn.href = destUrl;
+      }
+
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
+      const card = overlay.querySelector('.cce-notif-dialog-card');
+      if (card) card.style.transform = 'translateY(0) scale(1)';
+      document.body.classList.add('cce-modal-open');
+    }
+    window.showSessionWebWarningNotice = showSessionWebWarningNotice;
+
+    // Interception systématique des clics sur les liens vers sessionweb.org
+    document.addEventListener('click', (e) => {
+      const sessionWebLink = e.target instanceof Element ? e.target.closest('a[href*="sessionweb.org"]') : null;
+      if (sessionWebLink) {
+        e.preventDefault();
+        e.stopPropagation();
+        showSessionWebWarningNotice(sessionWebLink.href);
+      }
+    }, true);
+
     // Initialiser l'état visuel de tous les boutons dès le chargement
     updateNotifButtonsState();
 
