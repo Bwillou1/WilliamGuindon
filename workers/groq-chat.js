@@ -390,19 +390,60 @@ async function handleGroqChat(request, env) {
   });
 }
 
+const AHREFS_ENDPOINT = "https://analytics.ahrefs.com/api/cf_worker";
+const AHREFS_DATA_KEY = "9s9raVWglF5AYmYLv9RLjA";
+
+async function sendAhrefsAnalytics(request, response) {
+  try {
+    const referer = request.headers.get("referer") || "";
+    const userAgent = request.headers.get("user-agent") || "";
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    const contentType = response.headers.get("content-type") || "";
+    const payload = {
+      n: "serverpageview",
+      u: request.url,
+      ip: ip,
+      ua: userAgent,
+      ct: contentType,
+      m: request.method,
+      s: response.status,
+      k: AHREFS_DATA_KEY,
+      r: referer,
+    };
+    const hs = {};
+    for (const name of ["signature", "signature-input", "signature-agent"]) {
+      const value = request.headers.get(name);
+      if (value) hs[name] = value;
+    }
+    if (Object.keys(hs).length > 0) payload.hs = hs;
+    await fetch(AHREFS_ENDPOINT, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  } catch (_) {}
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // 1. Point de terminaison API Groq Chat & Assistant documentaire
     if (url.pathname.startsWith('/api/groq-chat')) {
-      return handleGroqChat(request, env);
+      const apiRes = await handleGroqChat(request, env);
+      if (ctx && typeof ctx.waitUntil === 'function') {
+        ctx.waitUntil(sendAhrefsAnalytics(request, apiRes));
+      }
+      return apiRes;
     }
 
     // 2. Hébergement Statique Global via Cloudflare Workers Static Assets
     if (env && env.ASSETS) {
-      const response = await env.ASSETS.fetch(request);
-      return applyEdgeSecurityHeaders(request, response, url);
+      const assetRes = await env.ASSETS.fetch(request);
+      const secureRes = applyEdgeSecurityHeaders(request, assetRes, url);
+      if (ctx && typeof ctx.waitUntil === 'function') {
+        ctx.waitUntil(sendAhrefsAnalytics(request, secureRes));
+      }
+      return secureRes;
     }
 
     // Fallback si exécuté hors environnement Assets
