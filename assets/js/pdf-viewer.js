@@ -801,7 +801,7 @@
     await loadPDF(targetFile, targetPage);
 
     const targetLangParam = urlParams.get('lang') || urlParams.get('tl') || hashParams.get('lang') || hashParams.get('tl');
-    if (targetLangParam && ['en', 'es', 'de', 'it', 'pt'].includes(targetLangParam)) {
+    if (targetLangParam && ['en', 'es'].includes(targetLangParam)) {
       if (dom.selectTranslateLang) dom.selectTranslateLang.value = targetLangParam;
       if (dom.headerSelectLang) dom.headerSelectLang.value = targetLangParam;
     }
