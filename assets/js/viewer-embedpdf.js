@@ -134,11 +134,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   ];
 
   function getSafeDocUrl(rawUrl) {
-    if (!rawUrl) return 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    if (!rawUrl || typeof rawUrl !== 'string') return 'assets/docs/observations-reponse-canada-sem26003.pdf';
     let clean = rawUrl.trim();
-    if (clean.includes('williamguindon.me/assets/docs/')) {
-      clean = clean.split('williamguindon.me/')[1];
-    }
+    try {
+      if (clean.startsWith('http://') || clean.startsWith('https://')) {
+        const parsed = new URL(clean, window.location.origin);
+        const host = parsed.hostname.toLowerCase();
+        if ((host === 'williamguindon.me' || host === 'www.williamguindon.me' || host === window.location.hostname) && parsed.pathname.includes('/assets/docs/')) {
+          clean = parsed.pathname.replace(/^\//, '');
+        }
+      }
+    } catch (_) {}
     const cleanRel = clean.replace(/^(\.\/|\/)/, '');
     if (ALLOWED_DOCS.includes(cleanRel)) return cleanRel;
     if (cleanRel.startsWith('assets/docs/') && cleanRel.endsWith('.pdf') && !cleanRel.includes('..')) {
@@ -150,15 +156,19 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       return cleanRel;
     }
     // Archives officielles (archive.org, Internet Archive)
-    if (/^https:\/\/(?:[a-zA-Z0-9-]+\.)?archive\.org\/.+\.pdf(?:[?#].*)?$/i.test(clean)) {
-      return clean;
-    }
+    try {
+      if (clean.startsWith('https://') || clean.startsWith('http://')) {
+        const u = new URL(clean, window.location.origin);
+        const host = u.hostname.toLowerCase();
+        const isOfficialHost = host === 'williamguindon.me' || host === 'www.williamguindon.me' || host === window.location.hostname;
+        const isArchive = host === 'archive.org' || host === 'web.archive.org' || host.endsWith('.archive.org');
+        if ((isOfficialHost || isArchive) && /\.(pdf|jpe?g|png|webp|tiff?|gif|bmp|svg)(?:[?#].*)?$/i.test(u.pathname)) {
+          return u.href;
+        }
+      }
+    } catch (_) {}
     // Objets blobs locaux (ex. ouverts depuis dossier-journalistes.html)
     if (clean.startsWith('blob:') || clean.startsWith('data:application/pdf') || clean.startsWith('data:image/')) {
-      return clean;
-    }
-    // URLs absolues HTTPS directes vers un PDF ou une image probatoire
-    if (/^https:\/\/[a-zA-Z0-9.-]+\/.*\.(pdf|jpe?g|png|webp|tiff?|gif|bmp|svg)(?:[?#].*)?$/i.test(clean) && !clean.includes('..')) {
       return clean;
     }
     return 'assets/docs/observations-reponse-canada-sem26003.pdf';
@@ -551,7 +561,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     imgEl.id = 'viewer-image-el';
     imgEl.className = 'viewer-image-el' + (isDocDark ? ' doc-dark-inverted' : '');
     imgEl.alt = cleanLabel;
-    imgEl.src = fullDocUrl;
+    imgEl.src = getSafeDocUrl(fullDocUrl);
     stage.appendChild(imgEl);
 
     dom.container.appendChild(wrap);
@@ -1074,7 +1084,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       dom.container.textContent = '';
       const fallbackIframe = document.createElement('iframe');
       fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
-      fallbackIframe.src = fullDocUrl;
+      fallbackIframe.src = getSafeDocUrl(fullDocUrl);
       dom.container.appendChild(fallbackIframe);
     }
   }
@@ -1178,7 +1188,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       const a = document.createElement('a');
       const safeTarget = getSafeDocUrl(currentTargetFile);
       const safeDownloadUrl = new URL(safeTarget, window.location.origin);
-      if (safeDownloadUrl.origin === window.location.origin || safeDownloadUrl.hostname.endsWith('archive.org')) {
+      const host = safeDownloadUrl.hostname.toLowerCase();
+      const isAllowedArchive = host === 'archive.org' || host === 'web.archive.org' || host.endsWith('.archive.org');
+      if (safeDownloadUrl.origin === window.location.origin || isAllowedArchive) {
         a.href = safeDownloadUrl.href;
       } else {
         a.href = '/' + 'assets/docs/observations-reponse-canada-sem26003.pdf';

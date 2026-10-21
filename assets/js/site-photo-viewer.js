@@ -122,8 +122,12 @@
 
     // E. Formats de médias et photographies acceptés (y compris Web Archive et ImageKit)
     const validExtensions = /\.(jpe?g|png|webp|avif|tiff?|bmp|gif)(\?.*)?$/i;
-    const isImageKit = src.includes('ik.imagekit.io');
-    const isWebArchive = src.includes('archive.org') || src.includes('web.archive.org');
+    let urlHost = '';
+    try {
+      urlHost = new URL(src, window.location.origin).hostname.toLowerCase();
+    } catch (_) {}
+    const isImageKit = urlHost === 'ik.imagekit.io' || urlHost.endsWith('.imagekit.io');
+    const isWebArchive = urlHost === 'archive.org' || urlHost === 'web.archive.org' || urlHost.endsWith('.archive.org');
     const isMediaDir = src.includes('/assets/media/') || src.includes('/photos/') || src.includes('/uploads/');
     const hasPhotoClass = img.classList.contains('photo-img') || 
                           img.classList.contains('blog-card-img') || 

@@ -4675,10 +4675,28 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
     if (currentIframe && currentIframe.getAttribute('data-raw-pdf')) {
       const rawPdf = currentIframe.getAttribute('data-raw-pdf');
-      // Validation stricte du chemin pour CodeQL (js/dom-text-reinterpreted-as-html)
-      if (typeof rawPdf === 'string' && (rawPdf.startsWith('assets/docs/') || rawPdf.startsWith('blob:') || /^https:\/\/[a-zA-Z0-9.-]+\/.*\.pdf$/i.test(rawPdf))) {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        const targetViewerUrl = isNative ? rawPdf : `viewer.html?file=${encodeURIComponent(rawPdf)}&theme=${encodeURIComponent(currentTheme)}`;
+      let safePdfPath = null;
+      if (typeof rawPdf === 'string') {
+        const trimmed = rawPdf.trim();
+        if (trimmed.startsWith('assets/docs/') && trimmed.endsWith('.pdf') && !trimmed.includes('..')) {
+          safePdfPath = encodeURI(trimmed);
+        } else if (trimmed.startsWith('blob:')) {
+          safePdfPath = trimmed;
+        } else {
+          try {
+            const u = new URL(trimmed, window.location.origin);
+            const host = u.hostname.toLowerCase();
+            const isAllowedHost = host === window.location.hostname || host === 'williamguindon.me' || host === 'www.williamguindon.me' || host === 'archive.org' || host.endsWith('.archive.org');
+            if ((u.protocol === 'https:' || u.protocol === 'http:') && isAllowedHost && u.pathname.endsWith('.pdf')) {
+              safePdfPath = u.href;
+            }
+          } catch (_) {}
+        }
+      }
+
+      if (safePdfPath) {
+        const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
+        const targetViewerUrl = isNative ? safePdfPath : `viewer.html?file=${encodeURIComponent(safePdfPath)}&theme=${encodeURIComponent(currentTheme)}`;
         currentIframe.src = targetViewerUrl;
         const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
         if (fsViewerLink) {

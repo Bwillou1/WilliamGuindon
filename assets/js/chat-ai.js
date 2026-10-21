@@ -1824,14 +1824,8 @@ Ne prétends pas avoir lu une page ou un fichier inaccessible. Indique brièveme
                 badge.appendChild(document.createTextNode(' Assistant Documentaire IA'));
 
                 const textDiv = document.createElement('div');
-                if (typeof DOMParser !== 'undefined') {
-                  const safeDoc = new DOMParser().parseFromString(item.text, 'text/html');
-                  while (safeDoc.body.firstChild) {
-                    textDiv.appendChild(safeDoc.body.firstChild);
-                  }
-                } else {
-                  textDiv.textContent = item.text;
-                }
+                const rawText = typeof item.text === 'string' ? item.text.replace(/<[^>]*>/g, '') : '';
+                textDiv.innerHTML = formatAiResponse(rawText);
 
                 bubble.appendChild(badge);
                 bubble.appendChild(textDiv);

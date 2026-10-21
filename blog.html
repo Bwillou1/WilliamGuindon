@@ -1656,7 +1656,7 @@
             </div>
             ${post.video.duration ? `<span style="font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(0,0,0,0.06);color:var(--muted,#666);">${post.video.duration}</span>` : ""}
           </div>
-          <div id="blog-video-stage" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:#0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat;cursor:${hasConsent ? 'default' : 'pointer'};" ${hasConsent ? '' : `onclick="window.loadBlogVideo && window.loadBlogVideo('${post.video.embedUrl}', '${(post.video.title || 'Vidéo').replace(/'/g, "\\'")}')" role="button" tabindex="0" aria-label="Lancer la vidéo"`}>
+          <div id="blog-video-stage" data-embed-url="${encodeURIComponent(post.video.embedUrl)}" data-title="${encodeURIComponent(post.video.title || 'Vidéo')}" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.18);background:#0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat;cursor:${hasConsent ? 'default' : 'pointer'};" ${hasConsent ? '' : `role="button" tabindex="0" aria-label="Lancer la vidéo"`}>
             ${hasConsent ? `
               <iframe src="${post.video.embedUrl}" title="${post.video.title || 'Vidéo'}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
             ` : `
@@ -1723,6 +1723,24 @@
     shareBtn?.addEventListener("click", async () => {
       await copyTextToClipboard(articleLink, shareBtn, "Lien de l'article copié !");
     });
+
+    const videoStage = document.getElementById("blog-video-stage");
+    if (videoStage && videoStage.hasAttribute("data-embed-url")) {
+      const handleVideoClick = () => {
+        const rawUrl = decodeURIComponent(videoStage.getAttribute("data-embed-url") || "");
+        const rawTitle = decodeURIComponent(videoStage.getAttribute("data-title") || "Vidéo");
+        if (window.loadBlogVideo && rawUrl) {
+          window.loadBlogVideo(rawUrl, rawTitle);
+        }
+      };
+      videoStage.addEventListener("click", handleVideoClick);
+      videoStage.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleVideoClick();
+        }
+      });
+    }
 
     modal.classList.add("open");
     document.body.classList.add("modal-open");
