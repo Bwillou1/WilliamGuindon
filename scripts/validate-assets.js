@@ -60,7 +60,9 @@ const CORE_FILES = [
   'tools.json',
   'agent-skills.json',
   '.well-known/security.txt',
-  'security.txt'
+  'security.txt',
+  '.assetsignore',
+  'wrangler.toml'
 ];
 
 let errors = [];

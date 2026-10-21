@@ -1,6 +1,7 @@
 /**
- * Cloudflare Worker — API Proxy Groq & Assistant Documentaire SEM-26-003
- * Route : /api/groq-chat/*
+ * Cloudflare Worker — William Guindon (williamguindon.me)
+ * 1. API Proxy Groq & Assistant Documentaire SEM-26-003 (/api/groq-chat/*)
+ * 2. Hébergement Statique Global & En-têtes de Sécurité Edge Stricts (Workers Static Assets)
  */
 
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
@@ -120,227 +121,294 @@ function getCorsHeaders(request) {
   };
 }
 
-export default {
-  async fetch(request, env) {
-    const corsHeaders = getCorsHeaders(request);
+const CSP_HEADER = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cloud.umami.is https://gateway.umami.is https://cdn.jsdelivr.net https://unpkg.com https://connect.facebook.net https://*.facebook.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.googleapis.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://*.gstatic.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://*.gstatic.com https://app.cal.com https://cal.com https://cdn.gtranslate.net; connect-src 'self' wss: ws: https://archive.org https://*.archive.org https://*.facebook.com https://facebook.com https://connect.facebook.net https://*.google.com https://*.googleapis.com https://generativelanguage.googleapis.com https://api.openai.com https://api.anthropic.com https://api.mistral.ai https://openrouter.ai http://localhost:11434 http://127.0.0.1:11434 http://localhost:1234 http://127.0.0.1:1234 https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; worker-src 'self' blob:; media-src 'self' blob: data: https://archive.org https://*.archive.org https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://archive.org https://*.archive.org https://*.facebook.com https://facebook.com https://www.facebook.com https://*.linkedin.com https://www.linkedin.com https://linkedin.com https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.google.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; frame-ancestors 'self'; object-src 'none'; base-uri 'self';";
 
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: corsHeaders });
-    }
+function applyEdgeSecurityHeaders(request, response, url) {
+  const headers = new Headers(response.headers);
+  const pathname = url.pathname;
 
-    if (request.method !== 'POST') {
-      return new Response(JSON.stringify({ error: 'Méthode non autorisée.' }), {
-        status: 405,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+  // 1. En-têtes stricts de sécurité Edge
+  headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'SAMEORIGIN');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), usb=()');
+  headers.set('Content-Security-Policy', CSP_HEADER);
 
-    const apiKey = env?.GROQ_API_KEY || (typeof GROQ_API_KEY !== 'undefined' ? GROQ_API_KEY : (typeof globalThis !== 'undefined' && globalThis.GROQ_API_KEY ? globalThis.GROQ_API_KEY : null));
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'Le service IA n’est pas configuré.' }), {
-        status: 503,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+  // 2. Politiques de cache granulaires conformes à _headers
+  if (pathname === '/admin.html' || pathname === '/console-admin.html' || pathname === '/editeur.html') {
+    headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    headers.set('Cloudflare-CDN-Cache-Control', 'no-store');
+    headers.set('CDN-Cache-Control', 'no-store');
+  } else if (pathname === '/sw.js' || pathname === '/data/site-state.json' || pathname === '/dossier-journalistes.html') {
+    headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+  } else if (pathname === '/age.html') {
+    headers.set('Cache-Control', 'public, max-age=0, must-revalidate, no-cache, no-store');
+    headers.set('X-Robots-Tag', 'noarchive');
+  } else if (pathname === '/status.json' || pathname === '/meta.json' || pathname === '/blainville_latest.png' || pathname.startsWith('/blainville_capture_')) {
+    headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+  } else if (pathname === '/llms.txt' || pathname === '/llms-full.txt') {
+    headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Content-Type', 'text/plain; charset=utf-8');
+  } else if (pathname === '/security.txt' || pathname === '/.well-known/security.txt') {
+    headers.set('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Content-Type', 'text/plain; charset=utf-8');
+  } else if (
+    pathname.startsWith('/assets/') ||
+    /\.(webp|png|jpg|jpeg|svg|ico|css|js|woff|woff2|ttf|wasm|pdf)$/i.test(pathname)
+  ) {
+    headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (pathname === '/' || pathname.endsWith('.html') || !pathname.includes('.')) {
+    headers.set('Cache-Control', 'public, max-age=600, s-maxage=600, stale-while-revalidate=86400, stale-if-error=86400');
+    headers.set('Cloudflare-CDN-Cache-Control', 'max-age=600, stale-while-revalidate=86400, stale-if-error=86400');
+    headers.set('CDN-Cache-Control', 'max-age=600, stale-while-revalidate=86400, stale-if-error=86400');
+    headers.set('Link', '</llms.txt>; rel="alternate"; type="text/markdown", </llms.txt>; rel="llms-txt"');
+  }
 
-    let rawBody;
-    try {
-      rawBody = await request.text();
-    } catch (_) {
-      return new Response(JSON.stringify({ error: 'Lecture du corps impossible.' }), {
+  const body = (response.status === 304 || response.status === 204 || request.method === 'HEAD') ? null : response.body;
+
+  return new Response(body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
+async function handleGroqChat(request, env) {
+  const corsHeaders = getCorsHeaders(request);
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Méthode non autorisée.' }), {
+      status: 405,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  const apiKey = env?.GROQ_API_KEY || (typeof GROQ_API_KEY !== 'undefined' ? GROQ_API_KEY : (typeof globalThis !== 'undefined' && globalThis.GROQ_API_KEY ? globalThis.GROQ_API_KEY : null));
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: 'Le service IA n’est pas configuré.' }), {
+      status: 503,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  let rawBody;
+  try {
+    rawBody = await request.text();
+  } catch (_) {
+    return new Response(JSON.stringify({ error: 'Lecture du corps impossible.' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  if (!rawBody || rawBody.length > MAX_BODY_BYTES) {
+    return new Response(JSON.stringify({ error: 'Requête trop volumineuse.' }), {
+      status: 413,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(rawBody);
+  } catch (_) {
+    return new Response(JSON.stringify({ error: 'JSON invalide.' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Secours automatique de traduction juridique in-document (0 échec, haute vitesse)
+  if (payload.action === 'translate') {
+    const targetLang = String(payload.targetLang || 'en').slice(0, 5);
+    const textToTranslate = String(payload.text || payload.messages?.[0]?.content || '').slice(0, MAX_MESSAGE_CHARS).trim();
+    if (!textToTranslate) {
+      return new Response(JSON.stringify({ error: 'Texte à traduire vide.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    if (!rawBody || rawBody.length > MAX_BODY_BYTES) {
-      return new Response(JSON.stringify({ error: 'Requête trop volumineuse.' }), {
-        status: 413,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+    const translateModel = env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b';
+    const prompt = `Tu es un traducteur juridique officiel de haute fidélité. Traduis fidèlement le texte suivant vers la langue "${targetLang}". Ne renvoie STRICTEMENT QUE le texte traduit, sans commentaire, sans introduction, sans guillemets :\n${textToTranslate}`;
 
-    let payload;
     try {
-      payload = JSON.parse(rawBody);
-    } catch (_) {
-      return new Response(JSON.stringify({ error: 'JSON invalide.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const groqRes = await fetch(GROQ_ENDPOINT, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: translateModel,
+          temperature: 0.1,
+          max_tokens: 450,
+          messages: [
+            { role: 'system', content: 'Tu es un traducteur officiel. Ne renvoie que le texte traduit sans aucune introduction ni explication.' },
+            { role: 'user', content: prompt }
+          ]
+        }),
+        signal: controller.signal
       });
-    }
+      clearTimeout(timeoutId);
 
-    // Secours automatique de traduction juridique in-document (0 échec, haute vitesse)
-    if (payload.action === 'translate') {
-      const targetLang = String(payload.targetLang || 'en').slice(0, 5);
-      const textToTranslate = String(payload.text || payload.messages?.[0]?.content || '').slice(0, MAX_MESSAGE_CHARS).trim();
-      if (!textToTranslate) {
-        return new Response(JSON.stringify({ error: 'Texte à traduire vide.' }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
-
-      const translateModel = env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b';
-      const prompt = `Tu es un traducteur juridique officiel de haute fidélité. Traduis fidèlement le texte suivant vers la langue "${targetLang}". Ne renvoie STRICTEMENT QUE le texte traduit, sans commentaire, sans introduction, sans guillemets :\n${textToTranslate}`;
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
-        const groqRes = await fetch(GROQ_ENDPOINT, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: translateModel,
-            temperature: 0.1,
-            max_tokens: 450,
-            messages: [
-              { role: 'system', content: 'Tu es un traducteur officiel. Ne renvoie que le texte traduit sans aucune introduction ni explication.' },
-              { role: 'user', content: prompt }
-            ]
-          }),
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (groqRes.ok) {
-          const resJson = await groqRes.json();
-          const translated = cleanModelOutput(resJson?.choices?.[0]?.message?.content || '');
-          if (translated) {
-            return new Response(JSON.stringify({ translatedText: translated, answer: translated }), {
-              status: 200,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
-          }
+      if (groqRes.ok) {
+        const groqJson = await groqRes.json();
+        const trOutput = cleanModelOutput(groqJson?.choices?.[0]?.message?.content || '');
+        if (trOutput) {
+          return new Response(JSON.stringify({ answer: trOutput }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
         }
-      } catch (_) {}
+      }
+    } catch (_) {}
+  }
 
-      return new Response(JSON.stringify({ error: 'Échec de la traduction de secours.' }), {
-        status: 502,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+  const messages = payload?.messages;
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return new Response(JSON.stringify({ error: 'Le champ messages doit être un tableau non vide.' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
 
-    const messages = Array.isArray(payload.messages) ? payload.messages : [];
-    if (!messages.length || messages.length > MAX_MESSAGES) {
-      return new Response(JSON.stringify({ error: 'Messages invalides.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+  const safeMessages = [];
+  for (const m of messages) {
+    if (!m || typeof m !== 'object') continue;
+    const role = m.role === 'assistant' ? 'assistant' : 'user';
+    let content = typeof m.content === 'string' ? m.content.slice(0, MAX_MESSAGE_CHARS) : '';
 
-    const mode = (payload.mode === 'expert') ? 'expert' : 'fast';
-
-    const safeMessages = messages
-      .filter((message) => message && ['user', 'assistant'].includes(message.role))
-      .map((message) => ({ role: message.role, content: String(message.content || '').slice(0, MAX_MESSAGE_CHARS) }))
-      .filter((message) => message.content.trim());
-
-    if (!safeMessages.length) {
-      return new Response(JSON.stringify({ error: 'Aucun message exploitable.' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Économie drastique de tokens pour le service public : on ne conserve que les 4 derniers messages (2 tours d'échange)
-    const trimmedSafeMessages = safeMessages.slice(-4);
-
-    const lastUserMessage = trimmedSafeMessages.slice().reverse().find(m => m.role === 'user')?.content || '';
-    if (isPromptInjection(lastUserMessage)) {
+    if (role === 'user' && isPromptInjection(content)) {
       return new Response(JSON.stringify({
-        answer: "Je suis l'assistant documentaire officiel du site de William Guindon, dédié exclusivement au dossier SEM-26-003 et à la protection de la Grande Tourbière de Blainville. Je ne peux répondre qu'aux questions factuelles relatives à ce dossier public."
+        answer: "Cette requête ne peut pas être traitée car elle tente de modifier les consignes de sécurité ou d'accéder à des paramètres système non autorisés. Je reste à votre entière disposition pour répondre à toute question factuelle sur le dossier SEM-26-003 et la protection de la Grande Tourbière de Blainville."
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    let candidateModels = [];
-    if (mode === 'expert') {
-      candidateModels = [
-        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'openai/gpt-oss-120b',
-        env?.GROQ_MODEL_LOW || env?.GROQ_MODEL_FAST || 'openai/gpt-oss-20b',
-        'qwen/qwen3.8-27b'
-      ];
-    } else {
-      candidateModels = [
-        env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b',
-        'qwen/qwen3.8-27b',
-        env?.GROQ_MODEL_EXPERT || env?.GROQ_MODEL || 'openai/gpt-oss-120b'
-      ];
+    if (content.trim()) {
+      safeMessages.push({ role, content });
     }
-    candidateModels = candidateModels.filter(Boolean).filter((m, idx, arr) => arr.indexOf(m) === idx);
+  }
 
-    let finalAnswer = null;
-    let lastError = null;
-
-    for (const model of candidateModels) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-      try {
-        const requestBody = {
-          model: model,
-          temperature: 0.2,
-          max_tokens: mode === 'expert' ? 500 : 380,
-          messages: [
-            {
-              role: 'system',
-              content: SYSTEM_PROMPT.trim()
-            },
-            ...trimmedSafeMessages
-          ]
-        };
-
-        if (model.includes('gpt-oss')) {
-          requestBody.reasoning_effort = 'low';
-          requestBody.reasoning_format = 'hidden';
-        }
-
-        const groqResponse = await fetch(GROQ_ENDPOINT, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!groqResponse.ok) {
-          let errDetail = '';
-          try {
-            const errJson = await groqResponse.json();
-            errDetail = errJson?.error?.message ? ` (${errJson.error.message})` : '';
-          } catch (_) {}
-          lastError = `HTTP ${groqResponse.status}${errDetail}`;
-          continue; // Bascule immédiate vers le fallback (ex. modèle indisponible ou 429)
-        }
-
-        const result = await groqResponse.json();
-        const rawContent = result?.choices?.[0]?.message?.content || result?.choices?.[0]?.message?.reasoning || '';
-        const content = cleanModelOutput(rawContent);
-        if (content && content.length > 0) {
-          finalAnswer = content;
-          break;
-        }
-      } catch (err) {
-        clearTimeout(timeoutId);
-        lastError = err?.name === 'AbortError' ? 'timeout' : (err?.message || 'fetch error');
-      }
-    }
-
-    if (!finalAnswer) {
-      return new Response(JSON.stringify({ error: `Service IA temporairement indisponible (${lastError || '429'})` }), {
-        status: 502,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    return new Response(JSON.stringify({ answer: finalAnswer }), {
-      status: 200,
+  if (safeMessages.length === 0) {
+    return new Response(JSON.stringify({ error: 'Aucun message valide reçu.' }), {
+      status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
-};
 
+  const trimmedSafeMessages = safeMessages.slice(-MAX_MESSAGES);
+  const mode = String(payload?.mode || '').toLowerCase();
+  const primaryModel = (mode === 'fast' || mode === 'rapide')
+    ? (env?.GROQ_MODEL_FAST || env?.GROQ_MODEL_LOW || 'openai/gpt-oss-20b')
+    : (env?.GROQ_MODEL || PRIMARY_MODEL);
+
+  const fallbackList = (env?.GROQ_MODEL_MEDIUM || env?.GROQ_MODEL_EXPERT)
+    ? [env?.GROQ_MODEL_MEDIUM, env?.GROQ_MODEL_FAST || 'openai/gpt-oss-20b', ...FALLBACK_MODELS]
+    : FALLBACK_MODELS;
+
+  const candidateModels = [primaryModel, ...fallbackList.filter(m => m && m !== primaryModel)];
+
+  let finalAnswer = null;
+  let lastError = null;
+
+  for (const model of candidateModels) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+    try {
+      const requestBody = {
+        model: model,
+        temperature: 0.2,
+        max_tokens: mode === 'expert' ? 500 : 380,
+        messages: [
+          {
+            role: 'system',
+            content: SYSTEM_PROMPT.trim()
+          },
+          ...trimmedSafeMessages
+        ]
+      };
+
+      if (model.includes('gpt-oss')) {
+        requestBody.reasoning_effort = 'low';
+        requestBody.reasoning_format = 'hidden';
+      }
+
+      const groqResponse = await fetch(GROQ_ENDPOINT, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!groqResponse.ok) {
+        let errDetail = '';
+        try {
+          const errJson = await groqResponse.json();
+          errDetail = errJson?.error?.message ? ` (${errJson.error.message})` : '';
+        } catch (_) {}
+        lastError = `HTTP ${groqResponse.status}${errDetail}`;
+        continue;
+      }
+
+      const result = await groqResponse.json();
+      const rawContent = result?.choices?.[0]?.message?.content || result?.choices?.[0]?.message?.reasoning || '';
+      const content = cleanModelOutput(rawContent);
+      if (content && content.length > 0) {
+        finalAnswer = content;
+        break;
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      lastError = err?.name === 'AbortError' ? 'timeout' : (err?.message || 'fetch error');
+    }
+  }
+
+  if (!finalAnswer) {
+    return new Response(JSON.stringify({ error: `Service IA temporairement indisponible (${lastError || '429'})` }), {
+      status: 502,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  return new Response(JSON.stringify({ answer: finalAnswer }), {
+    status: 200,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+  });
+}
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // 1. Point de terminaison API Groq Chat & Assistant documentaire
+    if (url.pathname.startsWith('/api/groq-chat')) {
+      return handleGroqChat(request, env);
+    }
+
+    // 2. Hébergement Statique Global via Cloudflare Workers Static Assets
+    if (env && env.ASSETS) {
+      const response = await env.ASSETS.fetch(request);
+      return applyEdgeSecurityHeaders(request, response, url);
+    }
+
+    // Fallback si exécuté hors environnement Assets
+    return new Response('Cloudflare Worker Static Assets non initialisé.', {
+      status: 500,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
+  }
+};
