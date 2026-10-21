@@ -2478,6 +2478,9 @@
         📋 Copier le message
       </button>
     </div>
+    <div style="font-size: 10px; color: #047857; margin-bottom: 7px; line-height: 1.35;">
+      <span>💡 <em>Astuce :</em> Pas besoin de manipulation spéciale, un simple clic sélectionne le texte et <kbd style="font-family: monospace; font-size: 9.5px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">Cmd+C</kbd> (ou <kbd style="font-family: monospace; font-size: 9.5px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">Ctrl+C</kbd>) copie automatiquement le tout comme d'habitude.</span>
+    </div>
 
     <!-- Prévisualisation du texte pour transparence -->
     <details class="archive-details" style="margin-bottom: 8px; font-size: 10.5px; border-radius: 6px; padding: 6px 8px;">
@@ -2686,6 +2689,9 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
                 🏷️ Copier l'objet
               </button>
             </div>
+            <div style="font-size: 11px; color: #047857; margin-bottom: 8px; line-height: 1.4; display: flex; align-items: center; gap: 5px;">
+              <span>💡 <strong>Copie directe au clavier :</strong> T'as pas besoin de cliquer sur un bouton spécial si tu préfères — un simple clic sur le texte sélectionne l'ensemble, et faire <kbd style="background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 10px;">Cmd+C</kbd> (ou <kbd style="background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 10px;">Ctrl+C</kbd>) copie automatiquement le texte comme d'habitude.</span>
+            </div>
 
             <!-- Prévisualisation du texte pour transparence -->
             <details style="font-size: 11px; color: #065f46; background: rgba(255,255,255,0.7); border-radius: 6px; padding: 6px 10px; border: 1px dashed #a7f3d0;">
@@ -2721,8 +2727,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
               ⚖️ Charte 12 · Droit d'auteur &amp; Utilisation équitable (art. 29 LDA) ↗
             </a>
           </div>
-          <div style="margin-top: 8px; font-size: 11px; color: #64748b; line-height: 1.4; text-align: center;">
-            Consultation documentaire à des fins exclusives de recherche, d'étude privée, de compte rendu journalistique et d'évaluation citoyenne (art. 29, 29.1 et 29.2 de la <em>Loi sur le droit d'auteur</em> du Canada).
+          <div style="margin-top: 8px; font-size: 11px; color: #64748b; line-height: 1.45; text-align: center;">
+            Consultation documentaire à des fins exclusives de recherche, d'étude privée, de compte rendu journalistique et d'évaluation citoyenne (art. 29, 29.1 et 29.2 de la <em>Loi sur le droit d'auteur</em> du Canada). Vous pouvez copier librement vos citations : le raccourci clavier <kbd style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-family: monospace; font-size: 10px;">Cmd+C</kbd> / <kbd style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-family: monospace; font-size: 10px;">Ctrl+C</kbd> fonctionne directement et copie le texte sélectionné comme d'habitude.
           </div>
         </div>
       </div>
@@ -4887,6 +4893,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       });
     });
   }
+
+  // Confirmation visuelle automatique lors de la copie native (Cmd+C / Ctrl+C)
+  document.addEventListener("copy", () => {
+    const sel = window.getSelection ? window.getSelection().toString() : "";
+    if (sel && sel.trim().length > 0) {
+      showDriveToast("Texte copié dans le presse-papier ! (Cmd+C / Ctrl+C)", "success", 2500);
+    }
+  });
 
   // Interdiction absolue d'importer des fichiers externes (archive publique verrouillée en lecture seule)
   window.addEventListener("dragover", (e) => {
