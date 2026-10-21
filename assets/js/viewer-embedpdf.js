@@ -1366,6 +1366,63 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
+  if (dom.btnTranslateAction) {
+    dom.btnTranslateAction.addEventListener('click', async () => {
+      const textToTranslate = (dom.textToTranslate && dom.textToTranslate.value.trim()) || '';
+      if (!textToTranslate) {
+        if (dom.translateStatus) dom.translateStatus.textContent = 'Veuillez saisir ou sélectionner du texte à traduire.';
+        return;
+      }
+
+      const targetLang = (dom.selectTranslateLang && dom.selectTranslateLang.value) || 'en';
+      if (dom.translateStatus) dom.translateStatus.textContent = `Traduction vers ${targetLang.toUpperCase()} via le Worker Cloudflare...`;
+      if (dom.translateOutput) dom.translateOutput.textContent = 'Traduction haute fidélité en cours, veuillez patienter...';
+
+      try {
+        const resp = await fetch('/api/groq-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'translate',
+            targetLang: targetLang,
+            text: textToTranslate
+          })
+        });
+
+        if (resp.ok) {
+          const json = await resp.json();
+          const trText = json?.translatedText || json?.answer || '';
+          if (trText && trText.trim()) {
+            if (dom.translateOutput) dom.translateOutput.textContent = trText.trim();
+            if (dom.translateStatus) dom.translateStatus.textContent = `Traduction haute précision (${targetLang.toUpperCase()}) terminée`;
+            return;
+          }
+        }
+        throw new Error('Réponse vide');
+      } catch (err) {
+        // Secours si Worker temporairement inaccessible
+        try {
+          const gtxUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
+          const gtxRes = await fetch(gtxUrl);
+          if (gtxRes.ok) {
+            const gtxData = await gtxRes.json();
+            if (gtxData && Array.isArray(gtxData[0])) {
+              const gtxTrans = gtxData[0].map(s => s[0]).join('');
+              if (gtxTrans && gtxTrans.trim()) {
+                if (dom.translateOutput) dom.translateOutput.textContent = gtxTrans.trim();
+                if (dom.translateStatus) dom.translateStatus.textContent = `Traduction de secours (${targetLang.toUpperCase()})`;
+                return;
+              }
+            }
+          }
+        } catch (_) {}
+
+        if (dom.translateStatus) dom.translateStatus.textContent = 'Erreur lors de la traduction';
+        if (dom.translateOutput) dom.translateOutput.textContent = `Impossible d'obtenir la traduction automatique (${err.message}). Veuillez utiliser les liens directs vers Google Traduction ou DeepL ci-dessous.`;
+      }
+    });
+  }
+
   // Gestion de la modale de Traduction (Ouverture & Fermeture sécurisée)
   const closeTranslateModal = () => {
     if (dom.translateDialog) {

@@ -297,9 +297,12 @@
 
         <!-- Zone de texte source sélectionné ou notice -->
         <div style="margin-top: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; flex-wrap: wrap;">
             <label for="embedpdf-text-to-translate" style="font-size: 11.5px; font-weight: 600; color: var(--text-muted);">Texte à traduire (sélectionné dans le PDF ou notice du document) :</label>
-            <button type="button" id="btn-use-selection" style="background: transparent; border: none; color: #059669; font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline;">Récupérer ma sélection</button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button type="button" id="btn-use-selection" style="background: transparent; border: none; color: #059669; font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline;">Récupérer ma sélection</button>
+              <button type="button" id="btn-embedpdf-do-translate" class="btn btn-primary" style="background: #059669; border-color: #059669; padding: 4px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">⚡ Traduire via le Worker Edge</button>
+            </div>
           </div>
           <textarea id="embedpdf-text-to-translate" style="width: 100%; min-height: 70px; max-height: 120px; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-family: inherit; font-size: 12px; line-height: 1.4; box-sizing: border-box; resize: vertical;"></textarea>
         </div>

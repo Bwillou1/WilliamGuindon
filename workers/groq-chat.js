@@ -177,6 +177,36 @@ function applyEdgeSecurityHeaders(request, response, url) {
   });
 }
 
+// Limiteur de débit Edge anti-abus et protection de quota Groq (Sliding window par IP)
+const ipRequestWindow = new Map();
+const RATE_LIMIT_MAX = 30; // max 30 requêtes par minute par IP
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+function checkRateLimit(request) {
+  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+  const now = Date.now();
+  const timestamps = ipRequestWindow.get(ip) || [];
+  const recent = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+
+  if (recent.length >= RATE_LIMIT_MAX) {
+    return false;
+  }
+
+  recent.push(now);
+  ipRequestWindow.set(ip, recent);
+
+  // Nettoyage périodique pour préserver la mémoire de l'instance Worker
+  if (ipRequestWindow.size > 1500) {
+    for (const [k, v] of ipRequestWindow.entries()) {
+      if (v.every(t => now - t >= RATE_LIMIT_WINDOW_MS)) {
+        ipRequestWindow.delete(k);
+      }
+    }
+  }
+
+  return true;
+}
+
 async function handleGroqChat(request, env) {
   const corsHeaders = getCorsHeaders(request);
 
@@ -188,6 +218,13 @@ async function handleGroqChat(request, env) {
     return new Response(JSON.stringify({ error: 'Méthode non autorisée.' }), {
       status: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  if (!checkRateLimit(request)) {
+    return new Response(JSON.stringify({ error: 'Limite de requêtes atteinte. Veuillez patienter quelques instants avant de formuler une nouvelle question.' }), {
+      status: 429,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '60' }
     });
   }
 

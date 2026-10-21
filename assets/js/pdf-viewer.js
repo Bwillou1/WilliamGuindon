@@ -2095,13 +2095,35 @@
     if (!text || !text.trim()) return text;
     const cleanText = text.trim();
 
-    // 1. Appel principal : Google Translate GTX
+    // 1. Appel principal prioritaire : Cloudflare Worker Edge (/api/groq-chat) (Garantie 0 blocage & haute fidélité)
     try {
       const c1 = new AbortController();
-      const t1 = setTimeout(() => c1.abort(), 3500);
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(cleanText)}`;
-      const res = await fetch(url, { signal: c1.signal });
+      const t1 = setTimeout(() => c1.abort(), 4500);
+      const res1 = await fetch('/api/groq-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'translate',
+          targetLang: targetLang,
+          text: cleanText
+        }),
+        signal: c1.signal
+      });
       clearTimeout(t1);
+      if (res1.ok) {
+        const json1 = await res1.json();
+        const t1Val = json1?.translatedText || json1?.answer;
+        if (t1Val && t1Val.trim()) return t1Val.trim();
+      }
+    } catch (_) {}
+
+    // 2. Secours Google Translate GTX
+    try {
+      const c2 = new AbortController();
+      const t2 = setTimeout(() => c2.abort(), 3500);
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(cleanText)}`;
+      const res = await fetch(url, { signal: c2.signal });
+      clearTimeout(t2);
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data[0])) {
@@ -2111,39 +2133,17 @@
       }
     } catch (_) {}
 
-    // 2. Secours alternatif : Google Translate TE
+    // 3. Secours alternatif : Google Translate TE
     try {
-      const c2 = new AbortController();
-      const t2 = setTimeout(() => c2.abort(), 3500);
+      const c3 = new AbortController();
+      const t3 = setTimeout(() => c3.abort(), 3500);
       const url2 = `https://translate.googleapis.com/translate_a/t?client=te&format=html&v=1.0&sl=auto&tl=${encodeURIComponent(targetLang)}&q=${encodeURIComponent(cleanText)}`;
-      const res2 = await fetch(url2, { signal: c2.signal });
-      clearTimeout(t2);
+      const res2 = await fetch(url2, { signal: c3.signal });
+      clearTimeout(t3);
       if (res2.ok) {
         const data2 = await res2.json();
         if (typeof data2 === 'string' && data2.trim()) return data2;
         if (Array.isArray(data2) && data2[0] && typeof data2[0] === 'string') return data2[0];
-      }
-    } catch (_) {}
-
-    // 3. Secours automatique vers notre fonction serveur (/api/groq-chat) (Garantie 0 blocage)
-    try {
-      const c3 = new AbortController();
-      const t3 = setTimeout(() => c3.abort(), 5500);
-      const res3 = await fetch('/api/groq-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'translate',
-          targetLang: targetLang,
-          text: cleanText
-        }),
-        signal: c3.signal
-      });
-      clearTimeout(t3);
-      if (res3.ok) {
-        const json3 = await res3.json();
-        const t3 = json3?.translatedText || json3?.answer;
-        if (t3 && t3.trim()) return t3.trim();
       }
     } catch (_) {}
 
