@@ -670,6 +670,14 @@
       document.head.appendChild(acScript);
     }
 
+    // Visualiseur universel de photographies et médias Viewer.js (Chen Fengyuan - MIT)
+    if (!document.querySelector('script[src*="site-photo-viewer.js"]')) {
+      const pvScript = document.createElement('script');
+      pvScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/site-photo-viewer.js?v=20261020-v1';
+      pvScript.defer = true;
+      document.head.appendChild(pvScript);
+    }
+
     // 0.A Système de détection et d'adaptation du fuseau horaire
     // Fuseau de référence officiel CCE : Heure de l'Est (UTC-4)
     function getVisitorTimezoneInfo(targetMs, customTz) {

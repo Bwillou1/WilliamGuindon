@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v179';
+const CACHE_NAME = 'wg-pwa-v180';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -37,6 +37,9 @@ const ASSETS_TO_CACHE = [
   '/assets/vendor/pdfjs/pdf.min.js',
   '/assets/vendor/pdfjs/pdf.worker.min.js',
   '/assets/vendor/pdfjs/pdf_viewer.css',
+  '/assets/vendor/viewerjs/viewer.min.js',
+  '/assets/vendor/viewerjs/viewer.min.css',
+  '/assets/js/site-photo-viewer.js',
   '/assets/js/papaparse.min.js',
   '/style.css',
   '/theme.js',

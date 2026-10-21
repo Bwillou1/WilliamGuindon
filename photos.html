@@ -25,6 +25,9 @@
 <meta name="twitter:description" content="Galerie photographique officielle de la Grande Tourbière de Blainville, des visites de terrain et des événements liés au dossier SEM-26-003.">
 
 <link rel="stylesheet" href="style.css?v=20261018-v87">
+<link rel="stylesheet" href="assets/vendor/viewerjs/viewer.min.css">
+<script src="assets/vendor/viewerjs/viewer.min.js" defer></script>
+<script src="assets/js/site-photo-viewer.js" defer></script>
 <script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
 
 <style>
@@ -1316,15 +1319,21 @@
       card.className = "photo-card";
       card.onclick = (e) => {
         if (e.target.closest(".photo-card-download-btn")) return;
+        const imgEl = card.querySelector("img.photo-img");
+        if (imgEl && window.Viewer) {
+          imgEl.click();
+          return;
+        }
         openLightbox(item);
       };
 
       const licenseHtml = item.license ? `<span class="photo-license-badge" title="Licence d'utilisation">${item.license}</span>` : "";
       const thumbUrl = getOptimizedImageUrl(item.imageUrl, 600);
+      const hdUrl = getOptimizedImageUrl(item.imageUrl, 1800);
 
       card.innerHTML = `
         <div class="photo-img-wrap">
-          <img src="${thumbUrl}" alt="${item.title || 'Photographie'}" class="photo-img" loading="lazy" decoding="async" width="600" height="400">
+          <img src="${thumbUrl}" data-original="${hdUrl}" alt="${item.title || 'Photographie'}" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="400">
           <span class="photo-badge">${item.category || "Terrain"}</span>
           ${licenseHtml}
           <div class="photo-overlay">
@@ -1350,6 +1359,10 @@
 
       grid.appendChild(card);
     });
+
+    if (window.SitePhotoViewer) {
+      window.SitePhotoViewer.setupGallery(grid);
+    }
   }
 
   let currentPhotoIndex = 0;
