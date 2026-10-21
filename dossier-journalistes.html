@@ -19,6 +19,9 @@
   <meta name="twitter:title" content="Dossier pour Journalistes · Archive documentaire SEM-26-003 · William Guindon">
   <meta name="twitter:description" content="Explorateur documentaire officiel pour journalistes et chercheurs sur le dossier CCE SEM-26-003.">
   <script src="assets/js/papaparse.min.js"></script>
+  <link rel="stylesheet" href="assets/vendor/viewerjs/viewer.min.css">
+  <script src="assets/vendor/viewerjs/viewer.min.js" defer></script>
+  <script src="assets/js/site-photo-viewer.js" defer></script>
 
   <script type="application/ld+json">
 {
@@ -2545,6 +2548,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       <div class="preview-header">
         <span id="current-filename" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">Sélectionnez un document</span>
         <div class="preview-header-actions" id="preview-header-actions" style="display: none;">
+          <button type="button" id="btn-zoom-image" class="btn-preview-action" style="display: none;" title="Agrandir et inspecter en haute résolution avec Viewer.js">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            <span>Agrandir / Zoom</span>
+          </button>
           <a id="btn-fullscreen-viewer" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Consulter dans le lecteur officiel grand écran">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             <span>Plein écran</span>
@@ -3862,23 +3869,51 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             directLink.style.display = "inline-flex";
           }
 
+          const zoomBtn = document.getElementById("btn-zoom-image");
+          if (zoomBtn) zoomBtn.style.display = "none";
+
           if (stage) {
             stage.innerHTML = "";
 
             if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
+              if (zoomBtn) zoomBtn.style.display = "inline-flex";
               stage.classList.add("is-media");
+
+              const imgLink = document.createElement("a");
+              imgLink.href = res.effectiveUrl;
+              imgLink.target = "_blank";
+              imgLink.rel = "noopener noreferrer";
+              imgLink.className = "preview-image-link";
+              imgLink.title = "Cliquer pour agrandir et inspecter (Viewer.js) ou ouvrir dans un nouvel onglet sans JavaScript";
+              imgLink.style.display = "inline-block";
+              imgLink.style.maxWidth = "100%";
+              imgLink.style.cursor = "zoom-in";
+
               const img = document.createElement("img");
               img.src = res.effectiveUrl;
-              img.className = "preview-image";
+              img.setAttribute("data-original", res.effectiveUrl);
+              img.className = "preview-image wg-viewable-image";
               img.alt = fileObj.name;
               img.onerror = () => {
                 if (img.src !== res.corsUrl && !img.src.includes('/cors/')) {
                   img.src = res.corsUrl;
+                  imgLink.href = res.corsUrl;
                 }
               };
-              stage.appendChild(img);
+              imgLink.appendChild(img);
+              stage.appendChild(imgLink);
+
+              if (window.SitePhotoViewer) {
+                window.SitePhotoViewer.setupSingleImage(img);
+              }
+              if (zoomBtn) {
+                zoomBtn.onclick = (e) => {
+                  e.preventDefault();
+                  img.click();
+                };
+              }
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
@@ -4377,6 +4412,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const fsViewerLink = document.getElementById("btn-fullscreen-viewer");
     const translateLink = document.getElementById("btn-translate-preview");
     const directLink = document.getElementById("direct-file-link");
+    const zoomBtn = document.getElementById("btn-zoom-image");
 
     document.querySelectorAll(".drive-item.active").forEach(el => el.classList.remove("active"));
 
@@ -4386,6 +4422,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     if (actions) actions.style.display = "inline-flex";
     if (fsViewerLink) fsViewerLink.style.display = "none";
     if (translateLink) translateLink.style.display = "none";
+    if (zoomBtn) zoomBtn.style.display = "none";
     if (directLink) {
       directLink.href = "https://www.facebook.com/reel/1796254438299162/";
       directLink.setAttribute("target", "_blank");

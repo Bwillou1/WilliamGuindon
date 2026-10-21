@@ -5,6 +5,10 @@
  * la rotation, le basculement et la consultation plein écran de toutes les photographies,
  * documents graphiques et archives médias du site (JPEG, PNG, WebP, AVIF, TIFF, Web Archive).
  *
+ * Fonctionne avec et sans JavaScript (Progressive Enhancement) :
+ * - Sans JavaScript : les liens natifs <a href="..."> ouvrent directement l'image HD dans un nouvel onglet.
+ * - Avec JavaScript : Viewer.js s'ouvre avec commandes complètes de zoom, pan, rotation et fermeture sécurisée (X / Échap / Fond).
+ *
  * Exclusions strictes : logos officiels, marques partenaires, pictogrammes UI et bannières structurelles.
  */
 (function () {
@@ -16,6 +20,9 @@
   let viewerLibraryLoading = false;
   let viewerLibraryLoaded = false;
   const loadCallbacks = [];
+
+  // Instance active de Viewer pour la fermeture sécurisée
+  let currentActiveViewer = null;
 
   // 1. Injection du CSS de Viewer.js si absent
   function ensureViewerCSS() {
@@ -114,11 +121,14 @@
     }
 
     // E. Formats de médias et photographies acceptés (y compris Web Archive et ImageKit)
-    const validExtensions = /\.(jpe?g|png|webp|avif|tiff?|bmp)(\?.*)?$/i;
+    const validExtensions = /\.(jpe?g|png|webp|avif|tiff?|bmp|gif)(\?.*)?$/i;
     const isImageKit = src.includes('ik.imagekit.io');
-    const isWebArchive = src.includes('web.archive.org');
+    const isWebArchive = src.includes('archive.org') || src.includes('web.archive.org');
     const isMediaDir = src.includes('/assets/media/') || src.includes('/photos/') || src.includes('/uploads/');
-    const hasPhotoClass = img.classList.contains('photo-img') || img.classList.contains('blog-card-img') || img.classList.contains('article-modal-banner-img');
+    const hasPhotoClass = img.classList.contains('photo-img') || 
+                          img.classList.contains('blog-card-img') || 
+                          img.classList.contains('article-modal-banner-img') ||
+                          img.classList.contains('preview-image');
 
     if (!validExtensions.test(src) && !isImageKit && !isWebArchive && !isMediaDir && !hasPhotoClass) {
       return false;
@@ -130,7 +140,12 @@
   // 4. Calcul de l'URL haute définition originale
   function getHighResUrl(img) {
     if (!img) return '';
-    // A. Attribut explicite de haute résolution
+    // A. Lien parent direct ou attribut explicite
+    const parentLink = img.closest('a');
+    if (parentLink && parentLink.href && /\.(jpe?g|png|webp|avif|tiff?|bmp|gif)(\?.*)?$/i.test(parentLink.href)) {
+      return parentLink.href;
+    }
+
     const hdAttr = img.getAttribute('data-original') ||
                    img.getAttribute('data-hd-src') ||
                    img.getAttribute('data-full-src') ||
@@ -146,7 +161,6 @@
       if (url.hostname === 'ik.imagekit.io' || url.hostname.endsWith('.imagekit.io')) {
         const tr = url.searchParams.get('tr');
         if (tr) {
-          // Remplacer les vignettes étroites par la pleine résolution
           url.searchParams.set('tr', 'f-auto,q-95');
           return url.toString();
         }
@@ -159,10 +173,13 @@
   // Configuration par défaut de l'interface Viewer.js
   const defaultViewerOptions = {
     inline: false,
-    button: true,
+    button: true, // Bouton X de fermeture en haut à droite
     navbar: 1,
+    zIndex: 999999,
+    zIndexInline: 999999,
+    backdrop: true, // Permet de fermer en cliquant sur le fond noir
     title: [1, (image, imageData) => {
-      const caption = image.alt || image.title || 'Photographie officielle — William Guindon';
+      const caption = image.alt || image.title || 'Photographie — William Guindon';
       const dimensions = imageData.naturalWidth && imageData.naturalHeight ? ` (${imageData.naturalWidth} × ${imageData.naturalHeight})` : '';
       return `${caption}${dimensions}`;
     }],
@@ -186,22 +203,92 @@
     scalable: true,
     transition: true,
     fullscreen: true,
-    keyboard: true,
+    keyboard: true, // Raccourci Échap pour fermer
     loading: true,
     loop: true,
     zoomRatio: 0.15,
-    minZoomRatio: 0.2,
-    maxZoomRatio: 6,
+    minZoomRatio: 0.1,
+    maxZoomRatio: 10,
     url(image) {
       return getHighResUrl(image);
+    },
+    show() {
+      currentActiveViewer = this;
+      document.body.classList.add('wg-viewer-open');
+    },
+    shown() {
+      currentActiveViewer = this;
+      bindCloseHandlers(this);
+    },
+    hide() {
+      document.body.classList.remove('wg-viewer-open');
+      if (currentActiveViewer === this) {
+        currentActiveViewer = null;
+      }
     }
   };
 
+  // 5. Fermeture garantie du bouton X et du fond
+  function bindCloseHandlers(viewerInstance) {
+    if (!viewerInstance || !viewerInstance.viewer) return;
+    const container = viewerInstance.viewer;
+
+    // A. Bouton X
+    const closeBtn = container.querySelector('.viewer-button, .viewer-close, [data-viewer-action="mix"]');
+    if (closeBtn && !closeBtn.__wgCloseBound) {
+      closeBtn.__wgCloseBound = true;
+      closeBtn.setAttribute('title', 'Fermer la vue agrandie (Échap)');
+      closeBtn.setAttribute('aria-label', 'Fermer la vue agrandie');
+
+      const handleClose = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        viewerInstance.hide();
+      };
+
+      closeBtn.addEventListener('click', handleClose, true);
+      closeBtn.addEventListener('touchend', handleClose, true);
+    }
+
+    // B. Fermeture au clic sur le canvas/fond si on ne glisse pas
+    const canvas = container.querySelector('.viewer-canvas');
+    if (canvas && !canvas.__wgCloseBound) {
+      canvas.__wgCloseBound = true;
+      let startX = 0, startY = 0;
+      canvas.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      canvas.addEventListener('mouseup', (e) => {
+        // Si clic direct sur le canvas (fond) sans drag
+        if (e.target === canvas) {
+          const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+          if (dist < 8) {
+            viewerInstance.hide();
+          }
+        }
+      });
+    }
+  }
+
+  // Écouteur global de secours pour la touche Échap
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && currentActiveViewer) {
+      e.preventDefault();
+      currentActiveViewer.hide();
+    }
+  }, true);
+
   const attachedViewers = new WeakMap();
 
-  // 5. Initialisation d'une galerie d'images
+  // 6. Initialisation d'une galerie d'images
   function setupGallery(container, customOptions) {
-    if (!container || attachedViewers.has(container)) return attachedViewers.get(container);
+    if (!container) return null;
+    if (attachedViewers.has(container)) {
+      const existing = attachedViewers.get(container);
+      if (existing && typeof existing.update === 'function') existing.update();
+      return existing;
+    }
 
     const options = Object.assign({}, defaultViewerOptions, {
       filter(image) {
@@ -214,18 +301,17 @@
     return viewer;
   }
 
-  // 6. Attacher Viewer.js à une image isolée
+  // 7. Attacher Viewer.js à une image isolée
   function setupSingleImage(img) {
     if (!img || attachedViewers.has(img)) return;
 
-    // Stylisation du curseur de zoom
     img.classList.add('wg-viewable-image');
     if (!img.title) {
       img.title = "Cliquer pour agrandir et inspecter (Viewer.js)";
     }
 
     const singleOptions = Object.assign({}, defaultViewerOptions, {
-      navbar: false, // Pas de vignettes pour une image seule
+      navbar: false, // Pas de bande de vignettes pour une image seule
       toolbar: {
         zoomIn: 1,
         zoomOut: 1,
@@ -245,7 +331,7 @@
     attachedViewers.set(img, viewer);
   }
 
-  // 7. Balayage et initialisation de toutes les photographies de la page
+  // 8. Balayage et initialisation de toutes les photographies de la page
   function scanAndInitPhotos(root = document) {
     if (!window.Viewer) {
       ensureViewerJS(() => scanAndInitPhotos(root));
@@ -253,7 +339,7 @@
     }
 
     // A. Galeries identifiées
-    const galleries = root.querySelectorAll('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid');
+    const galleries = root.querySelectorAll('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage');
     galleries.forEach(gallery => {
       if (!attachedViewers.has(gallery)) {
         setupGallery(gallery);
@@ -267,8 +353,7 @@
     const allImgs = root.querySelectorAll('img');
     allImgs.forEach(img => {
       if (!isViewableImage(img)) return;
-      // Si l'image est déjà dans une galerie gérée par Viewer.js, ne pas créer de visualiseur isolé en doublon
-      if (img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid')) {
+      if (img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage')) {
         img.classList.add('wg-viewable-image');
         return;
       }
@@ -276,7 +361,46 @@
     });
   }
 
-  // 8. Style global additionnel pour le curseur et l'intégration visuelle
+  // 9. Interception des clics sur les liens d'images pour Progressive Enhancement
+  document.addEventListener('click', (e) => {
+    // Si l'utilisateur clique sur une image éligible ou son lien parent
+    const target = e.target;
+    if (!target) return;
+
+    // Détection clic sur bouton de fermeture universel
+    const closeBtn = target.closest('.viewer-button, .viewer-close, [data-viewer-action="mix"]');
+    if (closeBtn && currentActiveViewer) {
+      e.preventDefault();
+      e.stopPropagation();
+      currentActiveViewer.hide();
+      return;
+    }
+
+    const link = target.closest('a.photo-link-wrap, a.preview-image-link');
+    const img = target.tagName === 'IMG' ? target : (link ? link.querySelector('img') : null);
+
+    if (img && isViewableImage(img) && window.Viewer) {
+      // Si JavaScript est activé et Viewer prêt, intercepter le lien natif et ouvrir Viewer
+      const gallery = img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage');
+      if (gallery && attachedViewers.has(gallery)) {
+        e.preventDefault();
+        const v = attachedViewers.get(gallery);
+        // Trouver l'index de l'image
+        const images = Array.from(gallery.querySelectorAll('img')).filter(isViewableImage);
+        const imgIndex = images.indexOf(img);
+        if (imgIndex !== -1 && v) {
+          v.view(imgIndex);
+        }
+      } else if (attachedViewers.has(img)) {
+        e.preventDefault();
+        const v = attachedViewers.get(img);
+        if (v) v.show();
+      }
+    }
+    // Sans JavaScript, le lien <a href="..."> standard du navigateur s'exécute naturellement !
+  });
+
+  // 10. Styles d'interface raffinés pour Viewer.js
   function injectViewerCustomStyles() {
     if (document.getElementById('wg-viewer-custom-css')) return;
     const style = document.createElement('style');
@@ -289,13 +413,17 @@
       .wg-viewable-image:hover {
         filter: brightness(1.04);
       }
+      .viewer-container {
+        z-index: 999999 !important;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      }
       .viewer-backdrop {
         background-color: rgba(6, 12, 10, 0.94) !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
       }
       .viewer-toolbar > ul > li {
-        background-color: rgba(255, 255, 255, 0.15) !important;
+        background-color: rgba(255, 255, 255, 0.16) !important;
         border-radius: 50% !important;
         margin: 0 4px !important;
         transition: background-color 0.2s ease, transform 0.15s ease !important;
@@ -306,36 +434,57 @@
       }
       .viewer-title {
         color: #f1f5f9 !important;
-        font-family: inherit !important;
         font-size: 13.5px !important;
         font-weight: 600 !important;
         letter-spacing: 0.01em !important;
         text-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;
-        padding: 6px 14px !important;
-        background: rgba(0,0,0,0.5) !important;
+        padding: 6px 16px !important;
+        background: rgba(0,0,0,0.6) !important;
         border-radius: 20px !important;
         margin-top: 10px !important;
         display: inline-block !important;
       }
+      /* Bouton X de fermeture : positionnement clair, cible tactile >= 44px, z-index maximal */
       .viewer-button {
-        background-color: rgba(255, 255, 255, 0.2) !important;
+        background-color: rgba(15, 23, 42, 0.85) !important;
+        border: 2px solid rgba(255, 255, 255, 0.35) !important;
         border-radius: 50% !important;
         top: 20px !important;
         right: 20px !important;
-        width: 44px !important;
-        height: 44px !important;
+        width: 46px !important;
+        height: 46px !important;
+        cursor: pointer !important;
+        z-index: 1000000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+        transition: background-color 0.2s ease, transform 0.15s ease, border-color 0.2s ease !important;
+        pointer-events: auto !important;
       }
-      .viewer-button:hover {
-        background-color: #ef4444 !important;
+      .viewer-button:before {
+        position: static !important;
+        margin: 0 !important;
+        pointer-events: none !important;
+      }
+      .viewer-button:hover,
+      .viewer-button:focus {
+        background-color: #dc2626 !important;
+        border-color: #ef4444 !important;
+        transform: scale(1.1) !important;
+        outline: none !important;
       }
       .viewer-navbar {
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.65) !important;
+      }
+      body.wg-viewer-open {
+        overflow: hidden !important;
       }
     `;
     document.head.appendChild(style);
   }
 
-  // 9. Initialisation automatique dès le chargement du DOM
+  // 11. Initialisation automatique dès le chargement du DOM
   function init() {
     ensureViewerCSS();
     injectViewerCustomStyles();
@@ -343,7 +492,7 @@
       scanAndInitPhotos(document);
     });
 
-    // Observation des ajouts dynamiques (modales, filtres de photos, chargement infini)
+    // Observation des ajouts dynamiques (modales, filtres de photos, prévisualisation drive)
     if (window.MutationObserver) {
       const observer = new MutationObserver((mutations) => {
         let shouldUpdate = false;
@@ -351,7 +500,7 @@
           if (mut.addedNodes && mut.addedNodes.length > 0) {
             for (const node of mut.addedNodes) {
               if (node.nodeType === 1) {
-                if (node.tagName === 'IMG' || node.querySelector('img')) {
+                if (node.tagName === 'IMG' || (node.querySelector && node.querySelector('img'))) {
                   shouldUpdate = true;
                   break;
                 }
@@ -379,7 +528,8 @@
     setupGallery,
     setupSingleImage,
     isViewableImage,
-    getHighResUrl
+    getHighResUrl,
+    hideCurrent: () => { if (currentActiveViewer) currentActiveViewer.hide(); }
   };
 
   if (document.readyState === 'loading') {
