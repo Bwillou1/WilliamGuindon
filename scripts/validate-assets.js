@@ -39,6 +39,7 @@ const CORE_FILES = [
   'statut-mineur.html',
   'age.html',
   'vie-privee-parents.html',
+  'correspondance.html',
   'dependances-licences.html',
   'licence-et-charte.html',
   'liens.html',
