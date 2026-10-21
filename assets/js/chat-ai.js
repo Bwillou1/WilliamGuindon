@@ -1285,12 +1285,35 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                     <span class="js-copy-prompt-icon">Copier le prompt</span>
                   </button>
                 </div>
-                <div id="ai-preset-prompt-text" class="ai-prompt-code">Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html</div>
+                <div id="ai-preset-prompt-text" class="ai-prompt-code" style="white-space: pre-wrap; max-height: 140px; line-height: 1.5; font-size: 11.5px;">Analyse ma question à partir du site https://williamguindon.me/.
+
+Commence par consulter le sitemap https://williamguindon.me/sitemap.xml pour repérer les pages pertinentes. Utilise aussi l’index https://williamguindon.me/llms.txt, le corpus https://williamguindon.me/llms-full.txt et le registre https://williamguindon.me/ai.html. Consulte les pages et documents pertinents du site, pas seulement la page d’accueil.
+
+Vérifie les faits importants dans les documents originaux disponibles, notamment :
+- Réponse du Canada : https://williamguindon.me/assets/docs/72-rsp_fr.pdf
+- Décision CCE : https://williamguindon.me/assets/docs/26-2-det2_fr.pdf
+- Communication révisée : https://williamguindon.me/assets/docs/26-3-rsub_fr_redacted.pdf
+- Déclaration de Manfred Liebel : https://williamguindon.me/assets/docs/declaration-appui-manfred-liebel-e7834.pdf
+- Pétition environnementale 546 : https://williamguindon.me/assets/docs/petition-546-cedd-bvg.pdf
+
+Cite les sources précises pour chaque fait important : titre, lien et, si possible, date, numéro de pièce et page ou section. Distingue les faits documentés, les affirmations des parties et tes interprétations. Ne présente pas une allégation comme un fait confirmé, n’invente rien et signale toute contradiction.
+
+Ne prétends pas avoir lu une page ou un fichier inaccessible. Indique brièvement les pages et documents consultés ainsi que les limites de ta recherche. Si les sources ne permettent pas de répondre, dis-le clairement.</div>
               </div>
 
               <!-- Section 1 : Clavardage & Recherche Assistée -->
               <div class="ai-section-title">Clavardage &amp; Moteurs IA</div>
               <div class="ai-models-grid">
+                <a href="https://gemini.google.com/gem/1yFZ47fwfqXd-CDL5Cefcue-c7rTXmeIq?usp=sharing" class="ai-model-card" target="_blank" rel="noopener noreferrer" style="border: 1.5px solid #38bdf8; background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);">
+                  <div class="ai-model-header">
+                    <div class="ai-model-icon">💎</div>
+                    <div class="ai-model-info">
+                      <div class="ai-model-name" style="color: #38bdf8; font-weight: 700;">Google Gemini (Custom Gem SEM-26-003) ↗</div>
+                      <div class="ai-model-desc">Assistant dédié entraîné sur le dossier William Guindon (disponible jusqu'au 17 novembre).</div>
+                    </div>
+                  </div>
+                </a>
+
                 <a href="https://ai.viro.app/chat" class="ai-model-card" target="_blank" rel="noopener">
                   <div class="ai-model-header">
                     <div class="ai-model-icon">✨</div>
@@ -1983,7 +2006,21 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       if (copyPromptBtn) {
         copyPromptBtn.addEventListener('click', () => {
           const promptEl = document.getElementById('ai-preset-prompt-text');
-          const textToCopy = promptEl ? promptEl.innerText.trim() : "Analyse les faits vérifiés et la chronologie de la communication citoyenne SEM-26-003 déposée par William Guindon devant la Commission de coopération environnementale (CCE / ACEUM) concernant la Grande Tourbière de Blainville et Stablex d'après les sources vérifiées : https://williamguindon.me/llms-full.txt et https://williamguindon.me/ai.html";
+          const defaultPrompt = `Analyse ma question à partir du site https://williamguindon.me/.
+
+Commence par consulter le sitemap https://williamguindon.me/sitemap.xml pour repérer les pages pertinentes. Utilise aussi l’index https://williamguindon.me/llms.txt, le corpus https://williamguindon.me/llms-full.txt et le registre https://williamguindon.me/ai.html. Consulte les pages et documents pertinents du site, pas seulement la page d’accueil.
+
+Vérifie les faits importants dans les documents originaux disponibles, notamment :
+- Réponse du Canada : https://williamguindon.me/assets/docs/72-rsp_fr.pdf
+- Décision CCE : https://williamguindon.me/assets/docs/26-2-det2_fr.pdf
+- Communication révisée : https://williamguindon.me/assets/docs/26-3-rsub_fr_redacted.pdf
+- Déclaration de Manfred Liebel : https://williamguindon.me/assets/docs/declaration-appui-manfred-liebel-e7834.pdf
+- Pétition environnementale 546 : https://williamguindon.me/assets/docs/petition-546-cedd-bvg.pdf
+
+Cite les sources précises pour chaque fait important : titre, lien et, si possible, date, numéro de pièce et page ou section. Distingue les faits documentés, les affirmations des parties et tes interprétations. Ne présente pas une allégation comme un fait confirmé, n’invente rien et signale toute contradiction.
+
+Ne prétends pas avoir lu une page ou un fichier inaccessible. Indique brièvement les pages et documents consultés ainsi que les limites de ta recherche. Si les sources ne permettent pas de répondre, dis-le clairement.`;
+          const textToCopy = promptEl ? promptEl.innerText.trim() : defaultPrompt;
           navigator.clipboard.writeText(textToCopy).then(() => {
             if (copyAlert) {
               copyAlert.innerHTML = `<svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Prompt IA copié dans le presse-papier !`;
