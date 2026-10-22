@@ -14,7 +14,7 @@
     document.head.appendChild(s);
   }
 
-  loadScript('assets/js/theme-core.js?v=20261022-v95');
+  loadScript('assets/js/theme-core.js?v=20261022-v96');
   loadScript('assets/js/chat-ai.js?v=20261022-v6');
   loadScript('assets/js/anticapture.js?v=20260925-v5');
 

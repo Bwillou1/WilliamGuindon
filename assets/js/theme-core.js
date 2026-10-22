@@ -2225,6 +2225,41 @@
       const closeBtn = dropdown.querySelector('.nav-notif-close-btn, .nav-notif-close');
       if (!btn) return;
 
+      // Synchronisation universelle des alertes d'octobre-novembre 2026 sur toutes les pages
+      const notifBody = dropdown.querySelector('.nav-notif-body');
+      if (notifBody && !notifBody.innerHTML.includes('observations-reponse-canada-sem26003.pdf')) {
+        const latestAlertsHtml = `
+          <article class="notif-item">
+            <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
+            <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal et Madeleine Chenette</h5>
+            <p class="notif-item-desc">Deux rencontres bilatérales confirmées pour novembre 2026 sur la Loi 93, le BAPE 371, l'échéance BVG du 10 novembre (pétition n° 0546) et la suite de SEM-26-003.</p>
+            <div class="notif-item-links">
+              <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article ↗</a>
+              <a href="enquete-partis.html" class="notif-link-btn notif-link-ghost">Suivi parlementaire</a>
+            </div>
+          </article>
+          <article class="notif-item">
+            <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
+            <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (72-RSP)</h5>
+            <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'aucun recours interne ni la pétition BVG n° 0546 n'empêchent la constitution d'un dossier factuel sous l'art. 24.28 de l'ACEUM.</p>
+            <div class="notif-item-links">
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
+              <a href="registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+            </div>
+          </article>
+          <article class="notif-item">
+            <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+            <h5 class="notif-item-title">Le Canada dépose sa réponse officielle de 59 pages et tente un rejet procédural</h5>
+            <p class="notif-item-desc">Ottawa invoque le litige municipal de Blainville et la pétition BVG 0546 sans contester les dépassements de cadmium (320×). Analyse par le Secrétariat en cours (60 jours ouvrables, art. 24.28).</p>
+            <div class="notif-item-links">
+              <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+            </div>
+          </article>
+        `;
+        notifBody.insertAdjacentHTML('afterbegin', latestAlertsHtml);
+      }
+
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         
