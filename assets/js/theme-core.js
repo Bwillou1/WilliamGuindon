@@ -1904,25 +1904,26 @@
         if (s.includes('stage3=1') || s.includes('stage=3') || s.includes('etape3=1') || s.includes('mode=sobre') || s.includes('mode=normal')) {
           return true;
         }
-        if (s.includes('stage3=0') || s.includes('etape3=0')) {
+        if (s.includes('stage3=0') || s.includes('etape3=0') || s.includes('stage2=1') || s.includes('etape2=1')) {
           return false;
         }
       }
 
-      let forceActive = false;
+      let forceDisabled = false;
       try {
         const raw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && Boolean(parsed.stage3StatusActive)) forceActive = true;
+          if (parsed && Boolean(parsed.stage3ForceDisabled)) forceDisabled = true;
         }
       } catch (_) {}
 
       if (typeof window !== 'undefined' && window.__WG_SITE_STATE) {
-        if (Boolean(window.__WG_SITE_STATE.stage3StatusActive)) forceActive = true;
+        if (Boolean(window.__WG_SITE_STATE.stage3ForceDisabled)) forceDisabled = true;
       }
 
-      return forceActive;
+      if (forceDisabled) return false;
+      return true;
     }
 
     // Vérification du statut Étape 2 CCE (16 octobre 2026, paramètre URL ou forcé via site-state)

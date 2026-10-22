@@ -10921,14 +10921,111 @@ body.stage2-active .stage2-doc-box {
 body.stage3-active #echeance-16-octobre,
 body.stage3-active #hero-countdown-block,
 body.stage3-active #hero-stage2-summary-block,
-body.stage3-active #tracker-stage2-state {
+body.stage3-active #tracker-countdown-state {
   display: none !important;
 }
 
 body.stage3-active #hero-stage3-card,
 body.stage3-active #hero-bio-lead,
-body.stage3-active #tracker-countdown-state {
+body.stage3-active #tracker-stage2-state {
   display: block !important;
+}
+
+/* Styles partagés pour la bannière CCE en Étape 2 et Étape 3 */
+body.stage2-active .cce-alert-banner,
+body.stage3-active .cce-alert-banner {
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(245, 158, 11, 0.03) 100%) !important;
+  box-shadow: 0 6px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="dark"] body.stage2-active .cce-alert-banner,
+[data-theme="dark"] body.stage3-active .cce-alert-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(11, 15, 25, 0.92) 100%) !important;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.stage3-active #tracker-stage2-state h3 {
+  color: var(--heading, #0f172a) !important;
+}
+
+[data-theme="dark"] body.stage3-active #tracker-stage2-state h3 {
+  color: #ffffff !important;
+}
+
+body.stage3-active #tracker-stage2-state p {
+  color: var(--text, #334155) !important;
+}
+
+[data-theme="dark"] body.stage3-active #tracker-stage2-state p {
+  color: #e2e8f0 !important;
+}
+
+body.stage3-active .stage2-doc-box {
+  background: rgba(245, 158, 11, 0.05) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: var(--text, #1e293b) !important;
+}
+
+[data-theme="dark"] body.stage3-active .stage2-doc-box {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Accordéon d'analyse juridique détaillée dans le Tracker (Mode sobre) */
+.stage2-deep-details {
+  margin: 14px 0 18px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .stage2-deep-details {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.stage2-deep-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+  background: rgba(16, 185, 129, 0.08);
+  transition: background 0.18s ease;
+}
+
+.stage2-deep-summary::-webkit-details-marker {
+  display: none;
+}
+
+.stage2-deep-summary:hover {
+  background: rgba(16, 185, 129, 0.14);
+}
+
+[data-theme="dark"] .stage2-deep-summary {
+  color: #f8fafc;
+  background: rgba(16, 185, 129, 0.14);
+}
+
+[data-theme="dark"] .stage2-deep-summary:hover {
+  background: rgba(16, 185, 129, 0.22);
+}
+
+.stage2-deep-body {
+  padding: 16px 18px 6px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="dark"] .stage2-deep-body {
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 .hero-bio-lead {
