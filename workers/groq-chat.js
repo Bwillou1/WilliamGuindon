@@ -138,7 +138,12 @@ function applyEdgeSecurityHeaders(request, response, url) {
   headers.set('Content-Security-Policy', CSP_HEADER);
 
   // 2. Politiques de cache granulaires conformes à _headers
-  if (pathname === '/admin.html' || pathname === '/console-admin.html' || pathname === '/editeur.html') {
+  // Ne JAMAIS mettre en cache les erreurs 4xx, 5xx ni les redirections temporaires 3xx
+  if (response.status >= 400 || (response.status >= 300 && response.status < 400)) {
+    headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    headers.set('Cloudflare-CDN-Cache-Control', 'no-store');
+    headers.set('CDN-Cache-Control', 'no-store');
+  } else if (pathname === '/admin.html' || pathname === '/console-admin.html' || pathname === '/editeur.html') {
     headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     headers.set('Cloudflare-CDN-Cache-Control', 'no-store');
     headers.set('CDN-Cache-Control', 'no-store');
@@ -486,19 +491,7 @@ export default {
     // 2. Hébergement Statique Global via Cloudflare Workers Static Assets
     if (env && env.ASSETS) {
       try {
-        let assetRes = await env.ASSETS.fetch(request);
-
-        // Si le chemin n'a pas d'extension et renvoie 404, tenter silencieusement avec .html (ex: /blog -> /blog.html)
-        if (assetRes.status === 404 && !url.pathname.includes('.') && url.pathname !== '/') {
-          const cleanPath = url.pathname.replace(/\/$/, '');
-          const htmlUrl = new URL(cleanPath + '.html' + url.search + url.hash, request.url);
-          const htmlRequest = new Request(htmlUrl.toString(), request);
-          const candidateRes = await env.ASSETS.fetch(htmlRequest);
-          if (candidateRes && candidateRes.ok) {
-            assetRes = candidateRes;
-          }
-        }
-
+        const assetRes = await env.ASSETS.fetch(request);
         const secureRes = applyEdgeSecurityHeaders(request, assetRes, url);
         if (ctx && typeof ctx.waitUntil === 'function') {
           ctx.waitUntil(sendAhrefsAnalytics(request, secureRes));
