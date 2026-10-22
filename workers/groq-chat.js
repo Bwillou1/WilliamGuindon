@@ -130,6 +130,7 @@ function applyEdgeSecurityHeaders(request, response, url) {
   // 1. En-têtes stricts de sécurité Edge
   headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   headers.set('X-Content-Type-Options', 'nosniff');
+  headers.delete('x-frame-options');
   headers.set('X-Frame-Options', 'SAMEORIGIN');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
@@ -168,7 +169,9 @@ function applyEdgeSecurityHeaders(request, response, url) {
     headers.set('Link', '</llms.txt>; rel="alternate"; type="text/markdown", </llms.txt>; rel="llms-txt"');
   }
 
-  const body = (response.status === 304 || response.status === 204 || request.method === 'HEAD') ? null : response.body;
+  // Ne jamais streamer de corps pour les redirections et statuts sans corps (évite le blocage des connexions HTTP/2)
+  const isNoBodyStatus = response.status === 204 || response.status === 205 || response.status === 304 || (response.status >= 300 && response.status < 400);
+  const body = (isNoBodyStatus || request.method === 'HEAD') ? null : response.body;
 
   return new Response(body, {
     status: response.status,
@@ -453,10 +456,17 @@ async function sendAhrefsAnalytics(request, response) {
       if (value) hs[name] = value;
     }
     if (Object.keys(hs).length > 0) payload.hs = hs;
+
+    // Timeout strict de 1200ms pour garantir qu'aucune requête d'analyse ne ralentisse les Workers
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1200);
+
     await fetch(AHREFS_ENDPOINT, {
       method: "POST",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
   } catch (_) {}
 }
 
@@ -475,12 +485,31 @@ export default {
 
     // 2. Hébergement Statique Global via Cloudflare Workers Static Assets
     if (env && env.ASSETS) {
-      const assetRes = await env.ASSETS.fetch(request);
-      const secureRes = applyEdgeSecurityHeaders(request, assetRes, url);
-      if (ctx && typeof ctx.waitUntil === 'function') {
-        ctx.waitUntil(sendAhrefsAnalytics(request, secureRes));
+      try {
+        let assetRes = await env.ASSETS.fetch(request);
+
+        // Si le chemin n'a pas d'extension et renvoie 404, tenter silencieusement avec .html (ex: /blog -> /blog.html)
+        if (assetRes.status === 404 && !url.pathname.includes('.') && url.pathname !== '/') {
+          const cleanPath = url.pathname.replace(/\/$/, '');
+          const htmlUrl = new URL(cleanPath + '.html' + url.search + url.hash, request.url);
+          const htmlRequest = new Request(htmlUrl.toString(), request);
+          const candidateRes = await env.ASSETS.fetch(htmlRequest);
+          if (candidateRes && candidateRes.ok) {
+            assetRes = candidateRes;
+          }
+        }
+
+        const secureRes = applyEdgeSecurityHeaders(request, assetRes, url);
+        if (ctx && typeof ctx.waitUntil === 'function') {
+          ctx.waitUntil(sendAhrefsAnalytics(request, secureRes));
+        }
+        return secureRes;
+      } catch (err) {
+        return new Response('Ressource momentanément indisponible.', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        });
       }
-      return secureRes;
     }
 
     // Fallback si exécuté hors environnement Assets
