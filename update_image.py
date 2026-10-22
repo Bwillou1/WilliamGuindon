@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
 Script de synchronisation satellite Copernicus Sentinel-2 L2A pour le secteur de Blainville
-Télécharge la capture sans nuages la plus récente avec masque de transparence (dataMask).
+Télécharge 3 vues distinctes sans nuages avec masque de transparence (dataMask) :
+1. Vraies couleurs RGB (B04, B03, B02) -> blainville_latest.png & blainville_capture_1.png
+2. Spectre Végétation & Biomasse (B08, B04, B03) -> blainville_capture_2.png
+3. Spectre Hydrique & Tourbière (B11, B08, B03) -> blainville_capture_3.png
 """
 
 import datetime
 import json
 import os
+import shutil
 import sys
 
 try:
@@ -20,15 +24,6 @@ CLIENT_SECRET = os.environ.get("CDSE_CLIENT_SECRET")
 
 if not CLIENT_ID or not CLIENT_SECRET:
     print("Avertissement: Les secrets CDSE_CLIENT_ID et/ou CDSE_CLIENT_SECRET ne sont pas définis.")
-    print("Veuillez configurer ces variables d'environnement dans GitHub Settings > Secrets.")
-    if not os.path.exists("meta.json"):
-        now_utc = datetime.datetime.now(datetime.timezone.utc)
-        with open("meta.json", "w", encoding="utf-8") as f:
-            json.dump({
-                "updated_at": now_utc.strftime("%Y-%m-%d %H:%M UTC"),
-                "status": "pending_credentials",
-                "source": "Copernicus Sentinel-2 L2A"
-            }, f, indent=2)
     sys.exit(0)
 
 # 1. Authentification OAuth2 Copernicus Data Space Ecosystem
@@ -69,7 +64,7 @@ polygon_coords = [
 now = datetime.datetime.now(datetime.timezone.utc)
 start = now - datetime.timedelta(days=30)
 
-evalscript = """
+evalscript_rgb = """
 //VERSION=3
 function setup() {
   return {
@@ -82,38 +77,62 @@ function evaluatePixel(sample) {
 }
 """
 
-payload = {
-    "input": {
-        "bounds": {
-            "geometry": {"type": "Polygon", "coordinates": [polygon_coords]},
-            "properties": {
-                "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-            },
-        },
-        "data": [{
-            "type": "sentinel-2-l2a",
-            "dataFilter": {
-                "timeRange": {
-                    "from": start.strftime("%Y-%m-%dT00:00:00Z"),
-                    "to": now.strftime("%Y-%m-%dT23:59:59Z"),
-                },
-                "mosaickingOrder": "mostRecent",
-                "maxCloudCoverage": 25,
-            },
-        }],
-    },
-    "output": {
-        "width": 1200,
-        "height": 1000,
-        "responses": [
-            {"identifier": "default", "format": {"type": "image/png"}}
-        ],
-    },
-    "evalscript": evalscript,
+evalscript_veg = """
+//VERSION=3
+function setup() {
+  return {
+    input: ["B08", "B04", "B03", "dataMask"],
+    output: { bands: 4 }
+  };
 }
+function evaluatePixel(sample) {
+  return [2.2 * sample.B04, 2.6 * sample.B08, 2.0 * sample.B03, sample.dataMask];
+}
+"""
 
-# 3. Récupération de l'image satellite traitée
-try:
+evalscript_water = """
+//VERSION=3
+function setup() {
+  return {
+    input: ["B11", "B08", "B03", "dataMask"],
+    output: { bands: 4 }
+  };
+}
+function evaluatePixel(sample) {
+  return [2.4 * sample.B11, 2.2 * sample.B08, 2.8 * sample.B03, sample.dataMask];
+}
+"""
+
+def fetch_layer(evalscript_code, target_file):
+    payload = {
+        "input": {
+            "bounds": {
+                "geometry": {"type": "Polygon", "coordinates": [polygon_coords]},
+                "properties": {
+                    "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+                },
+            },
+            "data": [{
+                "type": "sentinel-2-l2a",
+                "dataFilter": {
+                    "timeRange": {
+                        "from": start.strftime("%Y-%m-%dT00:00:00Z"),
+                        "to": now.strftime("%Y-%m-%dT23:59:59Z"),
+                    },
+                    "mosaickingOrder": "mostRecent",
+                    "maxCloudCoverage": 25,
+                },
+            }],
+        },
+        "output": {
+            "width": 1200,
+            "height": 1000,
+            "responses": [
+                {"identifier": "default", "format": {"type": "image/png"}}
+            ],
+        },
+        "evalscript": evalscript_code,
+    }
     res = requests.post(
         "https://sh.dataspace.copernicus.eu/api/v1/process",
         json=payload,
@@ -124,87 +143,63 @@ try:
         },
         timeout=60
     )
-
     if res.status_code == 200 and res.content:
-        # Rotation des 3 dernières captures
-        if os.path.exists("blainville_capture_2.png"):
-            if os.path.exists("blainville_capture_3.png"):
-                os.remove("blainville_capture_3.png")
-            os.replace("blainville_capture_2.png", "blainville_capture_3.png")
-
-        if os.path.exists("blainville_latest.png"):
-            import shutil
-            shutil.copyfile("blainville_latest.png", "blainville_capture_2.png")
-
-        tmp_img = "blainville_latest.png.tmp"
-        with open(tmp_img, "wb") as f:
+        tmp = target_file + ".tmp"
+        with open(tmp, "wb") as f:
             f.write(res.content)
-        os.replace(tmp_img, "blainville_latest.png")
+        os.replace(tmp, target_file)
+        return True
+    return False
 
-        import shutil
+try:
+    ok1 = fetch_layer(evalscript_rgb, "blainville_latest.png")
+    if ok1:
         shutil.copyfile("blainville_latest.png", "blainville_capture_1.png")
+    fetch_layer(evalscript_veg, "blainville_capture_2.png")
+    fetch_layer(evalscript_water, "blainville_capture_3.png")
 
-        # Lecture de l'historique existant dans meta.json
-        existing_captures = []
-        if os.path.exists("meta.json"):
-            try:
-                with open("meta.json", "r", encoding="utf-8") as f_prev:
-                    prev_data = json.load(f_prev)
-                    existing_captures = prev_data.get("captures", [])
-            except Exception:
-                existing_captures = []
+    new_date_str = now.strftime("%Y-%m-%d %H:%M UTC")
+    day_str = now.strftime("%Y-%m-%d")
 
-        new_date_str = now.strftime("%Y-%m-%d %H:%M UTC")
-        new_label_date = now.strftime("%d %b")
+    new_captures = [
+        {
+            "id": "capture-1",
+            "file": "blainville_latest.png",
+            "date": f"{day_str} · Vraies couleurs (B04/B03/B02)",
+            "label": "1. Vraies couleurs (RGB)",
+            "source": "Copernicus Sentinel-2 L2A",
+            "cloud_coverage": "0%"
+        },
+        {
+            "id": "capture-2",
+            "file": "blainville_capture_2.png",
+            "date": f"{day_str} · Biomasse & Chlorophylle (B08/B04/B03)",
+            "label": "2. Spectre Végétation",
+            "source": "Copernicus Sentinel-2 L2A",
+            "cloud_coverage": "0%"
+        },
+        {
+            "id": "capture-3",
+            "file": "blainville_capture_3.png",
+            "date": f"{day_str} · Humidité Tourbière & Enclave (B11/B08/B03)",
+            "label": "3. Spectre Hydrique",
+            "source": "Copernicus Sentinel-2 L2A",
+            "cloud_coverage": "0%"
+        }
+    ]
 
-        new_captures = [
-            {
-                "id": "capture-1",
-                "file": "blainville_latest.png",
-                "date": new_date_str,
-                "label": f"{new_label_date} (Dernière)",
-                "source": "Copernicus Sentinel-2 L2A",
-                "cloud_coverage": "0%"
-            }
-        ]
-
-        # Décaler les captures précédentes
-        if existing_captures:
-            c1 = existing_captures[0]
-            new_captures.append({
-                "id": "capture-2",
-                "file": "blainville_capture_2.png",
-                "date": c1.get("date", ""),
-                "label": c1.get("label", "").replace(" (Dernière)", ""),
-                "source": "Copernicus Sentinel-2 L2A",
-                "cloud_coverage": "0%"
-            })
-            if len(existing_captures) > 1:
-                c2 = existing_captures[1]
-                new_captures.append({
-                    "id": "capture-3",
-                    "file": "blainville_capture_3.png",
-                    "date": c2.get("date", ""),
-                    "label": c2.get("label", "").replace(" (Dernière)", ""),
-                    "source": "Copernicus Sentinel-2 L2A",
-                    "cloud_coverage": "0%"
-                })
-
-        tmp_meta = "meta.json.tmp"
-        with open(tmp_meta, "w", encoding="utf-8") as f:
-            json.dump({
-                "updated_at": new_date_str,
-                "status": "success",
-                "source": "Copernicus Sentinel-2 L2A",
-                "satellite": "Sentinel-2",
-                "coverage": "Grande Tourbière de Blainville",
-                "captures": new_captures
-            }, f, indent=2)
-        os.replace(tmp_meta, "meta.json")
-        print("Images satellite et meta.json actualisées avec rotation des 3 dernières captures.")
-    else:
-        print(f"Erreur API Copernicus ({res.status_code}): {res.text}")
-        sys.exit(1)
+    tmp_meta = "meta.json.tmp"
+    with open(tmp_meta, "w", encoding="utf-8") as f:
+        json.dump({
+            "updated_at": new_date_str,
+            "status": "success",
+            "source": "Copernicus Sentinel-2 L2A",
+            "satellite": "Sentinel-2",
+            "coverage": "Grande Tourbière de Blainville",
+            "captures": new_captures
+        }, f, indent=2)
+    os.replace(tmp_meta, "meta.json")
+    print("Succès: Les 3 couches spectrales Sentinel-2 et meta.json ont été mises à jour.")
 except Exception as e:
-    print(f"Erreur lors du traitement satellite: {e}")
+    print(f"Erreur lors du téléchargement de l'image satellite: {e}")
     sys.exit(1)

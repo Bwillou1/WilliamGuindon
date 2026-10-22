@@ -482,6 +482,72 @@
         </button>
       </div>
 
+      <!-- Outil Interactif : Vérificateur Cryptographique SHA-256 dans le Navigateur -->
+      <div id="verificateur-sha256-live" style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(59,130,246,0.45); border-radius:14px; padding:22px; margin:20px 0 26px;">
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#60a5fa; margin-bottom:4px;">Contrôle probatoire en direct · WebCrypto SHA-256</div>
+        <h2 style="margin:0 0 8px; font-size:1.2rem; color:var(--text);">Vérificateur d'intégrité cryptographique SHA-256 (100 % local)</h2>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 14px; line-height:1.55;">
+          Vérifiez en un clic ou glissez un fichier PDF téléchargé pour calculer localement son empreinte <code>SHA-256</code> via l'API native <code>crypto.subtle.digest</code> et contrôler sa conformité avec le registre des pièces déposées (<strong>SEM-26-003</strong>) :
+        </p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+          <button type="button" onclick="verifyTraceSha256('assets/docs/observations-reponse-canada-sem26003.pdf')" style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.18); color:#93c5fd; cursor:pointer;">Vérifier : Observations 17 oct.</button>
+          <button type="button" onclick="verifyTraceSha256('assets/docs/72-rsp_fr.pdf')" style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.18); color:#93c5fd; cursor:pointer;">Vérifier : Réponse Canada (72-RSP)</button>
+          <button type="button" onclick="verifyTraceSha256('assets/docs/73-rec_fr.pdf')" style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.18); color:#93c5fd; cursor:pointer;">Vérifier : Accusé CCE (73-REC)</button>
+          <button type="button" onclick="verifyTraceSha256('assets/docs/26-2-det2_fr.pdf')" style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.18); color:#93c5fd; cursor:pointer;">Vérifier : Décision 26-2-DET2</button>
+          <label style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px dashed rgba(16,185,129,0.65); background:rgba(16,185,129,0.12); color:#6ee7b7; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <span>📂 Glisser / Choisir un PDF local</span>
+            <input type="file" accept=".pdf" onchange="verifyTraceLocalSha256(this.files[0])" style="display:none;">
+          </label>
+        </div>
+        <div id="trace-sha256-box" style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px; font-family:monospace; font-size:12px; color:#cbd5e1; word-break:break-all;">
+          Sélectionnez une pièce officielle ou un fichier PDF local pour contrôler son empreinte SHA-256.
+        </div>
+        <script>
+          var TRACE_SHA256_MAP = {
+            "b6f045810fdcf995acf5a6b5775cbaace353ba7f7eb3007003c0692a4e281da7": "observations-reponse-canada-sem26003.pdf (Observations de William Guindon — 17 oct. 2026)",
+            "31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2": "72-rsp_fr.pdf (Réponse officielle du Canada FR — 16 oct. 2026)",
+            "e48ab3ffda74c685e5dd5ac50ff750230eef26cd59c7917d649b9398972f0289": "72-rsp_en.pdf (Réponse officielle du Canada EN — 16 oct. 2026)",
+            "c7a7498caab9176aa8b80367dedf4b6471dfff26236f4f76ff0d89209f2a7432": "73-rec_fr.pdf (Accusé de réception CCE FR — 16 oct. 2026)",
+            "b4d1eeea04f3629bd4d828a14b9df2b1f4b5033dd011ec083bc02cbbb6f35737": "73-rec_en.pdf (Accusé de réception CCE EN — 16 oct. 2026)",
+            "33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c": "26-2-det2_fr.pdf (Détermination positive CCE — 17 août 2026)",
+            "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710": "26-3-rsub_fr_redacted.pdf (Communication révisée SEM-26-003 — 15 pages)",
+            "4f84c0e44495257dbe3b0756bbc8c224b6952cb2ef343b1b53d44051da9dd243": "petition-546-cedd-bvg.pdf (Pétition environnementale 0546 — BVG / CEDD)",
+            "1c57b371f0700b773b8ceedf467f876013c07252abbc7d4894aaf9c76000486f": "declaration-appui-manfred-liebel-e7834.pdf (Déclaration scientifique de Berlin — Liebel & Meade)"
+          };
+          async function hashBufSha256(buf) {
+            var h = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(h)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+          }
+          function showTraceShaResult(hash, name) {
+            var box = document.getElementById('trace-sha256-box');
+            if (!box) return;
+            var hit = TRACE_SHA256_MAP[hash];
+            if (hit) {
+              box.style.borderColor = '#10b981';
+              box.innerHTML = '<div style="color:#34d399; font-weight:800; margin-bottom:4px;">✔ AUTHENTICITÉ CRYPTOGRAPHIQUE CONFIRMÉE (SHA-256)</div>' +
+                '<div><strong>Pièce certifiée :</strong> ' + hit + '</div>' +
+                '<div><strong>SHA-256 :</strong> <span style="color:#a7f3d0;">' + hash + '</span></div>';
+            } else {
+              box.style.borderColor = '#f59e0b';
+              box.innerHTML = '<div style="color:#fbbf24; font-weight:800; margin-bottom:4px;">ℹ EMPREINTE SHA-256 CALCULÉE (' + name + ')</div>' +
+                '<div><strong>SHA-256 :</strong> ' + hash + '</div>';
+            }
+          }
+          async function verifyTraceSha256(path) {
+            var box = document.getElementById('trace-sha256-box');
+            if (box) box.textContent = 'Calcul SHA-256 en cours sur ' + path + '...';
+            var res = await fetch(path);
+            var buf = await res.arrayBuffer();
+            showTraceShaResult(await hashBufSha256(buf), path);
+          }
+          async function verifyTraceLocalSha256(file) {
+            if (!file) return;
+            var buf = await file.arrayBuffer();
+            showTraceShaResult(await hashBufSha256(buf), file.name);
+          }
+        </script>
+      </div>
+
 
       <h2>1. Objectif et champ d'application transversal</h2>
       <p>Ce protocole documente la méthode par laquelle William Guindon et son site garantissent la <strong>provenance</strong>, l'<strong>authenticité</strong> et l'<strong>intégrité cryptographique</strong> de l'ensemble des éléments probatoires (documents officiels, données de terrain, analyses d'eau et de sol, captures d'écran, correspondances, dépositions CCE et ONU), afin de pouvoir démontrer, devant toute juridiction ou instance internationale, <strong>qu'une pièce n'a subi aucune modification et existait à une date certifiée</strong>.</p>

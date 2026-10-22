@@ -498,11 +498,11 @@
       </div>
       <div class="satellite-controls">
         <div class="control-group">
-          <label style="font-weight:600; color:var(--text);">3 dernières captures :</label>
-          <div class="capture-pills" id="capture-pills" role="radiogroup" aria-label="3 dernières captures Sentinel-2">
-            <button type="button" class="capture-pill active" data-index="0" aria-checked="true" title="Dernière capture">17 oct. (Dernière)</button>
-            <button type="button" class="capture-pill" data-index="1" aria-checked="false" title="Capture précédente">16 oct.</button>
-            <button type="button" class="capture-pill" data-index="2" aria-checked="false" title="Capture antérieure">15 oct.</button>
+          <label style="font-weight:600; color:var(--text);">Couche spectrale :</label>
+          <div class="capture-pills" id="capture-pills" role="radiogroup" aria-label="Couches spectrales Sentinel-2">
+            <button type="button" class="capture-pill active" data-index="0" aria-checked="true" title="Vraies couleurs B04/B03/B02">1. Vraies couleurs (RGB)</button>
+            <button type="button" class="capture-pill" data-index="1" aria-checked="false" title="Biomasse &amp; Chlorophylle (NDVI)">2. Spectre Végétation</button>
+            <button type="button" class="capture-pill" data-index="2" aria-checked="false" title="Humidité Tourbière &amp; Enclave (NDWI)">3. Spectre Hydrique</button>
           </div>
         </div>
         <div class="control-group">
@@ -523,6 +523,58 @@
       <div id="satellite-map" aria-label="Carte interactive de la Grande Tourbière de Blainville avec superposition satellite Sentinel-2"></div>
     </div>
   </div>
+
+  <!-- Curseur Avant / Après (Slider Comparatif Spectral Sentinel-2) -->
+  <section class="satellite-map-card" aria-label="Curseur comparatif Avant Après des couches spectrales Sentinel-2" style="margin-top: 24px; padding: 20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+      <div>
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#10b981; margin-bottom:4px;">Outil d'analyse visuelle · Glisser le curseur</div>
+        <h2 style="margin:0; font-size:1.25rem; color:var(--text);">Comparateur Spectral Avant / Après (Vraies couleurs vs. Analyse Hydrique &amp; Végétale)</h2>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="capture-pill active" id="btn-slider-water" onclick="setSliderRightImage('blainville_capture_3.png', 'Spectre Hydrique &amp; Enclave (NDWI)', this)">Comparer : Hydrique (NDWI)</button>
+        <button type="button" class="capture-pill" id="btn-slider-veg" onclick="setSliderRightImage('blainville_capture_2.png', 'Spectre Biomasse &amp; Chlorophylle (NDVI)', this)">Comparer : Végétation (NDVI)</button>
+      </div>
+    </div>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 14px; line-height:1.5;">
+      Faites glisser le curseur horizontalement pour superposer l'imagerie en <strong>vraies couleurs (RGB)</strong> et l'<strong>analyse spectrale</strong> mettant en évidence la saturation hydrique de la Grande Tourbière de Blainville face à l'enclave minérale industrielle de Stablex.
+    </p>
+    <div id="sat-before-after-box" style="position:relative; width:100%; max-width:920px; margin:0 auto; aspect-ratio:12/10; background:#090d16; border-radius:12px; overflow:hidden; border:1px solid var(--line, rgba(255,255,255,0.14)); user-select:none;">
+      <!-- Image de droite (Fond complet : Analyse Spectrale) -->
+      <img id="sat-slider-right-img" src="blainville_capture_3.png?v=20261022b" alt="Analyse spectrale Sentinel-2 de la Grande Tourbière de Blainville" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; pointer-events:none;">
+      <!-- Image de gauche (Découpée par clip-path : Vraies couleurs RGB) -->
+      <img id="sat-slider-left-img" src="blainville_latest.png?v=20261022b" alt="Vraies couleurs Sentinel-2 de la Grande Tourbière de Blainville" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; clip-path:inset(0 50% 0 0); pointer-events:none;">
+      <!-- Étiquettes Gauche / Droite -->
+      <span style="position:absolute; top:12px; left:12px; background:rgba(15,23,42,0.88); border:1px solid rgba(255,255,255,0.2); color:#f8fafc; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; z-index:4; pointer-events:none;">◀ Vraies couleurs (RGB)</span>
+      <span id="sat-slider-right-label" style="position:absolute; top:12px; right:12px; background:rgba(15,23,42,0.88); border:1px solid #10b981; color:#6ee7b7; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; z-index:4; pointer-events:none;">Spectre Hydrique &amp; Enclave (NDWI) ▶</span>
+      <!-- Barre verticale de séparation -->
+      <div id="sat-slider-line" style="position:absolute; top:0; bottom:0; left:50%; width:3px; background:#10b981; box-shadow:0 0 12px rgba(16,185,129,0.9); transform:translateX(-50%); z-index:3; pointer-events:none;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:38px; height:38px; border-radius:50%; background:#10b981; color:#064e3b; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; box-shadow:0 4px 14px rgba(0,0,0,0.5); border:2px solid #ffffff;">⇄</div>
+      </div>
+      <!-- Curseur range invisible couvrant toute la boîte (tactile + souris + clavier) -->
+      <input type="range" id="sat-compare-range" min="0" max="100" value="50" aria-label="Curseur de comparaison Avant Après" oninput="updateSatCompareSlider(this.value)" style="position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; z-index:5; margin:0;">
+    </div>
+    <script>
+      function updateSatCompareSlider(val) {
+        var leftImg = document.getElementById('sat-slider-left-img');
+        var line = document.getElementById('sat-slider-line');
+        var rightCut = 100 - parseFloat(val);
+        if (leftImg) leftImg.style.clipPath = 'inset(0 ' + rightCut + '% 0 0)';
+        if (line) line.style.left = val + '%';
+      }
+      function setSliderRightImage(file, labelText, btn) {
+        var rightImg = document.getElementById('sat-slider-right-img');
+        var rightLbl = document.getElementById('sat-slider-right-label');
+        if (rightImg) rightImg.src = file + '?_t=' + Date.now();
+        if (rightLbl) rightLbl.textContent = labelText + ' ▶';
+        var b1 = document.getElementById('btn-slider-water');
+        var b2 = document.getElementById('btn-slider-veg');
+        if (b1) b1.classList.remove('active');
+        if (b2) b2.classList.remove('active');
+        if (btn) btn.classList.add('active');
+      }
+    </script>
+  </section>
 
   <div class="satellite-info-grid">
     <div class="satellite-info-card">
@@ -626,9 +678,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Liste des 3 dernières captures (par défaut ou chargées depuis meta.json)
   var defaultCaptures = [
-    { id: 'capture-1', file: 'blainville_latest.png', label: '17 oct. (Dernière)', date: '2026-10-17 14:45 UTC' },
-    { id: 'capture-2', file: 'blainville_capture_2.png', label: '16 oct.', date: '2026-10-16 15:51 UTC' },
-    { id: 'capture-3', file: 'blainville_capture_3.png', label: '15 oct.', date: '2026-10-15 16:03 UTC' }
+    { id: 'capture-1', file: 'blainville_latest.png', label: '1. Vraies couleurs (RGB)', date: '2026-10-22 · Vraies couleurs (B04/B03/B02)' },
+    { id: 'capture-2', file: 'blainville_capture_2.png', label: '2. Spectre Végétation', date: '2026-10-22 · Biomasse & Chlorophylle (NDVI)' },
+    { id: 'capture-3', file: 'blainville_capture_3.png', label: '3. Spectre Hydrique', date: '2026-10-22 · Humidité Tourbière & Enclave (NDWI)' }
   ];
   var capturesList = defaultCaptures;
   var currentCaptureIndex = 0;

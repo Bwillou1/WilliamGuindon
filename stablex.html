@@ -781,6 +781,92 @@
         <div class="block-answer">
           <strong>La Cellule nº 6 en chiffres :</strong> Projet d'agrandissement de 278 000 m² (27,8 hectares) dans la Grande Tourbière de Blainville conçu pour recevoir 1,7 million de tonnes de déchets dangereux stabilisés sur 35 à 40 ans. Les cellules 1 à 5 approchant de leur saturation technique, ce projet entraîne le décapage de milieux humides centenaires d'une valeur écologique inestimable.
         </div>
+
+        <!-- Comparateur d'échelle interactif : Que représentent 278 000 m² de tourbière ? -->
+        <div id="comparateur-echelle-278k" style="background:linear-gradient(145deg, rgba(15,23,42,0.95), rgba(6,78,59,0.28)); border:1.5px solid rgba(16,185,129,0.45); border-radius:14px; padding:20px; margin:18px 0 22px; color:#f8fafc;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#34d399;">Convertisseur d'échelle visuel · 27,8 hectares</div>
+              <h3 style="margin:2px 0 0; font-size:1.15rem; color:#ffffff;">Que représentent concrètement 278 000 m² de tourbière menacés ?</h3>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;" role="tablist" aria-label="Unité de comparaison d'échelle">
+              <button type="button" class="js-scale-btn" onclick="setTourbiereScale('nhl', this)" style="padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid #10b981; background:#10b981; color:#064e3b; cursor:pointer;">🏒 183 Patinoires LNH</button>
+              <button type="button" class="js-scale-btn" onclick="setTourbiereScale('football', this)" style="padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#cbd5e1; cursor:pointer;">🏈 52 Terrains de football</button>
+              <button type="button" class="js-scale-btn" onclick="setTourbiereScale('soccer', this)" style="padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#cbd5e1; cursor:pointer;">⚽ 39 Terrains FIFA</button>
+              <button type="button" class="js-scale-btn" onclick="setTourbiereScale('pool', this)" style="padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.2); background:transparent; color:#cbd5e1; cursor:pointer;">🏊 222 Piscines olympiques</button>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; align-items:center; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div>
+              <div id="scale-big-num" style="font-size:2.2rem; font-weight:900; color:#34d399; line-height:1.1;">183 patinoires</div>
+              <div id="scale-unit-sub" style="font-size:0.85rem; color:#94a3b8; margin:4px 0 8px;">Dimensions officielles LNH : ~1 517 m² (61 m × 26 m) par patinoire</div>
+              <p id="scale-desc-text" style="margin:0; font-size:0.86rem; line-height:1.5; color:#e2e8f0;">
+                L'empiètement de la Cellule nº 6 équivaut à raser une surface continue de <strong>183 patinoires du Centre Bell</strong> au cœur d'une tourbière ombrotrophe millénaire non remplaçable.
+              </p>
+            </div>
+            <div id="scale-visual-grid" aria-hidden="true" style="display:flex; flex-wrap:wrap; gap:3px; max-height:125px; overflow:hidden; padding:8px; background:rgba(16,185,129,0.06); border-radius:8px; border:1px dashed rgba(16,185,129,0.35);"></div>
+          </div>
+          <script>
+            var SCALE_PRESETS = {
+              nhl: {
+                num: "183 patinoires",
+                count: 183,
+                sub: "Dimensions officielles LNH : ~1 517 m² (61 m × 26 m) par patinoire",
+                desc: "L'empiètement de la Cellule nº 6 équivaut à raser une surface continue de <strong>183 patinoires du Centre Bell</strong> au cœur d'une tourbière ombrotrophe millénaire non remplaçable.",
+                color: "#34d399"
+              },
+              football: {
+                num: "52 terrains",
+                count: 52,
+                sub: "Terrain de football américain/NFL : ~5 351 m² par terrain",
+                desc: "278 000 m² représentent l'équivalent de <strong>52 terrains de football complets</strong> excavés dans le plus vaste milieu humide boisé des Basses-Laurentides.",
+                color: "#fbbf24"
+              },
+              soccer: {
+                num: "39 stades FIFA",
+                count: 39,
+                sub: "Pelouse internationale FIFA : 7 140 m² (105 m × 68 m)",
+                desc: "La superficie visée par l'expropriation sous bâillon (Loi 93) couvre l'équivalent de <strong>39 terrains de soccer internationaux</strong> juxtaposés.",
+                color: "#60a5fa"
+              },
+              pool: {
+                num: "222 piscines",
+                count: 222,
+                sub: "Bassin olympique officiel : 1 250 m² (50 m × 25 m)",
+                desc: "La zone humide menacée équivaut à la surface de <strong>222 bassins olympiques</strong> assurant la filtration naturelle des eaux et la séquestration du carbone.",
+                color: "#38bdf8"
+              }
+            };
+            function setTourbiereScale(key, btn) {
+              var p = SCALE_PRESETS[key];
+              if (!p) return;
+              document.getElementById('scale-big-num').textContent = p.num;
+              document.getElementById('scale-unit-sub').textContent = p.sub;
+              document.getElementById('scale-desc-text').innerHTML = p.desc;
+              var grid = document.getElementById('scale-visual-grid');
+              if (grid) {
+                var blocks = '';
+                var maxBlocks = Math.min(p.count, 120);
+                for (var i = 0; i < maxBlocks; i++) {
+                  blocks += '<span style="width:11px; height:7px; border-radius:2px; background:' + p.color + '; opacity:0.85; display:inline-block;"></span>';
+                }
+                grid.innerHTML = blocks;
+              }
+              var btns = document.querySelectorAll('.js-scale-btn');
+              for (var j = 0; j < btns.length; j++) {
+                btns[j].style.background = 'transparent';
+                btns[j].style.color = '#cbd5e1';
+                btns[j].style.borderColor = 'rgba(255,255,255,0.2)';
+              }
+              if (btn) {
+                btn.style.background = '#10b981';
+                btn.style.color = '#064e3b';
+                btn.style.borderColor = '#10b981';
+              }
+            }
+            setTourbiereScale('nhl', document.querySelector('.js-scale-btn'));
+          </script>
+        </div>
         <p>
           Depuis 1983, Stablex a exploité et rempli successivement cinq cellules d'enfouissement (cellules 1, 2, 3, 4 et 5). Confrontée à l'épuisement prévisible de la capacité résiduelle de la cellule nº 5 à l'horizon 2025-2026, l'entreprise a déposé un vaste projet d'agrandissement : la cellule nº 6.
         </p>

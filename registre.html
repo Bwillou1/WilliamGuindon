@@ -972,6 +972,189 @@
         }
         </script>
 
+        <!-- Visualiseur Interactif de l'Article 24.27 / 24.28 de l'ACEUM (5 Étapes Officielles) -->
+        <article class="portal-prose-block" id="visualiseur-aceum-2427" style="background:var(--surface, rgba(15,23,42,0.75)); border:1.5px solid rgba(16,185,129,0.4); border-radius:14px; padding:22px; margin-bottom:24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--accent, #10b981); margin-bottom:4px;">Mécanisme International ACEUM · Chapitre 24</div>
+              <h3 style="margin:0; font-size:1.2rem; color:var(--text);">Visualiseur interactif de la procédure (Articles 24.27 &amp; 24.28)</h3>
+            </div>
+            <span style="font-size:11.5px; font-weight:800; background:rgba(16,185,129,0.18); border:1px solid #10b981; color:#34d399; padding:4px 12px; border-radius:999px;">Étape 4 / 5 en cours</span>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-muted); margin:0 0 16px;">
+            Cliquez sur chacune des 5 étapes officielles du traité international pour consulter les critères juridiques, les dates clés et les pièces versées au dossier <strong>SEM-26-003</strong> :
+          </p>
+
+          <!-- Barre des 5 étapes cliquables -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px; margin-bottom:16px;" role="tablist" aria-label="Étapes de la procédure ACEUM">
+            <button type="button" class="js-aceum-step" onclick="selectAceumStep(1, this)" style="text-align:left; padding:10px 12px; border-radius:10px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); color:var(--text); cursor:pointer;">
+              <div style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">Étape 1 · Complétée ✓</div>
+              <div style="font-size:12.5px; font-weight:700; margin-top:2px;">Dépôt citoyen (Art. 24.27(1))</div>
+            </button>
+            <button type="button" class="js-aceum-step" onclick="selectAceumStep(2, this)" style="text-align:left; padding:10px 12px; border-radius:10px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); color:var(--text); cursor:pointer;">
+              <div style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">Étape 2 · Complétée ✓</div>
+              <div style="font-size:12.5px; font-weight:700; margin-top:2px;">Recevabilité (Art. 24.27(2)-(3))</div>
+            </button>
+            <button type="button" class="js-aceum-step" onclick="selectAceumStep(3, this)" style="text-align:left; padding:10px 12px; border-radius:10px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); color:var(--text); cursor:pointer;">
+              <div style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">Étape 3 · Complétée ✓</div>
+              <div style="font-size:12.5px; font-weight:700; margin-top:2px;">Réponse du Canada &amp; Réplique</div>
+            </button>
+            <button type="button" class="js-aceum-step" onclick="selectAceumStep(4, this)" style="text-align:left; padding:10px 12px; border-radius:10px; border:2px solid #10b981; background:rgba(16,185,129,0.22); color:var(--text); cursor:pointer; box-shadow:0 0 16px rgba(16,185,129,0.25);">
+              <div style="font-size:10px; font-weight:800; color:#6ee7b7; text-transform:uppercase;">● Étape 4 · Active (60 j)</div>
+              <div style="font-size:12.5px; font-weight:800; margin-top:2px;">Examen Secrétariat (Art. 24.28(1))</div>
+            </button>
+            <button type="button" class="js-aceum-step" onclick="selectAceumStep(5, this)" style="text-align:left; padding:10px 12px; border-radius:10px; border:1px solid var(--line, rgba(255,255,255,0.15)); background:rgba(255,255,255,0.03); color:var(--text-muted); cursor:pointer;">
+              <div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase;">Étape 5 · À venir</div>
+              <div style="font-size:12.5px; font-weight:700; margin-top:2px;">Conseil &amp; Dossier factuel</div>
+            </button>
+          </div>
+
+          <!-- Panneau de détail dynamique de l'étape sélectionnée -->
+          <div id="aceum-step-detail" style="background:rgba(0,0,0,0.25); border:1px solid rgba(16,185,129,0.35); border-radius:10px; padding:16px;">
+            <div id="aceum-step-badge" style="font-size:11px; font-weight:800; color:#34d399; text-transform:uppercase; margin-bottom:4px;">Étape 4 sur 5 · En cours depuis le 16 octobre 2026 (Délai de 60 jours ouvrables)</div>
+            <h4 id="aceum-step-title" style="margin:0 0 8px; font-size:1.05rem; color:var(--text);">Examen de la réponse et recommandation d'un Dossier factuel (Article 24.28(1) ACEUM)</h4>
+            <p id="aceum-step-desc" style="margin:0 0 12px; font-size:0.88rem; line-height:1.6; color:var(--text);">
+              Le Secrétariat de la CCE examine la réponse du Canada (<strong>72-RSP</strong>) ainsi que les observations juridiques de l'auteur (<strong>17 oct. 2026</strong>) démontrant qu'une pétition citoyenne au Vérificateur général (n° 0546) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'art. 24.27(4)a). Le Secrétariat détermine s'il recommande au Conseil ministériel l'élaboration d'un Dossier factuel indépendant.
+            </p>
+            <div id="aceum-step-links" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a href="viewer.html?file=assets/docs/73-rec_fr.pdf" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Accusé CCE 73-REC (PDF) ↗</a>
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Observations du 17 oct. (PDF) ↗</a>
+              <a href="live.html" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Horloge des 60 jours ↗</a>
+            </div>
+          </div>
+          <script>
+            var ACEUM_STEPS_DATA = {
+              1: {
+                badge: "Étape 1 sur 5 · Juillet – Août 2026 · Complétée ✓",
+                title: "Dépôt de la communication citoyenne SEM-26-003 (Article 24.27(1) ACEUM)",
+                desc: "William Guindon (15 ans, premier citoyen mineur de l'histoire du mécanisme SEM depuis 1994) saisit formellement le Secrétariat de la CCE avec un mémoire juridique consolidé et 222 pièces probatoires alléguant l'omission du Canada d'assurer l'application efficace de ses lois environnementales (Loi sur les pêches, LEP) face à Stablex et la Grande Tourbière de Blainville.",
+                links: '<a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Mémoire révisé SEM-26-003 (PDF) ↗</a> <a href="dossier-journalistes.html" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Explorer les 222 pièces ↗</a>'
+              },
+              2: {
+                badge: "Étape 2 sur 5 · 17 août 2026 · Complétée ✓",
+                title: "Détermination positive de recevabilité et demande de réponse (Article 24.27(2)-(3) ACEUM)",
+                desc: "Par sa détermination officielle DET-26-003 (26-2-det2_fr.pdf), le Secrétariat de la CCE conclut que la communication SEM-26-003 satisfait à tous les critères de recevabilité et d'épuisement des recours internes (par. 66-79), et ordonne au gouvernement du Canada de déposer une réponse formelle concernant l'application de 17 dispositions dans 5 lois fédérales.",
+                links: '<a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Détermination 26-2-DET2 (PDF) ↗</a>'
+              },
+              3: {
+                badge: "Étape 3 sur 5 · 16 & 17 octobre 2026 · Complétée ✓",
+                title: "Réponse officielle du Canada (72-RSP) & Réplique juridique de l'auteur (Art. 24.27(4))",
+                desc: "Le 16 octobre 2026, Ottawa dépose sa réponse (72-RSP) : sans contester les rejets de cadmium (320x la norme) ni l'empiètement sur 278 000 m² de tourbière, le Canada invoque la pétition citoyenne 0546 au BVG pour demander la clôture ou le report. Dès le 17 octobre 2026, William Guindon dépose ses Observations en 7 moyens de droit réfutant cette fin de non-recevoir.",
+                links: '<a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Réponse du Canada 72-RSP (PDF) ↗</a> <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Réplique du 17 oct. (PDF) ↗</a>'
+              },
+              4: {
+                badge: "Étape 4 sur 5 · En cours depuis le 16 octobre 2026 (Délai de 60 jours ouvrables)",
+                title: "Examen de la réponse et recommandation d'un Dossier factuel (Article 24.28(1) ACEUM)",
+                desc: "Le Secrétariat de la CCE examine la réponse du Canada (72-RSP) ainsi que les observations juridiques de l'auteur (17 oct. 2026) démontrant qu'une pétition citoyenne au Vérificateur général (n° 0546) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'art. 24.27(4)a). Le Secrétariat détermine s'il recommande au Conseil ministériel l'élaboration d'un Dossier factuel indépendant.",
+                links: '<a href="viewer.html?file=assets/docs/73-rec_fr.pdf" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Accusé CCE 73-REC (PDF) ↗</a> <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Observations du 17 oct. (PDF) ↗</a> <a href="live.html" class="btn btn-outline btn-sm" style="font-size:12px; text-decoration:none;">Horloge des 60 jours ↗</a>'
+              },
+              5: {
+                badge: "Étape 5 sur 5 · Étape subséquente (Article 24.28(2)-(5) ACEUM)",
+                title: "Vote du Conseil ministériel trinational & Élaboration du Dossier factuel indépendant",
+                desc: "Sur recommandation du Secrétariat, le Conseil de la CCE (États-Unis, Mexique, Canada) vote sur l'ouverture d'un Dossier factuel complet (un vote d'au moins deux Parties sur trois suffit). Le Secrétariat mène alors une enquête scientifique et juridique indépendante dont le rapport final est rendu public.",
+                links: '<a href="agir.html" class="btn btn-primary btn-sm" style="font-size:12px; text-decoration:none;">Comment appuyer la démarche ↗</a>'
+              }
+            };
+            function selectAceumStep(num, btn) {
+              var d = ACEUM_STEPS_DATA[num];
+              if (!d) return;
+              document.getElementById('aceum-step-badge').textContent = d.badge;
+              document.getElementById('aceum-step-title').textContent = d.title;
+              document.getElementById('aceum-step-desc').textContent = d.desc;
+              document.getElementById('aceum-step-links').innerHTML = d.links;
+              var btns = document.querySelectorAll('.js-aceum-step');
+              for (var i = 0; i < btns.length; i++) {
+                btns[i].style.border = '1px solid rgba(16,185,129,0.35)';
+                btns[i].style.boxShadow = 'none';
+              }
+              if (btn) {
+                btn.style.border = '2px solid #10b981';
+                btn.style.boxShadow = '0 0 16px rgba(16,185,129,0.25)';
+              }
+            }
+          </script>
+        </article>
+
+        <!-- Vérificateur d'Intégrité Cryptographique SHA-256 dans le Navigateur -->
+        <article class="portal-prose-block" id="verificateur-sha256" style="background:var(--surface, rgba(15,23,42,0.75)); border:1.5px solid rgba(59,130,246,0.4); border-radius:14px; padding:22px; margin-bottom:24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#60a5fa; margin-bottom:4px;">Fixité probatoire · WebCrypto API (SHA-256)</div>
+              <h3 style="margin:0; font-size:1.15rem; color:var(--text);">Vérificateur d'authenticité SHA-256 des pièces déposées</h3>
+            </div>
+            <a href="tracabilite.html" style="font-size:12px; font-weight:700; color:#93c5fd; text-decoration:none;">Charte 07 (Traçabilité) →</a>
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 14px; line-height:1.55;">
+            Vérifiez instantanément dans votre navigateur (via <code>crypto.subtle.digest</code>, sans aucun envoi serveur) qu'un PDF téléchargé ou hébergé correspond bit pour bit à l'empreinte cryptographique originale versée au dossier <strong>SEM-26-003</strong> :
+          </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+            <button type="button" onclick="verifyServerPdfSha256('assets/docs/observations-reponse-canada-sem26003.pdf')" style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.15); color:#93c5fd; cursor:pointer;">Vérifier : Observations 17 oct.</button>
+            <button type="button" onclick="verifyServerPdfSha256('assets/docs/72-rsp_fr.pdf')" style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.15); color:#93c5fd; cursor:pointer;">Vérifier : Réponse Canada (72-RSP)</button>
+            <button type="button" onclick="verifyServerPdfSha256('assets/docs/73-rec_fr.pdf')" style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.15); color:#93c5fd; cursor:pointer;">Vérifier : Accusé CCE (73-REC)</button>
+            <button type="button" onclick="verifyServerPdfSha256('assets/docs/26-2-det2_fr.pdf')" style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.15); color:#93c5fd; cursor:pointer;">Vérifier : Décision 26-2-DET2</button>
+            <label style="padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700; border:1px dashed rgba(16,185,129,0.6); background:rgba(16,185,129,0.1); color:#6ee7b7; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+              <span>📂 Glisser / Choisir un PDF local</span>
+              <input type="file" accept=".pdf" onchange="verifyLocalFileSha256(this.files[0])" style="display:none;">
+            </label>
+          </div>
+          <div id="sha256-result-box" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px; font-family:monospace; font-size:12px; color:#cbd5e1; word-break:break-all;">
+            Sélectionnez une pièce ci-dessus ou importez un fichier PDF pour calculer et contrôler son empreinte SHA-256 en direct.
+          </div>
+          <script>
+            var OFFICIAL_SHA256_REGISTRY = {
+              "b6f045810fdcf995acf5a6b5775cbaace353ba7f7eb3007003c0692a4e281da7": "observations-reponse-canada-sem26003.pdf (Observations de William Guindon — 17 oct. 2026)",
+              "31ce88255e51b47118532da9e121f52d550ca421f583ebfa20a57cd8b6f0f5e2": "72-rsp_fr.pdf (Réponse officielle du Canada FR — 16 oct. 2026)",
+              "e48ab3ffda74c685e5dd5ac50ff750230eef26cd59c7917d649b9398972f0289": "72-rsp_en.pdf (Réponse officielle du Canada EN — 16 oct. 2026)",
+              "c7a7498caab9176aa8b80367dedf4b6471dfff26236f4f76ff0d89209f2a7432": "73-rec_fr.pdf (Accusé de réception CCE FR — 16 oct. 2026)",
+              "b4d1eeea04f3629bd4d828a14b9df2b1f4b5033dd011ec083bc02cbbb6f35737": "73-rec_en.pdf (Accusé de réception CCE EN — 16 oct. 2026)",
+              "33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c": "26-2-det2_fr.pdf (Détermination positive CCE — 17 août 2026)",
+              "d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710": "26-3-rsub_fr_redacted.pdf (Communication révisée SEM-26-003 — 15 pages)",
+              "4f84c0e44495257dbe3b0756bbc8c224b6952cb2ef343b1b53d44051da9dd243": "petition-546-cedd-bvg.pdf (Pétition environnementale 0546 — BVG / CEDD)",
+              "1c57b371f0700b773b8ceedf467f876013c07252abbc7d4894aaf9c76000486f": "declaration-appui-manfred-liebel-e7834.pdf (Déclaration scientifique de Berlin — Liebel & Meade)"
+            };
+            async function computeBufferSha256(buffer) {
+              var hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+              var hashArray = Array.from(new Uint8Array(hashBuffer));
+              return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+            }
+            function renderSha256Result(hash, label) {
+              var box = document.getElementById('sha256-result-box');
+              if (!box) return;
+              var matched = OFFICIAL_SHA256_REGISTRY[hash];
+              if (matched) {
+                box.style.borderColor = '#10b981';
+                box.innerHTML = '<div style="color:#34d399; font-weight:800; margin-bottom:4px;">✔ INTÉGRITÉ CRYPTOGRAPHIQUE CERTIFIÉE CONFORME (SHA-256)</div>' +
+                  '<div><strong>Pièce identifiée :</strong> ' + matched + '</div>' +
+                  '<div><strong>Empreinte SHA-256 :</strong> <span style="color:#a7f3d0;">' + hash + '</span></div>';
+              } else {
+                box.style.borderColor = '#f59e0b';
+                box.innerHTML = '<div style="color:#fbbf24; font-weight:800; margin-bottom:4px;">ℹ EMPREINTE SHA-256 CALCULÉE (' + label + ')</div>' +
+                  '<div><strong>Empreinte SHA-256 :</strong> ' + hash + '</div>';
+              }
+            }
+            async function verifyServerPdfSha256(path) {
+              var box = document.getElementById('sha256-result-box');
+              if (box) box.textContent = 'Calcul cryptographique SHA-256 en cours sur ' + path + '...';
+              try {
+                var res = await fetch(path);
+                var buf = await res.arrayBuffer();
+                var hash = await computeBufferSha256(buf);
+                renderSha256Result(hash, path);
+              } catch (e) {
+                if (box) box.textContent = 'Erreur lors de la lecture du fichier : ' + e.message;
+              }
+            }
+            async function verifyLocalFileSha256(file) {
+              if (!file) return;
+              var box = document.getElementById('sha256-result-box');
+              if (box) box.textContent = 'Analyse locale de ' + file.name + '...';
+              var buf = await file.arrayBuffer();
+              var hash = await computeBufferSha256(buf);
+              renderSha256Result(hash, file.name);
+            }
+          </script>
+        </article>
+
         <article class="portal-prose-block">
           <h3>Pièces maîtresses et ressources documentaires probatoires</h3>
           <p>L'ensemble des pièces versées au dossier international est consultable en libre accès sous formats numériques ouverts :</p>

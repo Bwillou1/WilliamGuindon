@@ -3542,9 +3542,184 @@
     }
   });
 
+  /* --- Glossaire juridique & scientifique infobulle (Tooltips automatiques) --- */
+  function initLegalGlossaryTooltips() {
+    if (document.getElementById('wg-glossary-tooltip-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'wg-glossary-tooltip-styles';
+    style.textContent = `
+      .wg-glossary-term {
+        border-bottom: 1px dashed rgba(45, 138, 86, 0.7);
+        cursor: help;
+        position: relative;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .wg-glossary-term:hover, .wg-glossary-term:focus {
+        color: var(--primary, #2d8a56);
+        border-bottom-color: var(--primary, #2d8a56);
+        outline: none;
+      }
+      #wg-floating-glossary-tip {
+        position: fixed;
+        z-index: 99999;
+        max-width: 310px;
+        background: rgba(15, 23, 42, 0.97);
+        color: #f8fafc;
+        border: 1px solid rgba(45, 138, 86, 0.55);
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        font-size: 0.78rem;
+        line-height: 1.48;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.16s ease, transform 0.16s ease;
+      }
+      #wg-floating-glossary-tip.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      #wg-floating-glossary-tip strong {
+        display: block;
+        color: #4ade80;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.22rem;
+      }
+    `;
+    document.head.appendChild(style);
+
+    const tip = document.createElement('div');
+    tip.id = 'wg-floating-glossary-tip';
+    tip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tip);
+
+    const GLOSSARY = [
+      {
+        regex: /\b(ACEUM\s+art\.\s*24\.28|article\s+24\.28)\b/gi,
+        title: 'ACEUM — Article 24.28 (Dossier factuel)',
+        desc: 'Disposition du traité Canada–États-Unis–Mexique permettant au Secrétariat de la CCE de recommander au Conseil ministériel la constitution d’un dossier factuel d’enquête internationale.'
+      },
+      {
+        regex: /\b(Dossier\s+factuel|dossier\s+factuel)\b/g,
+        title: 'Dossier factuel (CCE / ACEUM)',
+        desc: 'Enquête technique indépendante menée par le Secrétariat de la CCE, votée aux 2/3 par le Conseil (Canada, États-Unis, Mexique), exposant publiquement les faits d’inapplication d’une loi environnementale.'
+      },
+      {
+        regex: /\b(BAPE\s+371)\b/g,
+        title: 'Rapport BAPE 371 (Septembre 2023)',
+        desc: 'Rapport d’enquête du Bureau d’audiences publiques sur l’environnement concluant de façon défavorable au projet d’expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville.'
+      },
+      {
+        regex: /\b(Loi\s+93|Projet\s+de\s+loi\s+93)\b/g,
+        title: 'Loi 93 du Québec (28 mars 2025)',
+        desc: 'Loi spéciale adoptée sous bâillon expropriant 278 000 m² à Blainville au profit de Stablex (83 % des parts détenues par un fonds américain) en contournant le rapport défavorable du BAPE 371.'
+      },
+      {
+        regex: /\b(72-RSP)\b/g,
+        title: 'Pièce 72-RSP (Réponse du Canada — 16 oct. 2026)',
+        desc: 'Réponse officielle de 59 pages d’Environnement et Changement climatique Canada demandant la clôture de SEM-26-003 en invoquant le contrôle judiciaire municipal de Blainville.'
+      },
+      {
+        regex: /\b(Pétition\s+0546|pétition\s+n°\s*0546|BVG\s+0546)\b/gi,
+        title: 'Pétition fédérale n° 0546 (BVG / CEDD)',
+        desc: 'Pétition en matière d’environnement enregistrée par le Commissaire à l’environnement (BVG) sous l’art. 22 de la Loi sur le vérificateur général. Réponse obligatoire des ministres fédéraux d’ici le 10 novembre 2026.'
+      },
+      {
+        regex: /\b(Adultisme|adultisme)\b/g,
+        title: 'Adultisme systémique (ONU — Manfred Liebel)',
+        desc: 'Concept juridique et sociologique désignant la discrimination ou la disqualification de la parole citoyenne et juridique d’une personne en raison de son jeune âge.'
+      }
+    ];
+
+    const SKIP_TAGS = new Set(['A', 'BUTTON', 'SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'SUMMARY', 'TITLE']);
+    const seenTerms = new Set();
+    const root = document.querySelector('main') || document.body;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || node.nodeValue.trim().length < 5) return NodeFilter.FILTER_REJECT;
+        let p = node.parentElement;
+        while (p) {
+          if (SKIP_TAGS.has(p.tagName) || p.classList.contains('wg-glossary-term') || p.closest('.faq-question, [itemprop="name"]')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          p = p.parentElement;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    textNodes.forEach((node) => {
+      let text = node.nodeValue;
+      for (const item of GLOSSARY) {
+        if (seenTerms.has(item.title)) continue;
+        item.regex.lastIndex = 0;
+        const match = item.regex.exec(text);
+        if (match) {
+          seenTerms.add(item.title);
+          const before = text.slice(0, match.index);
+          const matchedText = match[0];
+          const after = text.slice(match.index + matchedText.length);
+
+          const frag = document.createDocumentFragment();
+          if (before) frag.appendChild(document.createTextNode(before));
+          const span = document.createElement('span');
+          span.className = 'wg-glossary-term';
+          span.tabIndex = 0;
+          span.dataset.gTitle = item.title;
+          span.dataset.gDesc = item.desc;
+          span.textContent = matchedText;
+          frag.appendChild(span);
+          if (after) frag.appendChild(document.createTextNode(after));
+          if (node.parentNode) node.parentNode.replaceChild(frag, node);
+          break;
+        }
+      }
+    });
+
+    function showTip(el) {
+      tip.innerHTML = '<strong>' + el.dataset.gTitle + '</strong>' + el.dataset.gDesc;
+      tip.classList.add('is-visible');
+      const rect = el.getBoundingClientRect();
+      const top = Math.max(10, rect.top - tip.offsetHeight - 10);
+      const left = Math.min(window.innerWidth - 325, Math.max(10, rect.left));
+      tip.style.top = (rect.top < 110 ? rect.bottom + 8 : top) + 'px';
+      tip.style.left = left + 'px';
+    }
+    function hideTip() {
+      tip.classList.remove('is-visible');
+    }
+
+    document.addEventListener('mouseover', (e) => {
+      const t = e.target.closest && e.target.closest('.wg-glossary-term');
+      if (t) showTip(t);
+    });
+    document.addEventListener('mouseout', (e) => {
+      const t = e.target.closest && e.target.closest('.wg-glossary-term');
+      if (t) hideTip();
+    });
+    document.addEventListener('focusin', (e) => {
+      const t = e.target.closest && e.target.closest('.wg-glossary-term');
+      if (t) showTip(t);
+    });
+    document.addEventListener('focusout', (e) => {
+      const t = e.target.closest && e.target.closest('.wg-glossary-term');
+      if (t) hideTip();
+    });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      setTimeout(initLegalGlossaryTooltips, 300);
+    });
   } else {
     initApp();
+    setTimeout(initLegalGlossaryTooltips, 300);
   }
 })();
