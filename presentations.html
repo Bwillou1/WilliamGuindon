@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Présentations &amp; Briefings Chiffrés (AES-256) | William Guindon — SEM-26-003</title>
-  <meta name="description" content="Portail de présentations et diapositives chiffrées de bout en bout (AES-256-GCM / PBKDF2 WebCrypto type StatiCrypt) pour les rencontres parlementaires, conférences et briefings médias de William Guindon.">
+  <title>Pupitre de Présentation Pro (PowerPoint .PPTX &amp; PDF) | William Guindon — SEM-26-003</title>
+  <meta name="description" content="Pupitre de présentation professionnel de William Guindon : prise en charge native des fichiers PowerPoint (.pptx) et PDF Canva protégés par mot de passe sur Mac, vue présentateur double écran, annotateur en direct et pointeur laser.">
   <link rel="canonical" href="https://williamguindon.me/presentations.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Présentations &amp; Briefings Chiffrés (AES-256) — William Guindon">
-  <meta property="og:description" content="Accès sécurisé par chiffrement client AES-256-GCM aux présentations Canva (PDF / PPTX) et supports de briefing parlementaire sur le dossier CCE SEM-26-003.">
+  <meta property="og:title" content="Pupitre de Présentation Pro (.PPTX &amp; PDF) — William Guindon">
+  <meta property="og:description" content="Console de présentation officielle de William Guindon (PowerPoint .pptx et PDF Canva protégés par mot de passe natif) pour allocutions, rencontres parlementaires et conférences.">
   <meta property="og:url" content="https://williamguindon.me/presentations.html">
   <meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -18,8 +18,8 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Présentations & Briefings Chiffrés (AES-256) — William Guindon",
-    "description": "Portail sécurisé de consultation des présentations (PDF Canva / PPTX) chiffrées côté client (AES-256-GCM / PBKDF2 600 000 itérations) pour les rencontres parlementaires et briefings médias.",
+    "name": "Pupitre de Présentation Pro (.PPTX & PDF) — William Guindon",
+    "description": "Console de présentation professionnelle prenant en charge les fichiers PowerPoint (.pptx) et PDF Canva protégés par mot de passe natif de William Guindon.",
     "url": "https://williamguindon.me/presentations.html",
     "inLanguage": "fr-CA",
     "isPartOf": {
@@ -30,196 +30,312 @@
   }
   </script>
   <style>
-    .vault-hero {
-      padding: 4.5rem 1.25rem 2.5rem;
-      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.14), transparent 70%);
+    .pro-deck-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4.5rem;
+    }
+    .pro-deck-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
-    .vault-container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 2rem 1.25rem 4rem;
-    }
-    .vault-tabs {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-    .vault-tab-btn {
-      padding: 0.65rem 1.15rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg-alt, rgba(15, 23, 42, 0.04));
-      color: var(--text);
-      font-weight: 700;
-      font-size: 0.86rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.18s ease;
-    }
-    .vault-tab-btn.is-active {
-      background: var(--primary, #2d8a56);
-      border-color: var(--primary, #2d8a56);
-      color: #ffffff;
-      box-shadow: 0 6px 18px rgba(45, 138, 86, 0.28);
-    }
-    .vault-card {
-      border: 1.5px solid var(--border);
-      border-radius: 18px;
-      background: var(--card-bg, var(--bg));
-      padding: 2rem;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-    }
-    .staticrypt-lock-box {
-      max-width: 540px;
-      margin: 1rem auto;
-      text-align: center;
-      padding: 2rem 1.5rem;
-      border-radius: 16px;
-      border: 1.5px solid rgba(45, 138, 86, 0.35);
-      background: linear-gradient(145deg, rgba(45, 138, 86, 0.06), rgba(15, 23, 42, 0.03));
-    }
-    .staticrypt-badge {
+    .pro-kicker {
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0.3rem 0.75rem;
+      padding: 0.28rem 0.75rem;
       border-radius: 999px;
       font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       background: rgba(16, 185, 129, 0.14);
       color: var(--primary, #2d8a56);
-      margin-bottom: 0.9rem;
+      margin-bottom: 0.55rem;
     }
-    .staticrypt-input-row {
-      display: flex;
-      gap: 0.55rem;
-      margin-top: 1.1rem;
-      flex-wrap: wrap;
+    /* Barre de lancement PowerPoint (.pptx) & Keynote Pro */
+    .pptx-launchpad {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
-    .staticrypt-input {
-      flex: 1;
-      min-width: 210px;
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
+    .pptx-card {
       border: 1.5px solid var(--border);
+      border-radius: 16px;
+      background: var(--card-bg, var(--bg));
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    }
+    .pptx-card--featured {
+      border-color: rgba(217, 119, 6, 0.5);
+      background: linear-gradient(145deg, rgba(217, 119, 6, 0.07), rgba(15, 23, 42, 0.02));
+    }
+    .pptx-card--pdf {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.07), rgba(15, 23, 42, 0.02));
+    }
+    .pptx-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .pptx-action-btn {
+      padding: 0.65rem 1.05rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
       background: var(--bg);
       color: var(--text);
-      font-size: 0.95rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .staticrypt-btn {
-      padding: 0.75rem 1.35rem;
-      border-radius: 10px;
-      border: none;
-      background: var(--primary, #2d8a56);
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
+      transition: all 0.15s ease;
     }
-    .staticrypt-btn:hover {
-      filter: brightness(1.07);
+    .pptx-action-btn--primary {
+      background: #c2410c;
+      border-color: #ea580c;
+      color: #ffffff;
     }
-    /* Lecteur de diapositives (Mode Keynote / Canva) */
-    .slide-stage-wrap {
-      display: none;
-      margin-top: 1.25rem;
+    .pptx-action-btn--emerald {
+      background: var(--primary, #2d8a56);
+      border-color: var(--primary, #2d8a56);
+      color: #ffffff;
     }
-    .slide-stage-wrap.is-unlocked {
-      display: block;
+    .pptx-action-btn:hover {
+      filter: brightness(1.08);
     }
-    .slide-toolbar {
+    /* Console de présentation Pro (Style PowerPoint Presenter View) */
+    .studio-shell {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1.5px solid rgba(148, 163, 184, 0.28);
+      background: #090d16;
+      color: #f8fafc;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+    }
+    .studio-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 0.75rem;
-      padding: 0.85rem 1.1rem;
-      border-radius: 12px 12px 0 0;
+      padding: 0.85rem 1.15rem;
       background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      border-bottom: none;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
     }
-    .slide-viewport {
-      position: relative;
-      background: #020617;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      border-radius: 0 0 12px 12px;
-      min-height: 480px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 1rem;
-      user-select: none;
-    }
-    .slide-viewport canvas {
-      max-width: 100%;
-      max-height: 76vh;
-      height: auto !important;
-      border-radius: 6px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
-    }
-    .laser-dot {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #ef4444;
-      box-shadow: 0 0 12px 4px rgba(239, 68, 68, 0.85);
-      pointer-events: none;
-      display: none;
-      transform: translate(-50%, -50%);
-      z-index: 30;
-    }
-    .slide-ctrl-btn {
-      padding: 0.45rem 0.85rem;
+    .studio-btn {
+      padding: 0.45rem 0.8rem;
       border-radius: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      border: 1px solid rgba(148, 163, 184, 0.28);
       background: rgba(30, 41, 59, 0.9);
       color: #f8fafc;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
+      transition: all 0.15s ease;
     }
-    .slide-ctrl-btn:hover {
-      background: rgba(51, 65, 85, 1);
+    .studio-btn:hover {
+      background: #334155;
     }
-    .slide-progress-bar {
+    .studio-btn.is-active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.22);
+      color: #34d399;
+    }
+    .studio-progress {
       height: 4px;
-      background: rgba(148, 163, 184, 0.2);
       width: 100%;
+      background: rgba(148, 163, 184, 0.18);
     }
-    .slide-progress-fill {
+    .studio-progress-fill {
       height: 100%;
-      background: #10b981;
       width: 0%;
+      background: linear-gradient(90deg, #10b981, #38bdf8);
       transition: width 0.2s ease;
     }
-    .dropzone-encrypt {
-      border: 2px dashed rgba(45, 138, 86, 0.45);
-      border-radius: 14px;
-      padding: 1.5rem;
-      text-align: center;
-      background: rgba(45, 138, 86, 0.04);
-      cursor: pointer;
-      margin-bottom: 1rem;
+    .studio-workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: 560px;
+      position: relative;
     }
-    .dropzone-encrypt:hover {
-      background: rgba(45, 138, 86, 0.08);
+    .studio-workspace.presenter-split {
+      grid-template-columns: 1fr 310px;
+    }
+    @media (max-width: 960px) {
+      .studio-workspace.presenter-split {
+        grid-template-columns: 1fr;
+      }
+    }
+    .studio-main-stage {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background: #020617;
+      overflow: hidden;
+      user-select: none;
+    }
+    .canvas-stack {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+    }
+    #pro-slide-canvas {
+      max-width: 100%;
+      max-height: 76vh;
+      height: auto !important;
+      border-radius: 6px;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.75);
+      display: none;
+    }
+    #pro-draw-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      border-radius: 6px;
+    }
+    #pro-draw-canvas.drawing-enabled {
+      pointer-events: auto;
+      cursor: crosshair;
+    }
+    .studio-side-panel {
+      display: none;
+      border-left: 1px solid rgba(148, 163, 184, 0.2);
+      background: #0f172a;
+      padding: 1rem;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .studio-workspace.presenter-split .studio-side-panel {
+      display: flex;
+    }
+    .next-slide-box {
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: #020617;
+      padding: 0.65rem;
+      text-align: center;
+    }
+    #pro-next-canvas {
+      max-width: 100%;
+      height: auto !important;
+      border-radius: 4px;
+    }
+    /* Modale de mot de passe PDF natif (Mac Preview / Adobe PDF Password) */
+    .pdf-pass-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 35;
+      background: rgba(2, 6, 23, 0.94);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .pdf-pass-card {
+      max-width: 440px;
+      width: 100%;
+      background: #0f172a;
+      border: 1.5px solid rgba(16, 185, 129, 0.45);
+      border-radius: 16px;
+      padding: 1.85rem 1.6rem;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    .pdf-pass-input {
+      width: 100%;
+      padding: 0.75rem 0.95rem;
+      border-radius: 10px;
+      border: 1.5px solid rgba(148, 163, 184, 0.35);
+      background: #020617;
+      color: #ffffff;
+      font-family: ui-monospace, monospace;
+      font-size: 0.95rem;
+      text-align: center;
+      margin: 0.9rem 0 0.7rem;
+    }
+    /* Grille Trieuse de diapositives (touche G) */
+    .slide-sorter-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.85rem;
+      padding: 1.25rem;
+      background: #020617;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+    .slide-sorter-grid.is-open {
+      display: grid;
+    }
+    .sorter-thumb {
+      border: 2px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      padding: 0.4rem;
+      background: #0f172a;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .sorter-thumb:hover, .sorter-thumb.is-current {
+      border-color: #10b981;
+      transform: translateY(-2px);
+    }
+    .sorter-thumb canvas {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    /* Écran noir de pause (Touche B comme PowerPoint) */
+    .blackout-screen {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      z-index: 45;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .blackout-screen.is-active {
+      display: flex;
+    }
+    .laser-pointer-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 14px 5px rgba(239, 68, 68, 0.9);
+      pointer-events: none;
+      display: none;
+      transform: translate(-50%, -50%);
+      z-index: 40;
     }
   </style>
 </head>
@@ -227,148 +343,159 @@
   <div id="navbar-placeholder"></div>
   <script src="assets/js/navbar-loader.js" defer></script>
 
-  <main id="main-content">
-    <section class="vault-hero">
-      <div class="wrap" style="max-width: 1040px; margin: 0 auto;">
-        <span class="staticrypt-badge">🔒 Chiffrement Client AES-256-GCM · PBKDF2 (600 000 itérations)</span>
-        <h1 style="margin: 0 0 0.6rem; font-size: clamp(1.8rem, 3.5vw, 2.6rem);">Coffre-fort de Présentations &amp; Diapositives (Canva PDF / PPTX)</h1>
-        <p style="margin: 0; max-width: 780px; color: var(--muted); font-size: 1rem; line-height: 1.6;">
-          Espace de diffusion chiffré de bout en bout (architecture inspirée de <strong>StatiCrypt</strong> via l'API native <code>WebCrypto</code>). Les fichiers de présentation (<strong>PDF Canva</strong> et <strong>PowerPoint .pptx</strong>) sont chiffrés en binaire <strong>AES-256-GCM</strong> : ils demeurent 100&nbsp;% illisibles sur le dépôt GitHub public et ne sont déchiffrés qu'en mémoire vive dans votre navigateur à la saisie de la clé d'accès.
+  <main id="main-content" class="pro-deck-wrap">
+    <header class="pro-deck-header">
+      <div>
+        <span class="pro-kicker">📽️ Pupitre du Présentateur · PowerPoint (.PPTX) &amp; PDF Protégés</span>
+        <h1 style="margin: 0; font-size: clamp(1.75rem, 3.2vw, 2.4rem);">Présentations &amp; Diapositives Officielles — William Guindon</h1>
+        <p style="margin: 0.4rem 0 0; color: var(--muted); max-width: 780px; font-size: 0.95rem;">
+          Console de présentation professionnelle pour allocutions, rencontres parlementaires et conférences. Compatible nativement avec tes fichiers <strong>PowerPoint (<code>.pptx</code>)</strong> et <strong>PDF Canva</strong> chiffrés par mot de passe sur ton Mac.
         </p>
       </div>
+    </header>
+
+    <!-- CARTES D'ACCÈS PRO : POWERPOINT (.PPTX) & PDF CANVA PROTÉGÉS PAR MOT DE PASSE MAC -->
+    <section class="pptx-launchpad" aria-label="Supports de présentation PowerPoint et PDF">
+      <!-- Carte 1 : PowerPoint (.pptx) Pro -->
+      <article class="pptx-card pptx-card--featured">
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; margin-bottom:0.45rem;">
+            <span style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#ea580c; background:rgba(234,88,12,0.14); padding:0.22rem 0.6rem; border-radius:999px;">📊 Microsoft PowerPoint &amp; Apple Keynote (.PPTX)</span>
+            <span style="font-size:0.74rem; font-weight:700; color:var(--muted);">🔒 Protégé par mot de passe Mac</span>
+          </div>
+          <h2 style="margin:0 0 0.35rem; font-size:1.18rem;">Présentation Native PowerPoint (<code>.pptx</code>)</h2>
+          <p style="margin:0; font-size:0.85rem; color:var(--muted); line-height:1.55;">
+            Fichier <code>.pptx</code> original chiffré sur Mac avec transitions, animations et notes du présentateur. Ouvre-le directement dans <strong>PowerPoint</strong> ou <strong>Keynote</strong> (le mot de passe natif du fichier te sera demandé à l'ouverture).
+          </p>
+        </div>
+        <div class="pptx-btn-row">
+          <button type="button" onclick="launchNativePptxApp()" class="pptx-action-btn pptx-action-btn--primary" title="Ouvrir directement dans l'application Microsoft PowerPoint sur Mac/PC/iPad">
+            <span>🚀 Ouvrir dans l'app PowerPoint</span>
+          </button>
+          <button type="button" onclick="downloadNativePptxFile()" class="pptx-action-btn" title="Télécharger le fichier .pptx protégé par mot de passe">
+            <span>⬇ Télécharger le .PPTX (Mac / Keynote)</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Carte 2 : PDF Canva Haute Définition (avec déverrouillage natif dans le pupitre ci-dessous) -->
+      <article class="pptx-card pptx-card--pdf">
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; margin-bottom:0.45rem;">
+            <span style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--primary); background:rgba(16,185,129,0.14); padding:0.22rem 0.6rem; border-radius:999px;">📄 Diaporama PDF Canva (Haute Définition)</span>
+            <span style="font-size:0.74rem; font-weight:700; color:var(--muted);">🔒 Déverrouillage natif PDF</span>
+          </div>
+          <h2 style="margin:0 0 0.35rem; font-size:1.18rem;">Présentation PDF Canva (<code>.pdf</code> protégé)</h2>
+          <p style="margin:0; font-size:0.85rem; color:var(--muted); line-height:1.55;">
+            Version PDF exportée de Canva et protégée par mot de passe sur Mac. Utilise le <strong>Pupitre de Présentation Pro</strong> ci-dessous (avec vue présentateur double écran, surligneur en direct et pointeur laser) ou ouvre un fichier local.
+          </p>
+        </div>
+        <div class="pptx-btn-row">
+          <button type="button" class="pptx-action-btn pptx-action-btn--emerald" onclick="loadServerProtectedPdf()">
+            <span>📽️ Lancer sur le Pupitre Pro ci-dessous</span>
+          </button>
+          <button type="button" class="pptx-action-btn" onclick="document.getElementById('local-pro-pdf-input').click()">
+            <span>📂 Ouvrir un PDF local depuis mon Mac...</span>
+          </button>
+          <input type="file" id="local-pro-pdf-input" accept="application/pdf,.pdf" style="display:none;" onchange="loadLocalProtectedPdf(this.files[0])">
+        </div>
+      </article>
     </section>
 
-    <div class="vault-container">
-      <!-- Navigation entre le Lecteur Visiteur et le Studio de Chiffrement -->
-      <div class="vault-tabs" role="tablist">
-        <button type="button" class="vault-tab-btn is-active" id="tab-btn-viewer" onclick="switchVaultTab('viewer')">
-          <span>📽️ Salle de Présentation (Déverrouiller mes Slides)</span>
-        </button>
-        <button type="button" class="vault-tab-btn" id="tab-btn-encrypt" onclick="switchVaultTab('encrypt')">
-          <span>🛠️ Studio de Chiffrement Local (Chiffrer mon PDF Canva / PPTX)</span>
-        </button>
+    <!-- PUPITRE DE PRÉSENTATION PRO (STYLE KEYNOTE / POWERPOINT PRESENTER VIEW) -->
+    <section class="studio-shell" id="pro-studio-shell" aria-label="Pupitre de présentation interactif">
+      <div class="studio-topbar">
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <button type="button" class="studio-btn" onclick="proPrevSlide()" title="Diapositive précédente (Flèche gauche)">◀ Préc.</button>
+          <span id="pro-slide-counter" style="font-family:ui-monospace,monospace; font-size:0.84rem; font-weight:800; padding:0 0.45rem;">Diapo 1 / 1</span>
+          <button type="button" class="studio-btn" onclick="proNextSlide()" title="Diapositive suivante (Flèche droite / Espace)">Suiv. ▶</button>
+          <button type="button" class="studio-btn" id="btn-sorter-grid" onclick="toggleSlideSorterGrid()" title="Grille de toutes les diapositives (Touche G)">⊞ Grille (G)</button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
+          <button type="button" class="studio-btn is-active" id="btn-split-view" onclick="togglePresenterSplitView()" title="Basculer la Vue Présentateur (Diapo suivante + Notes)">🖥️ Vue Présentateur</button>
+          <button type="button" class="studio-btn" id="btn-laser" onclick="toggleProLaser()" title="Pointeur laser rouge (Touche L)">🔴 Laser (L)</button>
+          <button type="button" class="studio-btn" id="btn-pen" onclick="toggleProPen()" title="Annoter / Surligner sur la diapositive (Touche P)">✏️ Surligneur (P)</button>
+          <button type="button" class="studio-btn" id="btn-clear-ink" onclick="clearProInk()" style="display:none;" title="Effacer les annotations de cette diapositive">🧹 Effacer</button>
+          <button type="button" class="studio-btn" id="btn-blackout" onclick="toggleBlackoutScreen()" title="Écran noir de pause comme sur PowerPoint (Touche B)">⬛ Écran noir (B)</button>
+          <button type="button" class="studio-btn" onclick="toggleProFullscreen()" title="Plein écran (Touche F)">⛶ Plein écran (F)</button>
+        </div>
       </div>
 
-      <!-- ONGLET 1 : SALLE DE PRÉSENTATION & DÉVERROUILLAGE -->
-      <section id="vault-panel-viewer" class="vault-card">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">
-          <div>
-            <span style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--primary);">Présentations officielles · William Guindon</span>
-            <h2 style="margin:0.2rem 0 0; font-size:1.35rem;">Sélectionner ou déverrouiller une présentation</h2>
-          </div>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <select id="vault-deck-select" onchange="onSelectPresentationDeck()" style="padding:0.55rem 0.85rem; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:0.83rem; font-weight:700;">
-              <option value="assets/docs/presentation-canva.enc">Présentation principale (Canva PDF + PPTX chiffrés — presentation-canva.enc)</option>
-              <option value="demo-parlement">Briefing Parlementaire — Novembre 2026 (Loi 93, BAPE 371, BVG 0546 &amp; CCE)</option>
-              <option value="local-enc">Charger un fichier chiffré (.enc) depuis mon appareil...</option>
-            </select>
-          </div>
-        </div>
+      <div class="studio-progress">
+        <div class="studio-progress-fill" id="pro-progress-fill"></div>
+      </div>
 
-        <!-- Boîte de déverrouillage AES-256 style StatiCrypt -->
-        <div class="staticrypt-lock-box" id="vault-lock-screen">
-          <div style="width:54px; height:54px; border-radius:50%; background:rgba(45,138,86,0.14); color:var(--primary); display:inline-flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:0.75rem;">🔐</div>
-          <h3 style="margin:0 0 0.4rem; font-size:1.2rem;">Présentation protégée par chiffrement AES-256</h3>
-          <p style="margin:0 auto; max-width:440px; font-size:0.86rem; color:var(--muted); line-height:1.55;">
-            Entrez la clé d'accès transmise par William Guindon pour déchiffrer les diapositives localement dans votre navigateur (aucune donnée n'est envoyée sur le réseau).
-          </p>
+      <!-- Grille Trieuse de diapositives -->
+      <div class="slide-sorter-grid" id="slide-sorter-grid"></div>
 
-          <div id="local-enc-upload-row" style="display:none; margin-top:0.9rem;">
-            <input type="file" id="local-enc-file-input" accept=".enc,application/octet-stream" style="font-size:0.82rem;">
+      <!-- Espace de travail principal (Scène + Panneau Présentateur latéral) -->
+      <div class="studio-workspace presenter-split" id="studio-workspace">
+        <div class="studio-main-stage" id="studio-main-stage">
+          <div class="laser-pointer-dot" id="pro-laser-dot"></div>
+
+          <!-- Écran noir (Touche B) -->
+          <div class="blackout-screen" id="pro-blackout-screen" onclick="toggleBlackoutScreen()">
+            <span>Mode Écran Noir actif — Cliquez ou appuyez sur « B » pour reprendre la présentation</span>
           </div>
 
-          <form onsubmit="event.preventDefault(); unlockSelectedPresentation();" class="staticrypt-input-row">
-            <input type="password" id="vault-password-input" class="staticrypt-input" placeholder="Clé de déchiffrement..." autocomplete="current-password" required>
-            <button type="submit" class="staticrypt-btn" id="vault-unlock-btn">
-              <span>Déverrouiller</span>
-            </button>
-          </form>
-
-          <div style="margin-top:0.85rem; display:flex; justify-content:center; gap:0.6rem; flex-wrap:wrap;">
-            <button type="button" onclick="unlockBuiltInSlideDeck()" style="background:none; border:none; color:var(--primary); font-size:0.78rem; font-weight:700; text-decoration:underline; cursor:pointer;">
-              Aperçu immédiat : Ouvrir le Briefing Parlementaire interactif (Novembre 2026) →
-            </button>
-          </div>
-
-          <div id="vault-status-msg" style="margin-top:0.8rem; font-size:0.82rem; font-weight:700; min-height:1.2em;"></div>
-        </div>
-
-        <!-- Scène de présentation déverrouillée (Lecteur PDF Canva + Slides HTML + Téléchargement PPTX) -->
-        <div class="slide-stage-wrap" id="slide-stage-wrap">
-          <div class="slide-toolbar">
-            <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
-              <span style="background:rgba(16,185,129,0.2); color:#34d399; padding:0.2rem 0.6rem; border-radius:999px; font-size:0.72rem; font-weight:800;">🔓 DÉCHIFFRÉ EN RAM</span>
-              <strong id="slide-deck-title" style="font-size:0.9rem;">Présentation officielle</strong>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
-              <button type="button" class="slide-ctrl-btn" onclick="prevSlide()" title="Diapositive précédente (Flèche gauche)">◀ Préc.</button>
-              <span id="slide-counter-badge" style="font-family:ui-monospace,monospace; font-size:0.82rem; padding:0 0.4rem;">1 / 1</span>
-              <button type="button" class="slide-ctrl-btn" onclick="nextSlide()" title="Diapositive suivante (Flèche droite)">Suiv. ▶</button>
-              <button type="button" class="slide-ctrl-btn" id="laser-toggle-btn" onclick="toggleLaserPointer()" title="Pointeur laser virtuel (Touche L)">🔴 Laser</button>
-              <button type="button" class="slide-ctrl-btn" onclick="toggleSlideFullscreen()" title="Plein écran (Touche F)">⛶ Plein écran</button>
-              <a id="download-decrypted-pdf-btn" style="display:none; text-decoration:none;" class="slide-ctrl-btn">⬇ PDF Canva</a>
-              <a id="download-decrypted-pptx-btn" style="display:none; text-decoration:none; background:#0284c7; border-color:#38bdf8;" class="slide-ctrl-btn">⬇ Fichier .PPTX</a>
-              <button type="button" class="slide-ctrl-btn" style="background:rgba(239,68,68,0.25); border-color:rgba(239,68,68,0.5);" onclick="lockPresentationVault()">🔒 Verrouiller</button>
+          <!-- Modale de déverrouillage natif du PDF protégé par mot de passe sur Mac -->
+          <div class="pdf-pass-overlay" id="pdf-pass-overlay">
+            <div class="pdf-pass-card">
+              <div style="font-size:2rem; margin-bottom:0.4rem;">🔐</div>
+              <h3 style="margin:0 0 0.35rem; font-size:1.18rem; color:#ffffff;">Présentation protégée par mot de passe</h3>
+              <p id="pdf-pass-msg" style="margin:0; font-size:0.84rem; color:#94a3b8; line-height:1.5;">
+                Entrez le mot de passe défini sur votre Mac pour déverrouiller et afficher les diapositives sur le pupitre :
+              </p>
+              <form onsubmit="event.preventDefault(); submitNativePdfPassword();">
+                <input type="password" id="native-pdf-pass-input" class="pdf-pass-input" placeholder="Mot de passe du document..." autocomplete="current-password">
+                <div style="display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;">
+                  <button type="submit" class="pptx-action-btn pptx-action-btn--emerald" style="width:100%; justify-content:center;">
+                    <span>Déverrouiller les diapositives</span>
+                  </button>
+                </div>
+              </form>
+              <div style="margin-top:0.85rem; padding-top:0.75rem; border-top:1px solid rgba(148,163,184,0.2);">
+                <button type="button" onclick="document.getElementById('local-pro-pdf-input').click()" style="background:none; border:none; color:#38bdf8; font-size:0.78rem; font-weight:700; cursor:pointer; text-decoration:underline;">
+                  Ou sélectionner un fichier PDF protégé depuis mon Mac →
+                </button>
+              </div>
             </div>
           </div>
-          <div class="slide-progress-bar">
-            <div class="slide-progress-fill" id="slide-progress-fill"></div>
-          </div>
-          <div class="slide-viewport" id="slide-viewport">
-            <div class="laser-dot" id="laser-dot"></div>
-            <canvas id="pdf-slide-canvas" style="display:none;"></canvas>
-            <div id="html-slide-container" style="width:100%; max-width:920px; display:none;"></div>
-          </div>
-        </div>
-      </section>
 
-      <!-- ONGLET 2 : STUDIO DE CHIFFREMENT LOCAL (POUR CHIFFRER TON PDF CANVA & PPTX) -->
-      <section id="vault-panel-encrypt" class="vault-card" style="display:none;">
-        <span class="staticrypt-badge">🛡️ Générateur de Paquet Chiffré AES-256-GCM (100 % Local)</span>
-        <h2 style="margin:0 0 0.5rem; font-size:1.35rem;">Chiffrer ta présentation Canva (PDF + PPTX) avant de la mettre sur GitHub</h2>
-        <p style="font-size:0.9rem; color:var(--muted); line-height:1.6; margin-bottom:1.25rem;">
-          <strong>Pourquoi cet outil est supérieur à StatiCrypt classique pour tes slides :</strong> StatiCrypt ne chiffre que le texte HTML ; si tu déposes ton PDF Canva ou ton <code>.pptx</code> à côté sur GitHub, n'importe qui peut le télécharger en clair. Cet outil regroupe ton <strong>PDF Canva</strong> (et optionnellement ton <strong>fichier PowerPoint .pptx</strong>) dans un seul conteneur binaire chiffré en <strong>AES-256-GCM (PBKDF2 — 600 000 itérations SHA-256)</strong> nommé <code>presentation-canva.enc</code>.
-        </p>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; margin-bottom:1.2rem;">
-          <div class="dropzone-encrypt" onclick="document.getElementById('enc-pdf-input').click()">
-            <div style="font-size:1.5rem; margin-bottom:0.35rem;">📄</div>
-            <strong style="display:block; font-size:0.9rem;">1. Ton PDF exporté de Canva (Requis)</strong>
-            <span id="enc-pdf-label" style="font-size:0.8rem; color:var(--muted);">Clique pour sélectionner ton fichier .pdf</span>
-            <input type="file" id="enc-pdf-input" accept="application/pdf,.pdf" style="display:none;" onchange="updateEncFileLabels()">
-          </div>
-
-          <div class="dropzone-encrypt" onclick="document.getElementById('enc-pptx-input').click()">
-            <div style="font-size:1.5rem; margin-bottom:0.35rem;">📊</div>
-            <strong style="display:block; font-size:0.9rem;">2. Ton fichier PowerPoint .pptx (Optionnel)</strong>
-            <span id="enc-pptx-label" style="font-size:0.8rem; color:var(--muted);">Clique pour inclure aussi le .pptx dans le coffre</span>
-            <input type="file" id="enc-pptx-input" accept=".pptx,.ppt,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none;" onchange="updateEncFileLabels()">
+          <div class="canvas-stack" id="canvas-stack">
+            <canvas id="pro-slide-canvas"></canvas>
+            <canvas id="pro-draw-canvas"></canvas>
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.85rem; margin-bottom:1.1rem;">
-          <div>
-            <label for="enc-title-input" style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.3rem;">Titre de la présentation :</label>
-            <input type="text" id="enc-title-input" class="staticrypt-input" style="width:100%;" value="Présentation Officielle — Dossier CCE SEM-26-003 (Canva)">
+        <!-- Panneau latéral du Présentateur (Chronomètre + Diapo suivante + Aide-mémoire) -->
+        <aside class="studio-side-panel" aria-label="Outils de l'orateur">
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#020617; padding:0.7rem 0.85rem; border-radius:10px; border:1px solid rgba(148,163,184,0.2);">
+            <span id="pro-timer-display" style="font-family:ui-monospace,monospace; font-size:1.15rem; font-weight:800; color:#38bdf8;">00:00</span>
+            <div style="display:flex; gap:0.35rem;">
+              <button type="button" class="studio-btn" onclick="toggleProTimer()" id="btn-timer-toggle">▶</button>
+              <button type="button" class="studio-btn" onclick="resetProTimer()" title="Réinitialiser le chronomètre">↺</button>
+            </div>
           </div>
-          <div>
-            <label for="enc-pass-input" style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:0.3rem;">Mot de passe de chiffrement AES-256 :</label>
-            <input type="text" id="enc-pass-input" class="staticrypt-input" style="width:100%;" placeholder="Ex: Tourbiere-2026-Secret!">
+
+          <div class="next-slide-box">
+            <div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:0.4rem;">Diapositive suivante</div>
+            <canvas id="pro-next-canvas"></canvas>
+            <div id="pro-next-label" style="font-size:0.74rem; color:#64748b; margin-top:0.3rem;">—</div>
           </div>
-        </div>
 
-        <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-          <button type="button" class="staticrypt-btn" onclick="generateEncryptedPresentationBundle()">
-            <span>🔒 Chiffrer en AES-256 et télécharger « presentation-canva.enc »</span>
-          </button>
-          <button type="button" class="vault-tab-btn" onclick="testPreviewEncryptedNow()">
-            <span>👁️ Tester immédiatement dans le lecteur</span>
-          </button>
-        </div>
+          <div style="flex:1; display:flex; flex-direction:column;">
+            <label for="pro-speaker-notes" style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#94a3b8; margin-bottom:0.35rem;">Notes d'allocution (locales) :</label>
+            <textarea id="pro-speaker-notes" placeholder="Tes repères d'orateur pour cette présentation (restent uniquement dans ton navigateur)..." style="flex:1; min-height:130px; width:100%; border-radius:10px; border:1px solid rgba(148,163,184,0.25); background:#020617; color:#e2e8f0; padding:0.65rem; font-size:0.82rem; line-height:1.5; resize:vertical;"></textarea>
+          </div>
 
-        <div id="enc-result-box" style="display:none; margin-top:1.25rem; padding:1rem; border-radius:12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.35); font-size:0.84rem; line-height:1.55;"></div>
-      </section>
-    </div>
+          <div style="font-size:0.72rem; color:#64748b; line-height:1.45;">
+            <strong>Raccourcis Pro :</strong> <code>←</code>/<code>→</code> Diapos · <code>F</code> Plein écran · <code>L</code> Laser · <code>P</code> Surligneur · <code>G</code> Grille · <code>B</code> Écran noir
+          </div>
+        </aside>
+      </div>
+    </section>
   </main>
 
   <script src="assets/vendor/pdfjs/pdf.min.js"></script>
@@ -380,433 +507,313 @@
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/vendor/pdfjs/pdf.worker.min.js';
       }
 
-      var currentPdfDoc = null;
-      var currentSlideIndex = 1;
-      var totalSlidesCount = 1;
-      var currentMode = 'none'; // 'pdf' | 'html'
-      var laserActive = false;
-      var lastEncryptedBytes = null;
+      // Chemin par défaut du PDF et du PPTX protégés par mot de passe sur Mac
+      var DEFAULT_PROTECTED_PDF = 'assets/docs/presentation-william-guindon.pdf';
+      var DEFAULT_PROTECTED_PPTX = 'assets/docs/presentation-william-guindon.pptx';
 
-      // Diapositives HTML intégrées (Briefing Parlementaire Novembre 2026)
-      var BUILTIN_SLIDES = [
-        {
-          kicker: 'DIAPOSITIVE 01 / 06 · BRIEFING PARLEMENTAIRE & MÉDIAS (NOVEMBRE 2026)',
-          title: 'Dossier CCE SEM-26-003 & Grande Tourbière de Blainville',
-          subtitle: 'État de la procédure internationale (ACEUM art. 24.28) et échéance fédérale du 10 novembre 2026 (BVG n° 0546)',
-          bullets: [
-            'Auteur : William Guindon (15 ans), premier mineur depuis 1994 à franchir l’étape de détermination positive à la CCE.',
-            'Site visé : Expansion de la cellule n° 6 de Stablex dans 278 000 m² de la Grande Tourbière de Blainville.',
-            'Enjeu central : Inapplication alléguée de la LCOM, de la LEP, de la LCPE (1999) et de la Loi sur les pêches.'
-          ]
-        },
-        {
-          kicker: 'DIAPOSITIVE 02 / 06 · FAITS SCIENTIFIQUES & BAPE 371',
-          title: 'Recommandation défavorable du BAPE 371 et expropriation sous bâillon (Loi 93)',
-          subtitle: 'Le contournement des mécanismes d’évaluation environnementale au Québec',
-          bullets: [
-            'Septembre 2023 (Rapport BAPE 371) : La commission d’enquête conclut que le projet de cellule 6 est prématuré et recommande de ne pas l’autoriser.',
-            '28 mars 2025 (Loi 93 sous bâillon) : Expropriation de 278 000 m² au profit de Stablex (filiale d’un groupe américain) et immunité contre les recours.',
-            'Contamination mesurée : Concentrations de cadmium atteignant jusqu’à 320× le critère de toxicité aiguë dans l’eau de surface et 31,8× à 57,6× dans les sédiments.'
-          ]
-        },
-        {
-          kicker: 'DIAPOSITIVE 03 / 06 · ANALYSE DE LA RÉPONSE D’OTTAWA (16 OCTOBRE 2026)',
-          title: 'Pièce 72-RSP (59 pages) : La stratégie d’évitement procédural du Canada',
-          subtitle: 'Pourquoi Ottawa demande la clôture sans répondre sur le fond de ses lois fédérales',
-          bullets: [
-            'Argument 1 d’Ottawa : Invoquer le contrôle judiciaire municipal de la Ville de Blainville contre la Loi 93.',
-            'Réfutation (17 oct. 2026) : Le litige municipal ne porte que sur le droit constitutionnel/municipal québécois — aucune loi fédérale (LCOM, LEP, LCPE) n’y est invoquée.',
-            'Argument 2 d’Ottawa : Invoquer la pétition environnementale fédérale n° 0546 déposée par l’auteur au BVG/CEDD.'
-          ]
-        },
-        {
-          kicker: 'DIAPOSITIVE 04 / 06 · ÉCHÉANCE LÉGALE DU 10 NOVEMBRE 2026',
-          title: 'Le piège procédural de la Pétition fédérale n° 0546 (BVG / CEDD)',
-          subtitle: 'Article 22 de la Loi sur le vérificateur général du Canada',
-          bullets: [
-            'Une pétition au BVG est un mécanisme de reddition de comptes parlementaire (questions-réponses) et non un tribunal (art. 24.27(4)(a) ACEUM inapplicable).',
-            'En l’invoquant devant la CCE, Ottawa s’est lui-même placé devant son obligation légale de répondre d’ici le 10 novembre 2026.',
-            'Toute réponse évasive des ministres fédéraux le 10 novembre confirmera devant la CCE la nécessité d’un dossier factuel.'
-          ]
-        },
-        {
-          kicker: 'DIAPOSITIVE 05 / 06 · ÉTAPE ACTIVE : ARTICLE 24.28 DE L’ACEUM',
-          title: 'Vers la constitution d’un Dossier factuel d’enquête internationale',
-          subtitle: 'Délai de 60 jours ouvrables du Secrétariat de la CCE (Pièce 73-REC)',
-          bullets: [
-            'Le Secrétariat de la CCE évalue actuellement la réponse 72-RSP et le mémoire d’observations citoyennes du 17 octobre 2026.',
-            'Aucune mesure d’inspection ou d’application fédérale n’ayant été démontrée sur la cellule n° 6, les conditions d’un dossier factuel sont réunies.',
-            'Le vote au Conseil ministériel trinational (Canada, États-Unis, Mexique) se prend à la majorité des 2/3 : Ottawa n’a aucun droit de veto.'
-          ]
-        },
-        {
-          kicker: 'DIAPOSITIVE 06 / 06 · PISTES D’ACTION PARLEMENTAIRE (NOVEMBRE 2026)',
-          title: 'Ce que les parlementaires québécois et fédéraux peuvent exiger dès maintenant',
-          subtitle: 'Rencontres bilatérales avec Nadine Le Gal (Assemblée nationale) et Madeleine Chenette (Parlement fédéral)',
-          bullets: [
-            '1. Exiger la publication intégrale des données hydrogéologiques et de suivi du cadmium autour de Stablex.',
-            '2. Demander aux ministres fédéraux (ECCC, MPO, Santé Canada) une réponse substantielle et complète à la pétition BVG n° 0546 le 10 novembre 2026.',
-            '3. Appuyer publiquement la recommandation d’un dossier factuel indépendant par la CCE en vertu de l’article 24.28 de l’ACEUM.'
-          ]
-        }
-      ];
-
-      window.switchVaultTab = function(tab) {
-        var isViewer = (tab === 'viewer');
-        document.getElementById('vault-panel-viewer').style.display = isViewer ? 'block' : 'none';
-        document.getElementById('vault-panel-encrypt').style.display = isViewer ? 'none' : 'block';
-        document.getElementById('tab-btn-viewer').classList.toggle('is-active', isViewer);
-        document.getElementById('tab-btn-encrypt').classList.toggle('is-active', !isViewer);
+      window.launchNativePptxApp = function() {
+        window.location.href = 'ms-powerpoint:ofv|u|https://williamguindon.me/' + DEFAULT_PROTECTED_PPTX;
       };
 
-      window.onSelectPresentationDeck = function() {
-        var val = document.getElementById('vault-deck-select').value;
-        var uploadRow = document.getElementById('local-enc-upload-row');
-        if (uploadRow) uploadRow.style.display = (val === 'local-enc') ? 'block' : 'none';
+      window.downloadNativePptxFile = function() {
+        var a = document.createElement('a');
+        a.href = DEFAULT_PROTECTED_PPTX;
+        a.download = 'presentation-william-guindon.pptx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       };
 
-      // --- Cryptographie WebCrypto AES-256-GCM + PBKDF2 (600 000 itérations SHA-256) ---
-      async function deriveAesKey(password, salt) {
-        var enc = new TextEncoder();
-        var baseKey = await crypto.subtle.importKey(
-          'raw',
-          enc.encode(password),
-          'PBKDF2',
-          false,
-          ['deriveKey']
-        );
-        return crypto.subtle.deriveKey(
-          {
-            name: 'PBKDF2',
-            salt: salt,
-            iterations: 600000,
-            hash: 'SHA-256'
-          },
-          baseKey,
-          { name: 'AES-GCM', length: 256 },
-          false,
-          ['encrypt', 'decrypt']
-        );
-      }
+      var pdfDoc = null;
+      var currentPage = 1;
+      var totalPages = 1;
+      var pendingPasswordCallback = null;
+      var laserEnabled = false;
+      var penEnabled = false;
+      var isDrawing = false;
+      var timerRunning = false;
+      var timerSec = 0;
+      var timerHandle = null;
 
-      function arrayBufferToBase64(buffer) {
-        var binary = '';
-        var bytes = new Uint8Array(buffer);
-        var chunkSize = 0x8000;
-        for (var i = 0; i < bytes.length; i += chunkSize) {
-          binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
-        }
-        return btoa(binary);
-      }
+      function openPdfWithNativePasswordSupport(sourceParam) {
+        var overlay = document.getElementById('pdf-pass-overlay');
+        var msg = document.getElementById('pdf-pass-msg');
+        sourceParam.isEvalSupported = false;
 
-      function base64ToUint8Array(b64) {
-        var binary = atob(b64);
-        var len = binary.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-          bytes[i] = binary.charCodeAt(i);
-        }
-        return bytes;
-      }
+        var loadingTask = window.pdfjsLib.getDocument(sourceParam);
 
-      window.updateEncFileLabels = function() {
-        var pdfFile = document.getElementById('enc-pdf-input').files[0];
-        var pptxFile = document.getElementById('enc-pptx-input').files[0];
-        if (pdfFile) {
-          document.getElementById('enc-pdf-label').textContent = '✔ ' + pdfFile.name + ' (' + Math.round(pdfFile.size / 1024) + ' Ko)';
-        }
-        if (pptxFile) {
-          document.getElementById('enc-pptx-label').textContent = '✔ ' + pptxFile.name + ' (' + Math.round(pptxFile.size / 1024) + ' Ko)';
-        }
-      };
-
-      async function createEncryptedBundleBuffer(password) {
-        var pdfFile = document.getElementById('enc-pdf-input').files[0];
-        var pptxFile = document.getElementById('enc-pptx-input').files[0];
-        var title = document.getElementById('enc-title-input').value.trim() || 'Présentation Canva';
-
-        if (!pdfFile) {
-          alert('Sélectionne d’abord ton fichier PDF exporté de Canva.');
-          return null;
-        }
-        if (!password || password.length < 4) {
-          alert('Choisis un mot de passe d’au moins 4 caractères.');
-          return null;
-        }
-
-        var pdfBuf = await pdfFile.arrayBuffer();
-        var payloadObj = {
-          title: title,
-          createdAt: new Date().toISOString(),
-          pdfName: pdfFile.name,
-          pdfBase64: arrayBufferToBase64(pdfBuf),
-          pptxName: null,
-          pptxBase64: null
+        // Gestionnaire officiel PDF.js pour les PDF chiffrés par mot de passe sur Mac / Adobe
+        loadingTask.onPassword = function(updatePassword, reason) {
+          pendingPasswordCallback = updatePassword;
+          overlay.style.display = 'flex';
+          if (reason === window.pdfjsLib.PasswordResponses.INCORRECT_PASSWORD) {
+            msg.style.color = '#f87171';
+            msg.textContent = '❌ Mot de passe incorrect. Réessaie avec le mot de passe défini sur ton Mac :';
+          } else {
+            msg.style.color = '#94a3b8';
+            msg.textContent = 'Ce PDF est chiffré par mot de passe. Entre ton mot de passe pour déverrouiller les diapositives :';
+          }
+          var inp = document.getElementById('native-pdf-pass-input');
+          if (inp) {
+            inp.value = '';
+            inp.focus();
+          }
         };
 
-        if (pptxFile) {
-          var pptxBuf = await pptxFile.arrayBuffer();
-          payloadObj.pptxName = pptxFile.name;
-          payloadObj.pptxBase64 = arrayBufferToBase64(pptxBuf);
-        }
-
-        var plainBytes = new TextEncoder().encode(JSON.stringify(payloadObj));
-        var salt = crypto.getRandomValues(new Uint8Array(16));
-        var iv = crypto.getRandomValues(new Uint8Array(12));
-        var key = await deriveAesKey(password, salt);
-        var cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, plainBytes);
-
-        // Format binaire WGENC1 : [6 octets "WGENC1"][16 octets salt][12 octets iv][ciphertext]
-        var header = new TextEncoder().encode('WGENC1');
-        var cipherBytes = new Uint8Array(cipherBuf);
-        var out = new Uint8Array(header.length + 16 + 12 + cipherBytes.length);
-        out.set(header, 0);
-        out.set(salt, 6);
-        out.set(iv, 22);
-        out.set(cipherBytes, 34);
-        return out;
-      }
-
-      window.generateEncryptedPresentationBundle = async function() {
-        var pass = document.getElementById('enc-pass-input').value;
-        var resBox = document.getElementById('enc-result-box');
-        resBox.style.display = 'block';
-        resBox.textContent = '⏳ Chiffrement AES-256-GCM (PBKDF2 600 000 itérations) en cours...';
-        try {
-          var outBytes = await createEncryptedPresentationWithCatch(pass);
-          if (!outBytes) {
-            resBox.style.display = 'none';
-            return;
-          }
-          lastEncryptedBytes = outBytes;
-          var blob = new Blob([outBytes], { type: 'application/octet-stream' });
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'presentation-canva.enc';
-          a.click();
-
-          var magicLink = window.location.origin + window.location.pathname + '#key=' + encodeURIComponent(pass);
-          resBox.innerHTML =
-            '<strong>✔ Fichier chiffré <code>presentation-canva.enc</code> généré avec succès !</strong><br>' +
-            '1. Place ce fichier dans <code>assets/docs/presentation-canva.enc</code> (ou envoie-le moi ici) : il est totalement illisible sur GitHub sans ton mot de passe.<br>' +
-            '2. Lien direct avec déverrouillage automatique (le fragment <code>#key=</code> reste dans le navigateur et n’est jamais envoyé au serveur) :<br>' +
-            '<code style="word-break:break-all;">' + magicLink + '</code>';
-        } catch (err) {
-          resBox.textContent = 'Erreur de chiffrement : ' + err.message;
-        }
-      };
-
-      async function createEncryptedPresentationWithCatch(pass) {
-        return await createEncryptedBundleBuffer(pass);
-      }
-
-      window.testPreviewEncryptedNow = async function() {
-        var pass = document.getElementById('enc-pass-input').value;
-        var outBytes = await createEncryptedBundleBuffer(pass);
-        if (!outBytes) return;
-        lastEncryptedBytes = outBytes;
-        switchVaultTab('viewer');
-        await decryptAndRenderBundleBytes(outBytes, pass);
-      };
-
-      async function decryptAndRenderBundleBytes(encBytes, password) {
-        var statusEl = document.getElementById('vault-status-msg');
-        if (encBytes.length < 40) throw new Error('Fichier chiffré invalide ou incomplet.');
-        var magic = new TextDecoder().decode(encBytes.subarray(0, 6));
-        if (magic !== 'WGENC1') throw new Error('En-tête cryptographique WGENC1 non reconnu.');
-
-        var salt = encBytes.subarray(6, 22);
-        var iv = encBytes.subarray(22, 34);
-        var ciphertext = encBytes.subarray(34);
-
-        if (statusEl) {
-          statusEl.style.color = 'var(--muted)';
-          statusEl.textContent = '⏳ Dérivation PBKDF2 (600 000 itérations) et déchiffrement AES-256-GCM...';
-        }
-
-        var key = await deriveAesKey(password, salt);
-        var plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ciphertext);
-        var payload = JSON.parse(new TextDecoder().decode(plainBuf));
-
-        await openDecryptedPdfPayload(payload);
-      }
-
-      async function openDecryptedPdfPayload(payload) {
-        var pdfBytes = base64ToUint8Array(payload.pdfBase64);
-        var pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-        var pdfUrl = URL.createObjectURL(pdfBlob);
-
-        var dlPdf = document.getElementById('download-decrypted-pdf-btn');
-        if (dlPdf) {
-          dlPdf.href = pdfUrl;
-          dlPdf.download = payload.pdfName || 'presentation-canva.pdf';
-          dlPdf.style.display = 'inline-flex';
-        }
-
-        var dlPptx = document.getElementById('download-decrypted-pptx-btn');
-        if (dlPptx) {
-          if (payload.pptxBase64) {
-            var pptxBytes = base64ToUint8Array(payload.pptxBase64);
-            var pptxBlob = new Blob([pptxBytes], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-            dlPptx.href = URL.createObjectURL(pptxBlob);
-            dlPptx.download = payload.pptxName || 'presentation.pptx';
-            dlPptx.style.display = 'inline-flex';
-          } else {
-            dlPptx.style.display = 'none';
-          }
-        }
-
-        document.getElementById('slide-deck-title').textContent = payload.title || 'Présentation Canva';
-
-        if (!window.pdfjsLib) {
-          throw new Error('Moteur PDF.js non chargé.');
-        }
-
-        var loadingTask = window.pdfjsLib.getDocument({
-          data: pdfBytes,
-          isEvalSupported: false
+        loadingTask.promise.then(function(doc) {
+          pdfDoc = doc;
+          currentPage = 1;
+          totalPages = doc.numPages;
+          overlay.style.display = 'none';
+          document.getElementById('pro-slide-canvas').style.display = 'block';
+          startOrResumeTimer();
+          renderProSlideStage();
+          buildSlideSorterThumbnails();
+        }).catch(function(err) {
+          overlay.style.display = 'flex';
+          msg.style.color = '#fbbf24';
+          msg.innerHTML = 'Fichier <code>presentation-william-guindon.pdf</code> en attente de dépôt sur le serveur. Tu peux ouvrir immédiatement ton PDF chiffré depuis ton Mac avec le bouton ci-dessous, ou me transmettre tes fichiers <code>.pdf</code> et <code>.pptx</code> dès qu’ils sont prêts.';
         });
-        currentPdfDoc = await loadingTask.promise;
-        currentMode = 'pdf';
-        currentSlideIndex = 1;
-        totalSlidesCount = currentPdfDoc.numPages;
-
-        document.getElementById('vault-lock-screen').style.display = 'none';
-        document.getElementById('slide-stage-wrap').classList.add('is-unlocked');
-        document.getElementById('html-slide-container').style.display = 'none';
-        document.getElementById('pdf-slide-canvas').style.display = 'block';
-
-        await renderCurrentSlide();
       }
 
-      window.unlockBuiltInSlideDeck = function() {
-        currentMode = 'html';
-        currentSlideIndex = 1;
-        totalSlidesCount = BUILTIN_SLIDES.length;
-        document.getElementById('slide-deck-title').textContent = 'Briefing Parlementaire & Médias — Novembre 2026 (SEM-26-003)';
-        document.getElementById('download-decrypted-pdf-btn').style.display = 'none';
-        document.getElementById('download-decrypted-pptx-btn').style.display = 'none';
-        document.getElementById('vault-lock-screen').style.display = 'none';
-        document.getElementById('slide-stage-wrap').classList.add('is-unlocked');
-        document.getElementById('pdf-slide-canvas').style.display = 'none';
-        document.getElementById('html-slide-container').style.display = 'block';
-        renderCurrentSlide();
-      };
-
-      window.unlockSelectedPresentation = async function() {
-        var deck = document.getElementById('vault-deck-select').value;
-        var pass = document.getElementById('vault-password-input').value;
-        var statusEl = document.getElementById('vault-status-msg');
-
-        if (deck === 'demo-parlement') {
-          unlockBuiltInSlideDeck();
-          return;
-        }
-
-        try {
-          var encBytes = null;
-          if (deck === 'local-enc') {
-            var f = document.getElementById('local-enc-file-input').files[0];
-            if (!f) {
-              statusEl.style.color = '#ef4444';
-              statusEl.textContent = 'Sélectionne d’abord ton fichier .enc local.';
-              return;
-            }
-            encBytes = new Uint8Array(await f.arrayBuffer());
-          } else if (lastEncryptedBytes) {
-            encBytes = lastEncryptedBytes;
-          } else {
-            var res = await fetch(deck + '?_t=' + Date.now());
-            if (!res.ok) {
-              statusEl.style.color = '#f59e0b';
-              statusEl.innerHTML = 'Aucun fichier <code>presentation-canva.enc</code> trouvé sur le serveur pour l’instant. Utilise l’onglet <strong>« Studio de Chiffrement Local »</strong> ci-dessus pour chiffrer ton PDF Canva ou ouvre le briefing parlementaire intégré.';
-              return;
-            }
-            encBytes = new Uint8Array(await res.arrayBuffer());
-          }
-          await decryptAndRenderBundleBytes(encBytes, pass);
-          statusEl.textContent = '';
-        } catch (e) {
-          statusEl.style.color = '#ef4444';
-          statusEl.textContent = '❌ Clé de déchiffrement invalide ou fichier altéré.';
+      window.submitNativePdfPassword = function() {
+        var inp = document.getElementById('native-pdf-pass-input');
+        var val = inp ? inp.value : '';
+        if (!val) return;
+        if (pendingPasswordCallback) {
+          pendingPasswordCallback(val);
+        } else {
+          // Si l'utilisateur clique avant que le fichier serveur ne soit chargé, tente de charger avec ce mot de passe
+          openPdfWithNativePasswordSupport({ url: DEFAULT_PROTECTED_PDF, password: val });
         }
       };
 
-      async function renderCurrentSlide() {
-        document.getElementById('slide-counter-badge').textContent = currentSlideIndex + ' / ' + totalSlidesCount;
-        var pct = totalSlidesCount > 0 ? Math.round((currentSlideIndex / totalSlidesCount) * 100) : 100;
-        document.getElementById('slide-progress-fill').style.width = pct + '%';
+      window.loadServerProtectedPdf = function() {
+        openPdfWithNativePasswordSupport({ url: DEFAULT_PROTECTED_PDF });
+      };
 
-        if (currentMode === 'pdf' && currentPdfDoc) {
-          var page = await currentPdfDoc.getPage(currentSlideIndex);
-          var viewport = page.getViewport({ scale: 1.8 });
-          var canvas = document.getElementById('pdf-slide-canvas');
-          var ctx = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        } else if (currentMode === 'html') {
-          var s = BUILTIN_SLIDES[currentSlideIndex - 1];
-          var box = document.getElementById('html-slide-container');
-          box.innerHTML =
-            '<div style="background:linear-gradient(145deg,#0f172a,#1e293b); border:1.5px solid rgba(16,185,129,0.45); border-radius:16px; padding:2.5rem 2.2rem; color:#f8fafc; box-shadow:0 20px 50px rgba(0,0,0,0.6);">' +
-              '<div style="font-size:0.74rem; font-weight:800; letter-spacing:0.08em; color:#34d399; text-transform:uppercase; margin-bottom:0.65rem;">' + s.kicker + '</div>' +
-              '<h3 style="margin:0 0 0.5rem; font-size:clamp(1.35rem,2.5vw,1.9rem); color:#ffffff;">' + s.title + '</h3>' +
-              '<p style="margin:0 0 1.4rem; font-size:0.98rem; color:#94a3b8;">' + s.subtitle + '</p>' +
-              '<ul style="margin:0; padding-left:1.25rem; display:grid; gap:0.85rem; font-size:0.96rem; line-height:1.6; color:#e2e8f0;">' +
-                s.bullets.map(function(b) { return '<li>' + b + '</li>'; }).join('') +
-              '</ul>' +
-            '</div>';
+      window.loadLocalProtectedPdf = function(file) {
+        if (!file) return;
+        file.arrayBuffer().then(function(buf) {
+          openPdfWithNativePasswordSupport({ data: new Uint8Array(buf) });
+        });
+      };
+
+      async function renderProSlideStage() {
+        if (!pdfDoc) return;
+        document.getElementById('pro-slide-counter').textContent = 'Diapo ' + currentPage + ' / ' + totalPages;
+        var pct = totalPages > 0 ? Math.round((currentPage / totalPages) * 100) : 100;
+        document.getElementById('pro-progress-fill').style.width = pct + '%';
+
+        var page = await pdfDoc.getPage(currentPage);
+        var viewport = page.getViewport({ scale: 1.9 });
+        var canvas = document.getElementById('pro-slide-canvas');
+        var drawCanvas = document.getElementById('pro-draw-canvas');
+        var ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        drawCanvas.width = viewport.width;
+        drawCanvas.height = viewport.height;
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        // Rendu de l'aperçu de la diapositive suivante
+        var nextCanvas = document.getElementById('pro-next-canvas');
+        var nextLabel = document.getElementById('pro-next-label');
+        if (currentPage < totalPages) {
+          var nextPage = await pdfDoc.getPage(currentPage + 1);
+          var nextVp = nextPage.getViewport({ scale: 0.45 });
+          nextCanvas.width = nextVp.width;
+          nextCanvas.height = nextVp.height;
+          nextCanvas.style.display = 'inline-block';
+          await nextPage.render({ canvasContext: nextCanvas.getContext('2d'), viewport: nextVp }).promise;
+          nextLabel.textContent = 'Diapo ' + (currentPage + 1) + ' / ' + totalPages;
+        } else {
+          nextCanvas.style.display = 'none';
+          nextLabel.textContent = 'Fin du diaporama';
+        }
+
+        // Mettre à jour la sélection dans la grille
+        var thumbs = document.querySelectorAll('.sorter-thumb');
+        thumbs.forEach(function(t, idx) {
+          t.classList.toggle('is-current', idx + 1 === currentPage);
+        });
+      }
+
+      async function buildSlideSorterThumbnails() {
+        var grid = document.getElementById('slide-sorter-grid');
+        if (!grid || !pdfDoc) return;
+        grid.innerHTML = '';
+        for (var i = 1; i <= pdfDoc.numPages; i++) {
+          (function(pageNum) {
+            var item = document.createElement('div');
+            item.className = 'sorter-thumb' + (pageNum === currentPage ? ' is-current' : '');
+            var c = document.createElement('canvas');
+            var cap = document.createElement('div');
+            cap.style.fontSize = '0.74rem';
+            cap.style.color = '#cbd5e1';
+            cap.style.marginTop = '0.25rem';
+            cap.textContent = 'Diapo ' + pageNum;
+            item.appendChild(c);
+            item.appendChild(cap);
+            item.onclick = function() {
+              currentPage = pageNum;
+              grid.classList.remove('is-open');
+              renderProSlideStage();
+            };
+            grid.appendChild(item);
+            pdfDoc.getPage(pageNum).then(function(p) {
+              var vp = p.getViewport({ scale: 0.32 });
+              c.width = vp.width;
+              c.height = vp.height;
+              p.render({ canvasContext: c.getContext('2d'), viewport: vp });
+            });
+          })(i);
         }
       }
 
-      window.prevSlide = function() {
-        if (currentSlideIndex > 1) {
-          currentSlideIndex--;
-          renderCurrentSlide();
+      window.proPrevSlide = function() {
+        if (pdfDoc && currentPage > 1) {
+          currentPage--;
+          renderProSlideStage();
         }
       };
 
-      window.nextSlide = function() {
-        if (currentSlideIndex < totalSlidesCount) {
-          currentSlideIndex++;
-          renderCurrentSlide();
+      window.proNextSlide = function() {
+        if (pdfDoc && currentPage < totalPages) {
+          currentPage++;
+          renderProSlideStage();
         }
       };
 
-      window.toggleLaserPointer = function() {
-        laserActive = !laserActive;
-        var dot = document.getElementById('laser-dot');
-        var btn = document.getElementById('laser-toggle-btn');
-        if (dot) dot.style.display = laserActive ? 'block' : 'none';
-        if (btn) btn.style.borderColor = laserActive ? '#ef4444' : 'rgba(148,163,184,0.3)';
+      window.toggleSlideSorterGrid = function() {
+        var grid = document.getElementById('slide-sorter-grid');
+        var btn = document.getElementById('btn-sorter-grid');
+        if (!grid) return;
+        var open = grid.classList.toggle('is-open');
+        if (btn) btn.classList.toggle('is-active', open);
       };
 
-      window.toggleSlideFullscreen = function() {
-        var stage = document.getElementById('slide-stage-wrap');
+      window.togglePresenterSplitView = function() {
+        var ws = document.getElementById('studio-workspace');
+        var btn = document.getElementById('btn-split-view');
+        var active = ws.classList.toggle('presenter-split');
+        if (btn) btn.classList.toggle('is-active', active);
+      };
+
+      window.toggleProLaser = function() {
+        laserEnabled = !laserEnabled;
+        if (laserEnabled && penEnabled) window.toggleProPen();
+        var dot = document.getElementById('pro-laser-dot');
+        var btn = document.getElementById('btn-laser');
+        if (dot) dot.style.display = laserEnabled ? 'block' : 'none';
+        if (btn) btn.classList.toggle('is-active', laserEnabled);
+      };
+
+      window.toggleProPen = function() {
+        penEnabled = !penEnabled;
+        if (penEnabled && laserEnabled) window.toggleProLaser();
+        var drawCanvas = document.getElementById('pro-draw-canvas');
+        var btn = document.getElementById('btn-pen');
+        var clearBtn = document.getElementById('btn-clear-ink');
+        if (drawCanvas) drawCanvas.classList.toggle('drawing-enabled', penEnabled);
+        if (btn) btn.classList.toggle('is-active', penEnabled);
+        if (clearBtn) clearBtn.style.display = penEnabled ? 'inline-flex' : 'none';
+      };
+
+      window.clearProInk = function() {
+        var drawCanvas = document.getElementById('pro-draw-canvas');
+        if (!drawCanvas) return;
+        var ctx = drawCanvas.getContext('2d');
+        ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      };
+
+      window.toggleBlackoutScreen = function() {
+        var b = document.getElementById('pro-blackout-screen');
+        var btn = document.getElementById('btn-blackout');
+        var active = b.classList.toggle('is-active');
+        if (btn) btn.classList.toggle('is-active', active);
+      };
+
+      window.toggleProFullscreen = function() {
+        var shell = document.getElementById('pro-studio-shell');
         if (!document.fullscreenElement) {
-          if (stage.requestFullscreen) stage.requestFullscreen();
+          if (shell.requestFullscreen) shell.requestFullscreen();
         } else {
           if (document.exitFullscreen) document.exitFullscreen();
         }
       };
 
-      window.lockPresentationVault = function() {
-        currentPdfDoc = null;
-        currentMode = 'none';
-        document.getElementById('slide-stage-wrap').classList.remove('is-unlocked');
-        document.getElementById('vault-lock-screen').style.display = 'block';
-        document.getElementById('vault-password-input').value = '';
+      function startOrResumeTimer() {
+        if (timerRunning) return;
+        timerRunning = true;
+        document.getElementById('btn-timer-toggle').textContent = '⏸';
+        timerHandle = setInterval(function() {
+          timerSec++;
+          var m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+          var s = String(timerSec % 60).padStart(2, '0');
+          document.getElementById('pro-timer-display').textContent = m + ':' + s;
+        }, 1000);
+      }
+
+      window.toggleProTimer = function() {
+        if (timerRunning) {
+          timerRunning = false;
+          clearInterval(timerHandle);
+          document.getElementById('btn-timer-toggle').textContent = '▶';
+        } else {
+          startOrResumeTimer();
+        }
       };
 
-      // Suivi du pointeur laser dans le viewport
-      var vp = document.getElementById('slide-viewport');
-      if (vp) {
-        vp.addEventListener('mousemove', function(e) {
-          if (!laserActive) return;
-          var rect = vp.getBoundingClientRect();
-          var dot = document.getElementById('laser-dot');
+      window.resetProTimer = function() {
+        timerSec = 0;
+        document.getElementById('pro-timer-display').textContent = '00:00';
+      };
+
+      // Surligneur / Annotateur sur le canvas superposé
+      var drawEl = document.getElementById('pro-draw-canvas');
+      if (drawEl) {
+        function getCanvasCoords(e) {
+          var rect = drawEl.getBoundingClientRect();
+          var scaleX = drawEl.width / rect.width;
+          var scaleY = drawEl.height / rect.height;
+          return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+          };
+        }
+        drawEl.addEventListener('mousedown', function(e) {
+          if (!penEnabled) return;
+          isDrawing = true;
+          var pt = getCanvasCoords(e);
+          var ctx = drawEl.getContext('2d');
+          ctx.strokeStyle = 'rgba(250, 204, 21, 0.85)';
+          ctx.lineWidth = 6;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(pt.x, pt.y);
+        });
+        drawEl.addEventListener('mousemove', function(e) {
+          if (!isDrawing || !penEnabled) return;
+          var pt = getCanvasCoords(e);
+          var ctx = drawEl.getContext('2d');
+          ctx.lineTo(pt.x, pt.y);
+          ctx.stroke();
+        });
+        window.addEventListener('mouseup', function() {
+          isDrawing = false;
+        });
+      }
+
+      // Pointeur laser
+      var stageEl = document.getElementById('studio-main-stage');
+      if (stageEl) {
+        stageEl.addEventListener('mousemove', function(e) {
+          if (!laserEnabled) return;
+          var rect = stageEl.getBoundingClientRect();
+          var dot = document.getElementById('pro-laser-dot');
           if (dot) {
             dot.style.left = (e.clientX - rect.left) + 'px';
             dot.style.top = (e.clientY - rect.top) + 'px';
@@ -814,33 +821,23 @@
         });
       }
 
-      // Raccourcis clavier (Flèches gauche/droite, L pour laser, F pour plein écran)
+      // Raccourcis clavier PowerPoint / Keynote Pro
       document.addEventListener('keydown', function(e) {
-        if (currentMode === 'none') return;
         if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
         if (e.key === 'ArrowRight' || e.key === ' ') {
-          e.preventDefault();
-          window.nextSlide();
+          if (pdfDoc) { e.preventDefault(); window.proNextSlide(); }
         } else if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          window.prevSlide();
+          if (pdfDoc) { e.preventDefault(); window.proPrevSlide(); }
         } else if (e.key === 'l' || e.key === 'L') {
-          window.toggleLaserPointer();
+          window.toggleProLaser();
+        } else if (e.key === 'p' || e.key === 'P') {
+          window.toggleProPen();
+        } else if (e.key === 'g' || e.key === 'G') {
+          window.toggleSlideSorterGrid();
+        } else if (e.key === 'b' || e.key === 'B') {
+          window.toggleBlackoutScreen();
         } else if (e.key === 'f' || e.key === 'F') {
-          window.toggleSlideFullscreen();
-        }
-      });
-
-      // Déverrouillage automatique si l'URL contient #key=...
-      window.addEventListener('DOMContentLoaded', function() {
-        var hash = window.location.hash || '';
-        if (hash.indexOf('#key=') === 0) {
-          var key = decodeURIComponent(hash.slice(5));
-          var input = document.getElementById('vault-password-input');
-          if (input && key) {
-            input.value = key;
-            window.unlockSelectedPresentation();
-          }
+          window.toggleProFullscreen();
         }
       });
     })();
