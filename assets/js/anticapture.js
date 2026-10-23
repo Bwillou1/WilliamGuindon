@@ -436,7 +436,7 @@
     }, true);
 
     window.addEventListener('beforeprint', () => {
-      triggerBlurProtection('screenshot');
+      clearBlurProtection(true);
     });
   }
 

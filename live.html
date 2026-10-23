@@ -1133,20 +1133,6 @@
       <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
       <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
     </div>
-
-    <div class="footer-sitemap-row">
-      <a href="blog.html">Blog</a> · 
-      <a href="photos.html">Photos</a> · 
-      <a href="viewer.html">Consulter les documents</a> · 
-      <a href="stablex.html">Dossier Stablex</a> · 
-      <a href="presse.html">Presse</a> · 
-      <a href="live.html">Horloge Live</a> · 
-      <a href="terms.html">Conditions d'utilisation</a> · 
-      <a href="privacy.html">Politique de confidentialité</a> · 
-      <a href="txt.html">Version texte</a> · 
-      <a href="api/">API Publique</a> · 
-      <a href="#accueil">Haut ↑</a>
-    </div>
   </div>
 </footer>
 
@@ -1222,16 +1208,22 @@
       const s = Math.floor((diff % (1000 * 60)) / 1000);
       const totalMins = Math.floor(diff / (1000 * 60));
 
-      if (dEl) dEl.textContent = pad(d);
-      if (hEl) hEl.textContent = pad(h);
-      if (mEl) mEl.textContent = pad(m);
-      if (sEl) sEl.textContent = pad(s);
+      const dStr = String(d);
+      const hStr = pad(h);
+      const mStr = pad(m);
+      const sStr = pad(s);
 
-      if (totalMinutesEl) {
-        totalMinutesEl.innerHTML = `<svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant la recommandation du Secrétariat CCE (Dossier factuel)`;
+      if (dEl && dEl.textContent !== dStr) dEl.textContent = dStr;
+      if (hEl && hEl.textContent !== hStr) hEl.textContent = hStr;
+      if (mEl && mEl.textContent !== mStr) mEl.textContent = mStr;
+      if (sEl && sEl.textContent !== sStr) sEl.textContent = sStr;
+
+      if (totalMinutesEl && totalMinutesEl.getAttribute('data-mins') !== String(totalMins)) {
+        totalMinutesEl.setAttribute('data-mins', String(totalMins));
+        totalMinutesEl.innerHTML = `<svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <strong class="live-minutes-highlight">${totalMins.toLocaleString('fr-CA')}</strong> minutes restantes avant la détermination du Secrétariat CCE (Dossier factuel · 15 déc. 2026)`;
       }
 
-      document.title = `[${d}j ${pad(h)}h ${pad(m)}m ${pad(s)}s] Recommandation Dossier Factuel CCE — Horloge Live William Guindon`;
+      document.title = `[${dStr}j ${hStr}h ${mStr}m ${sStr}s] Détermination Dossier Factuel CCE (15 déc. 2026) — William Guindon`;
     }
 
     updateLiveCountdown();

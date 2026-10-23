@@ -795,12 +795,6 @@
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && (key === 's' || code === 83)) {
         triggerScreenshotBlur();
       }
-
-      // Impression / Capture PDF: Cmd+P ou Ctrl+P
-      if (cmdOrCtrl && (key === 'p' || code === 80)) {
-        triggerScreenshotBlur();
-        return false;
-      }
     }, true);
 
     window.addEventListener('keyup', e => {
@@ -811,13 +805,6 @@
         triggerScreenshotBlur();
       }
     }, true);
-
-    // Interception de l'événement système d'impression
-    window.addEventListener('beforeprint', () => {
-      if (lastAppliedStateJson && lastAppliedStateJson.includes('"blockScreenshots":true')) {
-        triggerScreenshotBlur();
-      }
-    });
   }
 
   // --- MODE BLACKOUT / MAINTENANCE (CALQUE RÉVERSIBLE) ---

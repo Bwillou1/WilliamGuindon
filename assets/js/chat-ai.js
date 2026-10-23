@@ -63,11 +63,6 @@
         if (s.includes('surge=0') || s.includes('preview=today') || s.includes('stage2=0') || s.includes('etape2=0')) {
           return false;
         }
-        // Sur localhost / 127.0.0.1, simulation de demain (16 oct.) active par défaut pour prévisualiser l'affluence
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        if (isLocal) {
-          return true;
-        }
       }
       if (typeof localStorage !== 'undefined') {
         const radicalRaw = localStorage.getItem('wg_radical_site_state') || sessionStorage.getItem('wg_radical_site_state');
@@ -76,11 +71,11 @@
           if (parsed && Boolean(parsed.stage3StatusActive)) {
             return false;
           }
-          if (parsed && (parsed.stage2StatusActive || parsed.trafficSurgeActive)) {
+          if (parsed && Boolean(parsed.trafficSurgeActive)) {
             return true;
           }
         }
-        if (localStorage.getItem('wg_force_surge') === 'true' || localStorage.getItem('wg_stage2_active') === 'true') {
+        if (localStorage.getItem('wg_force_surge') === 'true') {
           return true;
         }
       }
@@ -88,16 +83,12 @@
         if (Boolean(window.__WG_SITE_STATE.stage3StatusActive)) {
           return false;
         }
-        if (window.__WG_SITE_STATE.stage2StatusActive || window.__WG_SITE_STATE.trafficSurgeActive) {
+        if (Boolean(window.__WG_SITE_STATE.trafficSurgeActive)) {
           return true;
         }
       }
     } catch (_) {}
-    const now = new Date();
-    // Période spéciale de 5 jours : du 16 octobre 2026 à 00:00:00 au 21 octobre 2026 à 23:59:59 (échéance réponse du Canada CCE)
-    const start = new Date(2026, 9, 16, 0, 0, 0); // 9 = octobre
-    const end = new Date(2026, 9, 21, 23, 59, 59);
-    return now >= start && now <= end;
+    return false;
   }
 
   function initFloatingAiHub() {

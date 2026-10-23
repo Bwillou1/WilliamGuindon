@@ -984,40 +984,36 @@
 <script>
 (function() {
   function tickImmediateCountdown() {
-    var target = new Date('2026-10-16T00:00:00-04:00').getTime();
+    var target = new Date('2026-12-15T23:59:59-05:00').getTime();
     var now = Date.now();
-    var diff = target - now;
-    var sParams = (typeof window !== 'undefined' && window.location && window.location.search) ? window.location.search : '';
-    var isStage2Param = sParams.indexOf('stage2=1') !== -1 || sParams.indexOf('etape2=1') !== -1 || sParams.indexOf('preview=stage2') !== -1 || sParams.indexOf('preview=tomorrow') !== -1 || sParams.indexOf('surge=1') !== -1;
-    var isPast = now >= target || diff <= 0 || isStage2Param;
-    var d = 0;
-    var h = 0;
-    var m = 0;
-    var s = 0;
-    var pad = function(n) { return (n < 10 ? '0' : '') + n; };
+    var diff = Math.max(0, target - now);
+    var d = String(Math.floor(diff / (1000 * 60 * 60 * 24)));
+    var h = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+    var m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+    var s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
 
-    document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) { el.textContent = d; });
-    document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(function(el) { el.textContent = pad(h); });
-    document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(function(el) { el.textContent = pad(m); });
-    document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(function(el) { el.textContent = pad(s); });
+    document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) {
+      if (el.textContent !== d) el.textContent = d;
+    });
+    document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(function(el) {
+      if (el.textContent !== h) el.textContent = h;
+    });
+    document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(function(el) {
+      if (el.textContent !== m) el.textContent = m;
+    });
+    document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(function(el) {
+      if (el.textContent !== s) el.textContent = s;
+    });
 
     var heroBlock = document.getElementById('hero-countdown-block');
     var heroStage2 = document.getElementById('hero-stage2-summary-block');
     var trackerBlock = document.getElementById('tracker-countdown-state');
     var trackerStage2 = document.getElementById('tracker-stage2-state');
 
-    if (isPast) {
-      if (heroBlock) heroBlock.style.display = 'none';
-      if (heroStage2) heroStage2.style.display = 'block';
-      if (trackerBlock) trackerBlock.style.display = 'none';
-      if (trackerStage2) trackerStage2.style.display = 'block';
-      document.querySelectorAll('.site-deadline-title').forEach(function(el) {
-        el.textContent = "Statut CCE · Réponse officielle déposée :";
-      });
-      document.querySelectorAll('.site-deadline-clock').forEach(function(el) {
-        el.innerHTML = '<span style="color:#10b981; font-weight:800; font-size:12px; letter-spacing:0.04em;">RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN CCE (ART. 24.28)</span>';
-      });
-    }
+    if (heroBlock) heroBlock.style.display = 'none';
+    if (heroStage2) heroStage2.style.display = 'block';
+    if (trackerBlock) trackerBlock.style.display = 'none';
+    if (trackerStage2) trackerStage2.style.display = 'block';
   }
   try {
     tickImmediateCountdown();
@@ -1063,6 +1059,7 @@
               <a href="enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
               <a href="autochtone.html" class="nav-dropdown-item">Dossier : Histoire autochtone &amp; Écologie</a>
               <a href="apercu.html" class="nav-dropdown-item">Dossier expliqué &amp; Vulgarisation (SEM-26-003)</a>
+              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Lexique &amp; Dictionnaire citoyen</a>
             </div>
           </details>
           <details class="nav-submenu">
@@ -2104,23 +2101,23 @@
         <article class="tracker-card tracker-card-compact tracker-card-countdown notranslate" translate="no">
           <div class="tracker-card-head">
             <svg class="tracker-icon-sm" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
-            <div class="counter-lbl">Échéance Fédérale CCE</div>
+            <div class="counter-lbl">Détermination CCE (15 déc. 2026)</div>
             <span class="tracker-tz-pill js-cd-tz-badge" style="display: none;"></span>
           </div>
-          <div class="precision-countdown-grid precision-countdown-compact notranslate" translate="no" aria-live="off" role="timer" aria-label="Décompte jusqu'à l'échéance du 16 octobre 2026">
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-days">0</span><span class="precision-time-lbl">J</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-hours">06</span><span class="precision-time-lbl">H</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-mins">40</span><span class="precision-time-lbl">M</span></div>
+          <div class="precision-countdown-grid precision-countdown-compact notranslate" translate="no" aria-live="off" role="timer" aria-label="Décompte jusqu'à la recommandation du Secrétariat CCE du 15 décembre 2026">
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-days">54</span><span class="precision-time-lbl">J</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-hours">04</span><span class="precision-time-lbl">H</span></div>
+            <div class="precision-time-unit"><span class="precision-time-val" id="cd-mins">50</span><span class="precision-time-lbl">M</span></div>
             <div class="precision-time-unit"><span class="precision-time-val" id="cd-secs">00</span><span class="precision-time-lbl">S</span></div>
           </div>
           <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
           <div style="margin-top: 10px; display: flex; justify-content: center; min-height: 42px;">
             <add-to-calendar-button 
-              name="Échéance CCE — Réponse officielle du Canada (Dossier Stablex SEM-26-003)"
-              description="Date butoir fixée par la Commission de coopération environnementale au Canada concernant l expansion du site Stablex à Blainville."
-              start-date="2026-10-16"
+              name="Échéance CCE — Recommandation Dossier Factuel (Dossier Stablex SEM-26-003)"
+              description="Fin du délai de 60 jours imparti au Secrétariat de la CCE pour déterminer s il recommande l ouverture d un dossier factuel indépendant au Conseil (Art. 24.28 ACEUM)."
+              start-date="2026-12-15"
               start-time="00:00"
-              end-date="2026-10-16"
+              end-date="2026-12-15"
               end-time="23:59"
               time-zone="America/Toronto"
               location="blainville"
@@ -2179,17 +2176,17 @@
         </div>
         <div class="steps-strip-grid">
           <div class="step-strip-item">
-            <span class="step-strip-badge">Étape 1</span>
+            <span class="step-strip-badge" style="background:rgba(16,185,129,0.18); color:#059669; border-color:rgba(16,185,129,0.4);">Étape 1 · Complétée</span>
             <div class="step-strip-text">
-              <strong class="step-strip-date">16 Oct. 2026 · Réponse du Canada</strong>
-              <span class="step-strip-desc">Dépôt de la réponse officielle sur les lois environnementales.</span>
+              <strong class="step-strip-date">16-17 Oct. 2026 · Réponse &amp; Réplique</strong>
+              <span class="step-strip-desc">Réponse du Canada (72-RSP) et observations citoyennes (7 moyens) déposées.</span>
             </div>
           </div>
           <div class="step-strip-item">
-            <span class="step-strip-badge">Étape 2</span>
+            <span class="step-strip-badge" style="background:#059669; color:#ffffff;">Étape 2 · En cours</span>
             <div class="step-strip-text">
-              <strong class="step-strip-date">Fin 2026 · Examen &amp; Dossier Factuel</strong>
-              <span class="step-strip-desc">Le Secrétariat détermine s'il recommande l'ouverture d'un dossier factuel (art. 24.28).</span>
+              <strong class="step-strip-date">15 Déc. 2026 · Détermination Dossier Factuel</strong>
+              <span class="step-strip-desc">Délai de 60 jours du Secrétariat CCE pour recommander un Dossier factuel (art. 24.28).</span>
             </div>
           </div>
           <div class="step-strip-item">
@@ -3136,152 +3133,206 @@
       <h3>Consultation en ligne et téléchargement direct</h3>
       <p class="section-lead">Accédez à l'ensemble des pièces maîtresses versées au registre de la Commission de coopération environnementale et aux instances internationales.</p>
 
-      <!-- Ligne horizontale d'accès au dossier documentaire complet -->
-      <div class="annexes-horizontal-bar" style="margin-top: 16px; margin-bottom: 24px; padding: 14px 18px; background: rgba(34, 197, 94, 0.08); border: 1.5px solid rgba(34, 197, 94, 0.3); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-        <span style="color: var(--text); font-size: 14.5px; font-weight: 600;">
-          Pour consulter les annexes et pièces probatoires, cliquez ici :
-        </span>
-        <a href="dossier-journalistes.html" class="btn-annexes-link" style="display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #ffffff; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 6px; text-decoration: none; white-space: nowrap; transition: opacity 0.2s;">
-          Consulter les pièces probatoires &rarr;
-        </a>
-      </div>
+      <!-- Barre d'outils documentaire : Accès aux pièces probatoires & Sélecteur de lecteur -->
+      <div class="docs-toolbar-modern">
+        <div class="annexes-horizontal-bar">
+          <div class="annexes-bar-left">
+            <span class="annexes-bar-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </span>
+            <div class="annexes-bar-text">
+              <strong>Registre intégral des annexes &amp; preuves</strong>
+              <span>Accès direct à l'ensemble des pièces probatoires vérifiées</span>
+            </div>
+          </div>
+          <a href="dossier-journalistes.html" class="btn-annexes-link">
+            <span>Consulter les pièces probatoires</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
 
-      <!-- Sélecteur de format de lecture (Mon lecteur vs Lecteur natif de l'appareil) -->
-      <div class="docs-reader-pref-bar" style="margin-bottom: 14px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; font-size: 12.5px; flex-wrap: wrap;">
-        <span style="color: var(--text-muted); font-size: 12px; font-weight: 500;">Format d'ouverture des documents :</span>
-        <div class="docs-reader-toggle-group" style="display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg-card);">
-          <button type="button" class="btn-switch-reader-pref btn-pref-custom active" data-pref="custom" title="Ouvrir dans le lecteur interactif enrichi de William" style="padding: 5px 12px; font-size: 11.5px; font-weight: 600; border: none; background: var(--accent); color: #ffffff; cursor: pointer;">
-            Mon lecteur enrichi
-          </button>
-          <button type="button" class="btn-switch-reader-pref btn-pref-native" data-pref="native" title="Ouvrir directement dans le format PDF natif de l'appareil" style="padding: 5px 12px; font-size: 11.5px; font-weight: 600; border: none; border-left: 1px solid var(--line); background: transparent; color: var(--text-muted); cursor: pointer;">
-            Format natif (navigateur)
-          </button>
+        <div class="docs-reader-pref-bar">
+          <span class="docs-reader-pref-label">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            Format d'ouverture des documents :
+          </span>
+          <div class="docs-reader-toggle-group" role="group" aria-label="Choisir le mode d'ouverture des documents PDF">
+            <button type="button" class="btn-switch-reader-pref btn-pref-custom active" data-pref="custom" title="Ouvrir dans le lecteur interactif enrichi avec traduction et outils d'analyse">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Mon lecteur enrichi</span>
+            </button>
+            <button type="button" class="btn-switch-reader-pref btn-pref-native" data-pref="native" title="Ouvrir directement dans le lecteur PDF natif du navigateur ou de l'appareil">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>Format natif (navigateur)</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <div class="docs-grid">
-        <div class="doc-card" style="border: 2px solid var(--accent); background: var(--bg-card); box-shadow: 0 4px 16px rgba(34, 197, 94, 0.1);">
-          <div style="display:inline-block; font-size:11px; font-weight:700; color:var(--accent); background:rgba(34, 197, 94, 0.12); padding:2px 8px; border-radius:9999px; margin-bottom:8px; border:1px solid rgba(34, 197, 94, 0.3);">Dernière pièce officielle · 16 oct. 2026</div>
+        <div class="doc-card doc-card-featured">
+          <div class="doc-card-top">
+            <span class="doc-badge doc-badge-live">
+              <span class="doc-badge-dot" aria-hidden="true"></span>
+              Dernière pièce officielle · 16 oct. 2026
+            </span>
+            <span class="doc-ref-tag">Pièces 72-RSP &amp; 73-REC</span>
+          </div>
           <h4>Réponse officielle du gouvernement du Canada (16 octobre 2026)</h4>
           <p>Mémoire officiel du Canada (pièce 72-RSP) demandant la fin ou le report de l'examen, et accusé formel de réception de la CCE (73-REC).</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <div class="doc-card-actions">
             <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
-            <a href="viewer.html?file=assets/docs/73-rec_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action" style="font-size:12px;display:inline-flex;align-items:center;gap:4px">Accusé CCE (73-REC) ↗</a>
-            <a href="viewer.html?file=assets/docs/72-rsp_en.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action" style="font-size:12px;display:inline-flex;align-items:center;gap:4px">English (72-RSP) ↗</a>
-            <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action" style="font-size:12px;display:inline-flex;align-items:center;gap:4px">Observations de William ↗</a>
+            <a href="viewer.html?file=assets/docs/73-rec_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Accusé CCE (73-REC) ↗</a>
+            <a href="viewer.html?file=assets/docs/72-rsp_en.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">English (72-RSP) ↗</a>
+            <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Observations de William ↗</a>
           </div>
         </div>
 
         <div class="doc-card">
+          <div class="doc-card-top">
+            <span class="doc-badge">17 août 2026 · Recevabilité</span>
+            <span class="doc-ref-tag">28 pages · Art. 24.27</span>
+          </div>
           <h4>Détermination positive CCE (17 août 2026)</h4>
           <p>Décision du Secrétariat (art. 24.27(2) &amp; 24.27(3)) exigeant une réponse du Canada (28 pages).</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <div class="doc-card-actions">
             <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
-            <a href="https://policycommons.net/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action" style="font-size:12px;display:inline-flex;align-items:center;gap:4px">Policy Commons ↗</a>
-            <a href="https://canadacommons.ca/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action" style="font-size:12px;display:inline-flex;align-items:center;gap:4px">Canada Commons ↗</a>
+            <a href="https://policycommons.net/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Policy Commons ↗</a>
+            <a href="https://canadacommons.ca/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Canada Commons ↗</a>
           </div>
         </div>
 
         <div class="doc-card">
+          <div class="doc-card-top">
+            <span class="doc-badge">16 juillet 2026 · Mémoire citoyen</span>
+            <span class="doc-ref-tag">15 pages · SEM-26-003</span>
+          </div>
           <h4>Soumission révisée SEM-26-003 (16 juillet 2026)</h4>
           <p>Dépôt officiel complet de William Guindon auprès du Secrétariat de la CCE (15 pages).</p>
-          <a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          <div class="doc-card-actions">
+            <a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          </div>
         </div>
 
         <div class="doc-card">
+          <div class="doc-card-top">
+            <span class="doc-badge">Instance internationale · Genève</span>
+            <span class="doc-ref-tag">Haut-Commissariat ONU</span>
+          </div>
           <h4>Déposition formelle à l'ONU</h4>
           <p>Mémoire transmis au Rapporteur spécial concernant les violations des droits humains.</p>
-          <a href="viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          <div class="doc-card-actions">
+            <a href="viewer.html?file=assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          </div>
         </div>
 
         <div class="doc-card">
+          <div class="doc-card-top">
+            <span class="doc-badge">3 juin 2026 · Notification</span>
+            <span class="doc-ref-tag">17 pages · Art. 24.27(1)</span>
+          </div>
           <h4>Décision du Secrétariat (3 juin 2026)</h4>
           <p>Notification de la CCE du 3 juin 2026 fixant le délai de révision (17 pages).</p>
-          <a href="viewer.html?file=assets/docs/26-3-det_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          <div class="doc-card-actions">
+            <a href="viewer.html?file=assets/docs/26-3-det_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter le document ↗</a>
+          </div>
         </div>
 
         <div class="doc-card">
+          <div class="doc-card-top">
+            <span class="doc-badge">Parlement du Canada · BVG</span>
+            <span class="doc-ref-tag">Art. 22 LVG · No 546</span>
+          </div>
           <h4>Pétition fédérale no 546 (CEDD / BVG)</h4>
           <p>Pétition environnementale officielle enregistrée au Vérificateur général du Canada (Loi sur les pêches, LEP, LCOM).</p>
-          <a href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter sur Canada.ca ↗</a>
+          <div class="doc-card-actions">
+            <a href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Consulter sur Canada.ca ↗</a>
+          </div>
         </div>
       </div>
 
-      <!-- Bannière horizontale compacte : Preuve officielle CCE Premier Mineur -->
-      <aside class="doc-proof-strip" style="margin-top: 24px; padding: 16px 20px; background: rgba(34, 197, 94, 0.05); border: 1.5px solid rgba(34, 197, 94, 0.25); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 14px; min-width: 280px; flex: 1;">
-          <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(34, 197, 94, 0.12); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg class="doc-icon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <strong style="color: var(--accent); font-size: 14.5px;">Confirmation officielle CCE : Premier auteur mineur (1994-2026)</strong>
-              <span style="background: var(--accent); color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700;">25 sept. 2026</span>
+      <!-- Cartes d'attestation & d'appui institutionnel -->
+      <div class="doc-proofs-grid">
+        <aside class="doc-proof-strip">
+          <div class="doc-proof-body">
+            <div class="doc-proof-icon-box" aria-hidden="true">
+              <svg class="doc-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             </div>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); line-height: 1.4;">
-              Courriel officiel du Secrétariat CCE (Unité SEM) attestant du premier dossier initié par un mineur en 32 ans d'histoire.
-            </p>
+            <div class="doc-proof-content">
+              <div class="doc-proof-header">
+                <strong>Confirmation officielle CCE : Premier auteur mineur (1994-2026)</strong>
+                <span class="doc-proof-date">25 sept. 2026</span>
+              </div>
+              <p>Courriel officiel du Secrétariat CCE (Unité SEM) attestant du premier dossier initié par un mineur en 32 ans d'histoire.</p>
+            </div>
           </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <a href="statut-mineur.html" class="btn btn-outline-sm" style="font-size: 12.5px; white-space: nowrap;">Statut &amp; Déontologie ↗</a>
-          <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-size: 12.5px; white-space: nowrap;">Voir le courriel officiel (HD) ↗</a>
-        </div>
-      </aside>
+          <div class="doc-proof-actions">
+            <a href="statut-mineur.html" class="btn btn-outline-sm">Statut &amp; Déontologie ↗</a>
+            <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Voir le courriel officiel (HD) ↗</a>
+          </div>
+        </aside>
 
-      <!-- Bannière horizontale compacte : Appui scientifique international Liebel & Meade -->
-      <aside class="doc-proof-strip" style="margin-top: 14px; padding: 16px 20px; background: rgba(34, 197, 94, 0.05); border: 1.5px solid rgba(34, 197, 94, 0.25); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 14px; min-width: 280px; flex: 1;">
-          <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(34, 197, 94, 0.12); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg class="doc-icon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <strong style="color: var(--accent); font-size: 14.5px;">Déclaration d'appui scientifique international (Berlin) — Capacité civique &amp; Adultisme</strong>
-              <span style="background: var(--accent); color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700;">14 oct. 2026</span>
+        <aside class="doc-proof-strip">
+          <div class="doc-proof-body">
+            <div class="doc-proof-icon-box" aria-hidden="true">
+              <svg class="doc-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
             </div>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); line-height: 1.4;">
-              Validation formelle par le Prof. Dr. Manfred Liebel (TU Berlin) et Philip Meade, M.A. à l'appui de William Guindon et de la démarche de pétition e-7834.
-            </p>
+            <div class="doc-proof-content">
+              <div class="doc-proof-header">
+                <strong>Déclaration d'appui scientifique international (Berlin) — Capacité civique &amp; Adultisme</strong>
+                <span class="doc-proof-date">14 oct. 2026</span>
+              </div>
+              <p>Validation formelle par le Prof. Dr. Manfred Liebel (TU Berlin) et Philip Meade, M.A. à l'appui de William Guindon et de la démarche de pétition e-7834.</p>
+            </div>
           </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <a href="adultisme.html" class="btn btn-outline-sm" style="font-size: 12.5px; white-space: nowrap;">Dossier Adultisme ↗</a>
-          <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-size: 12.5px; white-space: nowrap;">Voir le document certifié ↗</a>
-        </div>
-      </aside>
+          <div class="doc-proof-actions">
+            <a href="adultisme.html" class="btn btn-outline-sm">Dossier Adultisme ↗</a>
+            <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Voir le document certifié ↗</a>
+          </div>
+        </aside>
+      </div>
     </div>
   </section>
 
   <section id="faq" class="faq-section faq-section-padded">
     <div class="wrap">
-      <h2>Questions fréquentes (FAQ)</h2>
-      <h3>Tout comprendre sur les démarches citoyennes et le dossier SEM-26-003</h3>
+      <div class="faq-header-block">
+        <div>
+          <h2>Questions fréquentes (FAQ)</h2>
+          <h3>Tout comprendre sur les démarches citoyennes et le dossier SEM-26-003</h3>
+        </div>
+        <a href="lexique.html" class="faq-lexique-cta">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Dictionnaire citoyen &amp; termes juridiques &rarr;</span>
+        </a>
+      </div>
 
-      <details class="faq">
-        <summary>Qui est William Guindon ?</summary>
-        <p class="faq-content"><strong>William Guindon</strong> (né en 2011 au Québec) est un militant écologiste québécois et étudiant dans les Laurentides. Auteur de la communication SEM-26-003 déposée à 14 ans, il devient à 15 ans le premier mineur dans l'histoire des Soumissions environnementales (SEM) à obtenir une détermination positive de recevabilité devant la Commission de coopération environnementale (CCE / ACEUM). Consultez sa <a href="#apropos">biographie détaillée</a>, la <a href="stablex.html">chronologie Stablex</a> ou la <a href="presse.html">fiche de presse</a>.</p>
-      </details>
+      <div class="faq-list-modern">
+        <details class="faq" open>
+          <summary>Qui est William Guindon ?</summary>
+          <p class="faq-content"><strong>William Guindon</strong> (né en 2011 au Québec) est un militant écologiste québécois et étudiant dans les Laurentides. Auteur de la communication SEM-26-003 déposée à 14 ans, il devient à 15 ans le premier mineur dans l'histoire des Soumissions environnementales (SEM) à obtenir une détermination positive de recevabilité devant la Commission de coopération environnementale (CCE / ACEUM). Consultez sa <a href="#apropos">biographie détaillée</a>, la <a href="stablex.html">chronologie Stablex</a> ou la <a href="presse.html">fiche de presse</a>.</p>
+        </details>
 
-      <details class="faq">
-        <summary>Qu'est-ce que le dossier SEM-26-003 auprès de la CCE ?</summary>
-        <p class="faq-content">La communication <strong>SEM-26-003</strong> (« Enfouissement de matières dangereuses à Blainville ») dénonce le défaut d'application des lois environnementales fédérales canadiennes (oiseaux migrateurs, espèces en péril, rejet de cadmium) dans le cadre de l'expansion du site Stablex dans 278 000 m² de milieux humides. Retrouvez la <a href="stablex.html">chronologie complète du dossier</a>.</p>
-      </details>
+        <details class="faq">
+          <summary>Qu'est-ce que le dossier SEM-26-003 auprès de la CCE ?</summary>
+          <p class="faq-content">La communication <strong>SEM-26-003</strong> (« Enfouissement de matières dangereuses à Blainville ») dénonce le défaut d'application des lois environnementales fédérales canadiennes (oiseaux migrateurs, espèces en péril, rejet de cadmium) dans le cadre de l'expansion du site Stablex dans 278 000 m² de milieux humides. Retrouvez la <a href="stablex.html">chronologie complète du dossier</a>.</p>
+        </details>
 
-      <details class="faq">
-        <summary>Pourquoi la Grande Tourbière de Blainville est-elle menacée ?</summary>
-        <p class="faq-content">La Grande Tourbière de Blainville abrite une biodiversité exceptionnelle et constitue un puits de carbone majeur. Le projet d'expansion autoriserait l'enfouissement de millions de tonnes de résidus, détruisant 278 000 m² d'écosystèmes rares et posant des risques pour les eaux où des concentrations de cadmium ont été mesurées jusqu'à 320 fois le critère de qualité de l'eau pour la protection de la vie aquatique (toxicité aiguë, MELCCFP, échantillon du 2 déc. 2023). Visualisez les périmètres sur la <a href="#carte">carte interactive SIG</a>.</p>
-      </details>
+        <details class="faq">
+          <summary>Pourquoi la Grande Tourbière de Blainville est-elle menacée ?</summary>
+          <p class="faq-content">La Grande Tourbière de Blainville abrite une biodiversité exceptionnelle et constitue un puits de carbone majeur. Le projet d'expansion autoriserait l'enfouissement de millions de tonnes de résidus, détruisant 278 000 m² d'écosystèmes rares et posant des risques pour les eaux où des concentrations de cadmium ont été mesurées jusqu'à 320 fois le critère de qualité de l'eau pour la protection de la vie aquatique (toxicité aiguë, MELCCFP, échantillon du 2 déc. 2023). Visualisez les périmètres sur la <a href="#carte">carte interactive SIG</a>.</p>
+        </details>
 
-      <details class="faq">
-        <summary>William Guindon a-t-il reçu la réponse officielle du gouvernement du Canada ?</summary>
-        <p class="faq-content"><strong>Oui.</strong> Le <strong>16 octobre 2026</strong>, le gouvernement du Canada a formellement déposé sa réponse officielle (pièce 72-RSP) auprès du Secrétariat de la CCE. William Guindon en a reçu notification et a déposé le <strong>17 octobre 2026</strong> un mémoire d'observations en 7 moyens juridiques réfutant la tentative d'évitement d'Ottawa et demandant la constitution d'un Dossier factuel indépendant.</p>
-      </details>
+        <details class="faq">
+          <summary>William Guindon a-t-il reçu la réponse officielle du gouvernement du Canada ?</summary>
+          <p class="faq-content"><strong>Oui.</strong> Le <strong>16 octobre 2026</strong>, le gouvernement du Canada a formellement déposé sa réponse officielle (pièce 72-RSP) auprès du Secrétariat de la CCE. William Guindon en a reçu notification et a déposé le <strong>17 octobre 2026</strong> un mémoire d'observations en 7 moyens juridiques réfutant la tentative d'évitement d'Ottawa et demandant la constitution d'un Dossier factuel indépendant.</p>
+        </details>
 
-      <details class="faq">
-        <summary>Quelles sont les prochaines étapes suite au dépôt de la réponse du Canada ?</summary>
-        <p class="faq-content">Suite au dépôt de la réponse du Canada le <strong>16 octobre 2026</strong> et des observations citoyennes le <strong>17 octobre 2026</strong>, le Secrétariat de la CCE examine le dossier en vertu de l'article 24.28 de l'ACEUM pour déterminer s'il recommande l'élaboration d'un <strong>Dossier factuel</strong> indépendant soumis au vote du Conseil des ministres trinational. Suivez le <a href="#tracker">suivi de procédure en direct</a>.</p>
-      </details>
+        <details class="faq">
+          <summary>Quelles sont les prochaines étapes suite au dépôt de la réponse du Canada ?</summary>
+          <p class="faq-content">Suite au dépôt de la réponse du Canada le <strong>16 octobre 2026</strong> et des observations citoyennes le <strong>17 octobre 2026</strong>, le Secrétariat de la CCE examine le dossier en vertu de l'article 24.28 de l'ACEUM pour déterminer s'il recommande l'élaboration d'un <strong>Dossier factuel</strong> indépendant soumis au vote du Conseil des ministres trinational. Suivez le <a href="#tracker">suivi de procédure en direct</a>.</p>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -3630,33 +3681,11 @@
 
     <div class="footer-social-row">
       <a href="liens.html" class="footer-social-link" style="font-weight: 700; color: var(--accent);">Liens officiels (Bio) ↗</a>
+      <a href="lexique.html" class="footer-social-link" style="font-weight: 700;">Lexique citoyen ↗</a>
       <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
       <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="footer-social-link">Facebook ↗</a>
       <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
       <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
-    </div>
-
-    <div class="footer-sitemap-row">
-      <a href="#contact">Contact</a> · 
-      <a href="projets.html">Constellation des Projets</a> · 
-      <a href="messagerie.html">Messagerie chiffrée</a> · 
-      <a href="blog.html">Blog</a> · 
-      <a href="photos.html">Photos</a> · 
-      <a href="viewer.html">Consulter les documents</a> · 
-      <a href="miroirs.html">Miroirs Décentralisés</a> · 
-      <a href="stablex.html">Dossier Stablex</a> · 
-      <a href="contamination.html">Contamination &amp; Analyses</a> · 
-      <a href="loi-93.html">Loi 93</a> · 
-      <a href="presse.html">Presse</a> · 
-      <a href="live.html">Horloge Live</a> · 
-      <a href="agir.html" style="font-weight: 700; color: #059669;">Comment Agir</a> · 
-      <a href="netiquette.html">Nétiquette &amp; Modération</a> · 
-      <a href="terms.html">Conditions d'utilisation</a> · 
-      <a href="privacy.html">Politique de confidentialité</a> · 
-      <a href="txt.html">Version texte</a> · 
-      <a href="api/">API Publique</a> · 
-      <button type="button" class="footer-action-link js-force-reload" id="btn-force-reload" title="Purger le cache et recharger la toute dernière version du site"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:3px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>Recharger</button> · 
-      <a href="#accueil">Haut ↑</a>
     </div>
   </div>
 </footer>

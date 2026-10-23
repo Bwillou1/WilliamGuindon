@@ -775,14 +775,17 @@
       try {
         const stored = localStorage.getItem('wg_pdf_reader_pref');
         if (stored === 'native' || stored === 'custom') return stored;
-        const isLargeScreen = window.matchMedia && window.matchMedia('(min-width: 1024px)').matches;
-        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        return (isLargeScreen && !isTouch) ? 'native' : 'custom';
+        return 'custom';
       } catch (_) {
         return 'custom';
       }
     })();
-    const forceCustom = urlParams.get('mode') === 'custom' || urlParams.get('force') === 'custom' || hashParams.get('mode') === 'custom';
+    const forceCustom = urlParams.get('mode') === 'custom' ||
+                        urlParams.get('force') === 'custom' ||
+                        hashParams.get('mode') === 'custom' ||
+                        urlParams.get('tab') === 'translation' ||
+                        hashParams.get('tab') === 'translation' ||
+                        Boolean(urlParams.get('lang') || urlParams.get('tl') || hashParams.get('lang') || hashParams.get('tl'));
 
     if (readerPref === 'native' && !forceCustom) {
       const pageHash = targetPage > 1 ? `#page=${targetPage}` : '';
@@ -1192,7 +1195,8 @@
       renderSavedHighlightsOnPage(pageNum);
 
       if (state.translationMode) {
-        applyTranslationToPage(pageNum);
+        const currentLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en');
+        applyTranslationToPage(pageNum, currentLang);
       }
     } catch (err) {
       if (err.name !== 'RenderingCancelledException') {
@@ -1910,6 +1914,11 @@
       fullText += cur;
     }
     fullText = fullText.trim();
+    // Nettoyage des césures orphelines de titres ou d'en-têtes (ex. "nication SEM-26-003")
+    fullText = fullText.replace(/^nication\s+(SEM[-‑]?26[-‑]?003)/i, 'Communication $1');
+    fullText = fullText.replace(/\bCommu-\s+nication\b/gi, 'Communication');
+    fullText = fullText.replace(/\bSEM-\s*26-003\b/gi, 'SEM-26-003');
+    fullText = fullText.replace(/\bSEM26-003\b/gi, 'SEM-26-003');
 
     const isSerif = lines.some(l => l.isSerif);
     const isBold = lines.some(l => l.isBold);
@@ -2093,12 +2102,46 @@
 
   async function requestRobustTranslation(text, targetLang) {
     if (!text || !text.trim()) return text;
-    const cleanText = text.trim();
+    let cleanText = text.trim()
+      .replace(/^nication\s+(SEM[-‑]?26[-‑]?003)/i, 'Communication $1')
+      .replace(/\bSEM26-003\b/gi, 'SEM-26-003');
 
-    // 1. Appel principal prioritaire : Cloudflare Worker Edge (/api/groq-chat) (Garantie 0 blocage & haute fidélité)
+    const slParam = (targetLang === 'en' || targetLang === 'es' || targetLang === 'de') ? 'fr' : 'auto';
+
+    // 1. Appel rapide prioritaire : Google Translate GTX (instantané pour les blocs de page)
+    try {
+      const c2 = new AbortController();
+      const t2 = setTimeout(() => c2.abort(), 3500);
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${slParam}&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(cleanText)}`;
+      const res = await fetch(url, { signal: c2.signal });
+      clearTimeout(t2);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data[0])) {
+          const trans = data[0].map(s => s[0]).join('');
+          if (trans && trans.trim() && trans.trim() !== cleanText) return trans.trim();
+        }
+      }
+    } catch (_) {}
+
+    // 2. Secours alternatif : Google Translate TE
+    try {
+      const c3 = new AbortController();
+      const t3 = setTimeout(() => c3.abort(), 3500);
+      const url2 = `https://translate.googleapis.com/translate_a/t?client=te&format=html&v=1.0&sl=${slParam}&tl=${encodeURIComponent(targetLang)}&q=${encodeURIComponent(cleanText)}`;
+      const res2 = await fetch(url2, { signal: c3.signal });
+      clearTimeout(t3);
+      if (res2.ok) {
+        const data2 = await res2.json();
+        if (typeof data2 === 'string' && data2.trim() && data2.trim() !== cleanText) return data2.trim();
+        if (Array.isArray(data2) && data2[0] && typeof data2[0] === 'string' && data2[0].trim() !== cleanText) return data2[0].trim();
+      }
+    } catch (_) {}
+
+    // 3. Secours Cloudflare Worker Edge (/api/groq-chat)
     try {
       const c1 = new AbortController();
-      const t1 = setTimeout(() => c1.abort(), 4500);
+      const t1 = setTimeout(() => c1.abort(), 5000);
       const res1 = await fetch('/api/groq-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2114,36 +2157,6 @@
         const json1 = await res1.json();
         const t1Val = json1?.translatedText || json1?.answer;
         if (t1Val && t1Val.trim()) return t1Val.trim();
-      }
-    } catch (_) {}
-
-    // 2. Secours Google Translate GTX
-    try {
-      const c2 = new AbortController();
-      const t2 = setTimeout(() => c2.abort(), 3500);
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(cleanText)}`;
-      const res = await fetch(url, { signal: c2.signal });
-      clearTimeout(t2);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data[0])) {
-          const trans = data[0].map(s => s[0]).join('');
-          if (trans && trans.trim()) return trans;
-        }
-      }
-    } catch (_) {}
-
-    // 3. Secours alternatif : Google Translate TE
-    try {
-      const c3 = new AbortController();
-      const t3 = setTimeout(() => c3.abort(), 3500);
-      const url2 = `https://translate.googleapis.com/translate_a/t?client=te&format=html&v=1.0&sl=auto&tl=${encodeURIComponent(targetLang)}&q=${encodeURIComponent(cleanText)}`;
-      const res2 = await fetch(url2, { signal: c3.signal });
-      clearTimeout(t3);
-      if (res2.ok) {
-        const data2 = await res2.json();
-        if (typeof data2 === 'string' && data2.trim()) return data2;
-        if (Array.isArray(data2) && data2[0] && typeof data2[0] === 'string') return data2[0];
       }
     } catch (_) {}
 

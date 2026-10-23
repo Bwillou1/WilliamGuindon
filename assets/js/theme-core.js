@@ -510,10 +510,13 @@
 
     function scrollToHash(hash, smooth = true) {
       if (!hash || hash === '#' || hash === '') return false;
+      if (document.body && document.body.classList.contains('modal-open')) return false;
+      const articleModal = document.getElementById('article-modal');
+      if (articleModal) return false;
       const targetId = decodeURIComponent(hash.replace(/^#/, ''));
       if (!targetId) return false;
       const targetEl = document.getElementById(targetId) || document.querySelector(`[name="${CSS.escape(targetId)}"]`);
-      if (!targetEl) return false;
+      if (!targetEl || targetEl.getAttribute('aria-hidden') === 'true') return false;
 
       const headerOffset = getHeaderOffset();
       const rect = targetEl.getBoundingClientRect();
@@ -620,9 +623,11 @@
   }
 
   function initApp() {
-    // Date calendaire immuable de l'échéance CCE SEM-26-003 pour la réponse du Canada (16 octobre 2026)
+    // Date calendaire de l'échéance CCE SEM-26-003 (16 octobre 2026 — Réponse du Canada déposée)
     const CCE_16_OCT_DEADLINE = new Date('2026-10-16T00:00:00-04:00').getTime();
-    let cceTargetDate = CCE_16_OCT_DEADLINE;
+    // Prochaine échéance officielle CCE : Délai de 60 jours pour la recommandation d'un Dossier factuel (Art. 24.28 ACEUM — 15 décembre 2026)
+    const CCE_NEXT_DEADLINE = new Date('2026-12-15T23:59:59-05:00').getTime();
+    let cceTargetDate = CCE_NEXT_DEADLINE;
 
     try {
       updatePrecisionCountdown();
@@ -862,16 +867,16 @@
       banner.className = 'site-deadline-topbar notranslate';
       banner.setAttribute('translate', 'no');
       banner.setAttribute('role', 'region');
-      banner.setAttribute('aria-label', 'Compte à rebours de l’échéance CCE du 16 octobre 2026');
+      banner.setAttribute('aria-label', 'Compte à rebours de la prochaine échéance CCE du 15 décembre 2026');
 
       banner.innerHTML = `
         <div class="wrap site-deadline-topbar-wrap">
           <div class="site-deadline-left">
             <span class="site-deadline-badge">
               <span class="site-deadline-dot" aria-hidden="true"></span>
-              <span>16 OCTOBRE 2026</span>
+              <span>15 DÉCEMBRE 2026</span>
             </span>
-            <span class="site-deadline-title">Échéance CCE · Réponse du Canada (SEM-26-003) dans :</span>
+            <span class="site-deadline-title">Prochaine échéance CCE · Détermination Dossier factuel (Art. 24.28) :</span>
           </div>
           <div class="site-deadline-center">
             <div class="site-deadline-clock notranslate" translate="no">
@@ -1983,7 +1988,7 @@
     }
     syncFastSiteState();
 
-    // Décompte de précision (secondes) avec basculement automatique vers le Statut Officiel Étape 2 ou 3
+    // Décompte de précision (secondes) vers la prochaine échéance CCE (15 décembre 2026 — Art. 24.28 ACEUM)
     function updatePrecisionCountdown() {
       const now = new Date().getTime();
       const isStage3 = isStage3StatusActive();
@@ -1997,7 +2002,27 @@
       const trackerCountdown = document.getElementById('tracker-countdown-state');
       const trackerStage2 = document.getElementById('tracker-stage2-state');
 
-      // Mode Étape 3 : Version légère et pérenne post-échéance
+      // Calcul du décompte en direct vers la prochaine échéance CCE (15 décembre 2026)
+      const diff = Math.max(0, cceTargetDate - now);
+      const days = String(Math.floor(diff / (1000 * 60 * 60 * 24)));
+      const hours = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+      const mins = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+      const secs = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+
+      document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => {
+        if (el.textContent !== days) el.textContent = days;
+      });
+      document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => {
+        if (el.textContent !== hours) el.textContent = hours;
+      });
+      document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => {
+        if (el.textContent !== mins) el.textContent = mins;
+      });
+      document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => {
+        if (el.textContent !== secs) el.textContent = secs;
+      });
+
+      // Mode Étape 3 : Version légère et pérenne post-échéance 16 oct.
       if (isStage3) {
         document.body.classList.remove('stage2-active');
         document.body.classList.add('stage3-active');
@@ -2006,26 +2031,6 @@
         if (bioLead) bioLead.style.display = 'block';
         if (trackerCountdown) trackerCountdown.style.display = 'none';
         if (trackerStage2) trackerStage2.style.display = 'block';
-
-        // Adaptation du titre du tracker pour la phase post-échéance
-        const trackerTitle = document.querySelector('#tracker-countdown-state h3');
-        if (trackerTitle) {
-          trackerTitle.innerHTML = 'Procédure CCE SEM-26-003 : Phase d\'examen post-échéance (art. 24.28 ACEUM)';
-        }
-
-        // Adaptation sobre et apaisée de la topbar de décompte du site
-        document.querySelectorAll('.site-deadline-title').forEach(el => {
-          el.textContent = "Statut CCE · Suivi officiel post-échéance :";
-        });
-        document.querySelectorAll('.site-deadline-clock').forEach(el => {
-          el.innerHTML = '<span style="color:#38bdf8; font-weight:800; font-size:12px; letter-spacing:0.04em;">DOSSIER EN COURS D\'EXAMEN · ART. 24.28 ACEUM</span>';
-        });
-
-        // Les compteurs restent calés à 0
-        document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = '0');
-        document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = '00');
-        document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = '00');
-        document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = '00');
         return;
       }
 
@@ -2040,20 +2045,6 @@
         if (stage2Summary) stage2Summary.style.display = 'block';
         if (trackerCountdown) trackerCountdown.style.display = 'none';
         if (trackerStage2) trackerStage2.style.display = 'block';
-
-        // Adaptation de la topbar de décompte du site
-        document.querySelectorAll('.site-deadline-title').forEach(el => {
-          el.textContent = "Statut CCE · Réponse officielle déposée :";
-        });
-        document.querySelectorAll('.site-deadline-clock').forEach(el => {
-          el.innerHTML = '<span style="color:#10b981; font-weight:800; font-size:12px; letter-spacing:0.04em;">RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN CCE EN COURS</span>';
-        });
-
-        // Les compteurs restent calés à 0
-        document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = '0');
-        document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = '00');
-        document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = '00');
-        document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = '00');
         return;
       }
 
@@ -2062,18 +2053,6 @@
       if (stage2Summary) stage2Summary.style.display = 'none';
       if (trackerCountdown) trackerCountdown.style.display = 'block';
       if (trackerStage2) trackerStage2.style.display = 'none';
-
-      const diff = Math.max(0, cceTargetDate - now);
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.querySelectorAll('.js-cd-days, #cd-days').forEach(el => el.textContent = days);
-      document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(el => el.textContent = String(hours).padStart(2, '0'));
-      document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(el => el.textContent = String(mins).padStart(2, '0'));
-      document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => el.textContent = String(secs).padStart(2, '0'));
     }
 
     if (document.getElementById('cd-days') || document.getElementById('cd-hours') || document.querySelector('.js-cd-days') || document.getElementById('hero-stage2-panel') || document.getElementById('hero-countdown-block')) {
@@ -2208,6 +2187,8 @@
       const submenus = dropdown.querySelectorAll('.nav-submenu');
       submenus.forEach(submenu => {
         submenu.removeAttribute('open');
+        if (submenu.__wgAccordionBound) return;
+        submenu.__wgAccordionBound = true;
         submenu.addEventListener('toggle', () => {
           if (submenu.open) {
             submenus.forEach(other => {
@@ -2217,6 +2198,18 @@
             });
           }
         });
+      });
+
+      dropdown.addEventListener('mouseenter', () => {
+        if (window.innerWidth > 992) {
+          dropdowns.forEach(d => {
+            if (d !== dropdown && d.classList.contains('active')) {
+              d.classList.remove('active');
+              const ob = d.querySelector('.nav-dropdown-btn');
+              if (ob) ob.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
       });
     });
 
@@ -3263,10 +3256,12 @@
     backdrop.addEventListener('click', closeQuickSearch);
     closeBtn.addEventListener('click', closeQuickSearch);
 
-    // Initialisation du comportement accordéon sur les sous-menus hiérarchiques
+    // Initialisation du comportement accordéon sur les sous-menus hiérarchiques (avec garde anti-doublon)
     document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
       const submenus = dropdown.querySelectorAll('.nav-submenu');
       submenus.forEach(submenu => {
+        if (submenu.__wgAccordionBound) return;
+        submenu.__wgAccordionBound = true;
         submenu.addEventListener('toggle', () => {
           if (submenu.open) {
             submenus.forEach(other => {
@@ -3580,49 +3575,66 @@
 
   /* --- Glossaire juridique & scientifique infobulle (Tooltips automatiques) --- */
   function initLegalGlossaryTooltips() {
+    if (document.body && document.body.dataset.noGlossaryTooltips === 'true') return;
     if (document.getElementById('wg-glossary-tooltip-styles')) return;
     const style = document.createElement('style');
     style.id = 'wg-glossary-tooltip-styles';
     style.textContent = `
       .wg-glossary-term {
-        border-bottom: 1px dashed rgba(45, 138, 86, 0.7);
+        border-bottom: 1.5px dotted rgba(34, 197, 94, 0.78);
         cursor: help;
         position: relative;
-        transition: color 0.15s ease, border-color 0.15s ease;
+        padding-bottom: 1px;
+        transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
       }
       .wg-glossary-term:hover, .wg-glossary-term:focus {
-        color: var(--primary, #2d8a56);
-        border-bottom-color: var(--primary, #2d8a56);
+        color: var(--accent, #22c55e);
+        border-bottom-color: var(--accent, #22c55e);
+        background-color: rgba(34, 197, 94, 0.08);
+        border-radius: 3px;
         outline: none;
       }
       #wg-floating-glossary-tip {
         position: fixed;
         z-index: 99999;
-        max-width: 310px;
-        background: rgba(15, 23, 42, 0.97);
+        max-width: 335px;
+        background: rgba(15, 23, 42, 0.98);
         color: #f8fafc;
-        border: 1px solid rgba(45, 138, 86, 0.55);
-        border-radius: 10px;
-        padding: 0.65rem 0.85rem;
-        font-size: 0.78rem;
-        line-height: 1.48;
-        box-shadow: 0 12px 28px rgba(0,0,0,0.45);
-        pointer-events: none;
+        border: 1px solid rgba(34, 197, 94, 0.55);
+        border-radius: 12px;
+        padding: 0.75rem 0.95rem;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        box-shadow: 0 14px 32px rgba(0,0,0,0.48);
+        pointer-events: auto;
         opacity: 0;
+        visibility: hidden;
         transform: translateY(4px);
-        transition: opacity 0.16s ease, transform 0.16s ease;
+        transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
       }
       #wg-floating-glossary-tip.is-visible {
         opacity: 1;
+        visibility: visible;
         transform: translateY(0);
       }
       #wg-floating-glossary-tip strong {
         display: block;
         color: #4ade80;
-        font-size: 0.74rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        margin-bottom: 0.22rem;
+        margin-bottom: 0.25rem;
+      }
+      #wg-floating-glossary-tip .wg-tip-link {
+        display: inline-block;
+        margin-top: 0.4rem;
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: #4ade80;
+        text-decoration: none;
+      }
+      #wg-floating-glossary-tip .wg-tip-link:hover {
+        text-decoration: underline;
       }
     `;
     document.head.appendChild(style);
@@ -3634,51 +3646,148 @@
 
     const GLOSSARY = [
       {
-        regex: /\b(ACEUM\s+art\.\s*24\.28|article\s+24\.28)\b/gi,
+        regex: /\b(ACEUM\s+art\.\s*24\.28|article\s+24\.28|art\.\s*24\.28)\b/gi,
+        slug: 'article-24-28',
         title: 'ACEUM — Article 24.28 (Dossier factuel)',
-        desc: 'Disposition du traité Canada–États-Unis–Mexique permettant au Secrétariat de la CCE de recommander au Conseil ministériel la constitution d’un dossier factuel d’enquête internationale.'
+        desc: 'Règle du traité donnant 60 jours au Secrétariat de la CCE (après la réponse du pays) pour recommander aux ministres des 3 pays l’ouverture d’une enquête internationale (Dossier factuel).'
+      },
+      {
+        regex: /\b(ACEUM\s+art\.\s*24\.27(?:\([123]\))?|article\s+24\.27(?:\([123]\))?|art\.\s*24\.27(?:\([123]\))?)\b/gi,
+        slug: 'article-24-27',
+        title: 'ACEUM — Article 24.27 (Plainte citoyenne)',
+        desc: 'Article du traité permettant à tout citoyen de déposer une communication devant la CCE lorsqu’un gouvernement n’applique pas efficacement ses propres lois environnementales.'
+      },
+      {
+        regex: /\b(ACEUM)\b/g,
+        slug: 'aceum',
+        title: 'ACEUM (Accord Canada–États-Unis–Mexique)',
+        desc: 'Traité international liant le Canada, les États-Unis et le Mexique. Son chapitre 24 oblige chaque pays à appliquer ses lois environnementales et permet les plaintes citoyennes devant la CCE.'
+      },
+      {
+        regex: /\b(SEM-26-003)\b/g,
+        slug: 'sem-26-003',
+        title: 'Communication citoyenne SEM-26-003',
+        desc: 'Numéro officiel du dossier juridique déposé par William Guindon devant la CCE concernant l’expansion de Stablex et la protection de la Grande Tourbière de Blainville.'
       },
       {
         regex: /\b(Dossier\s+factuel|dossier\s+factuel)\b/g,
-        title: 'Dossier factuel (CCE / ACEUM)',
-        desc: 'Enquête technique indépendante menée par le Secrétariat de la CCE, votée aux 2/3 par le Conseil (Canada, États-Unis, Mexique), exposant publiquement les faits d’inapplication d’une loi environnementale.'
-      },
-      {
-        regex: /\b(BAPE\s+371)\b/g,
-        title: 'Rapport BAPE 371 (Septembre 2023)',
-        desc: 'Rapport d’enquête du Bureau d’audiences publiques sur l’environnement concluant de façon défavorable au projet d’expansion de la cellule n° 6 de Stablex dans la Grande Tourbière de Blainville.'
-      },
-      {
-        regex: /\b(Loi\s+93|Projet\s+de\s+loi\s+93)\b/g,
-        title: 'Loi 93 du Québec (28 mars 2025)',
-        desc: 'Loi spéciale adoptée sous bâillon expropriant 278 000 m² à Blainville au profit de Stablex (83 % des parts détenues par un fonds américain) en contournant le rapport défavorable du BAPE 371.'
+        slug: 'dossier-factuel',
+        title: 'Dossier factuel (Enquête CCE)',
+        desc: 'Enquête scientifique et juridique indépendante menée par la CCE et autorisée par un vote d’au moins 2 des 3 pays membres pour faire toute la lumière sur l’inapplication d’une loi environnementale.'
       },
       {
         regex: /\b(72-RSP)\b/g,
-        title: 'Pièce 72-RSP (Réponse du Canada — 16 oct. 2026)',
-        desc: 'Réponse officielle de 59 pages d’Environnement et Changement climatique Canada demandant la clôture de SEM-26-003 en invoquant le contrôle judiciaire municipal de Blainville.'
+        slug: '72-rsp',
+        title: 'Pièce 72-RSP (Réponse du Canada)',
+        desc: 'Mémoire officiel déposé par le gouvernement du Canada le 16 octobre 2026 demandant la fin ou le report du dossier SEM-26-003.'
       },
       {
-        regex: /\b(Pétition\s+0546|pétition\s+n°\s*0546|BVG\s+0546)\b/gi,
-        title: 'Pétition fédérale n° 0546 (BVG / CEDD)',
-        desc: 'Pétition en matière d’environnement enregistrée par le Commissaire à l’environnement (BVG) sous l’art. 22 de la Loi sur le vérificateur général. Réponse obligatoire des ministres fédéraux d’ici le 10 novembre 2026.'
+        regex: /\b(73-REC)\b/g,
+        slug: '73-rec',
+        title: 'Pièce 73-REC (Accusé CCE)',
+        desc: 'Acte officiel du Secrétariat de la CCE accusant réception de la réponse du Canada le 16 octobre 2026 et lançant le délai de 60 jours menant au 15 décembre 2026.'
+      },
+      {
+        regex: /\b(Ligne\s+directrice\s+7\.5)\b/gi,
+        slug: 'ligne-directrice-7-5',
+        title: 'Ligne directrice 7.5 de la CCE',
+        desc: 'Règle précisant qu’une simple pétition citoyenne d’information n’est pas une procédure judiciaire ou d’application de la loi pouvant bloquer une enquête de la CCE.'
+      },
+      {
+        regex: /\b(BAPE\s+371|rapport\s+371\s+du\s+BAPE)\b/gi,
+        slug: 'bape-371',
+        title: 'Rapport BAPE 371 (Septembre 2023)',
+        desc: 'Rapport indépendant du Bureau d’audiences publiques sur l’environnement concluant que le projet de cellule 6 de Stablex dans la tourbière ne devrait pas être autorisé.'
+      },
+      {
+        regex: /\b(Loi\s+93|Projet\s+de\s+loi\s+93)\b/g,
+        slug: 'loi-93',
+        title: 'Loi 93 du Québec (28 mars 2025)',
+        desc: 'Loi spéciale adoptée sous bâillon expropriant le terrain écologique de la Ville de Blainville au profit de Stablex en contournant le rapport défavorable du BAPE 371.'
+      },
+      {
+        regex: /\b(bâillon\s+parlementaire|sous\s+bâillon)\b/gi,
+        slug: 'baillon',
+        title: 'Bâillon parlementaire',
+        desc: 'Procédure d’exception par laquelle un gouvernement majoritaire suspend les règles normales de débat à l’Assemblée nationale pour imposer l’adoption rapide d’une loi.'
+      },
+      {
+        regex: /\b(Pétition\s+0?546|pétition\s+fédérale\s+no\s*0?546|pétition\s+n°\s*0?546)\b/gi,
+        slug: 'petition-546',
+        title: 'Pétition fédérale n° 546 (BVG / CEDD)',
+        desc: 'Pétition environnementale citoyenne déposée en vertu de l’article 22 de la Loi sur le vérificateur général obligeant les ministres fédéraux à répondre par écrit.'
+      },
+      {
+        regex: /\b(BVG|CEDD)\b/g,
+        slug: 'bvg-cedd',
+        title: 'BVG / CEDD (Vérificateur général)',
+        desc: 'Bureau du vérificateur général du Canada et Commissaire à l’environnement et au développement durable, chargés de vérifier l’action environnementale fédérale.'
+      },
+      {
+        regex: /\b(cadmium|Cadmium)\b/g,
+        slug: 'cadmium',
+        title: 'Cadmium (Métal lourd toxique)',
+        desc: 'Métal lourd hautement toxique pour la vie aquatique. Un échantillon du MELCCFP du 2 déc. 2023 a mesuré 320 fois le critère de toxicité aiguë à l’effluent lié à Stablex.'
+      },
+      {
+        regex: /\b(Cellule\s+6|cellule\s+6)\b/g,
+        slug: 'cellule-6',
+        title: 'Cellule 6 (Projet Stablex)',
+        desc: 'Nouveau bassin géant d’enfouissement de déchets industriels dangereux projeté par Stablex au cœur d’un secteur boisé et humide de la Grande Tourbière de Blainville.'
+      },
+      {
+        regex: /\b(Loi\s+sur\s+les\s+pêches|article\s+36\(3\))\b/gi,
+        slug: 'loi-peches',
+        title: 'Loi sur les pêches — Article 36(3)',
+        desc: 'Loi fédérale interdisant formellement le rejet de toute substance nocive ou toxique dans des eaux fréquentées par le poisson.'
+      },
+      {
+        regex: /\b(LEP|Loi\s+sur\s+les\s+espèces\s+en\s+péril)\b/g,
+        slug: 'lep',
+        title: 'LEP (Loi sur les espèces en péril)',
+        desc: 'Loi fédérale canadienne protégeant la faune et la flore menacées de disparition ainsi que leurs habitats essentiels.'
+      },
+      {
+        regex: /\b(LCOM)\b/g,
+        slug: 'lcom',
+        title: 'LCOM (Oiseaux migrateurs)',
+        desc: 'Loi de 1994 sur la convention concernant les oiseaux migrateurs, protégeant au niveau fédéral les oiseaux migrateurs, leurs nids et leurs habitats.'
+      },
+      {
+        regex: /\b(MELCCFP)\b/g,
+        slug: 'melccfp',
+        title: 'MELCCFP (Ministère de l’Environnement du Québec)',
+        desc: 'Ministère de l’Environnement, de la Lutte contre les changements climatiques, de la Faune et des Parcs du Québec, auteur des échantillonnages et avis techniques cités au dossier.'
+      },
+      {
+        regex: /\b(ombrotrophe|tourbière\s+ombrotrophe)\b/gi,
+        slug: 'tourbiere-ombrotrophe',
+        title: 'Tourbière ombrotrophe (Milieu humide)',
+        desc: 'Écosystème humide millénaire formé de sphaignes, alimenté par l’eau de pluie, qui filtre l’eau, abrite une biodiversité rare et ne peut pas être recréé une fois détruit.'
+      },
+      {
+        regex: /\b(puits\s+de\s+carbone)\b/gi,
+        slug: 'puits-de-carbone',
+        title: 'Puits de carbone naturel',
+        desc: 'Écosystème (comme la Grande Tourbière) qui capte et emprisonne d’immenses quantités de CO₂ depuis des millénaires, freinant le réchauffement climatique.'
       },
       {
         regex: /\b(Adultisme|adultisme)\b/g,
-        title: 'Adultisme systémique (ONU — Manfred Liebel)',
-        desc: 'Concept juridique et sociologique désignant la discrimination ou la disqualification de la parole citoyenne et juridique d’une personne en raison de son jeune âge.'
+        slug: 'adultisme',
+        title: 'Adultisme (Capacité civique des jeunes)',
+        desc: 'Préjugé ou discrimination consistant à écarter ou minimiser la parole citoyenne et les droits juridiques d’une personne parce qu’elle a moins de 18 ans.'
       }
     ];
 
     const SKIP_TAGS = new Set(['A', 'BUTTON', 'SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'SUMMARY', 'TITLE']);
-    const seenTerms = new Set();
+    const termCounts = new Map();
     const root = document.querySelector('main') || document.body;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
-        if (!node.nodeValue || node.nodeValue.trim().length < 5) return NodeFilter.FILTER_REJECT;
+        if (!node.nodeValue || node.nodeValue.trim().length < 3) return NodeFilter.FILTER_REJECT;
         let p = node.parentElement;
         while (p) {
-          if (SKIP_TAGS.has(p.tagName) || p.classList.contains('wg-glossary-term') || p.closest('.faq-question, [itemprop="name"]')) {
+          if (SKIP_TAGS.has(p.tagName) || p.classList.contains('wg-glossary-term') || p.closest('.faq-question, [itemprop="name"], .lexique-card')) {
             return NodeFilter.FILTER_REJECT;
           }
           p = p.parentElement;
@@ -3693,11 +3802,12 @@
     textNodes.forEach((node) => {
       let text = node.nodeValue;
       for (const item of GLOSSARY) {
-        if (seenTerms.has(item.title)) continue;
+        const count = termCounts.get(item.title) || 0;
+        if (count >= 3) continue;
         item.regex.lastIndex = 0;
         const match = item.regex.exec(text);
         if (match) {
-          seenTerms.add(item.title);
+          termCounts.set(item.title, count + 1);
           const before = text.slice(0, match.index);
           const matchedText = match[0];
           const after = text.slice(match.index + matchedText.length);
@@ -3709,6 +3819,7 @@
           span.tabIndex = 0;
           span.dataset.gTitle = item.title;
           span.dataset.gDesc = item.desc;
+          span.dataset.gSlug = item.slug || '';
           span.textContent = matchedText;
           frag.appendChild(span);
           if (after) frag.appendChild(document.createTextNode(after));
@@ -3718,18 +3829,35 @@
       }
     });
 
+    let hideTimeout = null;
     function showTip(el) {
-      tip.innerHTML = '<strong>' + el.dataset.gTitle + '</strong>' + el.dataset.gDesc;
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+      const slug = el.dataset.gSlug ? ('#' + el.dataset.gSlug) : '';
+      tip.innerHTML = '<strong>' + el.dataset.gTitle + '</strong><div>' + el.dataset.gDesc + '</div><a class="wg-tip-link" href="lexique.html' + slug + '">Voir dans le dictionnaire citoyen &rarr;</a>';
       tip.classList.add('is-visible');
       const rect = el.getBoundingClientRect();
       const top = Math.max(10, rect.top - tip.offsetHeight - 10);
-      const left = Math.min(window.innerWidth - 325, Math.max(10, rect.left));
-      tip.style.top = (rect.top < 110 ? rect.bottom + 8 : top) + 'px';
+      const left = Math.min(window.innerWidth - 345, Math.max(10, rect.left));
+      tip.style.top = (rect.top < 130 ? rect.bottom + 8 : top) + 'px';
       tip.style.left = left + 'px';
     }
-    function hideTip() {
-      tip.classList.remove('is-visible');
+    function scheduleHideTip() {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        tip.classList.remove('is-visible');
+      }, 220);
     }
+
+    tip.addEventListener('mouseenter', () => {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    });
+    tip.addEventListener('mouseleave', scheduleHideTip);
 
     document.addEventListener('mouseover', (e) => {
       const t = e.target.closest && e.target.closest('.wg-glossary-term');
@@ -3737,7 +3865,16 @@
     });
     document.addEventListener('mouseout', (e) => {
       const t = e.target.closest && e.target.closest('.wg-glossary-term');
-      if (t) hideTip();
+      if (t) scheduleHideTip();
+    });
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest && e.target.closest('.wg-glossary-term');
+      if (t) {
+        e.stopPropagation();
+        showTip(t);
+      } else if (!e.target.closest || !e.target.closest('#wg-floating-glossary-tip')) {
+        tip.classList.remove('is-visible');
+      }
     });
     document.addEventListener('focusin', (e) => {
       const t = e.target.closest && e.target.closest('.wg-glossary-term');
@@ -3745,7 +3882,7 @@
     });
     document.addEventListener('focusout', (e) => {
       const t = e.target.closest && e.target.closest('.wg-glossary-term');
-      if (t) hideTip();
+      if (t) scheduleHideTip();
     });
   }
 

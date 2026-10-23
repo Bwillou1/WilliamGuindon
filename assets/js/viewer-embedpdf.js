@@ -1456,6 +1456,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (dom.textToTranslate) {
       if (sel) {
         dom.textToTranslate.value = sel;
+        if (dom.btnTranslateAction) dom.btnTranslateAction.click();
       } else if (!dom.textToTranslate.value.trim()) {
         dom.textToTranslate.value = defaultMetaText;
       }
@@ -1491,8 +1492,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   if (dom.btnTranslateDoc) {
     dom.btnTranslateDoc.addEventListener('click', () => {
+      const sel = getSelectedDocText();
+      if (sel) {
+        openTranslateModal();
+        return;
+      }
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      redirectToLecteur(currentTargetFile, null, currentTheme);
+      redirectToLecteur(currentTargetFile, 'en', currentTheme);
     });
   }
 
