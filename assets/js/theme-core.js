@@ -3445,21 +3445,9 @@
   });
 
   function handleLowBandwidth() {
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (!conn) return;
-
-    const isSlow = conn.saveData ||
-      conn.effectiveType === 'slow-2g' ||
-      conn.effectiveType === '2g' ||
-      (conn.downlink && conn.downlink < 0.25) ||
-      (conn.rtt && conn.rtt > 1800);
-
-    const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.pathname === '';
-    const forceFull = sessionStorage.getItem('wg_force_full_site') === 'true';
-
-    if (isSlow && isHome && !forceFull) {
-      window.location.replace('txt.html');
-    }
+    // Ne jamais forcer de redirection automatique vers txt.html.
+    // L'accès à la version ultra-légère textuelle doit toujours rester un choix explicite de l'utilisateur.
+    return;
   }
 
   // ==========================================================================

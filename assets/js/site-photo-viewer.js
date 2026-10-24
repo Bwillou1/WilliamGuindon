@@ -205,7 +205,7 @@
     zoomable: true,
     rotatable: true,
     scalable: true,
-    transition: true,
+    transition: false, // DÉSACTIVÉ : évite le blocage mortel de transitionend lors de hide()
     fullscreen: true,
     keyboard: true, // Raccourci Échap pour fermer
     loading: true,
@@ -226,13 +226,57 @@
     },
     hide() {
       document.body.classList.remove('wg-viewer-open');
+    },
+    hidden() {
+      document.body.classList.remove('wg-viewer-open');
       if (currentActiveViewer === this) {
         currentActiveViewer = null;
       }
     }
   };
 
-  // 5. Fermeture garantie du bouton X et du fond
+  // 5. Fermeture universelle et garantie de Viewer.js
+  function closeViewer(viewerInstance) {
+    const target = viewerInstance || currentActiveViewer;
+    if (target) {
+      try {
+        if (typeof target.hide === 'function') {
+          target.hide(true); // Passer true force la fermeture immédiate sans attendre transitionend
+        }
+      } catch (err) {
+        console.warn('[SitePhotoViewer] hide(true) error:', err);
+      }
+      try {
+        if (typeof target.exit === 'function') target.exit();
+      } catch (_) {}
+      try {
+        if (typeof target.stop === 'function') target.stop();
+      } catch (_) {}
+      try {
+        if (typeof target.hidden === 'function') target.hidden();
+      } catch (_) {}
+      target.hiding = false;
+      target.isShown = false;
+      target.showing = false;
+      if (target.viewer) {
+        target.viewer.classList.remove('viewer-in');
+        target.viewer.classList.add('viewer-hide');
+      }
+    }
+
+    // Sécurité maximale : fermer et masquer tout conteneur Viewer.js présent dans le DOM
+    document.querySelectorAll('.viewer-container').forEach(c => {
+      c.classList.remove('viewer-in');
+      c.classList.add('viewer-hide');
+      c.setAttribute('aria-hidden', 'true');
+    });
+
+    document.body.classList.remove('wg-viewer-open');
+    if (!target || target === currentActiveViewer) {
+      currentActiveViewer = null;
+    }
+  }
+
   function bindCloseHandlers(viewerInstance) {
     if (!viewerInstance || !viewerInstance.viewer) return;
     const container = viewerInstance.viewer;
@@ -247,14 +291,15 @@
       const handleClose = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        viewerInstance.hide();
+        closeViewer(viewerInstance);
       };
 
       closeBtn.addEventListener('click', handleClose, true);
       closeBtn.addEventListener('touchend', handleClose, true);
+      closeBtn.addEventListener('pointerup', handleClose, true);
     }
 
-    // B. Fermeture au clic sur le canvas/fond si on ne glisse pas
+    // B. Fermeture au clic sur le canvas/fond (backdrop)
     const canvas = container.querySelector('.viewer-canvas');
     if (canvas && !canvas.__wgCloseBound) {
       canvas.__wgCloseBound = true;
@@ -263,23 +308,29 @@
         startX = e.clientX;
         startY = e.clientY;
       });
-      canvas.addEventListener('mouseup', (e) => {
-        // Si clic direct sur le canvas (fond) sans drag
+      canvas.addEventListener('click', (e) => {
+        // Si clic direct sur le canvas (fond noir) sans glissement
         if (e.target === canvas) {
           const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
           if (dist < 8) {
-            viewerInstance.hide();
+            e.preventDefault();
+            e.stopPropagation();
+            closeViewer(viewerInstance);
           }
         }
-      });
+      }, true);
     }
   }
 
   // Écouteur global de secours pour la touche Échap
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && currentActiveViewer) {
-      e.preventDefault();
-      currentActiveViewer.hide();
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      const anyOpen = document.querySelector('.viewer-container.viewer-in, .viewer-container:not(.viewer-hide)');
+      if (currentActiveViewer || anyOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeViewer(currentActiveViewer);
+      }
     }
   }, true);
 
@@ -373,10 +424,10 @@
 
     // Détection clic sur bouton de fermeture universel
     const closeBtn = target.closest('.viewer-button, .viewer-close, [data-viewer-action="mix"]');
-    if (closeBtn && currentActiveViewer) {
+    if (closeBtn) {
       e.preventDefault();
       e.stopPropagation();
-      currentActiveViewer.hide();
+      closeViewer(currentActiveViewer);
       return;
     }
 
@@ -533,7 +584,8 @@
     setupSingleImage,
     isViewableImage,
     getHighResUrl,
-    hideCurrent: () => { if (currentActiveViewer) currentActiveViewer.hide(); }
+    hideCurrent: () => closeViewer(currentActiveViewer),
+    closeViewer
   };
 
   if (document.readyState === 'loading') {
