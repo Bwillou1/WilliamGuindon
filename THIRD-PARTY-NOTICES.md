@@ -614,6 +614,7 @@ THE SOFTWARE.
 - **Streamline Icons (StreamlineHQ) & Iconify :** Jeux d'icônes vectorielles et symboles d'interface SVG sous licence libre / MIT / CC BY 4.0 ([streamlinehq.com](https://www.streamlinehq.com/?ref=iconify&utm_source=iconify&utm_medium=partner&utm_campaign=expand-your-collection&tab=all&via=iconify) & [iconify.design](https://iconify.design/)).
 - **Lucide Icons & Feather Icons :** Jeux d'icônes vectorielles SVG intégrés sous licence ISC / MIT (Copyright (c) 2022-2026 Lucide Contributors, Copyright (c) 2013-2026 Cole Bemis).
 - **Commission de Coopération Environnementale (CCE / cec.org) :** Consultation en direct des données et pièces officielles du registre public SEM-26-003 ([cec.org](https://www.cec.org)).
+- **Short.io (Short.cm Inc. / wg.s.gy) :** Service de redirection et domaine court officiel de William Guindon (`https://wg.s.gy/`) utilisé pour simplifier et sécuriser la diffusion et le partage des pièces documentaires officielles ([short.io](https://short.io)).
 - **uMap / OpenStreetMap Suisse (umap.osm.ch) :** Service libre de cartographie vectorielle et interactive basé sur les données ouvertes OpenStreetMap.
 - **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (données sous licence Open Database License - ODbL).
 
