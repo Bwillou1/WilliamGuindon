@@ -12,10 +12,20 @@
   }
 
   function initHero3D() {
-    const heroSection = document.getElementById('accueil') || document.getElementById('section-404') || document.querySelector('.hero-immersive') || document.querySelector('.hero-3d-wrap');
     const curtainsContainer = document.getElementById('hero-curtains-canvas') || document.querySelector('.hero-curtains-container');
+    if (!curtainsContainer) {
+      return;
+    }
 
-    if (!heroSection || !curtainsContainer) {
+    // Le parent doit être la section immersive réelle englobant le canvas (et non un <header>)
+    const heroSection = curtainsContainer.closest('.hero-immersive') ||
+                        curtainsContainer.closest('#section-404') ||
+                        document.querySelector('section.hero-immersive') ||
+                        document.querySelector('.hero-immersive') ||
+                        document.querySelector('.hero-3d-wrap') ||
+                        curtainsContainer.parentElement;
+
+    if (!heroSection) {
       return;
     }
 
@@ -264,10 +274,10 @@
     };
     imgPhoto.onerror = () => {
       if (imgPhoto.src.includes('.webp')) {
-        imgPhoto.src = 'assets/media/tourbiere-hero-3d.jpg?' + CACHE_KEY;
+        imgPhoto.src = '/assets/media/tourbiere-hero-3d.jpg?' + CACHE_KEY;
       }
     };
-    imgPhoto.src = 'assets/media/tourbiere-hero-3d.webp?' + CACHE_KEY;
+    imgPhoto.src = '/assets/media/tourbiere-hero-3d.webp?' + CACHE_KEY;
     if (imgPhoto.complete && imgPhoto.naturalWidth) {
       imgPhoto.onload();
     }
@@ -279,10 +289,10 @@
     };
     imgDepth.onerror = () => {
       if (imgDepth.src.includes('.webp')) {
-        imgDepth.src = 'assets/media/tourbiere-hero-depth.png?' + CACHE_KEY;
+        imgDepth.src = '/assets/media/tourbiere-hero-depth.png?' + CACHE_KEY;
       }
     };
-    imgDepth.src = 'assets/media/tourbiere-hero-depth.webp?' + CACHE_KEY;
+    imgDepth.src = '/assets/media/tourbiere-hero-depth.webp?' + CACHE_KEY;
     if (imgDepth.complete && imgDepth.naturalWidth) {
       imgDepth.onload();
     }
