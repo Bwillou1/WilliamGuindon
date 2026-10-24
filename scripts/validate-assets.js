@@ -317,7 +317,7 @@ function getInternalPath(rawUrl) {
     if (clean.startsWith('/api/') || clean.startsWith('api/')) {
       return null;
     }
-    return clean === '' || clean === '/' ? 'index.html' : clean;
+    return clean === '' || clean === '/' || clean === '.' || clean === './' ? 'index.html' : clean;
   } catch {
     return null;
   }
@@ -344,12 +344,16 @@ for (const htmlFile of htmlFiles) {
     const targetRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
     const targetFullPath = path.join(__dirname, '..', targetRelPath);
 
-    if (!fs.existsSync(targetFullPath)) {
+    const fileExists = fs.existsSync(targetFullPath) ||
+                       fs.existsSync(targetFullPath + '.html') ||
+                       (fs.existsSync(targetFullPath) && fs.statSync(targetFullPath).isDirectory() && fs.existsSync(path.join(targetFullPath, 'index.html')));
+
+    if (!fileExists) {
       errors.push(`[LIEN CASSE] Dans "${htmlFile}" : cible introuvable "${rawLink}" (résolu en: ${targetRelPath})`);
     }
 
-    // If it's a viewer.html with ?file= param, also check the file parameter
-    if (rawLink.includes('viewer.html?file=')) {
+    // If it's a viewer with ?file= param, also check the file parameter
+    if (rawLink.includes('viewer.html?file=') || rawLink.includes('viewer?file=')) {
       const queryPart = rawLink.split('?')[1] || '';
       const urlParams = new URLSearchParams(queryPart.split('#')[0]);
       const docFile = urlParams.get('file');

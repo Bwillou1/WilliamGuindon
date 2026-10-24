@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v181';
+const CACHE_NAME = 'wg-pwa-v182';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -157,11 +157,11 @@ function isCacheable(request, response) {
   // Le reste du HTML ne doit pas être mis en cache pour préserver le fonctionnement en direct des traductions
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
   if (contentType.includes('text/html')) {
-    const isOfflineAllowedHtml = url.pathname === '/apercu.html' || 
-                                 url.pathname === '/dossier-journalistes.html' || 
-                                 url.pathname === '/viewer.html' || 
-                                 url.pathname === '/lecteur.html' || 
-                                 url.pathname === '/dependances-licences.html';
+    const isOfflineAllowedHtml = url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
+                                 url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
+                                 url.pathname === '/viewer.html' || url.pathname === '/viewer' ||
+                                 url.pathname === '/lecteur.html' || url.pathname === '/lecteur' ||
+                                 url.pathname === '/dependances-licences.html' || url.pathname === '/dependances-licences';
     if (!isOfflineAllowedHtml) {
       return false;
     }
@@ -250,11 +250,11 @@ self.addEventListener('fetch', (event) => {
   // 2. Pour les navigations HTML : ne traiter en cache hors-ligne que apercu.html et les pièces
   // Toutes les autres pages naviguent en direct réseau sans interception SW (garantit 0 bug de traduction)
   if (isNavigation) {
-    const isOfflineAllowed = url.pathname === '/apercu.html' || 
-                             url.pathname === '/dossier-journalistes.html' || 
-                             url.pathname === '/viewer.html' || 
-                             url.pathname === '/lecteur.html' || 
-                             url.pathname === '/dependances-licences.html';
+    const isOfflineAllowed = url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
+                             url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
+                             url.pathname === '/viewer.html' || url.pathname === '/viewer' ||
+                             url.pathname === '/lecteur.html' || url.pathname === '/lecteur' ||
+                             url.pathname === '/dependances-licences.html' || url.pathname === '/dependances-licences';
     if (!isOfflineAllowed) {
       return;
     }
@@ -274,13 +274,16 @@ self.addEventListener('fetch', (event) => {
       })
       .catch(async () => {
         // Recherche dans le cache local
-        const cachedResponse = await caches.match(event.request);
+        let cachedResponse = await caches.match(event.request);
+        if (!cachedResponse && !url.pathname.endsWith('.html')) {
+          cachedResponse = await caches.match(url.pathname + '.html');
+        }
         if (cachedResponse) {
           return cachedResponse;
         }
 
         // Fallback pour la navigation apercu.html
-        if (isNavigation && url.pathname === '/apercu.html') {
+        if (isNavigation && (url.pathname === '/apercu.html' || url.pathname === '/apercu')) {
           const apercuFallback = await caches.match('/apercu.html');
           if (apercuFallback) return apercuFallback;
         }
