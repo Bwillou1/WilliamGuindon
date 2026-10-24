@@ -82,6 +82,17 @@ mirrorsData.mirrors.codeberg = {
   description: 'Réplication continue et indépendante de l\'arbre Git complet.'
 };
 
+mirrorsData.mirrors.lobbying_canada_wacz = {
+  name: 'Archive Web WACZ / ReplayWeb — Registre du Lobbying du Canada (Rencontre du 17 sept.)',
+  dateArchive: '2026-10-24',
+  dateEvenement: '2026-09-17',
+  status: 'Disponible',
+  replayUrl: 'https://replayweb.page/?source=https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz',
+  waczUrl: 'https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz',
+  detailsUrl: 'https://archive.org/details/lobby_canada_17',
+  description: 'Archive Web interactive (format standard WACZ) de la déclaration du Registre des lobbyistes du Canada documentant les représentations fédérales du 17 septembre dans le dossier Stablex / SEM-26-003, capturée le 24 octobre 2026.'
+};
+
 mirrorsData.documents_sha256 = {};
 
 for (const docRel of DOCS) {
