@@ -94,7 +94,7 @@
 
     if (isSameOrigin) return false;
 
-    // Exceptions autorisées : visionneuse de documents / PDF, horloge live, lecteur et explorateur de documents
+    // Exceptions autorisées : visionneuse de documents / PDF, horloge live, lecteur, explorateur et surveillance satellite
     const path = window.location.pathname.toLowerCase();
     const isAllowedEmbed = path.endsWith('viewer.html') || 
                            path.endsWith('/viewer') ||
@@ -102,6 +102,8 @@
                            path.endsWith('/live') ||
                            path.endsWith('lecteur.html') ||
                            path.endsWith('/lecteur') ||
+                           path.endsWith('satellite.html') ||
+                           path.endsWith('/satellite') ||
                            path.endsWith('dossier-journalistes.html') ||
                            path.endsWith('/dossier-journalistes') ||
                            path.endsWith('dossier-journalistes');
