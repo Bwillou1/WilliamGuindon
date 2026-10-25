@@ -128,6 +128,64 @@
   box-shadow: 0 0 6px #10b981;
 }
 
+/* Encadré d'intégration accélérée par IA */
+.dev-ai-callout {
+  max-width: 820px;
+  margin: 28px auto 0;
+  text-align: left;
+  background: radial-gradient(circle at top left, rgba(168, 85, 247, 0.14), transparent 70%), var(--surface);
+  border: 1.5px solid rgba(168, 85, 247, 0.4);
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.dev-ai-callout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.dev-ai-callout-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.dev-ai-callout-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.dev-ai-callout-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+.dev-ai-callout-details summary {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c084fc;
+  cursor: pointer;
+  user-select: none;
+}
+.dev-ai-callout-details summary:hover {
+  text-decoration: underline;
+}
+.dev-ai-callout-details pre {
+  margin-top: 10px;
+  background: #090d16;
+  border-radius: 8px;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  font-size: 0.8rem;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
 .dev-section {
   padding: 48px 0;
   border-bottom: 1px solid var(--line);
@@ -776,6 +834,79 @@
           <span>Spécification OpenAPI 3.1</span>
         </div>
       </div>
+
+      <!-- Encadré Assistant d'Intégration IA -->
+      <div class="dev-ai-callout">
+        <div class="dev-ai-callout-header">
+          <div class="dev-ai-callout-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <span>Intégration accélérée par IA (ChatGPT, Claude, Cursor)</span>
+          </div>
+          <button type="button" class="btn-copy-code" id="btn-copy-architect-prompt" title="Copier le prompt d'architecte pour votre IA">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copier le prompt d'architecte
+          </button>
+        </div>
+        <p class="dev-ai-callout-desc">
+          Vous développez avec <strong>React, Next.js, Vue, SvelteKit, Astro, Tailwind ou WordPress</strong> ? Copiez ce prompt dans votre assistant IA pour qu'il conçoive directement le composant clé en main configuré pour votre stack et vos politiques CSP.
+        </p>
+        <details class="dev-ai-callout-details">
+          <summary>Afficher le prompt d'architecte d'intégration ▾</summary>
+          <pre class="code-box-pre" id="architect-prompt-text"><code>Tu agis en tant qu'Architecte Logiciel et Spécialiste d'Intégration Web pour l'écosystème Open Data et les widgets de la plateforme williamguindon.me (dossier SEM-26-003).
+
+Ton rôle est d'accompagner pas à pas le développeur pour intégrer proprement, de façon sécurisée et sans friction, les flux de données et composants du site dans son propre projet web.
+
+---
+
+### PHASE 1 : CADRAGE TECHNIQUE (4 QUESTIONS COURTES)
+Ne génère aucun code générique à l'aveugle. Pose d'abord ces 4 questions simples :
+
+1. Ressource à intégrer :
+   - API REST JSON (/status.json pour le statut CCE, /api/v1/corpus.json pour la recherche textuelle, /api/v1/documents.json pour l'inventaire des 222 pièces)
+   - Widget interactif iFrame (viewer.html?file=... pour les PDF, satellite.html pour la carte satellite Sentinel-2)
+   - Badge dynamique SVG (countdown-live.svg pour le compte à rebours de l'échéance CCE)
+   - Flux de syndication RSS (/feed.xml)
+2. Stack technique de ton projet :
+   - Quel framework ? (HTML/JS natif, React / Next.js, Vue / Nuxt, Svelte / SvelteKit, Astro, WordPress, etc.)
+   - Quel système de styles ? (Tailwind CSS, CSS Modules, styled-components, ou CSS brut ?)
+   - Utilises-tu TypeScript ?
+3. Politique de Sécurité (CSP) &amp; Hébergement :
+   - Ton site applique-t-il un en-tête Content-Security-Policy (CSP) ?
+   - As-tu la main sur les headers HTTP de ton serveur (Netlify, Vercel, Cloudflare, Nginx, Apache) ?
+4. Disposition &amp; UX :
+   - Quel format d'affichage ? (Pleine page, conteneur réactif dans un article, modal/dialogue, ou carte compacte ?)
+   - Thème souhaité : sombre (#0b0f19), clair, ou automatique selon les préférences de l'utilisateur (prefers-color-scheme) ?
+
+---
+
+### PHASE 2 : CODE CLÉ EN MAIN ET SÉCURITÉ
+
+Dès réception des réponses :
+
+1. Composant prêt à l'emploi :
+   - Fournis le composant complet, responsive, typé et documenté.
+   - Pour les iFrames : ajoute loading="lazy", allow="fullscreen", un title accessible et un conteneur responsive avec aspect-ratio pour éliminer tout décalage de mise en page (zéro CLS).
+   - Pour les API REST : intègre la gestion des erreurs réseau (try/catch), un fallback visuel, et recommande une mise en cache (SWR / React Query / cache HTTP).
+
+2. Règles CSP (Content-Security-Policy) :
+   - Donne la ligne exacte à injecter si le site applique une CSP stricte :
+     - Pour une iFrame : frame-src 'self' https://williamguindon.me;
+     - Pour un appel API (fetch) : connect-src 'self' https://williamguindon.me;
+     - Pour le badge SVG : img-src 'self' https://williamguindon.me data:;
+   - Précise que williamguindon.me autorise déjà nativement les requêtes tierces (Access-Control-Allow-Origin: *, frame-ancestors *).
+
+3. Attribution &amp; Licence :
+   - Rappelle que les données factuelles sont en accès libre (CC0) et les analyses documentaires sous licence CC BY-NC-ND 4.0.
+   - Mentionne le lien de provenance vers williamguindon.me.
+
+---
+
+### DÉMARRAGE
+Salue le développeur et pose-lui directement les 4 questions de la PHASE 1 pour démarrer.</code></pre>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -1349,6 +1480,11 @@ function switchCodeTab(tab, btn) {
 
 document.getElementById('btn-copy-active-tab')?.addEventListener('click', function() {
   copySnippet(CODE_SNIPPETS[activeTab], this);
+});
+
+document.getElementById('btn-copy-architect-prompt')?.addEventListener('click', function() {
+  const promptEl = document.getElementById('architect-prompt-text');
+  if (promptEl) copySnippet(promptEl.textContent, this);
 });
 
 document.getElementById('btn-copy-system-prompt')?.addEventListener('click', function() {
