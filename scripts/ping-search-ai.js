@@ -11,61 +11,61 @@
 
 const https = require('https');
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
 const HOST = 'williamguindon.me';
 const KEY = '8781d75e5905f04a95157c0c264d928b';
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
-const ALL_URLS = [
-  `https://${HOST}/`,
-  `https://${HOST}/live.html`,
-  `https://${HOST}/dossier-journalistes.html`,
-  `https://${HOST}/communiques.html`,
-  `https://${HOST}/presse.html`,
-  `https://${HOST}/stablex.html`,
-  `https://${HOST}/contamination.html`,
-  `https://${HOST}/loi-93.html`,
-  `https://${HOST}/registre.html`,
-  `https://${HOST}/enquete-partis.html`,
-  `https://${HOST}/apparitions-publiques.html`,
-  `https://${HOST}/apercu.html`,
-  `https://${HOST}/autochtone.html`,
-  `https://${HOST}/edition-speciale-reconciliation.html`,
-  `https://${HOST}/agir.html`,
-  `https://${HOST}/statut-mineur.html`,
-  `https://${HOST}/age.html`,
-  `https://${HOST}/adultisme.html`,
-  `https://${HOST}/vie-privee-parents.html`,
-  `https://${HOST}/politiques.html`,
-  `https://${HOST}/deontologie.html`,
-  `https://${HOST}/independance.html`,
-  `https://${HOST}/ia-ethique.html`,
-  `https://${HOST}/anti-slapp.html`,
-  `https://${HOST}/embargo.html`,
-  `https://${HOST}/experts.html`,
-  `https://${HOST}/tracabilite.html`,
-  `https://${HOST}/opsec.html`,
-  `https://${HOST}/dependances-licences.html`,
-  `https://${HOST}/netiquette.html`,
-  `https://${HOST}/ai.html`,
-  `https://${HOST}/txt.html`,
+function getSitemapUrls() {
+  try {
+    const sitemapPath = path.join(__dirname, '..', 'sitemap.xml');
+    if (!fs.existsSync(sitemapPath)) return [];
+    const xml = fs.readFileSync(sitemapPath, 'utf8');
+    const urls = [...xml.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)].map(m => m[1].trim());
+    return urls;
+  } catch {
+    return [];
+  }
+}
+
+const SITEMAP_URLS = getSitemapUrls();
+
+// Variantes d'URLs propres sans extension .html
+const CLEAN_URLS = SITEMAP_URLS
+  .filter(u => u.endsWith('.html'))
+  .map(u => u.replace(/\.html$/, ''));
+
+// Endpoints machine et protocolaires critiques
+const PROTOCOL_URLS = [
   `https://${HOST}/status.json`,
   `https://${HOST}/llms.txt`,
   `https://${HOST}/llms-full.txt`,
   `https://${HOST}/feed.xml`,
   `https://${HOST}/sitemap.xml`,
   `https://${HOST}/sitemap-news.xml`,
+  `https://${HOST}/api/v1/corpus.json`,
+  `https://${HOST}/api/v1/documents.json`,
   `https://${HOST}/.well-known/agent-skills/index.json`
 ];
 
-const WAYBACK_URLS = [
+const ALL_URLS = Array.from(new Set([
   `https://${HOST}/`,
-  `https://${HOST}/live.html`,
-  `https://${HOST}/dossier-journalistes.html`,
-  `https://${HOST}/llms-full.txt`,
+  ...SITEMAP_URLS,
+  ...CLEAN_URLS,
+  ...PROTOCOL_URLS
+]));
+
+// Wayback Machine sauvegarde TOUTES les pages du site, les URLs propres et les protocoles
+const WAYBACK_URLS = Array.from(new Set([
+  `https://${HOST}/`,
+  ...SITEMAP_URLS,
+  ...CLEAN_URLS,
   `https://${HOST}/status.json`,
-  `https://${HOST}/feed.xml`
-];
+  `https://${HOST}/feed.xml`,
+  `https://${HOST}/llms-full.txt`
+]));
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -81,7 +81,7 @@ function request(urlStr, options = {}, data = null) {
         let body = '';
         res.on('data', (chunk) => body += chunk);
         res.on('end', () => {
-          resolve({ status: res.statusCode, body });
+          resolve({ status: res.statusCode, body, headers: res.headers });
         });
       });
 
@@ -89,7 +89,7 @@ function request(urlStr, options = {}, data = null) {
         resolve({ error: err.message, status: 0 });
       });
 
-      req.setTimeout(12000, () => {
+      req.setTimeout(35000, () => {
         req.destroy();
         resolve({ error: 'Timeout', status: 408 });
       });
@@ -174,16 +174,17 @@ async function main() {
   console.log(`   ➜ Googlebot & Bingbot : Découverte automatique via robots.txt (https://${HOST}/sitemap.xml)`);
   console.log('   ➜ Remarque : Les anciens endpoints /ping?sitemap= ayant été désactivés par Google (HTTP 404) et Bing (HTTP 410), l\'indexation temps réel est gérée via IndexNow (étape 1), WebSub (étape 2) et Search Console.');
 
-  console.log('\n🏛️ [4/4] Archivage Wayback Machine (Instantanés pour Common Crawl / Datasets IA)...');
+  console.log(`\n🏛️ [4/4] Archivage Wayback Machine de TOUTES les pages du site (${WAYBACK_URLS.length} URLs au total)...`);
   for (const pageUrl of WAYBACK_URLS) {
     try {
       const wb = await saveWayback(pageUrl);
-      console.log(`   ➜ ${pageUrl.replace(`https://${HOST}`, '') || '/'} : HTTP ${wb.status} ${wb.error ? `(${wb.error})` : ''}`);
+      const snapshot = wb.headers && wb.headers.location ? ` -> ${wb.headers.location}` : '';
+      console.log(`   ➜ ${pageUrl.replace(`https://${HOST}`, '') || '/'} : HTTP ${wb.status}${snapshot} ${wb.error ? `(${wb.error})` : ''}`);
     } catch (_) {}
-    await delay(1000); // Respect du rate limit de l'Archive
+    await delay(1200); // Respect du rate limit de l'Archive
   }
 
-  console.log('\n✅ Toutes les notifications IA, Google Actualités et moteurs ont été transmises avec succès.');
+  console.log('\n✅ Toutes les notifications IA, Google Actualités, moteurs et l\'archivage Wayback Machine sont terminés.');
 }
 
 if (require.main === module) {
