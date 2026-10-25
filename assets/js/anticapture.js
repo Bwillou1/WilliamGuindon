@@ -19,9 +19,30 @@
 (function () {
   'use strict';
 
-  // Les visionneuses de documents probatoires officiels sont exemptées de toute restriction
-  if (window.location.pathname.includes('viewer.html') || window.location.pathname.includes('lecteur.html')) {
-    return;
+  // Les pages en mode embed, visionneuses, dossiers journalistes, horloge et satellite sont strictement exemptées
+  const currentPath = window.location.pathname.toLowerCase();
+  const isAllowedEmbedPage = currentPath.includes('viewer') ||
+                             currentPath.includes('lecteur') ||
+                             currentPath.includes('dossier-journalistes') ||
+                             currentPath.includes('live') ||
+                             currentPath.includes('satellite');
+
+  let isFramed = false;
+  try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
+  try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
+  try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
+
+  let isEmbedParam = false;
+  try {
+    const p = new URLSearchParams(window.location.search);
+    isEmbedParam = p.get('embed') === '1' || p.get('widget') === '1' || p.get('iframe') === '1';
+  } catch (_) {}
+
+  if (isAllowedEmbedPage || isFramed || isEmbedParam) {
+    if (isFramed || isEmbedParam) {
+      document.documentElement.classList.add('is-embedded-widget');
+    }
+    return; // Sortie immédiate : aucune interférence avec les iframes intégrées
   }
 
   // CONTRÔLE D'INTÉGRITÉ HÔTE & ANTI-FRAMING RADICAL (REDONDANCE NIVEAU 2)
@@ -30,19 +51,11 @@
 
   if (!isConsolePage) {
     const currentHost = window.location.hostname.toLowerCase();
-    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io');
+    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io') || currentHost.endsWith('.pages.dev') || currentHost.endsWith('.local');
     if (!isHostAllowed) {
       try { window.location.replace('https://williamguindon.me/'); } catch (_) {}
       document.documentElement.style.display = 'none';
       return;
-    }
-
-    let isFramed = false;
-    try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
-    try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
-    try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
-    if (isFramed) {
-      document.documentElement.classList.add('is-embedded-widget');
     }
   }
 

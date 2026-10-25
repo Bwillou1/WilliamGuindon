@@ -11,48 +11,46 @@
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
   const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
 
-  if (!isConsolePage) {
-    // A. Validation de l'hôte d'exécution
+  const currentPath = window.location.pathname.toLowerCase();
+  const isAllowedEmbedPage = currentPath.includes('dossier-journalistes') ||
+                             currentPath.includes('viewer') ||
+                             currentPath.includes('lecteur') ||
+                             currentPath.includes('live') ||
+                             currentPath.includes('satellite');
+
+  let isFramed = false;
+  try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
+  try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
+  try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
+
+  let isEmbedParam = false;
+  try {
+    const p = new URLSearchParams(window.location.search);
+    isEmbedParam = p.get('embed') === '1' || p.get('widget') === '1' || p.get('iframe') === '1';
+  } catch (_) {}
+
+  if (isFramed || isEmbedParam) {
+    document.documentElement.classList.add('is-embedded-widget');
+  }
+
+  if (!isConsolePage && !isAllowedEmbedPage && !isFramed && !isEmbedParam) {
+    // A. Validation de l'hôte d'exécution (uniquement pour navigation principale non-embed)
     const currentHost = window.location.hostname.toLowerCase();
-    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io');
+    const isHostAllowed = !currentHost || ALLOWED_HOSTS.includes(currentHost) || currentHost.endsWith('.williamguindon.me') || currentHost.endsWith('.github.io') || currentHost.endsWith('.pages.dev') || currentHost.endsWith('.local');
 
     if (!isHostAllowed) {
       try { window.location.replace('https://williamguindon.me/'); } catch (_) {}
       document.documentElement.style.display = 'none';
       return;
     }
-
-    // B. Détection d'encadrement multi-vectorielle
-    let isFramed = false;
-    try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }
-    try { if (window.parent && window.parent !== window.self) isFramed = true; } catch (_) { isFramed = true; }
-    try { if (window.frameElement !== null) isFramed = true; } catch (_) { isFramed = true; }
-    try {
-      if (window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0) {
-        for (let i = 0; i < window.location.ancestorOrigins.length; i++) {
-          const orig = window.location.ancestorOrigins[i];
-          try {
-            const h = new URL(orig).hostname.toLowerCase();
-            if (!ALLOWED_HOSTS.includes(h) && !h.endsWith('.williamguindon.me') && !h.endsWith('.github.io')) {
-              isFramed = true;
-              break;
-            }
-          } catch (_) { isFramed = true; }
-        }
-      }
-    } catch (_) { isFramed = true; }
-
-    if (isFramed) {
-      document.documentElement.classList.add('is-embedded-widget');
-    }
-
-    // Déverrouillage de la sentinelle pré-rendu si présente
-    try {
-      document.documentElement.setAttribute('data-frame-allowed', 'true');
-      const earlyStyle = document.getElementById('wg-anti-frame-early');
-      if (earlyStyle) earlyStyle.remove();
-    } catch (_) {}
   }
+
+  // Déverrouillage de la sentinelle pré-rendu si présente
+  try {
+    document.documentElement.setAttribute('data-frame-allowed', 'true');
+    const earlyStyle = document.getElementById('wg-anti-frame-early');
+    if (earlyStyle) earlyStyle.remove();
+  } catch (_) {}
 
   const DEBUG = false;
   const themeStorageKey = 'william-guindon-theme';

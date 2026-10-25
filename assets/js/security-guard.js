@@ -13,6 +13,23 @@
   const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
   if (isConsolePage) return;
 
+  const currentPath = window.location.pathname.toLowerCase();
+  const isAllowedEmbedPage = currentPath.includes('dossier-journalistes') ||
+                             currentPath.includes('viewer') ||
+                             currentPath.includes('lecteur') ||
+                             currentPath.includes('live') ||
+                             currentPath.includes('satellite');
+
+  function isEmbedRequested() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('embed') === '1' || urlParams.get('widget') === '1' || urlParams.get('iframe') === '1') {
+        return true;
+      }
+    } catch (_) {}
+    return isFramedEnvironment();
+  }
+
   // 1. CONTRÔLE D'ENCADREMENT IFRAME & VERROUILLAGE RADICAL IMPÉNÉTRABLE (ANTI-CLICKJACKING / ANTI-BYPASS PROXY / WORKERS)
   function isFramedEnvironment() {
     try {
@@ -37,7 +54,7 @@
           const origin = window.location.ancestorOrigins[i];
           try {
             const host = new URL(origin).hostname;
-            if (!ALLOWED_HOSTS.includes(host)) return true;
+            if (!ALLOWED_HOSTS.includes(host) && !host.endsWith('.pages.dev') && !host.endsWith('.williamguindon.me') && !host.endsWith('.github.io')) return true;
           } catch (_) {
             return true;
           }
@@ -46,6 +63,26 @@
     } catch (_) { return true; }
 
     return false;
+  }
+
+  // En contexte d'intégration (embed / iFrame autorisé), neutraliser toutes les restrictions agressives (anti-redirection, anti-écran noir)
+  if (isAllowedEmbedPage && isEmbedRequested()) {
+    document.documentElement.classList.add('is-embedded-widget');
+    renderEmbedAttributionBanner();
+
+    // Règle de sécurité déontologique : isoler l'accueil pour éviter que le site principal ne soit chargé dans l'iframe
+    document.addEventListener('click', function(e) {
+      const a = e.target.closest('a');
+      if (a) {
+        const href = a.getAttribute('href') || '';
+        if (href === '/' || href === 'index.html' || href === './' || (href.includes('williamguindon.me/') && !href.includes('viewer.html') && !href.includes('lecteur.html') && !href.includes('dossier-journalistes') && !href.includes('live.html') && !href.includes('satellite.html') && !href.includes('assets/'))) {
+          e.preventDefault();
+          window.open('https://williamguindon.me/', '_blank');
+        }
+      }
+    }, true);
+
+    return; // Sortie immédiate : aucune interférence des règles de sécurité (pas de lockdown d'hôte, pas de redirection forcée, pas d'écran noir)
   }
 
   function enforceFrameSecurity() {
@@ -201,7 +238,7 @@
     if (!host) return true;
     const lower = host.toLowerCase();
     if (ALLOWED_HOSTS.includes(lower)) return true;
-    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io')) return true;
+    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io') || lower.endsWith('.pages.dev') || lower.endsWith('.local') || lower.endsWith('.ngrok.io') || lower.endsWith('.loca.lt')) return true;
     return false;
   }
 
@@ -299,6 +336,7 @@
   }
 
   function enforceHostSecurity() {
+    if (isFramedEnvironment() || isAllowedEmbedPage) return false;
     const currentHost = window.location.hostname;
     if (isAllowedHost(currentHost)) return false;
     renderHostLockdownScreen(currentHost);
