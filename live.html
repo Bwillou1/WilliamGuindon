@@ -250,6 +250,23 @@
 </head>
 <body class="dark-theme">
 
+  <!-- Bannière d'attribution officielle en mode iFrame intégré -->
+  <div id="embed-original-banner" class="embed-original-banner" style="display: none;">
+    <div class="embed-banner-inner">
+      <div class="embed-banner-left">
+        <span class="embed-banner-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          REGISTRE CITOYEN OFFICIEL CCE SEM-26-003
+        </span>
+        <span class="embed-banner-title">Horloge Live &amp; Décompte Officiel de la Procédure CCE (60 jours)</span>
+      </div>
+      <a href="https://williamguindon.me/live.html" target="_blank" rel="noopener noreferrer" class="embed-banner-link" title="Consulter la version originale officielle sur williamguindon.me">
+        <span>Consulter l'original sur williamguindon.me</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+    </div>
+  </div>
+
 <a href="#main-content" class="skip-link">Passer au contenu principal</a>
 
 <header class="site" aria-label="En-tête du site">
@@ -1360,6 +1377,36 @@
         }
       });
     });
+
+    // Détection du mode iFrame / Widget pour intégration externe
+    (function initEmbedMode() {
+      let isFramed = false;
+      try {
+        isFramed = (window.self !== window.top);
+      } catch (_) {
+        isFramed = true;
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const isEmbedParam = urlParams.get('embed') === '1' || urlParams.get('widget') === '1' || urlParams.get('iframe') === '1';
+
+      if (isFramed || isEmbedParam) {
+        document.documentElement.classList.add('is-embedded-widget');
+        const banner = document.getElementById('embed-original-banner');
+        if (banner) banner.style.display = 'block';
+
+        // Intercepter tout clic tentant de charger l'accueil ou le site racine dans l'iFrame
+        document.addEventListener('click', function(e) {
+          const a = e.target.closest('a');
+          if (a) {
+            const href = a.getAttribute('href') || '';
+            if (href === '/' || href.includes('index.html') || href === './' || (href.includes('williamguindon.me/') && !href.includes('live.html') && !href.includes('assets/'))) {
+              e.preventDefault();
+              window.open('https://williamguindon.me/', '_blank');
+            }
+          }
+        }, true);
+      }
+    })();
   });
 </script>
 

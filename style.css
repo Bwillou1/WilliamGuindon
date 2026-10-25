@@ -12805,6 +12805,118 @@ body.cce-modal-open {
   color: var(--text);
 }
 
+/* =========================================================
+   MODE EMBED / WIDGET IFRAME (Sites tiers)
+   ========================================================= */
+.embed-original-banner {
+  background: linear-gradient(90deg, #064e3b 0%, #047857 100%);
+  color: #ffffff;
+  padding: 8px 16px;
+  font-size: 12.5px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+  z-index: 99999;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.embed-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.embed-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.embed-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #ffffff;
+}
+.embed-banner-title {
+  font-weight: 600;
+  color: #ecfdf5;
+  font-size: 12px;
+}
+.embed-banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #064e3b !important;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+.embed-banner-link:hover {
+  background: #d1fae5;
+  color: #065f46 !important;
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .embed-original-banner {
+  background: linear-gradient(90deg, #06382b 0%, #064e3b 100%);
+  border-bottom-color: rgba(52, 211, 153, 0.25);
+}
+[data-theme="dark"] .embed-banner-link {
+  background: #10b981;
+  color: #052e16 !important;
+}
+[data-theme="dark"] .embed-banner-link:hover {
+  background: #34d399;
+  color: #022c22 !important;
+}
+
+/* Règles d'affichage lorsque la page est intégrée en widget */
+html.is-embedded-widget body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+html.is-embedded-widget .embed-original-banner {
+  display: block !important;
+}
+html.is-embedded-widget header.site,
+html.is-embedded-widget footer,
+html.is-embedded-widget .btn-back-home,
+html.is-embedded-widget .viewer-back-btn,
+html.is-embedded-widget .nav-dropdown,
+html.is-embedded-widget .skip-link {
+  display: none !important;
+}
+html.is-embedded-widget #pdf-app {
+  height: calc(100vh - 38px) !important;
+}
+html.is-embedded-widget .drive-container {
+  height: calc(100vh - 38px) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+html.is-embedded-widget .satellite-wrap {
+  padding: 12px 12px 24px !important;
+}
+html.is-embedded-widget .satellite-header h1 {
+  font-size: 1.35rem !important;
+}
+
 
 
 
