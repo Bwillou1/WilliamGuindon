@@ -222,13 +222,17 @@
       overflow: hidden !important;
     }
     html.is-embedded-widget .drive-container {
-      height: 100vh !important;
-      max-height: 100vh !important;
+      height: calc(100vh - 38px) !important;
+      max-height: calc(100vh - 38px) !important;
       border-radius: 0 !important;
       border: none !important;
       box-shadow: none !important;
     }
-    html.is-embedded-widget .btn-back-home {
+    html.is-embedded-widget .btn-back-home,
+    html.is-embedded-widget #local-mode-container,
+    html.is-embedded-widget #dropdown-header-actions,
+    html.is-embedded-widget .drive-tree-footer,
+    html.is-embedded-widget .encart-swisstransfer-presse {
       display: none !important;
     }
     .drive-title {
@@ -2824,7 +2828,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           </div>
 
           <!-- Encart d'accès officiel à l'enquête intégrale pour les rédactions (SwissTransfer) -->
-          <div style="margin: 16px auto; padding: 18px 20px; border-radius: 12px; background: #ecfdf5; border: 1.5px solid #10b981; text-align: left; max-width: 660px; box-shadow: 0 4px 14px rgba(16,185,129,0.1);">
+          <div class="encart-swisstransfer-presse" style="margin: 16px auto; padding: 18px 20px; border-radius: 12px; background: #ecfdf5; border: 1.5px solid #10b981; text-align: left; max-width: 660px; box-shadow: 0 4px 14px rgba(16,185,129,0.1);">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 1.25rem;">🗂️</span>
@@ -5174,6 +5178,15 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       // Règle stricte : Ne peut pas naviguer vers la page d'accueil (pas le site principal dans l'iFrame)
       const homeBtn = document.querySelector('.btn-back-home');
       if (homeBtn) homeBtn.style.display = 'none';
+
+      // Masquer les boutons Mode Local, Actions et le footer de demande d'archive SwissTransfer en mode iframe
+      const localCont = document.getElementById('local-mode-container');
+      if (localCont) localCont.style.display = 'none';
+      const actionsMenu = document.getElementById('dropdown-header-actions');
+      if (actionsMenu) actionsMenu.style.display = 'none';
+      document.querySelectorAll('.drive-tree-footer, .encart-swisstransfer-presse').forEach(function(el) {
+        el.style.display = 'none';
+      });
 
       // Intercepter tout clic tentant de charger l'accueil ou le site racine dans l'iFrame
       document.addEventListener('click', function(e) {
