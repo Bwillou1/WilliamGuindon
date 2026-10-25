@@ -94,162 +94,84 @@
 
     if (isSameOrigin) return false;
 
-    // Exceptions autorisées : visionneuse de documents / PDF, horloge live, lecteur, explorateur et surveillance satellite
-    const path = window.location.pathname.toLowerCase();
-    const isAllowedEmbed = path.endsWith('viewer.html') || 
-                           path.endsWith('/viewer') ||
-                           path.endsWith('live.html') || 
-                           path.endsWith('/live') ||
-                           path.endsWith('lecteur.html') ||
-                           path.endsWith('/lecteur') ||
-                           path.endsWith('satellite.html') ||
-                           path.endsWith('/satellite') ||
-                           path.endsWith('dossier-journalistes.html') ||
-                           path.endsWith('/dossier-journalistes') ||
-                           path.endsWith('dossier-journalistes');
-
-    if (isAllowedEmbed) return false;
-
-    // VERROUILLAGE RADICAL & PURGE DU DOM POUR RENDRE LE BYPASS IMPOSSIBLE
-    renderFrameLockdownScreen();
-    return true; // Bloqué
+    // Intégration en iFrame sur site tiers autorisée : passage en mode widget et injection/affichage de la bannière officielle
+    document.documentElement.classList.add('is-embedded-widget');
+    renderEmbedAttributionBanner();
+    return false;
   }
 
-  function renderFrameLockdownScreen() {
-    let safeUrl = 'https://williamguindon.me/';
-    try {
-      const rawPath = window.location.pathname;
-      const cleanPath = (rawPath === '/' || rawPath === '') ? '' : rawPath;
-      const u = new URL(cleanPath + window.location.search + window.location.hash, 'https://williamguindon.me');
-      safeUrl = u.href;
-    } catch (_) {
-      safeUrl = 'https://williamguindon.me/';
+  function renderEmbedAttributionBanner() {
+    let existingBanner = document.getElementById('embed-original-banner');
+    if (existingBanner) {
+      existingBanner.style.display = 'block';
+      return;
     }
 
-    // 1. Tentative d'évasion immédiate vers le haut (Frame Busting)
-    try {
-      if (window.top && window.top.location && window.top.location.href !== window.location.href) {
-        window.top.location.href = safeUrl;
+    const injectBanner = () => {
+      if (document.getElementById('embed-original-banner')) {
+        document.getElementById('embed-original-banner').style.display = 'block';
+        return;
       }
-    } catch (_) {}
+      const banner = document.createElement('div');
+      banner.id = 'embed-original-banner';
+      banner.className = 'embed-original-banner';
 
-    // 2. Application de la feuille de style anti-framing radicale
-    let lockStyle = document.getElementById('wg-frame-lock-style');
-    if (!lockStyle) {
-      lockStyle = document.createElement('style');
-      lockStyle.id = 'wg-frame-lock-style';
-      lockStyle.textContent = `
-        html, body {
-          margin: 0 !important;
-          padding: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          overflow: hidden !important;
-          background: #064e3b !important;
-        }
-        body > *:not(#wg-frame-warning-wrapper) {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-          pointer-events: none !important;
-        }
-      `;
-      (document.head || document.documentElement).appendChild(lockStyle);
-    }
-
-    const applyLockdown = () => {
-      // Nettoyer tous les autres éléments du document pour empêcher toute lecture résiduelle
-      if (document.body) {
-        const children = Array.from(document.body.children);
-        for (const child of children) {
-          if (child.id !== 'wg-frame-warning-wrapper' && child.id !== 'wg-frame-lock-style') {
-            try { child.remove(); } catch (_) { child.style.display = 'none'; }
-          }
-        }
+      const rawPath = window.location.pathname.toLowerCase();
+      let title = 'Document Officiel · Registre Citoyen CCE SEM-26-003';
+      if (rawPath.includes('satellite')) {
+        title = 'Surveillance Satellite Copernicus Sentinel-2';
+      } else if (rawPath.includes('live')) {
+        title = 'Horloge Live & Décompte CCE SEM-26-003';
+      } else if (rawPath.includes('dossier-journalistes')) {
+        title = 'Dossier Journalistes · Archive SEM-26-003';
+      } else if (rawPath.includes('viewer') || rawPath.includes('lecteur')) {
+        title = 'Lecteur de Pièces Officielles CCE';
       }
 
-      let overlay = document.getElementById('wg-frame-warning-wrapper');
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'wg-frame-warning-wrapper';
-        overlay.setAttribute('data-wg-lockdown', 'true');
-        overlay.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;background:#064e3b !important;color:#111827 !important;display:flex !important;align-items:center !important;justify-content:center !important;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif !important;z-index:2147483647 !important;padding:20px !important;box-sizing:border-box !important;overflow:auto !important;opacity:1 !important;visibility:visible !important;filter:none !important;pointer-events:auto !important;';
+      let safeUrl = 'https://williamguindon.me' + window.location.pathname + window.location.search;
 
-        overlay.innerHTML = `
-          <div style="background:#ffffff;border:2px solid #059669;border-radius:18px;padding:32px 28px;max-width:620px;width:100%;box-shadow:0 20px 45px rgba(0,0,0,0.5);text-align:center;box-sizing:border-box;">
-            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.1);color:#065f46;border:1px solid rgba(5,150,105,0.25);padding:6px 16px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:16px;">
-              <span>🛡️ Protection d'Intégrité &amp; Anti-Framing</span>
-            </div>
-
-            <h1 style="font-size:1.3rem;font-weight:900;color:#064e3b;margin:0 0 12px 0;line-height:1.35;">
-              Consultation non certifiée dans un cadre externe (iFrame)
-            </h1>
-
-            <div style="background:#fffbeb;border:1px solid #fef3c7;border-left:4px solid #f59e0b;border-radius:8px;padding:14px 16px;text-align:left;margin-bottom:18px;font-size:13.5px;color:#92400e;line-height:1.5;">
-              <strong>⚠️ Avertissement d'authenticité :</strong><br>
-              Cette page est actuellement affichée à l'intérieur d'un cadre, proxy ou site tiers. Cette intégration est <u>bloquée afin de prévenir toute altération, détournement de clic ou présentation trompeuse</u> du dossier officiel.
-            </div>
-
-            <p style="font-size:13.5px;color:#4b5563;line-height:1.6;margin:0 0 20px 0;text-align:left;">
-              Afin de garantir l'intégrité probatoire du dossier public <strong>SEM-26-003</strong> (Commission de coopération environnementale / ACEUM) et certifier les citations factuelles, veuillez toujours accéder directement au document source sur le domaine officiel sécurisé.
-            </p>
-
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;text-align:left;margin-bottom:22px;font-size:12.5px;color:#166534;">
-              <div style="font-weight:700;margin-bottom:4px;color:#065f46;">Emplacement officiel authentique :</div>
-              <div id="wg-frame-warning-url" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;word-break:break-all;color:#047857;font-weight:600;"></div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:10px;align-items:stretch;">
-              <a id="wg-frame-warning-top-link" target="_top" style="display:inline-block;background:#059669;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:10px;font-weight:800;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,0.3);text-align:center;">
-                Accéder à la version officielle originale (Plein écran) ↗
-              </a>
-              <a href="https://williamguindon.me" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:transparent;color:#047857;text-decoration:none;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;text-align:center;">
-                Ouvrir dans un nouvel onglet sécurisé →
-              </a>
-            </div>
-
-            <div style="margin-top:18px;font-size:11.5px;color:#9ca3af;border-top:1px solid #f3f4f6;padding-top:12px;">
-              Licence probatoire : Creative Commons CC BY-NC-ND 4.0 · Registre CCE SEM-26-003
-            </div>
+      banner.innerHTML = `
+        <div class="embed-banner-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1200px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif;">
+          <div class="embed-banner-left" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="embed-banner-badge" style="display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:10px;text-transform:uppercase;background:rgba(255,255,255,0.18);padding:2px 8px;border-radius:4px;color:#fff;">
+              REGISTRE OFFICIEL CCE SEM-26-003
+            </span>
+            <span class="embed-banner-title" style="font-weight:600;color:#ecfdf5;font-size:12px;">${title}</span>
           </div>
-        `;
+          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="embed-banner-link" style="display:inline-flex;align-items:center;gap:5px;background:#fff;color:#064e3b;padding:3px 10px;border-radius:6px;font-size:11.5px;font-weight:700;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);" title="Consulter la version originale officielle sur williamguindon.me">
+            <span>Consulter l'original sur williamguindon.me ↗</span>
+          </a>
+        </div>
+      `;
 
-        const urlDiv = overlay.querySelector('#wg-frame-warning-url');
-        if (urlDiv) urlDiv.textContent = safeUrl;
-        const topLink = overlay.querySelector('#wg-frame-warning-top-link');
-        if (topLink) topLink.href = safeUrl;
-
-        (document.body || document.documentElement).appendChild(overlay);
+      if (document.body) {
+        document.body.prepend(banner);
       } else {
-        overlay.style.setProperty('display', 'flex', 'important');
-        overlay.style.setProperty('visibility', 'visible', 'important');
-        overlay.style.setProperty('opacity', '1', 'important');
-        overlay.style.setProperty('filter', 'none', 'important');
-        overlay.style.setProperty('z-index', '2147483647', 'important');
+        document.addEventListener('DOMContentLoaded', () => {
+          if (document.body && !document.getElementById('embed-original-banner')) {
+            document.body.prepend(banner);
+          }
+        }, { once: true });
       }
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', applyLockdown, { once: true });
+      document.addEventListener('DOMContentLoaded', injectBanner, { once: true });
     } else {
-      applyLockdown();
+      injectBanner();
     }
 
-    // 3. MutationObserver anti-suppression / anti-altération : neutralise les scripts ou workers qui tentent de masquer le verrouillage
-    try {
-      const observer = new MutationObserver(() => {
-        applyLockdown();
-      });
-      observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style', 'class', 'hidden']
-      });
-    } catch (_) {}
-
-    // Watchdog périodique continu
-    setInterval(applyLockdown, 100);
+    // Interception des clics vers l'accueil ou le site racine dans l'iFrame pour les ouvrir en nouvel onglet
+    document.addEventListener('click', function(e) {
+      const a = e.target.closest('a');
+      if (a) {
+        const href = a.getAttribute('href') || '';
+        if (href === '/' || href === 'index.html' || href === './' || (href.includes('williamguindon.me/') && !href.includes('viewer.html') && !href.includes('lecteur.html') && !href.includes('dossier-journalistes') && !href.includes('live.html') && !href.includes('satellite.html') && !href.includes('assets/'))) {
+          e.preventDefault();
+          window.open('https://williamguindon.me/', '_blank');
+        }
+      }
+    }, true);
   }
 
   // CONTRÔLE D'HÔTE / ANTI-FORK / ANTI-REVERSE-PROXY

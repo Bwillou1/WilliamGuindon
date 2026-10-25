@@ -43,22 +43,7 @@
     } catch (_) { isFramed = true; }
 
     if (isFramed) {
-      let isSameOrigin = false;
-      try {
-        const topHost = window.top.location.hostname.toLowerCase();
-        if (ALLOWED_HOSTS.includes(topHost) || topHost.endsWith('.williamguindon.me') || topHost.endsWith('.github.io')) {
-          isSameOrigin = true;
-        }
-      } catch (_) { isSameOrigin = false; }
-
-      const path = window.location.pathname.toLowerCase();
-      const isAllowedEmbed = path.endsWith('viewer.html') || path.endsWith('live.html') || path.endsWith('lecteur.html');
-
-      if (!isSameOrigin && !isAllowedEmbed) {
-        try { if (window.top && window.top.location) window.top.location.href = 'https://williamguindon.me/'; } catch (_) {}
-        document.documentElement.style.display = 'none';
-        return;
-      }
+      document.documentElement.classList.add('is-embedded-widget');
     }
 
     // Déverrouillage de la sentinelle pré-rendu si présente
