@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v183';
+const CACHE_NAME = 'wg-pwa-v184';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -17,6 +17,7 @@ const ASSETS_TO_CACHE = [
   '/liens.html',
   '/lobby.html',
   '/dev.html',
+  '/portrait.html',
   '/assets/media/grande-tourbiere-couverture.webp',
   '/assets/docs/observations-reponse-canada-sem26003.pdf',
   '/assets/docs/72-rsp_fr.pdf',

@@ -44,6 +44,7 @@ const CORE_FILES = [
   'licence-et-charte.html',
   'liens.html',
   'dev.html',
+  'portrait.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
   'sitemap-news.xml',

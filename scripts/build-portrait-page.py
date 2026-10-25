@@ -1,0 +1,1195 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Script de génération de portrait.html
+Grand format journalistique & biographique de William Guindon
+Mise à jour : 25 octobre 2026
+"""
+
+import os
+import re
+
+with open("clean_portrait_text.txt", "r", encoding="utf-8") as f:
+    text = f.read()
+
+# We craft the full semantic HTML
+html_content = """<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<script src="assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr https://replayweb.page; object-src 'none';">
+
+<title>Portrait : Qui est William Guindon, le jeune militant qui défie les gouvernements sur le dossier Stablex ?</title>
+<meta name="description" content="Grand format biographique et documentaire : portrait complet de William Guindon (15 ans), auteur de la communication internationale SEM-26-003 auprès de la CCE (ACEUM) pour la protection de la Grande Tourbière de Blainville.">
+<meta name="keywords" content="William Guindon, Portrait William Guindon, Patrick Sanfaçon, La Presse, SEM-26-003, CCE, ACEUM, Stablex, Grande Tourbière de Blainville, Cellule 6, Cadmium, Adultisme, Droit environnemental, Québec">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://williamguindon.me/portrait.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/portrait.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/portrait.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+
+<!-- OpenGraph & Twitter -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Portrait : Qui est William Guindon, le jeune militant qui défie les gouvernements sur le dossier Stablex ?">
+<meta property="og:description" content="Portrait complet et enquête documentaire : qui est William Guindon, l'auteur de 15 ans derrière la procédure internationale SEM-26-003 face au Canada et à Stablex.">
+<meta property="og:url" content="https://williamguindon.me/portrait.html">
+<meta property="og:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
+<meta property="og:locale" content="fr_CA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Portrait : Qui est William Guindon, le jeune militant qui défie les gouvernements sur le dossier Stablex ?">
+<meta name="twitter:description" content="Grand format biographique et juridique mis à jour au 25 octobre 2026. Photo Patrick Sanfaçon, La Presse.">
+<meta name="twitter:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
+
+<link rel="stylesheet" href="style.css?v=20261018-v87">
+<script src="assets/js/theme-core.js?v=20261004-v77" defer></script>
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "alternateName": "William Tristan Logan Théo Guindon",
+      "birthDate": "2011-08-03",
+      "birthPlace": "Sainte-Marthe-sur-le-Lac, Québec, Canada",
+      "jobTitle": "Militant écologiste, juriste citoyen et auteur de la communication SEM-26-003",
+      "url": "https://williamguindon.me/",
+      "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
+      "sameAs": [
+        "https://www.linkedin.com/in/william-guindon/",
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://isni.org/isni/0000000531719103",
+        "https://g.dev/williamguindondev",
+        "https://github.com/Bwillou1"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/portrait.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Profil & Biographie",
+          "item": "https://williamguindon.me/#apropos"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Grand Portrait",
+          "item": "https://williamguindon.me/portrait.html"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "@id": "https://williamguindon.me/portrait.html#article",
+      "headline": "Portrait : Qui est William Guindon, le jeune militant qui défie les gouvernements sur le dossier Stablex ?",
+      "description": "Grand format biographique et documentaire d'enquête retraçant le parcours de William Guindon, du vaccin en 2021 à la procédure internationale CCE SEM-26-003 et la réplique du 17 octobre 2026.",
+      "author": { "@id": "https://williamguindon.me/#person" },
+      "publisher": { "@id": "https://williamguindon.me/#person" },
+      "datePublished": "2026-07-04T08:00:00-04:00",
+      "dateModified": "2026-10-25T12:00:00-04:00",
+      "inLanguage": "fr-CA",
+      "mainEntityOfPage": "https://williamguindon.me/portrait.html",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://williamguindon.me/assets/media/william-guindon.jpg",
+        "caption": "Photo Patrick Sanfaçon, La Presse — Portrait de William Guindon"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://williamguindon.me/portrait.html#profile",
+      "url": "https://williamguindon.me/portrait.html",
+      "name": "Portrait officiel et biographie de William Guindon",
+      "mainEntity": { "@id": "https://williamguindon.me/#person" }
+    }
+  ]
+}
+</script>
+
+<style>
+/* Styles spécifiques pour le Grand Portrait Journalistique */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3.5px;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  z-index: 99999;
+  transition: width 0.1s ease-out;
+}
+.portrait-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.portrait-header {
+  margin-bottom: 32px;
+}
+.portrait-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  margin-bottom: 16px;
+}
+.portrait-title {
+  font-size: clamp(2rem, 4.2vw, 2.9rem);
+  font-weight: 850;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+.portrait-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 0 0 20px;
+}
+.portrait-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--surface, rgba(255,255,255,0.04));
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+.portrait-meta-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.portrait-meta-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-action-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--surface-card, rgba(255,255,255,0.08));
+  color: var(--text);
+  border: 1px solid var(--line, rgba(255,255,255,0.12));
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.btn-action-sm:hover {
+  background: var(--surface-card-hover, rgba(255,255,255,0.14));
+  border-color: var(--accent, #10b981);
+  color: var(--accent, #10b981);
+}
+.portrait-feature-figure {
+  margin: 0 0 40px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line, rgba(255,255,255,0.1));
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+.portrait-feature-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  max-height: 540px;
+}
+.portrait-feature-caption {
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--muted);
+  border-top: 1px solid var(--line, rgba(255,255,255,0.08));
+}
+.portrait-caption-credit {
+  display: inline-block;
+  font-weight: 800;
+  color: var(--text);
+  margin-right: 6px;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+.portrait-lead-box {
+  background: rgba(16, 185, 129, 0.05);
+  border-left: 4px solid #10b981;
+  border-radius: 0 12px 12px 0;
+  padding: 22px 26px;
+  margin: 0 0 36px;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--text);
+  font-weight: 500;
+}
+.portrait-toc {
+  background: var(--surface, rgba(255,255,255,0.03));
+  border: 1px solid var(--line, rgba(255,255,255,0.08));
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 0 0 40px;
+}
+.portrait-toc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent, #10b981);
+  margin: 0 0 14px;
+}
+.portrait-toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.portrait-toc-link {
+  font-size: 0.88rem;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1.45;
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+.portrait-toc-link:hover {
+  color: var(--accent, #10b981);
+}
+.portrait-toc-num {
+  font-weight: 700;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.portrait-article-body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.portrait-article-body p {
+  margin: 0 0 1.4em;
+}
+.portrait-section {
+  margin: 54px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line, rgba(255,255,255,0.08));
+}
+.portrait-section-tag {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent, #10b981);
+  margin-bottom: 8px;
+}
+.portrait-h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 0 0 20px;
+  color: var(--text);
+}
+.portrait-h3 {
+  font-size: 1.25rem;
+  font-weight: 750;
+  line-height: 1.35;
+  margin: 28px 0 14px;
+  color: var(--text);
+}
+.pull-quote {
+  position: relative;
+  margin: 32px 0;
+  padding: 24px 30px;
+  background: var(--surface, rgba(255,255,255,0.03));
+  border-left: 4px solid var(--accent, #10b981);
+  border-radius: 0 12px 12px 0;
+  font-size: 1.18rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text);
+}
+.pull-quote-author {
+  display: block;
+  margin-top: 12px;
+  font-style: normal;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.stat-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin: 28px 0;
+}
+.stat-highlight-card {
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+.stat-highlight-value {
+  font-size: 1.85rem;
+  font-weight: 850;
+  color: var(--accent, #10b981);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.stat-highlight-label {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.media-outlet-card {
+  display: flex;
+  gap: 18px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.media-outlet-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 6px;
+  flex-shrink: 0;
+}
+.media-outlet-content {
+  flex: 1;
+}
+.media-outlet-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.media-outlet-title {
+  font-size: 1.1rem;
+  font-weight: 750;
+  margin: 0;
+  color: var(--text);
+}
+.media-outlet-date {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.source-list-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 30px;
+}
+.source-list-box ul {
+  padding-left: 20px;
+  margin: 0;
+}
+.source-list-box li {
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.source-list-box a {
+  color: var(--accent, #10b981);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.badge-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+</style>
+</head>
+<body>
+
+<!-- Barre de progression de lecture -->
+<div class="reading-progress-bar" id="reading-progress" aria-hidden="true"></div>
+
+<!-- En-tête globale avec barre de navigation synchronisée -->
+<!-- NAVBAR_PLACEHOLDER -->
+
+<main id="main-content" class="portrait-container">
+
+  <!-- Fil d'Ariane -->
+  <nav class="breadcrumb-nav" aria-label="Fil d'Ariane" style="margin-bottom: 20px; font-size: 0.85rem; color: var(--muted);">
+    <a href="./" style="color: var(--muted); text-decoration: none;">Accueil</a>
+    <span style="margin: 0 8px;">›</span>
+    <a href="/#apropos" style="color: var(--muted); text-decoration: none;">Profil &amp; Biographie</a>
+    <span style="margin: 0 8px;">›</span>
+    <span style="color: var(--text); font-weight: 600;">Grand Portrait</span>
+  </nav>
+
+  <!-- En-tête de l'article -->
+  <header class="portrait-header">
+    <div class="portrait-kicker">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      Grand Format · Enquête &amp; Biographie · Mis à jour le 25 octobre 2026
+    </div>
+    <h1 class="portrait-title">Portrait : Qui est William Guindon, le jeune militant qui défie les gouvernements sur le dossier Stablex ?</h1>
+    <p class="portrait-subtitle">
+      Par <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 700; text-decoration: none;">William Guindon</a> — Auteur de la communication SEM-26-003 auprès de la CCE | Suivi de l’article 24.28 de l’ACEUM
+    </p>
+
+    <!-- Barre de métadonnées -->
+    <div class="portrait-meta-bar">
+      <div class="portrait-meta-left">
+        <span>📅 <strong>Publication originale :</strong> 4 juillet 2026</span>
+        <span>🔄 <strong>Mise à jour :</strong> 25 octobre 2026</span>
+        <span>⏱️ <strong>Lecture :</strong> ~18 min</span>
+        <span class="badge-status-pill">Dossier actif</span>
+      </div>
+      <div class="portrait-meta-actions">
+        <button type="button" class="btn-action-sm" onclick="navigator.clipboard.writeText(window.location.href); alert('Lien copié dans le presse-papier !');" aria-label="Copier le lien de l'article">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Partager
+        </button>
+        <button type="button" class="btn-action-sm" onclick="window.print();" aria-label="Imprimer le portrait">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Imprimer
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Photo à la une avec crédit obligatoire -->
+  <figure class="portrait-feature-figure">
+    <picture>
+      <source srcset="assets/media/william-guindon.webp" type="image/webp">
+      <img src="assets/media/william-guindon.jpg" alt="Portrait officiel de William Guindon, photographié par Patrick Sanfaçon pour La Presse" class="portrait-feature-img" width="920" height="613" loading="eager" fetchpriority="high">
+    </picture>
+    <figcaption class="portrait-feature-caption">
+      <span class="portrait-caption-credit">PHOTO PATRICK SANFAÇON, LA PRESSE</span>
+      William Guindon, 15 ans, auteur de la communication citoyenne internationale SEM-26-003 déposée auprès de la Commission de coopération environnementale (CCE / ACEUM).
+    </figcaption>
+  </figure>
+
+  <!-- Chapeau d'accroche -->
+  <div class="portrait-lead-box">
+    Le 16 octobre 2026, le gouvernement du Canada disposait de deux pages pour répondre à un adolescent de Blainville. Il les a consacrées à demander qu'on ferme son dossier.<br><br>
+    Le lendemain, en moins de vingt-quatre heures, William Guindon déposait une réplique en sept moyens devant le Secrétariat de la Commission de coopération environnementale.
+  </div>
+
+  <!-- Sommaire interactif -->
+  <nav class="portrait-toc" aria-label="Sommaire du grand portrait">
+    <div class="portrait-toc-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      Sommaire de l'enquête &amp; du portrait
+    </div>
+    <ul class="portrait-toc-grid">
+      <li><a href="#depuis-juillet" class="portrait-toc-link"><span class="portrait-toc-num">01.</span> Ce qui s'est passé depuis juillet</a></li>
+      <li><a href="#premiere-32-ans" class="portrait-toc-link"><span class="portrait-toc-num">02.</span> Une première en trente-deux ans</a></li>
+      <li><a href="#119-jours" class="portrait-toc-link"><span class="portrait-toc-num">03.</span> 119 jours sans réponse (Cadmium)</a></li>
+      <li><a href="#changement-gouvernement" class="portrait-toc-link"><span class="portrait-toc-num">04.</span> Le Québec a changé de gouvernement</a></li>
+      <li><a href="#qui-est-william-guindon" class="portrait-toc-link"><span class="portrait-toc-num">05.</span> Qui est William Guindon ?</a></li>
+      <li><a href="#parcours-actions" class="portrait-toc-link"><span class="portrait-toc-num">06.</span> Parcours marqué par des actions d'éclat</a></li>
+      <li><a href="#tourbiere-avant-tourbiere" class="portrait-toc-link"><span class="portrait-toc-num">07.</span> La tourbière avant la tourbière (Mémoire)</a></li>
+      <li><a href="#dossier-stablex" class="portrait-toc-link"><span class="portrait-toc-num">08.</span> Le dossier Stablex : les dessous</a></li>
+      <li><a href="#enquete-lobbying" class="portrait-toc-link"><span class="portrait-toc-num">09.</span> Enquête dans le Registre des lobbyistes</a></li>
+      <li><a href="#precedent-mineurs" class="portrait-toc-link"><span class="portrait-toc-num">10.</span> Un précédent pour les mineurs (Adultisme)</a></li>
+      <li><a href="#democratiser-justice" class="portrait-toc-link"><span class="portrait-toc-num">11.</span> Démocratiser la justice environnementale</a></li>
+      <li><a href="#apparitions-medias" class="portrait-toc-link"><span class="portrait-toc-num">12.</span> Apparitions médias</a></li>
+      <li><a href="#ce-qui-sen-vient" class="portrait-toc-link"><span class="portrait-toc-num">13.</span> Ce qui s'en vient (Échéances)</a></li>
+      <li><a href="#sources-documentaires" class="portrait-toc-link"><span class="portrait-toc-num">14.</span> Sources documentaires primaires</a></li>
+    </ul>
+  </nav>
+
+  <!-- Corps de l'article -->
+  <div class="portrait-article-body">
+
+    <p>
+      William Guindon, né le 3 août 2011 à Sainte-Marthe-sur-le-Lac, est un militant écologiste québécois. Il est l'auteur de la communication citoyenne <strong>SEM-26-003</strong>, déposée le 1<sup>er</sup> mai 2026 dans le cadre de l'Accord Canada–États-Unis–Mexique (ACEUM), visant à freiner l'expansion du site d'enfouissement de déchets dangereux de Stablex dans la Grande Tourbière de Blainville. Il avait quatorze ans au moment du dépôt. Il en a quinze depuis le 3 août 2026.
+    </p>
+
+    <p>
+      Ce texte a d'abord été publié le 4 juillet 2026, au moment où le dossier prenait son envol. Depuis, presque tout a changé : le Canada a répondu, l'auteur a répliqué, une attestation inédite est tombée, une pétition fédérale a été cataloguée, un registre public a livré ses premières lignes, et le Québec a changé de gouvernement.
+    </p>
+
+    <p>
+      Voici ce qui s'est passé — et ce que ça change au portrait.
+    </p>
+
+    <!-- SECTION 1 -->
+    <section class="portrait-section" id="depuis-juillet">
+      <span class="portrait-section-tag">Partie 01 · Chronique récente</span>
+      <h2 class="portrait-h2">Ce qui s'est passé depuis juillet</h2>
+
+      <h3 class="portrait-h3" id="le-16-octobre">Le 16 octobre : Ottawa répond sans répondre</h3>
+      <p>
+        Le 16 octobre 2026, à la date butoir fixée par le Secrétariat de la CCE, le gouvernement du Canada dépose sa réponse officielle, la pièce <strong>72-RSP</strong>. Le Secrétariat en accuse réception le jour même, pièce <strong>73-REC</strong>, sous la signature de son directeur des affaires juridiques, Paolo Solano.
+      </p>
+      <p>
+        Le mémoire fédéral fait deux pages.
+      </p>
+      <p>
+        Il ne contient aucune contestation des constats matériels du dossier : ni les rejets de cadmium mesurés jusqu'à 320 fois le critère de protection de la vie aquatique, ni la destruction de 278 000 mètres carrés de milieux humides, ni l'absence de toute autorisation fédérale préalable. Il ne fait état d'aucune mesure d'application de la loi fédérale relative à la cellule 6 du site de Stablex.
+      </p>
+      <p>
+        Sa stratégie tient dans une fin de non-recevoir procédurale. Le Canada demande au Secrétariat de mettre fin à l'examen de la communication, ou d'en suspendre le traitement, en invoquant l'article 24.27(4)a) de l'ACEUM et la Ligne directrice 7.5. À ses yeux, la pétition environnementale n° 0546 déposée au Bureau du vérificateur général du Canada serait une procédure interne encore pendante, ce qui rendrait la communication citoyenne prématurée.
+      </p>
+      <p>
+        Autrement dit : l'État invoque ses propres délais administratifs pour demander la fermeture d'un dossier qui documente son inaction.
+      </p>
+
+      <h3 class="portrait-h3" id="le-17-octobre">Le 17 octobre : Sept moyens en vingt-quatre heures</h3>
+      <p>
+        Le lendemain, William Guindon dépose au Secrétariat un mémoire d'observations qui réfute point par point la demande d'Ottawa. Sept moyens, appuyés sur la jurisprudence du mécanisme.
+      </p>
+      <ul>
+        <li><strong>Premier moyen :</strong> une pétition au vérificateur général n'est ni une procédure judiciaire, ni une procédure administrative engagée par la Partie, ni une procédure quasi judiciaire. Le Bureau du vérificateur général n'a aucun pouvoir de sanction et ne vérifie pas l'exactitude des réponses ministérielles. Elle ne peut donc pas constituer le recours interne dont l'article 24.27(4)a) exige l'épuisement.</li>
+        <li><strong>Deuxième moyen :</strong> la Ligne directrice 7.5 existe pour protéger le recours du citoyen contre les interférences externes, pas pour offrir une échappatoire à l'État mis en cause.</li>
+        <li><strong>Troisième moyen :</strong> le Secrétariat avait déjà statué sur cette question. Les paragraphes 66 à 79 de la décision du 17 août traitent expressément de la coexistence des démarches, en s'appuyant sur la jurisprudence <em>Tijuana</em>, <em>Nazas</em> et <em>Pollution par les navires</em>. Revenir dessus constituerait un revirement injustifié.</li>
+        <li><strong>Quatrième moyen :</strong> les deux démarches n'ont ni la même nature ni la même portée. L'examen devant la CCE porte sur l'application de dix-sept dispositions issues de cinq lois environnementales fédérales — la <em>Loi sur la convention concernant les oiseaux migrateurs</em>, le <em>Règlement sur les oiseaux migrateurs</em>, la <em>Loi sur les espèces en péril</em>, la <em>Loi sur les pêches</em> et la <em>Loi canadienne sur la protection de l'environnement</em>. La pétition 0546, elle, ne porte que sur deux lois.</li>
+        <li><strong>Cinquième moyen :</strong> exiger l'épuisement préalable de simples questions d'information ministérielle créerait un précédent dangereux pour l'ensemble des citoyens des trois pays signataires de l'accord commercial.</li>
+        <li><strong>Sixième moyen :</strong> le report demandé est par nature indéterminé, puisque l'article 24.28 de l'ACEUM ne prévoit aucun mécanisme de réouverture une fois un examen suspendu.</li>
+        <li><strong>Septième moyen :</strong> sur le fond, la réponse du Canada ne fait état d'aucune mesure concrète d'application de la loi environnementale fédérale sur le site de la cellule 6. Le défaut d'application allégué n'est donc pas contesté.</li>
+      </ul>
+      <p>
+        Conclusion demandée au Secrétariat : rejeter la demande de mettre fin à l'examen, rejeter la demande de suspension, et poursuivre l'instruction en vue de recommander au Conseil des ministres du Canada, des États-Unis et du Mexique l'élaboration d'un dossier factuel complet.
+      </p>
+
+      <div class="pull-quote">
+        « La pétition environnementale n° 0546 et la communication citoyenne SEM-26-003 sont deux démarches complémentaires qui poursuivent des objectifs distincts par des voies différentes. Utiliser l'existence d'une demande d'information citoyenne auprès du vérificateur général pour tenter d'échapper à l'examen d'un traité international viderait le mécanisme citoyen de l'ACEUM de sa substance. »
+        <span class="pull-quote-author">— William Guindon, Observations au Secrétariat de la CCE, 17 octobre 2026 (Pièce officielle)</span>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="portrait-section" id="premiere-32-ans">
+      <span class="portrait-section-tag">Partie 02 · Statut juridique historique</span>
+      <h2 class="portrait-h2">Une première en trente-deux ans</h2>
+      <p>
+        Le 25 septembre 2026, l'Unité des soumissions relatives aux questions d'exécution de la CCE confirme par écrit un fait qui dépasse le cadre du dossier local :
+      </p>
+
+      <div class="pull-quote" style="border-left-color: #3b82f6;">
+        « Nous ne recueillons pas l'âge des auteurs des communications SEM. Toutefois, depuis l'entrée en vigueur de l'accord en 1994, aucune communication citoyenne n'a été déposée par un mineur. »
+        <span class="pull-quote-author">— Secrétariat de la Commission de coopération environnementale (Montréal), 25 septembre 2026</span>
+      </div>
+
+      <p>
+        La précision mérite d'être citée telle quelle. La CCE ne compile pas l'âge des auteurs : elle n'avait jamais eu à le faire. En trente-deux ans d'existence du mécanisme de l'ANACE puis de l'ACEUM, et à travers plus de cent communications examinées au Canada, aux États-Unis et au Mexique, aucun citoyen de moins de dix-huit ans n'avait franchi le seuil de recevabilité.
+      </p>
+      <p>
+        La veille, le 24 septembre, William Guindon avait publié un avis de clarification confirmant son statut d'auteur unique et son indépendance absolue. Le dossier a été conçu, rédigé et porté par un adolescent. Pas par un mandataire adulte qui prêterait son nom, ni par une organisation qui financerait en sous-main. Les pièces sont signées de sa main, avec le contreseing de son représentant légal comme l'exige le droit civil québécois.
+      </p>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="portrait-section" id="119-jours">
+      <span class="portrait-section-tag">Partie 03 · Données scientifiques</span>
+      <h2 class="portrait-h2">Cent dix-neuf jours sans réponse</h2>
+      <p>
+        Le 29 juin 2026, il dépose une pétition environnementale au Bureau du vérificateur général du Canada. Le commissaire à l'environnement et au développement durable l'enregistre sous le numéro <strong>15-0546</strong>. Le catalogue public fédéral affiche une première inscription :
+      </p>
+
+      <div class="pull-quote" style="border-left-color: #f59e0b;">
+        « Application des lois environnementales fédérales relativement au site de Stablex à Blainville : Loi sur les pêches, habitats aquatiques, oiseaux migrateurs et espèces susceptibles d'être concernées. »
+        <span class="pull-quote-author">— Bureau du vérificateur général du Canada, Catalogue officiel</span>
+      </div>
+
+      <p>
+        La pétition contient vingt-quatre questions d'information ministérielle. Dix d'entre elles portent sur le cadmium. Le dossier cite les analyses d'eau de surface réalisées en bordure de la Grande Tourbière, révélant des concentrations atteignant 320 fois le critère de protection de la vie aquatique.
+      </p>
+      <p>
+        Le 13 juillet, les ministères fédéraux recevaient formellement la pétition, ce qui déclenchait le délai légal de réponse de 120 jours fixé par l'article 22 de la <em>Loi sur le vérificateur général</em>.
+      </p>
+      <p>
+        Le 9 octobre, à sept jours de l'échéance internationale, il publie un communiqué pour souligner un compte à rebours parallèle : 119 jours s'étaient écoulés depuis la transmission aux ministères sans qu'aucune réponse ne soit apportée aux questions sur le cadmium. Le délai légal fédéral échoit le <strong>10 novembre 2026</strong>.
+      </p>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="portrait-section" id="changement-gouvernement">
+      <span class="portrait-section-tag">Partie 04 · Contexte politique</span>
+      <h2 class="portrait-h2">Le Québec a changé de gouvernement</h2>
+      <p>
+        Le dossier a aussi changé de contexte politique.
+      </p>
+      <p>
+        Le 5 octobre 2026, le Parti québécois forme un gouvernement minoritaire. Paul St-Pierre Plamondon est assermenté premier ministre le 21 octobre, succédant à Christine Fréchette. À l'Environnement, Jean Pellerin succède à Pascale Déry.
+      </p>
+      <p>
+        À Blainville, la circonscription change de visage : <strong>Nadine Le Gal</strong>, du Parti québécois, l'emporte avec 33,69 % des voix et 14 999 suffrages, devant Sébastien Daoust, du Parti libéral, à 26,55 %, et Pascal Quevillon, du Parti conservateur, à 15,97 %. Le député caquiste sortant, Mario Laframboise, termine quatrième. Le 21 octobre, Nadine Le Gal est nommée présidente du caucus du gouvernement.
+      </p>
+      <p>
+        Deux rencontres parlementaires sont confirmées pour novembre : avec elle, qui a demandé l'échange avant même l'ouverture de son bureau de circonscription, et avec <strong>Madeleine Chenette</strong>, députée fédérale libérale de Thérèse-De Blainville et secrétaire parlementaire. Au programme : la Loi 93, le rapport 371 du BAPE, la réponse fédérale du 10 novembre et la suite de la procédure devant la CCE.
+      </p>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section class="portrait-section" id="qui-est-william-guindon">
+      <span class="portrait-section-tag">Partie 05 · Biographie &amp; Racines</span>
+      <h2 class="portrait-h2">Qui est William Guindon</h2>
+      <p>
+        William Guindon passe son enfance à Sainte-Marthe-sur-le-Lac, dans la région des Laurentides, au Québec. Il effectue ses études primaires à Sainte-Marthe-sur-le-Lac, une municipalité voisine. Dès la sixième année, il manifeste un vif intérêt pour la science et l'environnement en remportant la troisième place lors de la finale régionale de l'Expo-Sciences Laurentides.
+      </p>
+      <p>
+        Il poursuit ensuite son parcours scolaire au secondaire à l'Externat Sacré-Cœur, un établissement privé situé à Rosemère. Ses aptitudes et son implication lui permettent de se distinguer à plusieurs reprises. En 2023, il reçoit le Prix Méritas dans la catégorie « ambassadeur — curiosité intellectuelle », suivi en 2024 du Prix Méritas « Engagement et humanisme ». Ses excellents résultats scolaires lui permettent également d'obtenir une exemption des examens finaux de français et de sciences. Parallèlement à ses études, il s'investit au sein des Cadets de l'Armée royale canadienne, où il atteint le niveau d'étoile d'argent.
+      </p>
+      <p>
+        Son implication dépasse largement le cadre scolaire. Dès l'âge de dix ans, il choisit de s'investir bénévolement dans sa communauté. De juin à septembre 2022, puis à nouveau à partir de juin 2023, il offre son temps aux équipes de loisirs de deux Centres d'hébergement et de soins de longue durée (CHSLD) de la région de Laval. Entre 2023 et 2024, il assure la coordination du jardin communautaire de l'Externat Sacré-Cœur, mené en étroite collaboration avec la Ville de Rosemère.
+      </p>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section class="portrait-section" id="parcours-actions">
+      <span class="portrait-section-tag">Partie 06 · Chronologie d'engagement</span>
+      <h2 class="portrait-h2">Un parcours marqué par des actions d'éclat</h2>
+
+      <h3 class="portrait-h3">2021 : La première attention publique</h3>
+      <p>
+        Le 28 novembre 2021, alors âgé de dix ans, William Guindon attire l'attention des médias en devenant l'un des tout premiers enfants québécois de la tranche d'âge des 5 à 11 ans à recevoir le vaccin contre la COVID-19. Ce geste symbolique et citoyen lui vaut les félicitations publiques du premier ministre du Québec, François Legault.
+      </p>
+
+      <h3 class="portrait-h3">2025 : L'interpellation politique dans Le Devoir</h3>
+      <p>
+        Quelques années plus tard, son combat se déplace sur le terrain politique et environnemental. En 2025, il publie une lettre ouverte dans le quotidien <em>Le Devoir</em>, intitulée <em>« François Legault, vous détruisez notre avenir »</em>. Il y interpelle directement le chef du gouvernement provincial sur les conséquences environnementales et intergénérationnelles découlant du projet d'expansion de Stablex.
+      </p>
+      <p>
+        Cette lettre paraît au lendemain de l'adoption sous bâillon du projet de loi 93.
+      </p>
+
+      <h3 class="portrait-h3">1<sup>er</sup> mai 2026 : L'offensive juridique internationale</h3>
+      <p>
+        Le 1<sup>er</sup> mai 2026, William Guindon franchit une étape majeure en portant le dossier sur la scène internationale. Il dépose une communication officielle, enregistrée sous la référence <strong>SEM-26-003</strong>, auprès de la Commission de coopération environnementale, l'organisme de surveillance créé par l'accord commercial de l'ACEUM.
+      </p>
+      <p>
+        Dans ce document, il soutient que le Canada faillit à ses obligations légales internationales concernant la protection des oiseaux migrateurs, des espèces en péril et de la qualité des eaux de surface. La cause de ce manquement : l'autorisation d'agrandir le site industriel de Stablex au cœur d'une zone écologique sensible.
+      </p>
+      <p>
+        La CCE accuse réception de la plainte le 4 mai 2026 et entame un examen approfondi du dossier en vertu des articles de l'accord transfrontalier.
+      </p>
+      <p>
+        Le 3 juin 2026, le Secrétariat conclut que la communication ne satisfait pas encore à l'ensemble des critères, mais invite l'auteur à présenter une communication révisée. C'est ce qu'il fera, six semaines plus tard.
+      </p>
+
+      <h3 class="portrait-h3">Mai 2026 : L'appel urgent aux Nations Unies</h3>
+      <p>
+        Parallèlement à sa démarche auprès de la CCE, il saisit le Rapporteur spécial des Nations Unies sur les substances toxiques et les droits humains, Marcos Orellana.
+      </p>
+      <p>
+        Dans cet appel, il documente le risque environnemental et sanitaire que représente l'enfouissement de matières dangereuses dans un milieu humide, soulignant que ce type de projet porte atteinte aux droits des générations présentes et futures.
+      </p>
+
+      <h3 class="portrait-h3">Juillet 2026 : L'intervention au conseil municipal de Blainville</h3>
+      <p>
+        Le 2 juillet 2026, William Guindon intervient publiquement lors de la séance du conseil municipal de Blainville.
+      </p>
+      <p>
+        Il y confronte la mairesse Liza Poulin sur les démarches en cours et sur la transparence de la Ville dans ce dossier.
+      </p>
+      <p>
+        Il dépose officiellement plusieurs documents clés, dont sa plainte auprès de la CCE et des Nations Unies, ainsi qu'une lettre officielle adressée à la ministre fédérale des Affaires étrangères, Mélanie Joly.
+      </p>
+      <p>
+        Le 7 juillet, il envoie une mise en demeure formelle à la mairesse et aux membres du conseil municipal, exigeant la mise en ligne publique et sans délai de l'ensemble des documents déposés lors de la séance du 2 juillet.
+      </p>
+      <p>
+        La Ville obtempère : le 9 juillet, elle publie sur son site officiel un avis public confirmant le dépôt de la communication SEM-26-003 et rend accessible l'ensemble des documents.
+      </p>
+      <p>
+        Ce dépôt municipal entraîne une couverture médiatique régionale et nationale : le reportage de TVBL, diffusé le soir même du 9 juillet, présente en détail l'intervention du jeune militant.
+      </p>
+
+      <h3 class="portrait-h3">Juillet 2026 : L'alliance avec la Longhouse</h3>
+      <p>
+        Quelques jours plus tard, il obtient un appui institutionnel d'une nature différente : la Longhouse Stuart Myiow, gardienne traditionnelle de la maison longue Kanien'kehá:ka, lui accorde son soutien officiel sous l'égide du Wampum à deux voies.
+      </p>
+      <p>
+        Cette alliance relie la démarche juridique moderne à la protection millénaire du territoire par les peuples autochtones. Elle marque un tournant dans la mobilisation citoyenne en inscrivant le combat pour la Grande Tourbière dans une perspective de justice environnementale et de réconciliation réelle.
+      </p>
+
+      <h3 class="portrait-h3">16 juillet 2026 : La soumission révisée</h3>
+      <p>
+        Le 16 juillet 2026, William Guindon dépose au Secrétariat de la CCE sa communication révisée.
+      </p>
+      <p>
+        Ce n'est plus une plainte d'adolescent. C'est un mémoire juridique de 45 pages, structuré en six sections, accompagné de 222 pièces probatoires, avec inventaires détaillés, chaîne de possession, métadonnées forensiques et concordance article par article.
+      </p>
+      <p>
+        L'ensemble du dossier est pérennisé sur Zenodo, l'archive ouverte du CERN, sous l'identifiant DOI <strong>10.5281/zenodo.21416989</strong>.
+      </p>
+      <p>
+        L'auteur y démontre comment le Canada omet d'appliquer cinq lois environnementales fédérales distinctes en lien avec le projet de cellule 6 de Stablex.
+      </p>
+
+      <h3 class="portrait-h3">1<sup>er</sup> août 2026 : UNESCO et Comité des droits de l'enfant</h3>
+      <p>
+        Le 1<sup>er</sup> août 2026, il élargit encore son offensive internationale en déposant un mémoire conjoint auprès du Comité du patrimoine mondial de l'UNESCO et du Comité des droits de l'enfant des Nations Unies.
+      </p>
+      <p>
+        Il y fait valoir que la destruction d'une tourbière millénaire et l'exposition d'écosystèmes à des contaminants persistants violent les droits garantis par la Convention relative aux droits de l'enfant, notamment le droit à un environnement sain, à la santé et au développement.
+      </p>
+
+      <h3 class="portrait-h3">17 août 2026 : La décision de la CCE</h3>
+      <p>
+        Le 17 août 2026, le Secrétariat de la Commission de coopération environnementale rend sa décision au titre de l'article 24.27(2) et (3) de l'ACEUM, document <strong>26-2-DET2</strong>.
+      </p>
+      <p>
+        La CCE conclut que la communication révisée satisfait à l'ensemble des critères de recevabilité et qu'elle justifie une réponse du gouvernement du Canada.
+      </p>
+      <p>
+        Le Secrétariat ordonne formellement au Canada de fournir une réponse écrite détaillée d'ici le 16 octobre 2026.
+      </p>
+      <p>
+        La décision fait les manchettes. C'est la première fois dans l'histoire de l'accord commercial que la plainte d'un citoyen mineur contraint un État signataire à s'expliquer.
+      </p>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section class="portrait-section" id="tourbiere-avant-tourbiere">
+      <span class="portrait-section-tag">Partie 07 · Territoire &amp; Histoire</span>
+      <h2 class="portrait-h2">La tourbière avant la tourbière</h2>
+      <p>
+        On parle d'un site industriel et d'un milieu humide. On parle rarement de ce qu'il y avait avant.
+      </p>
+      <p>
+        Le 25 septembre 2026, William Guindon publie un dossier documentaire indépendant qui replace la Grande Tourbière dans une temporalité beaucoup plus longue : six mille ans de mémoire organique, l'histoire des peuples Kanien'kehá:ka, Anishinaabeg et Haudenosaunee, et les territoires d'eau de la rivière des Mille Îles, le Makigôtekw. Le dossier rappelle aussi que ce territoire n'a jamais été cédé.
+      </p>
+      <p>
+        Ce n'est pas un supplément culturel. C'est un changement de cadre juridique et moral. Une tourbière n'est pas un terrain vague qu'on remplace par un ouvrage technique : c'est un puits de carbone qui a mis des millénaires à se former, un réservoir d'eau, un habitat et un lieu de mémoire. Le BAPE l'avait dit à sa manière en 2023, en qualifiant le projet de prématuré. Le dossier autochtone ajoute une voix qui, au Québec, a longtemps été tenue à l'écart de ces décisions.
+      </p>
+      <p>
+        Le lien avec la suite du combat n'est pas théorique : en juillet 2026, l'appui de la Longhouse Stuart Myiow, obtenu sous l'égide du Wampum à deux voies, s'inscrit exactement dans cette continuité. Un appui moral — et, le cas échéant, un appui devant les tribunaux.
+      </p>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section class="portrait-section" id="dossier-stablex">
+      <span class="portrait-section-tag">Partie 08 · Enquête industrielle</span>
+      <h2 class="portrait-h2">Le dossier Stablex : les dessous d'un affrontement environnemental</h2>
+      <p>
+        La Grande Tourbière de Blainville est un écosystème millénaire unique au Québec. Le site de Stablex Canada y est en exploitation depuis 1983. Il s'agit de l'unique centre industriel autorisé dans la province pour l'enfouissement final de résidus industriels inorganiques préalablement stabilisés et solidifiés.
+      </p>
+      <p>
+        Le conflit s'envenime en mars 2025, lorsque le gouvernement du Québec choisit d'adopter le projet de loi 93 sous procédure accélérée de bâillon. Cette loi force la municipalité de Blainville à transférer des terrains d'une grande valeur écologique afin de permettre l'aménagement de la nouvelle zone d'enfouissement de l'entreprise, appelée la « cellule 6 ».
+      </p>
+      <p>
+        Cette décision politique est imposée malgré un avis très défavorable du Bureau d'audiences publiques sur l'environnement (BAPE), publié en septembre 2023 (Rapport 371), qui qualifiait alors le projet d'expansion de « prématuré ». Pour protéger l'entreprise, la loi adoptée par Québec intègre des clauses strictes excluant presque toute possibilité de recours judiciaire citoyen sur le fond de l'affaire. Des organisations juridiques, à l'image du Centre québécois du droit de l'environnement (CQDE), dénoncent cette mesure qu'elles considèrent comme une atteinte grave au droit à un recours effectif en justice.
+      </p>
+      <p>
+        Les travaux d'aménagement de la cellule ont commencé. Le permis d'exploitation, lui, n'avait toujours pas été délivré à l'été 2026 : le ministère de l'Environnement indiquait alors que la demande d'autorisation était « toujours en analyse ». Le dossier relève désormais d'un nouveau gouvernement.
+      </p>
+      <p>
+        La mobilisation citoyenne s'appuie également sur des données environnementales. Des analyses de l'eau menées par des groupes de citoyens en décembre 2023 révèlent des concentrations de cadmium dans les eaux de surface avoisinantes jusqu'à <strong>320 fois supérieures</strong> aux normes environnementales en vigueur. Une seconde campagne indépendante, menée en juin 2026 par Climat Québec et la Coalition des citoyens de Blainville et supervisée par la limnologue Sonja Behmel, de WaterShed Monitoring, documente aussi la présence de zinc, de cuivre, d'arsenic et de chrome aux abords du site. Stablex conteste ces conclusions et soutient que ses plus récentes campagnes d'échantillonnage ministérielles, publiées en février 2026, concluent à la conformité de ses activités.
+      </p>
+      <p>
+        Les opposants rappellent enfin que près de 41 % des matières dangereuses enfouies à Blainville proviennent de l'extérieur du Québec, dont approximativement 29 % en provenance directe des États-Unis.
+      </p>
+
+      <div class="stat-highlight-grid">
+        <div class="stat-highlight-card">
+          <div class="stat-highlight-value">320 ×</div>
+          <div class="stat-highlight-label">Concentration de cadmium mesurée par rapport au critère de protection aquatique</div>
+        </div>
+        <div class="stat-highlight-card">
+          <div class="stat-highlight-value">278 000 m²</div>
+          <div class="stat-highlight-label">De milieux humides et de tourbière visés par l'expropriation sous la Loi 93</div>
+        </div>
+        <div class="stat-highlight-card">
+          <div class="stat-highlight-value">41 %</div>
+          <div class="stat-highlight-label">Des matières dangereuses traitées issues de l'extérieur du Québec (29 % des USA)</div>
+        </div>
+        <div class="stat-highlight-card">
+          <div class="stat-highlight-value">222 pièces</div>
+          <div class="stat-highlight-label">Probatoires forensiques déposées à la CCE et archivées sur Zenodo / CERN</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 9 -->
+    <section class="portrait-section" id="enquete-lobbying">
+      <span class="portrait-section-tag">Partie 09 · Registre fédéral</span>
+      <h2 class="portrait-h2">Une enquête dans le Registre des lobbyistes</h2>
+      <p>
+        Le 24 octobre 2026, William Guindon publie un dossier public construit à partir d'une seule source : le Registre des lobbyistes du Canada. Aucune révélation, aucun document confidentiel. Des inscriptions, des numéros, des dates, vérifiables par quiconque.
+      </p>
+      <p>
+        Le registre contient un enregistrement ouvert le 26 mars 2026, numéro <strong>964373-385380</strong>, version 1. Type : lobbyiste-conseil. Client : Stablex, 760 boulevard Industriel, à Blainville, représenté par son directeur général, Michel Perron. Lobbyiste : Alexandra Boudreault, de Catapulte communication, sans charge publique antérieure déclarée. Société mère déclarée : Republic Services, Massena, New York. L'objet déclaré, cité intégralement : <em>« Conseiller et informer les fonctionnaires et les élus sur la gestion des matières dangereuses résiduelles chez Stablex au niveau fédéral, en plus de les tenir au courant des travaux sur la cellule 6. »</em> Institutions visées : Environnement et Changement climatique Canada et la Chambre des communes.
+      </p>
+      <p>
+        Le registre contient aussi un rapport mensuel de communication, numéro <strong>385380-701620</strong>. Communication : le 17 septembre 2026. Affichage : le 17 septembre 2026, le jour même.
+      </p>
+      <p>
+        Les titulaires d'une charge publique désignée rencontrés ce jour-là sont trois fonctionnaires d'Environnement et Changement climatique Canada : <strong>Michael Bonser</strong>, sous-ministre adjoint de la Direction générale des affaires internationales ; <strong>Ailish Campbell</strong>, sous-ministre adjointe principale ; et <strong>Mylène Sauvé</strong>, directrice des Affaires multilatérales.
+      </p>
+      <p>
+        C'est là que les fils se croisent. Michael Bonser n'est pas seulement le sous-ministre adjoint d'une direction générale d'ECCC. Il est le représentant officiel du Canada auprès de la Commission de coopération environnementale : celui dont le nom figure sur les documents de liaison avec le Secrétariat, celui dont les services coordonnaient la rédaction de la réponse officielle due le 16 octobre.
+      </p>
+      <p>
+        Un mois sépare la rencontre du 17 septembre de la réponse d'Ottawa du 16 octobre. Les deux faits sont dans des registres publics distincts. L'un au Commissariat au lobbying du Canada, l'autre au registre des communications de la CCE. Le dossier publié le 24 octobre se contente de les mettre côte à côte.
+      </p>
+      <p>
+        Le registre montre enfin une anomalie de forme, que le dossier se contente de documenter. Pour cet enregistrement précis, le Registre des lobbyistes du Canada n'affiche qu'un seul rapport mensuel de communication — celui du 17 septembre —, alors que le champ <em>« Période de déclaration »</em> affiche <em>« août 2026 »</em>. Une communication tenue en septembre déclarée sur une période d'août : une coquille de saisie ou un rattrapage administratif, mais une trace que le registre conserve telle quelle.
+      </p>
+      <p>
+        Il faut être précis sur ce que ce dossier dit et ne dit pas. Il cite des registres publics. Il ne prête aucune intention, n'allègue aucune collusion et n'affirme aucun lien de cause à effet. Le Registre des lobbyistes est un registre de transparence : les lobbyistes y déclarent leurs activités parce que la loi les y oblige, et le fait de déclarer une rencontre ne constitue pas une infraction. Ce que le dossier montre, c'est la concomitance temporelle entre une activité de lobbying ciblant la direction même qui coordonnait la réponse du Canada et le dépôt d'une fin de non-recevoir procédurale quatre semaines plus tard.
+      </p>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section class="portrait-section" id="precedent-mineurs">
+      <span class="portrait-section-tag">Partie 10 · Droits fondamentaux &amp; Recherche</span>
+      <h2 class="portrait-h2">Un précédent pour les mineurs</h2>
+      <p>
+        Ce dossier n'est pas seulement environnemental. Il pose une question de droit qui dépasse la Grande Tourbière : celle de l'accès direct des mineurs à la justice internationale.
+      </p>
+      <p>
+        Le 23 septembre 2026, William Guindon publie un plaidoyer sur l'autonomie juridique des adolescents face à l'adultisme structurel du droit québécois et canadien. Son argument central : l'âge biologique ne peut pas être un critère d'irrecevabilité automatique lorsqu'un citoyen démontre sa capacité de discernement et apporte une preuve rigoureuse.
+      </p>
+      <p>
+        Le 14 octobre 2026, à Berlin, deux chercheurs donnent à ce plaidoyer un appui scientifique. <strong>Manfred Liebel</strong>, professeur émérite à l'Université technique de Berlin et figure mondiale des droits de l'enfant, et <strong>Rebecca Meade</strong>, chercheuse postdoctorale, signent une déclaration conjointe en appui à la démarche :
+      </p>
+
+      <div class="pull-quote" style="border-left-color: #8b5cf6;">
+        « La capacité civique et analytique ne s'acquiert pas par magie le jour du 18<sup>e</sup> anniversaire : elle se démontre par les actes, la méthode et la rigueur de la preuve. Les institutions doivent juger les dossiers sur leurs mérites documentaires, et non disqualifier les jeunes par des barrières adultistes. »
+        <span class="pull-quote-author">— Pr Manfred Liebel &amp; Dre Rebecca Meade, Berlin, 14 octobre 2026 (Déclaration académique conjointe)</span>
+      </div>
+
+      <p>
+        La portée pratique est là : un dossier de deux cent vingt-deux pièces probatoires, déposé sans avocat, qui contraint le gouvernement fédéral du Canada à mobiliser ses équipes juridiques et à produire une réponse officielle dans un traité international. Si un adolescent de quinze ans peut le faire, la barrière de l'âge n'est plus une fatalité procédurale.
+      </p>
+      <p>
+        C'est aussi à cette aune qu'il faut lire le reste du travail : le moteur de recherche plein texte et l'archive ZIP téléchargeable mis en ligne le 22 septembre, qui rendent les pièces accessibles à tous les citoyens sans intermédiaire ; les chartes déontologiques publiées sur son site ; le registre de traçabilité des pièces. L'architecture entière du site a été conçue pour que d'autres puissent s'en servir.
+      </p>
+    </section>
+
+    <!-- SECTION 11 -->
+    <section class="portrait-section" id="democratiser-justice">
+      <span class="portrait-section-tag">Partie 11 · Transmission &amp; Savoir</span>
+      <h2 class="portrait-h2">Démocratiser la justice environnementale</h2>
+      <p>
+        Faire entendre sa voix ne devrait pas être un parcours du combattant.
+      </p>
+      <p>
+        Après avoir franchi les exigences procédurales de la Commission de coopération environnementale, le jeune militant refuse que son apprentissage reste une expérience isolée.
+      </p>
+      <p>
+        Refusant de rester un simple observateur, William Guindon a lancé la rédaction d'un guide pratique et vulgarisé à l'intention des citoyens et des jeunes souhaitant comprendre les rouages du droit international et naviguer dans des processus juridiques complexes.
+      </p>
+      <p>
+        Objectifs : décoder le cadre législatif et la réglementation environnementale canadienne et internationale, vulgariser les étapes nécessaires pour déposer une communication recevable, et partager les leçons tirées de son propre parcours face aux ministères et aux tribunaux.
+      </p>
+    </section>
+
+    <!-- SECTION 12 -->
+    <section class="portrait-section" id="apparitions-medias">
+      <span class="portrait-section-tag">Partie 12 · Rayonnement public</span>
+      <h2 class="portrait-h2">Apparitions médias</h2>
+      <p>
+        L’impact des démarches juridiques et internationales de William Guindon a suscité une attention médiatique notable, tant au niveau local que national et international.
+      </p>
+
+      <!-- Media Outlet: The Rover -->
+      <div class="media-outlet-card">
+        <img src="assets/media/the-rover-logo.webp" alt="Logo The Rover" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">The Rover — Enquête internationale</h4>
+            <span class="media-outlet-date">11 juin 2026</span>
+          </div>
+          <p>
+            Le 11 juin 2026, le journaliste Éanna Mackey a publié un reportage d'enquête dans le média indépendant d'investigation <em>The Rover</em>, intitulé <em>« Blainville teenager takes Stablex fight international »</em>. L'article détaille le cheminement de William Guindon depuis sa découverte du dossier jusqu'au dépôt de sa plainte devant la CCE, et analyse les failles du cadre réglementaire entourant la gestion des matières dangereuses à Blainville.
+          </p>
+        </div>
+      </div>
+
+      <!-- Media Outlet: La Presse -->
+      <div class="media-outlet-card">
+        <img src="assets/media/lapresse-logo.webp" alt="Logo La Presse" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">La Presse — Le combat d'un adolescent à l'ONU</h4>
+            <span class="media-outlet-date">3 juillet 2026</span>
+          </div>
+          <p>
+            Le 3 juillet 2026, <em>La Presse</em> consacre un reportage d'envergure, signé par la journaliste Katia Gagnon et illustré par les photographies de Patrick Sanfaçon, intitulé <em>« Le combat d'un adolescent à l'ONU »</em>. Ce grand reportage met en lumière la détermination du jeune militant, son recours simultané à la CCE et aux Nations Unies, et la portée juridique de sa démarche pour la protection des milieux humides québécois.
+          </p>
+          <div class="pull-quote" style="margin: 14px 0 0; padding: 12px 18px; font-size: 1rem;">
+            « Le gouvernement a enlevé notre droit de pouvoir manifester nos craintes envers la pollution. Mais c'est un droit fondamental. »
+            <span class="pull-quote-author">— William Guindon dans La Presse, 3 juillet 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Outlet: TVBL -->
+      <div class="media-outlet-card">
+        <img src="assets/media/tvbl-logo.webp" alt="Logo TVBL" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">TVBL (Télévision des Basses-Laurentides)</h4>
+            <span class="media-outlet-date">9 juillet 2026</span>
+          </div>
+          <p>
+            Le jeudi 9 juillet 2026 à 19 h, William Guindon a franchi une nouvelle étape médiatique en étant l'invité principal d'une entrevue exclusive de 11 minutes dans l'émission d'actualités régionales <em>Le Télé-Journal</em> sur les ondes de TVBL, animée par le journaliste Pierre-Luc Paquin.
+          </p>
+          <p>
+            L'entrevue a permis au jeune militant d'expliquer directement aux citoyens des Basses-Laurentides les motifs de son intervention devant le conseil municipal de Blainville, les détails de sa communication internationale SEM-26-003, et les raisons de son refus de baisser les bras face à la Loi 93.
+          </p>
+        </div>
+      </div>
+
+      <!-- Media Outlet: Les as de l'info -->
+      <div class="media-outlet-card">
+        <img src="assets/media/lesasdelinfo-logo.webp" alt="Logo Les as de l'info" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">Les as de l'info (Média Jeunesse)</h4>
+            <span class="media-outlet-date">16 juin 2026</span>
+          </div>
+          <p>
+            Le 16 juin 2026, William Guindon a fait l'objet d'un portrait détaillé dans le média jeunesse <em>Les as de l'info</em>, intitulé <em>« William Guindon : un militant de 14 ans qui défie les frontières »</em>.
+          </p>
+          <p>
+            Cette tribune lui a permis d'interpeller directement le public d'âge scolaire, d'expliquer ses 250 heures de recherche documentaire, et de démontrer concrètement que les jeunes ne sont pas condamnés à l'écoanxiété passive : ils peuvent s'emparer des outils du droit pour défendre activement l'environnement.
+          </p>
+        </div>
+      </div>
+
+      <!-- Media Outlet: CBC Podcasts -->
+      <div class="media-outlet-card">
+        <img src="assets/media/cbc-logo.webp" alt="Logo CBC" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">CBC Podcasts (This is Montreal)</h4>
+            <span class="media-outlet-date">23 juillet 2026</span>
+          </div>
+          <p>
+            Le 23 juillet 2026, William Guindon a fait l'objet d'un épisode complet de 23 minutes dans le podcast national de CBC, <em>This is Montreal</em>, animé par Antoni Nercessian, intitulé <em>« The 14-year-old fighting a hazardous waste site »</em>.
+          </p>
+          <p>
+            Cette tribune lui a permis d'exposer à l'échelle nationale et internationale les enjeux entourant le projet de loi 93, l'importation de déchets dangereux américains et la protection de la Grande Tourbière de Blainville.
+          </p>
+        </div>
+      </div>
+
+      <!-- Media Outlet: Éducaloi -->
+      <div class="media-outlet-card">
+        <img src="assets/media/educaloi-logo.webp" alt="Logo Éducaloi" class="media-outlet-logo">
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">Éducaloi — Information juridique citoyenne</h4>
+            <span class="media-outlet-date">5 août 2026</span>
+          </div>
+          <p>
+            Le 5 août 2026, l'organisme d'information juridique <em>Éducaloi</em> a publié une analyse fouillée intitulée <em>« Porter plainte à l'international pour faire respecter les lois en environnement : le cas d'un adolescent de 14 ans »</em>.
+          </p>
+          <p>
+            L'article décortique le mécanisme juridique de l'article 24.27 de l'ACEUM, explique pourquoi le recours d'un adolescent devant une commission internationale constitue une première, et analyse les conditions qui rendent une telle plainte recevable face aux gouvernements signataires.
+          </p>
+        </div>
+      </div>
+
+      <!-- Media Outlet: Lab22 -->
+      <div class="media-outlet-card">
+        <div style="width: 54px; height: 54px; border-radius: 10px; background: #059669; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; flex-shrink: 0;">22</div>
+        <div class="media-outlet-content">
+          <div class="media-outlet-header">
+            <h4 class="media-outlet-title">Documentaire Lab22 — Projet cinématographique</h4>
+            <span class="media-outlet-date">Automne 2026 · Sortie 2027</span>
+          </div>
+          <p>
+            En septembre 2026, William Guindon a pris part au tournage d’un projet documentaire d’envergure mené par Lab22 (laboratoire d’innovations sociales et environnementales en milieu scolaire, en partenariat avec le Cégep du Vieux-Montréal).
+          </p>
+          <p>
+            Le tournage, réalisé sur les rives des lacs Fauvel et en bordure de la Grande Tourbière de Blainville, met en lumière le parcours de jeunes leaders environnementaux québécois qui utilisent des leviers institutionnels, juridiques et scientifiques novateurs pour protéger leur milieu de vie.
+          </p>
+          <p>
+            La première diffusion du documentaire est prévue pour 2027, avant une distribution officielle et des projections dans les établissements scolaires et festivals de films environnementaux à travers le Québec.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 13 -->
+    <section class="portrait-section" id="ce-qui-sen-vient">
+      <span class="portrait-section-tag">Partie 13 · Calendrier d'action</span>
+      <h2 class="portrait-h2">Ce qui s'en vient</h2>
+
+      <div style="border-left: 2px solid var(--accent); padding-left: 18px; margin: 24px 0;">
+        <p><strong>10 novembre 2026 — Échéance légale :</strong> Les ministres d'Environnement et Changement climatique Canada, de Pêches et Océans Canada et de Santé Canada doivent déposer au Parlement leurs réponses écrites aux vingt-quatre questions de la pétition environnementale n° 15-0546.</p>
+
+        <p><strong>Novembre 2026 — Deux rencontres parlementaires :</strong> Nadine Le Gal, députée de Blainville et présidente du caucus du gouvernement, et Madeleine Chenette, députée fédérale de Thérèse-De Blainville.</p>
+
+        <p><strong>12 et 13 novembre 2026 :</strong> Colloque du Réseau ACTES de la Centrale des syndicats du Québec (CSQ), en Mauricie.</p>
+
+        <p><strong>27 novembre 2026 :</strong> Journée verte de l'AREQ-CSQ Laurentides, à Saint-Jérôme, où il prononcera la conférence <em>« Transmettre l'engagement »</em>.</p>
+
+        <p><strong>Vers le 15 décembre 2026 — Décision CCE :</strong> Fin du délai de soixante jours ouvrables de l'examen ouvert sous l'article 24.28 de l'ACEUM : le Secrétariat de la CCE indiquera s'il recommande ou non la constitution d'un dossier factuel indépendant.</p>
+
+        <p><strong>Décembre 2026 :</strong> Dépôt du rapport de la commission de l'environnement de la Communauté métropolitaine de Montréal (CMM) sur la gestion des matières dangereuses résiduelles.</p>
+
+        <p><strong>2027 :</strong> Si un dossier factuel est recommandé, la décision revient aux ministres de l'environnement du Canada, des États-Unis et du Mexique.</p>
+
+        <p><strong>Entre-temps, au niveau municipal :</strong> Le nouveau Comité de coordination Stablex mis sur pied par la Ville de Blainville a commencé ses travaux en octobre 2026, et Québec a versé en août une compensation de 17 millions de dollars à la Ville pour la perte de valeur du terrain cédé.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 14 -->
+    <section class="portrait-section" id="sources-documentaires">
+      <span class="portrait-section-tag">Partie 14 · Vérifiabilité</span>
+      <h2 class="portrait-h2">Sources documentaires primaires</h2>
+      <p>
+        Conformément à la déontologie du dossier et à l'impératif de transparence probatoire, l'ensemble des éléments cités dans ce portrait repose sur des actes publics, des registres officiels et des publications vérifiables :
+      </p>
+
+      <div class="source-list-box">
+        <h4 style="margin: 0 0 12px; font-size: 1rem; color: var(--text);">Site officiel et registre documentaire</h4>
+        <ul>
+          <li><a href="./">williamguindon.me</a> — Portail officiel d'information citoyenne et registre public</li>
+          <li><a href="communiques">Communiqués officiels des 16 et 17 octobre 2026</a></li>
+          <li><a href="registre">Registre et calendrier de la procédure CCE SEM-26-003</a></li>
+          <li><a href="lobby">Enquête fédérale, volet Lobbying : La rencontre du 17 septembre 2026</a></li>
+          <li><a href="statut-mineur">Statut de citoyen mineur et attestation de la CCE du 25 septembre 2026</a></li>
+          <li><a href="adultisme">Autonomie juridique des adolescents et déclaration Liebel &amp; Meade (Berlin)</a></li>
+          <li><a href="autochtone">Histoire autochtone et mémoire organique de la Grande Tourbière</a></li>
+        </ul>
+
+        <h4 style="margin: 20px 0 12px; font-size: 1rem; color: var(--text);">Registres et institutions officielles</h4>
+        <ul>
+          <li><a href="https://www.cec.org/fr/nouvelles/la-cce-recoit-une-communication-sur-lenfouissement-de-matieres-dangereuses-dans-le-secteur-de-la-grande-tourbiere-de-blainville-quebec-canada/" target="_blank" rel="noopener noreferrer">Commission de coopération environnementale (CCE / ACEUM) — Fiche du dossier SEM-26-003 ↗</a></li>
+          <li><a href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html" target="_blank" rel="noopener noreferrer">Pétition environnementale n° 15-0546, Bureau du vérificateur général du Canada ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.21416989" target="_blank" rel="noopener noreferrer">Archive ouverte CERN / Zenodo : Communication SEM-26-003 et 222 pièces probatoires (DOI 10.5281/zenodo.21416989) ↗</a></li>
+        </ul>
+
+        <h4 style="margin: 20px 0 12px; font-size: 1rem; color: var(--text);">Principaux reportages et tribunes de presse</h4>
+        <ul>
+          <li><a href="https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-de-la-tourbiere-de-blainville/le-combat-d-un-adolescent-a-l-onu.php" target="_blank" rel="noopener noreferrer">La Presse — « Le combat d'un adolescent à l'ONU » (Katia Gagnon / Patrick Sanfaçon, 3 juillet 2026) ↗</a></li>
+          <li><a href="https://www.ledevoir.com/opinion/idees/898052/francois-legault-vous-detruisez-notre-avenir" target="_blank" rel="noopener noreferrer">Le Devoir — « François Legault, vous détruisez notre avenir » (Lettre ouverte, 8 avril 2025) ↗</a></li>
+          <li>The Rover — « Blainville teenager takes Stablex fight international » (Éanna Mackey, 11 juin 2026)</li>
+          <li><a href="https://educaloi.qc.ca/actualites-juridiques/porter-plainte-a-linternational-pour-faire-respecter-les-lois-en-environnement-le-cas-dun-adolescent-de-14-ans/" target="_blank" rel="noopener noreferrer">Éducaloi — « Porter plainte à l'international pour faire respecter les lois en environnement » (5 août 2026) ↗</a></li>
+          <li>Radio-Canada — Couverture de la mobilisation citoyenne et manifestation du 15 août 2026</li>
+          <li>Journal de Québec — « Compensation de 17 M$ à Blainville pour le terrain de Stablex », 24 août 2026</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Encart de clôture légale -->
+    <div style="margin-top: 40px; padding: 20px 22px; border-radius: 12px; background: var(--surface); border: 1.5px solid var(--line); font-size: 0.88rem; line-height: 1.65;">
+      <p style="margin: 0 0 8px;">
+        <strong>Contact de presse &amp; protocole :</strong> <a href="mailto:contact@williamguindon.me" style="color: var(--accent); font-weight: 700;">contact@williamguindon.me</a> · Blainville (Québec), Canada
+      </p>
+      <p style="margin: 0 0 8px; color: var(--muted);">
+        Ce portrait documentaire peut être cité, partagé et analysé librement. Les citations des registres publics sont conformes à la note de bonne foi (PARTIE 04 du fil conducteur) et n'allèguent aucune infraction, collusion ou motif illicite.
+      </p>
+      <p style="margin: 0; font-weight: 700; color: #059669;">
+        🛡️ Protection de l'auteur mineur : Toutes les démarches judiciaires et internationales sont transmises avec l'accord et sous le contreseing de son représentant légal.
+      </p>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Pied de page -->
+<footer>
+  <div class="wrap">
+    <p class="footer-copy">© 2026 William Guindon — Blainville, Québec, Canada · Registre citoyen SEM-26-003</p>
+    <div class="footer-sitemap-row">
+      <a href="./">Accueil</a> · 
+      <a href="portrait" style="font-weight: 700; color: #10b981;">Grand Portrait</a> · 
+      <a href="stablex">Dossier Stablex</a> · 
+      <a href="lobby">Volet Lobbying</a> · 
+      <a href="registre">Registre CCE</a> · 
+      <a href="dossier-journalistes">222 Pièces Probatoires</a> · 
+      <a href="statut-mineur">Statut Citoyen Mineur</a> · 
+      <a href="dev">Développeurs &amp; API</a> · 
+      <a href="presse">Kit Média</a> · 
+      <a href="#main-content">Haut ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Script de suivi de progression de lecture
+window.addEventListener('scroll', function() {
+  const docElement = document.documentElement;
+  const body = document.body;
+  const scrollTop = docElement.scrollTop || body.scrollTop;
+  const scrollHeight = (docElement.scrollHeight || body.scrollHeight) - docElement.clientHeight;
+  const progressPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  const progressBar = document.getElementById('reading-progress');
+  if (progressBar) {
+    progressBar.style.width = Math.min(100, Math.max(0, progressPercent)) + '%';
+  }
+}, { passive: true });
+</script>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+
+</body>
+</html>
+"""
+
+# Replace NAVBAR_PLACEHOLDER with actual navbar
+with open("navbar.html", "r", encoding="utf-8") as f:
+    navbar = f.read()
+
+final_html = html_content.replace("<!-- NAVBAR_PLACEHOLDER -->", navbar)
+
+with open("portrait.html", "w", encoding="utf-8") as f:
+    f.write(final_html)
+
+print("portrait.html written successfully!")
