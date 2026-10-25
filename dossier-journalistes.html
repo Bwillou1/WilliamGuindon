@@ -144,6 +144,93 @@
       background: #eaf5ee;
       border-color: #0d652d;
     }
+    /* Mode iFrame / Widget intégré pour sites tiers */
+    .embed-original-banner {
+      background: linear-gradient(90deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      padding: 9px 16px;
+      font-size: 12.5px;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+      z-index: 999;
+      flex-shrink: 0;
+    }
+    .embed-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .embed-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .embed-banner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+    .embed-banner-title {
+      font-weight: 600;
+      color: #ecfdf5;
+      font-size: 12px;
+    }
+    .embed-banner-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: #064e3b;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+    .embed-banner-link:hover {
+      background: #d1fae5;
+      color: #065f46;
+      transform: translateY(-1px);
+    }
+    [data-theme="dark"] .embed-original-banner {
+      background: linear-gradient(90deg, #06382b 0%, #064e3b 100%);
+      border-bottom-color: rgba(52, 211, 153, 0.25);
+    }
+    [data-theme="dark"] .embed-banner-link {
+      background: #10b981;
+      color: #052e16;
+    }
+    [data-theme="dark"] .embed-banner-link:hover {
+      background: #34d399;
+      color: #022c22;
+    }
+    html.is-embedded-widget body {
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    html.is-embedded-widget .drive-container {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+    html.is-embedded-widget .btn-back-home {
+      display: none !important;
+    }
     .drive-title {
       font-size: 15px;
       font-weight: 700;
@@ -1628,6 +1715,23 @@
 <div id="drive-toast" class="drive-toast" role="status" aria-live="polite"></div>
 
 <div class="drive-container" data-mobile-view="tree">
+  <!-- Bannière d'attribution officielle en mode iFrame intégré -->
+  <div id="embed-original-banner" class="embed-original-banner" style="display: none;">
+    <div class="embed-banner-inner">
+      <div class="embed-banner-left">
+        <span class="embed-banner-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          REGISTRE CITOYEN OFFICIEL CCE SEM-26-003
+        </span>
+        <span class="embed-banner-title">Explorateur documentaire · 222 Pièces Probatoires</span>
+      </div>
+      <a href="https://williamguindon.me/dossier-journalistes.html" target="_blank" rel="noopener noreferrer" class="embed-banner-link" title="Consulter la version originale officielle sur williamguindon.me">
+        <span>Consulter l'original sur williamguindon.me</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+    </div>
+  </div>
+
   <div class="drive-header">
     <div class="drive-header-left">
       <a href="index.html" class="btn-back-home" title="Retour au portail officiel">
@@ -5050,6 +5154,40 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       setTimeout(() => t.classList.remove("visible"), 4000);
     }
   }, false);
+
+  // Détection du mode iFrame / Widget pour intégration externe sur sites tiers
+  (function initEmbedMode() {
+    let isFramed = false;
+    try {
+      isFramed = (window.self !== window.top);
+    } catch (_) {
+      isFramed = true;
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const isEmbedParam = urlParams.get('embed') === '1' || urlParams.get('widget') === '1' || urlParams.get('iframe') === '1';
+
+    if (isFramed || isEmbedParam) {
+      document.documentElement.classList.add('is-embedded-widget');
+      const banner = document.getElementById('embed-original-banner');
+      if (banner) banner.style.display = 'block';
+
+      // Règle stricte : Ne peut pas naviguer vers la page d'accueil (pas le site principal dans l'iFrame)
+      const homeBtn = document.querySelector('.btn-back-home');
+      if (homeBtn) homeBtn.style.display = 'none';
+
+      // Intercepter tout clic tentant de charger l'accueil ou le site racine dans l'iFrame
+      document.addEventListener('click', function(e) {
+        const a = e.target.closest('a');
+        if (a) {
+          const href = a.getAttribute('href') || '';
+          if (href === 'index.html' || href === './' || href === '/' || (href.includes('williamguindon.me/') && !href.includes('dossier-journalistes') && !href.includes('viewer.html') && !href.includes('assets/'))) {
+            e.preventDefault();
+            window.open('https://williamguindon.me/', '_blank');
+          }
+        }
+      }, true);
+    }
+  })();
 })();
 </script>
 

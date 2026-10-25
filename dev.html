@@ -971,6 +971,66 @@ curl -s https://williamguindon.me/api/v1/corpus.json -o corpus-sem26003.json</co
         </div>
       </div>
 
+      <!-- Générateur d'iFrame pour l'Explorateur Documentaire (dossier-journalistes) -->
+      <div class="embed-builder-card" style="border-color: rgba(16, 185, 129, 0.4); margin-top: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text);">
+            Générateur d'intégration : Explorateur de Documents &amp; 222 Pièces Probatoires
+          </h3>
+          <span style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
+            ✅ Autorisé sur sites tiers
+          </span>
+        </div>
+        <p style="margin: 0 0 18px; font-size: 0.9rem; color: var(--muted); line-height: 1.5;">
+          Intégrez l'explorateur interactif complet des 222 pièces probatoires (rapports scientifiques, métadonnées forensiques, analyses cadmium, WACZ, CSV) directement sur votre site ou blogue journalistique. L'intégration embarquée affiche obligatoirement la bannière officielle de provenance (<em>« Original sur williamguindon.me »</em>) et neutralise la navigation vers la page d'accueil principale pour maintenir l'utilisateur focalisé sur les pièces documentaires.
+        </p>
+
+        <div class="embed-controls-grid">
+          <div class="embed-field">
+            <label for="select-height-explorer">Hauteur de l'explorateur :</label>
+            <select id="select-height-explorer" class="embed-select" onchange="updateExplorerSnippet()">
+              <option value="750">750 px (Recommandé · Plein confort avec arborescence et visionneuse)</option>
+              <option value="850">850 px (Grand écran · Format bureau &amp; rédaction)</option>
+              <option value="600">600 px (Format standard compact)</option>
+            </select>
+          </div>
+          <div class="embed-field">
+            <label for="select-theme-explorer">Thème visuel initial :</label>
+            <select id="select-theme-explorer" class="embed-select" onchange="updateExplorerSnippet()">
+              <option value="auto">Adaptatif automatique (Système de l'utilisateur)</option>
+              <option value="dark">Sombre forcé (Recommandé pour blogs sombres)</option>
+              <option value="light">Clair forcé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="code-box-tabs" style="margin-top: 10px;">
+          <div class="code-box-header">
+            <span style="font-size: 0.8rem; font-weight: 700; color: #a7f3d0;">Code d'intégration iFrame (HTML)</span>
+            <button type="button" class="btn-copy-code" onclick="copySnippet(document.getElementById('explorer-snippet-code').textContent, this)">Copier le code iFrame</button>
+          </div>
+          <pre class="code-box-pre"><code id="explorer-snippet-code">&lt;iframe 
+  src="https://williamguindon.me/dossier-journalistes.html?embed=1" 
+  width="100%" 
+  height="750" 
+  style="border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: #0f1a14; box-shadow: 0 10px 30px rgba(0,0,0,0.4);" 
+  allow="fullscreen" 
+  loading="lazy" 
+  title="Explorateur documentaire officiel SEM-26-003 · 222 Pièces Probatoires"&gt;
+&lt;/iframe&gt;</code></pre>
+        </div>
+
+        <!-- Consignes et garanties -->
+        <div style="margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); font-size: 0.84rem; color: var(--text); line-height: 1.5;">
+          <strong>🛡️ Cadre d'intégration sécurisé &amp; déontologique :</strong>
+          <ul style="margin: 6px 0 0; padding-left: 18px; color: var(--muted);">
+            <li><strong>Bannière officielle active :</strong> Le bandeau d'en-tête <em>« Consulter l'original sur williamguindon.me »</em> s'affiche automatiquement en mode iFrame avec lien direct en nouvel onglet.</li>
+            <li><strong>Isolation de l'accueil :</strong> Les liens vers la page d'accueil principale du site sont neutralisés à l'intérieur du cadre afin de préserver l'ergonomie de votre propre site web.</li>
+            <li><strong>En-têtes CORS / CSP ouverts :</strong> La ressource <code>/dossier-journalistes</code> transmet les en-têtes <code>frame-ancestors *</code> et <code>X-Frame-Options: ALLOWALL</code> pour un affichage garanti sur tous domaines externes.</li>
+          </ul>
+        </div>
+      </div>
+
       <!-- Widget Horloge Live & Badge Markdown -->
       <div class="embed-builder-card" style="border-color: rgba(56, 189, 248, 0.35);">
         <h3 style="margin: 0 0 8px; font-size: 1.25rem; font-weight: 800; color: var(--text);">
@@ -1287,6 +1347,31 @@ function updateEmbedSnippet() {
 </iframe>`;
 
   const codeEl = document.getElementById('embed-snippet-code');
+  if (codeEl) codeEl.textContent = snippet;
+}
+
+function updateExplorerSnippet() {
+  const selectHeight = document.getElementById('select-height-explorer');
+  const selectTheme = document.getElementById('select-theme-explorer');
+  if (!selectHeight) return;
+
+  const height = selectHeight.value;
+  const theme = selectTheme ? selectTheme.value : 'auto';
+  let query = 'embed=1';
+  if (theme === 'dark') query += '&theme=dark';
+  if (theme === 'light') query += '&theme=light';
+
+  const snippet = `<iframe 
+  src="https://williamguindon.me/dossier-journalistes.html?${query}" 
+  width="100%" 
+  height="${height}" 
+  style="border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: #0f1a14; box-shadow: 0 10px 30px rgba(0,0,0,0.4);" 
+  allow="fullscreen" 
+  loading="lazy" 
+  title="Explorateur documentaire officiel SEM-26-003 · 222 Pièces Probatoires">
+</iframe>`;
+
+  const codeEl = document.getElementById('explorer-snippet-code');
   if (codeEl) codeEl.textContent = snippet;
 }
 

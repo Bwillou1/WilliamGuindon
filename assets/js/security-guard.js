@@ -97,9 +97,14 @@
     // Exceptions autorisées : visionneuse de documents / PDF, horloge live, lecteur et explorateur de documents
     const path = window.location.pathname.toLowerCase();
     const isAllowedEmbed = path.endsWith('viewer.html') || 
+                           path.endsWith('/viewer') ||
                            path.endsWith('live.html') || 
+                           path.endsWith('/live') ||
                            path.endsWith('lecteur.html') ||
-                           path.endsWith('dossier-journalistes.html');
+                           path.endsWith('/lecteur') ||
+                           path.endsWith('dossier-journalistes.html') ||
+                           path.endsWith('/dossier-journalistes') ||
+                           path.endsWith('dossier-journalistes');
 
     if (isAllowedEmbed) return false;
 
