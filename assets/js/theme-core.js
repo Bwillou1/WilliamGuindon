@@ -488,7 +488,12 @@
   function initHashScrollManager() {
     function getHeaderOffset() {
       const header = document.querySelector('header.site');
-      return header ? Math.max(64, header.offsetHeight) : 70;
+      let offset = header ? Math.max(64, header.offsetHeight) : 70;
+      const stickyControls = document.querySelector('.lexique-controls, .sticky-controls, .filter-bar-sticky');
+      if (stickyControls) {
+        offset += stickyControls.offsetHeight;
+      }
+      return offset;
     }
 
     function scrollToHash(hash, smooth = true) {
@@ -501,6 +506,19 @@
       const targetEl = document.getElementById(targetId) || document.querySelector(`[name="${CSS.escape(targetId)}"]`);
       if (!targetEl || targetEl.getAttribute('aria-hidden') === 'true') return false;
 
+      // Si l'élément cible est une carte du lexique masquée par un filtre, le réinitialiser
+      if (targetEl.classList.contains('lexique-card') && targetEl.style.display === 'none') {
+        const searchInput = document.getElementById('lexique-search');
+        if (searchInput && searchInput.value) {
+          searchInput.value = '';
+          searchInput.dispatchEvent(new Event('input'));
+        }
+        const allBtn = document.querySelector('.lexique-filter-btn[data-cat="all"]');
+        if (allBtn) {
+          allBtn.click();
+        }
+      }
+
       const headerOffset = getHeaderOffset();
       const rect = targetEl.getBoundingClientRect();
       const targetTop = window.pageYOffset + rect.top - headerOffset - 16;
@@ -510,14 +528,12 @@
         behavior: smooth ? 'smooth' : 'auto'
       });
 
-      // Double vérification par scrollIntoView natif après défilement si décalage résiduel
-      if (!smooth) {
-        try {
-          targetEl.scrollIntoView({ block: 'start' });
-          if (headerOffset > 0) {
-            window.scrollBy(0, -(headerOffset + 16));
-          }
-        } catch (_) {}
+      if (targetEl.classList.contains('lexique-card')) {
+        document.querySelectorAll('.lexique-card').forEach(c => c.classList.remove('is-target-highlighted'));
+        targetEl.classList.add('is-target-highlighted');
+        setTimeout(() => {
+          targetEl.classList.remove('is-target-highlighted');
+        }, 2800);
       }
       return true;
     }
