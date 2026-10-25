@@ -43,6 +43,7 @@ const CORE_FILES = [
   'dependances-licences.html',
   'licence-et-charte.html',
   'liens.html',
+  'dev.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
   'sitemap-news.xml',
