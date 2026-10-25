@@ -332,119 +332,33 @@
       <div id="viewer-sidebar-backdrop" class="viewer-sidebar-backdrop" aria-hidden="true"></div>
 
       <aside id="viewer-sidebar" class="viewer-sidebar collapsed" aria-label="Panneau de navigation du document">
-        <div class="sidebar-header-row">
-          <div class="sidebar-tabs" role="tablist">
-            <button type="button" id="tab-thumbnails" class="sidebar-tab-btn active" role="tab" aria-selected="true" aria-controls="pane-thumbnails" title="Vignettes des pages">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              <span>Vignettes</span>
-            </button>
-            <button type="button" id="tab-outline" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-outline" title="Sommaire et signets">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-              <span>Sommaire</span>
-            </button>
-            <button type="button" id="tab-highlights" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-highlights" title="Notes et surlignages sauvegardés">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 11-6 6v3h3l6-6"></path><path d="m22 7-4.5-4.5a1.5 1.5 0 0 0-2.12 0l-1.88 1.88 6.62 6.62 1.88-1.88a1.5 1.5 0 0 0 0-2.12z"></path></svg>
-              <span>Surlignages</span>
-            </button>
-            <button type="button" id="tab-search" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-search" title="Recherche dans le document (Ctrl+F)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <span>Recherche</span>
-            </button>
-            <button type="button" id="tab-translation" class="sidebar-tab-btn" role="tab" aria-selected="false" aria-controls="pane-translation" title="Traduction du document">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-              <span>Traduction</span>
-            </button>
+        <div class="sidebar-header-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg);">
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; color: var(--text);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Vignettes des pages</span>
           </div>
-          <button type="button" id="btn-sidebar-close" class="sidebar-close-btn" title="Fermer le volet (Esc)" aria-label="Fermer le panneau latéral">
+          <button type="button" id="btn-sidebar-close" class="sidebar-close-btn" style="display: inline-flex;" title="Fermer le volet (Esc)" aria-label="Fermer le panneau latéral">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
 
-        <div class="sidebar-content">
-          <div id="pane-thumbnails" class="sidebar-pane active" role="tabpanel">
+        <div class="sidebar-content" id="sidebar-content">
+          <div id="pane-thumbnails" class="sidebar-pane active" role="region" aria-label="Vignettes des pages">
             <div id="thumbnails-grid" class="thumbnails-grid"></div>
           </div>
+        </div>
 
-          <div id="pane-outline" class="sidebar-pane" role="tabpanel">
-            <div id="outline-tree"></div>
-          </div>
-
-          <div id="pane-highlights" class="sidebar-pane" role="tabpanel" style="padding: 14px; display: none;">
-            <div style="font-weight: 700; font-size: 13px; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-              <span>Surlignages sauvegardés</span>
-              <span id="highlights-count-badge" style="font-size: 11px; font-weight: 600; background: var(--bg-card); padding: 2px 8px; border-radius: 12px; border: 1px solid var(--line);">0</span>
-            </div>
-            <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">Sélectionnez du texte avec la souris dans le document pour le surligner. Les surlignages sont sauvegardés automatiquement sur votre appareil.</p>
-            <div id="highlights-list" class="highlights-list"></div>
-          </div>
-
-          <div id="pane-search" class="sidebar-pane" role="tabpanel" style="padding: 14px; display: none;">
-            <div class="search-box">
-              <div class="search-input-wrap">
-                <input type="search" id="input-search" class="search-input" placeholder="Rechercher dans le texte..." autocomplete="off">
-                <button type="button" id="btn-search-prev" class="tool-btn" title="Occurrence précédente (Shift+Entrée)" aria-label="Précédent">
-                  <svg width="14" height="14" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                </button>
-                <button type="button" id="btn-search-next" class="tool-btn" title="Occurrence suivante (Entrée)" aria-label="Suivant">
-                  <svg width="14" height="14" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </button>
-              </div>
-              <div class="search-meta-bar">
-                <span id="search-count-label">0 résultat</span>
-                <div style="display:flex; gap:8px;">
-                  <label style="cursor:pointer; display:flex; align-items:center; gap:3px; font-size:11px; color:var(--text-muted);">
-                    <input type="checkbox" id="check-match-case"> Casse
-                  </label>
-                  <label style="cursor:pointer; display:flex; align-items:center; gap:3px; font-size:11px; color:var(--text-muted);">
-                    <input type="checkbox" id="check-match-word"> Mot entier
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div id="search-results-list" class="search-results-list"></div>
-          </div>
-
-          <div id="pane-translation" class="sidebar-pane" role="tabpanel" style="padding: 14px; display: none;">
-            <div style="font-weight: 700; font-size: 13px; color: var(--primary, #064e3b); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-              <span>Traduction du document</span>
-              <span id="translation-page-badge" style="font-size: 11px; font-weight: 600; background: var(--bg-card, #eaf5ee); padding: 2px 8px; border-radius: 12px; border: 1px solid var(--line, #c8e4d0);">Page 1</span>
-            </div>
-
-            <div style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
-                <label for="select-translate-lang" style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted, #52796f);">Langue cible :</label>
-                <select id="select-translate-lang" class="zoom-select" style="padding: 4px 8px; font-size: 12px; border-radius: 6px; font-weight: 600;">
-                  <option value="en">Anglais (English)</option>
-                  <option value="es">Espagnol (Español)</option>
-                </select>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                <button type="button" id="btn-toggle-doc-translation" class="sidebar-tab-btn" style="padding: 8px 10px; font-size: 11px; font-weight: 700; text-align: center; justify-content: center; background: #064e3b; color: #fff; border: 1px solid #064e3b; border-radius: 6px; grid-column: span 2; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  <span id="btn-toggle-doc-translation-text">Traduire le document sur la page</span>
-                </button>
-                <button type="button" id="btn-translate-current-page" class="sidebar-tab-btn" style="padding: 7px 10px; font-size: 11px; font-weight: 600; text-align: center; justify-content: center; background: var(--bg-card, #fff); border: 1px solid var(--line, #dce5df); border-radius: 6px;">
-                  Traduire la page
-                </button>
-                <button type="button" id="btn-open-google-docs-mode" class="sidebar-tab-btn" style="padding: 7px 10px; font-size: 11px; font-weight: 600; text-align: center; justify-content: center; background: var(--bg-card, #fff); border: 1px solid var(--line, #dce5df); border-radius: 6px;">
-                  Google Traduction ↗
-                </button>
-              </div>
-            </div>
-
-            <div id="translation-status" style="font-size: 11px; color: var(--text-muted, #52796f); margin-bottom: 8px; min-height: 16px;"></div>
-
-            <div id="translation-output" class="translation-output" style="background: var(--bg, #f4f6f4); border: 1px solid var(--line, #dce5df); border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.6; max-height: calc(100vh - 300px); overflow-y: auto; user-select: text; white-space: pre-wrap; font-family: var(--font-body, inherit);">
-              Cliquez sur « Traduire la page » pour afficher la traduction instantanée du texte ici.
-            </div>
-
-            <div style="margin-top: 10px; display: flex; gap: 6px;">
-              <button type="button" id="btn-copy-translation" class="sidebar-tab-btn" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 600; justify-content: center; background: var(--bg-card, #fff); border: 1px solid var(--line, #dce5df); border-radius: 6px;">
-                Copier le texte traduit
-              </button>
-            </div>
-          </div>
+        <!-- Éléments masqués conservés pour compatibilité logique sans affichage -->
+        <div style="display: none;" aria-hidden="true">
+          <button type="button" id="tab-thumbnails" class="active"></button>
+          <button type="button" id="tab-outline"></button>
+          <button type="button" id="tab-highlights"></button>
+          <button type="button" id="tab-search"></button>
+          <button type="button" id="tab-translation"></button>
+          <div id="pane-outline"><div id="outline-tree"></div></div>
+          <div id="pane-highlights"><span id="highlights-count-badge"></span><div id="highlights-list"></div></div>
+          <div id="pane-search"><input id="input-search"><span id="search-count-label"></span><div id="search-results-list"></div><button id="btn-search-prev"></button><button id="btn-search-next"></button><input id="check-match-case" type="checkbox"><input id="check-match-word" type="checkbox"></div>
+          <div id="pane-translation"><select id="select-translate-lang"><option value="en">EN</option><option value="es">ES</option></select><button id="btn-toggle-doc-translation"><span id="btn-toggle-doc-translation-text"></span></button><button id="btn-translate-current-page"></button><button id="btn-open-google-docs-mode"></button><div id="translation-status"></div><div id="translation-output"></div><button id="btn-copy-translation"></button><span id="translation-page-badge"></span></div>
         </div>
       </aside>
 

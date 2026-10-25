@@ -812,9 +812,9 @@
     const initialTab = urlParams.get('tab') || hashParams.get('tab');
     if (initialTab === 'translation') {
       toggleTranslationMode(true);
-      switchSidebarTab('translation');
-    } else if (initialTab && ['thumbnails', 'outline', 'search', 'explorer', 'info'].includes(initialTab)) {
-      switchSidebarTab(initialTab);
+      toggleSidebar(false);
+    } else if (initialTab === 'thumbnails') {
+      toggleSidebar(true);
     }
   }
 
@@ -1363,18 +1363,30 @@
       dom.thumbnailsGrid.appendChild(card);
     }
 
-    // Observer pour rendu différé des vignettes
-    const thumbObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const pageNum = parseInt(entry.target.dataset.pageNum, 10);
-          renderThumbnail(pageNum);
-          thumbObserver.unobserve(entry.target);
-        }
-      });
-    }, { root: dom.paneThumbnails, rootMargin: '100px' });
+    // Rendu immédiat et prioritaire des vignettes (évite tout écran blanc)
+    const immediateCount = Math.min(state.totalPages, 15);
+    for (let i = 1; i <= immediateCount; i++) {
+      renderThumbnail(i);
+    }
 
-    dom.thumbnailsGrid.querySelectorAll('.thumb-card').forEach(c => thumbObserver.observe(c));
+    // Rendu différé pour les documents très longs (> 15 pages)
+    if (state.totalPages > 15) {
+      const scrollParent = dom.sidebarContent || document.getElementById('sidebar-content') || null;
+      const thumbObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const pageNum = parseInt(entry.target.dataset.pageNum, 10);
+            renderThumbnail(pageNum);
+            thumbObserver.unobserve(entry.target);
+          }
+        });
+      }, { root: scrollParent, rootMargin: '200px' });
+
+      dom.thumbnailsGrid.querySelectorAll('.thumb-card').forEach(c => {
+        const pageNum = parseInt(c.dataset.pageNum, 10);
+        if (pageNum > 15) thumbObserver.observe(c);
+      });
+    }
   }
 
   async function renderThumbnail(pageNum) {
@@ -1839,6 +1851,14 @@
         }
       }, 300);
     }
+
+    // Garantir le rendu immédiat des vignettes dès que le volet s'ouvre
+    if (state.sidebarOpen && state.pdfDoc) {
+      const renderCount = Math.min(state.totalPages, 15);
+      for (let i = 1; i <= renderCount; i++) {
+        renderThumbnail(i);
+      }
+    }
   }
 
   function switchSidebarTab(tabName) {
@@ -1857,7 +1877,7 @@
       t.pane.classList.toggle('active', isActive);
     });
 
-    if (!state.sidebarOpen) {
+    if (tabName !== 'translation' && !state.sidebarOpen) {
       toggleSidebar(true);
     }
 
