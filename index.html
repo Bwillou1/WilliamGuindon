@@ -1005,14 +1005,7 @@
       if (el.textContent !== s) el.textContent = s;
     });
 
-    var heroBlock = document.getElementById('hero-countdown-block');
-    var heroStage2 = document.getElementById('hero-stage2-summary-block');
-    var trackerBlock = document.getElementById('tracker-countdown-state');
     var trackerStage2 = document.getElementById('tracker-stage2-state');
-
-    if (heroBlock) heroBlock.style.display = 'none';
-    if (heroStage2) heroStage2.style.display = 'block';
-    if (trackerBlock) trackerBlock.style.display = 'none';
     if (trackerStage2) trackerStage2.style.display = 'block';
   }
   try {
@@ -1398,277 +1391,6 @@
       <link itemprop="sameAs" href="https://github.com/Bwillou1">
       <link itemprop="sameAs" href="https://g.dev/williamguindondev">
 
-      <!-- Point focal d'urgence : Compteur en direct et pilules de presse intégrés au Hero (masqué en mode sobre Étape 3) -->
-      <div class="hero-crisis-card" id="echeance-16-octobre" style="display: none;">
-        <div class="hero-crisis-eyebrow">
-          <span class="hero-crisis-dot"></span>
-          <span>DOSSIER CCE · SEM-26-003 · GRANDE TOURBIÈRE DE BLAINVILLE</span>
-        </div>
-        <!-- Bloc Décompte dynamique en direct (inactif car réponse officielle déposée) -->
-        <div id="hero-countdown-block" style="display: none;">
-          <h2 class="hero-crisis-title">RÉPONSE DU CANADA : <span class="alert-highlight">16 OCTOBRE 2026</span></h2>
-          <p class="hero-crisis-subtitle">Le gouvernement fédéral est officiellement sommé de répondre (art. 24.27(3) de l'ACEUM) :</p>
-
-          <div class="hero-countdown-box notranslate" translate="no">
-            <div class="hero-countdown-grid">
-              <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-days">0</span>
-                <span class="hero-countdown-lbl">Jours</span>
-              </div>
-              <div class="hero-countdown-sep">:</div>
-              <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-hours">00</span>
-                <span class="hero-countdown-lbl">Heures</span>
-              </div>
-              <div class="hero-countdown-sep">:</div>
-              <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-mins">00</span>
-                <span class="hero-countdown-lbl">Minutes</span>
-              </div>
-              <div class="hero-countdown-sep">:</div>
-              <div class="hero-countdown-unit">
-                <span class="hero-countdown-val js-cd-secs">00</span>
-                <span class="hero-countdown-lbl">Secondes</span>
-              </div>
-            </div>
-          </div>
-          <div class="hero-countdown-tz js-cd-tz-desc" aria-live="polite" style="display: none;"></div>
-        </div>
-        <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
-
-        <!-- Bloc Statut Étape 2 sobre dans la carte Hero (actif car réponse déposée) -->
-        <div id="hero-stage2-summary-block" style="display: block;">
-          <div class="hero-stage2-pill-badge" style="background: rgba(16, 185, 129, 0.2); border: 1.5px solid rgba(52, 211, 153, 0.7); color: #a7f3d0;">
-            <span class="hero-stage2-dot" style="background: #34d399; box-shadow: 0 0 10px #34d399;"></span>
-            <span>RÉPONSE DÉPOSÉE &amp; OBSERVATIONS TRANSMISES · 17 OCTOBRE 2026</span>
-          </div>
-          <h2 class="hero-crisis-title">Le Canada a déposé sa réponse officielle : <span class="alert-highlight" style="color: #6ee7b7; text-shadow: 0 0 14px rgba(110, 231, 183, 0.5);">demande de fin ou de report</span></h2>
-          <p class="hero-crisis-subtitle" style="color: #f1f5f9;">Procédure internationale SEM-26-003 · 16 oct. : Le Canada demande le rejet · <strong style="color: #ffffff;">17 oct. : William Guindon dépose ses observations réfutant la clôture</strong> (7 moyens juridiques CCE) · <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" style="color: #6ee7b7; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;">Lire les observations (PDF) ↗</a> · <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" style="color: #6ee7b7; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;">Réponse du Canada (PDF) ↗</a></p>
-
-          <!-- Annonce mise en valeur : Rencontres parlementaires de novembre -->
-          <div style="margin-top: 14px; padding: 10px 14px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(96, 165, 250, 0.4); border-radius: 8px; text-align: left; font-size: 0.88rem; color: #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="display: inline-block; width: 8px; height: 8px; background: #60a5fa; border-radius: 50%; box-shadow: 0 0 8px #60a5fa;"></span>
-              <span><strong>Novembre 2026 :</strong> Rencontres bilatérales confirmées avec <strong>Nadine Le Gal</strong> (députée de Blainville) et <strong>Madeleine Chenette</strong> (députée fédérale).</span>
-            </div>
-            <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" style="color: #93c5fd; font-weight: 700; text-decoration: underline; text-underline-offset: 2px;">Lire l'article ↗</a>
-          </div>
-        </div>
-
-        <!-- Pilules de ressources pour journalistes et public autour du compteur -->
-        <div class="hero-pills-row">
-          <a href="presse.html" class="hero-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
-            <span>Kit média</span>
-          </a>
-          <a href="dossier-journalistes.html" class="hero-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-            <span>Dossier documentaire</span>
-          </a>
-          <a href="communiques.html" class="hero-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-            <span>Communiqués</span>
-          </a>
-          <a href="apercu.html" class="hero-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>Dossier expliqué</span>
-          </a>
-          <a href="registre.html" class="hero-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" x2="22" y1="22" y2="22"/><line x1="6" x2="6" y1="18"/><line x1="10" x2="10" y1="18"/><line x1="14" x2="14" y1="18"/><line x1="18" x2="18" y1="18"/><polygon points="12 2 20 7 4 7"/></svg>
-            <span>Registre CCE</span>
-          </a>
-        </div>
-
-        <!-- Boutons d'action majeurs -->
-        <div class="hero-actions-row">
-          <a href="presse.html" class="hero-btn-primary">
-            <span>Espace presse &amp; kit média ↗</span>
-          </a>
-          <a href="dossier-journalistes.html" class="hero-btn-outline">
-            <span>Explorateur documentaire ↗</span>
-          </a>
-          <a href="agir.html" class="hero-btn-outline">
-            <span>Comment agir ↗</span>
-          </a>
-        </div>
-
-        <!-- Vidéo officielle : Réponse vidéo de William Guindon (Protection 2-clics anti-cookies) -->
-        <div class="hero-video-alert-box" style="margin: 18px auto 16px; max-width: 300px; text-align: center;">
-          <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(225, 29, 72, 0.2); color: #fecdd3; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 10px; border: 1px solid rgba(244, 63, 94, 0.45); letter-spacing: 0.06em;">
-            <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
-            Réponse vidéo · Dossier CCE SEM-26-003
-          </div>
-          <div id="hero-reel-container" onclick="window.loadHeroReel &amp;&amp; window.loadHeroReel()" role="button" tabindex="0" aria-label="Lancer la réponse vidéo de William Guindon" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadHeroReel&amp;&amp;window.loadHeroReel();}" style="position: relative; width: 100%; max-width: 267px; height: 476px; margin: 0 auto 10px; border-radius: 14px; overflow: hidden; background: #0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat; box-shadow: 0 10px 30px rgba(0,0,0,0.65), 0 0 20px rgba(225,29,72,0.3); border: 2px solid rgba(244, 63, 94, 0.5); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px 16px; box-sizing: border-box; cursor: pointer;">
-            <!-- Voile dégradé cinéma -->
-            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.8) 100%); pointer-events: none;"></div>
-
-            <!-- Badge supérieur -->
-            <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">
-              <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
-              <span>Grande Tourbière</span>
-            </div>
-
-            <!-- Bouton central de lecture (Style Player Reel / Vidéo) -->
-            <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-              <div class="hero-reel-play-btn" style="width: 68px; height: 68px; border-radius: 50%; background: #e11d48; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.7), 0 0 0 5px rgba(255, 255, 255, 0.25); transition: transform 0.2s ease, box-shadow 0.2s ease;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" style="margin-left: 3px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              </div>
-              <span style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-                Visionner la vidéo
-              </span>
-            </div>
-
-            <!-- Note discrète au bas -->
-            <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #cbd5e1; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span>1 clic pour lancer · Zéro traceur avant clic</span>
-            </div>
-          </div>
-          <a href="https://www.facebook.com/reel/1796254438299162/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 6px; background: rgba(225, 29, 72, 0.25); border: 1px solid rgba(244, 63, 94, 0.5); color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; transition: background 0.2s ease;">
-            <span>Visionner sur Facebook Reel ↗</span>
-          </a>
-          <script>
-            window.loadHeroReel = function() {
-              var c = document.getElementById('hero-reel-container');
-              if (!c) return;
-              try { sessionStorage.setItem('wg_fb_consent', 'granted'); } catch(e){}
-              c.style.background = '#000000';
-              c.style.backgroundImage = 'none';
-              c.style.backgroundColor = '#000000';
-              c.style.padding = '0';
-              c.style.cursor = 'default';
-              c.style.boxShadow = '0 10px 30px rgba(0,0,0,0.85)';
-              c.style.border = '2px solid rgba(0,0,0,0.85)';
-              c.removeAttribute('role');
-              c.removeAttribute('tabindex');
-              c.removeAttribute('aria-label');
-              c.removeAttribute('onclick');
-              c.removeAttribute('onkeydown');
-              c.innerHTML = '<iframe src="https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0" width="267" height="476" style="border:none;overflow:hidden;width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="eager" title="Réponse vidéo de William Guindon (Facebook Reel)"></iframe>';
-            };
-          </script>
-        </div>
-
-        <!-- Bloc de contact rapide temporaire pour journalistes et médias (replié par défaut) -->
-        <div class="special-press-contact-container hero-press-container">
-          <details class="special-press-accordion">
-            <summary class="special-press-summary">
-              <span class="special-press-summary-icon" style="display:inline-flex; align-items:center;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
-              </span>
-              <span class="special-press-summary-text">
-                <strong>Demandes Médias, Entrevues &amp; Contacts Presse</strong>
-                <small>Canaux directs et vérifiés pour journalistes et rédactions · Déplier pour voir ▾</small>
-              </span>
-              <span class="special-press-arrow" aria-hidden="true">▾</span>
-            </summary>
-            <div class="special-press-body">
-              <!-- 1. Courriel officiel et cadre légal d'entrevue (fermé par défaut) -->
-              <details class="special-press-sub-accordion">
-                <summary class="special-press-sub-summary">
-                  <span style="display:inline-flex; align-items:center; gap:6px;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    <span>Courriel officiel &amp; Entrevues de presse</span>
-                  </span>
-                  <span class="special-press-sub-arrow">▾</span>
-                </summary>
-                <div class="special-press-sub-content">
-                  <p>
-                    Canal officiel direct pour les journalistes, chroniqueurs, rédactions et équipes d'enquête. Délai de réponse habituel : <strong>24 à 48 heures</strong>.
-                  </p>
-                  <div class="special-press-email-box">
-                    <!--email_off--><a href="mailto:contact@williamguindon.me" class="special-press-email-btn js-secure-mail">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
-                      <span>contact@williamguindon.me</span>
-                    </a><!--/email_off-->
-                    <button class="official-card-btn-copy btn-copy-session" type="button" data-copy="contact@williamguindon.me" aria-label="Copier l'adresse courriel de presse">Copier</button>
-                  </div>
-                  <div class="special-press-note">
-                    <strong>Cadre légal d'entrevue :</strong> William Guindon étant âgé de 15 ans (auteur citoyen mineur de la communication SEM-26-003 auprès de la CCE), toute demande d'entrevue formelle, de tournage ou d'enregistrement audiovisuel transite et se coordonne avec l'accord de son représentant légal.
-                  </div>
-                  <div class="special-press-links-row">
-                    <a href="presse.html" class="special-press-link-pill">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-                      <span>Kit Média complet &amp; Photos HD ↗</span>
-                    </a>
-                    <a href="communiques.html" class="special-press-link-pill">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                      <span>Déclarations &amp; Communiqués officiels ↗</span>
-                    </a>
-                  </div>
-                </div>
-              </details>
-
-              <!-- 2. Canal chiffré pour sources et lanceurs d'alerte (fermé par défaut) -->
-              <details class="special-press-sub-accordion">
-                <summary class="special-press-sub-summary">
-                  <span style="display:inline-flex; align-items:center; gap:6px;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span>Canal chiffré décentralisé pour sources (Application Session)</span>
-                  </span>
-                  <span class="special-press-sub-arrow">▾</span>
-                </summary>
-                <div class="special-press-sub-content">
-                  <p>
-                    Pour les transmissions confidentielles de documents, pièces non biffées ou signalements de terrain sensibles. Chiffrement de bout en bout décentralisé, sans numéro de téléphone, sans trace d'adresse IP ni métadonnées :
-                  </p>
-                  <div class="special-press-session-box">
-                    <div class="special-press-id-label">Identifiant Session officiel :</div>
-                    <div class="special-press-id-row">
-                      <code class="special-press-code">05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
-                      <button class="official-card-btn-copy btn-copy-session" type="button" data-copy="05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072" aria-label="Copier l'identifiant Session">Copier</button>
-                    </div>
-                  </div>
-                  <div class="special-press-links-row">
-                    <a href="https://sessionweb.org/app" target="_blank" rel="noopener noreferrer" class="special-press-link-pill" style="background: rgba(16, 185, 129, 0.15); border-color: var(--accent); color: var(--accent-deep, #059669); font-weight: 700;">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                      <span>Ouvrir Session Web ↗</span>
-                    </a>
-                    <a href="opsec.html" class="special-press-link-pill">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                      <span>Protocole de sécurité pour lanceurs d'alerte (OpSec) ↗</span>
-                    </a>
-                    <a href="messagerie.html" class="special-press-link-pill">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-                      <span>Messagerie &amp; Canaux chiffrés ↗</span>
-                    </a>
-                  </div>
-                </div>
-              </details>
-
-              <!-- 3. Clé OpenPGP pour courriels chiffrés (fermé par défaut) -->
-              <details class="special-press-sub-accordion">
-                <summary class="special-press-sub-summary">
-                  <span style="display:inline-flex; align-items:center; gap:6px;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
-                    <span>Clé publique de chiffrement OpenPGP</span>
-                  </span>
-                  <span class="special-press-sub-arrow">▾</span>
-                </summary>
-                <div class="special-press-sub-content">
-                  <p>
-                    Pour chiffrer vos correspondances et pièces jointes par courriel vers <!--email_off--><code>contact@williamguindon.me</code><!--/email_off--> :
-                  </p>
-                  <div class="special-press-session-box">
-                    <div class="special-press-id-label">Empreinte de la clé publique (Fingerprint) :</div>
-                    <div class="special-press-id-row">
-                      <code class="special-press-code">1CAF 48B1 53AC 7DA2 996D  65B2 1EFC 7E58 63D8 FD77</code>
-                      <button class="official-card-btn-copy btn-copy-session" type="button" data-copy="1CAF48B153AC7DA2996D65B21EFC7E5863D8FD77" aria-label="Copier l'empreinte PGP">Copier</button>
-                    </div>
-                  </div>
-                  <div class="special-press-links-row">
-                    <a href="#contact" class="special-press-link-pill">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-                      <span>Voir le hub de contact complet en bas de page</span>
-                    </a>
-                  </div>
-                </div>
-              </details>
-            </div>
-          </details>
-        </div>
-      </div>
-
       <!-- Carte CCE Sobre et Permanente (Étape 3 · Version légère post-échéance) -->
       <div class="hero-stage3-card" id="hero-stage3-card" style="display: block;">
         <div class="hero-stage3-eyebrow">
@@ -1738,91 +1460,7 @@
       </div>
 
       <aside class="cce-alert-banner" id="tracker-cce-banner" role="region" aria-label="Alerte CCE">
-        <!-- État Standard (masqué car réponse déposée) -->
-        <div id="tracker-countdown-state" style="display: none;">
-          <div class="cce-banner-header">
-            <div class="cce-badges-group">
-              <span class="badge-positive">Décision positive CCE</span>
-              <span class="badge-historic">Premier mineur de l'histoire SEM</span>
-            </div>
-            <span class="cce-sync-badge">Mise à jour : <time id="cce-sync-date" datetime="2026-08-17">17 août 2026</time></span>
-          </div>
-          <h3>Décision positive CCE : Réponse exigée du Canada d'ici le <time datetime="2026-10-16">16 octobre 2026</time></h3>
-          <p>Le Secrétariat a jugé la communication recevable en vertu de l'article 24.27(2) de l'ACEUM et a formellement demandé une réponse au gouvernement canadien.</p>
-
-          <!-- Preuve officielle CCE : Premier mineur de l'histoire SEM depuis 1994 -->
-          <div style="background: rgba(37, 99, 235, 0.06); border: 1.5px solid rgba(37, 99, 235, 0.25); border-radius: 10px; padding: 16px; margin: 16px 0 14px; text-align: left;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-              <strong style="color: #2563eb; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
-                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Preuve officielle du Secrétariat CCE : Premier mineur de l'histoire SEM (depuis 1994)
-              </strong>
-              <span style="font-size: 11.5px; background: #2563eb; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">25 sept. 2026</span>
-            </div>
-
-            <div style="background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px; margin-bottom: 12px; text-align: center;">
-              <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" title="Cliquer pour afficher la capture d'écran officielle en haute résolution">
-                <picture>
-                  <source srcset="assets/media/confirmation-cce-premier-mineur-1994.webp" type="image/webp">
-                  <img 
-                    src="assets/media/confirmation-cce-premier-mineur-1994.png" 
-                    alt="Courriel officiel de l'Unité SEM de la CCE confirmant que William Guindon est le premier mineur depuis 1994 à soumettre un dossier à la CCE" 
-                    width="840" 
-                    height="332" 
-                    loading="lazy" 
-                    decoding="async" 
-                    style="max-width: 100%; height: auto; border-radius: 6px; display: block; margin: 0 auto; box-shadow: 0 2px 6px rgba(0,0,0,0.08);"
-                  >
-                </picture>
-              </a>
-            </div>
-
-            <blockquote style="margin: 0 0 10px 0; padding: 8px 14px; border-left: 3px solid #2563eb; background: rgba(255, 255, 255, 0.7); font-style: italic; font-size: 12.5px; color: var(--text); line-height: 1.5;">
-              « Nous ne recueillons pas l'âge des auteurs des communications SEM. Toutefois, depuis 1994, c'est la première fois qu'un auteur nous indique être mineur au moment de soumettre un dossier à la CCE. »
-              <div style="font-style: normal; font-weight: 700; font-size: 11.5px; color: #2563eb; margin-top: 4px;">
-                — Unité SEM (SEM Unit), Secrétariat de la Commission de coopération environnementale (sem@cec.org)
-              </div>
-            </blockquote>
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <a href="statut-mineur.html" class="btn btn-outline-sm" style="font-size: 12px;">Consulter le Statut Juridique &amp; Protection Déontologique ↗</a>
-              <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="font-size: 12px;">Preuve HD Plein Écran ↗</a>
-            </div>
-          </div>
-
-          <!-- Déclaration d'appui scientifique de Berlin (Prof. Dr. Manfred Liebel & Philip Meade) -->
-          <div style="background: rgba(29, 78, 216, 0.06); border: 1.5px solid rgba(29, 78, 216, 0.25); border-radius: 10px; padding: 16px; margin: 14px 0; text-align: left;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-              <strong style="color: #1d4ed8; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
-                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg></span> Déclaration d'appui scientifique international : Adultisme structurel (Berlin)
-              </strong>
-              <span style="font-size: 11.5px; background: #1d4ed8; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">14 oct. 2026</span>
-            </div>
-
-            <p style="font-size: 13px; color: var(--text); margin: 0 0 10px 0; line-height: 1.5;">
-              Le <strong>Prof. Dr. Manfred Liebel</strong> (Université technique de Berlin / FH Potsdam) et <strong>Philip Meade, M.A.</strong> (coauteurs de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026) certifient la rigueur de William Guindon et dénoncent les refus institutionnels comme des <em>« exemples typiques d'adultisme structurel »</em>.
-            </p>
-
-            <blockquote style="margin: 0 0 10px 0; padding: 8px 14px; border-left: 3px solid #1d4ed8; background: rgba(255, 255, 255, 0.7); font-style: italic; font-size: 12.5px; color: var(--text); line-height: 1.5;">
-              « La capacité civique et analytique ne s’acquiert pas par magie le jour du 18e anniversaire : elle se démontre dans la pratique par l’agentivité concrète. [...] J’appuie donc pleinement la démarche de la pétition e-7834 à la Chambre des communes du Canada [...]. »
-            </blockquote>
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <a href="adultisme.html" class="btn btn-primary btn-sm" style="font-size: 12px; background: #1d4ed8; border-color: #1e40af;">Consulter le dossier Adultisme &amp; Déclaration officielle ↗</a>
-              <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-sm" style="font-size: 12px;">Document PDF (Berlin) ↗</a>
-              <a href="#petition-e7834-parrainage" class="btn btn-ghost btn-sm js-petition-pending" data-petition="e-7834" onclick="showPetitionPendingNotice(event); return false;" style="font-size: 12px; color: #b3261e;" title="En attente de parrainage parlementaire">Pétition e-7834 (En parrainage) ↗</a>
-            </div>
-          </div>
-
-          <div class="cce-alert-actions cce-actions-flex">
-            <a href="agir.html" class="btn btn-primary btn-sm" style="background: #059669; border-color: #047857; font-weight: 800;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Comment Agir</a>
-            <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Détermination officielle (PDF) ↗</a>
-            <a href="live.html" class="btn btn-primary btn-sm">Horloge Live</a>
-            <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Dossier CCE ↗</a>
-            <button type="button" id="btn-enable-notifications" class="notif-toggle-btn notif-toggle-sm" aria-label="Activer les alertes de suivi CCE"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Alertes CCE</button>
-          </div>
-        </div>
-
-        <!-- État Étape 2 (activé automatiquement car réponse déposée le 16 octobre) -->
+        <!-- État Actif Étape 2 & 3 : Réponse déposée & Examen en cours (Art. 24.28 ACEUM) -->
         <div id="tracker-stage2-state" style="display: block;">
           <div class="cce-banner-header">
             <div class="cce-badges-group">
@@ -2067,6 +1705,30 @@
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <a href="statut-mineur.html" class="stage2-minor-btn-primary">Consulter le Statut Juridique &amp; Protection Déontologique ↗</a>
               <a href="assets/media/confirmation-cce-premier-mineur-1994.png" target="_blank" rel="noopener noreferrer" class="stage2-minor-btn-ghost">Preuve HD Plein Écran ↗</a>
+            </div>
+          </div>
+
+          <!-- Déclaration d'appui scientifique de Berlin (Prof. Dr. Manfred Liebel & Philip Meade) -->
+          <div style="background: rgba(29, 78, 216, 0.06); border: 1.5px solid rgba(29, 78, 216, 0.25); border-radius: 10px; padding: 16px; margin: 14px 0; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+              <strong style="color: #1d4ed8; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg></span> Déclaration d'appui scientifique international : Adultisme structurel (Berlin)
+              </strong>
+              <span style="font-size: 11.5px; background: #1d4ed8; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">14 oct. 2026</span>
+            </div>
+
+            <p style="font-size: 13px; color: var(--text); margin: 0 0 10px 0; line-height: 1.5;">
+              Le <strong>Prof. Dr. Manfred Liebel</strong> (Université technique de Berlin / FH Potsdam) et <strong>Philip Meade, M.A.</strong> (coauteurs de <em>Adultism: A Critical Introduction to Discrimination Against Children</em>, 2026) certifient la rigueur de William Guindon et dénoncent les refus institutionnels comme des <em>« exemples typiques d'adultisme structurel »</em>.
+            </p>
+
+            <blockquote style="margin: 0 0 10px 0; padding: 8px 14px; border-left: 3px solid #1d4ed8; background: rgba(255, 255, 255, 0.7); font-style: italic; font-size: 12.5px; color: var(--text); line-height: 1.5;">
+              « La capacité civique et analytique ne s’acquiert pas par magie le jour du 18e anniversaire : elle se démontre dans la pratique par l’agentivité concrète. [...] J’appuie donc pleinement la démarche de la pétition e-7834 à la Chambre des communes du Canada [...]. »
+            </blockquote>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <a href="adultisme.html" class="btn btn-primary btn-sm" style="font-size: 12px; background: #1d4ed8; border-color: #1e40af;">Consulter le dossier Adultisme &amp; Déclaration officielle ↗</a>
+              <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline-sm" style="font-size: 12px;">Document PDF (Berlin) ↗</a>
+              <a href="#petition-e7834-parrainage" class="btn btn-ghost btn-sm js-petition-pending" data-petition="e-7834" onclick="showPetitionPendingNotice(event); return false;" style="font-size: 12px; color: #b3261e;" title="En attente de parrainage parlementaire">Pétition e-7834 (En parrainage) ↗</a>
             </div>
           </div>
 
@@ -3369,6 +3031,46 @@
       <div class="social-sync-header">
         <h2>Dernières publications &amp; vidéos</h2>
         <p class="social-sync-subtitle">Actualités, interventions et déclarations publiques en direct des réseaux officiels</p>
+      </div>
+
+      <!-- Déclaration vidéo officielle de William Guindon (Protection 2-clics anti-cookies) -->
+      <div class="video-declaration-box" style="margin: 0 auto 36px; max-width: 440px; text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12)); border-radius: 16px; padding: 22px 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(225, 29, 72, 0.15); color: #fecdd3; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px; border: 1px solid rgba(244, 63, 94, 0.35); letter-spacing: 0.05em;">
+          <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
+          Déclaration vidéo officielle · Dossier CCE SEM-26-003
+        </div>
+        <h3 style="font-size: 1.15rem; margin: 0 0 6px; color: var(--text); font-weight: 800;">Réponse de William Guindon au dépôt du Canada</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0 0 16px; line-height: 1.5;">Intervention citoyenne sur les faits matériels et la sauvegarde de la Grande Tourbière de Blainville.</p>
+        
+        <div id="hero-reel-container" onclick="window.loadHeroReel && window.loadHeroReel()" role="button" tabindex="0" aria-label="Lancer la réponse vidéo de William Guindon" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadHeroReel&amp;&amp;window.loadHeroReel();}" style="position: relative; width: 100%; max-width: 267px; height: 476px; margin: 0 auto 12px; border-radius: 14px; overflow: hidden; background: #0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat; box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(225,29,72,0.2); border: 2px solid rgba(244, 63, 94, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px 16px; box-sizing: border-box; cursor: pointer;">
+          <!-- Voile dégradé cinéma -->
+          <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.8) 100%); pointer-events: none;"></div>
+
+          <!-- Badge supérieur -->
+          <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">
+            <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
+            <span>Grande Tourbière</span>
+          </div>
+
+          <!-- Bouton central de lecture -->
+          <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <div class="hero-reel-play-btn" style="width: 64px; height: 64px; border-radius: 50%; background: #e11d48; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.7), 0 0 0 4px rgba(255, 255, 255, 0.25); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffffff" style="margin-left: 3px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <span style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+              Visionner la vidéo
+            </span>
+          </div>
+
+          <!-- Note discrète au bas -->
+          <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #cbd5e1; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>1 clic pour lancer · Zéro traceur avant clic</span>
+          </div>
+        </div>
+        <a href="https://www.facebook.com/reel/1796254438299162/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 6px; background: rgba(225, 29, 72, 0.18); border: 1px solid rgba(244, 63, 94, 0.4); color: #ffffff; text-decoration: none; font-size: 11.5px; font-weight: 700;">
+          <span>Visionner directement sur Facebook Reel ↗</span>
+        </a>
       </div>
 
       <!-- Sélecteur d'onglets réseaux sociaux -->
