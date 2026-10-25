@@ -551,45 +551,48 @@
       });
     }
 
-    // 5. Gestionnaire d'onglets pour les flux officiels (Facebook / YouTube)
+    // 5. Gestionnaire d'onglets pour les flux officiels (Facebook / YouTube / LinkedIn)
     const tabFb = document.getElementById('tab-facebook');
     const tabYt = document.getElementById('tab-youtube');
+    const tabLinkedin = document.getElementById('tab-linkedin');
     const panelFb = document.getElementById('social-panel-facebook');
     const panelYt = document.getElementById('social-panel-youtube');
+    const panelLinkedin = document.getElementById('social-panel-linkedin');
 
     function selectSocialTab(target) {
       const elTabFb = document.getElementById('tab-facebook');
       const elTabYt = document.getElementById('tab-youtube');
+      const elTabLinkedin = document.getElementById('tab-linkedin');
       const elPanelFb = document.getElementById('social-panel-facebook');
       const elPanelYt = document.getElementById('social-panel-youtube');
-      if (!elTabFb || !elTabYt || !elPanelFb || !elPanelYt) return;
+      const elPanelLinkedin = document.getElementById('social-panel-linkedin');
 
-      if (target === 'facebook') {
-        elTabFb.classList.add('active');
-        elTabFb.setAttribute('aria-selected', 'true');
-        elTabYt.classList.remove('active');
-        elTabYt.setAttribute('aria-selected', 'false');
-        elPanelFb.removeAttribute('hidden');
-        elPanelFb.classList.add('active');
-        elPanelYt.setAttribute('hidden', '');
-        elPanelYt.classList.remove('active');
-      } else {
-        elTabYt.classList.add('active');
-        elTabYt.setAttribute('aria-selected', 'true');
-        elTabFb.classList.remove('active');
-        elTabFb.setAttribute('aria-selected', 'false');
-        elPanelYt.removeAttribute('hidden');
-        elPanelYt.classList.add('active');
-        elPanelFb.setAttribute('hidden', '');
-        elPanelFb.classList.remove('active');
-      }
+      const tabs = [
+        { key: 'facebook', tab: elTabFb, panel: elPanelFb },
+        { key: 'youtube', tab: elTabYt, panel: elPanelYt },
+        { key: 'linkedin', tab: elTabLinkedin, panel: elPanelLinkedin }
+      ];
+
+      tabs.forEach(item => {
+        if (!item.tab || !item.panel) return;
+        if (item.key === target) {
+          item.tab.classList.add('active');
+          item.tab.setAttribute('aria-selected', 'true');
+          item.panel.removeAttribute('hidden');
+          item.panel.classList.add('active');
+        } else {
+          item.tab.classList.remove('active');
+          item.tab.setAttribute('aria-selected', 'false');
+          item.panel.setAttribute('hidden', '');
+          item.panel.classList.remove('active');
+        }
+      });
     }
     window.selectSocialTab = selectSocialTab;
 
-    if (tabFb && tabYt) {
-      tabFb.addEventListener('click', () => selectSocialTab('facebook'));
-      tabYt.addEventListener('click', () => selectSocialTab('youtube'));
-    }
+    if (tabFb) tabFb.addEventListener('click', () => selectSocialTab('facebook'));
+    if (tabYt) tabYt.addEventListener('click', () => selectSocialTab('youtube'));
+    if (tabLinkedin) tabLinkedin.addEventListener('click', () => selectSocialTab('linkedin'));
 
     // 6. Gestionnaire de consentement 2-clics pour le fil Facebook (sessionStorage uniquement, zéro traceur sans clic)
     const btnLoadFb = document.getElementById('btn-load-fb-embed');
@@ -704,6 +707,40 @@
     if (btnLoadYt) {
       btnLoadYt.addEventListener('click', loadYouTubeEmbed);
     }
+
+    // 6d. Gestionnaire de consentement 2-clics pour le widget LinkedIn (sessionStorage uniquement, zéro traceur sans clic)
+    const btnLoadLinkedin = document.getElementById('btn-load-linkedin-embed');
+
+    function loadLinkedInEmbed() {
+      const container = document.getElementById('linkedin-embed-container');
+      if (!container) return;
+      try {
+        sessionStorage.setItem('wg_linkedin_consent', 'granted');
+      } catch (e) {}
+      container.style.display = 'block';
+      container.style.padding = '0';
+      container.style.minHeight = 'auto';
+      container.innerHTML = `
+        <div style="width:100%; max-width:640px; margin:0 auto; overflow:hidden; border-radius:12px;">
+          <iframe src="https://www.linkedinembed.com/embed/PNnFEEnAcGH2x0DRAQy7" 
+                  title="LinkedIn widget" 
+                  loading="lazy" 
+                  style="width:100%;height:640px;border:0;color-scheme:normal;border-radius:12px;display:block;" 
+                  allowtransparency="true">
+          </iframe>
+        </div>`;
+    }
+    window.loadLinkedInEmbed = loadLinkedInEmbed;
+
+    if (btnLoadLinkedin) {
+      btnLoadLinkedin.addEventListener('click', loadLinkedInEmbed);
+    }
+
+    try {
+      if (sessionStorage.getItem('wg_linkedin_consent') === 'granted') {
+        loadLinkedInEmbed();
+      }
+    } catch (_) {}
 
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');
