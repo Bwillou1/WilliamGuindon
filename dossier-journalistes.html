@@ -4121,13 +4121,13 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
               const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
               const targetPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
               const isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
-              const viewerUrl = isNative ? targetPdfUrl : ("viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&theme=" + encodeURIComponent(currentTheme));
+              const viewerUrl = isNative ? targetPdfUrl : ("viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
               if (fsViewerLink) {
                 fsViewerLink.href = viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
-                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme);
+                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
                 translateLink.href = translateViewerUrl;
                 translateLink.title = "Traduire ce document en direct (anglais)";
                 translateLink.classList.remove("active");
@@ -4779,7 +4779,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         if (currentSrc.includes('viewer.html')) {
           // Bascule instantanée de la prévisualisation vers lecteur.html avec traduction active
-          iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&theme=${encodeURIComponent(currentTheme)}`;
+          iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         } else if (iframe.contentWindow) {
           iframe.contentWindow.postMessage({ type: 'wg_toggle_translation' }, '*');
         }
@@ -4883,7 +4883,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
       if (safePdfPath) {
         const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
-        const targetViewerUrl = isNative ? safePdfPath : `viewer.html?file=${encodeURIComponent(safePdfPath)}&theme=${encodeURIComponent(currentTheme)}`;
+        const targetViewerUrl = isNative ? safePdfPath : `viewer.html?file=${encodeURIComponent(safePdfPath)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         currentIframe.src = targetViewerUrl;
         const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
         if (fsViewerLink) {

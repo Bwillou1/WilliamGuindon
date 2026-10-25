@@ -168,6 +168,9 @@
         p.delete('engine');
         window.location.replace('lecteur.html?' + p.toString());
       }
+      if (p.get('preview') === '1') {
+        document.documentElement.classList.add('is-preview-mode');
+      }
     })();
   </script>
 
@@ -505,13 +508,31 @@
 
     // Détection du mode iFrame / Widget pour intégration externe
     (function initEmbedMode() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isPreview = urlParams.get('preview') === '1';
+
+      let isInsideParentDossier = false;
+      try {
+        if (window.parent && window.parent !== window.self) {
+          if (window.parent.location.pathname.includes('dossier-journalistes') || window.parent.document.querySelector('.drive-container')) {
+            isInsideParentDossier = true;
+          }
+        }
+      } catch (_) {}
+
+      // Si le lecteur est inclus en aperçu dans le dossier journalistes, NE JAMAIS afficher la bannière embed (évite le doublon)
+      if (isPreview || isInsideParentDossier) {
+        const banner = document.getElementById('embed-original-banner');
+        if (banner) banner.style.display = 'none';
+        return;
+      }
+
       let isFramed = false;
       try {
         isFramed = (window.self !== window.top);
       } catch (_) {
         isFramed = true;
       }
-      const urlParams = new URLSearchParams(window.location.search);
       const isEmbedParam = urlParams.get('embed') === '1' || urlParams.get('widget') === '1' || urlParams.get('iframe') === '1';
 
       if (isFramed || isEmbedParam) {

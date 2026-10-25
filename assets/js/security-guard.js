@@ -94,13 +94,35 @@
 
     if (isSameOrigin) return false;
 
+    // Si la page est chargée comme panneau d'aperçu interne dans dossier-journalistes, NE JAMAIS afficher de bannière (évite le doublon)
+    if (isPreviewChild()) {
+      const existingBanner = document.getElementById('embed-original-banner');
+      if (existingBanner) existingBanner.style.display = 'none';
+      return false;
+    }
+
     // Intégration en iFrame sur site tiers autorisée : passage en mode widget et injection/affichage de la bannière officielle
     document.documentElement.classList.add('is-embedded-widget');
     renderEmbedAttributionBanner();
     return false;
   }
 
+  function isPreviewChild() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('preview') === '1') return true;
+      if (window.parent && window.parent !== window.self) {
+        if (window.parent.location.pathname.includes('dossier-journalistes') || (window.parent.document && window.parent.document.querySelector('.drive-container'))) {
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
   function renderEmbedAttributionBanner() {
+    if (isPreviewChild()) return;
+
     let existingBanner = document.getElementById('embed-original-banner');
     if (existingBanner) {
       existingBanner.style.display = 'block';
