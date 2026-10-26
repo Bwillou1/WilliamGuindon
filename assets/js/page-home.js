@@ -698,6 +698,10 @@
                 <span class="yt-quick-title">Conseil de Blainville — Période de questions</span>
                 <span class="yt-quick-arrow" aria-hidden="true">↗</span>
               </a>
+              <a href="https://www.youtube.com/playlist?list=PLfwkPEn8BO1s" target="_blank" rel="noopener noreferrer" class="yt-quick-item">
+                <span class="yt-quick-title">Conseil de Blainville — Playlist complète</span>
+                <span class="yt-quick-arrow" aria-hidden="true">↗</span>
+              </a>
             </div>
           </div>
         </div>`;
