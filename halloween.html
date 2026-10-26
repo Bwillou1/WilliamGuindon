@@ -96,7 +96,8 @@ h1 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(3rem,8vw,6.5rem)
   border-color:#22c55e44;
   box-shadow:0 18px 60px rgba(0,0,0,0.5),0 0 25px rgba(34,197,94,0.08);
 }
-.entry.is-unlocked .toxic-curtain {
+.entry.is-unlocked .toxic-curtain,
+.entry.is-unlocked .art-overlay-seal {
   display:none !important;
 }
 .entry.is-unlocked .art {
@@ -143,6 +144,90 @@ h1 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(3rem,8vw,6.5rem)
 .entry.is-locked .toxic-curtain {
   display:block;
   opacity:1;
+}
+
+/* SCEAU CENTRÉ SUR L'ILLUSTRATION (DESSUS) */
+.art-overlay-seal {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(8,20,12,0.88);
+  border:1.5px solid #22c55e;
+  box-shadow:0 0 35px rgba(0,0,0,0.85),0 0 20px rgba(34,197,94,0.35);
+  backdrop-filter:blur(10px);
+  padding:16px 22px;
+  border-radius:14px;
+  text-align:center;
+  z-index:20;
+  pointer-events:none;
+  width:max-content;
+  max-width:85%;
+}
+.seal-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#052e16;
+  border:1px solid #22c55e88;
+  color:#4ade80;
+  font-size:.65rem;
+  font-weight:800;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:999px;
+  margin-bottom:6px;
+}
+.seal-date {
+  color:#f0eadc;
+  font-family:Georgia,serif;
+  font-size:clamp(1.1rem,2.2vw,1.4rem);
+  font-weight:700;
+  line-height:1.2;
+}
+.seal-time {
+  color:var(--gold);
+  font-size:.76rem;
+  font-weight:750;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-top:4px;
+}
+
+/* BADGE EN GRAND DANS LE RECTANGLE DE CONTENU (À CÔTÉ) */
+.opening-highlight {
+  background:linear-gradient(135deg,#0e2918,#0a1a10);
+  border:1.5px solid #22c55e;
+  border-left:5px solid #4ade80;
+  border-radius:12px;
+  padding:14px 18px;
+  margin-bottom:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 15px rgba(34,197,94,0.15);
+}
+.opening-highlight-head {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#86efac;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.opening-highlight-date {
+  font-family:Georgia,serif;
+  font-size:clamp(1.2rem,2.5vw,1.6rem);
+  color:#ffffff;
+  font-weight:700;
+  line-height:1.2;
+}
+.opening-highlight-sub {
+  color:var(--gold);
+  font-size:.78rem;
+  font-weight:650;
+  margin-top:4px;
 }
 
 /* COUCHE D'EFFET SVG TOXIQUE */
@@ -198,7 +283,7 @@ h1 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(3rem,8vw,6.5rem)
 
 /* INTERFACE DU DOSSIER SOUS SCELLÉ */
 .locked-dossier {
-  padding:10px 0;
+  padding:6px 0;
 }
 .hazard-stamp {
   display:inline-flex;
@@ -207,39 +292,39 @@ h1 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(3rem,8vw,6.5rem)
   background:#261309;
   border:1px solid #ea580c88;
   color:#fb923c;
-  padding:6px 14px;
+  padding:5px 12px;
   border-radius:6px;
-  font-size:.75rem;
+  font-size:.72rem;
   font-weight:800;
   letter-spacing:.14em;
   text-transform:uppercase;
-  margin-bottom:16px;
+  margin-bottom:12px;
 }
 .hazard-stamp svg {
-  width:16px;
-  height:16px;
+  width:15px;
+  height:15px;
   fill:currentColor;
 }
 .locked-title {
   font-family:Georgia,serif;
-  font-size:clamp(1.6rem,3.5vw,2.5rem);
+  font-size:clamp(1.5rem,3.2vw,2.3rem);
   color:#f0eadc;
-  margin:10px 0 14px;
+  margin:10px 0 12px;
   display:flex;
   align-items:center;
   gap:12px;
 }
 .locked-desc {
   color:var(--muted);
-  font-size:.95rem;
-  line-height:1.6;
-  margin-bottom:24px;
+  font-size:.92rem;
+  line-height:1.55;
+  margin-bottom:20px;
 }
 .countdown-box {
   background:#0a170e;
   border:1px solid #22c55e55;
   border-radius:14px;
-  padding:18px 22px;
+  padding:16px 20px;
   max-width:440px;
   box-shadow:0 8px 30px rgba(0,0,0,0.4),inset 0 0 15px rgba(34,197,94,0.1);
 }
@@ -314,7 +399,7 @@ h1 {font-family:Georgia,"Times New Roman",serif;font-size:clamp(3rem,8vw,6.5rem)
 
 /* BOUTON TEST AUDIT */
 .audit-bar {
-  margin-top:16px;
+  margin-top:14px;
   display:none;
 }
 .audit-bar.active {
@@ -364,6 +449,7 @@ footer a {color:var(--gold)}
   .finalin {display:block}
   .final .button {margin-top:25px}
   .countdown-box {padding:14px 16px}
+  .art-overlay-seal {padding:12px 16px}
 }
 @media(prefers-reduced-motion:reduce) {
   html {scroll-behavior:auto}
@@ -395,6 +481,14 @@ footer a {color:var(--gold)}
   <article class="entry is-locked" id="episode-1" data-unlock="2026-10-27T00:00:00-04:00">
     <div class="art-col">
       <div class="art" role="img" aria-label="Usine abandonnée dans la brume" style="background-image:url('assets/media/halloween/episode-1.webp'),url('assets/media/halloween/episode-1.jpg')"></div>
+      
+      <!-- Sceau de date directement dessus sur l'image -->
+      <div class="art-overlay-seal" aria-hidden="true">
+        <div class="seal-badge"><span>🔒</span> SCELLÉ</div>
+        <div class="seal-date">OUVERTURE LE MARDI 27 OCTOBRE</div>
+        <div class="seal-time">À 00H00 (MINUIT)</div>
+      </div>
+
       <div class="toxic-curtain" aria-hidden="true">
         <div class="toxic-smoke"></div>
         <svg viewBox="0 0 400 300" preserveAspectRatio="none">
@@ -404,17 +498,9 @@ footer a {color:var(--gold)}
               <stop offset="50%" stop-color="#15803d" stop-opacity="0.6"/>
               <stop offset="100%" stop-color="#22c55e" stop-opacity="0.1"/>
             </linearGradient>
-            <filter id="toxicGlow-episode-1">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
           <path d="M0,180 C80,160 120,200 200,170 C280,140 320,190 400,165 L400,300 L0,300 Z" fill="url(#toxicGrad-episode-1)"/>
           <path d="M0,210 C90,195 140,225 220,205 C300,185 340,220 400,200 L400,300 L0,300 Z" fill="#061f0d" fill-opacity="0.8"/>
-          <!-- Gouttes et bulles toxiques animées -->
           <circle cx="50" cy="240" r="6" class="toxic-bubble" style="animation-delay:0s;"/>
           <circle cx="120" cy="260" r="9" class="toxic-bubble" style="animation-delay:1.2s;"/>
           <circle cx="180" cy="250" r="5" class="toxic-bubble" style="animation-delay:2.4s;"/>
@@ -424,13 +510,65 @@ footer a {color:var(--gold)}
         </svg>
       </div>
     </div>
+    
+    <!-- Rectangle à côté pré-rempli : jamais vide ! Affiche la date exacte d'ouverture -->
     <div class="entry-content" id="content-episode-1">
-      <!-- Le contenu est protégé et injecté uniquement à l'heure du déverrouillage -->
+      <div class="locked-dossier">
+        <div class="hazard-stamp">
+          <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+          <span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>
+        </div>
+
+        <!-- Encadré mis en avant avec la date à laquelle ça ouvre -->
+        <div class="opening-highlight">
+          <div class="opening-highlight-head">
+            <span>📅 DATE D'OUVERTURE OFFICIELLE</span>
+          </div>
+          <div class="opening-highlight-date">Mardi 27 octobre 2026 à 00h00 (Minuit)</div>
+          <div class="opening-highlight-sub">Déverrouillage et décontamination automatique à minuit pile</div>
+        </div>
+
+        <div class="date">Mardi 27 octobre · Épisode 1</div>
+        <h3 class="locked-title">
+          <span>Épisode 1 · Sous scellé</span>
+        </h3>
+        <p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>
+        
+        <div class="countdown-box" aria-label="Compte à rebours de déverrouillage">
+          <div class="cd-header">
+            <span class="cd-label">☣ DÉVERROUILLAGE DANS</span>
+            <span class="cd-date">Mardi 27 octobre · 00h00</span>
+          </div>
+          <div class="cd-digits">
+            <div class="cd-block"><span class="cd-num" id="cd-h-episode-1">--</span><span class="cd-sub">Heures</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-m-episode-1">--</span><span class="cd-sub">Min</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-s-episode-1">--</span><span class="cd-sub">Sec</span></div>
+          </div>
+          <div class="cd-footer">
+            <span class="cd-footer-icon">🔒</span>
+            <span>Heure légale du Québec (Montréal UTC-4)</span>
+          </div>
+        </div>
+        
+        <div class="audit-bar" id="audit-episode-1">
+          <button type="button" class="btn-audit" data-audit-target="episode-1">Déverrouiller pour audit (Aperçu)</button>
+        </div>
+      </div>
     </div>
   </article>
   <article class="entry is-locked" id="episode-2" data-unlock="2026-10-28T00:00:00-04:00">
     <div class="art-col">
       <div class="art" role="img" aria-label="Eau sombre près d'un site industriel" style="background-image:url('assets/media/halloween/episode-2.webp'),url('assets/media/halloween/episode-2.jpg')"></div>
+      
+      <!-- Sceau de date directement dessus sur l'image -->
+      <div class="art-overlay-seal" aria-hidden="true">
+        <div class="seal-badge"><span>🔒</span> SCELLÉ</div>
+        <div class="seal-date">OUVERTURE LE MERCREDI 28 OCTOBRE</div>
+        <div class="seal-time">À 00H00 (MINUIT)</div>
+      </div>
+
       <div class="toxic-curtain" aria-hidden="true">
         <div class="toxic-smoke"></div>
         <svg viewBox="0 0 400 300" preserveAspectRatio="none">
@@ -440,17 +578,9 @@ footer a {color:var(--gold)}
               <stop offset="50%" stop-color="#15803d" stop-opacity="0.6"/>
               <stop offset="100%" stop-color="#22c55e" stop-opacity="0.1"/>
             </linearGradient>
-            <filter id="toxicGlow-episode-2">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
           <path d="M0,180 C80,160 120,200 200,170 C280,140 320,190 400,165 L400,300 L0,300 Z" fill="url(#toxicGrad-episode-2)"/>
           <path d="M0,210 C90,195 140,225 220,205 C300,185 340,220 400,200 L400,300 L0,300 Z" fill="#061f0d" fill-opacity="0.8"/>
-          <!-- Gouttes et bulles toxiques animées -->
           <circle cx="50" cy="240" r="6" class="toxic-bubble" style="animation-delay:0s;"/>
           <circle cx="120" cy="260" r="9" class="toxic-bubble" style="animation-delay:1.2s;"/>
           <circle cx="180" cy="250" r="5" class="toxic-bubble" style="animation-delay:2.4s;"/>
@@ -460,13 +590,65 @@ footer a {color:var(--gold)}
         </svg>
       </div>
     </div>
+    
+    <!-- Rectangle à côté pré-rempli : jamais vide ! Affiche la date exacte d'ouverture -->
     <div class="entry-content" id="content-episode-2">
-      <!-- Le contenu est protégé et injecté uniquement à l'heure du déverrouillage -->
+      <div class="locked-dossier">
+        <div class="hazard-stamp">
+          <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+          <span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>
+        </div>
+
+        <!-- Encadré mis en avant avec la date à laquelle ça ouvre -->
+        <div class="opening-highlight">
+          <div class="opening-highlight-head">
+            <span>📅 DATE D'OUVERTURE OFFICIELLE</span>
+          </div>
+          <div class="opening-highlight-date">Mercredi 28 octobre 2026 à 00h00 (Minuit)</div>
+          <div class="opening-highlight-sub">Déverrouillage et décontamination automatique à minuit pile</div>
+        </div>
+
+        <div class="date">Mercredi 28 octobre · Épisode 2</div>
+        <h3 class="locked-title">
+          <span>Épisode 2 · Sous scellé</span>
+        </h3>
+        <p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>
+        
+        <div class="countdown-box" aria-label="Compte à rebours de déverrouillage">
+          <div class="cd-header">
+            <span class="cd-label">☣ DÉVERROUILLAGE DANS</span>
+            <span class="cd-date">Mercredi 28 octobre · 00h00</span>
+          </div>
+          <div class="cd-digits">
+            <div class="cd-block"><span class="cd-num" id="cd-h-episode-2">--</span><span class="cd-sub">Heures</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-m-episode-2">--</span><span class="cd-sub">Min</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-s-episode-2">--</span><span class="cd-sub">Sec</span></div>
+          </div>
+          <div class="cd-footer">
+            <span class="cd-footer-icon">🔒</span>
+            <span>Heure légale du Québec (Montréal UTC-4)</span>
+          </div>
+        </div>
+        
+        <div class="audit-bar" id="audit-episode-2">
+          <button type="button" class="btn-audit" data-audit-target="episode-2">Déverrouiller pour audit (Aperçu)</button>
+        </div>
+      </div>
     </div>
   </article>
   <article class="entry is-locked" id="episode-3" data-unlock="2026-10-29T00:00:00-04:00">
     <div class="art-col">
       <div class="art" role="img" aria-label="Tourbière gelée et brume au ras du sol" style="background-image:url('assets/media/halloween/episode-3.webp'),url('assets/media/halloween/episode-3.jpg')"></div>
+      
+      <!-- Sceau de date directement dessus sur l'image -->
+      <div class="art-overlay-seal" aria-hidden="true">
+        <div class="seal-badge"><span>🔒</span> SCELLÉ</div>
+        <div class="seal-date">OUVERTURE LE JEUDI 29 OCTOBRE</div>
+        <div class="seal-time">À 00H00 (MINUIT)</div>
+      </div>
+
       <div class="toxic-curtain" aria-hidden="true">
         <div class="toxic-smoke"></div>
         <svg viewBox="0 0 400 300" preserveAspectRatio="none">
@@ -476,17 +658,9 @@ footer a {color:var(--gold)}
               <stop offset="50%" stop-color="#15803d" stop-opacity="0.6"/>
               <stop offset="100%" stop-color="#22c55e" stop-opacity="0.1"/>
             </linearGradient>
-            <filter id="toxicGlow-episode-3">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
           <path d="M0,180 C80,160 120,200 200,170 C280,140 320,190 400,165 L400,300 L0,300 Z" fill="url(#toxicGrad-episode-3)"/>
           <path d="M0,210 C90,195 140,225 220,205 C300,185 340,220 400,200 L400,300 L0,300 Z" fill="#061f0d" fill-opacity="0.8"/>
-          <!-- Gouttes et bulles toxiques animées -->
           <circle cx="50" cy="240" r="6" class="toxic-bubble" style="animation-delay:0s;"/>
           <circle cx="120" cy="260" r="9" class="toxic-bubble" style="animation-delay:1.2s;"/>
           <circle cx="180" cy="250" r="5" class="toxic-bubble" style="animation-delay:2.4s;"/>
@@ -496,13 +670,65 @@ footer a {color:var(--gold)}
         </svg>
       </div>
     </div>
+    
+    <!-- Rectangle à côté pré-rempli : jamais vide ! Affiche la date exacte d'ouverture -->
     <div class="entry-content" id="content-episode-3">
-      <!-- Le contenu est protégé et injecté uniquement à l'heure du déverrouillage -->
+      <div class="locked-dossier">
+        <div class="hazard-stamp">
+          <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+          <span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>
+        </div>
+
+        <!-- Encadré mis en avant avec la date à laquelle ça ouvre -->
+        <div class="opening-highlight">
+          <div class="opening-highlight-head">
+            <span>📅 DATE D'OUVERTURE OFFICIELLE</span>
+          </div>
+          <div class="opening-highlight-date">Jeudi 29 octobre 2026 à 00h00 (Minuit)</div>
+          <div class="opening-highlight-sub">Déverrouillage et décontamination automatique à minuit pile</div>
+        </div>
+
+        <div class="date">Jeudi 29 octobre · Épisode 3</div>
+        <h3 class="locked-title">
+          <span>Épisode 3 · Sous scellé</span>
+        </h3>
+        <p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>
+        
+        <div class="countdown-box" aria-label="Compte à rebours de déverrouillage">
+          <div class="cd-header">
+            <span class="cd-label">☣ DÉVERROUILLAGE DANS</span>
+            <span class="cd-date">Jeudi 29 octobre · 00h00</span>
+          </div>
+          <div class="cd-digits">
+            <div class="cd-block"><span class="cd-num" id="cd-h-episode-3">--</span><span class="cd-sub">Heures</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-m-episode-3">--</span><span class="cd-sub">Min</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-s-episode-3">--</span><span class="cd-sub">Sec</span></div>
+          </div>
+          <div class="cd-footer">
+            <span class="cd-footer-icon">🔒</span>
+            <span>Heure légale du Québec (Montréal UTC-4)</span>
+          </div>
+        </div>
+        
+        <div class="audit-bar" id="audit-episode-3">
+          <button type="button" class="btn-audit" data-audit-target="episode-3">Déverrouiller pour audit (Aperçu)</button>
+        </div>
+      </div>
     </div>
   </article>
   <article class="entry is-locked" id="episode-4" data-unlock="2026-10-30T00:00:00-04:00">
     <div class="art-col">
       <div class="art" role="img" aria-label="Couloir administratif sombre avec des documents" style="background-image:url('assets/media/halloween/episode-4.webp'),url('assets/media/halloween/episode-4.jpg')"></div>
+      
+      <!-- Sceau de date directement dessus sur l'image -->
+      <div class="art-overlay-seal" aria-hidden="true">
+        <div class="seal-badge"><span>🔒</span> SCELLÉ</div>
+        <div class="seal-date">OUVERTURE LE VENDREDI 30 OCTOBRE</div>
+        <div class="seal-time">À 00H00 (MINUIT)</div>
+      </div>
+
       <div class="toxic-curtain" aria-hidden="true">
         <div class="toxic-smoke"></div>
         <svg viewBox="0 0 400 300" preserveAspectRatio="none">
@@ -512,17 +738,9 @@ footer a {color:var(--gold)}
               <stop offset="50%" stop-color="#15803d" stop-opacity="0.6"/>
               <stop offset="100%" stop-color="#22c55e" stop-opacity="0.1"/>
             </linearGradient>
-            <filter id="toxicGlow-episode-4">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
           <path d="M0,180 C80,160 120,200 200,170 C280,140 320,190 400,165 L400,300 L0,300 Z" fill="url(#toxicGrad-episode-4)"/>
           <path d="M0,210 C90,195 140,225 220,205 C300,185 340,220 400,200 L400,300 L0,300 Z" fill="#061f0d" fill-opacity="0.8"/>
-          <!-- Gouttes et bulles toxiques animées -->
           <circle cx="50" cy="240" r="6" class="toxic-bubble" style="animation-delay:0s;"/>
           <circle cx="120" cy="260" r="9" class="toxic-bubble" style="animation-delay:1.2s;"/>
           <circle cx="180" cy="250" r="5" class="toxic-bubble" style="animation-delay:2.4s;"/>
@@ -532,13 +750,65 @@ footer a {color:var(--gold)}
         </svg>
       </div>
     </div>
+    
+    <!-- Rectangle à côté pré-rempli : jamais vide ! Affiche la date exacte d'ouverture -->
     <div class="entry-content" id="content-episode-4">
-      <!-- Le contenu est protégé et injecté uniquement à l'heure du déverrouillage -->
+      <div class="locked-dossier">
+        <div class="hazard-stamp">
+          <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+          <span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>
+        </div>
+
+        <!-- Encadré mis en avant avec la date à laquelle ça ouvre -->
+        <div class="opening-highlight">
+          <div class="opening-highlight-head">
+            <span>📅 DATE D'OUVERTURE OFFICIELLE</span>
+          </div>
+          <div class="opening-highlight-date">Vendredi 30 octobre 2026 à 00h00 (Minuit)</div>
+          <div class="opening-highlight-sub">Déverrouillage et décontamination automatique à minuit pile</div>
+        </div>
+
+        <div class="date">Vendredi 30 octobre · Épisode 4</div>
+        <h3 class="locked-title">
+          <span>Épisode 4 · Sous scellé</span>
+        </h3>
+        <p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>
+        
+        <div class="countdown-box" aria-label="Compte à rebours de déverrouillage">
+          <div class="cd-header">
+            <span class="cd-label">☣ DÉVERROUILLAGE DANS</span>
+            <span class="cd-date">Vendredi 30 octobre · 00h00</span>
+          </div>
+          <div class="cd-digits">
+            <div class="cd-block"><span class="cd-num" id="cd-h-episode-4">--</span><span class="cd-sub">Heures</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-m-episode-4">--</span><span class="cd-sub">Min</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-s-episode-4">--</span><span class="cd-sub">Sec</span></div>
+          </div>
+          <div class="cd-footer">
+            <span class="cd-footer-icon">🔒</span>
+            <span>Heure légale du Québec (Montréal UTC-4)</span>
+          </div>
+        </div>
+        
+        <div class="audit-bar" id="audit-episode-4">
+          <button type="button" class="btn-audit" data-audit-target="episode-4">Déverrouiller pour audit (Aperçu)</button>
+        </div>
+      </div>
     </div>
   </article>
   <article class="entry is-locked" id="episode-5" data-unlock="2026-10-31T00:00:00-04:00">
     <div class="art-col">
       <div class="art" role="img" aria-label="Marais sombre sous un ciel nocturne" style="background-image:url('assets/media/halloween/episode-5.webp'),url('assets/media/halloween/episode-5.jpg')"></div>
+      
+      <!-- Sceau de date directement dessus sur l'image -->
+      <div class="art-overlay-seal" aria-hidden="true">
+        <div class="seal-badge"><span>🔒</span> SCELLÉ</div>
+        <div class="seal-date">OUVERTURE LE SAMEDI 31 OCTOBRE</div>
+        <div class="seal-time">À 00H00 (MINUIT)</div>
+      </div>
+
       <div class="toxic-curtain" aria-hidden="true">
         <div class="toxic-smoke"></div>
         <svg viewBox="0 0 400 300" preserveAspectRatio="none">
@@ -548,17 +818,9 @@ footer a {color:var(--gold)}
               <stop offset="50%" stop-color="#15803d" stop-opacity="0.6"/>
               <stop offset="100%" stop-color="#22c55e" stop-opacity="0.1"/>
             </linearGradient>
-            <filter id="toxicGlow-episode-5">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
           <path d="M0,180 C80,160 120,200 200,170 C280,140 320,190 400,165 L400,300 L0,300 Z" fill="url(#toxicGrad-episode-5)"/>
           <path d="M0,210 C90,195 140,225 220,205 C300,185 340,220 400,200 L400,300 L0,300 Z" fill="#061f0d" fill-opacity="0.8"/>
-          <!-- Gouttes et bulles toxiques animées -->
           <circle cx="50" cy="240" r="6" class="toxic-bubble" style="animation-delay:0s;"/>
           <circle cx="120" cy="260" r="9" class="toxic-bubble" style="animation-delay:1.2s;"/>
           <circle cx="180" cy="250" r="5" class="toxic-bubble" style="animation-delay:2.4s;"/>
@@ -568,8 +830,52 @@ footer a {color:var(--gold)}
         </svg>
       </div>
     </div>
+    
+    <!-- Rectangle à côté pré-rempli : jamais vide ! Affiche la date exacte d'ouverture -->
     <div class="entry-content" id="content-episode-5">
-      <!-- Le contenu est protégé et injecté uniquement à l'heure du déverrouillage -->
+      <div class="locked-dossier">
+        <div class="hazard-stamp">
+          <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+          <span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>
+        </div>
+
+        <!-- Encadré mis en avant avec la date à laquelle ça ouvre -->
+        <div class="opening-highlight">
+          <div class="opening-highlight-head">
+            <span>📅 DATE D'OUVERTURE OFFICIELLE</span>
+          </div>
+          <div class="opening-highlight-date">Samedi 31 octobre 2026 à 00h00 (Halloween)</div>
+          <div class="opening-highlight-sub">Déverrouillage et décontamination automatique à minuit pile</div>
+        </div>
+
+        <div class="date">Samedi 31 octobre · Épilogue</div>
+        <h3 class="locked-title">
+          <span>Épilogue · Sous scellé</span>
+        </h3>
+        <p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>
+        
+        <div class="countdown-box" aria-label="Compte à rebours de déverrouillage">
+          <div class="cd-header">
+            <span class="cd-label">☣ DÉVERROUILLAGE DANS</span>
+            <span class="cd-date">Samedi 31 octobre · 00h00</span>
+          </div>
+          <div class="cd-digits">
+            <div class="cd-block"><span class="cd-num" id="cd-h-episode-5">--</span><span class="cd-sub">Heures</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-m-episode-5">--</span><span class="cd-sub">Min</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-block"><span class="cd-num" id="cd-s-episode-5">--</span><span class="cd-sub">Sec</span></div>
+          </div>
+          <div class="cd-footer">
+            <span class="cd-footer-icon">🔒</span>
+            <span>Heure légale du Québec (Montréal UTC-4)</span>
+          </div>
+        </div>
+        
+        <div class="audit-bar" id="audit-episode-5">
+          <button type="button" class="btn-audit" data-audit-target="episode-5">Déverrouiller pour audit (Aperçu)</button>
+        </div>
+      </div>
     </div>
   </article>
 </section>
@@ -585,9 +891,8 @@ footer a {color:var(--gold)}
 (function(){
   'use strict';
 
-  var EPISODES = [{"id": "prologue", "unlockDate": "2026-10-26T00:00:00-04:00", "dayLabel": "Lundi 26 octobre · Prologue", "title": "Les vrais monstres ne portent pas de masque", "artLabel": "Tourbière au crépuscule dans la brume", "imageJpg": "assets/media/halloween/prologue.jpg", "imageWebp": "assets/media/halloween/prologue.webp", "contentHtml": "<div class=\"date\">Lundi 26 octobre · Prologue</div><h3>Les vrais monstres ne portent pas de masque</h3><p>Cette semaine, tout le monde cherche des histoires de fantômes, de monstres et de sorcières pour se faire peur.</p><p>Pourtant, à Blainville, pas besoin d’inventer des légendes urbaines : ce qui dort dans nos sols et ce qui se trame dans les bureaux ministériels donne déjà froid dans le dos.</p><p class=\"emphasis\">Toute la semaine, on ouvre les dossiers classés. Prêts pour les faits bruts&nbsp;?</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+THVuZGkgMjYgb2N0b2JyZSDCtyBQcm9sb2d1ZTwvZGl2PjxoMz5MZXMgdnJhaXMgbW9uc3RyZXMgbmUgcG9ydGVudCBwYXMgZGUgbWFzcXVlPC9oMz48cD5DZXR0ZSBzZW1haW5lLCB0b3V0IGxlIG1vbmRlIGNoZXJjaGUgZGVzIGhpc3RvaXJlcyBkZSBmYW50w7RtZXMsIGRlIG1vbnN0cmVzIGV0IGRlIHNvcmNpw6hyZXMgcG91ciBzZSBmYWlyZSBwZXVyLjwvcD48cD5Qb3VydGFudCwgw6AgQmxhaW52aWxsZSwgcGFzIGJlc29pbiBk4oCZaW52ZW50ZXIgZGVzIGzDqWdlbmRlcyB1cmJhaW5lcyA6IGNlIHF1aSBkb3J0IGRhbnMgbm9zIHNvbHMgZXQgY2UgcXVpIHNlIHRyYW1lIGRhbnMgbGVzIGJ1cmVhdXggbWluaXN0w6lyaWVscyBkb25uZSBkw6lqw6AgZnJvaWQgZGFucyBsZSBkb3MuPC9wPjxwIGNsYXNzPSJlbXBoYXNpcyI+VG91dGUgbGEgc2VtYWluZSwgb24gb3V2cmUgbGVzIGRvc3NpZXJzIGNsYXNzw6lzLiBQcsOqdHMgcG91ciBsZXMgZmFpdHMgYnJ1dHMmbmJzcDs/PC9wPg=="}, {"id": "episode-1", "unlockDate": "2026-10-27T00:00:00-04:00", "dayLabel": "Mardi 27 octobre · Épisode 1", "title": "Le fantôme du Camp Bouchard", "artLabel": "Usine abandonnée dans la brume", "imageJpg": "assets/media/halloween/episode-1.jpg", "imageWebp": "assets/media/halloween/episode-1.webp", "contentHtml": "<div class=\"date\">Mardi 27 octobre · Épisode 1</div><h3>Le fantôme du Camp Bouchard</h3><p>Le terrain visé par la cellule 6 abritait de 1942 à 1980 une usine de munitions et d’explosifs du ministère de la Défense : le Camp Bouchard.</p><p>La fiche fédérale n° <span class=\"stat\">06875001</span> indique <span class=\"emphasis\">0 hectare décontaminé</span> et <span class=\"emphasis\">0&nbsp;$ alloué par Ottawa en 2025–2026</span>.</p><p>Avant même d’y ajouter de nouveaux résidus industriels, le passé dort déjà sous nos pieds.</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+TWFyZGkgMjcgb2N0b2JyZSDCtyDDiXBpc29kZSAxPC9kaXY+PGgzPkxlIGZhbnTDtG1lIGR1IENhbXAgQm91Y2hhcmQ8L2gzPjxwPkxlIHRlcnJhaW4gdmlzw6kgcGFyIGxhIGNlbGx1bGUgNiBhYnJpdGFpdCBkZSAxOTQyIMOgIDE5ODAgdW5lIHVzaW5lIGRlIG11bml0aW9ucyBldCBk4oCZZXhwbG9zaWZzIGR1IG1pbmlzdMOocmUgZGUgbGEgRMOpZmVuc2UgOiBsZSBDYW1wIEJvdWNoYXJkLjwvcD48cD5MYSBmaWNoZSBmw6lkw6lyYWxlIG7CsCA8c3BhbiBjbGFzcz0ic3RhdCI+MDY4NzUwMDE8L3NwYW4+IGluZGlxdWUgPHNwYW4gY2xhc3M9ImVtcGhhc2lzIj4wIGhlY3RhcmUgZMOpY29udGFtaW7DqTwvc3Bhbj4gZXQgPHNwYW4gY2xhc3M9ImVtcGhhc2lzIj4wJm5ic3A7JCBhbGxvdcOpIHBhciBPdHRhd2EgZW4gMjAyNeKAkzIwMjY8L3NwYW4+LjwvcD48cD5BdmFudCBtw6ptZSBk4oCZeSBham91dGVyIGRlIG5vdXZlYXV4IHLDqXNpZHVzIGluZHVzdHJpZWxzLCBsZSBwYXNzw6kgZG9ydCBkw6lqw6Agc291cyBub3MgcGllZHMuPC9wPg=="}, {"id": "episode-2", "unlockDate": "2026-10-28T00:00:00-04:00", "dayLabel": "Mercredi 28 octobre · Épisode 2", "title": "La vraie potion toxique", "artLabel": "Eau sombre près d'un site industriel", "imageJpg": "assets/media/halloween/episode-2.jpg", "imageWebp": "assets/media/halloween/episode-2.webp", "contentHtml": "<div class=\"date\">Mercredi 28 octobre · Épisode 2</div><h3>La vraie potion toxique</h3><p>Pas de chaudron magique : des mesures de laboratoire comparées aux repères de protection de l’environnement.</p><p>Cadmium dans l’eau de surface : jusqu’à <span class=\"stat\">320 fois</span> le critère de protection de la vie aquatique. Dans les sédiments : jusqu’à <span class=\"stat\">57,6 fois</span> le seuil d’effet rare.</p><p>Un déversement de <span class=\"emphasis\">1&nbsp;300 litres de lixiviat</span> est documenté au dossier. Selon les éléments de la série, le gouvernement du Canada a reçu ces chiffres le 16 octobre.</p><p class=\"emphasis\">La question posée : quelle réponse sur le fond scientifique&nbsp;?</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+TWVyY3JlZGkgMjggb2N0b2JyZSDCtyDDiXBpc29kZSAyPC9kaXY+PGgzPkxhIHZyYWllIHBvdGlvbiB0b3hpcXVlPC9oMz48cD5QYXMgZGUgY2hhdWRyb24gbWFnaXF1ZSA6IGRlcyBtZXN1cmVzIGRlIGxhYm9yYXRvaXJlIGNvbXBhcsOpZXMgYXV4IHJlcMOocmVzIGRlIHByb3RlY3Rpb24gZGUgbOKAmWVudmlyb25uZW1lbnQuPC9wPjxwPkNhZG1pdW0gZGFucyBs4oCZZWF1IGRlIHN1cmZhY2UgOiBqdXNxdeKAmcOgIDxzcGFuIGNsYXNzPSJzdGF0Ij4zMjAgZm9pczwvc3Bhbj4gbGUgY3JpdMOocmUgZGUgcHJvdGVjdGlvbiBkZSBsYSB2aWUgYXF1YXRpcXVlLiBEYW5zIGxlcyBzw6lkaW1lbnRzIDoganVzcXXigJnDoCA8c3BhbiBjbGFzcz0ic3RhdCI+NTcsNiBmb2lzPC9zcGFuPiBsZSBzZXVpbCBk4oCZZWZmZXQgcmFyZS48L3A+PHA+VW4gZMOpdmVyc2VtZW50IGRlIDxzcGFuIGNsYXNzPSJlbXBoYXNpcyI+MSZuYnNwOzMwMCBsaXRyZXMgZGUgbGl4aXZpYXQ8L3NwYW4+IGVzdCBkb2N1bWVudMOpIGF1IGRvc3NpZXIuIFNlbG9uIGxlcyDDqWzDqW1lbnRzIGRlIGxhIHPDqXJpZSwgbGUgZ291dmVybmVtZW50IGR1IENhbmFkYSBhIHJlw6d1IGNlcyBjaGlmZnJlcyBsZSAxNiBvY3RvYnJlLjwvcD48cCBjbGFzcz0iZW1waGFzaXMiPkxhIHF1ZXN0aW9uIHBvc8OpZSA6IHF1ZWxsZSByw6lwb25zZSBzdXIgbGUgZm9uZCBzY2llbnRpZmlxdWUmbmJzcDs/PC9wPg=="}, {"id": "episode-3", "unlockDate": "2026-10-29T00:00:00-04:00", "dayLabel": "Jeudi 29 octobre · Épisode 3", "title": "L’absurdité du calendrier", "artLabel": "Tourbière gelée et brume au ras du sol", "imageJpg": "assets/media/halloween/episode-3.jpg", "imageWebp": "assets/media/halloween/episode-3.webp", "contentHtml": "<div class=\"date\">Jeudi 29 octobre · Épisode 3</div><h3>L’absurdité du calendrier</h3><p>L’autorisation impose de compléter le déboisement avant le 15 avril afin d’éviter la période de nidification des oiseaux migrateurs.</p><p>Mais à la mi-avril, reptiles et amphibiens — dont la salamandre à quatre orteils — pourraient encore être en léthargie, enfouis sous la sphaigne froide.</p><p>Protéger les oiseaux peut donc vouloir dire intervenir alors que des animaux restent enfouis et vulnérables au sol : une contradiction dénoncée dans le dossier CCE.</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+SmV1ZGkgMjkgb2N0b2JyZSDCtyDDiXBpc29kZSAzPC9kaXY+PGgzPkzigJlhYnN1cmRpdMOpIGR1IGNhbGVuZHJpZXI8L2gzPjxwPkzigJlhdXRvcmlzYXRpb24gaW1wb3NlIGRlIGNvbXBsw6l0ZXIgbGUgZMOpYm9pc2VtZW50IGF2YW50IGxlIDE1IGF2cmlsIGFmaW4gZOKAmcOpdml0ZXIgbGEgcMOpcmlvZGUgZGUgbmlkaWZpY2F0aW9uIGRlcyBvaXNlYXV4IG1pZ3JhdGV1cnMuPC9wPjxwPk1haXMgw6AgbGEgbWktYXZyaWwsIHJlcHRpbGVzIGV0IGFtcGhpYmllbnMg4oCUIGRvbnQgbGEgc2FsYW1hbmRyZSDDoCBxdWF0cmUgb3J0ZWlscyDigJQgcG91cnJhaWVudCBlbmNvcmUgw6p0cmUgZW4gbMOpdGhhcmdpZSwgZW5mb3VpcyBzb3VzIGxhIHNwaGFpZ25lIGZyb2lkZS48L3A+PHA+UHJvdMOpZ2VyIGxlcyBvaXNlYXV4IHBldXQgZG9uYyB2b3Vsb2lyIGRpcmUgaW50ZXJ2ZW5pciBhbG9ycyBxdWUgZGVzIGFuaW1hdXggcmVzdGVudCBlbmZvdWlzIGV0IHZ1bG7DqXJhYmxlcyBhdSBzb2wgOiB1bmUgY29udHJhZGljdGlvbiBkw6lub25jw6llIGRhbnMgbGUgZG9zc2llciBDQ0UuPC9wPg=="}, {"id": "episode-4", "unlockDate": "2026-10-30T00:00:00-04:00", "dayLabel": "Vendredi 30 octobre · Épisode 4", "title": "Le rendez-vous dans l’ombre", "artLabel": "Couloir administratif sombre avec des documents", "imageJpg": "assets/media/halloween/episode-4.jpg", "imageWebp": "assets/media/halloween/episode-4.webp", "contentHtml": "<div class=\"date\">Vendredi 30 octobre · Épisode 4</div><h3>Le rendez-vous dans l’ombre</h3><p>Le rapport fédéral n° <span class=\"stat\">385380-701620</span> est cité pour mettre en regard deux délais : 10 questions citoyennes restées sans réponse pendant <span class=\"emphasis\">119 jours</span>, et une rencontre officielle de la haute direction fédérale avec la lobbyiste de l’exploitant le 17 septembre 2026, au sujet de la cellule 6.</p><p>Le contraste porte sur l’accès aux décideurs : une longue attente pour les questions du public, une rencontre officielle pour l’industrie.</p><a class=\"ref\" href=\"https://williamguindon.me/blog.html#lobbyisme-septembre-2026\">Lire l’enquête sur le registre des lobbyistes ↗</a>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+VmVuZHJlZGkgMzAgb2N0b2JyZSDCtyDDiXBpc29kZSA0PC9kaXY+PGgzPkxlIHJlbmRlei12b3VzIGRhbnMgbOKAmW9tYnJlPC9oMz48cD5MZSByYXBwb3J0IGbDqWTDqXJhbCBuwrAgPHNwYW4gY2xhc3M9InN0YXQiPjM4NTM4MC03MDE2MjA8L3NwYW4+IGVzdCBjaXTDqSBwb3VyIG1ldHRyZSBlbiByZWdhcmQgZGV1eCBkw6lsYWlzIDogMTAgcXVlc3Rpb25zIGNpdG95ZW5uZXMgcmVzdMOpZXMgc2FucyByw6lwb25zZSBwZW5kYW50IDxzcGFuIGNsYXNzPSJlbXBoYXNpcyI+MTE5IGpvdXJzPC9zcGFuPiwgZXQgdW5lIHJlbmNvbnRyZSBvZmZpY2llbGxlIGRlIGxhIGhhdXRlIGRpcmVjdGlvbiBmw6lkw6lyYWxlIGF2ZWMgbGEgbG9iYnlpc3RlIGRlIGzigJlleHBsb2l0YW50IGxlIDE3IHNlcHRlbWJyZSAyMDI2LCBhdSBzdWpldCBkZSBsYSBjZWxsdWxlIDYuPC9wPjxwPkxlIGNvbnRyYXN0ZSBwb3J0ZSBzdXIgbOKAmWFjY8OocyBhdXggZMOpY2lkZXVycyA6IHVuZSBsb25ndWUgYXR0ZW50ZSBwb3VyIGxlcyBxdWVzdGlvbnMgZHUgcHVibGljLCB1bmUgcmVuY29udHJlIG9mZmljaWVsbGUgcG91ciBs4oCZaW5kdXN0cmllLjwvcD48YSBjbGFzcz0icmVmIiBocmVmPSJodHRwczovL3dpbGxpYW1ndWluZG9uLm1lL2Jsb2cuaHRtbCNsb2JieWlzbWUtc2VwdGVtYnJlLTIwMjYiPkxpcmUgbOKAmWVucXXDqnRlIHN1ciBsZSByZWdpc3RyZSBkZXMgbG9iYnlpc3RlcyDihpc8L2E+"}, {"id": "episode-5", "unlockDate": "2026-10-31T00:00:00-04:00", "dayLabel": "Samedi 31 octobre · Épilogue", "title": "Pas de bonbons, des comptes", "artLabel": "Marais sombre sous un ciel nocturne", "imageJpg": "assets/media/halloween/episode-5.jpg", "imageWebp": "assets/media/halloween/episode-5.webp", "contentHtml": "<div class=\"date\">Samedi 31 octobre · Épilogue</div><h3>Pas de bonbons, des comptes</h3><p>Le 16 octobre, Ottawa a tenté de faire rejeter la plainte citoyenne pour un motif de procédure. Le 17 octobre, des observations juridiques en sept moyens ont été déposées en réponse.</p><p>Un délai de 60 jours est enclenché au Secrétariat de la CCE pour demander un dossier factuel indépendant sous l’article 24.28 de l’ACEUM.</p><p class=\"emphasis\">Un dossier factuel vise à établir les faits; ce n’est pas un jugement.</p><a class=\"ref\" href=\"https://williamguindon.me/viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf\">Lire les observations juridiques (PDF) ↗</a>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+U2FtZWRpIDMxIG9jdG9icmUgwrcgw4lwaWxvZ3VlPC9kaXY+PGgzPlBhcyBkZSBib25ib25zLCBkZXMgY29tcHRlczwvaDM+PHA+TGUgMTYgb2N0b2JyZSwgT3R0YXdhIGEgdGVudMOpIGRlIGZhaXJlIHJlamV0ZXIgbGEgcGxhaW50ZSBjaXRveWVubmUgcG91ciB1biBtb3RpZiBkZSBwcm9jw6lkdXJlLiBMZSAxNyBvY3RvYnJlLCBkZXMgb2JzZXJ2YXRpb25zIGp1cmlkaXF1ZXMgZW4gc2VwdCBtb3llbnMgb250IMOpdMOpIGTDqXBvc8OpZXMgZW4gcsOpcG9uc2UuPC9wPjxwPlVuIGTDqWxhaSBkZSA2MCBqb3VycyBlc3QgZW5jbGVuY2jDqSBhdSBTZWNyw6l0YXJpYXQgZGUgbGEgQ0NFIHBvdXIgZGVtYW5kZXIgdW4gZG9zc2llciBmYWN0dWVsIGluZMOpcGVuZGFudCBzb3VzIGzigJlhcnRpY2xlIDI0LjI4IGRlIGzigJlBQ0VVTS48L3A+PHAgY2xhc3M9ImVtcGhhc2lzIj5VbiBkb3NzaWVyIGZhY3R1ZWwgdmlzZSDDoCDDqXRhYmxpciBsZXMgZmFpdHM7IGNlIG7igJllc3QgcGFzIHVuIGp1Z2VtZW50LjwvcD48YSBjbGFzcz0icmVmIiBocmVmPSJodHRwczovL3dpbGxpYW1ndWluZG9uLm1lL3ZpZXdlci5odG1sP2ZpbGU9YXNzZXRzL2RvY3Mvb2JzZXJ2YXRpb25zLXJlcG9uc2UtY2FuYWRhLXNlbTI2MDAzLnBkZiI+TGlyZSBsZXMgb2JzZXJ2YXRpb25zIGp1cmlkaXF1ZXMgKFBERikg4oaXPC9hPg=="}];
+  var EPISODES = [{"id": "prologue", "unlockDate": "2026-10-26T00:00:00-04:00", "dayLabel": "Lundi 26 octobre · Prologue", "openingDateStr": "Lundi 26 octobre 2026 à 00h00", "title": "Les vrais monstres ne portent pas de masque", "artLabel": "Tourbière au crépuscule dans la brume", "imageJpg": "assets/media/halloween/prologue.jpg", "imageWebp": "assets/media/halloween/prologue.webp", "contentHtml": "<div class=\"date\">Lundi 26 octobre · Prologue</div><h3>Les vrais monstres ne portent pas de masque</h3><p>Cette semaine, tout le monde cherche des histoires de fantômes, de monstres et de sorcières pour se faire peur.</p><p>Pourtant, à Blainville, pas besoin d’inventer des légendes urbaines : ce qui dort dans nos sols et ce qui se trame dans les bureaux ministériels donne déjà froid dans le dos.</p><p class=\"emphasis\">Toute la semaine, on ouvre les dossiers classés. Prêts pour les faits bruts&nbsp;?</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+THVuZGkgMjYgb2N0b2JyZSDCtyBQcm9sb2d1ZTwvZGl2PjxoMz5MZXMgdnJhaXMgbW9uc3RyZXMgbmUgcG9ydGVudCBwYXMgZGUgbWFzcXVlPC9oMz48cD5DZXR0ZSBzZW1haW5lLCB0b3V0IGxlIG1vbmRlIGNoZXJjaGUgZGVzIGhpc3RvaXJlcyBkZSBmYW50w7RtZXMsIGRlIG1vbnN0cmVzIGV0IGRlIHNvcmNpw6hyZXMgcG91ciBzZSBmYWlyZSBwZXVyLjwvcD48cD5Qb3VydGFudCwgw6AgQmxhaW52aWxsZSwgcGFzIGJlc29pbiBk4oCZaW52ZW50ZXIgZGVzIGzDqWdlbmRlcyB1cmJhaW5lcyA6IGNlIHF1aSBkb3J0IGRhbnMgbm9zIHNvbHMgZXQgY2UgcXVpIHNlIHRyYW1lIGRhbnMgbGVzIGJ1cmVhdXggbWluaXN0w6lyaWVscyBkb25uZSBkw6lqw6AgZnJvaWQgZGFucyBsZSBkb3MuPC9wPjxwIGNsYXNzPSJlbXBoYXNpcyI+VG91dGUgbGEgc2VtYWluZSwgb24gb3V2cmUgbGVzIGRvc3NpZXJzIGNsYXNzw6lzLiBQcsOqdHMgcG91ciBsZXMgZmFpdHMgYnJ1dHMmbmJzcDs/PC9wPg=="}, {"id": "episode-1", "unlockDate": "2026-10-27T00:00:00-04:00", "dayLabel": "Mardi 27 octobre · Épisode 1", "openingDateStr": "Mardi 27 octobre 2026 à 00h00 (Minuit)", "title": "Le fantôme du Camp Bouchard", "artLabel": "Usine abandonnée dans la brume", "imageJpg": "assets/media/halloween/episode-1.jpg", "imageWebp": "assets/media/halloween/episode-1.webp", "contentHtml": "<div class=\"date\">Mardi 27 octobre · Épisode 1</div><h3>Le fantôme du Camp Bouchard</h3><p>Le terrain visé par la cellule 6 abritait de 1942 à 1980 une usine de munitions et d’explosifs du ministère de la Défense : le Camp Bouchard.</p><p>La fiche fédérale n° <span class=\"stat\">06875001</span> indique <span class=\"emphasis\">0 hectare décontaminé</span> et <span class=\"emphasis\">0&nbsp;$ alloué par Ottawa en 2025–2026</span>.</p><p>Avant même d’y ajouter de nouveaux résidus industriels, le passé dort déjà sous nos pieds.</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+TWFyZGkgMjcgb2N0b2JyZSDCtyDDiXBpc29kZSAxPC9kaXY+PGgzPkxlIGZhbnTDtG1lIGR1IENhbXAgQm91Y2hhcmQ8L2gzPjxwPkxlIHRlcnJhaW4gdmlzw6kgcGFyIGxhIGNlbGx1bGUgNiBhYnJpdGFpdCBkZSAxOTQyIMOgIDE5ODAgdW5lIHVzaW5lIGRlIG11bml0aW9ucyBldCBk4oCZZXhwbG9zaWZzIGR1IG1pbmlzdMOocmUgZGUgbGEgRMOpZmVuc2UgOiBsZSBDYW1wIEJvdWNoYXJkLjwvcD48cD5MYSBmaWNoZSBmw6lkw6lyYWxlIG7CsCA8c3BhbiBjbGFzcz0ic3RhdCI+MDY4NzUwMDE8L3NwYW4+IGluZGlxdWUgPHNwYW4gY2xhc3M9ImVtcGhhc2lzIj4wIGhlY3RhcmUgZMOpY29udGFtaW7DqTwvc3Bhbj4gZXQgPHNwYW4gY2xhc3M9ImVtcGhhc2lzIj4wJm5ic3A7JCBhbGxvdcOpIHBhciBPdHRhd2EgZW4gMjAyNeKAkzIwMjY8L3NwYW4+LjwvcD48cD5BdmFudCBtw6ptZSBk4oCZeSBham91dGVyIGRlIG5vdXZlYXV4IHLDqXNpZHVzIGluZHVzdHJpZWxzLCBsZSBwYXNzw6kgZG9ydCBkw6lqw6Agc291cyBub3MgcGllZHMuPC9wPg=="}, {"id": "episode-2", "unlockDate": "2026-10-28T00:00:00-04:00", "dayLabel": "Mercredi 28 octobre · Épisode 2", "openingDateStr": "Mercredi 28 octobre 2026 à 00h00 (Minuit)", "title": "La vraie potion toxique", "artLabel": "Eau sombre près d'un site industriel", "imageJpg": "assets/media/halloween/episode-2.jpg", "imageWebp": "assets/media/halloween/episode-2.webp", "contentHtml": "<div class=\"date\">Mercredi 28 octobre · Épisode 2</div><h3>La vraie potion toxique</h3><p>Pas de chaudron magique : des mesures de laboratoire comparées aux repères de protection de l’environnement.</p><p>Cadmium dans l’eau de surface : jusqu’à <span class=\"stat\">320 fois</span> le critère de protection de la vie aquatique. Dans les sédiments : jusqu’à <span class=\"stat\">57,6 fois</span> le seuil d’effet rare.</p><p>Un déversement de <span class=\"emphasis\">1&nbsp;300 litres de lixiviat</span> est documenté au dossier. Selon les éléments de la série, le gouvernement du Canada a reçu ces chiffres le 16 octobre.</p><p class=\"emphasis\">La question posée : quelle réponse sur le fond scientifique&nbsp;?</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+TWVyY3JlZGkgMjggb2N0b2JyZSDCtyDDiXBpc29kZSAyPC9kaXY+PGgzPkxhIHZyYWllIHBvdGlvbiB0b3hpcXVlPC9oMz48cD5QYXMgZGUgY2hhdWRyb24gbWFnaXF1ZSA6IGRlcyBtZXN1cmVzIGRlIGxhYm9yYXRvaXJlIGNvbXBhcsOpZXMgYXV4IHJlcMOocmVzIGRlIHByb3RlY3Rpb24gZGUgbOKAmWVudmlyb25uZW1lbnQuPC9wPjxwPkNhZG1pdW0gZGFucyBs4oCZZWF1IGRlIHN1cmZhY2UgOiBqdXNxdeKAmcOgIDxzcGFuIGNsYXNzPSJzdGF0Ij4zMjAgZm9pczwvc3Bhbj4gbGUgY3JpdMOocmUgZGUgcHJvdGVjdGlvbiBkZSBsYSB2aWUgYXF1YXRpcXVlLiBEYW5zIGxlcyBzw6lkaW1lbnRzIDoganVzcXXigJnDoCA8c3BhbiBjbGFzcz0ic3RhdCI+NTcsNiBmb2lzPC9zcGFuPiBsZSBzZXVpbCBk4oCZZWZmZXQgcmFyZS48L3A+PHA+VW4gZMOpdmVyc2VtZW50IGRlIDxzcGFuIGNsYXNzPSJlbXBoYXNpcyI+MSZuYnNwOzMwMCBsaXRyZXMgZGUgbGl4aXZpYXQ8L3NwYW4+IGVzdCBkb2N1bWVudMOpIGF1IGRvc3NpZXIuIFNlbG9uIGxlcyDDqWzDqW1lbnRzIGRlIGxhIHPDqXJpZSwgbGUgZ291dmVybmVtZW50IGR1IENhbmFkYSBhIHJlw6d1IGNlcyBjaGlmZnJlcyBsZSAxNiBvY3RvYnJlLjwvcD48cCBjbGFzcz0iZW1waGFzaXMiPkxhIHF1ZXN0aW9uIHBvc8OpZSA6IHF1ZWxsZSByw6lwb25zZSBzdXIgbGUgZm9uZCBzY2llbnRpZmlxdWUmbmJzcDs/PC9wPg=="}, {"id": "episode-3", "unlockDate": "2026-10-29T00:00:00-04:00", "dayLabel": "Jeudi 29 octobre · Épisode 3", "openingDateStr": "Jeudi 29 octobre 2026 à 00h00 (Minuit)", "title": "L’absurdité du calendrier", "artLabel": "Tourbière gelée et brume au ras du sol", "imageJpg": "assets/media/halloween/episode-3.jpg", "imageWebp": "assets/media/halloween/episode-3.webp", "contentHtml": "<div class=\"date\">Jeudi 29 octobre · Épisode 3</div><h3>L’absurdité du calendrier</h3><p>L’autorisation impose de compléter le déboisement avant le 15 avril afin d’éviter la période de nidification des oiseaux migrateurs.</p><p>Mais à la mi-avril, reptiles et amphibiens — dont la salamandre à quatre orteils — pourraient encore être en léthargie, enfouis sous la sphaigne froide.</p><p>Protéger les oiseaux peut donc vouloir dire intervenir alors que des animaux restent enfouis et vulnérables au sol : une contradiction dénoncée dans le dossier CCE.</p>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+SmV1ZGkgMjkgb2N0b2JyZSDCtyDDiXBpc29kZSAzPC9kaXY+PGgzPkzigJlhYnN1cmRpdMOpIGR1IGNhbGVuZHJpZXI8L2gzPjxwPkzigJlhdXRvcmlzYXRpb24gaW1wb3NlIGRlIGNvbXBsw6l0ZXIgbGUgZMOpYm9pc2VtZW50IGF2YW50IGxlIDE1IGF2cmlsIGFmaW4gZOKAmcOpdml0ZXIgbGEgcMOpcmlvZGUgZGUgbmlkaWZpY2F0aW9uIGRlcyBvaXNlYXV4IG1pZ3JhdGV1cnMuPC9wPjxwPk1haXMgw6AgbGEgbWktYXZyaWwsIHJlcHRpbGVzIGV0IGFtcGhpYmllbnMg4oCUIGRvbnQgbGEgc2FsYW1hbmRyZSDDoCBxdWF0cmUgb3J0ZWlscyDigJQgcG91cnJhaWVudCBlbmNvcmUgw6p0cmUgZW4gbMOpdGhhcmdpZSwgZW5mb3VpcyBzb3VzIGxhIHNwaGFpZ25lIGZyb2lkZS48L3A+PHA+UHJvdMOpZ2VyIGxlcyBvaXNlYXV4IHBldXQgZG9uYyB2b3Vsb2lyIGRpcmUgaW50ZXJ2ZW5pciBhbG9ycyBxdWUgZGVzIGFuaW1hdXggcmVzdGVudCBlbmZvdWlzIGV0IHZ1bG7DqXJhYmxlcyBhdSBzb2wgOiB1bmUgY29udHJhZGljdGlvbiBkw6lub25jw6llIGRhbnMgbGUgZG9zc2llciBDQ0UuPC9wPg=="}, {"id": "episode-4", "unlockDate": "2026-10-30T00:00:00-04:00", "dayLabel": "Vendredi 30 octobre · Épisode 4", "openingDateStr": "Vendredi 30 octobre 2026 à 00h00 (Minuit)", "title": "Le rendez-vous dans l’ombre", "artLabel": "Couloir administratif sombre avec des documents", "imageJpg": "assets/media/halloween/episode-4.jpg", "imageWebp": "assets/media/halloween/episode-4.webp", "contentHtml": "<div class=\"date\">Vendredi 30 octobre · Épisode 4</div><h3>Le rendez-vous dans l’ombre</h3><p>Le rapport fédéral n° <span class=\"stat\">385380-701620</span> est cité pour mettre en regard deux délais : 10 questions citoyennes restées sans réponse pendant <span class=\"emphasis\">119 jours</span>, et une rencontre officielle de la haute direction fédérale avec la lobbyiste de l’exploitant le 17 septembre 2026, au sujet de la cellule 6.</p><p>Le contraste porte sur l’accès aux décideurs : une longue attente pour les questions du public, une rencontre officielle pour l’industrie.</p><a class=\"ref\" href=\"https://williamguindon.me/blog.html#lobbyisme-septembre-2026\">Lire l’enquête sur le registre des lobbyistes ↗</a>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+VmVuZHJlZGkgMzAgb2N0b2JyZSDCtyDDiXBpc29kZSA0PC9kaXY+PGgzPkxlIHJlbmRlei12b3VzIGRhbnMgbOKAmW9tYnJlPC9oMz48cD5MZSByYXBwb3J0IGbDqWTDqXJhbCBuwrAgPHNwYW4gY2xhc3M9InN0YXQiPjM4NTM4MC03MDE2MjA8L3NwYW4+IGVzdCBjaXTDqSBwb3VyIG1ldHRyZSBlbiByZWdhcmQgZGV1eCBkw6lsYWlzIDogMTAgcXVlc3Rpb25zIGNpdG95ZW5uZXMgcmVzdMOpZXMgc2FucyByw6lwb25zZSBwZW5kYW50IDxzcGFuIGNsYXNzPSJlbXBoYXNpcyI+MTE5IGpvdXJzPC9zcGFuPiwgZXQgdW5lIHJlbmNvbnRyZSBvZmZpY2llbGxlIGRlIGxhIGhhdXRlIGRpcmVjdGlvbiBmw6lkw6lyYWxlIGF2ZWMgbGEgbG9iYnlpc3RlIGRlIGzigJlleHBsb2l0YW50IGxlIDE3IHNlcHRlbWJyZSAyMDI2LCBhdSBzdWpldCBkZSBsYSBjZWxsdWxlIDYuPC9wPjxwPkxlIGNvbnRyYXN0ZSBwb3J0ZSBzdXIgbOKAmWFjY8OocyBhdXggZMOpY2lkZXVycyA6IHVuZSBsb25ndWUgYXR0ZW50ZSBwb3VyIGxlcyBxdWVzdGlvbnMgZHUgcHVibGljLCB1bmUgcmVuY29udHJlIG9mZmljaWVsbGUgcG91ciBs4oCZaW5kdXN0cmllLjwvcD48YSBjbGFzcz0icmVmIiBocmVmPSJodHRwczovL3dpbGxpYW1ndWluZG9uLm1lL2Jsb2cuaHRtbCNsb2JieWlzbWUtc2VwdGVtYnJlLTIwMjYiPkxpcmUgbOKAmWVucXXDqnRlIHN1ciBsZSByZWdpc3RyZSBkZXMgbG9iYnlpc3RlcyDihpc8L2E+"}, {"id": "episode-5", "unlockDate": "2026-10-31T00:00:00-04:00", "dayLabel": "Samedi 31 octobre · Épilogue", "openingDateStr": "Samedi 31 octobre 2026 à 00h00 (Halloween)", "title": "Pas de bonbons, des comptes", "artLabel": "Marais sombre sous un ciel nocturne", "imageJpg": "assets/media/halloween/episode-5.jpg", "imageWebp": "assets/media/halloween/episode-5.webp", "contentHtml": "<div class=\"date\">Samedi 31 octobre · Épilogue</div><h3>Pas de bonbons, des comptes</h3><p>Le 16 octobre, Ottawa a tenté de faire rejeter la plainte citoyenne pour un motif de procédure. Le 17 octobre, des observations juridiques en sept moyens ont été déposées en réponse.</p><p>Un délai de 60 jours est enclenché au Secrétariat de la CCE pour demander un dossier factuel indépendant sous l’article 24.28 de l’ACEUM.</p><p class=\"emphasis\">Un dossier factuel vise à établir les faits; ce n’est pas un jugement.</p><a class=\"ref\" href=\"https://williamguindon.me/viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf\">Lire les observations juridiques (PDF) ↗</a>", "contentB64": "PGRpdiBjbGFzcz0iZGF0ZSI+U2FtZWRpIDMxIG9jdG9icmUgwrcgw4lwaWxvZ3VlPC9kaXY+PGgzPlBhcyBkZSBib25ib25zLCBkZXMgY29tcHRlczwvaDM+PHA+TGUgMTYgb2N0b2JyZSwgT3R0YXdhIGEgdGVudMOpIGRlIGZhaXJlIHJlamV0ZXIgbGEgcGxhaW50ZSBjaXRveWVubmUgcG91ciB1biBtb3RpZiBkZSBwcm9jw6lkdXJlLiBMZSAxNyBvY3RvYnJlLCBkZXMgb2JzZXJ2YXRpb25zIGp1cmlkaXF1ZXMgZW4gc2VwdCBtb3llbnMgb250IMOpdMOpIGTDqXBvc8OpZXMgZW4gcsOpcG9uc2UuPC9wPjxwPlVuIGTDqWxhaSBkZSA2MCBqb3VycyBlc3QgZW5jbGVuY2jDqSBhdSBTZWNyw6l0YXJpYXQgZGUgbGEgQ0NFIHBvdXIgZGVtYW5kZXIgdW4gZG9zc2llciBmYWN0dWVsIGluZMOpcGVuZGFudCBzb3VzIGzigJlhcnRpY2xlIDI0LjI4IGRlIGzigJlBQ0VVTS48L3A+PHAgY2xhc3M9ImVtcGhhc2lzIj5VbiBkb3NzaWVyIGZhY3R1ZWwgdmlzZSDDoCDDqXRhYmxpciBsZXMgZmFpdHM7IGNlIG7igJllc3QgcGFzIHVuIGp1Z2VtZW50LjwvcD48YSBjbGFzcz0icmVmIiBocmVmPSJodHRwczovL3dpbGxpYW1ndWluZG9uLm1lL3ZpZXdlci5odG1sP2ZpbGU9YXNzZXRzL2RvY3Mvb2JzZXJ2YXRpb25zLXJlcG9uc2UtY2FuYWRhLXNlbTI2MDAzLnBkZiI+TGlyZSBsZXMgb2JzZXJ2YXRpb25zIGp1cmlkaXF1ZXMgKFBERikg4oaXPC9hPg=="}];
 
-  // Heure locale de Montréal
   function getMontrealDate() {
     try {
       var str = new Date().toLocaleString("en-US", { timeZone: "America/Montreal" });
@@ -649,7 +954,6 @@ footer a {color:var(--gold)}
       } else {
         articleEl.classList.add('is-locked');
         articleEl.classList.remove('is-unlocked');
-        contentEl.removeAttribute('data-loaded');
 
         var totalSec = Math.max(0, Math.floor(diffMs / 1000));
         var days = Math.floor(totalSec / 86400);
@@ -658,43 +962,16 @@ footer a {color:var(--gold)}
         var secs = totalSec % 60;
         var totalHours = (days * 24) + hours;
 
-        contentEl.innerHTML = 
-          '<div class="locked-dossier">' +
-            '<div class="hazard-stamp">' +
-              '<svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>' +
-              '<span>PRÉLÈVEMENT SOUS SCELLÉ TOXIQUE</span>' +
-            '</div>' +
-            '<div class="date">' + ep.dayLabel + '</div>' +
-            '<h3 class="locked-title">' +
-              '<span>' + (ep.id === 'episode-5' ? 'Épilogue secret' : 'Dossier ' + ep.dayLabel.split('·')[1].trim()) + '</span>' +
-            '</h3>' +
-            '<p class="locked-desc">Pièce confidentielle en cours de traitement de décontamination. Les données de laboratoire et documents officiels seront révélés à minuit pile (HAE).</p>' +
-            '<div class="countdown-box" aria-label="Compte à rebours de déverrouillage">' +
-              '<div class="cd-header">' +
-                '<span class="cd-label">☣ DÉVERROUILLAGE AUTOMATIQUE</span>' +
-                '<span class="cd-date">' + ep.dayLabel.split('·')[0].trim() + ' · 00h00</span>' +
-              '</div>' +
-              '<div class="cd-digits">' +
-                '<div class="cd-block"><span class="cd-num">' + pad(totalHours) + '</span><span class="cd-sub">Heures</span></div>' +
-                '<span class="cd-sep">:</span>' +
-                '<div class="cd-block"><span class="cd-num">' + pad(mins) + '</span><span class="cd-sub">Min</span></div>' +
-                '<span class="cd-sep">:</span>' +
-                '<div class="cd-block"><span class="cd-num">' + pad(secs) + '</span><span class="cd-sub">Sec</span></div>' +
-              '</div>' +
-              '<div class="cd-footer">' +
-                '<span class="cd-footer-icon">🔒</span>' +
-                '<span>Heure légale du Québec (Montréal UTC-4)</span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="audit-bar" id="audit-' + ep.id + '">' +
-              '<button type="button" class="btn-audit" data-audit-target="' + ep.id + '">Déverrouiller pour audit (Aperçu)</button>' +
-            '</div>' +
-          '</div>';
+        var elH = document.getElementById("cd-h-" + ep.id);
+        var elM = document.getElementById("cd-m-" + ep.id);
+        var elS = document.getElementById("cd-s-" + ep.id);
+        if (elH) elH.textContent = pad(totalHours);
+        if (elM) elM.textContent = pad(mins);
+        if (elS) elS.textContent = pad(secs);
       }
     });
   }
 
-  // Délégation de clics pour les boutons d'audit sans guillemets dans onclick
   document.addEventListener('click', function(e) {
     var btn = e.target.closest('[data-audit-target]');
     if (btn) {
