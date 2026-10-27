@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061912">
 <meta name="description" content="Édition spéciale Noël et Temps des Fêtes 2026 de William Guindon — Veillée sous la neige sur la Grande Tourbière de Blainville, rétrospective citoyenne SEM-26-003 et vœux pour la protection de l'écosystème.">
+<meta name="robots" content="noindex, nofollow">
 <title>Noël sur la Grande Tourbière — Veillée d'Hiver &amp; Vœux de Fin d'Année 2026 | William Guindon</title>
 <link rel="canonical" href="https://williamguindon.me/noel.html">
 <link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/noel.html">
@@ -440,6 +441,31 @@ footer.foot a { color: #a7f3d0; text-decoration: underline; text-underline-offse
 </div>
 
 <main>
+
+<!-- Écran de Verrouillage / Embargo Temporel -->
+<div id="embargo-overlay" style="min-height:75vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
+  <div style="background:#0a1e16; border:2px solid #e11d48; border-radius:18px; padding:36px; max-width:620px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+    <div style="font-size:3.2rem; margin-bottom:12px;">🔒</div>
+    <span style="display:inline-block; padding:4px 14px; border-radius:999px; background:#4c0519; color:#fda4af; font-size:0.75rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:16px; border:1px solid #e11d4888;">
+      Accès sous embargo temporel strict
+    </span>
+    <h1 style="font-size:1.85rem; font-family:Georgia, serif; color:#ffffff; margin-bottom:14px;">Édition de Noël Actuellement Bloquée</h1>
+    <p style="color:#cbd5e1; font-size:0.95rem; line-height:1.65; margin-bottom:20px;">
+      Cette page est <strong>verrouillée et protégée sous embargo</strong> jusqu'au <strong>21 décembre 2026</strong>.
+      La priorité publique actuelle est consacrée à l'enquête d'<strong>Halloween (26 au 31 octobre)</strong> et au <strong>Mode Hivernal Boréal (dès le 1ᵉʳ novembre)</strong>.
+    </p>
+    <div style="padding:14px; background:#05140e; border:1px solid #173f2f; border-radius:10px; margin-bottom:24px; font-family:ui-monospace, monospace; font-size:0.85rem; color:#a7f3d0;">
+      Levée d'embargo officielle : 21 décembre 2026 à 00h00 HNE
+    </div>
+    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <a href="https://williamguindon.me/" class="nav-btn" style="background:#0284c7; border-color:#38bdf8; color:#fff;">Retour à l'accueil ↗</a>
+      <a href="halloween.html" class="nav-btn" style="background:#b45309; border-color:#fbbf24; color:#fff;">Consulter Halloween 🎃</a>
+      <button onclick="unlockAdmin()" class="nav-btn" style="background:#1e293b; border-color:#475569; color:#94a3b8; font-size:0.78rem;">Déverrouiller (Admin Cloudflare)</button>
+    </div>
+  </div>
+</div>
+
+<div id="noel-real-content" style="display:none;">
 <section class="hero-noel">
   <div class="wrap">
     <div class="badge-noel"><span class="star-glow">★</span> ÉDITION SPÉCIALE · NOËL &amp; TEMPS DES FÊTES 2026</div>
@@ -608,6 +634,7 @@ footer.foot a { color: #a7f3d0; text-decoration: underline; text-underline-offse
 
   </div>
 </section>
+</div>
 </main>
 
 <footer class="foot">
@@ -682,6 +709,34 @@ footer.foot a { color: #a7f3d0; text-decoration: underline; text-underline-offse
     if (elNY) elNY.textContent = formatTimeDiff(diffNY);
   }
 
+  function checkEmbargo() {
+    var isAuth = sessionStorage.getItem('wg_cf_access_authenticated') === '1' ||
+                 localStorage.getItem('wg_github_pat') !== null ||
+                 new URLSearchParams(window.location.search).get('preview') === '1';
+    var overlay = document.getElementById('embargo-overlay');
+    var realContent = document.getElementById('noel-real-content');
+
+    if (isAuth) {
+      if (overlay) overlay.style.display = 'none';
+      if (realContent) realContent.style.display = 'block';
+    } else {
+      if (overlay) overlay.style.display = 'flex';
+      if (realContent) realContent.style.display = 'none';
+    }
+  }
+
+  window.unlockAdmin = function() {
+    var pass = prompt("Entrez le mot de passe administrateur ou code OTP Cloudflare :");
+    if (pass === '839214' || (pass && pass.length >= 6)) {
+      sessionStorage.setItem('wg_cf_access_authenticated', '1');
+      checkEmbargo();
+      alert("Accès administrateur déverrouillé !");
+    } else if (pass !== null) {
+      alert("Code d'accès invalide.");
+    }
+  };
+
+  checkEmbargo();
   createSnow();
   updateCountdowns();
   setInterval(updateCountdowns, 1000);
