@@ -561,6 +561,7 @@ p.lead {
     </a>
     <div class="nav-links">
       <a class="nav-btn" href="halloween.html">Halloween 🎃</a>
+      <a class="nav-btn" href="noel.html">Noël 🎄</a>
       <a class="nav-btn" href="edition-speciale-reconciliation.html">Réconciliation 🧡</a>
       <a class="nav-btn" href="console-admin.html">Console Admin ⚙️</a>
       <a class="nav-btn" href="https://williamguindon.me/">Site officiel ↗</a>
@@ -651,20 +652,21 @@ p.lead {
           </div>
         </article>
 
-        <!-- Mode 4: Solstice d'Hiver & Fêtes Décembre 2026 -->
+        <!-- Mode 4: Noël & Fêtes Décembre 2026 -->
         <article class="mode-card is-locked embargo-card" id="card-solstice">
           <div class="mode-card-header">
             <div>
-              <div class="mode-title">4. Veillée du Solstice &amp; Bilan Annuel des Fêtes</div>
-              <span class="mode-schedule">21 AU 31 DÉCEMBRE 2026 · NUIT POLAIRE BORÉALE</span>
+              <div class="mode-title">4. Édition Féerique — Noël &amp; Temps des Fêtes Boréales</div>
+              <span class="mode-schedule" style="color:#fbbf24;">21 AU 31 DÉCEMBRE 2026 · VEILLÉE DU SOLSTICE &amp; NUIT POLAIRE</span>
             </div>
             <span class="mode-tag-badge badge-locked locked-tag">EMBARGO CLOUDFLARE</span>
           </div>
           <p class="mode-desc">
-            Rétrospective annuelle des dépôts CCE et mémoire citoyen sous la nuit polaire boréale. Compte à rebours vers la nouvelle année de procédure juridique 2027.
+            Veillée sous la neige sur la Grande Tourbière, vœux officiels de fin d'année 2026, rétrospective des 4 étapes clés de la procédure CCE SEM-26-003, flocons animés légers et palette vert sapin boréal, or stellaire et bleu givre.
           </p>
           <div class="mode-actions">
-            <button class="btn-action lock-btn auth-required-btn" onclick="requestProtectedPreview('solstice')">🔒 Déverrouiller l'aperçu Solstice</button>
+            <a class="btn-action primary" href="noel.html" target="_blank" style="background:#b45309; border-color:#fbbf24;">Ouvrir l'Édition de Noël 🎄</a>
+            <button class="btn-action lock-btn auth-required-btn" onclick="requestProtectedPreview('noel')">🔒 Déverrouiller la simulation Noël</button>
           </div>
         </article>
 
@@ -720,6 +722,11 @@ p.lead {
           <div class="val" id="countdown-winter">Calcul...</div>
         </div>
 
+        <div class="countdown-pill" style="margin-top:10px; border-color:#fbbf2444; background:#1c1607;">
+          <b style="color:#fbbf24;">🎄 Réveillon &amp; Noël 2026 :</b>
+          <div class="val" id="countdown-xmas-state" style="color:#fef08a;">Calcul...</div>
+        </div>
+
         <div class="countdown-pill" style="margin-top:10px; border-color:#ea580c44; background:#1b0f0a;">
           <b style="color:#fb923c;">🧡 Journée Réconciliation 2027 :</b>
           <div class="val" id="countdown-recon" style="color:#fdba74;">Calcul...</div>
@@ -739,8 +746,11 @@ p.lead {
           <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#38bdf888; color:#7dd3fc;" onclick="setSeasonMode('hiver')">
             2. Forcer Mode Hiver ❄️
           </button>
-          <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#fb923c88; color:#fdba74;" onclick="setSeasonMode('automne')">
-            3. Forcer Mode Automne / Halloween 🎃
+          <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#fbbf2488; color:#fef08a;" onclick="setSeasonMode('noel')">
+            3. Forcer Mode Noël &amp; Fêtes 🎄
+          </button>
+          <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#ea580c88; color:#fdba74;" onclick="setSeasonMode('automne')">
+            4. Forcer Mode Automne / Halloween 🎃
           </button>
         </div>
       </div>
@@ -889,7 +899,19 @@ p.lead {
       }
     }
 
-    // 2. Compte à rebours Réconciliation (30 septembre 2027 à 00:00:00 HAE)
+    // 2. Compte à rebours Noël (25 décembre 2026 à 00:00:00 HNE)
+    var targetXmas = new Date("2026-12-25T00:00:00-05:00");
+    var diffXmas = targetXmas.getTime() - m.getTime();
+    var xmasEl = document.getElementById('countdown-xmas-state');
+    if (xmasEl) {
+      if (diffXmas <= 0) {
+        xmasEl.innerHTML = '<span style="color:#fbbf24;">🎄 Joyeux Noël !</span>';
+      } else {
+        xmasEl.textContent = formatDiff(diffXmas);
+      }
+    }
+
+    // 3. Compte à rebours Réconciliation (30 septembre 2027 à 00:00:00 HAE)
     var targetRecon = new Date("2027-09-30T00:00:00-04:00");
     var diffRecon = targetRecon.getTime() - m.getTime();
     var reconEl = document.getElementById('countdown-recon');
@@ -994,8 +1016,9 @@ p.lead {
       openCFModal();
       return;
     }
-    if (modeName === 'solstice') {
-      alert("Simulation active : Mode Solstice d'Hiver 2026 activé en mémoire locale.");
+    if (modeName === 'solstice' || modeName === 'noel') {
+      alert("Simulation active : Mode Noël & Temps des Fêtes 2026 validé ! Redirection vers la veillée de Noël.");
+      window.location.href = 'noel.html';
     } else if (modeName === 'salamandre') {
       alert("Simulation active : Protocole d'alerte BAPE 371 (Salamandre à quatre orteils - 15 mars/avril 2027) prêt.");
     } else if (modeName === 'reconciliation') {
@@ -1014,6 +1037,11 @@ p.lead {
       localStorage.setItem('wg_season_mode', 'hiver');
       sessionStorage.setItem('wg_frozen', '1');
       alert("Mode Hiver forcé en local ! La page d'accueil et Halloween afficheront le thème givré.");
+    } else if (mode === 'noel') {
+      localStorage.setItem('wg_season_mode', 'noel');
+      sessionStorage.setItem('wg_frozen', '1');
+      alert("Mode Noël & Fêtes forcé en local ! Redirection vers l'édition de Noël...");
+      window.location.href = 'noel.html';
     } else if (mode === 'automne') {
       localStorage.setItem('wg_season_mode', 'automne');
       sessionStorage.removeItem('wg_frozen');
