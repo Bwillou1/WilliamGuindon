@@ -455,10 +455,94 @@ footer a {color:var(--gold)}
   html {scroll-behavior:auto}
   .toxic-smoke,.toxic-bubble,.pulse-dot {animation:none}
 }
+
+/* --- MODE HIVERNAL & GEL DU TOXIQUE (1ER NOVEMBRE) --- */
+body.is-frozen {
+  --bg: #071216;
+  --panel: #0d1e24;
+  --line: #193845;
+  --toxic: #38bdf8;
+  --toxic-glow: rgba(56, 189, 248, 0.45);
+  --toxic-dark: #082f49;
+  --gold: #7dd3fc;
+  --cream: #f0f9ff;
+  --muted: #94a3b8;
+}
+body.is-frozen .hero {
+  background-image: linear-gradient(90deg, #050f14f2 0%, #050f14c9 48%, #050f1440 100%), linear-gradient(0deg, var(--bg), transparent 45%), url('assets/media/tourbiere-hero-3d-hiver.webp'), url('assets/media/tourbiere-hero-3d-hiver.jpg');
+}
+.frozen-banner {
+  display: none;
+  background: linear-gradient(90deg, #082f49, #0c4a6e);
+  border-bottom: 1px solid #38bdf8;
+  color: #e0f2fe;
+  padding: 12px 0;
+  font-size: .88rem;
+  text-align: center;
+  font-weight: 650;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+body.is-frozen .frozen-banner {
+  display: block;
+}
+body.is-frozen .toxic-curtain {
+  display: block !important;
+  opacity: 0.95;
+}
+body.is-frozen .toxic-smoke {
+  background: radial-gradient(circle at 50% 80%, rgba(56, 189, 248, 0.3) 0%, rgba(8, 47, 73, 0.8) 60%, rgba(7, 18, 22, 0.98) 100%);
+  animation: none !important;
+}
+body.is-frozen .toxic-bubble {
+  animation: none !important;
+  fill: #bae6fd !important;
+  filter: drop-shadow(0 0 6px #38bdf8);
+}
+body.is-frozen .toxic-curtain svg path {
+  fill: #0c4a6e !important;
+}
+body.is-frozen .unlocked-pill {
+  background: #082f49;
+  border-color: #38bdf8;
+  color: #7dd3fc;
+}
+body.is-frozen .pulse-dot {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+}
+body.is-frozen .art-overlay-seal {
+  background: rgba(8, 47, 73, 0.92);
+  border-color: #38bdf8;
+  box-shadow: 0 0 35px rgba(0,0,0,0.85), 0 0 20px rgba(56, 189, 248, 0.35);
+}
+body.is-frozen .seal-badge {
+  background: #0369a1;
+  border-color: #38bdf8;
+  color: #e0f2fe;
+}
+body.is-frozen .opening-highlight {
+  background: linear-gradient(135deg, #0c4a6e, #072538);
+  border-color: #38bdf8;
+  border-left-color: #7dd3fc;
+}
+body.is-frozen .countdown-box {
+  background: #08212e;
+  border-color: #38bdf866;
+}
+body.is-frozen .cd-block {
+  background: #0c3347;
+  border-color: #38bdf844;
+}
+body.is-frozen .cd-num {
+  color: #7dd3fc;
+  text-shadow: 0 0 12px rgba(125, 211, 252, 0.5);
+}
+
 </style>
 </head>
 <body>
 <header class="nav"><div class="wrap navin"><a class="brand" href="https://williamguindon.me/">WILLIAM GUINDON<small>Grande Tourbière · dossier public</small></a><div class="nav-actions"><a class="cta" href="https://williamguindon.me/liens">Répertoire complet ↗</a></div></div></header>
+<div class="frozen-banner"><div class="wrap">🧊 <strong>Le 1ᵉʳ novembre, la Grande Tourbière a gelé.</strong> L'enquête d'Halloween est scellée sous la glace et conservée comme archive probatoire permanente.</div></div>
 
 <section class="top-directory" id="top-links" aria-label="Liens essentiels"><div class="wrap"><div class="topdir-head"><h2>Liens essentiels</h2><p>Comprendre · consulter les pièces · agir</p></div><nav class="topgrid" aria-label="Liens essentiels du site"><a href="https://williamguindon.me/apercu.html"><b>Comprendre le dossier</b><span>Résumé SEM-26-003</span></a><a href="https://williamguindon.me/viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf"><b>Observations déposées</b><span>Lire le PDF</span></a><a href="https://williamguindon.me/registre-cce-sem26003.html"><b>Registre CCE</b><span>Suivre la communication</span></a><a href="https://williamguindon.me/blog.html#lobbyisme-septembre-2026"><b>Enquête lobbyisme</b><span>Rapport et chronologie</span></a><a href="https://williamguindon.me/agir.html"><b>Comment agir</b><span>S’informer et participer</span></a><a href="https://williamguindon.me/liens"><b>Tous les liens du site</b><span>Voir le répertoire complet</span></a></nav></div></section>
 
@@ -904,6 +988,13 @@ footer a {color:var(--gold)}
 
   var urlParams = new URLSearchParams(window.location.search);
   var isPreviewAll = urlParams.get('preview') === 'all' || urlParams.get('preview') === '1' || sessionStorage.getItem('wg_halloween_preview') === '1';
+
+  // Détection du mode gelé (1er novembre automatique ou forcé)
+  var isFrozen = urlParams.get('frozen') === '1' || urlParams.get('mode') === 'hiver' || sessionStorage.getItem('wg_frozen') === '1' || (getMontrealDate() >= new Date("2026-11-01T00:00:00-04:00"));
+  if (isFrozen) {
+    document.body.classList.add('is-frozen');
+    isPreviewAll = true; // Tous les dossiers sont révélés sous la glace après Halloween
+  }
 
   function decodeB64(str) {
     try {

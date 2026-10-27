@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<script src="assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#091214">
+<meta name="description" content="Tableau de bord de transition saisonnière et état du site de William Guindon — Mode automne, hivernal boréal et cryogénisation d'Halloween.">
+<title>État du Site & Transition Hivernale (1ᵉʳ Novembre 2026) | William Guindon</title>
+<link rel="canonical" href="https://williamguindon.me/state.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/state.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/state.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+<link rel="alternate" type="text/plain" href="https://williamguindon.me/llms-full.txt" title="SEM-26-003 Full Plain-Text Knowledge Base">
+<link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
+<style>
+:root {
+  --bg: #071013;
+  --panel: #0d1a20;
+  --panel-card: #12242c;
+  --cream: #f0f9ff;
+  --muted: #94a3b8;
+  --line: #1e3a47;
+  --cyan: #38bdf8;
+  --cyan-deep: #0284c7;
+  --cyan-glow: rgba(56, 189, 248, 0.4);
+  --green: #22c55e;
+  --green-glow: rgba(34, 197, 94, 0.4);
+  --gold: #e0b36c;
+  --max: 1100px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  padding-bottom: 80px;
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.wrap { width: min(var(--max), calc(100% - 40px)); margin: auto; }
+
+header.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 0;
+  background: rgba(7, 16, 19, 0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.navin { display: flex; justify-content: space-between; align-items: center; }
+.brand { font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; }
+.brand small { display: block; color: var(--muted); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+.nav-links { display: flex; gap: 12px; align-items: center; }
+.nav-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  font-weight: 650;
+  background: #0d1e26;
+  color: #e2e8f0;
+}
+.nav-btn:hover { border-color: var(--cyan); background: #132a35; }
+
+.hero-state {
+  padding: 50px 0 35px;
+  border-bottom: 1px solid var(--line);
+  background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+}
+.badge-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: #082f49;
+  border: 1px solid var(--cyan);
+  color: #7dd3fc;
+  margin-bottom: 16px;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  animation: pulseDot 2s infinite;
+}
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.2)} }
+
+h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 14px;
+  color: #ffffff;
+}
+p.lead {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 780px;
+}
+
+.grid-cols {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 28px;
+  margin-top: 36px;
+}
+@media (max-width: 860px) {
+  .grid-cols { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 750;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+.card p {
+  color: var(--muted);
+  font-size: 0.93rem;
+  margin-bottom: 18px;
+}
+
+.switch-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+.mode-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--panel-card);
+  border: 1.5px solid var(--line);
+  cursor: pointer;
+  transition: all .25s ease;
+}
+.mode-option:hover {
+  border-color: var(--cyan);
+  background: #172d38;
+}
+.mode-option.active {
+  border-color: var(--cyan);
+  background: #08283a;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+}
+.mode-info b {
+  display: block;
+  font-size: 1rem;
+  color: #f8fafc;
+  margin-bottom: 3px;
+}
+.mode-info span {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.mode-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tag-auto { background: #052e16; color: #4ade80; border: 1px solid #22c55e66; }
+.tag-winter { background: #082f49; color: #7dd3fc; border: 1px solid #38bdf866; }
+.tag-autumn { background: #451a03; color: #fb923c; border: 1px solid #ea580c66; }
+
+.winter-preview-box {
+  margin-top: 24px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  position: relative;
+  background: #050c0e;
+}
+.winter-preview-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+.winter-caption {
+  padding: 12px 16px;
+  background: #0a161b;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+
+.color-swatch-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.swatch-item {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel-card);
+}
+.swatch-bar {
+  height: 38px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.swatch-label { font-size: 0.82rem; font-weight: 700; color: #ffffff; }
+.swatch-sub { font-size: 0.74rem; color: var(--muted); }
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: #0369a1;
+  color: #ffffff;
+  border: 1px solid #38bdf8;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+}
+.quick-btn:hover { background: #0284c7; }
+.quick-btn.sec {
+  background: #11232c;
+  border-color: var(--line);
+  color: #e2e8f0;
+  box-shadow: none;
+}
+.quick-btn.sec:hover { border-color: var(--cyan); background: #172e3a; }
+
+.status-clock {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  margin-bottom: 8px;
+}
+.clock-sub { font-size: 0.78rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="https://williamguindon.me/">WILLIAM GUINDON<small>Panneau d'état &amp; Saison</small></a>
+    <div class="nav-links">
+      <a class="nav-btn" href="halloween.html">Halloween ↗</a>
+      <a class="nav-btn" href="https://williamguindon.me/">Site officiel ↗</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero-state">
+  <div class="wrap">
+    <div class="badge-state"><span class="pulse-dot"></span> TABLEAU DE BORD DE TRANSITION · 1ER NOVEMBRE 2026</div>
+    <h1>État du site &amp; Mode Hivernal Boréal</h1>
+    <p class="lead">Ce tableau de bord permet de tester et contrôler le basculement automatique du site entre le mode automnal (Halloween) et le mode hivernal boréal (Grande Tourbière sous la neige et le gel).</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="grid-cols">
+    
+    <!-- Colonne gauche : Commutateur de saison -->
+    <div class="card">
+      <h2>⚙️ Sélecteur de mode saisonnier</h2>
+      <p>Choisissez le mode d'affichage pour tester le comportement en direct sur votre navigateur ou laisser le programmateur automatique gérer la transition.</p>
+
+      <div class="switch-panel">
+        
+        <div class="mode-option" id="opt-auto" onclick="setSeasonMode('auto')">
+          <div class="mode-info">
+            <b>1. Bascule automatique (Recommandé)</b>
+            <span>Automne jusqu'au 31 oct. 23h59 · Passe en Hiver le 1ᵉʳ nov. à 00h00</span>
+          </div>
+          <span class="mode-tag tag-auto" id="tag-auto-active">ACTIF</span>
+        </div>
+
+        <div class="mode-option" id="opt-winter" onclick="setSeasonMode('hiver')">
+          <div class="mode-info">
+            <b>2. Forcer le Mode Hivernal Boréal</b>
+            <span>Photo sous la neige 3D, depth map active, palette givre &amp; Halloween congelé</span>
+          </div>
+          <span class="mode-tag tag-winter">APERÇU HIVER</span>
+        </div>
+
+        <div class="mode-option" id="opt-autumn" onclick="setSeasonMode('automne')">
+          <div class="mode-info">
+            <b>3. Forcer le Mode Automne / Halloween</b>
+            <span>Tourbière automnale, compte à rebours d'Halloween actif jusqu'à minuit</span>
+          </div>
+          <span class="mode-tag tag-autumn">APERÇU AUTOMNE</span>
+        </div>
+
+      </div>
+
+      <div style="margin-top: 24px;">
+        <h3 style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">Accès directs de test :</h3>
+        <div class="quick-links">
+          <a class="quick-btn" href="halloween.html?frozen=1" target="_blank">Tester Halloween gelé 🧊</a>
+          <a class="quick-btn sec" href="https://williamguindon.me/?mode=hiver" target="_blank">Tester l'accueil en Hiver ❄️</a>
+          <a class="quick-btn sec" href="halloween.html" target="_blank">Halloween normal 🎃</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite : Horloge officielle et aperçu visuel -->
+    <div>
+      <div class="card" style="margin-bottom: 24px;">
+        <h2>🕒 Horloge officielle de Montréal</h2>
+        <div class="status-clock" id="montreal-clock">--:--:--</div>
+        <div class="clock-sub" id="countdown-to-nov">Calcul du temps restant avant le 1ᵉʳ novembre...</div>
+      </div>
+
+      <div class="card">
+        <h2>🌲 Nouvelle vue aérienne sous la neige</h2>
+        <p>Photographie haute définition de la Grande Tourbière enneigée avec relief stéréoscopique 3D (Curtains.js) :</p>
+        
+        <div class="winter-preview-box">
+          <img class="winter-preview-img" src="assets/media/tourbiere-hero-3d-hiver.webp" alt="Grande Tourbière de Blainville sous la neige">
+          <div class="winter-caption">
+            <span>tourbiere-hero-3d-hiver.webp</span>
+            <span style="color:#38bdf8;">Depth Map intégrée ✔</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.95rem; margin-top: 18px; color: #ffffff;">Nuances de la palette recommandée :</h3>
+        <div class="color-swatch-box">
+          <div class="swatch-item">
+            <div class="swatch-bar" style="background:#0b1612; border:1px solid #1e3a47;"></div>
+            <div class="swatch-label">Vert boréal sombre</div>
+            <div class="swatch-sub">Fond conifère (#0b1612)</div>
+          </div>
+          <div class="swatch-item">
+            <div class="swatch-bar" style="background:#38bdf8; box-shadow:0 0 10px rgba(56,189,248,0.5);"></div>
+            <div class="swatch-label">Bleu glacier boréal</div>
+            <div class="swatch-sub">Accents &amp; givre (#38bdf8)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  function getMontrealDate() {
+    try {
+      var str = new Date().toLocaleString("en-US", { timeZone: "America/Montreal" });
+      return new Date(str);
+    } catch(e) {
+      return new Date();
+    }
+  }
+
+  function updateClock() {
+    var m = getMontrealDate();
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    
+    var clockEl = document.getElementById('montreal-clock');
+    if (clockEl) {
+      clockEl.textContent = pad(m.getHours()) + ':' + pad(m.getMinutes()) + ':' + pad(m.getSeconds()) + ' HAE';
+    }
+
+    var targetNov = new Date("2026-11-01T00:00:00-04:00");
+    var diffMs = targetNov.getTime() - m.getTime();
+    var cdEl = document.getElementById('countdown-to-nov');
+    if (cdEl) {
+      if (diffMs <= 0) {
+        cdEl.innerHTML = '<strong style="color:#38bdf8;">🧊 Le 1ᵉʳ novembre est atteint : mode hivernal actif !</strong>';
+      } else {
+        var totalSec = Math.floor(diffMs / 1000);
+        var days = Math.floor(totalSec / 86400);
+        var hours = Math.floor((totalSec % 86400) / 3600);
+        var mins = Math.floor((totalSec % 3600) / 60);
+        cdEl.textContent = 'Bascule automatique dans : ' + days + 'j ' + hours + 'h ' + mins + 'm';
+      }
+    }
+  }
+
+  window.setSeasonMode = function(mode) {
+    if (mode === 'auto') {
+      localStorage.removeItem('wg_season_mode');
+      sessionStorage.removeItem('wg_frozen');
+    } else if (mode === 'hiver') {
+      localStorage.setItem('wg_season_mode', 'hiver');
+      sessionStorage.setItem('wg_frozen', '1');
+    } else if (mode === 'automne') {
+      localStorage.setItem('wg_season_mode', 'automne');
+      sessionStorage.removeItem('wg_frozen');
+    }
+    updateOptionUI();
+  };
+
+  function updateOptionUI() {
+    var current = localStorage.getItem('wg_season_mode') || 'auto';
+    document.querySelectorAll('.mode-option').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    
+    var activeEl = document.getElementById('opt-' + (current === 'auto' ? 'auto' : (current === 'hiver' ? 'winter' : 'autumn')));
+    if (activeEl) activeEl.classList.add('active');
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  updateOptionUI();
+})();
+</script>
+</body>
+</html>

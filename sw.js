@@ -1,7 +1,8 @@
-const CACHE_NAME = 'wg-pwa-v185';
+const CACHE_NAME = 'wg-pwa-v186';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/state.html',
   '/halloween.html',
   '/adultisme.html',
   '/satellite.html',

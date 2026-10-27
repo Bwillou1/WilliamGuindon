@@ -265,6 +265,22 @@
 
     const CACHE_KEY = 'v=20261009-v13-aerial3d';
 
+    // Détection de la saison : bascule automatique au 1er novembre ou forçage preview
+    const isWinterSeason = (() => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'hiver' || localStorage.getItem('wg_season_mode') === 'hiver') return true;
+        if (urlParams.get('mode') === 'automne' || localStorage.getItem('wg_season_mode') === 'automne') return false;
+        const montrealStr = new Date().toLocaleString("en-US", { timeZone: "America/Montreal" });
+        return new Date(montrealStr) >= new Date("2026-11-01T00:00:00-04:00");
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    const heroPhotoBase = isWinterSeason ? 'tourbiere-hero-3d-hiver' : 'tourbiere-hero-3d';
+    const heroDepthBase = isWinterSeason ? 'tourbiere-hero-depth-hiver' : 'tourbiere-hero-depth';
+
     const imgPhoto = new Image();
     imgPhoto.crossOrigin = 'anonymous';
     imgPhoto.onload = () => {
@@ -274,10 +290,10 @@
     };
     imgPhoto.onerror = () => {
       if (imgPhoto.src.includes('.webp')) {
-        imgPhoto.src = '/assets/media/tourbiere-hero-3d.jpg?' + CACHE_KEY;
+        imgPhoto.src = `/assets/media/${heroPhotoBase}.jpg?` + CACHE_KEY;
       }
     };
-    imgPhoto.src = '/assets/media/tourbiere-hero-3d.webp?' + CACHE_KEY;
+    imgPhoto.src = `/assets/media/${heroPhotoBase}.webp?` + CACHE_KEY;
     if (imgPhoto.complete && imgPhoto.naturalWidth) {
       imgPhoto.onload();
     }
@@ -289,10 +305,10 @@
     };
     imgDepth.onerror = () => {
       if (imgDepth.src.includes('.webp')) {
-        imgDepth.src = '/assets/media/tourbiere-hero-depth.png?' + CACHE_KEY;
+        imgDepth.src = `/assets/media/${heroDepthBase}.png?` + CACHE_KEY;
       }
     };
-    imgDepth.src = '/assets/media/tourbiere-hero-depth.webp?' + CACHE_KEY;
+    imgDepth.src = `/assets/media/${heroDepthBase}.webp?` + CACHE_KEY;
     if (imgDepth.complete && imgDepth.naturalWidth) {
       imgDepth.onload();
     }
