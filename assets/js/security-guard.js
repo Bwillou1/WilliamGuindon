@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
+  const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io', 'guindon-security.cloudflareaccess.com'];
   const STORAGE_KEY = 'wg_radical_site_state';
 
   // Ne pas bloquer la console admin, l'espace d'administration ni l'éditeur
@@ -236,9 +236,9 @@
   // CONTRÔLE D'HÔTE / ANTI-FORK / ANTI-REVERSE-PROXY
   function isAllowedHost(host) {
     if (!host) return true;
-    const lower = host.toLowerCase();
+    const lower = host.toLowerCase().split(':')[0]; // Retirer le port éventuel
     if (ALLOWED_HOSTS.includes(lower)) return true;
-    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io') || lower.endsWith('.pages.dev') || lower.endsWith('.local') || lower.endsWith('.ngrok.io') || lower.endsWith('.loca.lt')) return true;
+    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io') || lower.endsWith('.pages.dev') || lower.endsWith('.netlify.app') || lower.endsWith('.vercel.app') || lower.endsWith('.cloudflareaccess.com') || lower.endsWith('.local') || lower.endsWith('.ngrok.io') || lower.endsWith('.loca.lt') || /^192\.168\./.test(lower) || /^10\./.test(lower) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(lower)) return true;
     return false;
   }
 

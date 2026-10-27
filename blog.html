@@ -1504,7 +1504,15 @@
     const grid = document.getElementById("blog-posts-grid");
     const empty = document.getElementById("blog-empty-state");
     try {
-      const res = await fetch("data/blog.json", { cache: "no-cache" });
+      let res;
+      try {
+        res = await fetch("data/blog.json", { cache: "no-cache" });
+      } catch (_) {
+        res = await fetch("/data/blog.json", { cache: "no-cache" });
+      }
+      if (!res || !res.ok) {
+        res = await fetch("/data/blog.json", { cache: "no-cache" });
+      }
       if (!res.ok) throw new Error("Erreur chargement données blog");
       allPosts = await res.json();
       renderPosts(allPosts);
@@ -1516,8 +1524,8 @@
         if (target) openArticleModal(target);
       }
     } catch (e) {
-      console.error(e);
-      grid.innerHTML = "<p class='text-muted'>Impossible de charger les articles pour le moment.</p>";
+      console.warn("Chargement distant des articles :", e);
+      // Garder les articles HTML déjà en place
     }
   }
 
@@ -1562,9 +1570,8 @@
   function isSafeLinkUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') return false;
     const trimmed = rawUrl.trim();
-    if (trimmed.startsWith('#') || trimmed.startsWith('/') || /^[a-zA-Z0-9_\-\.\/]+\.html(?:#[a-zA-Z0-9_\-]+)?$/i.test(trimmed)) {
-      return true;
-    }
+    if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./')) return true;
+    if (/^[a-zA-Z0-9_\-\.\/]+\.html(?:[\?#].*)?$/i.test(trimmed)) return true;
     try {
       const parsed = new URL(trimmed, window.location.origin);
       return parsed.protocol === 'http:' || parsed.protocol === 'https:' || parsed.protocol === 'mailto:';
@@ -1585,9 +1592,17 @@
         if (!isSafeLinkUrl(rawUrl)) {
           return linkText;
         }
-        const isExternal = rawUrl.startsWith('http');
+        const isExternal = rawUrl.startsWith('http') && !rawUrl.includes(window.location.hostname);
         const safeUrl = rawUrl.replace(/"/g, '&quot;');
         return `<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${linkText}${isExternal ? ' ↗' : ''}</a>`;
+      })
+      .replace(/(^|[\s(])(https?:\/\/[^\s<)"']+)/g, (match, prefix, rawUrl) => {
+        const cleanUrl = rawUrl.replace(/[.,;:]+$/, '');
+        const trailing = rawUrl.slice(cleanUrl.length);
+        if (!isSafeLinkUrl(cleanUrl)) return match;
+        const isExternal = !cleanUrl.includes(window.location.hostname);
+        const safeUrl = cleanUrl.replace(/"/g, '&quot;');
+        return `${prefix}<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${cleanUrl}${isExternal ? ' ↗' : ''}</a>${trailing}`;
       });
   }
 
