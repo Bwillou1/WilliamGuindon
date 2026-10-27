@@ -10,7 +10,7 @@
   const STORAGE_KEY = 'wg_radical_site_state';
 
   // Ne pas bloquer la console admin, l'espace d'administration ni l'éditeur
-  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html');
+  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html') || window.location.pathname.includes('state.html');
   if (isConsolePage) return;
 
   const currentPath = window.location.pathname.toLowerCase();

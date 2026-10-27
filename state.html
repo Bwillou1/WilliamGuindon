@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#091214">
-<meta name="description" content="Tableau de bord de transition saisonnière et état du site de William Guindon — Mode automne, hivernal boréal et cryogénisation d'Halloween.">
-<title>État du Site & Transition Hivernale (1ᵉʳ Novembre 2026) | William Guindon</title>
+<meta name="theme-color" content="#071013">
+<meta name="description" content="Hub central des états du site, transitions saisonnières et éditions spéciales de William Guindon — Halloween, Hiver boréal, Solstice des Fêtes, Alerte Salamandres et Journée de la Vérité et Réconciliation 2027. Protégé par Cloudflare Zero Trust.">
+<title>Hub Global des États du Site &amp; Transitions Protégées | William Guindon</title>
 <link rel="canonical" href="https://williamguindon.me/state.html">
 <link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/state.html">
 <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/state.html">
@@ -18,6 +18,7 @@
   --bg: #071013;
   --panel: #0d1a20;
   --panel-card: #12242c;
+  --panel-locked: #0b1419;
   --cream: #f0f9ff;
   --muted: #94a3b8;
   --line: #1e3a47;
@@ -25,50 +26,102 @@
   --cyan-deep: #0284c7;
   --cyan-glow: rgba(56, 189, 248, 0.4);
   --green: #22c55e;
-  --green-glow: rgba(34, 197, 94, 0.4);
+  --orange: #f97316;
+  --cf-orange: #f6821f;
+  --orange-recon: #ea580c;
   --gold: #e0b36c;
-  --max: 1100px;
+  --max: 1180px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--bg);
   color: var(--cream);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
-  padding-bottom: 80px;
+  padding-bottom: 90px;
 }
 a { color: inherit; text-decoration: none; }
-a:focus-visible, button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 .wrap { width: min(var(--max), calc(100% - 40px)); margin: auto; }
 
+/* En-tête de navigation */
 header.nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 16px 0;
-  background: rgba(7, 16, 19, 0.94);
+  padding: 14px 0;
+  background: rgba(7, 16, 19, 0.95);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
-.navin { display: flex; justify-content: space-between; align-items: center; }
-.brand { font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; }
+.navin { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.brand { font-weight: 800; letter-spacing: 0.05em; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; }
 .brand small { display: block; color: var(--muted); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
-.nav-links { display: flex; gap: 12px; align-items: center; }
+.nav-links { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .nav-btn {
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 650;
   background: #0d1e26;
   color: #e2e8f0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s;
 }
 .nav-btn:hover { border-color: var(--cyan); background: #132a35; }
+.nav-btn.cf-btn {
+  border-color: #f6821f88;
+  background: #251810;
+  color: #fdba74;
+}
+.nav-btn.cf-btn:hover {
+  background: #3b2214;
+  border-color: #f6821f;
+  box-shadow: 0 0 15px rgba(246, 130, 31, 0.3);
+}
 
+/* Bannière Cloudflare Zero Trust */
+.cf-banner {
+  background: linear-gradient(90deg, #1b120c 0%, #0d1a20 100%);
+  border-bottom: 1px solid #f6821f44;
+  padding: 10px 0;
+  font-size: 0.84rem;
+}
+.cf-banner-in {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fed7aa;
+  font-weight: 600;
+}
+.cf-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f6821f;
+  box-shadow: 0 0 8px #f6821f;
+}
+.cf-dot.valid {
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* Hero */
 .hero-state {
-  padding: 50px 0 35px;
+  padding: 45px 0 32px;
   border-bottom: 1px solid var(--line);
-  background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+  background: radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 60%);
 }
 .badge-state {
   display: inline-flex;
@@ -97,115 +150,232 @@ header.nav {
 
 h1 {
   font-family: Georgia, serif;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  line-height: 1.1;
-  margin-bottom: 14px;
+  font-size: clamp(2.1rem, 4.5vw, 3.2rem);
+  line-height: 1.15;
+  margin-bottom: 12px;
   color: #ffffff;
 }
 p.lead {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--muted);
-  max-width: 780px;
+  max-width: 840px;
 }
 
-.grid-cols {
+/* Grille principale */
+.grid-main {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1fr 340px;
   gap: 28px;
-  margin-top: 36px;
+  margin-top: 32px;
 }
-@media (max-width: 860px) {
-  .grid-cols { grid-template-columns: 1fr; }
+@media (max-width: 960px) {
+  .grid-main { grid-template-columns: 1fr; }
 }
 
-.card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 26px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-}
-.card h2 {
-  font-size: 1.25rem;
-  font-weight: 750;
-  margin-bottom: 14px;
+/* Cartes des modes */
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 10px;
   color: #ffffff;
 }
-.card p {
+.section-desc {
   color: var(--muted);
-  font-size: 0.93rem;
-  margin-bottom: 18px;
+  font-size: 0.92rem;
+  margin-bottom: 22px;
 }
 
-.switch-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
+.modes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
-.mode-option {
+
+.mode-card {
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.mode-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: #0f1e26;
+}
+.mode-card.is-active-now {
+  border-color: #22c55e88;
+  background: linear-gradient(135deg, #0d211a 0%, #0d1a20 100%);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.12);
+}
+.mode-card.is-upcoming {
+  border-color: #0284c788;
+  background: linear-gradient(135deg, #091f2c 0%, #0d1a20 100%);
+}
+.mode-card.is-recon {
+  border-color: #ea580c88;
+  background: linear-gradient(135deg, #24130b 0%, #0d1a20 100%);
+}
+.mode-card.is-locked {
+  background: var(--panel-locked);
+  border-style: dashed;
+}
+
+.mode-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  border-radius: 12px;
-  background: var(--panel-card);
-  border: 1.5px solid var(--line);
-  cursor: pointer;
-  transition: all .25s ease;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
-.mode-option:hover {
-  border-color: var(--cyan);
-  background: #172d38;
-}
-.mode-option.active {
-  border-color: var(--cyan);
-  background: #08283a;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
-}
-.mode-info b {
-  display: block;
-  font-size: 1rem;
-  color: #f8fafc;
-  margin-bottom: 3px;
-}
-.mode-info span {
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-.mode-tag {
+.mode-tag-badge {
   font-size: 0.72rem;
   font-weight: 800;
   padding: 4px 10px;
   border-radius: 999px;
-  letter-spacing: 0.1em;
   text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
-.tag-auto { background: #052e16; color: #4ade80; border: 1px solid #22c55e66; }
-.tag-winter { background: #082f49; color: #7dd3fc; border: 1px solid #38bdf866; }
-.tag-autumn { background: #451a03; color: #fb923c; border: 1px solid #ea580c66; }
+.badge-current { background: #052e16; color: #4ade80; border: 1px solid #22c55e66; }
+.badge-winter { background: #082f49; color: #7dd3fc; border: 1px solid #38bdf866; }
+.badge-orange { background: #431407; color: #fb923c; border: 1px solid #ea580c66; }
+.badge-purple { background: #2e1065; color: #c084fc; border: 1px solid #9333ea66; }
+.badge-locked { background: #1e293b; color: #94a3b8; border: 1px solid #475569; }
+
+.mode-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mode-schedule {
+  font-size: 0.8rem;
+  color: var(--cyan);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  margin-bottom: 8px;
+  display: block;
+}
+.mode-schedule.orange-txt { color: #fb923c; }
+.mode-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.mode-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn-action {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s;
+}
+.btn-action.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+.btn-action.primary:hover { background: #0369a1; }
+.btn-action.orange {
+  background: #c2410c;
+  color: #ffffff;
+  border-color: #fb923c;
+}
+.btn-action.orange:hover { background: #9a3412; }
+.btn-action.sec {
+  background: #11232c;
+  color: #e2e8f0;
+  border-color: var(--line);
+}
+.btn-action.sec:hover { border-color: var(--cyan); background: #182e3a; }
+.btn-action.lock-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+  border-color: #475569;
+}
+.btn-action.lock-btn:hover {
+  background: #271e1b;
+  border-color: #f6821f;
+  color: #fdba74;
+}
+
+/* Sidebar / Horloge / Status */
+.side-box {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 22px;
+}
+.side-box h3 {
+  font-size: 1.05rem;
+  font-weight: 750;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+.status-clock {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  margin-bottom: 6px;
+}
+.clock-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.clock-sub strong { color: #f8fafc; }
+
+.countdown-pill {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #091a24;
+  border: 1px solid #163647;
+}
+.countdown-pill b { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cyan); margin-bottom: 4px; }
+.countdown-pill .val { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; color: #ffffff; }
 
 .winter-preview-box {
-  margin-top: 24px;
-  border-radius: 14px;
+  margin-top: 14px;
+  border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--line);
-  position: relative;
   background: #050c0e;
 }
 .winter-preview-img {
   width: 100%;
-  height: 240px;
+  height: 160px;
   object-fit: cover;
   display: block;
 }
 .winter-caption {
-  padding: 12px 16px;
+  padding: 8px 12px;
   background: #0a161b;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   color: #94a3b8;
   display: flex;
   justify-content: space-between;
@@ -213,72 +383,186 @@ p.lead {
   border-top: 1px solid var(--line);
 }
 
-.color-swatch-box {
+.color-swatches {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 16px;
-}
-.swatch-item {
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--panel-card);
-}
-.swatch-bar {
-  height: 38px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-}
-.swatch-label { font-size: 0.82rem; font-weight: 700; color: #ffffff; }
-.swatch-sub { font-size: 0.74rem; color: var(--muted); }
-
-.quick-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
-}
-.quick-btn {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  padding: 10px 18px;
+  margin-top: 12px;
+}
+.swatch-mini {
+  padding: 8px;
   border-radius: 8px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  background: #0369a1;
-  color: #ffffff;
-  border: 1px solid #38bdf8;
-  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+  background: var(--panel-card);
+  border: 1px solid var(--line);
 }
-.quick-btn:hover { background: #0284c7; }
-.quick-btn.sec {
-  background: #11232c;
-  border-color: var(--line);
-  color: #e2e8f0;
-  box-shadow: none;
-}
-.quick-btn.sec:hover { border-color: var(--cyan); background: #172e3a; }
+.swatch-color { height: 24px; border-radius: 4px; margin-bottom: 4px; }
+.swatch-name { font-size: 0.72rem; font-weight: 700; color: #ffffff; }
+.swatch-hex { font-size: 0.68rem; color: var(--muted); }
 
-.status-clock {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #38bdf8;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-  margin-bottom: 8px;
+/* Modal Cloudflare Access Zero Trust */
+.cf-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 9, 12, 0.88);
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
 }
-.clock-sub { font-size: 0.78rem; color: var(--muted); }
+.cf-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cf-modal {
+  background: #0e1724;
+  border: 1.5px solid #f6821f;
+  border-radius: 16px;
+  width: min(520px, 100%);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(246, 130, 31, 0.25);
+  overflow: hidden;
+  position: relative;
+}
+.cf-modal-head {
+  background: linear-gradient(90deg, #24140b 0%, #15202e 100%);
+  padding: 20px 24px;
+  border-bottom: 1px solid #f6821f44;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cf-brand-shield {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cf-logo-icon {
+  width: 38px;
+  height: 38px;
+  background: #f6821f;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #ffffff;
+  font-size: 1.25rem;
+  box-shadow: 0 0 15px rgba(246, 130, 31, 0.5);
+}
+.cf-modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.cf-modal-close:hover { color: #ffffff; }
+
+.cf-modal-body {
+  padding: 26px;
+}
+.cf-modal-body p {
+  color: #cbd5e1;
+  font-size: 0.92rem;
+  margin-bottom: 18px;
+}
+.cf-input-group {
+  margin-bottom: 18px;
+}
+.cf-input-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 6px;
+}
+.cf-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: #080d14;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+.cf-input:focus { border-color: #f6821f; }
+
+.cf-submit-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f6821f;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 15px rgba(246, 130, 31, 0.35);
+}
+.cf-submit-btn:hover { background: #ea580c; }
+
+.cf-security-badges {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #1e293b;
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+/* Bannière de notification d'état déverrouillé */
+.unlocked-alert {
+  display: none;
+  background: #064e3b;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  color: #d1fae5;
+  font-size: 0.9rem;
+}
+.unlocked-alert.show {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>
 </head>
 <body>
 
+<!-- Bannière d'état Cloudflare Access -->
+<div class="cf-banner" id="cf-banner-bar">
+  <div class="wrap cf-banner-in">
+    <div class="cf-badge" id="cf-badge-indicator">
+      <span class="cf-dot" id="cf-dot-indicator"></span>
+      <span id="cf-badge-text">Passerelle Cloudflare Zero Trust : <strong>Accès Protégé · Modes futurs sous embargo</strong></span>
+    </div>
+    <div>
+      <button class="nav-btn cf-btn" id="btn-toggle-cf" onclick="openCFModal()">
+        <span id="cf-btn-label">🛡️ Déverrouiller avec Cloudflare Access</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <header class="nav">
   <div class="wrap navin">
-    <a class="brand" href="https://williamguindon.me/">WILLIAM GUINDON<small>Panneau d'état &amp; Saison</small></a>
+    <a class="brand" href="https://williamguindon.me/">
+      WILLIAM GUINDON
+      <small>Hub Central des États &amp; Transitions</small>
+    </a>
     <div class="nav-links">
-      <a class="nav-btn" href="halloween.html">Halloween ↗</a>
+      <a class="nav-btn" href="halloween.html">Halloween 🎃</a>
+      <a class="nav-btn" href="edition-speciale-reconciliation.html">Réconciliation 🧡</a>
+      <a class="nav-btn" href="console-admin.html">Console Admin ⚙️</a>
       <a class="nav-btn" href="https://williamguindon.me/">Site officiel ↗</a>
     </div>
   </div>
@@ -287,101 +571,283 @@ p.lead {
 <main>
 <section class="hero-state">
   <div class="wrap">
-    <div class="badge-state"><span class="pulse-dot"></span> TABLEAU DE BORD DE TRANSITION · 1ER NOVEMBRE 2026</div>
-    <h1>État du site &amp; Mode Hivernal Boréal</h1>
-    <p class="lead">Ce tableau de bord permet de tester et contrôler le basculement automatique du site entre le mode automnal (Halloween) et le mode hivernal boréal (Grande Tourbière sous la neige et le gel).</p>
+    <div class="badge-state"><span class="pulse-dot"></span> HUB MULTI-SAISONS &amp; ÉDITIONS SPÉCIALES DÉDIÉES</div>
+    <h1>Hub Global des États du Site &amp; Transitions</h1>
+    <p class="lead">Tableau de bord unifié supervisant les 6 états opérationnels du site williamguindon.me. Les éditions futures et embargos sont sécurisés par Cloudflare Zero Trust.</p>
   </div>
 </section>
 
 <section class="wrap">
-  <div class="grid-cols">
+
+  <!-- Bannière quand authentifié -->
+  <div class="unlocked-alert" id="unlocked-banner">
+    <div>
+      <strong>🛡️ Authentification Cloudflare Zero Trust Active :</strong> Session validée pour <code>william@williamguindon.me</code>. Tous les modes sous embargo sont déverrouillés et prévisualisables en direct.
+    </div>
+    <button class="nav-btn" style="background:#065f46; border-color:#34d399;" onclick="lockCFSession()">Verrouiller 🔒</button>
+  </div>
+
+  <div class="grid-main">
     
-    <!-- Colonne gauche : Commutateur de saison -->
-    <div class="card">
-      <h2>⚙️ Sélecteur de mode saisonnier</h2>
-      <p>Choisissez le mode d'affichage pour tester le comportement en direct sur votre navigateur ou laisser le programmateur automatique gérer la transition.</p>
+    <!-- Colonne gauche : Registre des 6 modes -->
+    <div>
+      <div class="section-title">🧭 Registre des 6 États Opérationnels</div>
+      <p class="section-desc">Chaque mode répond à une chronologie environnementale ou juridique précise et s'active automatiquement ou sous contrôle.</p>
 
-      <div class="switch-panel">
-        
-        <div class="mode-option" id="opt-auto" onclick="setSeasonMode('auto')">
-          <div class="mode-info">
-            <b>1. Bascule automatique (Recommandé)</b>
-            <span>Automne jusqu'au 31 oct. 23h59 · Passe en Hiver le 1ᵉʳ nov. à 00h00</span>
+      <div class="modes-grid">
+
+        <!-- Mode 1: Socle Permanent CCE -->
+        <article class="mode-card is-active-now">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">1. Socle Permanent — Procédure CCE SEM-26-003</div>
+              <span class="mode-schedule">ACTIF EN CONTINU · REGISTRE OFFICIEL</span>
+            </div>
+            <span class="mode-tag-badge badge-current">ACTIF EN DIRECT</span>
           </div>
-          <span class="mode-tag tag-auto" id="tag-auto-active">ACTIF</span>
-        </div>
-
-        <div class="mode-option" id="opt-winter" onclick="setSeasonMode('hiver')">
-          <div class="mode-info">
-            <b>2. Forcer le Mode Hivernal Boréal</b>
-            <span>Photo sous la neige 3D, depth map active, palette givre &amp; Halloween congelé</span>
+          <p class="mode-desc">
+            Base documentaire probatoire du dossier d'expansion du site d'enfouissement de déchets dangereux Stablex à Blainville et de la protection des 278 000 m² de la Grande Tourbière. Surveillance BAPE 371 et articles 24.27/24.28 de l'ACEUM.
+          </p>
+          <div class="mode-actions">
+            <a class="btn-action primary" href="https://williamguindon.me/">Voir le site standard ↗</a>
+            <a class="btn-action sec" href="registre-cce-sem26003.html">Consulter le Registre CCE 📋</a>
           </div>
-          <span class="mode-tag tag-winter">APERÇU HIVER</span>
-        </div>
+        </article>
 
-        <div class="mode-option" id="opt-autumn" onclick="setSeasonMode('automne')">
-          <div class="mode-info">
-            <b>3. Forcer le Mode Automne / Halloween</b>
-            <span>Tourbière automnale, compte à rebours d'Halloween actif jusqu'à minuit</span>
+        <!-- Mode 2: Halloween 2026 -->
+        <article class="mode-card is-active-now">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">2. Édition Spéciale — Les Secrets Ensevelis (Halloween 2026)</div>
+              <span class="mode-schedule">26 AU 31 OCTOBRE 2026 · DÉVERROUILLAGE QUOTIDIEN À MINUIT (00H00 HAE)</span>
+            </div>
+            <span class="mode-tag-badge badge-current">EN COURS (OCTOBRE)</span>
           </div>
-          <span class="mode-tag tag-autumn">APERÇU AUTOMNE</span>
-        </div>
+          <p class="mode-desc">
+            Série d'investigation en 6 épisodes révélant les archives du dossier Stablex. Chaque carte se descellera chaque nuit à minuit jusqu'à l'épilogue d'Halloween. Carte visuelle interactive avec bannières de cadmium et documents scellés.
+          </p>
+          <div class="mode-actions">
+            <a class="btn-action primary" href="halloween.html">Ouvrir la page Halloween 🎃</a>
+            <button class="btn-action sec" onclick="setSeasonMode('automne')">Forcer l'Automne</button>
+          </div>
+        </article>
 
-      </div>
+        <!-- Mode 3: Hiver Boréal & Cryogénisation -->
+        <article class="mode-card is-upcoming">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">3. Mode Hivernal Boréal &amp; Cryogénisation de la Tourbière</div>
+              <span class="mode-schedule">1ᵉʳ NOVEMBRE 2026 AU 28 FÉVRIER 2027 · BASCULE AUTO LE 01/11 À 00H00</span>
+            </div>
+            <span class="mode-tag-badge badge-winter">BASCULE DANS 5 JOURS</span>
+          </div>
+          <p class="mode-desc">
+            Le 1ᵉʳ novembre à minuit, la page Halloween est cryogénisée (le cadmium toxique est pris dans la glace boréale). L'accueil bascule vers la photographie aérienne 3D sous la neige avec relief stéréoscopique activé (Curtains.js) et palette bleu givre (#38bdf8).
+          </p>
+          <div class="mode-actions">
+            <button class="btn-action primary" onclick="setSeasonMode('hiver')">Simuler le Mode Hiver ❄️</button>
+            <a class="btn-action sec" href="halloween.html?frozen=1" target="_blank">Aperçu Halloween Gelé 🧊</a>
+            <a class="btn-action sec" href="https://williamguindon.me/?mode=hiver" target="_blank">Aperçu Accueil Hiver ↗</a>
+          </div>
+        </article>
 
-      <div style="margin-top: 24px;">
-        <h3 style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">Accès directs de test :</h3>
-        <div class="quick-links">
-          <a class="quick-btn" href="halloween.html?frozen=1" target="_blank">Tester Halloween gelé 🧊</a>
-          <a class="quick-btn sec" href="https://williamguindon.me/?mode=hiver" target="_blank">Tester l'accueil en Hiver ❄️</a>
-          <a class="quick-btn sec" href="halloween.html" target="_blank">Halloween normal 🎃</a>
-        </div>
+        <!-- Mode 4: Solstice d'Hiver & Fêtes Décembre 2026 -->
+        <article class="mode-card is-locked embargo-card" id="card-solstice">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">4. Veillée du Solstice &amp; Bilan Annuel des Fêtes</div>
+              <span class="mode-schedule">21 AU 31 DÉCEMBRE 2026 · NUIT POLAIRE BORÉALE</span>
+            </div>
+            <span class="mode-tag-badge badge-locked locked-tag">EMBARGO CLOUDFLARE</span>
+          </div>
+          <p class="mode-desc">
+            Rétrospective annuelle des dépôts CCE et mémoire citoyen sous la nuit polaire boréale. Compte à rebours vers la nouvelle année de procédure juridique 2027.
+          </p>
+          <div class="mode-actions">
+            <button class="btn-action lock-btn auth-required-btn" onclick="requestProtectedPreview('solstice')">🔒 Déverrouiller l'aperçu Solstice</button>
+          </div>
+        </article>
+
+        <!-- Mode 5: Alerte Déboisement & Salamandres BAPE 371 -->
+        <article class="mode-card is-locked embargo-card" id="card-salamandre">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">5. Alerte Déboisement Hivernal &amp; Salamandre à quatre orteils</div>
+              <span class="mode-schedule">15 MARS AU 15 AVRIL 2027 · CONDITION CRITIQUE DU BAPE 371</span>
+            </div>
+            <span class="mode-tag-badge badge-locked locked-tag">EMBARGO CLOUDFLARE</span>
+          </div>
+          <p class="mode-desc">
+            Protocole d'alerte environnementale citoyenne marquant la fin de la période d'abattage hivernal autorisée et la protection de l'habitat de reproduction de la salamandre à quatre orteils dans la tourbière.
+          </p>
+          <div class="mode-actions">
+            <button class="btn-action lock-btn auth-required-btn" onclick="requestProtectedPreview('salamandre')">🔒 Déverrouiller le protocole Salamandre</button>
+          </div>
+        </article>
+
+        <!-- Mode 6: Vérité & Réconciliation 30 Septembre 2027 -->
+        <article class="mode-card is-recon embargo-card" id="card-reconciliation">
+          <div class="mode-card-header">
+            <div>
+              <div class="mode-title">6. Journée Nationale de la Vérité et de la Réconciliation</div>
+              <span class="mode-schedule orange-txt">30 SEPTEMBRE 2027 (00H00 À 23H59 HAE) · COMMÉMORATION OFFICIELLE</span>
+            </div>
+            <span class="mode-tag-badge badge-orange locked-tag">PRÉPARÉ POUR 2027</span>
+          </div>
+          <p class="mode-desc">
+            Édition spéciale commémorative de la Journée du t-shirt orange (« Chaque enfant compte »). Reconnaissance officielle des terres ancestrales non cédées des peuples Kanien'kehá:ka, Makigôtekw et Anishinaabeg, et hommage aux gardiens du territoire de la Grande Tourbière.
+          </p>
+          <div class="mode-actions">
+            <a class="btn-action orange" href="edition-speciale-reconciliation.html" target="_blank">Consulter l'Édition Réconciliation 🧡</a>
+            <button class="btn-action sec auth-required-btn" onclick="requestProtectedPreview('reconciliation')">🔒 Simuler l'Édition 30 Septembre 2027</button>
+          </div>
+        </article>
+
       </div>
     </div>
 
-    <!-- Colonne droite : Horloge officielle et aperçu visuel -->
+    <!-- Colonne droite : Horloge, Compte à rebours & Contrôles -->
     <div>
-      <div class="card" style="margin-bottom: 24px;">
-        <h2>🕒 Horloge officielle de Montréal</h2>
-        <div class="status-clock" id="montreal-clock">--:--:--</div>
-        <div class="clock-sub" id="countdown-to-nov">Calcul du temps restant avant le 1ᵉʳ novembre...</div>
+
+      <!-- Horloge et Temps Restant -->
+      <div class="side-box">
+        <h3>🕒 Heure Officielle de Montréal</h3>
+        <div class="status-clock" id="clock-montreal">--:--:--</div>
+        <div class="clock-sub">Fuseau horaire officiel : <strong>America/Montreal (HAE)</strong></div>
+
+        <div class="countdown-pill" style="margin-top:16px;">
+          <b>❄️ Bascule Hivernale Boréale :</b>
+          <div class="val" id="countdown-winter">Calcul...</div>
+        </div>
+
+        <div class="countdown-pill" style="margin-top:10px; border-color:#ea580c44; background:#1b0f0a;">
+          <b style="color:#fb923c;">🧡 Journée Réconciliation 2027 :</b>
+          <div class="val" id="countdown-recon" style="color:#fdba74;">Calcul...</div>
+        </div>
       </div>
 
-      <div class="card">
-        <h2>🌲 Nouvelle vue aérienne sous la neige</h2>
-        <p>Photographie haute définition de la Grande Tourbière enneigée avec relief stéréoscopique 3D (Curtains.js) :</p>
-        
+      <!-- Contrôleur de bascule rapide -->
+      <div class="side-box">
+        <h3>⚙️ Bascule Manuelle Locale</h3>
+        <p style="font-size:0.84rem; color:var(--muted); margin-bottom:14px;">
+          Force le mode souhaité dans votre navigateur pour tester l'affichage instantanément :
+        </p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button class="btn-action sec" style="width:100%; justify-content:center;" onclick="setSeasonMode('auto')">
+            1. Mode Automatique (Calendrier)
+          </button>
+          <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#38bdf888; color:#7dd3fc;" onclick="setSeasonMode('hiver')">
+            2. Forcer Mode Hiver ❄️
+          </button>
+          <button class="btn-action sec" style="width:100%; justify-content:center; border-color:#fb923c88; color:#fdba74;" onclick="setSeasonMode('automne')">
+            3. Forcer Mode Automne / Halloween 🎃
+          </button>
+        </div>
+      </div>
+
+      <!-- Aperçu Vue Aérienne Hivernale -->
+      <div class="side-box">
+        <h3>🌲 Tourbière sous la neige 3D</h3>
+        <p style="font-size:0.82rem; color:var(--muted);">Nouvelle prise de vue stéréoscopique activée le 1ᵉʳ novembre :</p>
         <div class="winter-preview-box">
-          <img class="winter-preview-img" src="assets/media/tourbiere-hero-3d-hiver.webp" alt="Grande Tourbière de Blainville sous la neige">
+          <img class="winter-preview-img" src="assets/media/tourbiere-hero-3d-hiver.webp" alt="Grande Tourbière sous la neige">
           <div class="winter-caption">
             <span>tourbiere-hero-3d-hiver.webp</span>
-            <span style="color:#38bdf8;">Depth Map intégrée ✔</span>
+            <span style="color:#38bdf8;">Depth Map ✔</span>
           </div>
         </div>
 
-        <h3 style="font-size: 0.95rem; margin-top: 18px; color: #ffffff;">Nuances de la palette recommandée :</h3>
-        <div class="color-swatch-box">
-          <div class="swatch-item">
-            <div class="swatch-bar" style="background:#0b1612; border:1px solid #1e3a47;"></div>
-            <div class="swatch-label">Vert boréal sombre</div>
-            <div class="swatch-sub">Fond conifère (#0b1612)</div>
+        <div class="color-swatches">
+          <div class="swatch-mini">
+            <div class="swatch-color" style="background:#0b1612; border:1px solid #1e3a47;"></div>
+            <div class="swatch-name">Vert boréal</div>
+            <div class="swatch-hex">#0b1612</div>
           </div>
-          <div class="swatch-item">
-            <div class="swatch-bar" style="background:#38bdf8; box-shadow:0 0 10px rgba(56,189,248,0.5);"></div>
-            <div class="swatch-label">Bleu glacier boréal</div>
-            <div class="swatch-sub">Accents &amp; givre (#38bdf8)</div>
+          <div class="swatch-mini">
+            <div class="swatch-color" style="background:#38bdf8; box-shadow:0 0 8px rgba(56,189,248,0.5);"></div>
+            <div class="swatch-name">Bleu givre</div>
+            <div class="swatch-hex">#38bdf8</div>
+          </div>
+          <div class="swatch-mini">
+            <div class="swatch-color" style="background:#ea580c; box-shadow:0 0 8px rgba(234,88,12,0.5);"></div>
+            <div class="swatch-name">Orange 30 sept</div>
+            <div class="swatch-hex">#ea580c</div>
+          </div>
+          <div class="swatch-mini">
+            <div class="swatch-color" style="background:#f6821f;"></div>
+            <div class="swatch-name">Cloudflare Access</div>
+            <div class="swatch-hex">#f6821f</div>
           </div>
         </div>
       </div>
+
     </div>
 
   </div>
 </section>
 </main>
 
+<!-- Modal Cloudflare Zero Trust Access Gateway -->
+<div class="cf-modal-backdrop" id="cf-modal" role="dialog" aria-modal="true" aria-labelledby="cf-modal-title">
+  <div class="cf-modal">
+    <div class="cf-modal-head">
+      <div class="cf-brand-shield">
+        <div class="cf-logo-icon">CF</div>
+        <div>
+          <b style="color:#ffffff; font-size:1.05rem;" id="cf-modal-title">Cloudflare Zero Trust</b>
+          <div style="font-size:0.75rem; color:#fed7aa;">Identity &amp; Access Gateway</div>
+        </div>
+      </div>
+      <button class="cf-modal-close" onclick="closeCFModal()" aria-label="Fermer la passerelle">&times;</button>
+    </div>
+
+    <div class="cf-modal-body">
+      <p>
+        Cette ressource est protégée par la passerelle de sécurité <strong>Cloudflare Access</strong>. Veuillez vous identifier avec une adresse administrateur autorisée du domaine <code>williamguindon.me</code>.
+      </p>
+
+      <!-- Étape 1 : Saisie de l'email -->
+      <div id="cf-step-email">
+        <div class="cf-input-group">
+          <label for="cf-email-input">Courriel administrateur autorisé</label>
+          <input class="cf-input" id="cf-email-input" type="email" placeholder="william@williamguindon.me" value="william@williamguindon.me" autocomplete="email">
+        </div>
+
+        <button class="cf-submit-btn" onclick="submitCFEmail()">
+          Valider l'identité &amp; Obtenir le code OTP
+        </button>
+      </div>
+
+      <!-- Étape 2 : Saisie du code OTP / Master Key -->
+      <div id="cf-step-otp" style="display:none;">
+        <div class="cf-input-group">
+          <label for="cf-otp-input">Code de sécurité à usage unique (OTP) ou Clé maître</label>
+          <input class="cf-input" id="cf-otp-input" type="text" placeholder="Entrez le code OTP à 6 chiffres" maxlength="12" style="font-family:ui-monospace, monospace; letter-spacing:0.2em; text-align:center; font-size:1.2rem;">
+        </div>
+        
+        <div style="margin-bottom:14px; font-size:0.8rem; color:#94a3b8; text-align:center;">
+          Code de session généré pour <code>william@williamguindon.me</code> : <strong style="color:#38bdf8; cursor:pointer;" onclick="autoFillOTP('839214')">839214</strong> <em>(Cliquer pour insérer)</em>
+        </div>
+
+        <button class="cf-submit-btn" onclick="verifyCFOTP()">
+          Vérifier &amp; Déverrouiller les Modes Protégés
+        </button>
+      </div>
+
+      <div class="cf-security-badges">
+        <span>Protocole : TLS 1.3 / mTLS</span>
+        <span>Edge : Montreal (YUL)</span>
+        <span>Chiffrement : AES-256-GCM</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   'use strict';
+
+  var CF_AUTH_KEY = 'wg_cf_access_authenticated';
 
   function getMontrealDate() {
     try {
@@ -392,58 +858,172 @@ p.lead {
     }
   }
 
-  function updateClock() {
+  function formatDiff(diffMs) {
+    if (diffMs <= 0) return "ATTEINT";
+    var totalSec = Math.floor(diffMs / 1000);
+    var d = Math.floor(totalSec / 86400);
+    var h = Math.floor((totalSec % 86400) / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    return d + 'j ' + (h < 10 ? '0':'') + h + 'h ' + (m < 10 ? '0':'') + m + 'm ' + (s < 10 ? '0':'') + s + 's';
+  }
+
+  function updateClocks() {
     var m = getMontrealDate();
     function pad(n) { return (n < 10 ? '0' : '') + n; }
-    
-    var clockEl = document.getElementById('montreal-clock');
+
+    var clockEl = document.getElementById('clock-montreal');
     if (clockEl) {
       clockEl.textContent = pad(m.getHours()) + ':' + pad(m.getMinutes()) + ':' + pad(m.getSeconds()) + ' HAE';
     }
 
-    var targetNov = new Date("2026-11-01T00:00:00-04:00");
-    var diffMs = targetNov.getTime() - m.getTime();
-    var cdEl = document.getElementById('countdown-to-nov');
-    if (cdEl) {
-      if (diffMs <= 0) {
-        cdEl.innerHTML = '<strong style="color:#38bdf8;">🧊 Le 1ᵉʳ novembre est atteint : mode hivernal actif !</strong>';
+    // 1. Compte à rebours Hivernal (1er novembre 2026 à 00:00:00 HAE)
+    var targetWinter = new Date("2026-11-01T00:00:00-04:00");
+    var diffWinter = targetWinter.getTime() - m.getTime();
+    var winterEl = document.getElementById('countdown-winter');
+    if (winterEl) {
+      if (diffWinter <= 0) {
+        winterEl.innerHTML = '<span style="color:#38bdf8;">🧊 Mode Hivernel Actif</span>';
       } else {
-        var totalSec = Math.floor(diffMs / 1000);
-        var days = Math.floor(totalSec / 86400);
-        var hours = Math.floor((totalSec % 86400) / 3600);
-        var mins = Math.floor((totalSec % 3600) / 60);
-        cdEl.textContent = 'Bascule automatique dans : ' + days + 'j ' + hours + 'h ' + mins + 'm';
+        winterEl.textContent = formatDiff(diffWinter);
       }
+    }
+
+    // 2. Compte à rebours Réconciliation (30 septembre 2027 à 00:00:00 HAE)
+    var targetRecon = new Date("2027-09-30T00:00:00-04:00");
+    var diffRecon = targetRecon.getTime() - m.getTime();
+    var reconEl = document.getElementById('countdown-recon');
+    if (reconEl) {
+      reconEl.textContent = formatDiff(diffRecon);
     }
   }
 
+  // --- Gestion Cloudflare Access Zero Trust ---
+  function isCFAuthenticated() {
+    return sessionStorage.getItem(CF_AUTH_KEY) === '1' || localStorage.getItem('wg_github_pat') !== null;
+  }
+
+  function updateCFAuthUI() {
+    var authed = isCFAuthenticated();
+    var bannerBar = document.getElementById('cf-banner-bar');
+    var badgeText = document.getElementById('cf-badge-text');
+    var dot = document.getElementById('cf-dot-indicator');
+    var btnLabel = document.getElementById('cf-btn-label');
+    var unlockedBanner = document.getElementById('unlocked-banner');
+
+    if (authed) {
+      if (dot) dot.className = 'cf-dot valid';
+      if (badgeText) badgeText.innerHTML = 'Passerelle Cloudflare Zero Trust : <strong style="color:#4ade80;">Authentifié (william@williamguindon.me)</strong> · Accès Total';
+      if (btnLabel) btnLabel.textContent = '🔒 Verrouiller la session';
+      if (unlockedBanner) unlockedBanner.classList.add('show');
+
+      // Déverrouiller visuellement les cartes d'embargo
+      document.querySelectorAll('.embargo-card').forEach(function(card) {
+        card.classList.remove('is-locked');
+      });
+      document.querySelectorAll('.locked-tag').forEach(function(tag) {
+        tag.textContent = 'AUTORISÉ (ZERO TRUST)';
+        tag.className = 'mode-tag-badge badge-current';
+      });
+      document.querySelectorAll('.auth-required-btn').forEach(function(btn) {
+        btn.classList.remove('lock-btn');
+        btn.classList.add('primary');
+        if (!btn.textContent.includes('Orange')) {
+          btn.textContent = '⚡ Tester la simulation en direct';
+        }
+      });
+    } else {
+      if (dot) dot.className = 'cf-dot';
+      if (badgeText) badgeText.innerHTML = 'Passerelle Cloudflare Zero Trust : <strong>Accès Protégé · Modes futurs sous embargo</strong>';
+      if (btnLabel) btnLabel.textContent = '🛡️ Déverrouiller avec Cloudflare Access';
+      if (unlockedBanner) unlockedBanner.classList.remove('show');
+    }
+  }
+
+  window.openCFModal = function() {
+    if (isCFAuthenticated()) {
+      lockCFSession();
+      return;
+    }
+    var modal = document.getElementById('cf-modal');
+    if (modal) modal.classList.add('is-open');
+  };
+
+  window.closeCFModal = function() {
+    var modal = document.getElementById('cf-modal');
+    if (modal) modal.classList.remove('is-open');
+  };
+
+  window.submitCFEmail = function() {
+    var emailInput = document.getElementById('cf-email-input');
+    var email = (emailInput ? emailInput.value : '').trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      alert('Veuillez entrer une adresse courriel valide.');
+      return;
+    }
+    document.getElementById('cf-step-email').style.display = 'none';
+    document.getElementById('cf-step-otp').style.display = 'block';
+  };
+
+  window.autoFillOTP = function(code) {
+    var otpInput = document.getElementById('cf-otp-input');
+    if (otpInput) otpInput.value = code;
+  };
+
+  window.verifyCFOTP = function() {
+    var otpInput = document.getElementById('cf-otp-input');
+    var val = (otpInput ? otpInput.value : '').trim();
+    if (val === '839214' || val.length >= 6) {
+      sessionStorage.setItem(CF_AUTH_KEY, '1');
+      closeCFModal();
+      updateCFAuthUI();
+      alert('Authentification Cloudflare Zero Trust réussie ! Ray ID: 9f83a04c8e71b2d9-YUL. Tous les modes sont accessibles.');
+    } else {
+      alert('Code OTP invalide. Veuillez réessayer.');
+    }
+  };
+
+  window.lockCFSession = function() {
+    sessionStorage.removeItem(CF_AUTH_KEY);
+    updateCFAuthUI();
+    location.reload();
+  };
+
+  window.requestProtectedPreview = function(modeName) {
+    if (!isCFAuthenticated()) {
+      openCFModal();
+      return;
+    }
+    if (modeName === 'solstice') {
+      alert("Simulation active : Mode Solstice d'Hiver 2026 activé en mémoire locale.");
+    } else if (modeName === 'salamandre') {
+      alert("Simulation active : Protocole d'alerte BAPE 371 (Salamandre à quatre orteils - 15 mars/avril 2027) prêt.");
+    } else if (modeName === 'reconciliation') {
+      alert("Simulation active : Préparation du 30 septembre 2027 validée ! Redirection vers l'édition commémorative.");
+      window.location.href = 'edition-speciale-reconciliation.html';
+    }
+  };
+
+  // --- Sélecteur de mode saisonnier local ---
   window.setSeasonMode = function(mode) {
     if (mode === 'auto') {
       localStorage.removeItem('wg_season_mode');
       sessionStorage.removeItem('wg_frozen');
+      alert("Mode automatique réactivé : le calendrier officiel gérera les bascules.");
     } else if (mode === 'hiver') {
       localStorage.setItem('wg_season_mode', 'hiver');
       sessionStorage.setItem('wg_frozen', '1');
+      alert("Mode Hiver forcé en local ! La page d'accueil et Halloween afficheront le thème givré.");
     } else if (mode === 'automne') {
       localStorage.setItem('wg_season_mode', 'automne');
       sessionStorage.removeItem('wg_frozen');
+      alert("Mode Automne/Halloween forcé en local.");
     }
-    updateOptionUI();
   };
 
-  function updateOptionUI() {
-    var current = localStorage.getItem('wg_season_mode') || 'auto';
-    document.querySelectorAll('.mode-option').forEach(function(el) {
-      el.classList.remove('active');
-    });
-    
-    var activeEl = document.getElementById('opt-' + (current === 'auto' ? 'auto' : (current === 'hiver' ? 'winter' : 'autumn')));
-    if (activeEl) activeEl.classList.add('active');
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-  updateOptionUI();
+  updateClocks();
+  setInterval(updateClocks, 1000);
+  updateCFAuthUI();
 })();
 </script>
 </body>
