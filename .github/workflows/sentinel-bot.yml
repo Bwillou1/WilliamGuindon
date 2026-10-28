@@ -1,0 +1,41 @@
+name: Bot Sentinelle & Audit Quotidien Ahrefs
+
+on:
+  schedule:
+    # Exécution quotidienne à 04h00 UTC (minuit heure de Montréal)
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  sentinel-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Exécution du Bot Sentinelle
+        run: node scripts/sentinel-bot.js
+
+      - name: Validation de l'intégrité globale
+        run: node scripts/validate-assets.js
+
+      - name: Commit et Push du rapport sentinelle et de statut.html
+        run: |
+          git config --global user.name "Sentinel Bot"
+          git config --global user.email "sentinel-bot@williamguindon.me"
+          git add data/sentinel-report.json statut.html
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "chore(sentinel): audit quotidien de l'infrastructure et contrôle Ahrefs [skip ci]"
+            git push
+            echo "Rapport sentinelle et statut.html synchronisés avec succès."
+          else
+            echo "Aucun changement à commiter, infrastructure stable."
+          fi
