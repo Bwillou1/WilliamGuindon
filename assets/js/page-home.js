@@ -612,6 +612,9 @@
                 allowfullscreen="true" 
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                 loading="eager"
+                credentialless="true"
+                referrerpolicy="no-referrer"
+                sandbox="allow-scripts allow-same-origin allow-presentation"
                 title="Fil d'actualité officiel de William Guindon sur Facebook">
         </iframe>`;
     }
@@ -652,6 +655,9 @@
           allowfullscreen="true" 
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
           loading="eager"
+          credentialless="true"
+          referrerpolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
           title="Réponse vidéo de William Guindon (Facebook Reel)">
         </iframe>`;
     }
