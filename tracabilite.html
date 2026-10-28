@@ -546,16 +546,47 @@
           function showTraceShaResult(hash, name) {
             var box = document.getElementById('trace-sha256-box');
             if (!box) return;
-            var hit = TRACE_SHA256_MAP[hash];
+            box.textContent = '';
+            var safeHash = String(hash || '').replace(/[^a-f0-9]/gi, '');
+            var safeName = String(name || '').replace(/[\r\n<>]/g, '');
+            var hit = TRACE_SHA256_MAP[safeHash];
+
             if (hit) {
               box.style.borderColor = '#10b981';
-              box.innerHTML = '<div style="color:#34d399; font-weight:800; margin-bottom:4px;">✔ AUTHENTICITÉ CRYPTOGRAPHIQUE CONFIRMÉE (SHA-256)</div>' +
-                '<div><strong>Pièce certifiée :</strong> ' + hit + '</div>' +
-                '<div><strong>SHA-256 :</strong> <span style="color:#a7f3d0;">' + hash + '</span></div>';
+              var title = document.createElement('div');
+              title.style.cssText = 'color:#34d399; font-weight:800; margin-bottom:4px;';
+              title.textContent = '✔ AUTHENTICITÉ CRYPTOGRAPHIQUE CONFIRMÉE (SHA-256)';
+              box.appendChild(title);
+
+              var pieceDiv = document.createElement('div');
+              var strongP = document.createElement('strong');
+              strongP.textContent = 'Pièce certifiée : ';
+              pieceDiv.appendChild(strongP);
+              pieceDiv.appendChild(document.createTextNode(hit));
+              box.appendChild(pieceDiv);
+
+              var hashDiv = document.createElement('div');
+              var strongH = document.createElement('strong');
+              strongH.textContent = 'SHA-256 : ';
+              hashDiv.appendChild(strongH);
+              var spanH = document.createElement('span');
+              spanH.style.color = '#a7f3d0';
+              spanH.textContent = safeHash;
+              hashDiv.appendChild(spanH);
+              box.appendChild(hashDiv);
             } else {
               box.style.borderColor = '#f59e0b';
-              box.innerHTML = '<div style="color:#fbbf24; font-weight:800; margin-bottom:4px;">ℹ EMPREINTE SHA-256 CALCULÉE (' + name + ')</div>' +
-                '<div><strong>SHA-256 :</strong> ' + hash + '</div>';
+              var title = document.createElement('div');
+              title.style.cssText = 'color:#fbbf24; font-weight:800; margin-bottom:4px;';
+              title.textContent = 'ℹ EMPREINTE SHA-256 CALCULÉE (' + safeName + ')';
+              box.appendChild(title);
+
+              var hashDiv = document.createElement('div');
+              var strongH = document.createElement('strong');
+              strongH.textContent = 'SHA-256 : ';
+              hashDiv.appendChild(strongH);
+              hashDiv.appendChild(document.createTextNode(safeHash));
+              box.appendChild(hashDiv);
             }
           }
           async function verifyTraceSha256(path) {

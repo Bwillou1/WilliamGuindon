@@ -1820,7 +1820,7 @@ Ne prétends pas avoir lu une page ou un fichier inaccessible. Indique brièveme
                 badge.appendChild(document.createTextNode(' Assistant Documentaire IA'));
 
                 const textDiv = document.createElement('div');
-                const rawText = typeof item.text === 'string' ? item.text.replace(/<[^>]*>/g, '') : '';
+                const rawText = typeof item.text === 'string' ? item.text : '';
                 textDiv.innerHTML = formatAiResponse(rawText);
 
                 bubble.appendChild(badge);

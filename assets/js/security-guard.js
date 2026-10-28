@@ -187,21 +187,45 @@
         title = 'Lecteur de Pièces Officielles CCE';
       }
 
-      let safeUrl = 'https://williamguindon.me' + window.location.pathname + window.location.search;
+      let safePath = encodeURI(window.location.pathname || '/');
+      let safeSearch = encodeURI(window.location.search || '');
+      let safeTargetUrl = 'https://williamguindon.me' + safePath + safeSearch;
 
-      banner.innerHTML = `
-        <div class="embed-banner-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1200px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif;">
-          <div class="embed-banner-left" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span class="embed-banner-badge" style="display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:10px;text-transform:uppercase;background:rgba(255,255,255,0.18);padding:2px 8px;border-radius:4px;color:#fff;">
-              REGISTRE OFFICIEL CCE SEM-26-003
-            </span>
-            <span class="embed-banner-title" style="font-weight:600;color:#ecfdf5;font-size:12px;">${title}</span>
-          </div>
-          <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="embed-banner-link" style="display:inline-flex;align-items:center;gap:5px;background:#fff;color:#064e3b;padding:3px 10px;border-radius:6px;font-size:11.5px;font-weight:700;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);" title="Consulter la version originale officielle sur williamguindon.me">
-            <span>Consulter l'original sur williamguindon.me ↗</span>
-          </a>
-        </div>
-      `;
+      const innerDiv = document.createElement('div');
+      innerDiv.className = 'embed-banner-inner';
+      innerDiv.style.cssText = 'display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;max-width:1200px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif;';
+
+      const leftDiv = document.createElement('div');
+      leftDiv.className = 'embed-banner-left';
+      leftDiv.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+
+      const badge = document.createElement('span');
+      badge.className = 'embed-banner-badge';
+      badge.style.cssText = 'display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:10px;text-transform:uppercase;background:rgba(255,255,255,0.18);padding:2px 8px;border-radius:4px;color:#fff;';
+      badge.textContent = 'REGISTRE OFFICIEL CCE SEM-26-003';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'embed-banner-title';
+      titleSpan.style.cssText = 'font-weight:600;color:#ecfdf5;font-size:12px;';
+      titleSpan.textContent = title;
+
+      leftDiv.appendChild(badge);
+      leftDiv.appendChild(titleSpan);
+
+      const linkEl = document.createElement('a');
+      linkEl.className = 'embed-banner-link';
+      linkEl.style.cssText = 'display:inline-flex;align-items:center;gap:5px;background:#fff;color:#064e3b;padding:3px 10px;border-radius:6px;font-size:11.5px;font-weight:700;text-decoration:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);';
+      linkEl.href = safeTargetUrl;
+      linkEl.target = '_blank';
+      linkEl.rel = 'noopener noreferrer';
+      linkEl.title = 'Consulter la version originale officielle sur williamguindon.me';
+      linkEl.textContent = "Consulter l'original sur williamguindon.me ↗";
+
+      innerDiv.appendChild(leftDiv);
+      innerDiv.appendChild(linkEl);
+
+      banner.textContent = '';
+      banner.appendChild(innerDiv);
 
       if (document.body) {
         document.body.prepend(banner);

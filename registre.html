@@ -1120,16 +1120,47 @@
             function renderSha256Result(hash, label) {
               var box = document.getElementById('sha256-result-box');
               if (!box) return;
-              var matched = OFFICIAL_SHA256_REGISTRY[hash];
+              box.textContent = '';
+              var safeHash = String(hash || '').replace(/[^a-f0-9]/gi, '');
+              var safeLabel = String(label || '').replace(/[\r\n<>]/g, '');
+              var matched = OFFICIAL_SHA256_REGISTRY[safeHash];
+
               if (matched) {
                 box.style.borderColor = '#10b981';
-                box.innerHTML = '<div style="color:var(--accent); font-weight:800; margin-bottom:4px;">✔ INTÉGRITÉ CRYPTOGRAPHIQUE CERTIFIÉE CONFORME (SHA-256)</div>' +
-                  '<div><strong>Pièce identifiée :</strong> ' + matched + '</div>' +
-                  '<div><strong>Empreinte SHA-256 :</strong> <span style="color:var(--accent); font-weight:700;">' + hash + '</span></div>';
+                var title = document.createElement('div');
+                title.style.cssText = 'color:var(--accent); font-weight:800; margin-bottom:4px;';
+                title.textContent = '✔ INTÉGRITÉ CRYPTOGRAPHIQUE CERTIFIÉE CONFORME (SHA-256)';
+                box.appendChild(title);
+
+                var pieceDiv = document.createElement('div');
+                var strongP = document.createElement('strong');
+                strongP.textContent = 'Pièce identifiée : ';
+                pieceDiv.appendChild(strongP);
+                pieceDiv.appendChild(document.createTextNode(matched));
+                box.appendChild(pieceDiv);
+
+                var hashDiv = document.createElement('div');
+                var strongH = document.createElement('strong');
+                strongH.textContent = 'Empreinte SHA-256 : ';
+                hashDiv.appendChild(strongH);
+                var spanH = document.createElement('span');
+                spanH.style.cssText = 'color:var(--accent); font-weight:700;';
+                spanH.textContent = safeHash;
+                hashDiv.appendChild(spanH);
+                box.appendChild(hashDiv);
               } else {
                 box.style.borderColor = '#f59e0b';
-                box.innerHTML = '<div style="color:#d97706; font-weight:800; margin-bottom:4px;">ℹ EMPREINTE SHA-256 CALCULÉE (' + label + ')</div>' +
-                  '<div><strong>Empreinte SHA-256 :</strong> ' + hash + '</div>';
+                var title = document.createElement('div');
+                title.style.cssText = 'color:#d97706; font-weight:800; margin-bottom:4px;';
+                title.textContent = 'ℹ EMPREINTE SHA-256 CALCULÉE (' + safeLabel + ')';
+                box.appendChild(title);
+
+                var hashDiv = document.createElement('div');
+                var strongH = document.createElement('strong');
+                strongH.textContent = 'Empreinte SHA-256 : ';
+                hashDiv.appendChild(strongH);
+                hashDiv.appendChild(document.createTextNode(safeHash));
+                box.appendChild(hashDiv);
               }
             }
             async function verifyServerPdfSha256(path) {

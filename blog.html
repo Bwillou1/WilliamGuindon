@@ -1862,7 +1862,33 @@
       s.removeAttribute('tabindex');
       s.removeAttribute('aria-label');
       s.removeAttribute('onclick');
-      s.innerHTML = '<iframe src="' + embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1" title="' + title + '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="eager"></iframe>';
+
+      var safeSrc = '';
+      try {
+        var u = new URL(embedUrl, window.location.origin);
+        if (u.protocol === 'https:' && (u.hostname === 'www.youtube.com' || u.hostname === 'www.youtube-nocookie.com')) {
+          u.searchParams.set('autoplay', '1');
+          safeSrc = u.href;
+        }
+      } catch (e) {}
+
+      if (!safeSrc) return;
+
+      while (s.firstChild) s.removeChild(s.firstChild);
+      var iframe = document.createElement('iframe');
+      iframe.src = safeSrc;
+      iframe.title = typeof title === 'string' ? title : 'Vidéo';
+      iframe.style.position = 'absolute';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = '0';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+      iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'eager');
+      s.appendChild(iframe);
     };
 
     if (post.video && post.video.embedUrl) {

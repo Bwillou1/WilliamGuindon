@@ -197,7 +197,7 @@ function runLocalAudit() {
   // Vérification de la configuration Ahrefs dans le worker
   if (fs.existsSync(GROQ_WORKER_PATH)) {
     const workerContent = fs.readFileSync(GROQ_WORKER_PATH, 'utf8');
-    if (workerContent.includes('AHREFS_DATA_KEY') && workerContent.includes('analytics.ahrefs.com')) {
+    if (workerContent.includes('AHREFS_DATA_KEY') && /https:\/\/analytics\.ahrefs\.com\b/.test(workerContent)) {
       audit.ahrefsConfig = true;
     }
   }
@@ -214,7 +214,7 @@ function runLocalAudit() {
   const sitemapPath = path.join(ROOT_DIR, 'sitemap.xml');
   if (fs.existsSync(sitemapPath)) {
     const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
-    if (sitemapContent.includes('<urlset') && sitemapContent.includes('https://williamguindon.me/')) {
+    if (sitemapContent.includes('<urlset') && /<loc>https:\/\/williamguindon\.me\//.test(sitemapContent)) {
       audit.sitemapOk = true;
     }
   }

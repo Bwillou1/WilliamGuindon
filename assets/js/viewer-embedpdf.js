@@ -134,44 +134,35 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   ];
 
   function getSafeDocUrl(rawUrl) {
-    if (!rawUrl || typeof rawUrl !== 'string') return 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    const DEFAULT_DOC = 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_DOC;
     let clean = rawUrl.trim();
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         const parsed = new URL(clean, window.location.origin);
-        const host = parsed.hostname.toLowerCase();
-        if ((host === 'williamguindon.me' || host === 'www.williamguindon.me' || host === window.location.hostname) && parsed.pathname.includes('/assets/docs/')) {
-          clean = parsed.pathname.replace(/^\//, '');
+        if (parsed.origin === window.location.origin) {
+          clean = parsed.pathname;
+        } else {
+          return DEFAULT_DOC;
         }
       }
-    } catch (_) {}
-    const cleanRel = clean.replace(/^(\.\/|\/)/, '');
+    } catch (_) {
+      return DEFAULT_DOC;
+    }
+    const cleanRel = clean.replace(/^(\.\/|\/)+/, '');
+    if (cleanRel.includes('..') || cleanRel.includes('\\') || cleanRel.includes('://')) {
+      return DEFAULT_DOC;
+    }
     if (ALLOWED_DOCS.includes(cleanRel)) return cleanRel;
-    if (cleanRel.startsWith('assets/docs/') && cleanRel.endsWith('.pdf') && !cleanRel.includes('..')) {
+    // Vérification stricte des chemins relatifs de documentation officielle (PDF)
+    if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel)) {
       return cleanRel;
     }
-    // Fichiers images locaux autorisés (documentation de terrain, cartes, rapports)
-    if ((cleanRel.startsWith('assets/media/') || cleanRel.startsWith('assets/uploads/') || cleanRel.startsWith('assets/docs/') || cleanRel.startsWith('assets/img/')) &&
-        /\.(jpe?g|png|webp|tiff?|gif|bmp|svg)$/i.test(cleanRel) && !cleanRel.includes('..')) {
+    // Fichiers images locaux autorisés
+    if (/^assets\/(?:media|docs|uploads|img)\/[a-zA-Z0-9_\-.]+\.(?:jpe?g|png|webp|svg)$/i.test(cleanRel)) {
       return cleanRel;
     }
-    // Archives officielles (archive.org, Internet Archive)
-    try {
-      if (clean.startsWith('https://') || clean.startsWith('http://')) {
-        const u = new URL(clean, window.location.origin);
-        const host = u.hostname.toLowerCase();
-        const isOfficialHost = host === 'williamguindon.me' || host === 'www.williamguindon.me' || host === window.location.hostname;
-        const isArchive = host === 'archive.org' || host === 'web.archive.org' || host.endsWith('.archive.org');
-        if ((isOfficialHost || isArchive) && /\.(pdf|jpe?g|png|webp|tiff?|gif|bmp|svg)(?:[?#].*)?$/i.test(u.pathname)) {
-          return u.href;
-        }
-      }
-    } catch (_) {}
-    // Objets blobs locaux (ex. ouverts depuis dossier-journalistes.html)
-    if (clean.startsWith('blob:') || clean.startsWith('data:application/pdf') || clean.startsWith('data:image/')) {
-      return clean;
-    }
-    return 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    return DEFAULT_DOC;
   }
 
   // Éléments du DOM
