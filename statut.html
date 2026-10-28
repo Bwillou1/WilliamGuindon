@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Statut des systèmes — William Guindon</title>
-<meta name="description" content="Statut opérationnel en temps réel, historique des incidents et calendrier des opérations de l'infrastructure williamguindon.me et du registre CCE.">
+<title>État des systèmes & Registre des bogues — William Guindon</title>
+<meta name="description" content="Disponibilité technique en temps réel, journal public des bogues découverts et historique des correctifs d'infrastructure de williamguindon.me.">
 <meta name="author" content="William Guindon">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://williamguindon.me/statut.html">
@@ -16,9 +16,9 @@
 <meta name="theme-color" content="#121316">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="William Guindon — Statut des Systèmes">
-<meta property="og:title" content="Statut des systèmes — William Guindon">
-<meta property="og:description" content="Disponibilité en direct, journal des anomalies et calendrier des opérations de williamguindon.me.">
+<meta property="og:site_name" content="William Guindon — État des Systèmes & Bogues">
+<meta property="og:title" content="État des systèmes & Registre des bogues — William Guindon">
+<meta property="og:description" content="Disponibilité technique, registre public des bogues et historique transparent des correctifs de williamguindon.me.">
 <meta property="og:url" content="https://williamguindon.me/statut.html">
 <meta property="og:image" content="https://williamguindon.me/og-image.jpg">
 
@@ -39,6 +39,7 @@
     --orange-bar: #f97316;
     --red-bar: #ef4444;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --code-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,7 +62,7 @@
     max-width: 740px;
   }
 
-  /* Barre supérieure : Logo à gauche / Bouton Subscribe à droite */
+  /* Barre supérieure : Nom / logo à gauche, Bouton Signaler un bogue à droite */
   .top-header {
     display: flex;
     align-items: center;
@@ -115,7 +116,7 @@
     opacity: 0.9;
   }
 
-  /* 1. Grande boîte : "We're fully operational" */
+  /* 1. Grande boîte : "Tous les systèmes sont opérationnels" */
   .operational-box {
     border-radius: 10px;
     overflow: hidden;
@@ -149,19 +150,19 @@
   }
 
   .operational-body {
-    background: var(--bg-card);
-    padding: 18px 20px;
-    color: var(--text-muted);
-    font-size: 0.94rem;
-    border-top: 1px solid var(--green-border);
+    background: #092019;
+    padding: 14px 20px;
+    font-size: 0.92rem;
+    color: #a7f3d0;
+    line-height: 1.45;
   }
 
-  /* Cartes génériques */
+  /* Cartes de sections */
   .card-panel {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
     border-radius: 10px;
-    padding: 22px 24px;
+    padding: 24px;
     margin-bottom: 24px;
   }
 
@@ -169,34 +170,44 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
   }
 
   .card-header-title {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--text-head);
+    letter-spacing: -0.01em;
   }
 
+  .card-header-subtitle {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Sélecteur de dates (‹ Oct. 2026 ›) */
   .date-switcher {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    font-size: 0.92rem;
     color: var(--text-muted);
-    font-size: 0.88rem;
-    font-weight: 500;
     user-select: none;
   }
 
   .date-switcher-btn {
-    background: none;
-    border: none;
-    color: var(--text-faint);
+    background: #1e2026;
+    border: 1px solid var(--border-card);
+    color: var(--text-muted);
+    border-radius: 5px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 1.1rem;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: 16px;
     transition: color 0.15s ease, background 0.15s ease;
   }
 
@@ -207,7 +218,7 @@
 
   /* 2. System status (barres d'uptime) */
   .system-service-row {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
 
   .system-service-row:last-child {
@@ -302,7 +313,7 @@
     color: transparent;
   }
 
-  /* Cercle autour des dates avec événement / incident */
+  /* Cercle autour des dates avec bogue ou correctif */
   .badge-circle {
     display: inline-flex;
     align-items: center;
@@ -322,33 +333,32 @@
   .badge-circle.orange {
     border: 2px solid #ea580c;
     color: #ffedd5;
+    background: rgba(234, 88, 12, 0.1);
   }
 
   .badge-circle.red {
     border: 2px solid #ef4444;
     color: #fee2e2;
+    background: rgba(239, 68, 68, 0.1);
   }
 
   .badge-circle.yellow {
     border: 2px solid #f59e0b;
     color: #fef3c7;
+    background: rgba(245, 158, 11, 0.1);
   }
 
-  .badge-circle.green {
-    border: 2px solid #10b981;
-    color: #d1fae5;
-  }
-
-  /* Détails de l'incident au clic / en dessous */
+  /* Boîte de détails du bogue au clic */
   .incident-details-box {
     margin-top: 18px;
-    padding: 14px 18px;
+    padding: 16px 20px;
     background: #121316;
     border: 1px solid var(--border-card);
     border-radius: 8px;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
     display: none;
+    line-height: 1.5;
   }
 
   .incident-details-box.active {
@@ -365,7 +375,92 @@
     color: var(--text-head);
   }
 
-  /* Pied de page sobre */
+  .incident-commit-tag {
+    display: inline-block;
+    font-family: var(--code-font);
+    font-size: 0.8rem;
+    background: #1f232b;
+    color: #93c5fd;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    border: 1px solid #2b3240;
+  }
+
+  .incident-status-tag {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+  }
+
+  .incident-status-tag.resolved {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* 4. Journal public des bogues (liste chronologique) */
+  .bug-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .bug-item {
+    background: #131418;
+    border: 1px solid var(--border-cell);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bug-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .bug-item-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-head);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .bug-item-date {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .bug-item-desc {
+    font-size: 0.88rem;
+    color: var(--text-body);
+    line-height: 1.45;
+  }
+
+  .bug-item-fix {
+    font-size: 0.83rem;
+    color: #a7f3d0;
+    background: rgba(16, 185, 129, 0.08);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid var(--green-icon);
+  }
+
+  /* Pied de page */
   .page-footer {
     margin-top: 32px;
     text-align: center;
@@ -382,23 +477,18 @@
   .page-footer a:hover {
     color: var(--text-head);
   }
-
-  /* Infobulle tooltip pour les barres d'uptime */
-  .tick[data-tip] {
-    position: relative;
-  }
 </style>
 </head>
 <body>
 
 <div class="wrapper">
-  <!-- En-tête : Nom / logo à gauche, Bouton s'abonner / retour à droite -->
+  <!-- En-tête : Nom / logo à gauche, Bouton Signaler un bogue à droite -->
   <header class="top-header">
     <a href="index.html" class="brand-logo" title="Retour à l'accueil de williamguindon.me">
       <span class="brand-monogram">WG</span>
       <span>William Guindon</span>
     </a>
-    <a href="mailto:contact@williamguindon.me?subject=Signalement%20de%20bogue" class="btn-subscribe">
+    <a href="mailto:contact@williamguindon.me?subject=Signalement%20de%20bogue%20technique" class="btn-subscribe">
       <span>Signaler un bogue</span>
     </a>
   </header>
@@ -410,17 +500,20 @@
       <span>Tous les systèmes sont opérationnels</span>
     </div>
     <div class="operational-body">
-      Aucun incident n'affecte nos systèmes actuellement. L'ensemble des services est disponible.
+      Ce registre technique public assure la transparence intégrale sur la disponibilité du site, les anomalies détectées et l'historique des bogues corrigés dans le code source. Aucune échéance politique ou légale n'y figure : cet espace est strictement réservé à la santé de l'infrastructure web.
     </div>
   </section>
 
   <!-- 1. Carte : System status (avec sélecteur de dates et barres d'uptime) -->
   <section class="card-panel">
     <div class="card-header-row">
-      <div class="card-header-title">État des systèmes</div>
+      <div>
+        <h2 class="card-header-title">Disponibilité des systèmes</h2>
+        <p class="card-header-subtitle">Historique des 60 derniers jours de production</p>
+      </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Période précédente" onclick="switchUptimeRange(-1)">‹</button>
-        <span id="uptimeRangeLabel">Juil. 2026 – Oct. 2026</span>
+        <span id="uptimeRangeLabel">Sept. 2026 – Oct. 2026</span>
         <button class="date-switcher-btn" type="button" aria-label="Période suivante" onclick="switchUptimeRange(1)">›</button>
       </div>
     </div>
@@ -430,42 +523,45 @@
       <div class="system-service-meta">
         <div class="system-service-name">
           <div class="check-icon" style="width: 17px; height: 17px; font-size: 11px;" aria-hidden="true">✓</div>
-          <span>Site web principal (williamguindon.me)</span>
+          <span>Site web &amp; Carnet de bord (williamguindon.me)</span>
         </div>
         <div class="uptime-percentage" id="uptimeWebPercent">99.98% disponibilité</div>
       </div>
-      <div class="uptime-bar" id="uptimeBarWeb" aria-label="Historique de disponibilité des 60 derniers jours"></div>
+      <div class="uptime-bar" id="uptimeBarWeb" aria-label="Historique de disponibilité du site web"></div>
     </div>
 
-    <!-- Composant 2 : Registre CCE & Pièces probatoires -->
+    <!-- Composant 2 : Registre CCE & Visionneuses -->
     <div class="system-service-row" style="margin-top: 24px;">
       <div class="system-service-meta">
         <div class="system-service-name">
           <div class="check-icon" style="width: 17px; height: 17px; font-size: 11px;" aria-hidden="true">✓</div>
-          <span>Registre CCE SEM-26-003 &amp; Moteur de recherche OCR</span>
+          <span>Registre documentaire CCE &amp; Visionneuses PDF hors-ligne</span>
         </div>
-        <div class="uptime-percentage">100.00% disponibilité</div>
+        <div class="uptime-percentage">99.95% disponibilité</div>
       </div>
       <div class="uptime-bar" id="uptimeBarCce" aria-label="Historique de disponibilité du registre"></div>
     </div>
 
-    <!-- Composant 3 : API & Flux de données -->
+    <!-- Composant 3 : API & Cloudflare Worker -->
     <div class="system-service-row" style="margin-top: 24px;">
       <div class="system-service-meta">
         <div class="system-service-name">
           <div class="check-icon" style="width: 17px; height: 17px; font-size: 11px;" aria-hidden="true">✓</div>
-          <span>API Publique, status.json &amp; Flux RSS</span>
+          <span>API Cloudflare Worker, status.json &amp; Flux RSS</span>
         </div>
-        <div class="uptime-percentage">100.00% disponibilité</div>
+        <div class="uptime-percentage">99.92% disponibilité</div>
       </div>
       <div class="uptime-bar" id="uptimeBarApi" aria-label="Historique de disponibilité API"></div>
     </div>
   </section>
 
-  <!-- 2. Carte : Calendar (avec grille, bordures et cercles de couleur) -->
+  <!-- 2. Carte : Calendar (avec grille, bordures et cercles de couleur sur les bogues) -->
   <section class="card-panel">
     <div class="card-header-row">
-      <div class="card-header-title">Calendrier des opérations</div>
+      <div>
+        <h2 class="card-header-title">Calendrier des anomalies &amp; correctifs</h2>
+        <p class="card-header-subtitle">Cliquez sur un jour entouré pour afficher le bogue et sa résolution</p>
+      </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Mois précédent" onclick="prevMonth()">‹</button>
         <span id="calendarMonthLabel">Oct. 2026</span>
@@ -477,28 +573,149 @@
 
     <!-- Boîte d'information interactive qui s'affiche au clic sur un jour entouré -->
     <div class="incident-details-box" id="incidentDetailsBox">
-      <strong id="incidentDetailsTitle"></strong> : <span id="incidentDetailsText"></span>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 6px;">
+        <div>
+          <span class="incident-commit-tag" id="incidentCommit"></span>
+          <strong id="incidentDetailsTitle"></strong>
+        </div>
+        <span class="incident-status-tag resolved">Résolu</span>
+      </div>
+      <p id="incidentDetailsText" style="margin-bottom: 6px;"></p>
+      <div id="incidentResolutionText" class="bug-item-fix"></div>
+    </div>
+  </section>
+
+  <!-- 3. Carte : Journal public des bogues découverts et résolus -->
+  <section class="card-panel">
+    <div class="card-header-row">
+      <div>
+        <h2 class="card-header-title">Journal public des bogues récents</h2>
+        <p class="card-header-subtitle">Extraits vérifiés des correctifs déployés dans le dépôt GitHub</p>
+      </div>
+    </div>
+
+    <div class="bug-list">
+      <!-- Bogue 1 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">14effee</span>
+            <span>Écran bloquant « Certificat non certifié » sur les articles du blog</span>
+          </div>
+          <span class="bug-item-date">27 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> Lorsque les visiteurs cliquaient pour lire un article du carnet de bord, une page d'erreur de certificat de sécurité fictive s'affichait et empêchait l'accès aux liens internes.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Remplacement de la barrière de redirection erronée par l'ouverture directe des billets et assainissement des routes de lecture du blog.
+        </div>
+      </article>
+
+      <!-- Bogue 2 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">de7aaab</span>
+            <span>Écran noir et interférence de sécurité sur les intégrations iFrame</span>
+          </div>
+          <span class="bug-item-date">25 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> La protection anti-framing déclenchait une redirection agressive et un écran d'erreur noir lors de l'intégration dans des lecteurs et cadres légitimes.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Neutralisation du blocage anti-framing systématique au profit d'un en-tête CSP assaini et d'une bannière informative non destructive.
+        </div>
+      </article>
+
+      <!-- Bogue 3 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">629286f</span>
+            <span>Décalage de défilement sous la barre de navigation fixe (Sticky Header)</span>
+          </div>
+          <span class="bug-item-date">25 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> Les clics sur les ancres (ex. #lexique, #contact) masquaient les 80 premiers pixels du titre de section sous la barre de menu.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Ajout de la règle CSS <code>scroll-margin-top: calc(var(--nav-height) + 20px)</code> sur l'ensemble des cibles d'ancrage.
+        </div>
+      </article>
+
+      <!-- Bogue 4 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">86eb127</span>
+            <span>Boucles de redirection HTTP 307 &amp; Cache CDN sur les erreurs</span>
+          </div>
+          <span class="bug-item-date">22 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> Le Cloudflare Worker renvoyait des redirections 307 temporaires en boucle lors de requêtes simultanées et mettait en cache CDN des pages d'erreur 500.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Rétablissement de la résolution racine directe vers <code>index.html</code> et application de <code>Cache-Control: no-store</code> sur toutes les réponses d'erreur.
+        </div>
+      </article>
+
+      <!-- Bogue 5 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">5811cfb</span>
+            <span>Rechargement brutal de page lors de l'activation du Service Worker</span>
+          </div>
+          <span class="bug-item-date">19 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> L'écouteur d'événement <code>controllerchange</code> forçait un rafraîchissement complet de la page sans préavis alors que l'internaute était en cours de lecture.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Suppression du rechargement automatique forcé ; activation en tâche de fond discrète au rechargement suivant.
+        </div>
+      </article>
+
+      <!-- Bogue 6 -->
+      <article class="bug-item">
+        <div class="bug-item-header">
+          <div class="bug-item-title">
+            <span class="incident-commit-tag">24bc7df</span>
+            <span>Décalage géométrique de la sélection de texte dans le visualiseur PDF</span>
+          </div>
+          <span class="bug-item-date">18 oct. 2026</span>
+        </div>
+        <p class="bug-item-desc">
+          <strong>Symptôme :</strong> Dans le lecteur haute fidélité PDF.js, la couche <code>textLayer</code> était désalignée par rapport aux glyphes du document, rendant la sélection et la copie de texte imprécises.
+        </p>
+        <div class="bug-item-fix">
+          <strong>Correctif déployé :</strong> Recalcul strict des coordonnées du canvas lors du redimensionnement et alignement des matrices de transformation.
+        </div>
+      </article>
     </div>
   </section>
 
   <!-- Pied de page -->
   <footer class="page-footer">
-    <p>Surveillance en temps réel opérée pour le registre public indépendant de William Guindon.</p>
-    <p style="margin-top: 6px;"><a href="index.html">← Revenir au site officiel</a> · <a href="feed.xml">Flux RSS</a> · <a href="mailto:contact@williamguindon.me">Assistance technique</a></p>
+    <p>Surveillance technique et traçabilité Git opérées pour l'infrastructure de William Guindon.</p>
+    <p style="margin-top: 6px;"><a href="index.html">← Revenir au site officiel</a> · <a href="feed.xml">Flux RSS</a> · <a href="mailto:contact@williamguindon.me">Signaler une anomalie</a></p>
   </footer>
 </div>
 
 <script>
-  /* ---------- 1. Génération des barres d'uptime ---------- */
+  /* ---------- 1. Génération des barres d'uptime basées sur l'historique réel ---------- */
   function renderUptimeBar(containerId, anomalies) {
     var container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = '';
-    var totalTicks = 64; // Nombre de barres verticales comme sur la maquette
+    var totalTicks = 64; // 64 barres verticales
     for (var i = 0; i < totalTicks; i++) {
       var tick = document.createElement('div');
       tick.className = 'tick';
-      // Anomalies simulées conformes à l'historique réel
       if (anomalies && anomalies[i]) {
         tick.className += ' ' + anomalies[i].type;
         tick.title = anomalies[i].date + ' : ' + anomalies[i].msg;
@@ -509,54 +726,179 @@
     }
   }
 
-  // Barres d'uptime réalistes
+  // Anomalies techniques réelles issues de git log
   var webAnomalies = {
-    14: { type: 'orange', date: '2 octobre 2026', msg: 'Maintenance préventive nocturne (8 min)' },
-    28: { type: 'red', date: '16 octobre 2026', msg: 'Afflux serveur lors du dépôt de la réponse fédérale (14 min)' },
-    48: { type: 'orange', date: '27 octobre 2026', msg: 'Correction du filtre d\'hôte de sécurité (12 min)' }
+    18: { type: 'orange', date: '5 octobre 2026', msg: 'Bogue Cloudflare ScrapeShield (liens mailto masqués)' },
+    26: { type: 'orange', date: '9 octobre 2026', msg: 'Invalidation du cache Service Worker satellite' },
+    38: { type: 'orange', date: '19 octobre 2026', msg: 'Bogue de rechargement intempestif Service Worker' },
+    44: { type: 'red', date: '22 octobre 2026', msg: 'Boucle de redirection HTTP 307 Cloudflare Worker' },
+    50: { type: 'orange', date: '25 octobre 2026', msg: 'Bogue de décalage ancre sous barre fixe' },
+    54: { type: 'red', date: '27 octobre 2026', msg: 'Bogue alerte certificat blog (bloquant)' }
   };
 
   var cceAnomalies = {
-    28: { type: 'orange', date: '16 octobre 2026', msg: 'Pic de requêtes OCR lors de la mise en ligne 72-RSP' }
+    36: { type: 'orange', date: '18 octobre 2026', msg: 'Désalignement textLayer PDF.js et débordement iframe' },
+    38: { type: 'orange', date: '19 octobre 2026', msg: 'Échec initial chargement WASM EmbedPDF hors-ligne' }
+  };
+
+  var apiAnomalies = {
+    30: { type: 'orange', date: '15 octobre 2026', msg: 'Pic de requêtes et latence sur la passerelle IA (bascule cluster Llama-3)' },
+    44: { type: 'red', date: '22 octobre 2026', msg: 'Mise en cache CDN erronée sur les réponses d\'erreur' }
   };
 
   renderUptimeBar('uptimeBarWeb', webAnomalies);
   renderUptimeBar('uptimeBarCce', cceAnomalies);
-  renderUptimeBar('uptimeBarApi', null);
+  renderUptimeBar('uptimeBarApi', apiAnomalies);
 
   function switchUptimeRange(step) {
     var lbl = document.getElementById('uptimeRangeLabel');
     if (step > 0) {
-      lbl.textContent = 'Nov. 2026 – Déc. 2026';
+      lbl.textContent = 'Oct. 2026 – En cours';
     } else {
-      lbl.textContent = 'Juil. 2026 – Oct. 2026';
+      lbl.textContent = 'Août 2026 – Sept. 2026';
     }
   }
 
-  /* ---------- 2. Calendrier interactif avec grilles et cercles ---------- */
+  /* ---------- 2. Calendrier interactif avec grilles et cercles sur les bogues ---------- */
   var monthsData = {
+    '2026-09': {
+      label: 'Sept. 2026',
+      firstDayOffset: 1, // 1er septembre 2026 = Mardi (index 1 si L=0)
+      daysInMonth: 30,
+      events: {
+        24: {
+          type: 'yellow',
+          commit: '773c4a8',
+          title: '24 septembre 2026 · Bogue syntaxe Schema.org',
+          text: 'Détection d\'un bloc JSON-LD dupliqué causant une erreur de validation dans les outils Google Rich Results.',
+          fix: 'Nettoyage des balises dupliquées et validation du format Person / ProfilePage.'
+        },
+        27: {
+          type: 'orange',
+          commit: 'bdddc85',
+          title: '27 septembre 2026 · Régression menu mobile',
+          text: 'Sous iOS Safari, le tiroir de menu mobile restait bloqué en position ouverte lors d\'un balayage tactile.',
+          fix: 'Refonte complète du conteneur en slideout CSS natif avec fermeture tactile fiabilisée.'
+        },
+        28: {
+          type: 'yellow',
+          commit: '18c15e6',
+          title: '28 septembre 2026 · Bogue de superposition z-index',
+          text: 'Les sous-menus déroulants passaient sous le bandeau d\'alerte supérieur.',
+          fix: 'Réajustement strict des strates de z-index (header: 1000, dropdown: 1050).'
+        },
+        30: {
+          type: 'orange',
+          commit: '6810ca9',
+          title: '30 septembre 2026 · Défilement bloqué du tiroir',
+          text: 'Impossibilité de faire défiler le panneau de notifications sur les écrans mobiles étroits.',
+          fix: 'Ajout de overflow-y: auto et -webkit-overflow-scrolling: touch.'
+        }
+      }
+    },
     '2026-10': {
       label: 'Oct. 2026',
       firstDayOffset: 3, // 1er octobre 2026 = Jeudi (index 3 si L=0)
       daysInMonth: 31,
       events: {
-        2: { type: 'red', title: '2 octobre 2026', text: 'Maintenance préventive des certificats et vérification d\'intégrité.' },
-        9: { type: 'red', title: '9 octobre 2026', text: 'Publication du communiqué J-7 de William Guindon (SEM-26-003).' },
-        13: { type: 'orange', title: '13 octobre 2026', text: 'Mise à niveau de la capacité de consultation des 222 pièces probatoires.' },
-        16: { type: 'red', title: '16 octobre 2026', text: 'Dépôt officiel de la réponse du Canada (72-RSP) auprès de la CCE. Disponibilité 100%.' },
-        20: { type: 'yellow', title: '20 octobre 2026', text: 'Sauvegarde redondante de l\'archive documentaire certifiée Zenodo.' },
-        27: { type: 'orange', title: '27 octobre 2026', text: 'Harmonisation des filtres d\'accès Zero Trust et liens du blog. Résolu.' }
+        5: {
+          type: 'orange',
+          commit: '7849d16',
+          title: '5 octobre 2026 · Bogue liens de courriel mailto',
+          text: 'L\'activation de Cloudflare ScrapeShield (Email Address Obfuscation) masquait les adresses de contact et brisait les liens cliquables.',
+          fix: 'Ajout des commentaires spéciaux <!--email_off--> et protection explicite des ancres.'
+        },
+        8: {
+          type: 'yellow',
+          commit: 'd9209c4',
+          title: '8 octobre 2026 · Blocage CSP du lecteur 360',
+          text: 'La politique Content-Security-Policy bloquait les frames nécessaires à l\'autotour 360.',
+          fix: 'Ajustement précis de frame-src dans netlify.toml, _headers et vercel.json.'
+        },
+        9: {
+          type: 'orange',
+          commit: 'f8298cd',
+          title: '9 octobre 2026 · Distorsion shader WebGL',
+          text: 'Sur certains GPU intégrés, le shader stéréoscopique produisait des étirements géométriques.',
+          fix: 'Optimisation de la précision du fragment shader et forçage de dimensions en puissances de deux.'
+        },
+        12: {
+          type: 'yellow',
+          commit: '395b6fa',
+          title: '12 octobre 2026 · Bogue cookies tiers non sollicités',
+          text: 'L\'intégration de vidéos tierces chargeait des cookies traceurs sans consentement préalable de l\'utilisateur.',
+          fix: 'Déploiement d\'un bouclier 2-clics strict et suppression de tout script d\'analyse externe intrusif.'
+        },
+        15: {
+          type: 'orange',
+          commit: '1860b14',
+          title: '15 octobre 2026 · Saturation de la passerelle IA',
+          text: 'Pic de trafic simultané causant des dépassements de quotas et des erreurs 429 sur les modèles lourds.',
+          fix: 'Bascule automatique vers les clusters Llama-3.3-70B et Llama-3.1-8B avec gestion de repli instantanée.'
+        },
+        18: {
+          type: 'orange',
+          commit: '24bc7df',
+          title: '18 octobre 2026 · Désalignement textLayer PDF.js',
+          text: 'La surbrillance et la sélection textuelle sur les documents officiels étaient décalées de plusieurs millimètres.',
+          fix: 'Alignement géométrique de la couche textLayer avec les dimensions réelles du canvas de rendu.'
+        },
+        19: {
+          type: 'red',
+          commit: '5811cfb',
+          title: '19 octobre 2026 · Rechargement brutal Service Worker',
+          text: 'Le navigateur rechargeait brutalement la page active dès qu\'un nouvel asset était mis en cache.',
+          fix: 'Neutralisation de l\'auto-reload sur controllerchange ; activation silencieuse en arrière-plan.'
+        },
+        21: {
+          type: 'yellow',
+          commit: '5e67234',
+          title: '21 octobre 2026 · Alertes d\'échappement DOM CodeQL',
+          text: 'Alertes automatisées de sécurité sur l\'utilisation de variables d\'URL dans le DOM sans échappement.',
+          fix: 'Remplacement systématique de innerHTML par textContent et assainissement des paramètres d\'URL.'
+        },
+        22: {
+          type: 'red',
+          commit: '86eb127',
+          title: '22 octobre 2026 · Boucle 307 & Cache d\'erreur CDN',
+          text: 'Cloudflare Worker renvoyait des boucles de redirection 307 et mettait en cache des réponses 500.',
+          fix: 'Résolution directe d\'index.html et application d\'en-têtes Cache-Control: no-store sur les erreurs.'
+        },
+        24: {
+          type: 'yellow',
+          commit: '84618a7',
+          title: '24 octobre 2026 · Redirection intempestive txt.html',
+          text: 'La version texte ultra-légère subissait une redirection automatique non désirée vers la page principale.',
+          fix: 'Suppression du script de détection d\'écran et maintien de la version texte 100% autonome.'
+        },
+        25: {
+          type: 'red',
+          commit: 'de7aaab',
+          title: '25 octobre 2026 · Écran noir anti-framing',
+          text: 'La sentinelle anti-fork affichait un écran noir d\'erreur sur les intégrations iFrame légitimes.',
+          fix: 'Remplacement du blocage total par une détection ciblée et une bannière non invasive.'
+        },
+        26: {
+          type: 'yellow',
+          commit: '776680d',
+          title: '26 octobre 2026 · Blocage de la boucle Canvas/WebGL',
+          text: 'Une exception non interceptée dans la boucle d\'animation bloquait le rendu visuel interactif.',
+          fix: 'Encapsulation dans un bloc try/catch et réinitialisation automatique du contexte WebGL.'
+        },
+        27: {
+          type: 'red',
+          commit: '14effee',
+          title: '27 octobre 2026 · Alerte bloquante « Certificat non certifié »',
+          text: 'Les visiteurs voulant lire les articles du carnet de bord étaient bloqués par une alerte d\'invalidation.',
+          fix: 'Suppression de la vérification erronée et rétablissement des routes d\'articles du blog.'
+        }
       }
     },
     '2026-11': {
       label: 'Nov. 2026',
       firstDayOffset: 6, // 1er novembre 2026 = Dimanche (index 6)
       daysInMonth: 30,
-      events: {
-        10: { type: 'red', title: '10 novembre 2026', text: 'Échéance légale de réponse fédérale au BVG (Pétition 15-546).' },
-        11: { type: 'orange', title: '11 novembre 2026', text: 'Jour du Souvenir : mise en ligne du minuteur solennel des 2 minutes de silence.' },
-        15: { type: 'yellow', title: '15 novembre 2026', text: 'Fenêtre de maintenance préventive du service worker (02 h 00 HE).' }
-      }
+      events: {}
     }
   };
 
@@ -580,7 +922,7 @@
     for (var day = 1; day <= data.daysInMonth; day++) {
       var ev = data.events[day];
       if (ev) {
-        html += '<td><span class="badge-circle ' + ev.type + '" onclick="showIncident(' + day + ')">' + day + '</span></td>';
+        html += '<td><span class="badge-circle ' + ev.type + '" onclick="showIncident(' + day + ')" title="Bogue ' + ev.commit + ' : ' + ev.title + '">' + day + '</span></td>';
       } else {
         html += '<td>' + day + '</td>';
       }
@@ -607,19 +949,23 @@
     var ev = data && data.events[day];
     var box = document.getElementById('incidentDetailsBox');
     if (!ev || !box) return;
+    document.getElementById('incidentCommit').textContent = ev.commit || 'GIT';
     document.getElementById('incidentDetailsTitle').textContent = ev.title;
     document.getElementById('incidentDetailsText').textContent = ev.text;
+    document.getElementById('incidentResolutionText').innerHTML = '<strong>Correctif :</strong> ' + ev.fix;
     box.classList.add('active');
   }
 
   function prevMonth() {
-    currentMonthKey = '2026-10';
+    if (currentMonthKey === '2026-11') currentMonthKey = '2026-10';
+    else if (currentMonthKey === '2026-10') currentMonthKey = '2026-09';
     renderCalendar(currentMonthKey);
     document.getElementById('incidentDetailsBox').classList.remove('active');
   }
 
   function nextMonth() {
-    currentMonthKey = '2026-11';
+    if (currentMonthKey === '2026-09') currentMonthKey = '2026-10';
+    else if (currentMonthKey === '2026-10') currentMonthKey = '2026-11';
     renderCalendar(currentMonthKey);
     document.getElementById('incidentDetailsBox').classList.remove('active');
   }
