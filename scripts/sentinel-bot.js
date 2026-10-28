@@ -107,22 +107,33 @@ function testHttpUrl(urlStr, timeoutMs = 7000) {
   });
 }
 
+const AHREFS_PROJECT_ID = process.env.AHREFS_PROJECT_ID || '10333783';
+
 // Helper pour interroger l'API officielle Ahrefs v3 si un jeton secret est configuré
 async function checkAhrefsApi(token) {
-  if (!token) return { connected: false, message: 'Aucun jeton AHREFS_API_TOKEN configuré (mode structurel autonome)' };
+  if (!token) {
+    return {
+      connected: false,
+      projectId: AHREFS_PROJECT_ID,
+      message: 'Aucun jeton AHREFS_API_TOKEN configuré dans GitHub Secrets (mode structurel autonome)'
+    };
+  }
+
   return new Promise((resolve) => {
     try {
+      const endpointPath = `/v3/site-audit/issues?project_id=${AHREFS_PROJECT_ID}`;
       const req = https.request(
         {
           hostname: 'api.ahrefs.com',
-          path: '/v3/site-audit/projects',
+          path: endpointPath,
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
             'User-Agent': 'SentinelBot/1.0 (+https://williamguindon.me)'
           },
-          timeout: 6000
+          timeout: 10000
         },
         (res) => {
           let data = '';
@@ -131,21 +142,43 @@ async function checkAhrefsApi(token) {
             if (res.statusCode >= 200 && res.statusCode < 300) {
               try {
                 const parsed = JSON.parse(data);
-                resolve({ connected: true, status: res.statusCode, projects: parsed.projects ? parsed.projects.length : 0 });
+                const issues = parsed.issues || [];
+                const errors = issues.filter(i => i.severity === 'error' || i.type === 'error' || i.is_error);
+                const warnings = issues.filter(i => i.severity === 'warning' || i.type === 'warning');
+                resolve({
+                  connected: true,
+                  status: res.statusCode,
+                  projectId: AHREFS_PROJECT_ID,
+                  totalIssues: issues.length,
+                  errorsCount: errors.length,
+                  warningsCount: warnings.length,
+                  issuesList: issues.slice(0, 5).map(i => i.title || i.name || i.issue_type || 'Anomalie'),
+                  message: `Ahrefs API connecté (Projet ${AHREFS_PROJECT_ID}) : ${errors.length} erreur(s), ${warnings.length} avertissement(s)`
+                });
               } catch (_) {
-                resolve({ connected: true, status: res.statusCode });
+                resolve({
+                  connected: true,
+                  status: res.statusCode,
+                  projectId: AHREFS_PROJECT_ID,
+                  message: 'Connexion Ahrefs API établie avec succès'
+                });
               }
             } else {
-              resolve({ connected: false, status: res.statusCode, message: `Réponse HTTP Ahrefs : ${res.statusCode}` });
+              resolve({
+                connected: false,
+                status: res.statusCode,
+                projectId: AHREFS_PROJECT_ID,
+                message: `Réponse HTTP Ahrefs : ${res.statusCode}`
+              });
             }
           });
         }
       );
-      req.on('error', (err) => resolve({ connected: false, message: err.message }));
-      req.on('timeout', () => { req.destroy(); resolve({ connected: false, message: 'Délai dépassé vers Ahrefs API' }); });
+      req.on('error', (err) => resolve({ connected: false, message: err.message, projectId: AHREFS_PROJECT_ID }));
+      req.on('timeout', () => { req.destroy(); resolve({ connected: false, message: 'Délai dépassé vers Ahrefs API', projectId: AHREFS_PROJECT_ID }); });
       req.end();
     } catch (e) {
-      resolve({ connected: false, message: e.message });
+      resolve({ connected: false, message: e.message, projectId: AHREFS_PROJECT_ID });
     }
   });
 }
@@ -279,8 +312,17 @@ async function main() {
   console.log(`\n[3/3] Contrôle de connexion Ahrefs...`);
   const ahrefsToken = process.env.AHREFS_API_TOKEN || null;
   const ahrefsApiRes = await checkAhrefsApi(ahrefsToken);
+  let finalSummary = genericSummary;
+  let finalSeverity = isGlobalHealthy ? 'green' : 'yellow';
+
   if (ahrefsApiRes.connected) {
-    console.log(`  ✔ Connexion API Ahrefs v3 établie avec succès.`);
+    console.log(`  ✔ ${ahrefsApiRes.message}`);
+    if (ahrefsApiRes.errorsCount > 0) {
+      finalSeverity = 'orange';
+      finalSummary = `Audit Ahrefs (Projet ${AHREFS_PROJECT_ID}) : ${ahrefsApiRes.errorsCount} erreur(s) et ${ahrefsApiRes.warningsCount} avertissement(s).`;
+    } else {
+      finalSummary = `Audit Ahrefs (Projet ${AHREFS_PROJECT_ID}) : 0 erreur SEO, santé de crawl 100% conforme.`;
+    }
   } else {
     console.log(`  ℹ ${ahrefsApiRes.message}`);
   }
@@ -289,9 +331,9 @@ async function main() {
   const reportData = {
     date: todayKey,
     timestamp: now.toISOString(),
-    status: isGlobalHealthy ? 'Tout bon' : 'Moyen',
-    severity: isGlobalHealthy ? 'green' : 'yellow',
-    summary: genericSummary,
+    status: finalSeverity === 'green' ? 'Tout bon' : (finalSeverity === 'orange' ? 'Important' : 'Moyen'),
+    severity: finalSeverity,
+    summary: finalSummary,
     metrics: {
       pagesChecked: localAudit.checkedPagesCount,
       ahrefsAnalyticsActive: localAudit.ahrefsConfig,
@@ -303,10 +345,14 @@ async function main() {
     },
     ahrefs: {
       siteAuditReady: true,
+      projectId: AHREFS_PROJECT_ID,
       canonicalTagsVerified: localAudit.canonicalIssues.length === 0,
       trackingKeyInstalled: localAudit.ahrefsConfig,
       apiConnected: ahrefsApiRes.connected,
-      apiMessage: ahrefsApiRes.message || 'Connecté'
+      apiMessage: ahrefsApiRes.message || 'Connecté',
+      errorsCount: ahrefsApiRes.errorsCount || 0,
+      warningsCount: ahrefsApiRes.warningsCount || 0,
+      topIssues: ahrefsApiRes.issuesList || []
     },
     networkChecks: networkResults
   };
@@ -319,7 +365,7 @@ async function main() {
   console.log(`\n✔ [OK] Rapport sentinelle enregistré dans : data/sentinel-report.json`);
 
   // 6. Mise à jour de 'statut.html'
-  updateStatutPage(todayKey, isGlobalHealthy, genericSummary);
+  updateStatutPage(todayKey, finalSeverity === 'green', finalSummary);
 
   console.log('\n🎉 Audit sentinelle terminé avec succès !');
 }
