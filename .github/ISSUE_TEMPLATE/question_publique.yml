@@ -1,0 +1,43 @@
+name: "💬 Poser une question publique ou demande documentaire"
+description: "Poser une question publique sur le registre, le dossier CCE ou l'infrastructure"
+title: "[Question publique] : "
+labels: ["question-publique", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 💬 Question publique & Demande documentaire
+        Cet espace public permet d'adresser une question générale ou une demande documentaire relative au dossier citoyen SEM-26-003, aux pièces publiques du registre ou au fonctionnement du site.
+        
+        > **⚠️ Rappel de sécurité & vie privée :** Ce fil d'échange est **100 % public**. Ne formulez ici **rien qui soit lié à des renseignements personnels**, à des révélations confidentielles ou à des pièces sous embargo. Les clauses de sécurité du site n'équivalent pas à GitHub : pour tout contact protégé ou sensible, utilisez `opsec.html`.
+  - type: input
+    id: subject
+    attributes:
+      label: Sujet de la question
+      placeholder: "ex. Précision sur une pièce du registre CCE, question sur les données ouvertes, etc."
+    validations:
+      required: true
+  - type: textarea
+    id: question-content
+    attributes:
+      label: Votre question ou demande
+      description: Formulez votre interrogation de façon claire, factuelle et constructive.
+      placeholder: "Posez votre question ou détaillez votre demande documentaire publique ici..."
+    validations:
+      required: true
+  - type: input
+    id: related-doc
+    attributes:
+      label: Document ou section concernée (facultatif)
+      placeholder: "ex. Pièce 26-3-det_fr.pdf, Section BAPE 371, API v1, etc."
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacy-ack
+    attributes:
+      label: Confirmations préalables obligatoires
+      options:
+        - label: "Je confirme que ma question est destinée à être publique et ne divulgue aucun renseignement privé, sensible ou confidentiel."
+          required: true
+        - label: "Je reconnais que GitHub n'est pas un canal d'alerte sécurisée (pour les signalements de sécurité ou confidentiels, se référer à SECURITY.md et opsec.html)."
+          required: true

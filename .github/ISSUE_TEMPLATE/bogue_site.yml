@@ -1,0 +1,55 @@
+name: "🛠️ Signaler un problème technique (Bogue du site)"
+description: "Signaler un bogue, un affichage défectueux ou un lien brisé sur williamguindon.me"
+title: "[Bogue] : "
+labels: ["bogue-technique", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🛠️ Signalement public d'anomalie technique
+        Merci de nous aider à maintenir la fiabilité et la traçabilité de l'infrastructure de `williamguindon.me`.
+        
+        > **⚠️ Rappel de sécurité essentiel :** Ce ticket est **100 % public**. Ne soumettez **aucun renseignement personnel**, secret, mot de passe ou donnée confidentielle. Les clauses de sécurité du site n'équivalent pas à GitHub : les failles de sécurité doivent être signalées en privé selon notre politique `SECURITY.md`.
+  - type: input
+    id: page-url
+    attributes:
+      label: Page ou ressource concernée
+      description: Quelle URL ou page du site présente un dysfonctionnement ?
+      placeholder: "ex. https://williamguindon.me/statut.html ou /registre.html"
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Description précise du problème
+      description: Que s'est-il passé ? Qu'auriez-vous dû voir à la place ?
+      placeholder: "Décrivez ce qui ne fonctionne pas, le comportement attendu et les étapes pour reproduire le bogue..."
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Niveau d'impact estimé
+      options:
+        - "Moyen (détail cosmétique, coquille, ralentissement mineur)"
+        - "Important (page difficile d'accès, filtre ou bouton inopérant)"
+        - "Critique (page totalement inaccessible, erreur 404/500)"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Appareil et navigateur (facultatif)
+      description: Sur quel matériel le bogue a-t-il été constaté ?
+      placeholder: "ex. Safari iOS sur iPhone 15 / Chrome sur macOS / Firefox sur Windows"
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmations préalables obligatoires
+      options:
+        - label: "Je confirme que ce signalement est public et ne contient AUCUN renseignement personnel ou confidentiel."
+          required: true
+        - label: "Je comprends que les clauses de sécurité du site n'équivalent pas à GitHub et que les failles de sécurité doivent être signalées en privé selon SECURITY.md."
+          required: true

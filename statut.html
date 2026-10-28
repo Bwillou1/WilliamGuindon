@@ -473,6 +473,160 @@
   .page-footer a:hover {
     color: var(--text-head);
   }
+
+  /* Section Contact & Signalement GitHub (2 options) */
+  .contact-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 28px;
+  }
+
+  .contact-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+
+  .contact-card {
+    background: #14161b;
+    border: 1px solid #232730;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-2px);
+    border-color: #3b4252;
+  }
+
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .contact-card-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .contact-card-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #252830;
+    color: var(--text-muted);
+  }
+
+  .contact-card-title {
+    color: var(--text-head);
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.35;
+  }
+
+  .contact-card-desc {
+    color: var(--text-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  .contact-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-bug {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+
+  .btn-bug:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #fff;
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
+  .btn-question {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+  }
+
+  .btn-question:hover {
+    background: rgba(59, 130, 246, 0.25);
+    color: #fff;
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  /* Boîte de clause de sécurité stricte */
+  .security-warning-box {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 10px;
+  }
+
+  .security-warning-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fcd34d;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+  }
+
+  .security-warning-text {
+    color: #d1d5db;
+    font-size: 0.83rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .security-warning-text a {
+    color: #fcd34d;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .security-warning-text a:hover {
+    color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -484,8 +638,8 @@
       <span class="brand-monogram">WG</span>
       <span>William Guindon</span>
     </a>
-    <a href="mailto:contact@williamguindon.me?subject=Signalement%20de%20bogue%20technique" class="btn-report">
-      <span>Signaler un bogue</span>
+    <a href="#contact-options" class="btn-report" title="Ouvrir les options de contact ou de signalement GitHub">
+      <span>Signaler un bogue / Écrire</span>
     </a>
   </header>
 
@@ -593,10 +747,69 @@
   <!-- Info-bulle flottante au survol -->
   <div id="tickHoverTooltip" class="tick-hover-card"></div>
 
+  <!-- 3. Section : Deux options de contact & Signalement public (Modèles GitHub) -->
+  <section id="contact-options" class="contact-panel">
+    <div class="card-header-row" style="margin-bottom:6px;">
+      <div>
+        <h2 class="card-header-title" style="font-size:1.15rem;">Nous contacter ou signaler une anomalie</h2>
+        <p class="card-header-subtitle">Deux options publiques via notre système de suivi GitHub officiel — ouvrez un modèle prêt à remplir en un clic</p>
+      </div>
+    </div>
+
+    <!-- Grille des 2 options -->
+    <div class="contact-options-grid">
+      <!-- Option 1 : Problème technique / Bogue -->
+      <div class="contact-card">
+        <div>
+          <div class="contact-card-header">
+            <span class="contact-card-icon" style="background:rgba(239, 68, 68, 0.15); color:var(--color-red);">🛠️</span>
+            <span class="contact-card-badge">Option 1</span>
+          </div>
+          <h3 class="contact-card-title">Signaler un problème technique sur le site</h3>
+          <p class="contact-card-desc">Une page inaccessible, un bogue d'affichage sur smartphone, un lecteur PDF défectueux ou un lien brisé ? Ouvrez un rapport technique pré-structuré.</p>
+        </div>
+        <a href="https://github.com/Bwillou1/WilliamGuindon/issues/new?template=bogue_site.yml" target="_blank" rel="noopener noreferrer" class="contact-btn btn-bug">
+          <span>Ouvrir le modèle de bogue</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+      </div>
+
+      <!-- Option 2 : Question publique -->
+      <div class="contact-card">
+        <div>
+          <div class="contact-card-header">
+            <span class="contact-card-icon" style="background:rgba(59, 130, 246, 0.15); color:#60a5fa;">💬</span>
+            <span class="contact-card-badge">Option 2</span>
+          </div>
+          <h3 class="contact-card-title">Poser une question publique (Registre &amp; Dossier)</h3>
+          <p class="contact-card-desc">Une question générale ou une demande documentaire qui peut être rendue publique ? Rien qui ne soit confidentiel, secret ou lié à des renseignements personnels.</p>
+        </div>
+        <a href="https://github.com/Bwillou1/WilliamGuindon/issues/new?template=question_publique.yml" target="_blank" rel="noopener noreferrer" class="contact-btn btn-question">
+          <span>Ouvrir le modèle de question</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Encadré strict de clauses de sécurité -->
+    <div class="security-warning-box">
+      <div class="security-warning-header">
+        <span class="security-warning-icon" aria-hidden="true">⚠️</span>
+        <strong>Clause stricte de confidentialité &amp; Sécurité — GitHub n'est pas un canal sécurisé</strong>
+      </div>
+      <p class="security-warning-text">
+        <strong>Attention :</strong> Toutes les discussions et issues ouvertes sur GitHub sont <strong>strictement publiques, permanentes et indexées</strong>. N'y inscrivez <strong>aucun renseignement personnel</strong>, donnée d'enquête confidentielle ou coordonnée privée.
+      </p>
+      <p class="security-warning-text" style="margin-top:8px;">
+        <strong>Nos clauses de sécurité n'équivalent pas à GitHub :</strong> Les signalements de failles de sécurité, vulnérabilités informatiques ou révélations protégées ne doivent <em>jamais</em> être soumis via GitHub. Pour tout signalement de sécurité ou échange confidentiel, consultez impérativement notre <a href="https://github.com/Bwillou1/WilliamGuindon/blob/main/SECURITY.md" target="_blank" rel="noopener">politique de sécurité (SECURITY.md)</a> et utilisez nos <a href="opsec.html">protocoles sécurisés hors-ligne (OPSEC)</a> (PGP / ProtonMail chiffré).
+      </p>
+    </div>
+  </section>
+
   <!-- Pied de page -->
   <footer class="page-footer">
     <p>Surveillance technique et traçabilité opérées pour l'infrastructure publique de William Guindon.</p>
-    <p style="margin-top: 6px;"><a href="index.html">← Revenir au site officiel</a> · <a href="feed.xml">Flux RSS</a> · <a href="mailto:contact@williamguindon.me">Assistance technique</a></p>
+    <p style="margin-top: 6px;"><a href="index.html">← Revenir au site officiel</a> · <a href="feed.xml">Flux RSS</a> · <a href="#contact-options">Signaler un bogue / Poser une question</a> · <a href="opsec.html">Canaux sécurisés OPSEC</a></p>
   </footer>
 </div>
 
