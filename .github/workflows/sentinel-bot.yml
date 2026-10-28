@@ -1,9 +1,9 @@
-name: Bot Sentinelle & Audit Quotidien Ahrefs
+name: Bot Sentinelle Hebdomadaire & Audit Ahrefs (Lundi)
 
 on:
   schedule:
-    # Exécution quotidienne à 04h00 UTC (minuit heure de Montréal)
-    - cron: '0 4 * * *'
+    # Exécution chaque lundi à 01h30 du matin heure de Montréal (05h30 UTC)
+    - cron: '30 5 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Exécution du Bot Sentinelle
+      - name: Exécution du Bot Sentinelle Hebdomadaire
+        env:
+          AHREFS_API_TOKEN: ${{ secrets.AHREFS_API_TOKEN }}
         run: node scripts/sentinel-bot.js
 
       - name: Validation de l'intégrité globale
@@ -33,7 +35,7 @@ jobs:
           git config --global user.email "sentinel-bot@williamguindon.me"
           git add data/sentinel-report.json statut.html
           if ! git diff --quiet || ! git diff --staged --quiet; then
-            git commit -m "chore(sentinel): audit quotidien de l'infrastructure et contrôle Ahrefs [skip ci]"
+            git commit -m "chore(sentinel): grand audit hebdomadaire du lundi et contrôle Ahrefs [skip ci]"
             git push
             echo "Rapport sentinelle et statut.html synchronisés avec succès."
           else

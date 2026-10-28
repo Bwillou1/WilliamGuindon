@@ -107,6 +107,49 @@ function testHttpUrl(urlStr, timeoutMs = 7000) {
   });
 }
 
+// Helper pour interroger l'API officielle Ahrefs v3 si un jeton secret est configuré
+async function checkAhrefsApi(token) {
+  if (!token) return { connected: false, message: 'Aucun jeton AHREFS_API_TOKEN configuré (mode structurel autonome)' };
+  return new Promise((resolve) => {
+    try {
+      const req = https.request(
+        {
+          hostname: 'api.ahrefs.com',
+          path: '/v3/site-audit/projects',
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'User-Agent': 'SentinelBot/1.0 (+https://williamguindon.me)'
+          },
+          timeout: 6000
+        },
+        (res) => {
+          let data = '';
+          res.on('data', chunk => data += chunk);
+          res.on('end', () => {
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              try {
+                const parsed = JSON.parse(data);
+                resolve({ connected: true, status: res.statusCode, projects: parsed.projects ? parsed.projects.length : 0 });
+              } catch (_) {
+                resolve({ connected: true, status: res.statusCode });
+              }
+            } else {
+              resolve({ connected: false, status: res.statusCode, message: `Réponse HTTP Ahrefs : ${res.statusCode}` });
+            }
+          });
+        }
+      );
+      req.on('error', (err) => resolve({ connected: false, message: err.message }));
+      req.on('timeout', () => { req.destroy(); resolve({ connected: false, message: 'Délai dépassé vers Ahrefs API' }); });
+      req.end();
+    } catch (e) {
+      resolve({ connected: false, message: e.message });
+    }
+  });
+}
+
 // 2. Audit local d'intégrité (fichiers, liens, balises Ahrefs & SEO)
 function runLocalAudit() {
   const audit = {
@@ -233,6 +276,15 @@ async function main() {
     ? "Infrastructure 100% opérationnelle, zéro anomalie détectée."
     : "Avertissement mineur sur les temps de réponse ou balises d'indexation.";
 
+  console.log(`\n[3/3] Contrôle de connexion Ahrefs...`);
+  const ahrefsToken = process.env.AHREFS_API_TOKEN || null;
+  const ahrefsApiRes = await checkAhrefsApi(ahrefsToken);
+  if (ahrefsApiRes.connected) {
+    console.log(`  ✔ Connexion API Ahrefs v3 établie avec succès.`);
+  } else {
+    console.log(`  ℹ ${ahrefsApiRes.message}`);
+  }
+
   // 5. Sauvegarde du rapport JSON
   const reportData = {
     date: todayKey,
@@ -252,7 +304,9 @@ async function main() {
     ahrefs: {
       siteAuditReady: true,
       canonicalTagsVerified: localAudit.canonicalIssues.length === 0,
-      trackingKeyInstalled: localAudit.ahrefsConfig
+      trackingKeyInstalled: localAudit.ahrefsConfig,
+      apiConnected: ahrefsApiRes.connected,
+      apiMessage: ahrefsApiRes.message || 'Connecté'
     },
     networkChecks: networkResults
   };
