@@ -5,6 +5,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#071013">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="description" content="Hub central des états du site, transitions saisonnières et éditions spéciales de William Guindon — Halloween, Hiver boréal, Solstice des Fêtes, Alerte Salamandres et Journée de la Vérité et Réconciliation 2027. Protégé par Cloudflare Zero Trust.">
 <title>Hub Global des États du Site &amp; Transitions Protégées | William Guindon</title>
 <link rel="canonical" href="https://williamguindon.me/state.html">
@@ -569,7 +570,30 @@ p.lead {
   </div>
 </header>
 
-<main>
+<!-- Écran de verrouillage Cloudflare Zero Trust (affiché si non authentifié) -->
+<div id="cf-access-gate" style="min-height:70vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
+  <div style="background:#0d1a20; border:1px solid #1e3a47; border-radius:14px; padding:36px 30px; max-width:540px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+    <div style="width:58px; height:58px; border-radius:12px; background:rgba(246, 130, 31, 0.15); border:1px solid rgba(246, 130, 31, 0.4); display:inline-flex; align-items:center; justify-content:center; margin-bottom:20px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f6821f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    </div>
+    <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f6821f; margin-bottom:8px;">Passerelle Cloudflare Zero Trust</div>
+    <h2 style="font-size:1.4rem; color:#fff; margin-bottom:12px; font-weight:700;">Accès Protégé · Modes sous Embargo</h2>
+    <p style="color:#94a3b8; font-size:0.9rem; line-height:1.6; margin-bottom:24px;">
+      Ce tableau de bord supervise les états opérationnels, transitions saisonnières futures et éditions sous embargo de <code>williamguindon.me</code>. L'accès public direct est restreint par politique d'accès.
+    </p>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <button onclick="openCFModal()" style="background:#f6821f; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+        <span>🛡️ Déverrouiller avec Cloudflare Access</span>
+      </button>
+      <a href="index.html" style="color:#64748b; font-size:0.85rem; text-decoration:none; padding:8px;">← Retourner au site officiel public</a>
+    </div>
+    <div style="margin-top:20px; font-size:0.78rem; color:#475569; border-top:1px solid #1e3a47; padding-top:14px;">
+      Zone sécurisée : <code>guindon-security.cloudflareaccess.com</code> · ID : <code>00ae76e7cc375a8175a3dde4f2a48ec0</code>
+    </div>
+  </div>
+</div>
+
+<main id="dashboard-content" style="display:none;">
 <section class="hero-state">
   <div class="wrap">
     <div class="badge-state"><span class="pulse-dot"></span> HUB MULTI-SAISONS &amp; ÉDITIONS SPÉCIALES DÉDIÉES</div>
@@ -931,11 +955,23 @@ p.lead {
 
   function updateCFAuthUI() {
     var authed = isCFAuthenticated();
+    var gate = document.getElementById('cf-access-gate');
+    var content = document.getElementById('dashboard-content');
     var bannerBar = document.getElementById('cf-banner-bar');
     var badgeText = document.getElementById('cf-badge-text');
     var dot = document.getElementById('cf-dot-indicator');
     var btnLabel = document.getElementById('cf-btn-label');
     var unlockedBanner = document.getElementById('unlocked-banner');
+
+    if (gate && content) {
+      if (authed) {
+        gate.style.display = 'none';
+        content.style.display = 'block';
+      } else {
+        gate.style.display = 'flex';
+        content.style.display = 'none';
+      }
+    }
 
     if (authed) {
       if (dot) dot.className = 'cf-dot valid';

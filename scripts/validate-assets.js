@@ -399,6 +399,7 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'reload.html',
   'navbar.html',
   'noel.html',
+  'state.html',
   '404.html'
 ]);
 
