@@ -2127,8 +2127,13 @@
     dropdowns.forEach((dropdown) => {
       const btn = dropdown.querySelector('.nav-dropdown-btn');
       if (!btn) return;
+      // Ne jamais intercepter les liens de navigation directs sans menu déroulant
+      if (btn.tagName === 'A' && !dropdown.querySelector('.nav-dropdown-menu')) return;
 
       btn.addEventListener('click', (e) => {
+        // Si le bouton est un lien direct sans sous-menu, laisser la navigation se faire
+        if (!dropdown.querySelector('.nav-dropdown-menu')) return;
+
         e.preventDefault();
         e.stopPropagation();
         
