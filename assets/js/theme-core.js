@@ -58,12 +58,92 @@
       const KEY = '_cf_sess_sync';
       const LEGACY_KEY = 'wg_reciprocite_lock';
       const VAL = '72rsp_active';
-      const searchParams = new URLSearchParams(window.location.search);
-      const unlockKey = searchParams.get('unlock');
-      const resetToken = searchParams.get('reset_token') || searchParams.get('token');
-      const isAuthorizedUnlock = unlockKey === 'wg2026' || resetToken === 'wg_destroy_lock_9f82b7c4e1d0865e8932fc81b4d098e72a4b16c9e0d84f1a5' || resetToken === '9f82b7c4e1d0865e8932fc81b4d098e';
+      const TARGET_UNLOCK_HASH = '71af49aaffcae9f4bff692bddde902af070d8bdb3f17588b9206a77f5576c2c9';
 
-      // Déverrouillage d'urgence administrateur ou jeton de destruction permanent
+      function sha256Sync(ascii) {
+        function rightRotate(value, amount) {
+          return (value >>> amount) | (value << (32 - amount));
+        }
+        var mathPow = Math.pow;
+        var maxWord = mathPow(2, 32);
+        var lengthProperty = 'length';
+        var i, j;
+        var result = '';
+        var words = [];
+        var asciiBitLength = ascii[lengthProperty] * 8;
+        var hash = [
+          0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+          0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+        ];
+        var k = [
+          0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+          0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+          0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+          0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+          0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+          0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+          0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+          0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+        ];
+        ascii += '\x80';
+        while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+        for (i = 0; i < ascii[lengthProperty]; i++) {
+          j = ascii.charCodeAt(i);
+          if (j >> 8) return '';
+          words[i >> 2] |= j << ((3 - i) % 4) * 8;
+        }
+        words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+        words[words[lengthProperty]] = (asciiBitLength | 0);
+        for (j = 0; j < words[lengthProperty];) {
+          var w = words.slice(j, j += 16);
+          var oldHash = hash;
+          hash = hash.slice(0, 8);
+          for (i = 0; i < 64; i++) {
+            var w15 = w[i - 15], w2 = w[i - 2];
+            var s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
+            var s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
+            var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+            var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+            var temp1 = hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0);
+            var temp2 = (rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj;
+            hash = [(temp1 + temp2) | 0].concat(hash);
+            hash[4] = (hash[4] + temp1) | 0;
+          }
+          for (i = 0; i < 8; i++) {
+            hash[i] = (hash[i] + oldHash[i]) | 0;
+          }
+        }
+        for (i = 0; i < 8; i++) {
+          for (j = 3; j + 1; j--) {
+            var b = (hash[i] >> (j * 8)) & 255;
+            result += ((b < 16) ? '0' : '') + b.toString(16);
+          }
+        }
+        return result;
+      }
+
+      // Extraction de jeton candidat dans le fragment volatile (#reinit=..., #unlock=..., #token=... ou hash direct)
+      // et secondairement dans les paramètres d'URL (?reinit=..., ?unlock=...)
+      let candidateKey = '';
+      const rawHash = window.location.hash ? window.location.hash.substring(1) : '';
+      if (rawHash) {
+        if (rawHash.includes('=')) {
+          const hp = new URLSearchParams(rawHash);
+          candidateKey = hp.get('reinit') || hp.get('unlock') || hp.get('token') || '';
+        } else {
+          candidateKey = rawHash;
+        }
+      }
+      if (!candidateKey && window.location.search) {
+        const sp = new URLSearchParams(window.location.search);
+        candidateKey = sp.get('reinit') || sp.get('unlock') || sp.get('token') || sp.get('reset_token') || '';
+      }
+
+      // Vérification cryptographique SHA-256 en mémoire locale
+      // Aucune clé secrète n'est présente en clair dans le code GitHub (0 trace publique)
+      const isAuthorizedUnlock = candidateKey ? (sha256Sync(candidateKey) === TARGET_UNLOCK_HASH) : false;
+
+      // Déverrouillage d'urgence / destruction permanente des verrous
       if (isAuthorizedUnlock) {
         try {
           localStorage.removeItem(KEY);
@@ -71,9 +151,9 @@
           localStorage.removeItem('_cf_hw_sig');
           sessionStorage.removeItem(KEY);
           sessionStorage.removeItem('_cf_hw_sig');
-          document.cookie = KEY + "=; path=/; max-age=0";
-          document.cookie = LEGACY_KEY + "=; path=/; max-age=0";
-          document.cookie = "_cf_hw_sig=; path=/; max-age=0";
+          document.cookie = KEY + "=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie = LEGACY_KEY + "=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie = "_cf_hw_sig=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           if (window.indexedDB) {
             const req = indexedDB.open('wg_sys_db', 1);
             req.onsuccess = function(e) {
@@ -91,6 +171,10 @@
           if ('BroadcastChannel' in window) {
             const bc = new BroadcastChannel('wg_reciprocity_ch');
             bc.postMessage({ action: 'UNLOCK' });
+          }
+          // Nettoie l'URL volatile pour ne laisser aucune trace dans la barre d'adresse
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
           }
         } catch (_) {}
         return;

@@ -401,8 +401,7 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'noel.html',
   'state.html',
   '404.html',
-  'dossier-confidentiel-non-biffe-sem26003.html',
-  'deverrouillage-9f82b7c4e1d0865e8932fc81b4d098e.html'
+  'dossier-confidentiel-non-biffe-sem26003.html'
 ]);
 
 let publicPagesAudited = 0;
