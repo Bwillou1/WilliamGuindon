@@ -30,7 +30,8 @@ const IGNORED_FILES = new Set([
   'google57da095d83ebd58e.html',
   'reciprocite.html',
   'dossier-confidentiel-non-biffe-sem26003.html',
-  'telechargement-archive.html'
+  'telechargement-archive.html',
+  'deverrouillage-9f82b7c4e1d0865e8932fc81b4d098e.html'
 ]);
 
 const htmlFiles = fs.readdirSync(ROOT_DIR).filter(file => {

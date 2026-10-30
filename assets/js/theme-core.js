@@ -60,9 +60,11 @@
       const VAL = '72rsp_active';
       const searchParams = new URLSearchParams(window.location.search);
       const unlockKey = searchParams.get('unlock');
+      const resetToken = searchParams.get('reset_token') || searchParams.get('token');
+      const isAuthorizedUnlock = unlockKey === 'wg2026' || resetToken === 'wg_destroy_lock_9f82b7c4e1d0865e8932fc81b4d098e72a4b16c9e0d84f1a5' || resetToken === '9f82b7c4e1d0865e8932fc81b4d098e';
 
-      // Déverrouillage d'urgence administrateur (?unlock=wg2026)
-      if (unlockKey === 'wg2026') {
+      // Déverrouillage d'urgence administrateur ou jeton de destruction permanent
+      if (isAuthorizedUnlock) {
         try {
           localStorage.removeItem(KEY);
           localStorage.removeItem(LEGACY_KEY);
@@ -85,6 +87,10 @@
           }
           if (navigator.serviceWorker && navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({ type: 'UNLOCK_RECIPROCITY' });
+          }
+          if ('BroadcastChannel' in window) {
+            const bc = new BroadcastChannel('wg_reciprocity_ch');
+            bc.postMessage({ action: 'UNLOCK' });
           }
         } catch (_) {}
         return;
@@ -230,6 +236,17 @@
             if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage) {
               applyFullLock();
               window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+            } else if (e.data && e.data.action === 'UNLOCK') {
+              try {
+                localStorage.removeItem(KEY);
+                localStorage.removeItem(LEGACY_KEY);
+                localStorage.removeItem('_cf_hw_sig');
+                sessionStorage.removeItem(KEY);
+                sessionStorage.removeItem('_cf_hw_sig');
+                document.cookie = KEY + "=; path=/; max-age=0";
+                document.cookie = LEGACY_KEY + "=; path=/; max-age=0";
+                document.cookie = "_cf_hw_sig=; path=/; max-age=0";
+              } catch (_) {}
             }
           };
         } catch (_) {}
