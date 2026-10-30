@@ -222,24 +222,37 @@ self.addEventListener('activate', (event) => {
 
 const SECURITY_FLAG_CACHE = 'wg-sec-flags';
 let isReciprocityLocked = false;
+let isDeviceImmune = false;
 
-// Initialiser le drapeau de verrouillage au démarrage
+// Initialiser les drapeaux de sécurité au démarrage
 caches.open(SECURITY_FLAG_CACHE).then(cache => {
   cache.match('/flag-reciprocity').then(res => {
     if (res) isReciprocityLocked = true;
+  }).catch(() => {});
+  cache.match('/flag-device-immune').then(res => {
+    if (res) isDeviceImmune = true;
   }).catch(() => {});
 }).catch(() => {});
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'LOCK_RECIPROCITY') {
-    isReciprocityLocked = true;
-    caches.open(SECURITY_FLAG_CACHE).then(cache => {
-      cache.put('/flag-reciprocity', new Response('72rsp_active'));
-    }).catch(() => {});
+    if (!isDeviceImmune) {
+      isReciprocityLocked = true;
+      caches.open(SECURITY_FLAG_CACHE).then(cache => {
+        cache.put('/flag-reciprocity', new Response('72rsp_active'));
+      }).catch(() => {});
+    }
   } else if (event.data && event.data.type === 'UNLOCK_RECIPROCITY') {
     isReciprocityLocked = false;
     caches.open(SECURITY_FLAG_CACHE).then(cache => {
       cache.delete('/flag-reciprocity');
+    }).catch(() => {});
+  } else if (event.data && event.data.type === 'IMMUNIZE_DEVICE') {
+    isReciprocityLocked = false;
+    isDeviceImmune = true;
+    caches.open(SECURITY_FLAG_CACHE).then(cache => {
+      cache.delete('/flag-reciprocity');
+      cache.put('/flag-device-immune', new Response('1'));
     }).catch(() => {});
   }
 });
@@ -254,8 +267,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 0. VERROUILLAGE RÉCIPROCITÉ : Interception des documents PDF et navigations directes
-  if (isReciprocityLocked) {
+  // 0. VERROUILLAGE RÉCIPROCITÉ : Interception des documents PDF et navigations directes (non appliqué aux appareils immunisés)
+  if (isReciprocityLocked && !isDeviceImmune) {
     const isDoc = url.pathname.endsWith('.pdf') || url.pathname.startsWith('/assets/docs/');
     const isNavigation = event.request.mode === 'navigate';
     const isExempt = url.pathname === '/reciprocite.html' || url.pathname.includes('console-admin.html') || url.pathname.includes('admin.html');
