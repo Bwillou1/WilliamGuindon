@@ -212,11 +212,35 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
+          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs') && key !== 'wg-sec-flags')
           .map((key) => caches.delete(key))
       );
     }).then(() => self.clients.claim())
   );
+});
+
+const SECURITY_FLAG_CACHE = 'wg-sec-flags';
+let isReciprocityLocked = false;
+
+// Initialiser le drapeau de verrouillage au démarrage
+caches.open(SECURITY_FLAG_CACHE).then(cache => {
+  cache.match('/flag-reciprocity').then(res => {
+    if (res) isReciprocityLocked = true;
+  }).catch(() => {});
+}).catch(() => {});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'LOCK_RECIPROCITY') {
+    isReciprocityLocked = true;
+    caches.open(SECURITY_FLAG_CACHE).then(cache => {
+      cache.put('/flag-reciprocity', new Response('72rsp_active'));
+    }).catch(() => {});
+  } else if (event.data && event.data.type === 'UNLOCK_RECIPROCITY') {
+    isReciprocityLocked = false;
+    caches.open(SECURITY_FLAG_CACHE).then(cache => {
+      cache.delete('/flag-reciprocity');
+    }).catch(() => {});
+  }
 });
 
 self.addEventListener('fetch', (event) => {
@@ -227,6 +251,20 @@ self.addEventListener('fetch', (event) => {
   // Ignorer complètement les domaines externes (GTranslate, Google Translate, Analytics, CDN, etc.)
   if (url.origin !== self.location.origin) {
     return;
+  }
+
+  // 0. VERROUILLAGE RÉCIPROCITÉ : Interception des documents PDF et navigations directes
+  if (isReciprocityLocked) {
+    const isDoc = url.pathname.endsWith('.pdf') || url.pathname.startsWith('/assets/docs/');
+    const isNavigation = event.request.mode === 'navigate';
+    const isExempt = url.pathname === '/reciprocite.html' || url.pathname.includes('console-admin.html') || url.pathname.includes('admin.html');
+    
+    if ((isDoc || isNavigation) && !isExempt) {
+      event.respondWith(
+        Response.redirect('/reciprocite.html?doc=sem26003&sig=72rsp', 302)
+      );
+      return;
+    }
   }
 
   // 1. Accélération locale maximale pour les images, styles, polices, scripts et données JSON (Cache-First + synchronisation silencieuse)

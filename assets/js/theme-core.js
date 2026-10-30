@@ -52,21 +52,41 @@
     if (earlyStyle) earlyStyle.remove();
   } catch (_) {}
 
-  // B. Réciprocité procédurale & verrouillage institutionnel (SEM-26-003)
-  try {
-    const searchParams = new URLSearchParams(window.location.search);
-    const unlockKey = searchParams.get('unlock');
-    if (unlockKey === 'wg2026') {
-      try {
-        localStorage.removeItem('_cf_sess_sync');
-        localStorage.removeItem('wg_reciprocite_lock');
-      } catch (_) {}
-      try {
-        document.cookie = "_cf_sess_sync=; path=/; max-age=0";
-        document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
-      } catch (_) {}
-    } else {
-      // Signatures camouflées (ressemblant à des jetons légaux du dossier, WAF ou analytics)
+  // B. Réciprocité procédurale & verrouillage institutionnel hermétique (SEM-26-003)
+  (function initReciprocitySystem() {
+    try {
+      const KEY = '_cf_sess_sync';
+      const LEGACY_KEY = 'wg_reciprocite_lock';
+      const VAL = '72rsp_active';
+      const searchParams = new URLSearchParams(window.location.search);
+      const unlockKey = searchParams.get('unlock');
+
+      // Déverrouillage d'urgence administrateur (?unlock=wg2026)
+      if (unlockKey === 'wg2026') {
+        try {
+          localStorage.removeItem(KEY);
+          localStorage.removeItem(LEGACY_KEY);
+          sessionStorage.removeItem(KEY);
+          document.cookie = KEY + "=; path=/; max-age=0";
+          document.cookie = LEGACY_KEY + "=; path=/; max-age=0";
+          if (window.indexedDB) {
+            const req = indexedDB.open('wg_sys_db', 1);
+            req.onsuccess = function(e) {
+              const db = e.target.result;
+              if (db.objectStoreNames.contains('flags')) {
+                const tx = db.transaction('flags', 'readwrite');
+                tx.objectStore('flags').delete(KEY);
+              }
+            };
+          }
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type: 'UNLOCK_RECIPROCITY' });
+          }
+        } catch (_) {}
+        return;
+      }
+
+      // 1. Détection par signatures d'URL camouflées
       const hasReciprocityParam = (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
                                   searchParams.get('doc_id') === 'sem26003' ||
                                   searchParams.get('utm_source') === 'cec_portal' ||
@@ -74,40 +94,138 @@
                                   searchParams.get('reciprocite') === '1' ||
                                   searchParams.get('asnum') === 'federal';
 
-      const isLockedStorage = localStorage.getItem('_cf_sess_sync') === '72rsp_active' || localStorage.getItem('wg_reciprocite_lock') === '1';
-      const isLockedCookie = document.cookie.includes('_cf_sess_sync=72rsp_active') || document.cookie.includes('wg_reciprocite_lock=1');
-      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
-
-      if (hasReciprocityParam || isReciprocitePage) {
-        try {
-          localStorage.setItem('_cf_sess_sync', '72rsp_active');
-          localStorage.setItem('wg_reciprocite_lock', '1');
-        } catch (_) {}
-        try {
-          document.cookie = "_cf_sess_sync=72rsp_active; path=/; max-age=31536000; SameSite=Lax";
-          document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax";
-        } catch (_) {}
+      // 2. Détection par Referrer institutionnel (courriels, intranets, passerelles fédérales et corporatives)
+      let hasInstitutionalReferrer = false;
+      const ref = (document.referrer || '').toLowerCase();
+      if (ref) {
+        const fedPatterns = [
+          'mail.gc.ca', 'canada.ca', 'spc-ssc.gc.ca', 'ec.gc.ca', 'justice.gc.ca',
+          'ceaa-acee.gc.ca', 'outlook.office.com', 'outlook.live.com', 'teams.microsoft.com',
+          'republicservices.com', 'stablex.com', 'zscaler', 'bluecoat', 'forcepoint', 'umbrella'
+        ];
+        hasInstitutionalReferrer = fedPatterns.some(function(p) { return ref.includes(p); });
       }
 
-      if ((isLockedStorage || isLockedCookie || hasReciprocityParam) && !isReciprocitePage && !isConsolePage) {
-        window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
-        document.documentElement.style.display = 'none';
-        return;
+      // 3. Vérification des 4 niveaux de stockage
+      let isLockedCookie = document.cookie.includes(KEY + '=' + VAL) || document.cookie.includes(LEGACY_KEY + '=1');
+      let isLockedLocal = localStorage.getItem(KEY) === VAL || localStorage.getItem(LEGACY_KEY) === '1';
+      let isLockedSession = sessionStorage.getItem(KEY) === VAL;
+
+      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
+
+      // Fonction d'auto-guérison et d'inscription multi-supports (Evercookie 4 niveaux)
+      function applyFullLock() {
+        try { localStorage.setItem(KEY, VAL); } catch (_) {}
+        try { localStorage.setItem(LEGACY_KEY, '1'); } catch (_) {}
+        try { sessionStorage.setItem(KEY, VAL); } catch (_) {}
+        try { document.cookie = KEY + "=" + VAL + "; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+        try { document.cookie = LEGACY_KEY + "=1; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+
+        // Inscription dans IndexedDB
+        if (window.indexedDB) {
+          try {
+            const req = indexedDB.open('wg_sys_db', 1);
+            req.onupgradeneeded = function(e) {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains('flags')) {
+                db.createObjectStore('flags');
+              }
+            };
+            req.onsuccess = function(e) {
+              const db = e.target.result;
+              const tx = db.transaction('flags', 'readwrite');
+              tx.objectStore('flags').put(VAL, KEY);
+            };
+          } catch (_) {}
+        }
+
+        // Notification au Service Worker pour bloquer les PDF directs
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          try {
+            navigator.serviceWorker.controller.postMessage({ type: 'LOCK_RECIPROCITY' });
+          } catch (_) {}
+        }
+      }
+
+      // Si l'un des signaux s'allume ou si nous sommes sur reciprocite.html
+      const shouldLock = isLockedCookie || isLockedLocal || isLockedSession || hasReciprocityParam || hasInstitutionalReferrer || isReciprocitePage;
+
+      if (shouldLock) {
+        applyFullLock();
+
+        // Synchronisation temps réel inter-onglets via BroadcastChannel
+        if ('BroadcastChannel' in window) {
+          try {
+            const bc = new BroadcastChannel('wg_reciprocity_ch');
+            bc.postMessage({ action: 'LOCK', doc: 'sem26003', sig: '72rsp' });
+          } catch (_) {}
+        }
+
+        if (!isReciprocitePage && !isConsolePage) {
+          window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+          document.documentElement.style.display = 'none';
+          return;
+        }
+
+        // 4. Auto-défense contre suppression dans les outils de développement (uniquement si verrouillé)
+        window.addEventListener('storage', function(e) {
+          if (e.key === KEY || e.key === LEGACY_KEY) {
+            applyFullLock();
+            if (!isReciprocitePage && !isConsolePage) {
+              window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+            }
+          }
+        });
+      }
+
+      // Écoute BroadcastChannel sur tous les onglets pour redirection synchronisée
+      if ('BroadcastChannel' in window) {
+        try {
+          const bc = new BroadcastChannel('wg_reciprocity_ch');
+          bc.onmessage = function(e) {
+            if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage) {
+              applyFullLock();
+              window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+            }
+          };
+        } catch (_) {}
       }
 
       // Piège de retour arrière pour pages restaurées depuis le cache mémoire (bfcache)
       window.addEventListener('pageshow', function() {
         try {
-          const lockedNow = localStorage.getItem('_cf_sess_sync') === '72rsp_active' ||
-                            document.cookie.includes('_cf_sess_sync=72rsp_active') ||
-                            localStorage.getItem('wg_reciprocite_lock') === '1';
+          const lockedNow = localStorage.getItem(KEY) === VAL ||
+                            document.cookie.includes(KEY + '=' + VAL) ||
+                            sessionStorage.getItem(KEY) === VAL;
           if (lockedNow && !isReciprocitePage && !isConsolePage) {
             window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
           }
         } catch (_) {}
       });
-    }
-  } catch (_) {}
+
+      // Vérification asynchrone IndexedDB (au cas où cookies et localStorage ont été vidés)
+      if (!shouldLock && window.indexedDB) {
+        try {
+          const req = indexedDB.open('wg_sys_db', 1);
+          req.onsuccess = function(e) {
+            const db = e.target.result;
+            if (db.objectStoreNames.contains('flags')) {
+              const tx = db.transaction('flags', 'readonly');
+              const getReq = tx.objectStore('flags').get(KEY);
+              getReq.onsuccess = function() {
+                if (getReq.result === VAL) {
+                  applyFullLock();
+                  if (!isReciprocitePage && !isConsolePage) {
+                    window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+                  }
+                }
+              };
+            }
+          };
+        } catch (_) {}
+      }
+    } catch (_) {}
+  })();
 
   const DEBUG = false;
   const themeStorageKey = 'william-guindon-theme';
