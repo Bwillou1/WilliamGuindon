@@ -28,7 +28,8 @@ const navbarContent = fs.readFileSync(NAVBAR_FILE, 'utf8').trim();
 const IGNORED_FILES = new Set([
   'navbar.html',
   'google57da095d83ebd58e.html',
-  'reciprocite.html'
+  'reciprocite.html',
+  'dossier-confidentiel-non-biffe-sem26003.html'
 ]);
 
 const htmlFiles = fs.readdirSync(ROOT_DIR).filter(file => {

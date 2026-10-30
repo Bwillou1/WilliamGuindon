@@ -288,6 +288,33 @@ html, body {
     min-height: auto !important;
   }
 }
+
+/* Filigrane anti-photo de cellulaire (Camera Shield) */
+.camera-shield-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0.07;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  user-select: none;
+}
+.camera-shield-row {
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #ffffff;
+  transform: rotate(-14deg);
+  text-transform: uppercase;
+}
 </style>
 </head>
 <body>
@@ -302,6 +329,9 @@ html, body {
     </div>
 
     <div class="reciprocite-card">
+      <!-- Filigrane haute-fréquence anti-photo de cellulaire (Camera Shield) -->
+      <div class="camera-shield-overlay" aria-hidden="true" id="camera-shield-watermark"></div>
+
       <div class="reciprocite-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         Avis de réciprocité procédurale · SEM-26-003
@@ -380,6 +410,31 @@ html, body {
     try { sessionStorage.setItem(KEY, VAL); } catch (_) {}
     try { document.cookie = KEY + "=" + VAL + "; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
     try { document.cookie = LEGACY_KEY + "=1; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+
+    // Enregistrement de l'empreinte matérielle pour verrouillage inter-réseaux
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 160;
+      canvas.height = 40;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#166534';
+        ctx.fillRect(10, 5, 80, 25);
+        ctx.fillStyle = '#22c55e';
+        ctx.fillText('SEM-26-003-WG', 12, 12);
+        const langProfile = (navigator.languages || [navigator.language || '']).join(',');
+        const str = canvas.toDataURL() + (navigator.hardwareConcurrency || 4) + (screen.colorDepth || 24) + langProfile;
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = ((hash << 5) - hash) + str.charCodeAt(i);
+          hash |= 0;
+        }
+        const sig = 'hw_' + Math.abs(hash).toString(36);
+        localStorage.setItem('_cf_hw_sig', sig);
+        sessionStorage.setItem('_cf_hw_sig', sig);
+        document.cookie = "_cf_hw_sig=" + sig + "; path=/; max-age=31536000; SameSite=Lax";
+      }
+    } catch (_) {}
 
     // Inscription dans IndexedDB
     if (window.indexedDB) {
@@ -482,6 +537,20 @@ html, body {
   purgeAiElements();
   document.addEventListener('DOMContentLoaded', purgeAiElements);
   window.addEventListener('load', purgeAiElements);
+
+  // 7. Génération dynamique du filigrane Camera Shield anti-photo
+  try {
+    const shield = document.getElementById('camera-shield-watermark');
+    if (shield) {
+      const today = new Date().toISOString().slice(0, 10);
+      const rowText = `REPRÉSENTATION INSTITUTIONNELLE NON FORMELLE · CCE SEM-26-003 · HORODATÉ LE ${today} · ART. 24.28 ACEUM · `;
+      let lines = '';
+      for (let i = 0; i < 14; i++) {
+        lines += `<div class="camera-shield-row">${rowText.repeat(4)}</div>`;
+      }
+      shield.innerHTML = lines;
+    }
+  } catch (_) {}
 })();
 </script>
 

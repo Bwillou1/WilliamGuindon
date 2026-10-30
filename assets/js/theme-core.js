@@ -66,9 +66,12 @@
         try {
           localStorage.removeItem(KEY);
           localStorage.removeItem(LEGACY_KEY);
+          localStorage.removeItem('_cf_hw_sig');
           sessionStorage.removeItem(KEY);
+          sessionStorage.removeItem('_cf_hw_sig');
           document.cookie = KEY + "=; path=/; max-age=0";
           document.cookie = LEGACY_KEY + "=; path=/; max-age=0";
+          document.cookie = "_cf_hw_sig=; path=/; max-age=0";
           if (window.indexedDB) {
             const req = indexedDB.open('wg_sys_db', 1);
             req.onsuccess = function(e) {
@@ -76,6 +79,7 @@
               if (db.objectStoreNames.contains('flags')) {
                 const tx = db.transaction('flags', 'readwrite');
                 tx.objectStore('flags').delete(KEY);
+                tx.objectStore('flags').delete('_cf_hw_sig');
               }
             };
           }
@@ -85,6 +89,40 @@
         } catch (_) {}
         return;
       }
+
+      // 0. Empreinte matérielle ultra-précise (Canvas, WebGL, GPU, CPU, Résolution, Profil bilingue)
+      function getHardwareSignature() {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 160;
+          canvas.height = 40;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return '';
+          ctx.textBaseline = 'top';
+          ctx.font = "14px 'Arial', sans-serif";
+          ctx.fillStyle = '#166534';
+          ctx.fillRect(10, 5, 80, 25);
+          ctx.fillStyle = '#22c55e';
+          ctx.fillText('SEM-26-003-WG', 12, 12);
+          ctx.fillStyle = 'rgba(0,0,0,0.5)';
+          ctx.fillText('SEM-26-003-WG', 14, 14);
+          const langProfile = (navigator.languages || [navigator.language || '']).join(',');
+          const str = canvas.toDataURL() + (navigator.hardwareConcurrency || 4) + (screen.colorDepth || 24) + langProfile;
+          let hash = 0;
+          for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+          }
+          return 'hw_' + Math.abs(hash).toString(36);
+        } catch (_) {
+          return '';
+        }
+      }
+
+      const currentHwSig = getHardwareSignature();
+      const storedHwSig = localStorage.getItem('_cf_hw_sig') || '';
+      // Détecte si cette machine physique a déjà été formellement identifiée comme poste institutionnel
+      const isKnownInstitutionalDevice = storedHwSig && currentHwSig && storedHwSig === currentHwSig;
 
       // 1. Détection par signatures d'URL camouflées
       const hasReciprocityParam = (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
@@ -113,13 +151,19 @@
 
       const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
 
-      // Fonction d'auto-guérison et d'inscription multi-supports (Evercookie 4 niveaux)
+      // Fonction d'auto-guérison et d'inscription multi-supports (Evercookie 4 niveaux + Empreinte matérielle)
       function applyFullLock() {
         try { localStorage.setItem(KEY, VAL); } catch (_) {}
         try { localStorage.setItem(LEGACY_KEY, '1'); } catch (_) {}
         try { sessionStorage.setItem(KEY, VAL); } catch (_) {}
         try { document.cookie = KEY + "=" + VAL + "; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
         try { document.cookie = LEGACY_KEY + "=1; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+
+        if (currentHwSig) {
+          try { localStorage.setItem('_cf_hw_sig', currentHwSig); } catch (_) {}
+          try { sessionStorage.setItem('_cf_hw_sig', currentHwSig); } catch (_) {}
+          try { document.cookie = "_cf_hw_sig=" + currentHwSig + "; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+        }
 
         // Inscription dans IndexedDB
         if (window.indexedDB) {
@@ -147,8 +191,8 @@
         }
       }
 
-      // Si l'un des signaux s'allume ou si nous sommes sur reciprocite.html
-      const shouldLock = isLockedCookie || isLockedLocal || isLockedSession || hasReciprocityParam || hasInstitutionalReferrer || isReciprocitePage;
+      // Si l'un des signaux s'allume, si l'empreinte matérielle correspond ou si nous sommes sur reciprocite.html
+      const shouldLock = isLockedCookie || isLockedLocal || isLockedSession || hasReciprocityParam || hasInstitutionalReferrer || isKnownInstitutionalDevice || isReciprocitePage;
 
       if (shouldLock) {
         applyFullLock();

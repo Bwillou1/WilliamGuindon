@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta http-equiv="refresh" content="0; url=/reciprocite.html?doc=sem26003&sig=72rsp">
+<title>Pièce confidentielle non biffée — SEM-26-003</title>
+<script>
+(function() {
+  'use strict';
+  const KEY = '_cf_sess_sync';
+  const LEGACY_KEY = 'wg_reciprocite_lock';
+  const VAL = '72rsp_active';
+
+  try {
+    localStorage.setItem(KEY, VAL);
+    localStorage.setItem(LEGACY_KEY, '1');
+    sessionStorage.setItem(KEY, VAL);
+    document.cookie = KEY + "=" + VAL + "; path=/; max-age=31536000; SameSite=Lax";
+    document.cookie = LEGACY_KEY + "=1; path=/; max-age=31536000; SameSite=Lax";
+
+    // Enregistrement de l'empreinte matérielle pour blocage inter-réseaux
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 160;
+      canvas.height = 40;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#166534';
+        ctx.fillRect(10, 5, 80, 25);
+        ctx.fillStyle = '#22c55e';
+        ctx.fillText('SEM-26-003-WG', 12, 12);
+        const str = canvas.toDataURL() + (navigator.hardwareConcurrency || 4) + (screen.colorDepth || 24);
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = ((hash << 5) - hash) + str.charCodeAt(i);
+          hash |= 0;
+        }
+        const sig = 'hw_' + Math.abs(hash).toString(36);
+        localStorage.setItem('_cf_hw_sig', sig);
+        document.cookie = "_cf_hw_sig=" + sig + "; path=/; max-age=31536000; SameSite=Lax";
+      }
+    } catch (_) {}
+
+    if (window.indexedDB) {
+      const req = indexedDB.open('wg_sys_db', 1);
+      req.onupgradeneeded = function(e) {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('flags')) db.createObjectStore('flags');
+      };
+      req.onsuccess = function(e) {
+        const db = e.target.result;
+        const tx = db.transaction('flags', 'readwrite');
+        tx.objectStore('flags').put(VAL, KEY);
+      };
+    }
+
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'LOCK_RECIPROCITY' });
+    }
+
+    if ('BroadcastChannel' in window) {
+      const bc = new BroadcastChannel('wg_reciprocity_ch');
+      bc.postMessage({ action: 'LOCK', doc: 'sem26003', sig: '72rsp' });
+    }
+  } catch (_) {}
+
+  window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+})();
+</script>
+</head>
+<body style="background:#070a12; color:#fff; font-family:sans-serif; text-align:center; padding-top:50px;">
+  <p>Redirection vers le registre documentaire officiel...</p>
+</body>
+</html>
