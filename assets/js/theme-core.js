@@ -875,7 +875,8 @@
       'privacy.html',
       'netiquette.html',
       'dependances-licences.html',
-      'reciprocite.html'
+      'reciprocite.html',
+      'telechargement-archive.html'
     ];
     const isPolicyPage = POLICY_FILES.some(f => currentPath.endsWith(f));
     const isDocViewer = currentPath.includes('viewer.html') || currentPath.includes('lecteur.html') || currentPath.includes('dossier-journalistes.html');

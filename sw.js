@@ -23,6 +23,7 @@ const ASSETS_TO_CACHE = [
   '/dev.html',
   '/portrait.html',
   '/reciprocite.html',
+  '/telechargement-archive.html',
   '/assets/media/grande-tourbiere-couverture.webp',
   '/assets/docs/observations-reponse-canada-sem26003.pdf',
   '/assets/docs/72-rsp_fr.pdf',
