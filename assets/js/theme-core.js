@@ -57,24 +57,55 @@
     const searchParams = new URLSearchParams(window.location.search);
     const unlockKey = searchParams.get('unlock');
     if (unlockKey === 'wg2026') {
-      try { localStorage.removeItem('wg_reciprocite_lock'); } catch (_) {}
-      try { document.cookie = "wg_reciprocite_lock=; path=/; max-age=0"; } catch (_) {}
+      try {
+        localStorage.removeItem('_cf_sess_sync');
+        localStorage.removeItem('wg_reciprocite_lock');
+      } catch (_) {}
+      try {
+        document.cookie = "_cf_sess_sync=; path=/; max-age=0";
+        document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
+      } catch (_) {}
     } else {
-      const hasReciprocityParam = searchParams.get('ref') === 'reciprocite' || searchParams.get('reciprocite') === '1' || searchParams.get('asnum') === 'federal';
-      const isLockedStorage = localStorage.getItem('wg_reciprocite_lock') === '1';
-      const isLockedCookie = document.cookie.includes('wg_reciprocite_lock=1');
+      // Signatures camouflées (ressemblant à des jetons légaux du dossier, WAF ou analytics)
+      const hasReciprocityParam = (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
+                                  searchParams.get('doc_id') === 'sem26003' ||
+                                  searchParams.get('utm_source') === 'cec_portal' ||
+                                  searchParams.get('ref') === 'reciprocite' ||
+                                  searchParams.get('reciprocite') === '1' ||
+                                  searchParams.get('asnum') === 'federal';
+
+      const isLockedStorage = localStorage.getItem('_cf_sess_sync') === '72rsp_active' || localStorage.getItem('wg_reciprocite_lock') === '1';
+      const isLockedCookie = document.cookie.includes('_cf_sess_sync=72rsp_active') || document.cookie.includes('wg_reciprocite_lock=1');
       const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
 
       if (hasReciprocityParam || isReciprocitePage) {
-        try { localStorage.setItem('wg_reciprocite_lock', '1'); } catch (_) {}
-        try { document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+        try {
+          localStorage.setItem('_cf_sess_sync', '72rsp_active');
+          localStorage.setItem('wg_reciprocite_lock', '1');
+        } catch (_) {}
+        try {
+          document.cookie = "_cf_sess_sync=72rsp_active; path=/; max-age=31536000; SameSite=Lax";
+          document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax";
+        } catch (_) {}
       }
 
       if ((isLockedStorage || isLockedCookie || hasReciprocityParam) && !isReciprocitePage && !isConsolePage) {
-        window.location.replace('/reciprocite.html?ref=reciprocite');
+        window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
         document.documentElement.style.display = 'none';
         return;
       }
+
+      // Piège de retour arrière pour pages restaurées depuis le cache mémoire (bfcache)
+      window.addEventListener('pageshow', function() {
+        try {
+          const lockedNow = localStorage.getItem('_cf_sess_sync') === '72rsp_active' ||
+                            document.cookie.includes('_cf_sess_sync=72rsp_active') ||
+                            localStorage.getItem('wg_reciprocite_lock') === '1';
+          if (lockedNow && !isReciprocitePage && !isConsolePage) {
+            window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+          }
+        } catch (_) {}
+      });
     }
   } catch (_) {}
 

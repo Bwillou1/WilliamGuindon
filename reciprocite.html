@@ -263,7 +263,7 @@ html, body {
 <main id="main-content">
   <section class="reciprocite-section">
     <div class="reciprocite-header-brand">
-      <a href="reciprocite.html?ref=reciprocite" aria-label="William Guindon">
+      <a href="reciprocite.html?doc=sem26003&sig=72rsp" aria-label="William Guindon">
         <img src="/assets/img/wg-monogram.svg" alt="" width="32" height="20" style="vertical-align: middle;">
         <span>William <span style="color: #22c55e;">Guindon</span></span>
       </a>
@@ -300,7 +300,7 @@ html, body {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
           Consulter le Registre Officiel CCE ↗
         </a>
-        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf&ref=reciprocite" class="btn-reciprocite btn-reciprocite-ghost">
+        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf&doc=sem26003&sig=72rsp" class="btn-reciprocite btn-reciprocite-ghost">
           Observations de l'auteur (17 oct.)
         </a>
       </div>
@@ -316,31 +316,50 @@ html, body {
 (function() {
   'use strict';
 
-  // 1. Verrouillage persistant local & cookie
+  // 1. Verrouillage persistant camouflé (_cf_sess_sync + wg_reciprocite_lock)
   try {
+    localStorage.setItem('_cf_sess_sync', '72rsp_active');
     localStorage.setItem('wg_reciprocite_lock', '1');
+    document.cookie = "_cf_sess_sync=72rsp_active; path=/; max-age=31536000; SameSite=Lax";
     document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax";
   } catch (_) {}
 
-  // 2. Transport du marqueur de transmission : l'URL dans la barre d'adresse porte systématiquement ?ref=reciprocite
+  // 2. Transport sous signature documentaire plausible (?doc=sem26003&sig=72rsp)
   try {
     if (window.history && window.history.replaceState) {
       const u = new URL(window.location.href);
-      if (u.searchParams.get('ref') !== 'reciprocite') {
-        u.searchParams.set('ref', 'reciprocite');
+      if (u.searchParams.get('doc') !== 'sem26003' || u.searchParams.get('sig') !== '72rsp') {
+        u.searchParams.set('doc', 'sem26003');
+        u.searchParams.set('sig', '72rsp');
+        u.searchParams.delete('ref');
+        u.searchParams.delete('reciprocite');
         window.history.replaceState(null, '', u.toString());
       }
     }
   } catch (_) {}
 
-  // 3. Interception du presse-papier : si l'utilisateur copie un lien ou texte vers le site, injection du marqueur
+  // 3. Piège anti-retour arrière (Back-button Trap)
+  // Injecte une série d'états dans l'historique et intercepte popstate
+  try {
+    for (let i = 0; i < 25; i++) {
+      window.history.pushState({ locked: true, depth: i }, '', window.location.href);
+    }
+    window.addEventListener('popstate', function(e) {
+      window.history.pushState({ locked: true }, '', window.location.href);
+      try {
+        window.location.replace(window.location.href);
+      } catch (_) {}
+    });
+  } catch (_) {}
+
+  // 4. Interception du presse-papier : si l'utilisateur copie un lien ou texte vers le site, injection de la signature
   document.addEventListener('copy', function(e) {
     try {
       const selection = window.getSelection().toString();
       if (selection && (selection.includes('williamguindon.me') || selection.startsWith('/') || selection.startsWith('http'))) {
         let modified = selection;
-        if (!modified.includes('ref=reciprocite')) {
-          modified = modified.includes('?') ? (modified + '&ref=reciprocite') : (modified + '?ref=reciprocite');
+        if (!modified.includes('doc=sem26003')) {
+          modified = modified.includes('?') ? (modified + '&doc=sem26003&sig=72rsp') : (modified + '?doc=sem26003&sig=72rsp');
         }
         if (e.clipboardData) {
           e.clipboardData.setData('text/plain', modified);
@@ -350,7 +369,7 @@ html, body {
     } catch (_) {}
   });
 
-  // 4. Nettoyage et suppression dynamique de tout widget IA rémanent
+  // 5. Nettoyage et suppression dynamique de tout widget IA rémanent
   function purgeAiElements() {
     try {
       const selectors = ['.floating-ai-btn', '#js-floating-ai-btn', '.ai-modal-overlay', '#ai-chat', 'header.site'];
