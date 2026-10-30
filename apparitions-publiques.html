@@ -186,6 +186,117 @@
   color: var(--muted);
   font-weight: 600;
 }
+
+/* BADGES DE CLASSIFICATION MÉDIATIQUE & LÉGENDE */
+.press-legend-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin: 22px 0 30px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+.press-legend-intro {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.press-legend-title {
+  font-weight: 800;
+  color: var(--text);
+  margin-right: 6px;
+}
+.press-legend-desc {
+  color: var(--muted);
+}
+.press-legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.press-legend-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.press-legend-subtext {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.press-meta-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.press-type-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.press-type-pill svg {
+  flex-shrink: 0;
+}
+
+/* 🎙️ Entrevue exclusive */
+.press-type-pill.pill-interview {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284c7;
+  border: 1px solid rgba(14, 165, 233, 0.35);
+}
+[data-theme="dark"] .press-type-pill.pill-interview {
+  background: rgba(14, 165, 233, 0.18);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+/* 📰 Enquête & Citation */
+.press-type-pill.pill-citation {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+[data-theme="dark"] .press-type-pill.pill-citation {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+/* ✍️ Tribune d'opinion */
+.press-type-pill.pill-tribune {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+[data-theme="dark"] .press-type-pill.pill-tribune {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+/* 📢 Prise de parole & Allocution */
+.press-type-pill.pill-speech {
+  background: rgba(147, 51, 234, 0.12);
+  color: #7c3aed;
+  border: 1px solid rgba(147, 51, 234, 0.35);
+}
+[data-theme="dark"] .press-type-pill.pill-speech {
+  background: rgba(147, 51, 234, 0.18);
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.4);
+}
 .press-headline {
   font-family: var(--font-heading);
   font-size: 1.15rem;
@@ -1088,6 +1199,44 @@
       </button>
     </nav>
 
+    <!-- BANDEAU DE TRANSPARENCE & LÉGENDE DE CLASSIFICATION MÉDIATIQUE -->
+    <div class="press-legend-bar" role="region" aria-label="Légende des types de parution">
+      <div class="press-legend-intro">
+        <span class="press-legend-title">Classification &amp; Rigueur documentaire :</span>
+        <span class="press-legend-desc">Afin de préserver une transparence intégrale envers le public et les instances officielles (CCE / ACEUM), chaque parution est explicitement catégorisée selon la nature exacte de la prise de parole.</span>
+      </div>
+      <div class="press-legend-items">
+        <div class="press-legend-item">
+          <span class="press-type-pill pill-interview">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+            <span>Entrevue exclusive</span>
+          </span>
+          <span class="press-legend-subtext">Entrevue directe accordée en studio, en face-à-face ou par micro ouvert.</span>
+        </div>
+        <div class="press-legend-item">
+          <span class="press-type-pill pill-citation">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+            <span>Enquête &amp; Citation</span>
+          </span>
+          <span class="press-legend-subtext">Reportage ou enquête journalistique citant le dossier et les démarches citoyennes.</span>
+        </div>
+        <div class="press-legend-item">
+          <span class="press-type-pill pill-tribune">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Tribune d'opinion</span>
+          </span>
+          <span class="press-legend-subtext">Texte ou lettre ouverte rédigé et signé personnellement par William Guindon.</span>
+        </div>
+        <div class="press-legend-item">
+          <span class="press-type-pill pill-speech">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+            <span>Prise de parole publique</span>
+          </span>
+          <span class="press-legend-subtext">Intervention citoyenne au conseil, colloque académique ou allocution plénière.</span>
+        </div>
+      </div>
+    </div>
+
     <!-- SECTION 1 : CARTES DE COUVERTURE MÉDIATIQUE (STYLE OFFICIEL DU SITE) -->
     <section class="press-grid-layout" id="press-cards-grid" aria-label="Grille des articles et passages médiatiques">
 
@@ -1097,7 +1246,13 @@
           <a href="https://www.lapresse.ca/actualites/environnement/2026-07-03/protection-d-une-tourbiere-a-blainville/le-combat-d-un-adolescent-a-l-onu.php" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-lapresse" aria-label="La Presse">
             <img src="assets/media/lapresse-logo.png" alt="Logo La Presse" class="press-logo-img" width="120" height="34" loading="lazy">
           </a>
-          <span class="press-date-tag">3 juillet 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Enquête &amp; Citation</span>
+            </span>
+            <span class="press-date-tag">3 juillet 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1120,7 +1275,13 @@
           <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" class="press-logo-link" aria-label="TVBL">
             <img src="assets/media/tvbl-logo.png" alt="Logo TVBL" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">Juillet 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-interview">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+              <span>Entrevue exclusive</span>
+            </span>
+            <span class="press-date-tag">Juillet 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1147,7 +1308,13 @@
           <a href="https://blainville.ca" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-blainville" aria-label="Ville de Blainville">
             <img src="assets/media/blainville-logo.png" alt="Logo Ville de Blainville" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">8 juillet 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-speech">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              <span>Prise de parole citoyenne</span>
+            </span>
+            <span class="press-date-tag">8 juillet 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1178,7 +1345,13 @@
           <a href="https://www.ledevoir.com/opinion/lettres/865027/francois-legault-vous-detruisez-notre-avenir" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-ledevoir" aria-label="Le Devoir">
             <img src="assets/media/ledevoir-logo.png" alt="Logo Le Devoir" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">8 avril 2025</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-tribune">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>Tribune d'opinion</span>
+            </span>
+            <span class="press-date-tag">8 avril 2025</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1201,7 +1374,13 @@
           <a href="https://www.cbc.ca/listen/cbc-podcasts/1419-this-is-montreal" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-cbc" aria-label="CBC">
             <img src="assets/media/cbc-logo.jpg" alt="Logo CBC Radio-Canada" class="press-logo-img" width="120" height="36" loading="lazy">
           </a>
-          <span class="press-date-tag">Été 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-interview">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+              <span>Entrevue audio d'enquête</span>
+            </span>
+            <span class="press-date-tag">Été 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1228,7 +1407,13 @@
           <a href="https://therover.ca/blainville-teenager-takes-stablex-fight-international/" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-therover" aria-label="The Rover">
             <img src="assets/media/the-rover-logo.jpg" alt="Logo The Rover" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">Juillet 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Enquête de presse</span>
+            </span>
+            <span class="press-date-tag">Juillet 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1251,7 +1436,13 @@
           <a href="https://info-fcqged.beehiiv.com/p/infolettre-fcqged-septembre-2026" target="_blank" rel="noopener noreferrer" class="press-logo-link item-fcqged" aria-label="FCQGED">
             <img src="assets/media/fcqged-logo.png" alt="Logo FCQGED" class="press-logo-img" width="120" height="32" loading="lazy" style="object-fit:contain;">
           </a>
-          <span class="press-date-tag">30 septembre 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Analyse &amp; Veille juridique</span>
+            </span>
+            <span class="press-date-tag">30 septembre 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1274,7 +1465,13 @@
           <a href="https://educaloi.qc.ca/actualites-juridiques/porter-plainte-a-linternational-pour-faire-respecter-les-lois-en-environnement/" target="_blank" rel="noopener noreferrer" class="press-logo-link item-educaloi" aria-label="Éducaloi">
             <img src="assets/media/educaloi-logo.png" alt="Logo Éducaloi" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">Septembre 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Référence juridique</span>
+            </span>
+            <span class="press-date-tag">Septembre 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1297,7 +1494,13 @@
           <a href="https://lesasdelinfo.com/articles/6171/super-william-a-la-rescousse-de-la-grande-tourbiere" target="_blank" rel="noopener noreferrer" class="press-logo-link" aria-label="Les As de l'info">
             <img src="assets/media/lesasdelinfo-logo.png" alt="Logo Les As de l'info" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">Juillet 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Reportage jeunesse</span>
+            </span>
+            <span class="press-date-tag">Juillet 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1314,13 +1517,19 @@
         </div>
       </article>
 
-      <!-- ITEM 9 : JOURNAL DE MONTRÉAL ARCHIVE -->
+      <!-- ITEM 10 : JOURNAL DE MONTRÉAL ARCHIVE -->
       <article class="press-card" data-category="press">
         <div class="press-card-header">
           <a href="https://www.journaldemontreal.com/2021/11/28/francois-legault-felicite-le-premier-enfant-vaccine-1" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-jdm" aria-label="Le Journal de Montréal">
             <img src="assets/media/jdm-logo.svg" alt="Logo Le Journal de Montréal" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">28 novembre 2021</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-citation">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+              <span>Archive historique</span>
+            </span>
+            <span class="press-date-tag">28 novembre 2021</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1337,13 +1546,19 @@
         </div>
       </article>
 
-      <!-- ITEM 10 : COLLOQUE RÉSEAU ACTES CSQ -->
+      <!-- ITEM 11 : COLLOQUE RÉSEAU ACTES CSQ -->
       <article class="press-card" data-category="event">
         <div class="press-card-header">
           <a href="https://www.lacsq.org" target="_blank" rel="noopener noreferrer" class="press-logo-link" aria-label="CSQ">
             <img src="assets/media/logo-mouvement-actes-csq.png" alt="Logo ACTES CSQ" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">12-13 novembre 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-speech">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              <span>Conférence &amp; Atelier</span>
+            </span>
+            <span class="press-date-tag">12-13 novembre 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1360,13 +1575,19 @@
         </div>
       </article>
 
-      <!-- ITEM 11 : JOURNÉE VERTE AREQ-CSQ -->
+      <!-- ITEM 12 : JOURNÉE VERTE AREQ-CSQ -->
       <article class="press-card" data-category="event">
         <div class="press-card-header">
           <a href="https://areq.lacsq.org" target="_blank" rel="noopener noreferrer" class="press-logo-link" aria-label="AREQ CSQ">
             <img src="assets/media/logo-areq-csq.png" alt="Logo AREQ CSQ" class="press-logo-img" width="120" height="32" loading="lazy">
           </a>
-          <span class="press-date-tag">27 novembre 2026</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-speech">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              <span>Allocution plénière</span>
+            </span>
+            <span class="press-date-tag">27 novembre 2026</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1389,7 +1610,13 @@
           <a href="https://curiummag.com" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-curium" aria-label="Curium Mag">
             <img src="assets/media/curium-logo.png" alt="Logo Curium Mag" class="press-logo-img" width="120" height="34" loading="lazy">
           </a>
-          <span class="press-status-badge">⏳ À paraître · Hiver 2026-2027</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-interview">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+              <span>Entrevue grand format</span>
+            </span>
+            <span class="press-status-badge">⏳ À paraître · Hiver 2026-2027</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
@@ -1413,7 +1640,13 @@
           <a href="https://lab22.org" target="_blank" rel="noopener noreferrer" class="press-logo-link logo-lab22" aria-label="Lab22">
             <img src="assets/media/lab22-logo.png" alt="Logo Lab22" class="press-logo-img" width="120" height="34" loading="lazy">
           </a>
-          <span class="press-status-badge">⏳ En production · Première printemps 2027</span>
+          <div class="press-meta-header">
+            <span class="press-type-pill pill-speech">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              <span>Participation documentaire</span>
+            </span>
+            <span class="press-status-badge">⏳ En production · Première printemps 2027</span>
+          </div>
         </div>
         <div class="press-card-body">
           <h2 class="press-headline">
