@@ -27,7 +27,8 @@ const navbarContent = fs.readFileSync(NAVBAR_FILE, 'utf8').trim();
 // Liste des fichiers à ignorer
 const IGNORED_FILES = new Set([
   'navbar.html',
-  'google57da095d83ebd58e.html'
+  'google57da095d83ebd58e.html',
+  'reciprocite.html'
 ]);
 
 const htmlFiles = fs.readdirSync(ROOT_DIR).filter(file => {

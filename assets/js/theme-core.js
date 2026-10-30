@@ -52,6 +52,32 @@
     if (earlyStyle) earlyStyle.remove();
   } catch (_) {}
 
+  // B. Réciprocité procédurale & verrouillage institutionnel (SEM-26-003)
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    const unlockKey = searchParams.get('unlock');
+    if (unlockKey === 'wg2026') {
+      try { localStorage.removeItem('wg_reciprocite_lock'); } catch (_) {}
+      try { document.cookie = "wg_reciprocite_lock=; path=/; max-age=0"; } catch (_) {}
+    } else {
+      const hasReciprocityParam = searchParams.get('ref') === 'reciprocite' || searchParams.get('reciprocite') === '1' || searchParams.get('asnum') === 'federal';
+      const isLockedStorage = localStorage.getItem('wg_reciprocite_lock') === '1';
+      const isLockedCookie = document.cookie.includes('wg_reciprocite_lock=1');
+      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
+
+      if (hasReciprocityParam || isReciprocitePage) {
+        try { localStorage.setItem('wg_reciprocite_lock', '1'); } catch (_) {}
+        try { document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax"; } catch (_) {}
+      }
+
+      if ((isLockedStorage || isLockedCookie || hasReciprocityParam) && !isReciprocitePage && !isConsolePage) {
+        window.location.replace('/reciprocite.html?ref=reciprocite');
+        document.documentElement.style.display = 'none';
+        return;
+      }
+    }
+  } catch (_) {}
+
   const DEBUG = false;
   const themeStorageKey = 'william-guindon-theme';
 
@@ -655,7 +681,8 @@
       'terms.html',
       'privacy.html',
       'netiquette.html',
-      'dependances-licences.html'
+      'dependances-licences.html',
+      'reciprocite.html'
     ];
     const isPolicyPage = POLICY_FILES.some(f => currentPath.endsWith(f));
     const isDocViewer = currentPath.includes('viewer.html') || currentPath.includes('lecteur.html') || currentPath.includes('dossier-journalistes.html');

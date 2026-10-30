@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cloudflareinsights.com; object-src 'none';">
 
-<title>Avis de réciprocité institutionnelle — William Guindon</title>
+<title>Avis de réciprocité procédurale — William Guindon (SEM-26-003)</title>
 <meta name="description" content="Avis de réciprocité documentaire et procédurale concernant les réseaux du Gouvernement du Canada et de Republic Services / Stablex (Dossier CCE SEM-26-003).">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://williamguindon.me/reciprocite.html">
@@ -28,7 +28,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
 <link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
 <link rel="manifest" href="/manifest.json?v=20261017">
-<meta name="theme-color" content="#0b0f0c">
+<meta name="theme-color" content="#070a12">
 <meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -38,467 +38,237 @@
 <!-- BRANDKIT:END -->
 
 <style>
+/* Masquage total et absolu de la navbar et du widget IA sur cette page */
+header.site,
+.site-deadline-topbar-wrap,
+#ai-chat,
+.floating-ai-btn,
+#js-floating-ai-btn,
+.ai-modal-overlay,
+.bio-floating-player,
+#wg-floating-glossary-tip {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html, body {
+  background-color: #070a12 !important;
+  color: #e2e8f0 !important;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 .reciprocite-section {
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 16px;
-  background: radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.08), transparent 70%);
+  padding: 40px 16px 24px;
+  background: radial-gradient(circle at 50% 12%, rgba(16, 185, 129, 0.14), transparent 65%), #070a12;
+  box-sizing: border-box;
 }
+
+.reciprocite-header-brand {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.reciprocite-header-brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #f8fafc;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
 .reciprocite-card {
-  max-width: 760px;
+  max-width: 780px;
   width: 100%;
-  background: var(--card-bg, #111827);
-  border: 1.5px solid var(--border-color, rgba(255, 255, 255, 0.12));
-  border-radius: 16px;
-  padding: 40px 32px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 18px;
+  padding: 40px 36px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(16, 185, 129, 0.06);
   position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
 }
+
+@media (max-width: 640px) {
+  .reciprocite-card {
+    padding: 28px 20px;
+  }
+}
+
 .reciprocite-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   margin-bottom: 20px;
 }
+
 .reciprocite-title {
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.25;
-  color: var(--text, #f9fafb);
-  margin-bottom: 12px;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: #ffffff !important;
+  margin: 0 0 16px 0 !important;
+  letter-spacing: -0.02em;
 }
+
 .reciprocite-lead {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text-muted, #9ca3af);
-  margin-bottom: 24px;
+  font-size: 16px !important;
+  line-height: 1.65 !important;
+  color: #cbd5e1 !important;
+  margin-bottom: 24px !important;
 }
+
+.reciprocite-lead strong {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.reciprocite-lead .highlight-asn {
+  color: #6ee7b7 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95em;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
 .reciprocite-box {
-  background: rgba(0, 0, 0, 0.25);
-  border-left: 3px solid #f59e0b;
-  padding: 16px 20px;
-  border-radius: 0 10px 10px 0;
-  margin-bottom: 24px;
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: var(--text, #e5e7eb);
+  background: rgba(245, 158, 11, 0.08) !important;
+  border-left: 4px solid #f59e0b !important;
+  border-top: 1px solid rgba(245, 158, 11, 0.25);
+  border-right: 1px solid rgba(245, 158, 11, 0.25);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 18px 20px !important;
+  border-radius: 0 12px 12px 0;
+  margin-bottom: 24px !important;
+  font-size: 14.5px !important;
+  line-height: 1.7 !important;
+  color: #fef3c7 !important;
 }
+
 .reciprocite-box strong {
-  color: #fbbf24;
+  color: #fbbf24 !important;
+  font-size: 15px;
 }
+
+.reciprocite-desc {
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: #e2e8f0 !important;
+  margin-bottom: 18px !important;
+}
+
+.reciprocite-desc strong {
+  color: #ffffff !important;
+}
+
 .reciprocite-points {
-  margin: 0 0 28px 0;
-  padding-left: 20px;
-  color: var(--text, #d1d5db);
-  font-size: 14px;
-  line-height: 1.7;
+  margin: 0 0 28px 0 !important;
+  padding-left: 22px !important;
+  color: #cbd5e1 !important;
+  font-size: 14.5px !important;
+  line-height: 1.75 !important;
 }
+
 .reciprocite-points li {
-  margin-bottom: 8px;
+  margin-bottom: 12px !important;
 }
+
+.reciprocite-points strong {
+  color: #ffffff !important;
+}
+
 .reciprocite-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
+
 .btn-reciprocite {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
+
 .btn-reciprocite-primary {
-  background: var(--accent, #10b981);
+  background: #10b981 !important;
   color: #ffffff !important;
-  border: 1px solid var(--accent, #10b981);
+  border: 1px solid #10b981 !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
+
 .btn-reciprocite-primary:hover {
-  background: #059669;
+  background: #059669 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+}
+
+.btn-reciprocite-ghost {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+
+.btn-reciprocite-ghost:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
   transform: translateY(-1px);
 }
-.btn-reciprocite-ghost {
-  background: transparent;
-  color: var(--text, #e5e7eb) !important;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
-}
-.btn-reciprocite-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.4);
+
+.reciprocite-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8 !important;
+  line-height: 1.6;
 }
 </style>
 </head>
 <body>
 
-<header class="site" aria-label="En-tête du site">
-  <div id="ai-chat" aria-hidden="true"></div>
-  <div class="wrap">
-    <a class="brand" href="./" aria-label="William Guindon">
-      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
-      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
-      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
-    </a>
-    <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navigation principale"><div class="mobile-nav-header">
-          <span class="mobile-nav-title">Navigation</span>
-          <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            <span>Fermer</span>
-          </button>
-        </div>
-      <!-- Rubrique 1 : Dossier CCE & Stablex -->
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>Dossier CCE &amp; Stablex ▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Enquêtes &amp; Analyses</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="stablex.html" class="nav-dropdown-item">Dossier d'enquête Stablex</a>
-              <a href="contamination.html" class="nav-dropdown-item">Enquête : Contamination &amp; Mesures</a>
-              <a href="loi-93.html" class="nav-dropdown-item">Législation : Loi 93 &amp; Expropriation</a>
-              <a href="enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
-              <a href="lobby.html" class="nav-dropdown-item">Enquête fédérale : Volet Lobbying</a>
-              <a href="autochtone.html" class="nav-dropdown-item">Dossier : Histoire autochtone &amp; Écologie</a>
-              <a href="apercu.html" class="nav-dropdown-item">Dossier expliqué &amp; Vulgarisation (SEM-26-003)</a>
-              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Lexique &amp; Dictionnaire citoyen</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Registre CCE &amp; Pièces</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Observations de l'auteur (17 oct.)</a>
-              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="nav-dropdown-item">Réponse du Canada (16 oct.)</a>
-              <a href="registre.html" class="nav-dropdown-item">Registre officiel CCE (Direct)</a>
-              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
-              <a href="viewer.html" class="nav-dropdown-item">Consulter les documents (PDF)</a>
-              <a href="dossier-journalistes.html" class="nav-dropdown-item">Explorateur documentaire</a>
-              <a href="miroirs.html" class="nav-dropdown-item">Miroirs Décentralisés (IPFS/Tor)</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Suivi &amp; Outils Direct</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Comment Agir &amp; Soutenir</a>
-              <a href="live.html" class="nav-dropdown-item">Horloge &amp; Réponse Canada (16 oct.)</a>
-              <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
-              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
-              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
-              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <!-- Rubrique 2 : Actualités & Médias -->
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>Actualités &amp; Médias ▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Terrain &amp; Réseaux</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
-              <a href="autochtone.html" class="nav-dropdown-item">Dossier : Histoire autochtone &amp; Écologie</a>
-              <a href="apercu.html" class="nav-dropdown-item">Dossier expliqué &amp; Vulgarisation (SEM-26-003)</a>
-              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
-              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Presse &amp; Déclarations</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
-              <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
-              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
-              <a href="presse.html" class="nav-dropdown-item">Espace Presse &amp; Kit Média</a>
-              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
-              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <!-- Rubrique 3 : Autonomie & Adultisme -->
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>Autonomie &amp; Adultisme ▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <a href="adultisme.html" class="nav-dropdown-item">01. Appui scientifique &amp; Adultisme (Liebel &amp; Meade)</a>
-          <a href="statut-mineur.html" class="nav-dropdown-item">02. Statut citoyen mineur &amp; Attestation CCE</a>
-          <a href="age.html" class="nav-dropdown-item">03. Wmail — Archive des correspondances</a>
-        </div>
-      </div>
-
-      <!-- Rubrique 4 : Chartes & Politiques (Cadre légal) -->
-      <div class="nav-dropdown nav-dropdown-right">
-        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>Chartes &amp; Politiques ▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>01–03. Chartes &amp; Déontologie</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="politiques.html" class="nav-dropdown-item">00. Registre des politiques (Hub)</a>
-              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
-              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
-              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>04–08. Protection &amp; Procédures</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="anti-slapp.html" class="nav-dropdown-item">04. Déclaration Anti-SLAPP</a>
-              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Presse</a>
-              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
-              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
-              <a href="opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>09–12. Statut, Archives &amp; Textes légaux</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
-              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
-              <a href="licence-et-charte.html" class="nav-dropdown-item">Licence &amp; Charte graphique</a>
-              <a href="terms.html" class="nav-dropdown-item">Conditions d'utilisation</a>
-              <a href="privacy.html" class="nav-dropdown-item">Politique de confidentialité</a>
-              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
-              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <!-- Rubrique 5 : À propos & Contact -->
-      <div class="nav-dropdown nav-dropdown-right">
-        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
-          <span>À propos &amp; Contact ▾</span>
-        </button>
-        <div class="nav-dropdown-menu">
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Profil &amp; Réalisations</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
-              <a href="./#apropos" class="nav-dropdown-item">Biographie de William Guindon</a>
-              <a href="liens.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Liens officiels (Réseaux &amp; Bio)</a>
-              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
-              <a href="dev.html" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
-              <a href="statut.html" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
-              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
-              <a href="api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
-            </div>
-          </details>
-          <details class="nav-submenu">
-            <summary class="nav-submenu-summary">
-              <span>Échanges &amp; Contact</span>
-              <span class="nav-submenu-arrow">▾</span>
-            </summary>
-            <div class="nav-submenu-items">
-              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #10b981;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Comment Agir &amp; Soutenir</a>
-              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
-              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
-              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <!-- Sélecteur de langue unique (FR / EN / ES) -->
-      <div class="nav-dropdown nav-lang-dropdown">
-        <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
-          <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-          <span class="current-lang-code">FR</span>
-          <span>▾</span>
-        </button>
-        <div class="nav-dropdown-menu nav-lang-menu" role="menu">
-          <span class="nav-dropdown-group-title">Langue / Language</span>
-          <button type="button" class="nav-dropdown-item lang-select-btn active" data-lang="fr" role="menuitem">
-            <span class="lang-name">Français</span>
-            <span class="lang-tag">FR</span>
-          </button>
-          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
-            <span class="lang-name">English</span>
-            <span class="lang-tag">EN</span>
-          </button>
-          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
-            <span class="lang-name">Español</span>
-            <span class="lang-tag">ES</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Panneau des alertes & notifications -->
-      <div class="nav-notif-dropdown">
-        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span class="nav-notif-badge" role="status" aria-label="3 nouvelles alertes actives" title="3 nouvelles alertes actives"></span>
-        </button>
-        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
-          <div class="nav-notif-header">
-            <div class="nav-notif-title-group">
-              <span class="nav-notif-pulse"></span>
-              <h4>Alertes &amp; Publications</h4>
-            </div>
-            <button class="nav-notif-close" type="button" aria-label="Fermer les notifications">&times;</button>
-          </div>
-          <div class="nav-notif-body">
-            <article class="notif-item">
-              <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
-              <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal (députée de Blainville) et Madeleine Chenette (députée fédérale)</h5>
-              <p class="notif-item-desc">Deux rencontres bilatérales confirmées. Nadine Le Gal a souhaité fixer cet échange avant même d'avoir ouvert son bureau permanent. Enjeux au programme : Loi 93, BAPE 371, réponse fédérale au BVG (10 nov.) et suite CCE SEM-26-003.</p>
-              <div class="notif-item-links">
-                <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article du carnet ↗</a>
-                <a href="agir.html" class="notif-link-btn notif-link-ghost">Mobilisation &amp; Élus</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
-              <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (Pétition BVG 0546)</h5>
-              <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'une pétition citoyenne au BVG (art. 22 LVG) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'article 24.27(4)(a) de l'ACEUM.</p>
-              <div class="notif-item-links">
-                <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
-                <a href="registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
-              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
-              <p class="notif-item-desc">Ottawa invoque sa propre pétition au BVG pour demander la fin ou le report de l'examen, sans contester les rejets critiques de cadmium (320x la norme) ni l'atteinte à la tourbière. Examen CCE en cours (art. 24.28).</p>
-              <div class="notif-item-links">
-                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
-                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
-              <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>
-              <p class="notif-item-desc">Dans sept jours (16 octobre), le Canada doit répondre à la communication SEM-26-003 jugée recevable par la CCE (ACEUM). Déclaration de presse officielle de William Guindon.</p>
-              <div class="notif-item-links">
-                <a href="communiques.html#communique-2026-10-09-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
-                <a href="https://ia601006.us.archive.org/29/items/communique_presse_SEM-26-003/communique_presse_SEM-26-003.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Télécharger le PDF ↗</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
-              <h5 class="notif-item-title">SEM-26-003 expliqué simplement : Le dossier complet et accessible</h5>
-              <p class="notif-item-desc">Publication d'une grande synthèse vulgarisée en 12 parties décortiquant la soumission citoyenne, la décision CCE du 17 août 2026, les allégations retenues et les pièges de chiffres.</p>
-              <div class="notif-item-links">
-                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
-                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">26 septembre 2026 · Cadre Juridique</div>
-              <h5 class="notif-item-title">Adoption de la Charte Fondamentale 12 (Protection de l'archive)</h5>
-              <p class="notif-item-desc">Adoption formelle de la politique encadrant la fixité probatoire, la conformité au droit d'auteur et la procédure de biffure/retrait des 222 pièces.</p>
-              <div class="notif-item-links">
-                <a href="protection-archive.html" class="notif-link-btn notif-link-primary">Consulter la Charte 12 ↗</a>
-                <a href="politiques.html" class="notif-link-btn notif-link-ghost">Hub des chartes</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
-              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
-              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
-              <div class="notif-item-links">
-                <a href="statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
-                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Presse</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">22 septembre 2026 · Kit Presse &amp; Transparence</div>
-              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (En ligne)</h5>
-              <p class="notif-item-desc">Mise en ligne officielle du moteur de recherche interne plein texte (OCR) et du kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
-              <div class="notif-item-links">
-                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Accéder au Kit Média ↗</a>
-                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
-              <h5 class="notif-item-title">Enquête : Positionnement des partis politiques (Cellule 6)</h5>
-              <p class="notif-item-desc">Publication du rapport d'enquête citoyenne évaluant la position des formations politiques québécoises et canadiennes face à la décision CCE SEM-26-003.</p>
-              <div class="notif-item-links">
-                <a href="enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter le rapport ↗</a>
-                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Archive Zenodo</a>
-              </div>
-            </article>
-            <article class="notif-item">
-              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
-              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
-              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
-              <div class="notif-item-links">
-                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
-                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
-                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
-              </div>
-            </article>
-          </div>
-          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
-            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div>
-</header>
-
 <main id="main-content">
   <section class="reciprocite-section">
+    <div class="reciprocite-header-brand">
+      <a href="reciprocite.html?ref=reciprocite" aria-label="William Guindon">
+        <img src="/assets/img/wg-monogram.svg" alt="" width="32" height="20" style="vertical-align: middle;">
+        <span>William <span style="color: #22c55e;">Guindon</span></span>
+      </a>
+    </div>
+
     <div class="reciprocite-card">
       <div class="reciprocite-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
@@ -508,15 +278,15 @@
       <h1 class="reciprocite-title">Accès restreint aux représentants institutionnels et corporatifs</h1>
       
       <p class="reciprocite-lead">
-        Votre connexion semble provenir des réseaux du <strong>Gouvernement du Canada</strong> (Services partagés Canada — AS2675) ou de la maison mère du site d'enfouissement de Blainville (<strong>Republic Services / Stablex Canada Inc.</strong> — AS35934).
+        Votre connexion semble provenir des réseaux du <strong>Gouvernement du Canada</strong> (<span class="highlight-asn">Services partagés Canada — AS2675</span>) ou de la maison mère du site d'enfouissement de Blainville (<span class="highlight-asn">Republic Services / Stablex Canada Inc. — AS35934</span>).
       </p>
 
       <div class="reciprocite-box">
         <strong>⚖️ Principe de réciprocité démocratique :</strong><br>
-        Pendant des mois, les démarches d'accès à l'information (AIPRP) visant à documenter la contamination au cadmium, l'expropriation de la Loi 93 et la menace pesant sur les 278 000 m² de la Grande Tourbière de Blainville se sont heurtées à des refus systématiques, des délais déraisonnables et des centaines de pages noircies au feutre noir. Dans sa réponse officielle du 16 octobre 2026, Ottawa a tenté un rejet procédural pour éviter d'avoir à répondre sur le fond de l'atteinte environnementale.
+        Pendant des mois, les démarches citoyennes d'accès à l'information (AIPRP) visant à documenter la contamination au cadmium, l'expropriation sous la Loi 93 et la menace pesant sur les 278&nbsp;000&nbsp;m² de la Grande Tourbière de Blainville se sont heurtées à des refus systématiques, des délais déraisonnables et des centaines de pages noircies au feutre noir. Dans sa réponse officielle du 16 octobre 2026, Ottawa a tenté un rejet procédural pour éviter d'avoir à répondre sur le fond de l'atteinte environnementale.
       </div>
 
-      <p style="font-size: 14.5px; line-height: 1.6; color: var(--text, #d1d5db); margin-bottom: 16px;">
+      <p class="reciprocite-desc">
         En vertu de cette stricte réciprocité, les synthèses accélérées, explorateurs documentaires internes et dossiers d'investigation de ce portail <strong>sont réservés aux journalistes d'enquête, chercheurs universitaires et citoyens</strong>.
       </p>
 
@@ -526,26 +296,76 @@
       </ul>
 
       <div class="reciprocite-actions">
-        <a href="registre.html" class="btn-reciprocite btn-reciprocite-primary">
+        <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="btn-reciprocite btn-reciprocite-primary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          Consulter le Registre Officiel CCE
+          Consulter le Registre Officiel CCE ↗
         </a>
-        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="btn-reciprocite btn-reciprocite-ghost">
+        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf&ref=reciprocite" class="btn-reciprocite btn-reciprocite-ghost">
           Observations de l'auteur (17 oct.)
-        </a>
-        <a href="./" class="btn-reciprocite btn-reciprocite-ghost">
-          Retour à l'accueil citoyen
         </a>
       </div>
     </div>
+
+    <footer class="reciprocite-footer">
+      <p>Site officiel et registre documentaire public de William Guindon · Dossier CCE SEM-26-003 · Licence CC BY-NC-ND 4.0</p>
+    </footer>
   </section>
 </main>
 
-<footer class="site-footer" style="padding: 24px 0; border-top: 1px solid var(--border-color, rgba(255,255,255,0.08)); text-align: center; font-size: 13px; color: var(--text-muted, #9ca3af);">
-  <div class="wrap">
-    <p>Site officiel et registre documentaire public de William Guindon · Dossier CCE SEM-26-003 · Licence CC BY-NC-ND 4.0</p>
-  </div>
-</footer>
+<script>
+(function() {
+  'use strict';
+
+  // 1. Verrouillage persistant local & cookie
+  try {
+    localStorage.setItem('wg_reciprocite_lock', '1');
+    document.cookie = "wg_reciprocite_lock=1; path=/; max-age=31536000; SameSite=Lax";
+  } catch (_) {}
+
+  // 2. Transport du marqueur de transmission : l'URL dans la barre d'adresse porte systématiquement ?ref=reciprocite
+  try {
+    if (window.history && window.history.replaceState) {
+      const u = new URL(window.location.href);
+      if (u.searchParams.get('ref') !== 'reciprocite') {
+        u.searchParams.set('ref', 'reciprocite');
+        window.history.replaceState(null, '', u.toString());
+      }
+    }
+  } catch (_) {}
+
+  // 3. Interception du presse-papier : si l'utilisateur copie un lien ou texte vers le site, injection du marqueur
+  document.addEventListener('copy', function(e) {
+    try {
+      const selection = window.getSelection().toString();
+      if (selection && (selection.includes('williamguindon.me') || selection.startsWith('/') || selection.startsWith('http'))) {
+        let modified = selection;
+        if (!modified.includes('ref=reciprocite')) {
+          modified = modified.includes('?') ? (modified + '&ref=reciprocite') : (modified + '?ref=reciprocite');
+        }
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', modified);
+          e.preventDefault();
+        }
+      }
+    } catch (_) {}
+  });
+
+  // 4. Nettoyage et suppression dynamique de tout widget IA rémanent
+  function purgeAiElements() {
+    try {
+      const selectors = ['.floating-ai-btn', '#js-floating-ai-btn', '.ai-modal-overlay', '#ai-chat', 'header.site'];
+      selectors.forEach(function(sel) {
+        document.querySelectorAll(sel).forEach(function(el) {
+          el.remove();
+        });
+      });
+    } catch (_) {}
+  }
+  purgeAiElements();
+  document.addEventListener('DOMContentLoaded', purgeAiElements);
+  window.addEventListener('load', purgeAiElements);
+})();
+</script>
 
 </body>
 </html>
