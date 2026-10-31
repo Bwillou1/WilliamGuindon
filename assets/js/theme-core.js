@@ -262,7 +262,8 @@
       let isLockedLocal = localStorage.getItem(KEY) === VAL || localStorage.getItem(LEGACY_KEY) === '1';
       let isLockedSession = sessionStorage.getItem(KEY) === VAL;
 
-      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
+      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite') ||
+                                currentPath.endsWith('transmission-sem26003.html') || currentPath.endsWith('transmission-sem26003');
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
                                   currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques');

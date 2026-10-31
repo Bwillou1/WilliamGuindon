@@ -69,6 +69,18 @@
         localStorage.setItem('wg_device_immune', '1');
         sessionStorage.setItem('wg_device_immune', '1');
         document.cookie = "wg_immune=1; path=/; max-age=31536000; SameSite=Lax";
+
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({ type: 'UNLOCK_RECIPROCITY' });
+          navigator.serviceWorker.controller.postMessage({ type: 'IMMUNIZE_DEVICE' });
+        }
+        if ('BroadcastChannel' in window) {
+          try {
+            var bc = new BroadcastChannel('wg_reciprocity_ch');
+            bc.postMessage({ action: 'UNLOCK' });
+            bc.postMessage({ action: 'IMMUNIZE' });
+          } catch (_) {}
+        }
         window.location.replace('./');
       }
     }

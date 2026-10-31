@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v189';
+const CACHE_NAME = 'wg-pwa-v190';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -269,14 +269,18 @@ self.addEventListener('fetch', (event) => {
 
   // 0. VERROUILLAGE RÉCIPROCITÉ : Interception des documents PDF et navigations directes (non appliqué aux appareils immunisés)
   if (isReciprocityLocked && !isDeviceImmune) {
+    const hasUnlockParam = url.search.includes('wg_destroy_lock') || url.search.includes('wg_reinit') ||
+                           url.search.includes('token=') || url.search.includes('unlock=');
     const isDoc = url.pathname.endsWith('.pdf') || url.pathname.startsWith('/assets/docs/');
     const isNavigation = event.request.mode === 'navigate';
     const isExempt = url.pathname === '/reciprocite.html' ||
+                     url.pathname === '/transmission-sem26003.html' ||
                      url.pathname.includes('console-admin.html') ||
                      url.pathname.includes('admin.html') ||
                      url.pathname.endsWith('privacy.html') ||
                      url.pathname.endsWith('terms.html') ||
-                     url.pathname.endsWith('politiques.html');
+                     url.pathname.endsWith('politiques.html') ||
+                     hasUnlockParam;
     
     if ((isDoc || isNavigation) && !isExempt) {
       event.respondWith(
