@@ -1290,15 +1290,6 @@ html, body {
       modalOverlay.addEventListener('click', function(e) {
         if (e.target === modalOverlay) closeModal();
       });
-
-      // Affichage automatique au premier accès si non vu dans la session
-      let seen = false;
-      try { seen = sessionStorage.getItem('wg_rpm_seen') === '1'; } catch (_) {}
-      if (!seen) {
-        setTimeout(function() {
-          modalOverlay.style.display = 'flex';
-        }, 1200);
-      }
     }
   } catch (_) {}
 })();
