@@ -318,7 +318,7 @@
         }
 
         if (!isReciprocitePage && !isConsolePage) {
-          window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+          window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
           document.documentElement.style.display = 'none';
           return;
         }
@@ -343,7 +343,7 @@
           if (e.key === KEY || e.key === LEGACY_KEY) {
             applyFullLock();
             if (!isReciprocitePage && !isConsolePage) {
-              window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+              window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
             }
           }
         });
@@ -356,7 +356,7 @@
           bc.onmessage = function(e) {
             if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage) {
               applyFullLock();
-              window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+              window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
             } else if (e.data && e.data.action === 'UNLOCK') {
               try {
                 localStorage.removeItem(KEY);
@@ -380,7 +380,7 @@
                             document.cookie.includes(KEY + '=' + VAL) ||
                             sessionStorage.getItem(KEY) === VAL;
           if (lockedNow && !isReciprocitePage && !isConsolePage) {
-            window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+            window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
           }
         } catch (_) {}
       });
@@ -398,7 +398,7 @@
                 if (getReq.result === VAL) {
                   applyFullLock();
                   if (!isReciprocitePage && !isConsolePage) {
-                    window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+                    window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
                   }
                 }
               };

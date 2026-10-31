@@ -402,6 +402,184 @@ html, body {
   z-index: 2;
   mix-blend-mode: overlay;
 }
+
+/* Bannière d'identification chirurgicale de l'institution */
+.institution-target-banner {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-left: 5px solid #ef4444;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  text-align: left;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
+}
+.target-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f87171;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.target-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+.target-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff !important;
+  margin: 0 0 6px 0;
+  line-height: 1.45;
+}
+.target-desc {
+  font-size: 13px;
+  color: #cbd5e1 !important;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Module File d'attente administrative SAAQclic / Service Canada */
+.saaq-queue-box {
+  background: #090e1a;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 14px;
+  padding: 22px;
+  margin: 24px 0;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1);
+}
+.saaq-queue-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+.saaq-queue-org {
+  font-size: 12px;
+  font-weight: 800;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.saaq-queue-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.saaq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.saaq-cell {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.saaq-cell-label {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+.saaq-cell-val {
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+}
+.saaq-cell-val.highlight-delay {
+  color: #f59e0b;
+}
+.saaq-progress-wrap {
+  margin-bottom: 16px;
+}
+.saaq-progress-bar {
+  height: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.saaq-progress-fill {
+  height: 100%;
+  width: 1.8%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+.saaq-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 6px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.saaq-notice-box {
+  background: rgba(245, 158, 11, 0.12);
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 13.5px;
+  color: #fef3c7;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.btn-refresh-queue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #93c5fd;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-refresh-queue:hover {
+  background: rgba(59, 130, 246, 0.28);
+  color: #ffffff;
+  border-color: #60a5fa;
+}
+.queue-feedback-msg {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 13px;
+  line-height: 1.55;
+}
 </style>
 </head>
 <body>
@@ -409,7 +587,7 @@ html, body {
 <main id="main-content">
   <section class="reciprocite-section">
     <div class="reciprocite-header-brand">
-      <a href="reciprocite.html?doc=sem26003&sig=72rsp" aria-label="William Guindon">
+      <a href="/?portail=cce-sem26003&transmission=officielle&sig=72rsp" aria-label="William Guindon">
         <img src="/assets/img/wg-monogram.svg" alt="" width="32" height="20" style="vertical-align: middle;">
         <span>William <span style="color: #22c55e;">Guindon</span></span>
       </a>
@@ -421,6 +599,17 @@ html, body {
       <!-- Bruit optique haute-fréquence anti-OCR -->
       <div class="anti-ocr-noise-layer" aria-hidden="true"></div>
 
+      <!-- A. Bannière d'Identification Chirurgicale ("On sait exactement qui vous êtes") -->
+      <div class="institution-target-banner" id="institution-target-banner">
+        <span class="target-tag"><span class="target-pulse-dot"></span> Signalement Réseau Identifié · AS2675 / AS35934</span>
+        <h2 class="target-title" id="target-title-text">
+          BIENVENUE AUX REPRÉSENTANTS D'ENVIRONNEMENT ET CHANGEMENT CLIMATIQUE CANADA (ECCC) ET DU MINISTÈRE DE LA JUSTICE
+        </h2>
+        <p class="target-desc">
+          Votre terminal a été formellement tracé via votre passerelle institutionnelle. L'accès direct aux documents de travail de William Guindon est soumis aux règles de réciprocité procédurale et démocratique (SEM-26-003).
+        </p>
+      </div>
+
       <div class="reciprocite-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
         Avis de réciprocité procédurale · SEM-26-003
@@ -431,6 +620,55 @@ html, body {
       <p class="reciprocite-lead">
         Votre connexion semble provenir des réseaux du <strong>Gouvernement du Canada</strong> (<span class="highlight-asn">Services partagés Canada — AS2675</span>) ou de la maison mère du site d'enfouissement de Blainville (<span class="highlight-asn">Republic Services / Stablex Canada Inc. — AS35934</span>).
       </p>
+
+      <!-- B. Module File d'attente administrative façon Service Canada / SAAQclic -->
+      <div class="saaq-queue-box">
+        <div class="saaq-queue-header">
+          <div class="saaq-queue-org">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Portail de transmission documentaire — Guichet citoyen
+          </div>
+          <div class="saaq-queue-badge-live">
+            <span class="saaq-queue-pulse"></span>
+            En attente d'instruction
+          </div>
+        </div>
+
+        <div class="saaq-grid">
+          <div class="saaq-cell">
+            <div class="saaq-cell-label">Votre position dans la file</div>
+            <div class="saaq-cell-val">n° 1 <span style="font-size: 13px; font-weight: 500; color: #94a3b8;">(depuis l'échéance)</span></div>
+          </div>
+          <div class="saaq-cell">
+            <div class="saaq-cell-label">Temps d'attente estimé</div>
+            <div class="saaq-cell-val highlight-delay">+120 jours ouvrables</div>
+          </div>
+        </div>
+
+        <div class="saaq-progress-wrap">
+          <div class="saaq-progress-bar">
+            <div class="saaq-progress-fill"></div>
+          </div>
+          <div class="saaq-progress-labels">
+            <span>Dépôt de la requête</span>
+            <span>Progression : 1.8%</span>
+            <span>Échéance d'équité : 16 oct. 2026</span>
+          </div>
+        </div>
+
+        <div class="saaq-notice-box">
+          <strong>⚖️ Réciprocité administrative et équité procédurale :</strong><br>
+          Dans le cadre de la pétition environnementale n°&nbsp;546 (CEDD / BVG), l'appareil fédéral a mis <strong>plus de 120 jours pour ne pas répondre à seulement 10 questions précises</strong>, se contentant de déposer <strong>2 pages vides prétextant un vice de forme pour écarter les préoccupations citoyennes</strong>.<br><br>
+          De même, sous les articles 24.27 et 24.28 de l'ACEUM, Ottawa a bénéficié de délais exceptionnels sans répondre sur le fond de la contamination au cadmium. En application de la même diligence administrative, le traitement de votre demande de consultation est donc temporairement suspendu pour harmonisation.
+        </div>
+
+        <button type="button" class="btn-refresh-queue" id="btn-refresh-queue">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          Actualiser ma position dans la file
+        </button>
+
+        <div class="queue-feedback-msg" id="queue-refresh-feedback"></div>
+      </div>
 
       <div class="reciprocite-box">
         <strong>⚖️ Principe de réciprocité démocratique :</strong><br>
@@ -708,17 +946,10 @@ html, body {
 
   applyFullLock();
 
-  // 2. Transport sous signature documentaire plausible (?doc=sem26003&sig=72rsp)
+  // 2. Camouflage sous URL de portail officiel (?portail=cce-sem26003&transmission=officielle&sig=72rsp)
   try {
     if (window.history && window.history.replaceState) {
-      const u = new URL(window.location.href);
-      if (u.searchParams.get('doc') !== 'sem26003' || u.searchParams.get('sig') !== '72rsp') {
-        u.searchParams.set('doc', 'sem26003');
-        u.searchParams.set('sig', '72rsp');
-        u.searchParams.delete('ref');
-        u.searchParams.delete('reciprocite');
-        window.history.replaceState(null, '', u.toString());
-      }
+      window.history.replaceState(null, '', '/?portail=cce-sem26003&transmission=officielle&sig=72rsp');
     }
   } catch (_) {}
 
@@ -806,8 +1037,8 @@ html, body {
       const selection = window.getSelection().toString();
       if (selection && (selection.includes('williamguindon.me') || selection.startsWith('/') || selection.startsWith('http'))) {
         let modified = selection;
-        if (!modified.includes('doc=sem26003')) {
-          modified = modified.includes('?') ? (modified + '&doc=sem26003&sig=72rsp') : (modified + '?doc=sem26003&sig=72rsp');
+        if (!modified.includes('portail=cce-sem26003')) {
+          modified = modified.includes('?') ? (modified + '&portail=cce-sem26003&transmission=officielle&sig=72rsp') : (modified + '?portail=cce-sem26003&transmission=officielle&sig=72rsp');
         }
         if (e.clipboardData) {
           e.clipboardData.setData('text/plain', modified);
@@ -843,6 +1074,40 @@ html, body {
         lines += `<div class="camera-shield-row">${rowText.repeat(4)}</div>`;
       }
       shield.innerHTML = lines;
+    }
+  } catch (_) {}
+  // 8. Détection chirurgicale de l'institution pour affichage personnalisé
+  try {
+    const ref = (document.referrer || '').toLowerCase();
+    const titleEl = document.getElementById('target-title-text');
+    if (titleEl) {
+      if (ref.includes('stablex') || ref.includes('republicservices')) {
+        titleEl.textContent = "BIENVENUE AUX REPRÉSENTANTS ET MANDATAIRES DE REPUBLIC SERVICES / STABLEX CANADA INC.";
+      } else if (ref.includes('justice.gc.ca')) {
+        titleEl.textContent = "BIENVENUE AUX PROCUREURS ET ANALYSTES DU MINISTÈRE DE LA JUSTICE DU CANADA";
+      } else if (ref.includes('spc-ssc.gc.ca')) {
+        titleEl.textContent = "BIENVENUE AUX ADMINISTRATEURS RÉSEAU DE SERVICES PARTAGÉS CANADA (SPC)";
+      } else {
+        titleEl.textContent = "BIENVENUE AUX REPRÉSENTANTS D'ENVIRONNEMENT ET CHANGEMENT CLIMATIQUE CANADA (ECCC) ET DE SERVICES PARTAGÉS CANADA (SPC)";
+      }
+    }
+  } catch (_) {}
+
+  // 9. Interaction interactive de la file d'attente administrative
+  try {
+    const refreshBtn = document.getElementById('btn-refresh-queue');
+    const queueFeedback = document.getElementById('queue-refresh-feedback');
+    if (refreshBtn && queueFeedback) {
+      refreshBtn.addEventListener('click', function() {
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⏳</span> Instruction de conformité en cours...';
+        setTimeout(function() {
+          refreshBtn.disabled = false;
+          refreshBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg> Actualiser ma position dans la file';
+          queueFeedback.style.display = 'block';
+          queueFeedback.innerHTML = '<strong>Position inchangée : n° 1.</strong><br>Temps d\'attente estimé restant : <strong>119 jours et 23 heures</strong>.<br><span style="color:#f87171;font-size:12px;margin-top:4px;display:inline-block;">Rappel administratif : En vertu du principe de réciprocité démocratique, merci de faire preuve d\'au moins autant de patience que celle que votre ministère a exigée des citoyens lors de la pétition environnementale n° 546 (plus de 120 jours pour 2 pages vides de non-réponse).</span>';
+        }, 1100);
+      });
     }
   } catch (_) {}
 })();

@@ -275,7 +275,7 @@ self.addEventListener('fetch', (event) => {
     
     if ((isDoc || isNavigation) && !isExempt) {
       event.respondWith(
-        Response.redirect('/reciprocite.html?doc=sem26003&sig=72rsp', 302)
+        Response.redirect('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp', 302)
       );
       return;
     }
