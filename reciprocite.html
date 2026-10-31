@@ -580,6 +580,123 @@ html, body {
   font-size: 13px;
   line-height: 1.55;
 }
+
+/* Modale / Pop-up de Conditions Spécifiques & Vie Privée (Loi 25 / LPRPDE) */
+.reciprocity-privacy-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeInModal 0.25s ease-out;
+}
+.reciprocity-privacy-modal {
+  background: #0d1322;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-top: 4px solid #3b82f6;
+  border-radius: 14px;
+  max-width: 540px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 30px rgba(59, 130, 246, 0.15);
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
+  text-align: left;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.rpm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+.rpm-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rpm-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+.rpm-close-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.rpm-content {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+.rpm-content p {
+  margin: 0 0 10px 0;
+}
+.rpm-highlight {
+  background: rgba(59, 130, 246, 0.12);
+  border-left: 3px solid #3b82f6;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 12px 0;
+  font-size: 12.5px;
+  color: #93c5fd;
+}
+.rpm-actions {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.btn-rpm-confirm {
+  background: #2563eb;
+  color: #ffffff;
+  border: 1px solid #3b82f6;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-rpm-confirm:hover {
+  background: #1d4ed8;
+}
+.btn-rpm-link {
+  color: #94a3b8;
+  font-size: 12px;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.btn-rpm-link:hover {
+  color: #ffffff;
+}
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -705,7 +822,44 @@ html, body {
 
     <footer class="reciprocite-footer">
       <p>Site officiel et registre documentaire public de William Guindon · Dossier CCE SEM-26-003 · Licence CC BY-NC-ND 4.0</p>
+      <p style="margin-top: 6px;">
+        <button type="button" id="btn-open-privacy-modal" class="btn-rpm-link">Conditions d'accès et Protection de la vie privée (Loi 25 / LPRPDE)</button>
+      </p>
     </footer>
+
+    <!-- Modale pop-up spécifique de Conditions d'Utilisation & Vie Privée (Loi 25 / LPRPDE) -->
+    <div id="reciprocity-privacy-modal-overlay" class="reciprocity-privacy-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="rpm-title">
+      <div class="reciprocity-privacy-modal">
+        <div class="rpm-header">
+          <h3 id="rpm-title" class="rpm-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Conditions d'accès au portail et Protection de la vie privée
+          </h3>
+          <button type="button" class="rpm-close-btn" id="btn-close-privacy-modal" aria-label="Fermer la fenêtre">&times;</button>
+        </div>
+        
+        <div class="rpm-content">
+          <p>
+            <strong>Contexte juridique :</strong> Ce portail constitue un registre public probatoire rattaché à la communication citoyenne internationale <strong>SEM-26-003</strong> déposée auprès de la Commission de coopération environnementale (CCE / ACEUM).
+          </p>
+          
+          <div class="rpm-highlight">
+            <strong>🔒 Respect strict de la vie privée (Loi 25 du Québec / LPRPDE) :</strong><br>
+            Aucune donnée nominative, biométrique ou renseignement personnel confidentiel n'est extrait, vendu ou transmis à des tiers. Les vérifications de session opérées sur cette page reposent exclusivement sur des drapeaux de routage locaux et la détection d'en-têtes techniques légitimes.
+          </div>
+
+          <p>
+            <strong>Principe de réciprocité procédurale :</strong><br>
+            L'accès en flux continu aux pièces citoyennes est conditionné au respect de la symétrie administrative. Pendant que les requêtes publiques d'accès à l'information (AIPRP) et la pétition n° 546 font l'objet de délais unilatéraux de plus de 120 jours pour des réponses dilatoires, la mise à disposition instantanée des archives est soumise à la même diligence de traitement.
+          </div>
+
+          <div class="rpm-actions">
+            <a href="/politiques.html" target="_blank" class="btn-rpm-link">Politique globale</a>
+            <button type="button" class="btn-rpm-confirm" id="btn-confirm-privacy-modal">J'ai pris connaissance</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Leurre d'impression pour tromper la hiérarchie lors des impressions ou exportations PDF -->
     <div class="reciprocite-print-decoy" aria-hidden="true">
@@ -1108,6 +1262,43 @@ html, body {
           queueFeedback.innerHTML = '<strong>Position inchangée : n° 1.</strong><br>Temps d\'attente estimé restant : <strong>119 jours et 23 heures</strong>.<br><span style="color:#f87171;font-size:12px;margin-top:4px;display:inline-block;">Rappel administratif : En vertu du principe de réciprocité démocratique, merci de faire preuve d\'au moins autant de patience que celle que votre ministère a exigée des citoyens lors de la pétition environnementale n° 546 (plus de 120 jours pour 2 pages vides de non-réponse).</span>';
         }, 1100);
       });
+    }
+  } catch (_) {}
+
+  // 10. Gestionnaire de la mini pop-up spécifique Conditions d'accès & Vie privée
+  try {
+    const modalOverlay = document.getElementById('reciprocity-privacy-modal-overlay');
+    const openBtn = document.getElementById('btn-open-privacy-modal');
+    const closeBtn = document.getElementById('btn-close-privacy-modal');
+    const confirmBtn = document.getElementById('btn-confirm-privacy-modal');
+
+    function closeModal() {
+      if (modalOverlay) {
+        modalOverlay.style.display = 'none';
+        try { sessionStorage.setItem('wg_rpm_seen', '1'); } catch (_) {}
+      }
+    }
+
+    if (modalOverlay) {
+      if (openBtn) {
+        openBtn.addEventListener('click', function() {
+          modalOverlay.style.display = 'flex';
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (confirmBtn) confirmBtn.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) closeModal();
+      });
+
+      // Affichage automatique au premier accès si non vu dans la session
+      let seen = false;
+      try { seen = sessionStorage.getItem('wg_rpm_seen') === '1'; } catch (_) {}
+      if (!seen) {
+        setTimeout(function() {
+          modalOverlay.style.display = 'flex';
+        }, 1200);
+      }
     }
   } catch (_) {}
 })();

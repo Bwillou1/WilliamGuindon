@@ -237,7 +237,8 @@
       const isKnownInstitutionalDevice = storedHwSig && currentHwSig && storedHwSig === currentHwSig;
 
       // 1. Détection par signatures d'URL camouflées
-      const hasReciprocityParam = (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
+      const hasReciprocityParam = (searchParams.get('portail') === 'cce-sem26003' && searchParams.get('sig') === '72rsp') ||
+                                  (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
                                   searchParams.get('doc_id') === 'sem26003' ||
                                   searchParams.get('utm_source') === 'cec_portal' ||
                                   searchParams.get('ref') === 'reciprocite' ||
