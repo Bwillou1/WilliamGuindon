@@ -1529,7 +1529,7 @@
       return;
     }
     const card = e.target.closest(".blog-card");
-    if (!card || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    if (!card || card.__wgCardBound || e.metaKey || e.ctrlKey || e.shiftKey) return;
     const linkEl = card.querySelector(".blog-card-title-link, .blog-card-read-more");
     if (!linkEl) return;
     const href = linkEl.getAttribute("href") || "";
@@ -1824,11 +1824,13 @@
     posts.forEach(post => {
       const card = document.createElement("article");
       card.className = "blog-card" + (post.category === "Spécial" ? " special-card" : "");
+      card.__wgCardBound = true;
       const articleHref = '#' + (post.slug || post.id || '');
       card.addEventListener("click", (e) => {
         if (e.target.closest(".btn-copy-card-link")) return;
         if (e.metaKey || e.ctrlKey || e.shiftKey) return;
         e.preventDefault();
+        e.stopPropagation();
         openArticleModal(post);
       });
 

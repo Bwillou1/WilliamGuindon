@@ -1108,7 +1108,7 @@
     // Visualiseur universel de photographies et médias Viewer.js (Chen Fengyuan - MIT)
     if (!document.querySelector('script[src*="site-photo-viewer.js"]')) {
       const pvScript = document.createElement('script');
-      pvScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/site-photo-viewer.js?v=20261020-v1';
+      pvScript.src = (window.location.protocol === 'file:' ? '' : '/') + 'assets/js/site-photo-viewer.js?v=20261031-v2';
       pvScript.defer = true;
       document.head.appendChild(pvScript);
     }

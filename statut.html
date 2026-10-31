@@ -974,20 +974,20 @@
       resolution: 'Synchronisation immédiate du déverrouillage avec BroadcastChannel, CacheStorage et priorisation absolue du drapeau d\'immunité locale.'
     },
     '2026-10-30': {
-      severity: 'yellow',
-      severityLabel: 'Moyen',
-      title: 'Artefact visuel de badge & Liens Markdown dans le blog',
-      summary: 'Étirement du badge de catégorie en modale et altération des URL avec tirets bas.',
-      desc: 'Dans la fenêtre modale du blog, l\'héritage simultané des propriétés CSS top et bottom étirait le badge de catégorie en un ovale sombre géant, et le parseur Markdown convertissait les tirets bas à l\'intérieur des URL en balises italiques.',
-      resolution: 'Réinitialisation de top: auto sur le badge de modale et isolation préalable des liens avant le formatage typographique Markdown.'
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Gel CPU (MutationObserver / Viewer.js), badge CSS & liens Markdown dans le blog',
+      summary: 'Boucle infinie (« Page ne répondant pas ») à l\'ouverture d\'un article, ovale CSS et URL tronquées.',
+      desc: 'Lors du clic sur une carte de blog.html, l\'injection de l\'image de bannière dans la modale déclenchait le MutationObserver de site-photo-viewer.js qui rappelait Viewer.update() sur .blog-grid et recréait des nœuds .viewer-container en boucle infinie de microtâches (figeant l\'onglet Chrome avec « Page ne répondant pas »). En parallèle, l\'héritage simultané de top et bottom étirait le badge de catégorie en ovale sombre géant, et les tirets bas dans les URL Markdown étaient convertis en italique.',
+      resolution: 'Exclusion stricte de .viewer-container, .blog-grid et des bannières de modale dans site-photo-viewer.js avec anti-rebond (debounce), réinitialisation de top: auto sur le badge et isolation préalable des liens Markdown.'
     },
     '2026-10-31': {
       severity: 'red',
       severityLabel: 'Critique',
-      title: 'Boucle de redirection infinie SW & Alerte navigateur (i)',
-      summary: 'Chargement infini et icône (i) page non sécurisée causés par le Service Worker.',
-      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à la réécriture Clean URLs et à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i) même après rechargement.',
-      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js, purge automatique de wg-sec-flags, déclaration de searchParams et coupe-circuit anti-boucle.'
+      title: 'Boucle de redirection infinie SW, gel du blog & Alerte navigateur (i)',
+      summary: 'Chargement infini (i) via Service Worker et blocage du thread principal sur le carnet de bord.',
+      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i). De plus, la boucle récursive entre MutationObserver et Viewer.js bloquait l\'ouverture des articles de blog.html.',
+      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js (v193), purge automatique de wg-sec-flags, déclaration de searchParams et désactivation de l\'observation récursive Viewer.js sur le blog.'
     }
   };
 

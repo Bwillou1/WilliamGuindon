@@ -74,6 +74,15 @@
     if (!img || !(img instanceof HTMLElement) || img.tagName !== 'IMG') return false;
     if (img.dataset.noViewer === 'true') return false;
 
+    // 0. Exclusion absolue des conteneurs Viewer.js et des vignettes de cartes de blog
+    if (
+      img.classList.contains('blog-card-img') ||
+      img.classList.contains('article-modal-banner-img') ||
+      img.closest('.viewer-container, .blog-card, .blog-grid, #blog-posts-grid, .article-modal-hero')
+    ) {
+      return false;
+    }
+
     // A. Exclusion explicite des logos et identités visuelles
     if (
       img.classList.contains('brand-mark') ||
@@ -130,8 +139,6 @@
     const isWebArchive = urlHost === 'archive.org' || urlHost === 'web.archive.org' || urlHost.endsWith('.archive.org');
     const isMediaDir = src.includes('/assets/media/') || src.includes('/photos/') || src.includes('/uploads/');
     const hasPhotoClass = img.classList.contains('photo-img') || 
-                          img.classList.contains('blog-card-img') || 
-                          img.classList.contains('article-modal-banner-img') ||
                           img.classList.contains('preview-image');
 
     if (!validExtensions.test(src) && !isImageKit && !isWebArchive && !isMediaDir && !hasPhotoClass) {
@@ -386,34 +393,43 @@
     attachedViewers.set(img, viewer);
   }
 
+  let isScanningPhotos = false;
+  let scanDebounceTimer = null;
+
   // 8. Balayage et initialisation de toutes les photographies de la page
   function scanAndInitPhotos(root = document) {
     if (!window.Viewer) {
       ensureViewerJS(() => scanAndInitPhotos(root));
       return;
     }
+    if (isScanningPhotos) return;
+    isScanningPhotos = true;
 
-    // A. Galeries identifiées
-    const galleries = root.querySelectorAll('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage');
-    galleries.forEach(gallery => {
-      if (!attachedViewers.has(gallery)) {
-        setupGallery(gallery);
-      } else {
-        const v = attachedViewers.get(gallery);
-        if (v && typeof v.update === 'function') v.update();
-      }
-    });
+    try {
+      // A. Galeries identifiées (hors grille de cartes du blog qui ouvre la modale d'article)
+      const galleries = root.querySelectorAll('#photos-grid, .photos-grid, .photo-grid, .articles-grid, #preview-stage');
+      galleries.forEach(gallery => {
+        if (!attachedViewers.has(gallery)) {
+          setupGallery(gallery);
+        } else {
+          const v = attachedViewers.get(gallery);
+          if (v && typeof v.update === 'function') v.update();
+        }
+      });
 
-    // B. Images photographiques individuelles
-    const allImgs = root.querySelectorAll('img');
-    allImgs.forEach(img => {
-      if (!isViewableImage(img)) return;
-      if (img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage')) {
-        img.classList.add('wg-viewable-image');
-        return;
-      }
-      setupSingleImage(img);
-    });
+      // B. Images photographiques individuelles
+      const allImgs = root.querySelectorAll('img');
+      allImgs.forEach(img => {
+        if (!isViewableImage(img)) return;
+        if (img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, #preview-stage')) {
+          img.classList.add('wg-viewable-image');
+          return;
+        }
+        setupSingleImage(img);
+      });
+    } finally {
+      isScanningPhotos = false;
+    }
   }
 
   // 9. Interception des clics sur les liens d'images pour Progressive Enhancement
@@ -436,7 +452,7 @@
 
     if (img && isViewableImage(img) && window.Viewer) {
       // Si JavaScript est activé et Viewer prêt, intercepter le lien natif et ouvrir Viewer
-      const gallery = img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, .blog-grid, #preview-stage');
+      const gallery = img.closest('#photos-grid, .photos-grid, .photo-grid, .articles-grid, #preview-stage');
       if (gallery && attachedViewers.has(gallery)) {
         e.preventDefault();
         const v = attachedViewers.get(gallery);
@@ -550,11 +566,21 @@
     // Observation des ajouts dynamiques (modales, filtres de photos, prévisualisation drive)
     if (window.MutationObserver) {
       const observer = new MutationObserver((mutations) => {
+        if (isScanningPhotos) return;
         let shouldUpdate = false;
         for (const mut of mutations) {
+          if (mut.target && mut.target.closest && mut.target.closest('.viewer-container, #blog-posts-grid, .article-modal')) {
+            continue;
+          }
           if (mut.addedNodes && mut.addedNodes.length > 0) {
             for (const node of mut.addedNodes) {
               if (node.nodeType === 1) {
+                if (
+                  node.classList?.contains('viewer-container') ||
+                  (node.closest && node.closest('.viewer-container, #blog-posts-grid, .article-modal'))
+                ) {
+                  continue;
+                }
                 if (node.tagName === 'IMG' || (node.querySelector && node.querySelector('img'))) {
                   shouldUpdate = true;
                   break;
@@ -565,7 +591,10 @@
           if (shouldUpdate) break;
         }
         if (shouldUpdate) {
-          scanAndInitPhotos(document);
+          clearTimeout(scanDebounceTimer);
+          scanDebounceTimer = setTimeout(() => {
+            scanAndInitPhotos(document);
+          }, 180);
         }
       });
 
