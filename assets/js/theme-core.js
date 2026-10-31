@@ -58,6 +58,16 @@
       const KEY = '_cf_sess_sync';
       const LEGACY_KEY = 'wg_reciprocite_lock';
       const VAL = '72rsp_active';
+
+      // 0. Vérification prioritaire absolue d'immunité permanente de l'appareil :
+      // Si cet appareil a été débloqué une fois, tout verrouillage réseau, ASN ou empreinte est neutralisé d'office
+      const isDeviceImmune = localStorage.getItem('wg_device_immune') === '1' ||
+                             document.cookie.includes('wg_immune=1') ||
+                             sessionStorage.getItem('wg_device_immune') === '1';
+      if (isDeviceImmune) {
+        return;
+      }
+
       // Empreintes cryptographiques SHA-256 autorisées (0 secret en clair sur GitHub)
       const AUTHORIZED_UNLOCK_HASHES = [
         '9cdf1ba710bfc23bbc3176ebb3257ff5c995381f5c113227ffd4c46c5fd6c1b8', // SHA-256 de wg_destroy_lock_9f82b7c4e1d0865e8932fc81b4d098e72a4b16c9e0d84f1a5
@@ -190,15 +200,6 @@
             window.history.replaceState(null, '', window.location.pathname);
           }
         } catch (_) {}
-        return;
-      }
-
-      // Vérification d'immunité permanente de l'appareil :
-      // Si cet appareil a été débloqué une fois, il ne peut JAMAIS être bloqué par aucun test réseau, ASN ou empreinte
-      const isDeviceImmune = localStorage.getItem('wg_device_immune') === '1' ||
-                             document.cookie.includes('wg_immune=1') ||
-                             sessionStorage.getItem('wg_device_immune') === '1';
-      if (isDeviceImmune) {
         return;
       }
 
