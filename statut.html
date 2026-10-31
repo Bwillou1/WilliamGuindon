@@ -984,10 +984,10 @@
     '2026-10-31': {
       severity: 'red',
       severityLabel: 'Critique',
-      title: 'Boucle de redirection infinie SW, gel du blog & Alerte navigateur (i)',
-      summary: 'Chargement infini (i) via Service Worker et blocage du thread principal sur le carnet de bord.',
-      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i). De plus, la boucle récursive entre MutationObserver et Viewer.js bloquait l\'ouverture des articles de blog.html.',
-      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js (v193), purge automatique de wg-sec-flags, déclaration de searchParams et désactivation de l\'observation récursive Viewer.js sur le blog.'
+      title: 'Boucle de redirection infinie SW, gel CPU du blog & agencement des apparitions',
+      summary: 'Chargement infini (i) via Service Worker, blocage de l\'ouverture des articles et masquage des parutions médias.',
+      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i). De plus, une boucle récursive entre MutationObserver et Viewer.js figeait le thread principal lors du clic sur un article de blog.html. Enfin, l\'encadré d\'agenda parlementaire masquait la visibilité des vraies apparitions médiatiques en haut de page et le lien du registre des chartes était enfoui dans un sous-dépliant de navigation.',
+      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js (v193), purge de wg-sec-flags, désactivation du balayage Viewer.js sur le blog, déplacement de l\'agenda parlementaire après la grille des apparitions publiques et mise en avant de 00. Registre des chartes au premier rang du menu.'
     }
   };
 
