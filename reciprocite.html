@@ -735,12 +735,70 @@ html, body {
     });
   } catch (_) {}
 
-  // 4. Auto-défense contre suppression manuelle dans les DevTools (F12)
-  window.addEventListener('storage', function(e) {
-    if (e.key === KEY || e.key === LEGACY_KEY) {
-      applyFullLock();
-    }
-  });
+  // 4. Neutralisation complète des outils d'inspection DevTools (F12, Clic droit, Raccourcis)
+  try {
+    // A. Blocage du clic droit (menu contextuel)
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, true);
+
+    // B. Blocage immédiat de F12 et des raccourcis d'inspection
+    window.addEventListener('keydown', function(e) {
+      const key = e.key || '';
+      const keyCode = e.keyCode || e.which;
+      const isCtrlOrMeta = e.ctrlKey || e.metaKey;
+      const isShift = e.shiftKey;
+      const isAltOrOption = e.altKey;
+
+      // Touche F12
+      if (key === 'F12' || keyCode === 123) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Ctrl+Shift+I / J / C (Inspecteur / Console)
+      if (isCtrlOrMeta && isShift && (key === 'I' || key === 'i' || key === 'J' || key === 'j' || key === 'C' || key === 'c' || keyCode === 73 || keyCode === 74 || keyCode === 67)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Mac: Cmd+Option+I / J / C / U
+      if (isCtrlOrMeta && isAltOrOption && (key === 'I' || key === 'i' || key === 'J' || key === 'j' || key === 'C' || key === 'c' || key === 'U' || key === 'u')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+
+      // Ctrl+U (Code source de la page) et Ctrl+S (Sauvegarde)
+      if (isCtrlOrMeta && (key === 'u' || key === 'U' || key === 's' || key === 'S' || keyCode === 85 || keyCode === 83)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }, true);
+
+    // C. Auto-défense contre suppression manuelle dans le stockage (F12)
+    window.addEventListener('storage', function(e) {
+      if (e.key === KEY || e.key === LEGACY_KEY) {
+        applyFullLock();
+      }
+    });
+
+    // D. Boucle anti-débogueur : gèle les DevTools s'ils sont ouverts via le menu du navigateur
+    setInterval(function() {
+      const t0 = performance.now();
+      debugger;
+      if (performance.now() - t0 > 100) {
+        try {
+          console.clear();
+        } catch (_) {}
+      }
+    }, 1000);
+  } catch (_) {}
 
   // 5. Interception du presse-papier : injection automatique de la signature
   document.addEventListener('copy', function(e) {

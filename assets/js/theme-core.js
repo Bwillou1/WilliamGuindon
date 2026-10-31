@@ -323,7 +323,22 @@
           return;
         }
 
-        // 4. Auto-défense contre suppression dans les outils de développement (uniquement si verrouillé)
+        // 4. Neutralisation de F12, clic droit et raccourcis d'inspection pour les sessions sous verrou
+        try {
+          document.addEventListener('contextmenu', function(e) { e.preventDefault(); }, true);
+          window.addEventListener('keydown', function(e) {
+            const k = e.key || '';
+            const c = e.keyCode || e.which;
+            const m = e.ctrlKey || e.metaKey;
+            if (k === 'F12' || c === 123 || (m && e.shiftKey && (c === 73 || c === 74 || c === 67)) || (m && (c === 85 || c === 83))) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }
+          }, true);
+        } catch (_) {}
+
+        // Auto-défense contre suppression dans les outils de développement (uniquement si verrouillé)
         window.addEventListener('storage', function(e) {
           if (e.key === KEY || e.key === LEGACY_KEY) {
             applyFullLock();
