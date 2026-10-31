@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v190';
+const CACHE_NAME = 'wg-pwa-v192';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -157,7 +157,7 @@ async function trimCache(cacheName, maxEntries) {
  * Vérifie si une réponse peut être mise en cache en respectant les critères de sécurité et de type
  */
 function isCacheable(request, response) {
-  if (!response || response.status !== 200 || response.type === 'opaque') {
+  if (!response || response.status !== 200 || response.type === 'opaque' || response.redirected) {
     return false;
   }
 
@@ -213,7 +213,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs') && key !== 'wg-sec-flags')
+          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
           .map((key) => caches.delete(key))
       );
     }).then(() => self.clients.claim())
@@ -224,36 +224,18 @@ const SECURITY_FLAG_CACHE = 'wg-sec-flags';
 let isReciprocityLocked = false;
 let isDeviceImmune = false;
 
-// Initialiser les drapeaux de sécurité au démarrage
-caches.open(SECURITY_FLAG_CACHE).then(cache => {
-  cache.match('/flag-reciprocity').then(res => {
-    if (res) isReciprocityLocked = true;
-  }).catch(() => {});
-  cache.match('/flag-device-immune').then(res => {
-    if (res) isDeviceImmune = true;
-  }).catch(() => {});
-}).catch(() => {});
-
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'LOCK_RECIPROCITY') {
     if (!isDeviceImmune) {
       isReciprocityLocked = true;
-      caches.open(SECURITY_FLAG_CACHE).then(cache => {
-        cache.put('/flag-reciprocity', new Response('72rsp_active'));
-      }).catch(() => {});
     }
   } else if (event.data && event.data.type === 'UNLOCK_RECIPROCITY') {
     isReciprocityLocked = false;
-    caches.open(SECURITY_FLAG_CACHE).then(cache => {
-      cache.delete('/flag-reciprocity');
-    }).catch(() => {});
+    caches.delete(SECURITY_FLAG_CACHE).catch(() => {});
   } else if (event.data && event.data.type === 'IMMUNIZE_DEVICE') {
     isReciprocityLocked = false;
     isDeviceImmune = true;
-    caches.open(SECURITY_FLAG_CACHE).then(cache => {
-      cache.delete('/flag-reciprocity');
-      cache.put('/flag-device-immune', new Response('1'));
-    }).catch(() => {});
+    caches.delete(SECURITY_FLAG_CACHE).catch(() => {});
   }
 });
 
@@ -265,29 +247,6 @@ self.addEventListener('fetch', (event) => {
   // Ignorer complètement les domaines externes (GTranslate, Google Translate, Analytics, CDN, etc.)
   if (url.origin !== self.location.origin) {
     return;
-  }
-
-  // 0. VERROUILLAGE RÉCIPROCITÉ : Interception des documents PDF et navigations directes (non appliqué aux appareils immunisés)
-  if (isReciprocityLocked && !isDeviceImmune) {
-    const hasUnlockParam = url.search.includes('wg_destroy_lock') || url.search.includes('wg_reinit') ||
-                           url.search.includes('token=') || url.search.includes('unlock=');
-    const isDoc = url.pathname.endsWith('.pdf') || url.pathname.startsWith('/assets/docs/');
-    const isNavigation = event.request.mode === 'navigate';
-    const isExempt = url.pathname === '/reciprocite.html' ||
-                     url.pathname === '/transmission-sem26003.html' ||
-                     url.pathname.includes('console-admin.html') ||
-                     url.pathname.includes('admin.html') ||
-                     url.pathname.endsWith('privacy.html') ||
-                     url.pathname.endsWith('terms.html') ||
-                     url.pathname.endsWith('politiques.html') ||
-                     hasUnlockParam;
-    
-    if ((isDoc || isNavigation) && !isExempt) {
-      event.respondWith(
-        Response.redirect('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp', 302)
-      );
-      return;
-    }
   }
 
   // 1. Accélération locale maximale pour les images, styles, polices, scripts et données JSON (Cache-First + synchronisation silencieuse)

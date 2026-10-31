@@ -26,7 +26,7 @@
 <meta name="twitter:description" content="Actualités, analyses juridiques et carnet de bord citoyen de William Guindon sur le dossier SEM-26-003 et la Grande Tourbière de Blainville.">
 
 <link rel="stylesheet" href="style.css?v=20261018-v87">
-<script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
+<script src="assets/js/theme-core.js?v=20261031-v71" defer></script>
 
 <script type="application/ld+json">
 {
@@ -574,8 +574,10 @@
   }
   .article-modal-hero .blog-modal-category {
     position: absolute;
+    top: auto;
     bottom: 16px;
     left: 20px;
+    height: auto;
     z-index: 5;
   }
   .article-modal-inner {
@@ -1200,6 +1202,7 @@
           <a href="#lobbyisme-septembre-2026" class="blog-card-read-more" style="font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">Lire l'article ↗</a>
           <button type="button" class="btn-copy-card-link" aria-label="Copier le lien direct de cet article" title="Copier le lien direct vers cet article">
             <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copier le lien</span>
           </button>
         </div>
       </div>
@@ -1510,6 +1513,34 @@
 <script>
   let allPosts = [];
 
+  // Délégation immédiate sur les cartes pré-rendues (avant ou pendant le chargement de blog.json)
+  document.getElementById("blog-posts-grid")?.addEventListener("click", (e) => {
+    const copyBtn = e.target.closest(".btn-copy-card-link");
+    if (copyBtn) {
+      const card = copyBtn.closest(".blog-card");
+      const linkEl = card?.querySelector(".blog-card-title-link, .blog-card-read-more");
+      if (linkEl && (!allPosts || allPosts.length === 0)) {
+        e.preventDefault();
+        e.stopPropagation();
+        const href = linkEl.getAttribute("href") || "";
+        const fullUrl = new URL(href, window.location.href).href;
+        copyTextToClipboard(fullUrl, copyBtn, "Lien copié !");
+      }
+      return;
+    }
+    const card = e.target.closest(".blog-card");
+    if (!card || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const linkEl = card.querySelector(".blog-card-title-link, .blog-card-read-more");
+    if (!linkEl) return;
+    const href = linkEl.getAttribute("href") || "";
+    if (href.startsWith("#") && allPosts && allPosts.length > 0) {
+      e.preventDefault();
+      const slug = decodeURIComponent(href.slice(1));
+      const target = allPosts.find(p => p.slug === slug || p.id === slug);
+      if (target) openArticleModal(target);
+    }
+  });
+
   async function loadBlogPosts() {
     const grid = document.getElementById("blog-posts-grid");
     const empty = document.getElementById("blog-empty-state");
@@ -1592,28 +1623,41 @@
 
   function parseInlineMarkdown(text) {
     if (!text) return '';
-    return text
+    const linkTokens = [];
+    let processed = text.replace(/\[([^\]]+?)\]\(([^)\s]+)\)/g, (match, linkText, rawUrl) => {
+      if (!isSafeLinkUrl(rawUrl)) {
+        return linkText;
+      }
+      const isExternal = rawUrl.startsWith('http') && !rawUrl.includes(window.location.hostname);
+      const safeUrl = rawUrl.replace(/"/g, '&quot;');
+      const formattedText = linkText
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^\*]+?)\*/g, '<em>$1</em>');
+      const token = `\x00LINK_${linkTokens.length}\x00`;
+      linkTokens.push(`<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${formattedText}${isExternal ? ' ↗' : ''}</a>`);
+      return token;
+    });
+
+    processed = processed.replace(/(^|[\s(])(https?:\/\/[^\s<)"']+)/g, (match, prefix, rawUrl) => {
+      const cleanUrl = rawUrl.replace(/[.,;:]+$/, '');
+      const trailing = rawUrl.slice(cleanUrl.length);
+      if (!isSafeLinkUrl(cleanUrl)) return match;
+      const isExternal = !cleanUrl.includes(window.location.hostname);
+      const safeUrl = cleanUrl.replace(/"/g, '&quot;');
+      const token = `\x00LINK_${linkTokens.length}\x00`;
+      linkTokens.push(`<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${cleanUrl}${isExternal ? ' ↗' : ''}</a>`);
+      return `${prefix}${token}${trailing}`;
+    });
+
+    processed = processed
+      .replace(/`([^`]+?)`/g, '<code class="blog-inline-code">$1</code>')
       .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*([^\*]+?)\*/g, '<em>$1</em>')
-      .replace(/_([^_]+?)_/g, '<em>$1</em>')
-      .replace(/`([^`]+?)`/g, '<code class="blog-inline-code">$1</code>')
-      .replace(/\[([^\]]+?)\]\(([^)\s]+)\)/g, (match, linkText, rawUrl) => {
-        if (!isSafeLinkUrl(rawUrl)) {
-          return linkText;
-        }
-        const isExternal = rawUrl.startsWith('http') && !rawUrl.includes(window.location.hostname);
-        const safeUrl = rawUrl.replace(/"/g, '&quot;');
-        return `<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${linkText}${isExternal ? ' ↗' : ''}</a>`;
-      })
-      .replace(/(^|[\s(])(https?:\/\/[^\s<)"']+)/g, (match, prefix, rawUrl) => {
-        const cleanUrl = rawUrl.replace(/[.,;:]+$/, '');
-        const trailing = rawUrl.slice(cleanUrl.length);
-        if (!isSafeLinkUrl(cleanUrl)) return match;
-        const isExternal = !cleanUrl.includes(window.location.hostname);
-        const safeUrl = cleanUrl.replace(/"/g, '&quot;');
-        return `${prefix}<a href="${safeUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''}>${cleanUrl}${isExternal ? ' ↗' : ''}</a>${trailing}`;
-      });
+      .replace(/(^|[\s(])_([^_\n]+?)_(?=[\s.,;:!?)]|$)/g, '$1<em>$2</em>');
+
+    return processed.replace(/\x00LINK_(\d+)\x00/g, (_, idx) => linkTokens[Number(idx)] || '');
   }
 
   function parseMarkdown(md) {
@@ -1844,7 +1888,9 @@
     const modal = document.getElementById("article-modal");
     modal.classList.remove("open");
     document.body.classList.remove("modal-open");
-    history.pushState("", document.title, window.location.pathname);
+    try {
+      history.replaceState(null, document.title, window.location.pathname + window.location.search);
+    } catch (_) {}
   }
 
   function openArticleModal(post) {

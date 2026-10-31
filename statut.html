@@ -660,7 +660,7 @@
       </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Période précédente" onclick="shiftDayWindow(-1)">‹</button>
-        <span id="uptimeWindowLabel">30 août – 28 oct. 2026</span>
+        <span id="uptimeWindowLabel">2 sept. – 31 oct. 2026</span>
         <button class="date-switcher-btn" type="button" aria-label="Période suivante" onclick="shiftDayWindow(1)">›</button>
       </div>
     </div>
@@ -672,7 +672,7 @@
         <strong style="color:var(--text-head);">Bot Sentinelle &amp; Surveillance Ahrefs</strong>
         <span style="color:var(--text-muted);">· Audit quotidien automatisé</span>
       </div>
-      <div id="sentinelStatusLabel" style="color:#a7f3d0;">Dernier contrôle : 28 oct. 2026 · Conforme</div>
+      <div id="sentinelStatusLabel" style="color:#a7f3d0;">Dernier contrôle : 31 oct. 2026 · Conforme</div>
     </div>
 
     <!-- Composant 1 : Site web & Carnet de bord -->
@@ -964,6 +964,30 @@
       summary: 'Les internautes voulant lire les articles du carnet étaient bloqués par une alerte erronée.',
       desc: 'Une vérification de certificat fictif s\'interposait entre les visiteurs et les billets du carnet de bord, bloquant l\'accès aux articles.',
       resolution: 'Suppression complète du filtre bloquant et rétablissement des routes d\'articles du blog.'
+    },
+    '2026-10-29': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Conflit de jeton de déverrouillage & Cache Service Worker',
+      summary: 'Nettoyage prématuré de l\'URL empêchant la synchronisation du déblocage.',
+      desc: 'Le script d\'en-tête effaçait le paramètre de déverrouillage de l\'URL via replaceState avant l\'exécution différée de theme-core.js et sans purger le drapeau du Service Worker, réactivant le verrouillage de réciprocité.',
+      resolution: 'Synchronisation immédiate du déverrouillage avec BroadcastChannel, CacheStorage et priorisation absolue du drapeau d\'immunité locale.'
+    },
+    '2026-10-30': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Artefact visuel de badge & Liens Markdown dans le blog',
+      summary: 'Étirement du badge de catégorie en modale et altération des URL avec tirets bas.',
+      desc: 'Dans la fenêtre modale du blog, l\'héritage simultané des propriétés CSS top et bottom étirait le badge de catégorie en un ovale sombre géant, et le parseur Markdown convertissait les tirets bas à l\'intérieur des URL en balises italiques.',
+      resolution: 'Réinitialisation de top: auto sur le badge de modale et isolation préalable des liens avant le formatage typographique Markdown.'
+    },
+    '2026-10-31': {
+      severity: 'red',
+      severityLabel: 'Critique',
+      title: 'Boucle de redirection infinie SW & Alerte navigateur (i)',
+      summary: 'Chargement infini et icône (i) page non sécurisée causés par le Service Worker.',
+      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à la réécriture Clean URLs et à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i) même après rechargement.',
+      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js, purge automatique de wg-sec-flags, déclaration de searchParams et coupe-circuit anti-boucle.'
     }
   };
 
@@ -975,7 +999,7 @@
     if (serviceKey === 'web') {
       return inc; // Le site web subit tous les incidents de routage/frontend
     } else if (serviceKey === 'cce') {
-      if (dateStr === '2026-10-18' || dateStr === '2026-10-19') {
+      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31') {
         return inc;
       }
       return null;
@@ -996,8 +1020,8 @@
     if (!container) return;
     container.innerHTML = '';
 
-    // Fenêtre des 60 derniers jours se terminant le 28 octobre 2026
-    var endDate = new Date(2026, 9, 28); // 28 oct. 2026
+    // Fenêtre des 60 derniers jours se terminant le 31 octobre 2026
+    var endDate = new Date(2026, 9, 31); // 31 oct. 2026
     var totalDays = 60;
 
     for (var i = totalDays - 1; i >= 0; i--) {
@@ -1078,7 +1102,7 @@
     if (step > 0) {
       lbl.textContent = 'Octobre 2026 – En cours';
     } else {
-      lbl.textContent = '30 août – 28 oct. 2026';
+      lbl.textContent = '2 sept. – 31 oct. 2026';
     }
   }
 

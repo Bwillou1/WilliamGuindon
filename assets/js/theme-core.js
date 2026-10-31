@@ -65,6 +65,19 @@
                              document.cookie.includes('wg_immune=1') ||
                              sessionStorage.getItem('wg_device_immune') === '1';
       if (isDeviceImmune) {
+        try {
+          localStorage.removeItem(KEY);
+          localStorage.removeItem(LEGACY_KEY);
+          localStorage.removeItem('_cf_hw_sig');
+          sessionStorage.removeItem(KEY);
+          sessionStorage.removeItem('_cf_hw_sig');
+          if ('caches' in window) {
+            caches.delete('wg-sec-flags').catch(function() {});
+          }
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type: 'IMMUNIZE_DEVICE' });
+          }
+        } catch (_) {}
         return;
       }
 
@@ -238,6 +251,7 @@
       const isKnownInstitutionalDevice = storedHwSig && currentHwSig && storedHwSig === currentHwSig;
 
       // 1. Détection par signatures d'URL camouflées
+      const searchParams = new URLSearchParams(window.location.search);
       const hasReciprocityParam = (searchParams.get('portail') === 'cce-sem26003' && searchParams.get('sig') === '72rsp') ||
                                   (searchParams.get('doc') === 'sem26003' && searchParams.get('sig') === '72rsp') ||
                                   searchParams.get('doc_id') === 'sem26003' ||
@@ -4112,7 +4126,7 @@
         if (!node.nodeValue || node.nodeValue.trim().length < 3) return NodeFilter.FILTER_REJECT;
         let p = node.parentElement;
         while (p) {
-          if (SKIP_TAGS.has(p.tagName) || p.classList.contains('wg-glossary-term') || p.closest('.faq-question, [itemprop="name"], .lexique-card')) {
+          if (SKIP_TAGS.has(p.tagName) || p.classList.contains('wg-glossary-term') || p.closest('.faq-question, [itemprop="name"], .lexique-card, .blog-card')) {
             return NodeFilter.FILTER_REJECT;
           }
           p = p.parentElement;

@@ -1093,7 +1093,21 @@ html, body {
                          document.cookie.includes('wg_immune=1') ||
                          sessionStorage.getItem('wg_device_immune') === '1';
   if (isDeviceImmune) {
-    document.cookie = "wg_immune=1; path=/; max-age=31536000; SameSite=Lax";
+    try {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(LEGACY_KEY);
+      localStorage.removeItem('_cf_hw_sig');
+      sessionStorage.removeItem(KEY);
+      sessionStorage.removeItem('_cf_hw_sig');
+      document.cookie = "wg_immune=1; path=/; max-age=31536000; SameSite=Lax";
+      if ('caches' in window) {
+        caches.delete('wg-sec-flags').catch(function() {});
+      }
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'UNLOCK_RECIPROCITY' });
+        navigator.serviceWorker.controller.postMessage({ type: 'IMMUNIZE_DEVICE' });
+      }
+    } catch (_) {}
     window.location.replace('./');
     return;
   }
