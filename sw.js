@@ -271,7 +271,12 @@ self.addEventListener('fetch', (event) => {
   if (isReciprocityLocked && !isDeviceImmune) {
     const isDoc = url.pathname.endsWith('.pdf') || url.pathname.startsWith('/assets/docs/');
     const isNavigation = event.request.mode === 'navigate';
-    const isExempt = url.pathname === '/reciprocite.html' || url.pathname.includes('console-admin.html') || url.pathname.includes('admin.html');
+    const isExempt = url.pathname === '/reciprocite.html' ||
+                     url.pathname.includes('console-admin.html') ||
+                     url.pathname.includes('admin.html') ||
+                     url.pathname.endsWith('privacy.html') ||
+                     url.pathname.endsWith('terms.html') ||
+                     url.pathname.endsWith('politiques.html');
     
     if ((isDoc || isNavigation) && !isExempt) {
       event.respondWith(

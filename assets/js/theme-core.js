@@ -263,6 +263,9 @@
       let isLockedSession = sessionStorage.getItem(KEY) === VAL;
 
       const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite');
+      const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
+                                  currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
+                                  currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques');
 
       // Fonction d'auto-guérison et d'inscription multi-supports (Evercookie 4 niveaux + Empreinte matérielle)
       function applyFullLock() {
@@ -318,10 +321,62 @@
           } catch (_) {}
         }
 
-        if (!isReciprocitePage && !isConsolePage) {
+        if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
           window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
           document.documentElement.style.display = 'none';
           return;
+        }
+
+        // Si l'utilisateur consulte une page légale sous verrou de réciprocité : mode isolé pur
+        if (isLegalIsolatedPage) {
+          try {
+            const styleIsolation = document.createElement('style');
+            styleIsolation.textContent = `
+              header.site, footer, #ai-chat, .floating-ai-btn, #js-floating-ai-btn, .ai-modal-overlay,
+              .scroll-progress-bar, .bg-blob-container, .skip-link, nav {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+              }
+              body { padding-top: 20px !important; }
+              .legal-isolated-return-bar {
+                background: rgba(15, 23, 42, 0.95);
+                border: 1px solid rgba(59, 130, 246, 0.4);
+                border-radius: 10px;
+                padding: 12px 18px;
+                margin: 0 auto 24px auto;
+                max-width: 900px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                color: #e2e8f0;
+                font-family: system-ui, sans-serif;
+                font-size: 13px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+              }
+              .legal-isolated-return-bar a {
+                background: #2563eb;
+                color: #fff !important;
+                padding: 6px 14px;
+                border-radius: 6px;
+                text-decoration: none !important;
+                font-weight: 700;
+              }
+            `;
+            document.head.appendChild(styleIsolation);
+
+            window.addEventListener('DOMContentLoaded', function() {
+              const mainWrap = document.querySelector('main .wrap') || document.body;
+              if (mainWrap) {
+                const bar = document.createElement('div');
+                bar.className = 'legal-isolated-return-bar';
+                bar.innerHTML = '<span>⚖️ <strong>Consultation légale isolée</strong> (Régime de réciprocité SEM-26-003 actif)</span><a href="/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp">← Retourner au portail</a>';
+                mainWrap.insertBefore(bar, mainWrap.firstChild);
+              }
+            });
+          } catch (_) {}
         }
 
         // 4. Neutralisation de F12, clic droit et raccourcis d'inspection pour les sessions sous verrou
@@ -343,7 +398,7 @@
         window.addEventListener('storage', function(e) {
           if (e.key === KEY || e.key === LEGACY_KEY) {
             applyFullLock();
-            if (!isReciprocitePage && !isConsolePage) {
+            if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
               window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
             }
           }
@@ -355,7 +410,7 @@
         try {
           const bc = new BroadcastChannel('wg_reciprocity_ch');
           bc.onmessage = function(e) {
-            if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage) {
+            if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
               applyFullLock();
               window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
             } else if (e.data && e.data.action === 'UNLOCK') {
@@ -380,7 +435,7 @@
           const lockedNow = localStorage.getItem(KEY) === VAL ||
                             document.cookie.includes(KEY + '=' + VAL) ||
                             sessionStorage.getItem(KEY) === VAL;
-          if (lockedNow && !isReciprocitePage && !isConsolePage) {
+          if (lockedNow && !isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
             window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
           }
         } catch (_) {}
@@ -398,7 +453,7 @@
               getReq.onsuccess = function() {
                 if (getReq.result === VAL) {
                   applyFullLock();
-                  if (!isReciprocitePage && !isConsolePage) {
+                  if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
                     window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
                   }
                 }
