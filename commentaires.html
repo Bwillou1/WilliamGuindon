@@ -424,17 +424,13 @@ html, body {
 
 /* 3-Column Responsive Grid (Strictly impossible without JavaScript) */
 .mur-grid {
-  display: none;
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
-body.js-ready .mur-grid {
-  display: grid !important;
-}
-
 @media (max-width: 1080px) {
-  body.js-ready .mur-grid {
+  .mur-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 16px;
   }
@@ -444,7 +440,7 @@ body.js-ready .mur-grid {
 }
 
 @media (max-width: 680px) {
-  body.js-ready .mur-grid {
+  .mur-grid {
     grid-template-columns: 1fr !important;
     gap: 14px;
   }
@@ -1270,21 +1266,475 @@ body.js-ready .mur-grid {
     </div>
   </section>
 
-  <!-- NO-JS LOCKDOWN FALLBACK (CARDS ARE NEVER IN STATIC HTML) -->
+  <!-- NO-JS STATIC BANNER -->
   <noscript>
-    <div class="mur-nojs-lockdown">
-      <div class="mur-nojs-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+    <div class="mur-nojs-banner">
+      <div class="mur-nojs-banner-icon">⚡</div>
+      <div class="mur-nojs-banner-text">
+        <strong>Mode lecture statique actif (sans JavaScript) :</strong> Vous consultez ci-dessous un aperçu direct des témoignages citoyens archivés. Activez JavaScript pour débloquer l'ensemble des 412 témoignages, la recherche instantanée (⌘K) et les filtres thématiques.
       </div>
-      <h3>Activation de JavaScript requise</h3>
-      <p>
-        Pour des raisons strictes de protection de la vie privée, d'anonymisation dynamique et de sécurité juridique, les témoignages citoyens ne peuvent être consultés que dans un navigateur avec JavaScript activé.
-      </p>
     </div>
   </noscript>
 
-  <!-- CARDS GRID (RENDERED 100% CLIENT-SIDE BY JAVASCRIPT) -->
+  <!-- CARDS GRID (PRE-RENDERED SAMPLE FOR NO-JS, HYDRATED DYNAMICALLY WHEN JS IS ACTIVE) -->
   <main class="mur-grid" id="murGrid">
+    <article class="mur-card" id="com-1" data-category="democratie">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Basses-Laurentides</div>
+          <span class="mur-badge badge-democratie">Démocratie &amp; Transparence</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-1" title="Identifiant d'archive officiel #001">#001</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo William - la démocratie n&#x27;existe que lorsqu&#x27;elle est exercée. Je te recommande fortement d&#x27;ouvrir une demande d&#x27;accès a l&#x27;information dans le but de faire la lumière sur ton dossier, ainsi que d&#x27;appliquer de la pression citoyenne constante.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-2" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Protection de l&#x27;eau potable</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-2" title="Identifiant d'archive officiel #002">#002</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo jeune homme! Vous faites preuve de courage que plusieurs hommes n’ont pas .</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-3" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Couronne-Nord</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-3" title="Identifiant d'archive officiel #003">#003</span>
+      </div>
+      <div class="mur-card-body">
+        <p>J&#x27;espère que tu n&#x27;es pas seul dans ton combat, j&#x27;espère qu&#x27;il y a beaucoup de gens pour te supporter. Quel courage!!! Bravo à toi!!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-4" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Résidence de Blainville</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-4" title="Identifiant d'archive officiel #004">#004</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Merci William pour tout ce que tu fais. Tu es un modèle et un protecteur pour toutes les générations présentes et à venir.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-5" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Parent de famille</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-5" title="Identifiant d'archive officiel #005">#005</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo William! Nous avons besoin de beaucoup d&#x27;humains impliqués comme toi.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-6" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Aîné solidaire</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-6" title="Identifiant d'archive officiel #006">#006</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Ne lâches pas William, on est derrière toi! Et ce que tu fais est remarquable!!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-7" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Démocratie &amp; Droit de savoir</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-7" title="Identifiant d'archive officiel #007">#007</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Incroyable. C&#x27;est épouvantable...continu je suis vraiment fière de toi. Courage et Force pour un environnement meilleur.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-8" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Protection des milieux humides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-8" title="Identifiant d'archive officiel #008">#008</span>
+      </div>
+      <div class="mur-card-body">
+        <p>J&#x27;admire ton initiative et ton implication ! Continue tes démarches et saches qu&#x27;on t&#x27;appuie . Tu es un espoir pour notre Québec. Lache pas, on est fier de toi!!!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-9" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Vigilance citoyenne</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-9" title="Identifiant d'archive officiel #009">#009</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo William de t&#x27;impliquer pour cette importante cause!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-10" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Laurentides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-10" title="Identifiant d'archive officiel #010">#010</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Courage et continue ton excellent travail et bravo</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-11" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Mobilisation de la relève</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-11" title="Identifiant d'archive officiel #011">#011</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo William! Ton dossier est bien travaillé.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-12" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Santé publique &amp; Avenir</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-12" title="Identifiant d'archive officiel #012">#012</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Beau travail! Continue.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-13" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Basses-Laurentides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-13" title="Identifiant d'archive officiel #013">#013</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Continue comme ça mon homme!!!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-14" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Protection de l&#x27;eau potable</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-14" title="Identifiant d'archive officiel #014">#014</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo! Continue! Tu auras l’appui de cet organisme international qui ne va pas se laisser intimider!…</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-15" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Couronne-Nord</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-15" title="Identifiant d'archive officiel #015">#015</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo! Je suis épatée! Continue!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-16" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Résidence de Blainville</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-16" title="Identifiant d'archive officiel #016">#016</span>
+      </div>
+      <div class="mur-card-body">
+        <p>C&#x27;est beau de te voir aller William, continue de protéger l&#x27;environnement!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-17" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Parent de famille</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-17" title="Identifiant d'archive officiel #017">#017</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Merci faut pas cesser de faire savoir..lâche pas</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-18" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Aîné solidaire</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-18" title="Identifiant d'archive officiel #018">#018</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Félicitations William. Tu es inspirant et j’espère pouvoir te suivre.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-19" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Démocratie &amp; Droit de savoir</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-19" title="Identifiant d'archive officiel #019">#019</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo jeune homme et continue</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-20" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Protection des milieux humides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-20" title="Identifiant d'archive officiel #020">#020</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo jeune homme...impressionnant et continue!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-21" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Vigilance citoyenne</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-21" title="Identifiant d'archive officiel #021">#021</span>
+      </div>
+      <div class="mur-card-body">
+        <p>De tout cœur avec toi . Lâches surtout pas</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-22" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Laurentides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-22" title="Identifiant d'archive officiel #022">#022</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo! Tu es un excellent combattant!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-23" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Mobilisation de la relève</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-23" title="Identifiant d'archive officiel #023">#023</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo keunne homme</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-24" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Santé publique &amp; Avenir</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-24" title="Identifiant d'archive officiel #024">#024</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Félicitations pour ton implication, William! On a besoin de plus de personnes comme toi qui posent des questions, qui insistent pour recevoir des réponses, pour le plus grand bien de tes semblables et de l’environnement! Il faut faire la lumière sur les pratiques néfastes qui ont cours et exiger des réformes. Je suis avec toi de tout coeur et je vais tenter à mon échelle de diffuser ton message à nos dirigeants et de sensibiliser autour de moi. Bravo et continue ton beau travail!</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-25" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Basses-Laurentides</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-25" title="Identifiant d'archive officiel #025">#025</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Lâche pas jeune homme je t’encourage à continuer à te battre pour faire connaître la vérité.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-26" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Protection de l&#x27;eau potable</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-26" title="Identifiant d'archive officiel #026">#026</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Merci William Guindon...ta position ferme et assumée de jeune homme responsable me donne espoir en l&#x27; avenir. Gratitude. Admiration.Soutien indéfectible.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-27" data-category="eau">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Couronne-Nord</div>
+          <span class="mur-badge badge-eau">Eau Potable &amp; Santé</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-27" title="Identifiant d'archive officiel #027">#027</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo jeune homme en espérant que les gens de cette circonscription te soutiennent dans ta quête de vérité et de justice. Quand l &#x27; eau sera tellement contaminée il sera trop tard pour agir. Continu ton beau travail.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-28" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Résidence de Blainville</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-28" title="Identifiant d'archive officiel #028">#028</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravos jeune homme ! Vous les jeune d&#x27;aujourd&#x27;hui avez le pouvoir de changer les choses.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-29" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Parent de famille</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-29" title="Identifiant d'archive officiel #029">#029</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Bravo William! Pour ton courage, ta lucidité et ta persévérance.</p>
+      </div>
+    </article>
+    <article class="mur-card" id="com-30" data-category="releve">
+      <div class="mur-card-top">
+        <div class="mur-avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="mur-card-meta">
+          <div class="mur-author-title">Témoignage citoyen · Aîné solidaire</div>
+          <span class="mur-badge badge-releve">Relève &amp; Solidarité</span>
+        </div>
+        <span class="mur-archive-id" data-id="com-30" title="Identifiant d'archive officiel #030">#030</span>
+      </div>
+      <div class="mur-card-body">
+        <p>Ne lâche pas et fonce</p>
+      </div>
+    </article>
+    <noscript>
+      <div class="mur-nojs-limit-card">
+        <div class="mur-nojs-limit-icon">🔒</div>
+        <h4>Aperçu statique limité (30 témoignages affichés sur 412)</h4>
+        <p>Les 30 témoignages ci-dessus sont consultables en clair. Pour parcourir l'intégralité des <strong>412 témoignages citoyens</strong>, utiliser la recherche instantanée et filtrer par thématique, activez JavaScript.</p>
+      </div>
+    </noscript>
     <div id="emptyState">
       <h3>Aucun témoignage ne correspond à votre recherche</h3>
       <p>Essayez avec d'autres termes comme « eau », « santé », « avenir », « députés » ou réinitialisez les filtres.</p>
@@ -1410,6 +1860,11 @@ body.js-ready .mur-grid {
   }
 
   var grid = document.getElementById('murGrid');
+  // Clean out static pre-rendered cards before injecting dynamic 412 dataset
+  var existingStaticCards = grid.querySelectorAll('.mur-card');
+  for (var sc = 0; sc < existingStaticCards.length; sc++) {
+    existingStaticCards[sc].remove();
+  }
   var searchInput = document.getElementById('searchInput');
   var filterBtns = document.querySelectorAll('.filter-btn');
   var countDisplay = document.getElementById('countDisplay');
