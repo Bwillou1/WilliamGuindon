@@ -423,7 +423,49 @@ html, body {
 }
 
 /* 3-Column Responsive Grid (Strictly impossible without JavaScript) */
-.mur-grid {
+
+    .mur-pagination-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 36px 0 24px 0;
+      width: 100%;
+    }
+    .btn-batch-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mur-accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+      transition: all 0.2s ease;
+    }
+    .btn-batch-action:hover {
+      background: #047857;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
+    }
+    .btn-batch-action.secondary {
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .btn-batch-action.secondary:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .mur-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
@@ -1746,6 +1788,19 @@ html, body {
     </div>
   </main>
 
+  <!-- DYNAMIC BATCH ACTIONS (30 TEMOIGNAGES ALEATOIRES A CHAQUE CHARGEMENT) -->
+  <div class="mur-pagination-bar" id="murPaginationBar">
+    <button type="button" class="btn-batch-action" id="btnShuffleNew" title="Piocher 30 autres témoignages aléatoires parmi les 412">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      <span>🎲 Piocher 30 nouveaux témoignages</span>
+    </button>
+    <button type="button" class="btn-batch-action secondary" id="btnLoadMore" title="Ajouter 30 témoignages supplémentaires">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>Afficher 30 de plus</span>
+    </button>
+  </div>
+
+
   <!-- MASSIVE LEGAL DISCLAIMER & DELETION REQUEST SECTION -->
   <section class="mur-legal-section" id="demande-retrait" aria-label="Avis juridique et procédure de retrait">
     <div class="mur-legal-badge">Cadre Juridique, Exclusion de Responsabilité &amp; Protection de la Vie Privée</div>
@@ -1928,20 +1983,39 @@ html, body {
     article.appendChild(innerTop);
     article.appendChild(bodyDiv);
 
-    fragment.appendChild(article);
     cardElements.push({ el: article, text: (item.role + ' ' + item.text + ' ' + item.cat_label).toLowerCase(), category: item.category });
+  }
+
+  // Mélange aléatoire (Fisher-Yates) à chaque chargement ou rafraîchissement (F5 / reload)
+  // pour que chaque visite présente toujours 30 nouveaux témoignages aléatoires
+  for (var s = cardElements.length - 1; s > 0; s--) {
+    var r = Math.floor(Math.random() * (s + 1));
+    var tmp = cardElements[s];
+    cardElements[s] = cardElements[r];
+    cardElements[r] = tmp;
+  }
+  for (var k = 0; k < cardElements.length; k++) {
+    fragment.appendChild(cardElements[k].el);
   }
 
   // Insert before emptyState
   grid.insertBefore(fragment, emptyState);
 
-  // Search and filter engine
+  // Search, filter & 30-batch engine
   var currentFilter = 'all';
   var currentQuery = '';
+  var BATCH_SIZE = 30;
+  var visibleLimit = BATCH_SIZE;
+
+  var paginationBar = document.getElementById('murPaginationBar');
+  var btnShuffleNew = document.getElementById('btnShuffleNew');
+  var btnLoadMore = document.getElementById('btnLoadMore');
 
   function applyFilters() {
     var visibleCount = 0;
+    var totalMatches = 0;
     var query = currentQuery.toLowerCase().trim();
+    var isFiltered = (currentFilter !== 'all' || query !== '');
 
     for (var i = 0; i < cardElements.length; i++) {
       var item = cardElements[i];
@@ -1949,20 +2023,72 @@ html, body {
       var matchQuery = (!query || item.text.indexOf(query) !== -1);
 
       if (matchCat && matchQuery) {
-        item.el.style.display = 'flex';
-        visibleCount++;
+        totalMatches++;
+        // If searching or filtering, display all matches.
+        // If on default stream, show exactly 30 at a time (visibleLimit)!
+        if (isFiltered || visibleCount < visibleLimit) {
+          item.el.style.display = 'flex';
+          visibleCount++;
+        } else {
+          item.el.style.display = 'none';
+        }
       } else {
         item.el.style.display = 'none';
       }
     }
 
     if (countDisplay) {
-      countDisplay.textContent = visibleCount + (visibleCount > 1 ? ' témoignages affichés' : ' témoignage affiché');
+      if (isFiltered) {
+        countDisplay.textContent = visibleCount + (visibleCount > 1 ? ' témoignages trouvés' : ' témoignage trouvé');
+      } else {
+        countDisplay.textContent = visibleCount + ' témoignages aléatoires affichés (sur ' + cardElements.length + ' archivés)';
+      }
     }
 
     if (emptyState) {
       emptyState.style.display = (visibleCount === 0) ? 'block' : 'none';
     }
+
+    if (paginationBar) {
+      if (isFiltered) {
+        paginationBar.style.display = 'none';
+      } else {
+        paginationBar.style.display = 'flex';
+        if (btnLoadMore) {
+          btnLoadMore.style.display = (visibleCount >= totalMatches) ? 'none' : 'inline-flex';
+        }
+      }
+    }
+  }
+
+  // Shuffle button: picks 30 new random testimonials instantly without page reload
+  if (btnShuffleNew) {
+    btnShuffleNew.addEventListener('click', function() {
+      // Fisher-Yates re-shuffle of cardElements
+      for (var s = cardElements.length - 1; s > 0; s--) {
+        var r = Math.floor(Math.random() * (s + 1));
+        var tmp = cardElements[s];
+        cardElements[s] = cardElements[r];
+        cardElements[r] = tmp;
+      }
+      // Re-insert DOM nodes in new randomized order
+      for (var i = 0; i < cardElements.length; i++) {
+        grid.insertBefore(cardElements[i].el, emptyState);
+      }
+      visibleLimit = BATCH_SIZE;
+      applyFilters();
+      if (grid) {
+        window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
+      }
+    });
+  }
+
+  // Load more button: display 30 more from the current random pool
+  if (btnLoadMore) {
+    btnLoadMore.addEventListener('click', function() {
+      visibleLimit += BATCH_SIZE;
+      applyFilters();
+    });
   }
 
   if (searchInput) {
@@ -2105,6 +2231,9 @@ html, body {
       focusCommentsSearch();
     }
   }, true);
+
+  // Initialisation : affiche immédiatement le lot de 30 témoignages aléatoires
+  applyFilters();
 
   // 3. Anti-Screenshot Pure Whiteout Shield
   var whiteout = document.getElementById('antiScreenshotWhiteout');
