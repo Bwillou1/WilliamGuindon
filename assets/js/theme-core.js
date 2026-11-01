@@ -367,7 +367,8 @@
               cleanParams.delete('pass');
               cleanParams.delete('acces');
               const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
-              window.history.replaceState(null, '', window.location.pathname + newQuery);
+              const targetPath = (window.location.pathname === '/index.html' || window.location.pathname === '/index') ? '/' : window.location.pathname;
+              window.history.replaceState(null, '', targetPath + newQuery);
             }
           }
         } catch (_) {}

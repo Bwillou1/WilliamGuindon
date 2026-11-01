@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <base href="/">
+<script>
+(function() {
+  try {
+    var p = new URLSearchParams(window.location.search);
+    var k = p.get('cle') || p.get('code') || p.get('pass') || p.get('acces') || '';
+    if (!k && window.location.hash) {
+      var h = window.location.hash.substring(1).trim();
+      if (h.length === 6 && !h.includes('=')) k = h;
+    }
+    if (k && k.trim().length === 6) {
+      window.location.replace('/?cle=' + encodeURIComponent(k.trim().toUpperCase()));
+    }
+  } catch (_) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Portail d'accréditation officielle — William Guindon</title>
 <meta name="description" content="Guichet d'accréditation documentaire et de validation des laissez-passer parlementaires et d'investigation — William Guindon (Procédure SEM-26-003).">
