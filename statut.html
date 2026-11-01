@@ -660,7 +660,7 @@
       </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Période précédente" onclick="shiftDayWindow(-1)">‹</button>
-        <span id="uptimeWindowLabel">2 sept. – 31 oct. 2026</span>
+        <span id="uptimeWindowLabel">3 sept. – 1 nov. 2026</span>
         <button class="date-switcher-btn" type="button" aria-label="Période suivante" onclick="shiftDayWindow(1)">›</button>
       </div>
     </div>
@@ -723,7 +723,7 @@
       </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Mois précédent" onclick="prevMonth()">‹</button>
-        <span id="calendarMonthLabel">Oct. 2026</span>
+        <span id="calendarMonthLabel">Nov. 2026</span>
         <button class="date-switcher-btn" type="button" aria-label="Mois suivant" onclick="nextMonth()">›</button>
       </div>
     </div>
@@ -988,6 +988,14 @@
       summary: 'Chargement infini (i) via Service Worker, blocage de l\'ouverture des articles et masquage des parutions médias.',
       desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i). De plus, une boucle récursive entre MutationObserver et Viewer.js figeait le thread principal lors du clic sur un article de blog.html. Enfin, l\'encadré d\'agenda parlementaire masquait la visibilité des vraies apparitions médiatiques en haut de page et le lien du registre des chartes était enfoui dans un sous-dépliant de navigation.',
       resolution: 'Retrait de l\'interception de navigation 302 dans sw.js (v193), purge de wg-sec-flags, désactivation du balayage Viewer.js sur le blog, déplacement de l\'agenda parlementaire après la grille des apparitions publiques et mise en avant de 00. Registre des chartes au premier rang du menu.'
+    },
+    '2026-11-01': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Contraste et lisibilité du Hero en mode hivernal',
+      summary: 'Bascule automatique saisonnière et ajustement du contraste sur le panorama enneigé.',
+      desc: 'Au 1er novembre 2026, le déclenchement automatique du modèle 3D hivernal a affiché le paysage enneigé de la tourbière. Le fond blanc diminuait la lisibilité du texte de présentation.',
+      resolution: 'Préservation du panorama lumineux d\'origine et ajout d\'un encadré en verre dépoli vert givré avec effet de flou pour une lisibilité parfaite.'
     }
   };
 
@@ -1020,8 +1028,8 @@
     if (!container) return;
     container.innerHTML = '';
 
-    // Fenêtre des 60 derniers jours se terminant le 31 octobre 2026
-    var endDate = new Date(2026, 9, 31); // 31 oct. 2026
+    // Fenêtre des 60 derniers jours se terminant le 1er novembre 2026
+    var endDate = new Date(2026, 10, 1); // 1er nov. 2026
     var totalDays = 60;
 
     for (var i = totalDays - 1; i >= 0; i--) {
@@ -1100,9 +1108,9 @@
   function shiftDayWindow(step) {
     var lbl = document.getElementById('uptimeWindowLabel');
     if (step > 0) {
-      lbl.textContent = 'Octobre 2026 – En cours';
+      lbl.textContent = 'Novembre 2026 – En cours';
     } else {
-      lbl.textContent = '2 sept. – 31 oct. 2026';
+      lbl.textContent = '3 sept. – 1 nov. 2026';
     }
   }
 
@@ -1131,7 +1139,7 @@
   };
 
   var monthKeysOrder = ['2026-09', '2026-10', '2026-11', '2026-12'];
-  var currentMonthIdx = 1; // Commence sur Octobre 2026
+  var currentMonthIdx = 2; // Commence sur Novembre 2026
 
   function renderCalendar(monthKey) {
     var data = monthsData[monthKey];
