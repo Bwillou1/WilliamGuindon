@@ -278,6 +278,13 @@
       }
     })();
 
+    if (isWinterSeason) {
+      document.documentElement.classList.add('season-winter');
+      const heroEl = document.getElementById('accueil') || document.querySelector('.hero-immersive');
+      if (heroEl) heroEl.classList.add('season-winter');
+      if (curtainsContainer) curtainsContainer.classList.add('season-winter');
+    }
+
     const heroPhotoBase = isWinterSeason ? 'tourbiere-hero-3d-hiver' : 'tourbiere-hero-3d';
     const heroDepthBase = isWinterSeason ? 'tourbiere-hero-depth-hiver' : 'tourbiere-hero-depth';
 
