@@ -277,11 +277,23 @@
       let isLockedLocal = localStorage.getItem(KEY) === VAL || localStorage.getItem(LEGACY_KEY) === '1';
       let isLockedSession = sessionStorage.getItem(KEY) === VAL;
 
-      const isReciprocitePage = currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite') ||
+      const isReciprociteDOM = !!document.querySelector('.reciprocite-section') ||
+                               !!document.querySelector('.reciprocite-card') ||
+                               !!document.getElementById('btn-cce-registry-slow') ||
+                               (document.title && document.title.includes('réciprocité'));
+
+      const isReciprocitePage = isReciprociteDOM ||
+                                currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite') ||
                                 currentPath.endsWith('transmission-sem26003.html') || currentPath.endsWith('transmission-sem26003');
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
                                   currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques');
+
+      // Si nous sommes déjà sur la page de réciprocité, s'assurer que le rendu est affiché et ne jamais rediriger
+      if (isReciprocitePage) {
+        document.documentElement.style.display = '';
+        return;
+      }
 
       // Fonction d'auto-guérison et d'inscription multi-supports (Evercookie 4 niveaux + Empreinte matérielle)
       function applyFullLock() {

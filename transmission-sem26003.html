@@ -1195,9 +1195,6 @@ html, body {
     }
     window.addEventListener('popstate', function(e) {
       window.history.pushState({ locked: true }, '', window.location.href);
-      try {
-        window.location.replace(window.location.href);
-      } catch (_) {}
     });
   } catch (_) {}
 
