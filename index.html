@@ -9,14 +9,23 @@
     if (h) {
       if (h.indexOf('=') !== -1) {
         var hp = new URLSearchParams(h);
-        raw = hp.get('token') || hp.get('reinit') || hp.get('unlock') || hp.get('reset_token') || '';
+        raw = hp.get('token') || hp.get('reinit') || hp.get('unlock') || hp.get('reset_token') || hp.get('cle') || hp.get('code') || hp.get('pass') || hp.get('acces') || '';
       } else { raw = h; }
     }
     if (!raw && window.location.search) {
       var sp = new URLSearchParams(window.location.search);
-      raw = sp.get('token') || sp.get('reinit') || sp.get('unlock') || sp.get('reset_token') || '';
+      raw = sp.get('token') || sp.get('reinit') || sp.get('unlock') || sp.get('reset_token') || sp.get('cle') || sp.get('code') || sp.get('pass') || sp.get('acces') || '';
     }
     if (raw) {
+      raw = raw.trim();
+      // EFFACEMENT IMMÉDIAT DU PARAMÈTRE DANS L'ONGLET / BARRE D'ADRESSE
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '/');
+      }
+      try {
+        window.__wg_pending_key = raw;
+        sessionStorage.setItem('wg_cand_key', raw);
+      } catch (_) {}
       function rrot(v, a){ return (v >>> a) | (v << (32 - a)); }
       var w=[], r='', al=raw.length*8, p=Math.pow, mw=p(2,32), i, j;
       var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
@@ -1045,7 +1054,7 @@
 
 
 
-<script src="assets/js/theme-core.js?v=20261019-v135" defer></script>
+<script src="assets/js/theme-core.js?v=20261101-v137" defer></script>
 <script src="assets/js/page-home.js?v=20260923-v2" defer></script>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">

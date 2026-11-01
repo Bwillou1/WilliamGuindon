@@ -2,6 +2,34 @@
 <html lang="fr-CA">
 <head>
 <meta charset="utf-8">
+<script>
+(function(){
+  try {
+    var raw = '';
+    var h = window.location.hash ? window.location.hash.substring(1) : '';
+    if (h) {
+      if (h.indexOf('=') !== -1) {
+        var hp = new URLSearchParams(h);
+        raw = hp.get('cle') || hp.get('code') || hp.get('pass') || hp.get('acces') || '';
+      } else if (h.length === 6) { raw = h; }
+    }
+    if (!raw && window.location.search) {
+      var sp = new URLSearchParams(window.location.search);
+      raw = sp.get('cle') || sp.get('code') || sp.get('pass') || sp.get('acces') || '';
+    }
+    if (raw && raw.trim().length === 6) {
+      raw = raw.trim().toUpperCase();
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+      try {
+        window.__wg_pending_key = raw;
+        sessionStorage.setItem('wg_cand_key', raw);
+      } catch (_) {}
+    }
+  } catch (_) {}
+})();
+</script>
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dossier SEM-26-003 Blainville Expliqué — William Guindon</title>
@@ -145,7 +173,7 @@
 </script>
 
 <link rel="stylesheet" href="style.css?v=20261018-v87">
-<script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
+<script src="assets/js/theme-core.js?v=20261101-v137" defer></script>
 
 <style>
 :root{

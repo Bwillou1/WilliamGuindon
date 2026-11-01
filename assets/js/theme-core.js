@@ -262,15 +262,24 @@
 
       let candidateParlementCode = '';
       try {
-        const spP = new URLSearchParams(window.location.search);
-        candidateParlementCode = spP.get('cle') || spP.get('code') || spP.get('pass') || spP.get('acces') || '';
-        if (!candidateParlementCode && window.location.hash) {
-          const rawH = window.location.hash.substring(1).trim();
-          if (rawH.length === 6 && !rawH.includes('=')) {
-            candidateParlementCode = rawH;
-          } else if (rawH.includes('=')) {
-            const hpP = new URLSearchParams(rawH);
-            candidateParlementCode = hpP.get('cle') || hpP.get('code') || hpP.get('pass') || hpP.get('acces') || '';
+        if (window.__wg_pending_key) {
+          candidateParlementCode = window.__wg_pending_key;
+          window.__wg_pending_key = '';
+        } else if (sessionStorage.getItem('wg_cand_key')) {
+          candidateParlementCode = sessionStorage.getItem('wg_cand_key') || '';
+          sessionStorage.removeItem('wg_cand_key');
+        }
+        if (!candidateParlementCode) {
+          const spP = new URLSearchParams(window.location.search);
+          candidateParlementCode = spP.get('cle') || spP.get('code') || spP.get('pass') || spP.get('acces') || '';
+          if (!candidateParlementCode && window.location.hash) {
+            const rawH = window.location.hash.substring(1).trim();
+            if (rawH.length === 6 && !rawH.includes('=')) {
+              candidateParlementCode = rawH;
+            } else if (rawH.includes('=')) {
+              const hpP = new URLSearchParams(rawH);
+              candidateParlementCode = hpP.get('cle') || hpP.get('code') || hpP.get('pass') || hpP.get('acces') || '';
+            }
           }
         }
       } catch (_) {}
