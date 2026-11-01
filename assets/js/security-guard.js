@@ -9,8 +9,8 @@
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io', 'guindon-security.cloudflareaccess.com', 'web.archive.org', 'archive.org'];
   const STORAGE_KEY = 'wg_radical_site_state';
 
-  // Ne pas bloquer la console admin, l'espace d'administration ni l'éditeur
-  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html') || window.location.pathname.includes('state.html');
+  // Ne pas bloquer la console admin, l'espace d'administration, l'éditeur ni la note diplomatique publique
+  const isConsolePage = window.location.pathname.includes('console-admin.html') || window.location.pathname.includes('admin.html') || window.location.pathname.includes('editeur.html') || window.location.pathname.includes('state.html') || window.location.pathname.includes('delegation.html');
   if (isConsolePage) return;
 
   const currentPath = window.location.pathname.toLowerCase();
