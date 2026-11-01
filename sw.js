@@ -120,6 +120,8 @@ const ASSETS_TO_CACHE = [
   '/assets/media/logo-mouvement-actes-csq.webp',
   '/assets/media/signalement-faunique-plan-bouchard.jpg',
   '/assets/media/signalement-faunique-plan-bouchard.webp',
+  '/assets/media/coulisses-replique-cce-sem26003.jpg',
+  '/assets/media/coulisses-replique-cce-sem26003.webp',
   '/manifest.json',
   '/favicon.svg',
   '/favicon-32.png',
