@@ -302,7 +302,7 @@
               const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
 
               if (isClePage) {
-                const targetDest = destParam || '/apercu';
+                const targetDest = destParam || '/';
                 if (window.history && window.history.replaceState) {
                   window.history.replaceState(null, '', targetDest + newQuery);
                 }
@@ -331,7 +331,7 @@
         const isClePage = window.location.pathname.includes('cle') || window.location.pathname === '/cle';
         if (isClePage) {
           const spP = new URLSearchParams(window.location.search);
-          const dest = spP.get('dest') || spP.get('redirect') || '/apercu';
+          const dest = spP.get('dest') || spP.get('redirect') || '/';
           if (window.history && window.history.replaceState) {
             window.history.replaceState(null, '', dest);
           }

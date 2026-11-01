@@ -23,7 +23,7 @@
       // Masquer instantanément pour éliminer tout clignotement ou affichage de cle.html
       document.documentElement.style.visibility = 'hidden';
       var sp = new URLSearchParams(s);
-      var dest = sp.get('dest') || sp.get('redirect') || '/apercu';
+      var dest = sp.get('dest') || sp.get('redirect') || '/';
       if (window.history && window.history.replaceState) {
         window.history.replaceState(null, '', dest);
       }
@@ -267,7 +267,7 @@ body.auth-portal-body {
             document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
 
             var sp = new URLSearchParams(window.location.search);
-            var dest = sp.get('redirect') || sp.get('dest') || '/apercu';
+            var dest = sp.get('redirect') || sp.get('dest') || '/';
             if (window.history && window.history.replaceState) {
               window.history.replaceState(null, '', dest);
             }
