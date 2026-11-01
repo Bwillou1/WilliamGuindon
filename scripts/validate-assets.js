@@ -405,7 +405,8 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'transmission-sem26003.html',
   'dossier-confidentiel-non-biffe-sem26003.html',
   'cle.html',
-  'delegation.html'
+  'delegation.html',
+  'commentaires.html'
 ]);
 
 let publicPagesAudited = 0;
