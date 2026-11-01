@@ -335,6 +335,18 @@
         }
       }
 
+      // Construction sécurisée de l'URL cible préservant tous les paramètres personnalisés passés par l'utilisateur
+      function buildReciprociteTargetUrl() {
+        try {
+          const p = new URLSearchParams(window.location.search);
+          if (!p.has('portail')) p.set('portail', 'cce-sem26003');
+          if (!p.has('sig')) p.set('sig', '72rsp');
+          return '/reciprocite.html?' + p.toString() + window.location.hash;
+        } catch (_) {
+          return '/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp';
+        }
+      }
+
       // Si l'un des signaux s'allume, si l'empreinte matérielle correspond ou si nous sommes sur reciprocite.html
       const shouldLock = isLockedCookie || isLockedLocal || isLockedSession || hasReciprocityParam || hasInstitutionalReferrer || isKnownInstitutionalDevice || isReciprocitePage;
 
@@ -350,7 +362,7 @@
         }
 
         if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
-          window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
+          window.location.replace(buildReciprociteTargetUrl());
           document.documentElement.style.display = 'none';
           return;
         }
@@ -427,7 +439,7 @@
           if (e.key === KEY || e.key === LEGACY_KEY) {
             applyFullLock();
             if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
-              window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
+              window.location.replace(buildReciprociteTargetUrl());
             }
           }
         });
@@ -440,7 +452,7 @@
           bc.onmessage = function(e) {
             if (e.data && e.data.action === 'LOCK' && !isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
               applyFullLock();
-              window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
+              window.location.replace(buildReciprociteTargetUrl());
             } else if (e.data && e.data.action === 'UNLOCK') {
               try {
                 localStorage.removeItem(KEY);
@@ -464,7 +476,7 @@
                             document.cookie.includes(KEY + '=' + VAL) ||
                             sessionStorage.getItem(KEY) === VAL;
           if (lockedNow && !isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
-            window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
+            window.location.replace(buildReciprociteTargetUrl());
           }
         } catch (_) {}
       });
@@ -482,7 +494,7 @@
                 if (getReq.result === VAL) {
                   applyFullLock();
                   if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
-                    window.location.replace('/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp');
+                    window.location.replace(buildReciprociteTargetUrl());
                   }
                 }
               };
