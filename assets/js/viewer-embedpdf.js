@@ -275,7 +275,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   let embedViewerInstance = null;
   let isDocDark = false;
   try {
-    isDocDark = localStorage.getItem('wg_pdf_doc_dark') === 'true';
+    // Purge de l'ancienne clé corrompue qui forçait automatiquement le mode nuit
+    localStorage.removeItem('wg_pdf_doc_dark');
+    isDocDark = localStorage.getItem('wg_pdf_doc_dark_user') === 'true';
   } catch (_) {}
 
   let saveAnnotationTimeout = null;
@@ -383,11 +385,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     applyDocDarkMode(isDocDark);
   }
 
-  function applyDocDarkMode(enabled) {
+  function applyDocDarkMode(enabled, isManual = false) {
     isDocDark = enabled;
-    try {
-      localStorage.setItem('wg_pdf_doc_dark', enabled ? 'true' : 'false');
-    } catch (_) {}
+    if (isManual) {
+      try {
+        localStorage.setItem('wg_pdf_doc_dark_user', enabled ? 'true' : 'false');
+      } catch (_) {}
+    }
     if (dom.btnDocDark) {
       dom.btnDocDark.classList.toggle('doc-dark-active', enabled);
       dom.btnDocDark.title = enabled
@@ -478,8 +482,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       embedViewerInstance.setTheme(theme);
     }
 
-    // Filtre automatique pour le document : sombre si theme === 'dark', clair sinon
-    applyDocDarkMode(theme === 'dark');
+    // Le thème de l'interface (clair/sombre) ne doit jamais forcer l'inversion sombre des pages du document.
+    // Les pages PDF restent en affichage naturel clair sauf si l'utilisateur active explicitement l'inversion.
+    if (isDocDark) {
+      applyDocDarkMode(true, false);
+    } else {
+      applyDocDarkMode(false, false);
+    }
 
     setTimeout(injectEmbedPDFStyles, 50);
   }
@@ -1261,10 +1270,10 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     });
   }
 
-  // Bascule du mode Document Sombre / Inversion
+  // Bascule du mode Document Sombre / Inversion manuelle
   if (dom.btnDocDark) {
     dom.btnDocDark.addEventListener('click', () => {
-      applyDocDarkMode(!isDocDark);
+      applyDocDarkMode(!isDocDark, true);
     });
   }
 
