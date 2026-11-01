@@ -263,9 +263,16 @@
       let candidateParlementCode = '';
       try {
         const spP = new URLSearchParams(window.location.search);
-        const hpP = new URLSearchParams(window.location.hash ? window.location.hash.substring(1) : '');
-        candidateParlementCode = spP.get('cle') || spP.get('pass') || spP.get('acces') ||
-                                 hpP.get('cle') || hpP.get('pass') || hpP.get('acces') || '';
+        candidateParlementCode = spP.get('cle') || spP.get('code') || spP.get('pass') || spP.get('acces') || '';
+        if (!candidateParlementCode && window.location.hash) {
+          const rawH = window.location.hash.substring(1).trim();
+          if (rawH.length === 6 && !rawH.includes('=')) {
+            candidateParlementCode = rawH;
+          } else if (rawH.includes('=')) {
+            const hpP = new URLSearchParams(rawH);
+            candidateParlementCode = hpP.get('cle') || hpP.get('code') || hpP.get('pass') || hpP.get('acces') || '';
+          }
+        }
       } catch (_) {}
 
       let newlyActivatedParlementPass = false;
@@ -287,31 +294,13 @@
             localStorage.setItem('wg_parlement_exp', exp90Days.toString());
             sessionStorage.setItem('wg_parlement_pass', candidateHash);
             document.cookie = 'wg_parlement_pass=' + candidateHash + '; path=/; max-age=7776000; SameSite=Lax';
+
+            // Immunité permanente de l'appareil
+            localStorage.setItem('wg_device_immune', '1');
+            sessionStorage.setItem('wg_device_immune', '1');
+            document.cookie = 'wg_immune=1; path=/; max-age=7776000; SameSite=Lax';
+
             newlyActivatedParlementPass = true;
-
-            try {
-              const isClePage = window.location.pathname.includes('cle') || window.location.pathname === '/cle';
-              const cleanParams = new URLSearchParams(window.location.search);
-              const destParam = cleanParams.get('dest') || cleanParams.get('redirect') || '';
-              cleanParams.delete('cle');
-              cleanParams.delete('code');
-              cleanParams.delete('pass');
-              cleanParams.delete('acces');
-              cleanParams.delete('dest');
-              cleanParams.delete('redirect');
-              const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
-
-              if (isClePage) {
-                const targetDest = destParam || '/';
-                if (window.history && window.history.replaceState) {
-                  window.history.replaceState(null, '', targetDest + newQuery);
-                }
-                window.location.replace(targetDest + newQuery);
-                return;
-              } else if (window.history && window.history.replaceState) {
-                window.history.replaceState(null, '', window.location.pathname + newQuery);
-              }
-            } catch (_) {}
           }
         }
       }
@@ -319,6 +308,12 @@
       const isParlementaireAuthorized = isParlementPassValid || newlyActivatedParlementPass;
       if (isParlementaireAuthorized) {
         try {
+          // 1. Immunité permanente de l'appareil
+          localStorage.setItem('wg_device_immune', '1');
+          sessionStorage.setItem('wg_device_immune', '1');
+          document.cookie = 'wg_immune=1; path=/; max-age=7776000; SameSite=Lax';
+
+          // 2. Destruction immédiate de tout verrou de réciprocité
           localStorage.removeItem(KEY);
           localStorage.removeItem(LEGACY_KEY);
           localStorage.removeItem('_cf_hw_sig');
@@ -326,21 +321,57 @@
           sessionStorage.removeItem('_cf_hw_sig');
           document.cookie = KEY + '=; path=/; max-age=0';
           document.cookie = LEGACY_KEY + '=; path=/; max-age=0';
+          document.cookie = '_cf_hw_sig=; path=/; max-age=0';
+
+          if (window.indexedDB) {
+            try {
+              const req = indexedDB.open('wg_sys_db', 1);
+              req.onsuccess = function(e) {
+                try {
+                  const db = e.target.result;
+                  if (db.objectStoreNames.contains('flags')) {
+                    const tx = db.transaction('flags', 'readwrite');
+                    tx.objectStore('flags').delete(KEY);
+                  }
+                } catch (_) {}
+              };
+            } catch (_) {}
+          }
+
+          if ('BroadcastChannel' in window) {
+            try {
+              const bc = new BroadcastChannel('wg_reciprocity_ch');
+              bc.postMessage({ action: 'UNLOCK' });
+            } catch (_) {}
+          }
         } catch (_) {}
 
+        // 3. Rétablissement du rendu (au cas où il a été masqué)
+        document.documentElement.style.display = '';
+        document.documentElement.style.visibility = '';
+
+        // 4. Si la personne arrive sur /cle ou /cle.html : redirection directe vers l'accueil /
         const isClePage = window.location.pathname.includes('cle') || window.location.pathname === '/cle';
         if (isClePage) {
-          const spP = new URLSearchParams(window.location.search);
-          const dest = spP.get('dest') || spP.get('redirect') || '/';
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState(null, '', dest);
-          }
-          window.location.replace(dest);
+          window.location.replace('/');
           return;
         }
 
-        // Accès parlementaire accordé sans bandeau intrusif : navigation fluide et propre
-        document.documentElement.style.display = '';
+        // 5. Si elle est sur une autre page avec ?cle=... dans l'URL : nettoyage invisible de la barre d'adresse
+        try {
+          if (window.history && window.history.replaceState) {
+            const cleanParams = new URLSearchParams(window.location.search);
+            if (cleanParams.has('cle') || cleanParams.has('code') || cleanParams.has('pass') || cleanParams.has('acces')) {
+              cleanParams.delete('cle');
+              cleanParams.delete('code');
+              cleanParams.delete('pass');
+              cleanParams.delete('acces');
+              const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
+              window.history.replaceState(null, '', window.location.pathname + newQuery);
+            }
+          }
+        } catch (_) {}
+
         return;
       }
 
@@ -484,10 +515,12 @@
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
                                   currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques');
+      const isClePage = currentPath.endsWith('cle.html') || currentPath.endsWith('cle') || currentPath.includes('/cle');
 
-      // Si nous sommes déjà sur la page de réciprocité, s'assurer que le rendu est affiché et ne jamais rediriger
-      if (isReciprocitePage) {
+      // Si nous sommes déjà sur la page de réciprocité ou sur le guichet de clé, s'assurer que le rendu est affiché et ne jamais rediriger
+      if (isReciprocitePage || isClePage) {
         document.documentElement.style.display = '';
+        document.documentElement.style.visibility = '';
         return;
       }
 
