@@ -1290,37 +1290,9 @@ html, body {
         applyFullLock();
       }
     });
-
-    // D. Boucle anti-débogueur : gèle les DevTools s'ils sont ouverts via le menu du navigateur
-    setInterval(function() {
-      const t0 = performance.now();
-      debugger;
-      if (performance.now() - t0 > 100) {
-        try {
-          console.clear();
-        } catch (_) {}
-      }
-    }, 1000);
   } catch (_) {}
 
-  // 5. Interception du presse-papier : injection automatique de la signature
-  document.addEventListener('copy', function(e) {
-    try {
-      const selection = window.getSelection().toString();
-      if (selection && (selection.includes('williamguindon.me') || selection.startsWith('/') || selection.startsWith('http'))) {
-        let modified = selection;
-        if (!modified.includes('portail=cce-sem26003')) {
-          modified = modified.includes('?') ? (modified + '&portail=cce-sem26003&transmission=officielle&sig=72rsp') : (modified + '?portail=cce-sem26003&transmission=officielle&sig=72rsp');
-        }
-        if (e.clipboardData) {
-          e.clipboardData.setData('text/plain', modified);
-          e.preventDefault();
-        }
-      }
-    } catch (_) {}
-  });
-
-  // 6. Nettoyage et suppression dynamique de tout widget IA rémanent
+  // 5. Nettoyage et suppression dynamique de tout widget IA rémanent
   function purgeAiElements() {
     try {
       const selectors = ['.floating-ai-btn', '#js-floating-ai-btn', '.ai-modal-overlay', '#ai-chat', 'header.site'];
