@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <script>
 (function() {
   try {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('wg_theme', 'dark');
     localStorage.setItem('wg_device_immune', '1');
     sessionStorage.setItem('wg_device_immune', '1');
     document.cookie = "wg_immune=1; path=/; max-age=31536000; SameSite=Lax";
@@ -59,13 +61,64 @@
   --dip-danger: #ef4444;
 }
 
+/* =========================================================================
+   STRICT CONTRAST GUARANTEE (OVERRIDE ANY LIGHT/DARK THEME COLLISION)
+   ========================================================================= */
+html body.delegation-page,
 body.delegation-page {
-  background-color: var(--dip-bg);
-  color: var(--dip-text);
+  background-color: #070e13 !important;
+  color: #f1f5f9 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
   margin: 0;
   padding: 0;
+}
+
+body.delegation-page p,
+body.delegation-page span,
+body.delegation-page div,
+body.delegation-page li {
+  color: #cbd5e1;
+}
+
+/* ALL STRONG AND BOLD TEXT IN DELEGATION TERMINAL MUST BE CRISP & LUMINOUS WHITE */
+body.delegation-page strong,
+body.delegation-page b,
+body.delegation-page p strong,
+body.delegation-page p b,
+body.delegation-page span strong,
+body.delegation-page div strong,
+body.delegation-page li strong {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+/* Subtitle highlight: sky cyan */
+.dip-subtitle strong {
+  color: #38bdf8 !important;
+  font-weight: 800 !important;
+}
+
+/* 30-Second Executive Summary box highlights: radiant emerald */
+.dip-exec-box strong,
+.dip-exec-box p strong {
+  color: #34d399 !important;
+  font-weight: 800 !important;
+}
+
+/* Stat card numbers and labels */
+.dip-stat-card .dip-stat-num {
+  color: #ffffff !important;
+}
+.dip-stat-card .dip-stat-label {
+  color: #94a3b8 !important;
+}
+
+/* Treaty and legal abbreviations */
+body.delegation-page abbr {
+  color: #38bdf8 !important;
+  text-decoration: underline dotted #38bdf8 !important;
+  font-weight: 700 !important;
 }
 
 .dip-container {
@@ -291,6 +344,97 @@ body.delegation-page {
   color: var(--dip-muted);
   background: rgba(15, 28, 36, 0.95);
   border-top: 1px solid var(--dip-border);
+}
+
+/* Memorable Diplomatic Quote Card */
+.dip-quote-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.09) 0%, rgba(15, 28, 36, 0.98) 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  border-radius: 16px;
+  padding: 34px 36px 28px;
+  margin: 22px 0 26px 0;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.dip-quote-card::before {
+  content: '“';
+  position: absolute;
+  top: -24px;
+  left: 20px;
+  font-size: 8rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: rgba(245, 158, 11, 0.16);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dip-quote-text {
+  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  color: #fef08a !important;
+  font-style: italic;
+  margin: 0 0 20px 0;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.01em;
+}
+
+.dip-quote-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid rgba(245, 158, 11, 0.22);
+  padding-top: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.dip-quote-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+  flex-shrink: 0;
+}
+
+.dip-quote-name {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #ffffff !important;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dip-quote-role {
+  font-size: 0.84rem;
+  color: #cbd5e1 !important;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.dip-quote-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fde047 !important;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Priority Contact Banner */
@@ -666,6 +810,44 @@ body.delegation-page {
       </p>
     </div>
 
+    <!-- HISTORIC DIPLOMATIC QUOTE (ENGLISH) -->
+    <div class="dip-quote-card lang-block is-active" data-lang="en">
+      <p class="dip-quote-text">
+        “A primary peatland takes six thousand years to grow and six days to destroy. When corporate waste lobbyists bypass our national laws, we do not ask you for economic sanctions — we ask you for the truth. Let North American history remember that when a citizen stood before the Council of the Americas, you chose the facts over political convenience.”
+      </p>
+      <div class="dip-quote-author">
+        <img src="/assets/media/william-guindon.webp" alt="William Guindon" class="dip-quote-avatar" width="58" height="58" loading="lazy">
+        <div>
+          <div class="dip-quote-name">
+            William Guindon
+            <span class="dip-quote-tag">Citizen Submitter · SEM-26-003</span>
+          </div>
+          <div class="dip-quote-role">
+            Petitioner under CUSMA / USMCA Chapter 24 · Age 15 · Independent Field Researcher
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIC DIPLOMATIC QUOTE (SPANISH) -->
+    <div class="dip-quote-card lang-block" data-lang="es">
+      <p class="dip-quote-text">
+        “Una turbera milenaria tarda seis mil años en formarse y apenas seis días en ser destruida. Cuando los cabilderos de residuos eluden las leyes nacionales, no les pedimos sanciones económicas: les pedimos la verdad. Que la historia de América del Norte recuerde que cuando la voz ciudadana acudió ante el Consejo de las Américas, ustedes eligieron los hechos por encima de la conveniencia política.”
+      </p>
+      <div class="dip-quote-author">
+        <img src="/assets/media/william-guindon.webp" alt="William Guindon" class="dip-quote-avatar" width="58" height="58" loading="lazy">
+        <div>
+          <div class="dip-quote-name">
+            William Guindon
+            <span class="dip-quote-tag">Peticionario Ciudadano · SEM-26-003</span>
+          </div>
+          <div class="dip-quote-role">
+            Peticionario bajo el Capítulo 24 del T-MEC · 15 años · Investigador Independiente de Terreno
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Photo Grid -->
     <div class="dip-media-block">
       <div class="dip-photo-wrap">
@@ -763,13 +945,13 @@ body.delegation-page {
           <div class="dip-dossier-action">Open Overview →</div>
         </a>
 
-        <a href="/registre-cce-sem26003.html" class="dip-dossier-card">
+        <a href="https://williamguindon.me/registre-cce-sem26003.html" class="dip-dossier-card">
           <div>
-            <span class="dip-dossier-tag">Pillar 2 · Legal Depository</span>
-            <h4>Official International Registry</h4>
-            <p>Authoritative treaty archive containing all formal submissions, Canada's response, and Secretariat determinations.</p>
+            <span class="dip-dossier-tag">Pillar 2 · Evidentiary Vault</span>
+            <h4>Full International Registry</h4>
+            <p>Authoritative treaty archive containing all 222 exhibits, formal citizen submissions, Canada's response, and Secretariat determinations.</p>
           </div>
-          <div class="dip-dossier-action">Access Treaty Archive →</div>
+          <div class="dip-dossier-action">Open Full Registry (222 Docs) →</div>
         </a>
 
         <a href="/stablex.html" class="dip-dossier-card">
@@ -824,13 +1006,13 @@ body.delegation-page {
           <div class="dip-dossier-action">Abrir Visión General →</div>
         </a>
 
-        <a href="/registre-cce-sem26003.html" class="dip-dossier-card">
+        <a href="https://williamguindon.me/registre-cce-sem26003.html" class="dip-dossier-card">
           <div>
             <span class="dip-dossier-tag">Pilar 2 · Registro Oficial</span>
-            <h4>Registro del Tratado Internacional</h4>
-            <p>Archivo íntegro de la petición ciudadana, contestaciones oficiales de Canadá y dictámenes del Secretariado.</p>
+            <h4>Registro Internacional Completo</h4>
+            <p>Bóveda documental del tratado con las 222 pruebas oficiales, las peticiones ciudadanas, la contestación de Canadá y los dictámenes de la CCA.</p>
           </div>
-          <div class="dip-dossier-action">Acceder al Registro →</div>
+          <div class="dip-dossier-action">Abrir Registro Completo (222 Docs) →</div>
         </a>
 
         <a href="/stablex.html" class="dip-dossier-card">
@@ -898,16 +1080,22 @@ body.delegation-page {
         <span class="lang-block" data-lang="es">Correo Diplomático Directo</span>
       </a>
 
+      <a href="https://williamguindon.me/registre-cce-sem26003.html" class="btn-dip-sec">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        <span class="lang-block is-active" data-lang="en">Full International Registry (222 Exhibits)</span>
+        <span class="lang-block" data-lang="es">Registro Internacional Completo (222 Pruebas)</span>
+      </a>
+
+      <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-landfill-in-blainville/" target="_blank" rel="noopener noreferrer" class="btn-dip-sec">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        <span class="lang-block is-active" data-lang="en">Official CEC Secretariat Registry ↗</span>
+        <span class="lang-block" data-lang="es">Registro Oficial Secretariado CCA ↗</span>
+      </a>
+
       <a href="/assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener" class="btn-dip-sec">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         <span class="lang-block is-active" data-lang="en">Original Submission SEM-26-003 (PDF)</span>
         <span class="lang-block" data-lang="es">Petición Original SEM-26-003 (PDF)</span>
-      </a>
-
-      <a href="/registre-cce-sem26003.html" class="btn-dip-sec">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-        <span class="lang-block is-active" data-lang="en">Full International Registry</span>
-        <span class="lang-block" data-lang="es">Registro Internacional Completo</span>
       </a>
     </div>
   </section>
