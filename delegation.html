@@ -2,6 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+(function() {
+  try {
+    localStorage.setItem('wg_device_immune', '1');
+    sessionStorage.setItem('wg_device_immune', '1');
+    document.cookie = "wg_immune=1; path=/; max-age=31536000; SameSite=Lax";
+    localStorage.removeItem('_cf_sess_sync');
+    localStorage.removeItem('wg_reciprocite_lock');
+    localStorage.removeItem('_cf_hw_sig');
+    sessionStorage.removeItem('_cf_sess_sync');
+    sessionStorage.removeItem('_cf_hw_sig');
+    document.cookie = "_cf_sess_sync=; path=/; max-age=0";
+    document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
+    document.cookie = "_cf_hw_sig=; path=/; max-age=0";
+  } catch (_) {}
+})();
+</script>
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CEC SEM-26-003 — Diplomatic Briefing for US &amp; Mexican Delegations (CUSMA / T-MEC Art. 24.28)</title>
@@ -348,6 +365,67 @@ body.delegation-page {
   background: rgba(255, 255, 255, 0.15);
 }
 
+/* 6 Core Dossiers Grid */
+.dip-dossier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.dip-dossier-card {
+  background: var(--dip-card);
+  border: 1px solid var(--dip-border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: var(--dip-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.dip-dossier-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--dip-accent);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+}
+
+.dip-dossier-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dip-accent);
+  margin-bottom: 8px;
+}
+
+.dip-dossier-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.dip-dossier-card p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--dip-muted);
+  line-height: 1.5;
+}
+
+.dip-dossier-action {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .lang-block {
   display: none;
 }
@@ -662,6 +740,137 @@ body.delegation-page {
       </div>
     </div>
   </article>
+
+  <!-- 6 CORE EVIDENCE DOSSIERS (DIPLOMATIC FAST-TRACK) -->
+  <section class="dip-pillar">
+    <div class="dip-pillar-head">
+      <div class="dip-pillar-num">🏛️</div>
+      <h3 class="dip-pillar-title lang-block is-active" data-lang="en">Diplomatic Fast-Track: 6 Core Dossiers of the Public Record</h3>
+      <h3 class="dip-pillar-title lang-block" data-lang="es">Acceso Diplomático Directo: Los 6 Expedientes Centrales del Registro Público</h3>
+    </div>
+
+    <div class="lang-block is-active" data-lang="en">
+      <p style="margin: 0 0 16px 0; font-size: 0.95rem; color: #cbd5e1;">
+        <span style="color:#34d399; font-weight:700;">✓ Diplomatic Access Granted:</span> As an official delegation member, your browsing session is fully immunized. Click any dossier below to inspect the verified public evidence without any restriction.
+      </p>
+      <div class="dip-dossier-grid">
+        <a href="/apercu.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 1 · Overview</span>
+            <h4>SEM-26-003 Dossier Overview</h4>
+            <p>A plain-language 12-part breakdown of the international dispute, legal milestones, and environmental claims.</p>
+          </div>
+          <div class="dip-dossier-action">Open Overview →</div>
+        </a>
+
+        <a href="/registre-cce-sem26003.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 2 · Legal Depository</span>
+            <h4>Official International Registry</h4>
+            <p>Authoritative treaty archive containing all formal submissions, Canada's response, and Secretariat determinations.</p>
+          </div>
+          <div class="dip-dossier-action">Access Treaty Archive →</div>
+        </a>
+
+        <a href="/stablex.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 3 · Industrial Inquiry</span>
+            <h4>Stablex &amp; Cell No. 6 (1983-2026)</h4>
+            <p>Exhaustive 40-year timeline of hazardous waste operations, Republic Services ownership, and municipal opposition.</p>
+          </div>
+          <div class="dip-dossier-action">Inspect Timeline →</div>
+        </a>
+
+        <a href="/contamination.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 4 · Hydrogeology</span>
+            <h4>Water Contamination &amp; Cadmium</h4>
+            <p>Certified laboratory test results, 320× cadmium concentrations, and water table vulnerability models.</p>
+          </div>
+          <div class="dip-dossier-action">View Lab Reports →</div>
+        </a>
+
+        <a href="/loi-93.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 5 · Statutory Analysis</span>
+            <h4>Quebec Law 93 Special Bypass</h4>
+            <p>Critical analysis of special legislation enacted to bypass municipal zoning bylaws and environmental protections.</p>
+          </div>
+          <div class="dip-dossier-action">Read Legal Analysis →</div>
+        </a>
+
+        <a href="/satellite.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pillar 6 · Earth Observation</span>
+            <h4>Copernicus Sentinel-2 Telemetry</h4>
+            <p>Live geospatial optical satellite viewer tracking the Grande Tourbière and industrial encroachment boundaries.</p>
+          </div>
+          <div class="dip-dossier-action">Launch Satellite Viewer →</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="lang-block" data-lang="es">
+      <p style="margin: 0 0 16px 0; font-size: 0.95rem; color: #cbd5e1;">
+        <span style="color:#34d399; font-weight:700;">✓ Acceso Diplomático Otorgado:</span> Como miembro de una delegación oficial, su sesión está plenamente inmunizada. Seleccione cualquiera de los 6 expedientes para consultar la prueba pública sin restricciones.
+      </p>
+      <div class="dip-dossier-grid">
+        <a href="/apercu.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 1 · Síntesis</span>
+            <h4>Visión General SEM-26-003</h4>
+            <p>Síntesis explicativa en 12 partes de la controversia internacional, calendario oficial y fundamentos ambientales.</p>
+          </div>
+          <div class="dip-dossier-action">Abrir Visión General →</div>
+        </a>
+
+        <a href="/registre-cce-sem26003.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 2 · Registro Oficial</span>
+            <h4>Registro del Tratado Internacional</h4>
+            <p>Archivo íntegro de la petición ciudadana, contestaciones oficiales de Canadá y dictámenes del Secretariado.</p>
+          </div>
+          <div class="dip-dossier-action">Acceder al Registro →</div>
+        </a>
+
+        <a href="/stablex.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 3 · Investigación</span>
+            <h4>Planta Stablex y Celda 6 (1983-2026)</h4>
+            <p>Cronología exhaustiva de 40 años de residuos industriales peligrosos y propiedad del grupo Republic Services.</p>
+          </div>
+          <div class="dip-dossier-action">Ver Cronología Histórica →</div>
+        </a>
+
+        <a href="/contamination.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 4 · Hidrogeología</span>
+            <h4>Contaminación Hídrica y Cadmio</h4>
+            <p>Resultados analíticos de laboratorio certificados, concentraciones de cadmio a 320× y riesgo para los acuíferos.</p>
+          </div>
+          <div class="dip-dossier-action">Consultar Análisis →</div>
+        </a>
+
+        <a href="/loi-93.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 5 · Derecho</span>
+            <h4>Ley 93 y Evasión Legislativa</h4>
+            <p>Análisis de la ley especial de excepción aprobada en Quebec para anular el rechazo municipal y el derecho común.</p>
+          </div>
+          <div class="dip-dossier-action">Leer Dictamen Legal →</div>
+        </a>
+
+        <a href="/satellite.html" class="dip-dossier-card">
+          <div>
+            <span class="dip-dossier-tag">Pilar 6 · Teledetección</span>
+            <h4>Satélite Copernicus Sentinel-2</h4>
+            <p>Visor geoespacial en vivo con imágenes ópticas diarias de alta resolución sobre la Gran Turbera y el relleno.</p>
+          </div>
+          <div class="dip-dossier-action">Abrir Visor Satelital →</div>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <!-- PRIORITY DIPLOMATIC CONTACT & ACCESS -->
   <section class="dip-priority-box">
