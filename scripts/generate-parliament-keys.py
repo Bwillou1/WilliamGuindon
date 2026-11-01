@@ -44,7 +44,7 @@ with open('MES-CLES-PARLEMENTAIRES.md', 'w', encoding='utf-8') as f:
     for e in entries:
         code = e['code']
         num = e['id']
-        url = f'https://williamguindon.me/apercu.html?cle={code}'
+        url = f'https://williamguindon.me/cle.html?cle={code}'
         f.write(f'| **{num:03d}** | `{code}` | [{url}]({url}) | *(Disponible)* | ⚪ Non utilisée |\n')
 
 print(f"Génération terminée : 100 clés générées dans data/parlement-hashes.json et MES-CLES-PARLEMENTAIRES.md")

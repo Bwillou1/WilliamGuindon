@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr-CA" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Portail d'accréditation officielle — William Guindon</title>
+<meta name="description" content="Guichet d'accréditation documentaire et de validation des laissez-passer parlementaires et d'investigation — William Guindon (Procédure SEM-26-003).">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="canonical" href="https://williamguindon.me/cle.html">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#070a12">
+
+<link rel="stylesheet" href="/style.css?v=20261019-v88">
+<script src="/assets/js/theme-core.js?v=20261019-v136" defer></script>
+
+<style>
+/* Style sobre et prestigieux pour le guichet d'accréditation */
+body.auth-portal-body {
+  background-color: #070a12 !important;
+  color: #f1f5f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  margin-bottom: 20px;
+}
+
+.auth-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.auth-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #94a3b8;
+  margin: 0 0 24px 0;
+}
+
+.auth-input-wrap {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.auth-input-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.auth-code-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0b1120;
+  border: 1.5px solid rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.auth-code-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.btn-auth-submit {
+  width: 100%;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-auth-submit:hover {
+  background: #059669;
+}
+
+.auth-feedback {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  min-height: 24px;
+}
+
+.auth-footer-help {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.2);
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+</style>
+</head>
+<body class="auth-portal-body">
+
+<main class="auth-card">
+  <div class="auth-brand" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+  </div>
+
+  <h1 class="auth-title">Accréditation officielle</h1>
+  <p class="auth-desc">
+    Portail documentaire réservé aux membres de la députation, attachés parlementaires, journalistes et chercheurs accrédités.
+  </p>
+
+  <form id="auth-code-form" onsubmit="handleManualAuth(event);" autocomplete="off">
+    <div class="auth-input-wrap">
+      <label for="input-auth-code" class="auth-input-label">Clé d'accès officielle (6 caractères)</label>
+      <input type="text" id="input-auth-code" class="auth-code-input" maxlength="6" placeholder="••••••" autofocus required autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+    </div>
+
+    <button type="submit" id="btn-submit-code" class="btn-auth-submit">
+      <span>Valider l'accréditation</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </form>
+
+  <div id="auth-feedback" class="auth-feedback"></div>
+
+  <div class="auth-footer-help">
+    Registre citoyen SEM-26-003 · Commission de coopération environnementale (CCE / ACEUM). Les connexions directes émanant des parties adverses sous enquête (ECCC / Stablex) sont soumises à la réciprocité procédurale.
+  </div>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  // Détection automatique de la clé passée dans l'URL (?cle=... ou ?code=... ou #XXXXXX)
+  function autoValidateFromUrl() {
+    const sp = new URLSearchParams(window.location.search);
+    let code = sp.get('cle') || sp.get('code') || sp.get('pass') || sp.get('acces') || '';
+    if (!code && window.location.hash) {
+      const h = window.location.hash.substring(1).trim();
+      if (h.length === 6 && !h.includes('=')) {
+        code = h;
+      }
+    }
+    if (code && code.trim().length === 6) {
+      const input = document.getElementById('input-auth-code');
+      if (input) input.value = code.trim().toUpperCase();
+      validateCode(code.trim().toUpperCase());
+    }
+  }
+
+  window.handleManualAuth = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = document.getElementById('input-auth-code');
+    if (!input) return;
+    validateCode(input.value.trim().toUpperCase());
+  };
+
+  function validateCode(cleanCode) {
+    const feedback = document.getElementById('auth-feedback');
+    const submitBtn = document.getElementById('btn-submit-code');
+
+    if (cleanCode.length !== 6) {
+      if (feedback) feedback.innerHTML = '<span style="color:#ef4444;font-weight:700;">Le code doit comporter exactement 6 caractères.</span>';
+      return;
+    }
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (feedback) feedback.innerHTML = '<span style="color:#38bdf8;">Vérification de la clé cryptographique...</span>';
+
+    // Chargement et vérification auprès du registre de 100 clés SHA-256
+    fetch('/data/parlement-hashes.json?v=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode(cleanCode)).then(function(buf) {
+          const arr = Array.from(new Uint8Array(buf));
+          const h = arr.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+          const validHashes = new Set(data.hashes || []);
+
+          if (validHashes.has(h)) {
+            // Clé validée avec succès !
+            const exp90Days = Date.now() + (90 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('wg_parlement_pass', h);
+            localStorage.setItem('wg_parlement_exp', exp90Days.toString());
+            sessionStorage.setItem('wg_parlement_pass', h);
+            document.cookie = 'wg_parlement_pass=' + h + '; path=/; max-age=7776000; SameSite=Lax';
+
+            // Levée immédiate de tout verrou de réciprocité
+            localStorage.removeItem('_cf_sess_sync');
+            localStorage.removeItem('wg_reciprocite_lock');
+            localStorage.removeItem('_cf_hw_sig');
+            sessionStorage.removeItem('_cf_sess_sync');
+            sessionStorage.removeItem('_cf_hw_sig');
+            document.cookie = "_cf_sess_sync=; path=/; max-age=0";
+            document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
+
+            if (feedback) feedback.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Accréditation confirmée. Redirection vers le dossier...</span>';
+
+            setTimeout(function() {
+              const sp = new URLSearchParams(window.location.search);
+              const dest = sp.get('redirect') || sp.get('dest') || '/apercu.html';
+              window.location.replace(dest);
+            }, 800);
+          } else {
+            if (submitBtn) submitBtn.disabled = false;
+            if (feedback) feedback.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ Clé d\'accès invalide ou non reconnue.</span>';
+          }
+        });
+      })
+      .catch(function() {
+        if (submitBtn) submitBtn.disabled = false;
+        if (feedback) feedback.innerHTML = '<span style="color:#ef4444;font-weight:700;">Erreur lors de la vérification réseau. Réessayez.</span>';
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoValidateFromUrl);
+  } else {
+    autoValidateFromUrl();
+  }
+})();
+</script>
+
+</body>
+</html>

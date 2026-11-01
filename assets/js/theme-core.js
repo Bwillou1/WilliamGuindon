@@ -315,23 +315,7 @@
           document.cookie = LEGACY_KEY + '=; path=/; max-age=0';
         } catch (_) {}
 
-        try {
-          const showBanner = function() {
-            if (!document.getElementById('wg-parlement-banner')) {
-              const b = document.createElement('div');
-              b.id = 'wg-parlement-banner';
-              b.style.cssText = 'position:fixed;bottom:14px;right:14px;z-index:99999;background:rgba(15,23,42,0.96);border:1px solid #10b981;border-radius:8px;padding:8px 14px;color:#f1f5f9;font-size:0.8rem;box-shadow:0 4px 14px rgba(0,0,0,0.4);display:flex;align-items:center;gap:8px;backdrop-filter:blur(8px);font-family:sans-serif;';
-              b.innerHTML = '<span style="color:#10b981;font-size:1rem;">🏛️</span> <span><strong>Consultation parlementaire certifiée</strong> (Accès actif · 90 jours)</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:0 0 0 6px;">✕</button>';
-              document.body.appendChild(b);
-            }
-          };
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', showBanner);
-          } else {
-            showBanner();
-          }
-        } catch (_) {}
-
+        // Accès parlementaire accordé sans bandeau intrusif : navigation fluide et propre
         document.documentElement.style.display = '';
         return;
       }
