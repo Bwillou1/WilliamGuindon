@@ -14,6 +14,24 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#070a12">
 
+<script>
+(function() {
+  try {
+    var s = window.location.search || '';
+    var h = window.location.hash || '';
+    if (s.indexOf('cle=') !== -1 || s.indexOf('code=') !== -1 || s.indexOf('pass=') !== -1 || s.indexOf('acces=') !== -1 || (h.length === 7 && h.charAt(0) === '#')) {
+      // Masquer instantanément pour éliminer tout clignotement ou affichage de cle.html
+      document.documentElement.style.visibility = 'hidden';
+      var sp = new URLSearchParams(s);
+      var dest = sp.get('dest') || sp.get('redirect') || '/apercu';
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', dest);
+      }
+    }
+  } catch (_) {}
+})();
+</script>
+
 <link rel="stylesheet" href="/style.css?v=20261019-v88">
 <script src="/assets/js/theme-core.js?v=20261019-v136" defer></script>
 
@@ -248,20 +266,21 @@ body.auth-portal-body {
             document.cookie = "_cf_sess_sync=; path=/; max-age=0";
             document.cookie = "wg_reciprocite_lock=; path=/; max-age=0";
 
-            if (feedback) feedback.innerHTML = '<span style="color:#10b981;font-weight:700;">✓ Accréditation confirmée. Redirection vers le dossier...</span>';
-
-            setTimeout(function() {
-              const sp = new URLSearchParams(window.location.search);
-              const dest = sp.get('redirect') || sp.get('dest') || '/apercu.html';
-              window.location.replace(dest);
-            }, 800);
+            var sp = new URLSearchParams(window.location.search);
+            var dest = sp.get('redirect') || sp.get('dest') || '/apercu';
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState(null, '', dest);
+            }
+            window.location.replace(dest);
           } else {
+            document.documentElement.style.visibility = '';
             if (submitBtn) submitBtn.disabled = false;
             if (feedback) feedback.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ Clé d\'accès invalide ou non reconnue.</span>';
           }
         });
       })
       .catch(function() {
+        document.documentElement.style.visibility = '';
         if (submitBtn) submitBtn.disabled = false;
         if (feedback) feedback.innerHTML = '<span style="color:#ef4444;font-weight:700;">Erreur lors de la vérification réseau. Réessayez.</span>';
       });

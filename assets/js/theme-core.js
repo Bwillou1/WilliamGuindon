@@ -290,12 +290,25 @@
             newlyActivatedParlementPass = true;
 
             try {
-              if (window.history && window.history.replaceState) {
-                const cleanParams = new URLSearchParams(window.location.search);
-                cleanParams.delete('cle');
-                cleanParams.delete('pass');
-                cleanParams.delete('acces');
-                const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
+              const isClePage = window.location.pathname.includes('cle') || window.location.pathname === '/cle';
+              const cleanParams = new URLSearchParams(window.location.search);
+              const destParam = cleanParams.get('dest') || cleanParams.get('redirect') || '';
+              cleanParams.delete('cle');
+              cleanParams.delete('code');
+              cleanParams.delete('pass');
+              cleanParams.delete('acces');
+              cleanParams.delete('dest');
+              cleanParams.delete('redirect');
+              const newQuery = cleanParams.toString() ? ('?' + cleanParams.toString()) : '';
+
+              if (isClePage) {
+                const targetDest = destParam || '/apercu';
+                if (window.history && window.history.replaceState) {
+                  window.history.replaceState(null, '', targetDest + newQuery);
+                }
+                window.location.replace(targetDest + newQuery);
+                return;
+              } else if (window.history && window.history.replaceState) {
                 window.history.replaceState(null, '', window.location.pathname + newQuery);
               }
             } catch (_) {}
@@ -314,6 +327,17 @@
           document.cookie = KEY + '=; path=/; max-age=0';
           document.cookie = LEGACY_KEY + '=; path=/; max-age=0';
         } catch (_) {}
+
+        const isClePage = window.location.pathname.includes('cle') || window.location.pathname === '/cle';
+        if (isClePage) {
+          const spP = new URLSearchParams(window.location.search);
+          const dest = spP.get('dest') || spP.get('redirect') || '/apercu';
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', dest);
+          }
+          window.location.replace(dest);
+          return;
+        }
 
         // Accès parlementaire accordé sans bandeau intrusif : navigation fluide et propre
         document.documentElement.style.display = '';
