@@ -598,6 +598,56 @@
           document.documentElement.setAttribute('data-theme', stored);
         }
       } catch (_) {}
+
+      // Nettoyage automatique des mouchards de suivi (fbclid, utm_*, etc.)
+      try {
+        if (window.history && window.history.replaceState) {
+          var hasSearch = !!window.location.search;
+          var hasHash = !!(window.location.hash && window.location.hash.indexOf('?') !== -1);
+          if (hasSearch || hasHash) {
+            var url = new URL(window.location.href);
+            var TRACKING_KEYS = new Set([
+              'fbclid', 'fbadid', 'gclid', 'gbraid', 'wbraid', '_ga', '_gl',
+              'igshid', 'twclid', 'ttclid', 'msclkid', 'mc_cid', 'mc_eid',
+              'yclid', 'dclid', 'ref_src'
+            ]);
+            var isTrackingKey = function (k) {
+              var lower = (k || '').toLowerCase();
+              return lower.indexOf('utm_') === 0 || lower.indexOf('fb_') === 0 || TRACKING_KEYS.has(lower);
+            };
+            var changed = false;
+            if (hasSearch) {
+              var toRemove = [];
+              url.searchParams.forEach(function (_, key) {
+                if (isTrackingKey(key)) toRemove.push(key);
+              });
+              for (var i = 0; i < toRemove.length; i++) {
+                url.searchParams.delete(toRemove[i]);
+                changed = true;
+              }
+            }
+            if (hasHash) {
+              var hashParts = url.hash.split('?');
+              var hashBase = hashParts[0];
+              var hsp = new URLSearchParams(hashParts.slice(1).join('?'));
+              var hToRemove = [];
+              hsp.forEach(function (_, key) {
+                if (isTrackingKey(key)) hToRemove.push(key);
+              });
+              for (var j = 0; j < hToRemove.length; j++) {
+                hsp.delete(hToRemove[j]);
+                changed = true;
+              }
+              url.hash = hashBase + (hsp.toString() ? '?' + hsp.toString() : '');
+            }
+            if (changed) {
+              var newSearch = url.searchParams.toString();
+              var cleanUrl = url.pathname + (newSearch ? '?' + newSearch : '') + url.hash;
+              window.history.replaceState(null, '', cleanUrl);
+            }
+          }
+        }
+      } catch (_) {}
     })();
   </script>
 </head>

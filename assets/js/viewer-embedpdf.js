@@ -1579,6 +1579,24 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   // Démarrage initial avec synchronisation du thème et assombrissement automatique
   const urlParams = new URLSearchParams(window.location.search);
+  try {
+    if (window.history && window.history.replaceState && window.location.search) {
+      const TRACKING_KEYS = new Set(['fbclid', 'fbadid', 'gclid', 'gbraid', 'wbraid', '_ga', '_gl', 'igshid', 'twclid', 'ttclid', 'msclkid', 'mc_cid', 'mc_eid', 'yclid', 'dclid', 'ref_src']);
+      let stripped = false;
+      const cleanParams = new URLSearchParams(window.location.search);
+      Array.from(cleanParams.keys()).forEach(k => {
+        const lower = k.toLowerCase();
+        if (lower.startsWith('utm_') || lower.startsWith('fb_') || TRACKING_KEYS.has(lower)) {
+          cleanParams.delete(k);
+          stripped = true;
+        }
+      });
+      if (stripped) {
+        const newSearch = cleanParams.toString();
+        window.history.replaceState(null, '', window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash);
+      }
+    }
+  } catch (_) {}
   const urlTheme = urlParams.get('theme');
   const storedTheme = (function() {
     try {

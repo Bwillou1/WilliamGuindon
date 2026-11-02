@@ -52,6 +52,69 @@
     if (earlyStyle) earlyStyle.remove();
   } catch (_) {}
 
+  // 0.1 NETTOYAGE TRANSPARENT DES PARAMÈTRES DE PISTAGE (UTM, FBCLID, GCLID, IGSHID, ETC.)
+  (function stripTrackingParams() {
+    try {
+      if (!window.history || !window.history.replaceState) return;
+      var hasSearch = !!window.location.search;
+      var hasHash = !!(window.location.hash && window.location.hash.indexOf('?') !== -1);
+      if (!hasSearch && !hasHash) return;
+
+      var url = new URL(window.location.href);
+      var TRACKING_KEYS = new Set([
+        'fbclid', 'fbadid', 'gclid', 'gbraid', 'wbraid', '_ga', '_gl',
+        'igshid', 'twclid', 'ttclid', 'msclkid', 'mc_cid', 'mc_eid',
+        'yclid', 'dclid', 'ref_src'
+      ]);
+      var isTrackingKey = function (k) {
+        var lower = (k || '').toLowerCase();
+        return lower.indexOf('utm_') === 0 || lower.indexOf('fb_') === 0 || TRACKING_KEYS.has(lower);
+      };
+
+      var changed = false;
+
+      // A. Nettoyage de la chaîne de recherche (?utm_...&fbclid=...)
+      if (hasSearch) {
+        var toRemove = [];
+        url.searchParams.forEach(function (_, key) {
+          if (isTrackingKey(key)) toRemove.push(key);
+        });
+        if (toRemove.length > 0) {
+          for (var i = 0; i < toRemove.length; i++) {
+            url.searchParams.delete(toRemove[i]);
+          }
+          changed = true;
+        }
+      }
+
+      // B. Nettoyage d'éventuels paramètres injectés après l'ancre (#section?fbclid=...)
+      if (hasHash) {
+        var hashParts = url.hash.split('?');
+        var hashBase = hashParts[0];
+        var hashQuery = hashParts.slice(1).join('?');
+        var hsp = new URLSearchParams(hashQuery);
+        var hToRemove = [];
+        hsp.forEach(function (_, key) {
+          if (isTrackingKey(key)) hToRemove.push(key);
+        });
+        if (hToRemove.length > 0) {
+          for (var j = 0; j < hToRemove.length; j++) {
+            hsp.delete(hToRemove[j]);
+          }
+          var cleanHashQuery = hsp.toString();
+          url.hash = hashBase + (cleanHashQuery ? '?' + cleanHashQuery : '');
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        var newSearch = url.searchParams.toString();
+        var cleanUrl = url.pathname + (newSearch ? '?' + newSearch : '') + url.hash;
+        window.history.replaceState(null, '', cleanUrl);
+      }
+    } catch (_) {}
+  })();
+
   // B. Réciprocité procédurale & verrouillage institutionnel hermétique (SEM-26-003)
   (function initReciprocitySystem() {
     try {

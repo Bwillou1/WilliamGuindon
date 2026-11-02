@@ -773,6 +773,25 @@
     const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
     const hashParams = new URLSearchParams(hashStr);
 
+    try {
+      if (window.history && window.history.replaceState && window.location.search) {
+        const TRACKING_KEYS = new Set(['fbclid', 'fbadid', 'gclid', 'gbraid', 'wbraid', '_ga', '_gl', 'igshid', 'twclid', 'ttclid', 'msclkid', 'mc_cid', 'mc_eid', 'yclid', 'dclid', 'ref_src']);
+        let stripped = false;
+        const cleanParams = new URLSearchParams(window.location.search);
+        Array.from(cleanParams.keys()).forEach(k => {
+          const lower = k.toLowerCase();
+          if (lower.startsWith('utm_') || lower.startsWith('fb_') || TRACKING_KEYS.has(lower)) {
+            cleanParams.delete(k);
+            stripped = true;
+          }
+        });
+        if (stripped) {
+          const newSearch = cleanParams.toString();
+          window.history.replaceState(null, '', window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash);
+        }
+      }
+    } catch (_) {}
+
     let rawFile = urlParams.get('file') || urlParams.get('doc') || hashParams.get('file') || hashParams.get('doc') || '';
     let targetPage = parseInt(urlParams.get('page') || hashParams.get('page') || (window.location.hash.match(/#page=(\d+)/)?.[1]), 10) || 1;
     let targetDocKey = urlParams.get('id') || hashParams.get('id');
