@@ -6280,7 +6280,7 @@ h1, h2, h3, h4, h5, h6 {
 /* --- Gutenberg High-Precision Print Stylesheet --- */
 @media print {
   @page {
-    margin: 1.2cm 1.4cm;
+    margin: 0.8cm 1cm;
     size: portrait;
   }
   
@@ -6295,8 +6295,8 @@ h1, h2, h3, h4, h5, h6 {
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
-    font-size: 9.5pt;
-    line-height: 1.35;
+    font-size: 8.5pt;
+    line-height: 1.25;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     orphans: 3;
     widows: 3;
@@ -6315,7 +6315,15 @@ h1, h2, h3, h4, h5, h6 {
   .bio-floating-player, .quick-search-modal, .media-logos-ticker-wrapper,
   .press-explorer-frame-wrapper, iframe, .special-edition-banner,
   #anticapture-toast, .anticapture-toast, .anticapture-shield-overlay, .anticapture-shield-card, #wg-screenshot-shield, #translation-shield-overlay, .site-deadline-topbar,
-  .legal-print-button, button, input, select, textarea {
+  .legal-print-button, button, input, select, textarea,
+  .docu-poster-wrap, .docu-actions-bar, .docu-poster-badge, .btn-docu-cal,
+  .event-speaking-card, .events-banner-grid .event-speaking-card,
+  .blog-preview-section, .felt-map-section, #carte, #documents, #apropos, #dernier-post,
+  .hero-curtains-container, .hero-curtains-plane, .hero-curtains-overlay, .citation-hero, .audio-player-widget,
+  .hero-portrait-badge, .hero-cta-group, .hero-actions, .stage2-doc-btn-row, .notice-compact-actions,
+  .hero-pills-row, .hero-stage3-actions, .hero-stage3-card, #hero-stage3-card, .cce-alert-banner div[style*="display:flex"],
+  .press-carousel-controls, .blog-tab-switcher, .footer-social-row, .newsletter-card-wrapper,
+  .steps-sub-badge, .docu-badge-live, .scroll-indicator {
     display: none !important;
   }
   
@@ -6451,6 +6459,162 @@ h1, h2, h3, h4, h5, h6 {
   a { color: #000 !important; text-decoration: underline !important; }
   a[href^="http"]:not(.no-print-url)::after { content: " (" attr(href) ")"; font-size: 8pt; word-break: break-all; color: #333 !important; }
   a[href^="#"]::after, a[href^="javascript:"]::after { content: "" !important; }
+
+  /* Optimisation Hub d'accueil pour 3 pages A4 max */
+  .hero-immersive {
+    padding: 4pt 0 2pt 0 !important;
+    min-height: auto !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .hero-immersive h1 {
+    font-size: 15pt !important;
+    line-height: 1.15 !important;
+    margin: 0 0 2pt 0 !important;
+  }
+  .hero-immersive .hero-lead {
+    font-size: 8pt !important;
+    line-height: 1.25 !important;
+    margin: 0 0 4pt 0 !important;
+  }
+  
+  .tracker-section {
+    padding: 2pt 0 !important;
+    margin: 0 0 4pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .tracker-section h2 {
+    font-size: 10pt !important;
+    margin: 0 0 2pt 0 !important;
+  }
+  .tracker-section p {
+    font-size: 7.5pt !important;
+    line-height: 1.2 !important;
+    margin: 0 0 3pt 0 !important;
+  }
+  .cce-alert-banner {
+    padding: 3pt 5pt !important;
+    margin: 2pt 0 3pt 0 !important;
+    border: 1pt solid #000 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .status-grid, .stage-banner, .notice-box-compact {
+    padding: 2pt 4pt !important;
+    margin: 1pt 0 2pt 0 !important;
+    border: 1pt solid #ccc !important;
+    font-size: 7.2pt !important;
+  }
+  
+  .event-documentary-featured {
+    padding: 3pt 5pt !important;
+    margin: 0 0 3pt 0 !important;
+    border: 1.5pt solid #000 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .docu-header-title {
+    font-size: 10pt !important;
+    margin: 0 0 2pt 0 !important;
+  }
+  .docu-header-sub {
+    font-size: 7.8pt !important;
+    font-weight: bold !important;
+    margin: 0 0 2pt 0 !important;
+  }
+  .docu-synopsis {
+    font-size: 7.2pt !important;
+    line-height: 1.15 !important;
+  }
+  .docu-revelations-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2pt !important;
+    margin-top: 2pt !important;
+  }
+  .docu-revelation-card {
+    padding: 2pt 3pt !important;
+    border: 1pt solid #ddd !important;
+    font-size: 6.5pt !important;
+    line-height: 1.1 !important;
+  }
+  
+  .facts-section {
+    padding: 2pt 0 !important;
+    margin: 0 0 3pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .facts-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 4pt !important;
+    margin: 2pt 0 !important;
+  }
+  .fact-card {
+    padding: 2pt 4pt !important;
+    border: 1pt solid #bbb !important;
+    text-align: center !important;
+  }
+  .fact-num {
+    font-size: 11pt !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+  }
+  .fact-label {
+    font-size: 6.5pt !important;
+    line-height: 1.1 !important;
+  }
+  
+  .pillars-section {
+    padding: 2pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .pillars-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 3pt !important;
+    margin: 2pt 0 !important;
+  }
+  .pillars-grid .resource-card {
+    padding: 2pt 4pt !important;
+    border: 1pt solid #ccc !important;
+    font-size: 6.8pt !important;
+    line-height: 1.1 !important;
+  }
+  .pillars-grid .resource-card h3 {
+    font-size: 7.5pt !important;
+    margin: 0 0 1pt 0 !important;
+  }
+  
+  .press-review-section {
+    padding: 2pt 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .press-review-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 4pt !important;
+    margin: 2pt 0 !important;
+  }
+  .press-card {
+    padding: 2pt 4pt !important;
+    border: 1pt solid #ccc !important;
+    font-size: 6.8pt !important;
+    line-height: 1.1 !important;
+  }
+  .press-card h3 {
+    font-size: 7.5pt !important;
+    margin: 0 0 1pt 0 !important;
+  }
+  
+  .resource-card::after, .fact-card::after, .press-card::after,
+  .btn-docu-cal::after, .stage2-doc-btn-blue::after, .stage2-doc-btn-neutral::after {
+    content: "" !important;
+  }
 }
 
 .press-review-section {
@@ -13507,6 +13671,29 @@ html.is-embedded-widget.is-preview-mode .embed-original-banner {
 html.is-preview-mode #pdf-app {
   height: 100vh !important;
 }
+
+@media print {
+  .hero-immersive,
+  body.stage2-active .hero-immersive,
+  .hero-immersive .wrap,
+  .tracker-section,
+  .tracker-section .wrap,
+  main {
+    display: block !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #hero-stage3-card,
+  .hero-stage3-card,
+  body.stage3-active #hero-stage3-card,
+  body.stage2-active #hero-stage2-summary-block {
+    display: none !important;
+  }
+}
+
 
 
 
