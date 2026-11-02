@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v206';
+const CACHE_NAME = 'wg-pwa-v207';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -125,6 +125,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/signalement-faunique-plan-bouchard.webp',
   '/assets/media/coulisses-replique-cce-sem26003.jpg',
   '/assets/media/coulisses-replique-cce-sem26003.webp',
+  '/assets/media/affiche-documentaire-sem26003.webp',
   '/manifest.json',
   '/favicon.svg',
   '/favicon-32.png',
