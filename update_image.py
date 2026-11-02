@@ -133,7 +133,7 @@ def fetch_layer(evalscript_code, target_file):
                         "to": end_date,
                     },
                     "mosaickingOrder": "mostRecent",
-                    "maxCloudCoverage": 25,
+                    "maxCloudCoverage": 15,
                 },
             }],
         },
