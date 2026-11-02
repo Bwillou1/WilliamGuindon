@@ -61,8 +61,21 @@ polygon_coords = [
     [-73.88134, 45.692871],
 ]
 
-now = datetime.datetime.now(datetime.timezone.utc)
-start = now - datetime.timedelta(days=30)
+# Date cible : capture Copernicus Sentinel-2 sans nuages demandée (par défaut 2026-10-21)
+TARGET_DATE = os.environ.get("TARGET_DATE", "2026-10-21")
+
+if TARGET_DATE:
+    start_date = f"{TARGET_DATE}T00:00:00Z"
+    end_date = f"{TARGET_DATE}T23:59:59Z"
+    day_str = TARGET_DATE
+    new_date_str = f"{TARGET_DATE} 15:53 UTC"
+else:
+    now = datetime.datetime.now(datetime.timezone.utc)
+    start = now - datetime.timedelta(days=30)
+    start_date = start.strftime("%Y-%m-%dT00:00:00Z")
+    end_date = now.strftime("%Y-%m-%dT23:59:59Z")
+    day_str = now.strftime("%Y-%m-%d")
+    new_date_str = now.strftime("%Y-%m-%d %H:%M UTC")
 
 evalscript_rgb = """
 //VERSION=3
@@ -116,8 +129,8 @@ def fetch_layer(evalscript_code, target_file):
                 "type": "sentinel-2-l2a",
                 "dataFilter": {
                     "timeRange": {
-                        "from": start.strftime("%Y-%m-%dT00:00:00Z"),
-                        "to": now.strftime("%Y-%m-%dT23:59:59Z"),
+                        "from": start_date,
+                        "to": end_date,
                     },
                     "mosaickingOrder": "mostRecent",
                     "maxCloudCoverage": 25,
@@ -158,9 +171,6 @@ try:
     fetch_layer(evalscript_veg, "blainville_capture_2.png")
     fetch_layer(evalscript_water, "blainville_capture_3.png")
 
-    new_date_str = now.strftime("%Y-%m-%d %H:%M UTC")
-    day_str = now.strftime("%Y-%m-%d")
-
     new_captures = [
         {
             "id": "capture-1",
@@ -194,7 +204,7 @@ try:
             "updated_at": new_date_str,
             "status": "success",
             "source": "Copernicus Sentinel-2 L2A",
-            "satellite": "Sentinel-2",
+            "satellite": "Sentinel-2B",
             "coverage": "Grande Tourbière de Blainville",
             "captures": new_captures
         }, f, indent=2)

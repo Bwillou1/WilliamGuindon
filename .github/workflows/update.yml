@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 12 * * *'
   workflow_dispatch:
+    inputs:
+      target_date:
+        description: 'Date de capture Sentinel-2 (YYYY-MM-DD)'
+        required: false
+        default: '2026-10-21'
 
 permissions:
   contents: write
@@ -27,6 +32,7 @@ jobs:
         env:
           CDSE_CLIENT_ID: ${{ secrets.CDSE_CLIENT_ID }}
           CDSE_CLIENT_SECRET: ${{ secrets.CDSE_CLIENT_SECRET }}
+          TARGET_DATE: ${{ github.event.inputs.target_date || '2026-10-21' }}
         run: python update_image.py
 
       - name: Commiter et pousser la mise à jour
