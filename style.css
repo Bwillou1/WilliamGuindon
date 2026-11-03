@@ -13851,14 +13851,24 @@ body.mode-simple .nav-simple-mode-btn,
 }
 
 /* Allègement global de la barre de navigation sur tout le site en mode simple */
-body.mode-simple header.site nav .nav-dropdown-right,
-body.mode-simple header.site nav .nav-submenu,
-body.mode-simple header.site nav .nav-dropdown:nth-child(n+5) {
+body.mode-simple header.site nav .nav-dropdown-right {
   display: none !important;
 }
 
 body.mode-simple header.site nav {
   gap: 10px !important;
+}
+
+/* En mode simple : affichage immédiat de la synthèse express et masquage des blocs encombrants */
+body.mode-simple #hero-stage3-card {
+  display: none !important;
+}
+
+body.mode-simple #synthese-rapide,
+body.mode-simple .simple-mode-only {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Allègement du contenu des pages en mode simple sur tout le site */

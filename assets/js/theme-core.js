@@ -4267,6 +4267,11 @@
   const SIMPLE_MODE_KEY = 'wg_simple_view_mode';
 
   function applyGlobalSimpleMode(isSimple) {
+    const synthese = document.getElementById('synthese-rapide');
+    if (synthese) {
+      synthese.style.display = isSimple ? 'block' : 'none';
+    }
+
     if (isSimple) {
       document.body.classList.add('mode-simple');
       document.documentElement.classList.add('mode-simple');
@@ -4315,10 +4320,12 @@
             localStorage.setItem(SIMPLE_MODE_KEY, nextState ? '1' : '0');
           } catch (_) {}
 
-          if (nextState && toggleBtn.classList.contains('btn-text-simple-switch')) {
+          if (nextState) {
             const summary = document.getElementById('synthese-rapide');
             if (summary) {
-              summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              setTimeout(() => {
+                summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 60);
             }
           }
         }
