@@ -1807,6 +1807,28 @@
         }
       }
 
+      // Bouton Mode Simple Global (Vue épurée / Vue complète sur toutes les pages)
+      let simpleModeBtn = document.querySelector('.nav-simple-mode-btn');
+      if (!simpleModeBtn) {
+        simpleModeBtn = document.createElement('button');
+        simpleModeBtn.type = 'button';
+        simpleModeBtn.className = 'nav-simple-mode-btn js-toggle-simple-mode';
+        simpleModeBtn.setAttribute('aria-label', 'Activer le mode simple sans superflu');
+        simpleModeBtn.setAttribute('title', 'Basculer entre la vue complète et la vue épurée');
+        simpleModeBtn.innerHTML = `
+          <svg class="mode-icon-bolt" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="mode-status-text">Mode simple</span>
+        `;
+        if (nav) {
+          const notifDrop = nav.querySelector('.nav-notif-dropdown');
+          if (notifDrop) {
+            nav.insertBefore(simpleModeBtn, notifDrop);
+          } else {
+            nav.appendChild(simpleModeBtn);
+          }
+        }
+      }
+
       // Toolbar interne au menu tiroir (pour la langue en mobile)
       let navToolbar = nav.querySelector('.nav-mobile-toolbar');
       if (!navToolbar) {
@@ -4231,12 +4253,78 @@
     if (e.key === 'wg_pdf_reader_pref') {
       applyPdfReaderPrefUI(e.newValue);
     }
+    if (e.key === 'wg_simple_view_mode') {
+      applyGlobalSimpleMode(e.newValue === '1');
+    }
   });
   window.addEventListener('wg_pdf_reader_pref_change', (e) => {
     if (e.detail && e.detail.pref) {
       applyPdfReaderPrefUI(e.detail.pref);
     }
   });
+
+  /* --- Mode Simple Global (Vue épurée sans superflu sur tout le site) --- */
+  const SIMPLE_MODE_KEY = 'wg_simple_view_mode';
+
+  function applyGlobalSimpleMode(isSimple) {
+    if (isSimple) {
+      document.body.classList.add('mode-simple');
+      document.documentElement.classList.add('mode-simple');
+      document.querySelectorAll('.js-toggle-simple-mode').forEach(btn => {
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+        const txt = btn.querySelector('.mode-status-text');
+        if (txt) txt.textContent = 'Vue complète';
+        btn.setAttribute('title', 'Désactiver le mode simple et afficher la vue complète');
+      });
+      const promptElem = document.querySelector('.version-switch-prompt');
+      const labelElem = document.querySelector('.version-switch-action-label');
+      if (promptElem) promptElem.textContent = 'Vous consultez la version épurée (sans superflu) ·';
+      if (labelElem) labelElem.textContent = 'Afficher la version complète';
+    } else {
+      document.body.classList.remove('mode-simple');
+      document.documentElement.classList.remove('mode-simple');
+      document.querySelectorAll('.js-toggle-simple-mode').forEach(btn => {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-pressed', 'false');
+        const txt = btn.querySelector('.mode-status-text');
+        if (txt) txt.textContent = 'Mode simple';
+        btn.setAttribute('title', 'Activer le mode simple sans superflu');
+      });
+      const promptElem = document.querySelector('.version-switch-prompt');
+      const labelElem = document.querySelector('.version-switch-action-label');
+      if (promptElem) promptElem.textContent = 'Vous préférez une version courte ?';
+      if (labelElem) labelElem.textContent = 'Cliquez ici';
+    }
+  }
+
+  function initGlobalSimpleMode() {
+    try {
+      const isSimpleUrl = new URLSearchParams(window.location.search).get('mode') === 'simple';
+      const isSimpleSaved = localStorage.getItem(SIMPLE_MODE_KEY) === '1';
+      const activeSimple = isSimpleUrl || isSimpleSaved;
+      applyGlobalSimpleMode(activeSimple);
+
+      document.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.js-toggle-simple-mode');
+        if (toggleBtn) {
+          e.preventDefault();
+          const nextState = !document.body.classList.contains('mode-simple');
+          applyGlobalSimpleMode(nextState);
+          try {
+            localStorage.setItem(SIMPLE_MODE_KEY, nextState ? '1' : '0');
+          } catch (_) {}
+
+          if (nextState && toggleBtn.classList.contains('btn-text-simple-switch')) {
+            const summary = document.getElementById('synthese-rapide');
+            if (summary) {
+              summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        }
+      });
+    } catch (_) {}
+  }
 
   /* --- Glossaire juridique & scientifique infobulle (Tooltips automatiques) --- */
   function initLegalGlossaryTooltips() {
@@ -4554,10 +4642,12 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
+      initGlobalSimpleMode();
       setTimeout(initLegalGlossaryTooltips, 300);
     });
   } else {
     initApp();
+    initGlobalSimpleMode();
     setTimeout(initLegalGlossaryTooltips, 300);
   }
 })();

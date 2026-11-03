@@ -12202,9 +12202,15 @@ body.stage3-active .stage2-doc-box {
 }
 
 .hero-stage3-btn.outline {
-  background: rgba(255, 255, 255, 0.06) !important;
-  color: #f1f5f9 !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="light"] .hero-stage3-btn.outline {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
 }
 
 .hero-stage3-btn.outline:hover {
@@ -12212,6 +12218,72 @@ body.stage3-active .stage2-doc-box {
   border-color: #38bdf8 !important;
   color: #ffffff !important;
   transform: translateY(-1px);
+}
+
+[data-theme="light"] .hero-stage3-btn.outline:hover {
+  background: #e2e8f0 !important;
+  color: #0284c7 !important;
+  border-color: #0284c7 !important;
+}
+
+/* Boutons de la synthèse épurée (100% lisibles et contrastés dans tous les thèmes) */
+.simple-summary-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.simple-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.simple-btn-pill.primary {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.simple-btn-pill.primary:hover {
+  background: #0369a1 !important;
+  transform: translateY(-1px);
+}
+
+.simple-btn-pill.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+}
+
+.simple-btn-pill.secondary:hover {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] .simple-btn-pill.secondary {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .simple-btn-pill.secondary:hover {
+  border-color: #059669 !important;
+  color: #059669 !important;
+  background: #ecfdf5 !important;
 }
 
 /* En-tête de décompte en Mode 3 */
@@ -13776,6 +13848,27 @@ body.mode-simple .nav-simple-mode-btn,
   color: #064e3b !important;
   border-color: #10b981 !important;
   box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+}
+
+/* Allègement global de la barre de navigation sur tout le site en mode simple */
+body.mode-simple header.site nav .nav-dropdown-right,
+body.mode-simple header.site nav .nav-submenu,
+body.mode-simple header.site nav .nav-dropdown:nth-child(n+5) {
+  display: none !important;
+}
+
+body.mode-simple header.site nav {
+  gap: 10px !important;
+}
+
+/* Allègement du contenu des pages en mode simple sur tout le site */
+body.mode-simple .secondary-appendix,
+body.mode-simple .social-sync-section,
+body.mode-simple .docu-revelations-grid,
+body.mode-simple .press-archive-accordion,
+body.mode-simple .long-biography-chapter,
+body.mode-simple .audio-player-widget {
+  display: none !important;
 }
 
 /* Bannière de bascule rapide Hero (Haute visibilité contrastée sur fond d'image) */

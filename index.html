@@ -1623,19 +1623,19 @@
         </div>
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="hero-stage3-btn primary" style="font-size: 0.92rem; padding: 9px 18px;">
+      <div class="simple-summary-links">
+        <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="simple-btn-pill primary">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           <span>Observations de l'auteur (PDF) ↗</span>
         </a>
-        <a href="registre-cce-sem26003.html" class="hero-stage3-btn outline" style="font-size: 0.92rem; padding: 9px 16px;">
+        <a href="registre-cce-sem26003.html" class="simple-btn-pill secondary">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" x2="22" y1="22" y2="22"/><line x1="6" x2="6" y1="18"/><line x1="10" x2="10" y1="18"/><line x1="14" x2="14" y1="18"/><line x1="18" x2="18" y1="18"/><polygon points="12 2 20 7 4 7"/></svg>
           <span>Registre documentaire complet ↗</span>
         </a>
-        <a href="portrait.html" class="hero-stage3-btn outline" style="font-size: 0.92rem; padding: 9px 16px;">
+        <a href="portrait.html" class="simple-btn-pill secondary">
           <span>Grand Portrait de William Guindon ↗</span>
         </a>
-        <a href="agir.html" class="hero-stage3-btn outline" style="font-size: 0.92rem; padding: 9px 16px;">
+        <a href="agir.html" class="simple-btn-pill secondary">
           <span>Comment agir &amp; soutenir ↗</span>
         </a>
       </div>
@@ -3835,70 +3835,6 @@
 <script src="assets/js/hero-depth-3d.js?v=20261009-v13-aerial3d" defer></script>
 <script src="assets/js/chat-ai.js?v=20261016-v2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2.15.0" integrity="sha384-80vV/KEhBwD5tKGZUNJIP8v35xgzoh4G8XSqB97o794UbhhHRhOfKhrNGPFrhRwY" crossorigin="anonymous" async defer></script>
-
-<script>
-(function initSimpleViewMode() {
-  const STORAGE_KEY = 'wg_simple_view_mode';
-
-  function applyMode(isSimple) {
-    const promptElem = document.querySelector('.version-switch-prompt');
-    const labelElem = document.querySelector('.version-switch-action-label');
-
-    if (isSimple) {
-      document.body.classList.add('mode-simple');
-      document.documentElement.classList.add('mode-simple-loading');
-      if (promptElem) promptElem.textContent = 'Vous consultez la version épurée (sans superflu) ·';
-      if (labelElem) labelElem.textContent = 'Afficher la version complète';
-
-      document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
-        btn.classList.add('is-active');
-        const text = btn.querySelector('.mode-status-text');
-        if (text) text.textContent = 'Vue complète';
-        btn.setAttribute('aria-pressed', 'true');
-        btn.setAttribute('title', 'Désactiver le mode simple et afficher la vue complète');
-      });
-    } else {
-      document.body.classList.remove('mode-simple');
-      document.documentElement.classList.remove('mode-simple-loading');
-      if (promptElem) promptElem.textContent = 'Vous préférez une version courte ?';
-      if (labelElem) labelElem.textContent = 'Cliquez ici';
-
-      document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
-        btn.classList.remove('is-active');
-        const text = btn.querySelector('.mode-status-text');
-        if (text) text.textContent = 'Mode simple';
-        btn.setAttribute('aria-pressed', 'false');
-        btn.setAttribute('title', 'Activer le mode simple sans superflu');
-      });
-    }
-  }
-
-  try {
-    const urlParam = new URLSearchParams(window.location.search).get('mode');
-    let isSimple = urlParam === 'simple' || localStorage.getItem(STORAGE_KEY) === '1';
-    applyMode(isSimple);
-
-    document.addEventListener('click', function(e) {
-      const toggleBtn = e.target.closest('.js-toggle-simple-mode');
-      if (toggleBtn) {
-        e.preventDefault();
-        isSimple = !document.body.classList.contains('mode-simple');
-        applyMode(isSimple);
-        try {
-          localStorage.setItem(STORAGE_KEY, isSimple ? '1' : '0');
-        } catch (_) {}
-
-        if (isSimple && toggleBtn.classList.contains('btn-text-simple-switch')) {
-          const summary = document.getElementById('synthese-rapide');
-          if (summary) {
-            summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-      }
-    });
-  } catch (_) {}
-})();
-</script>
 
 </body>
 </html>
