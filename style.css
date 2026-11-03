@@ -13694,6 +13694,121 @@ html.is-preview-mode #pdf-app {
   }
 }
 
+/* ==========================================================================
+   MODE SIMPLE (VUE ÉPURÉE SANS LE SUPERFLU)
+   ========================================================================== */
+html.mode-simple-loading body #carte,
+html.mode-simple-loading body .stage2-comp-box,
+html.mode-simple-loading body .agenda-subscribe-card,
+html.mode-simple-loading body #faits,
+html.mode-simple-loading body #dernier-post,
+html.mode-simple-loading body .doc-proofs-grid,
+body.mode-simple #carte,
+body.mode-simple .stage2-comp-box,
+body.mode-simple .agenda-subscribe-card,
+body.mode-simple #faits,
+body.mode-simple #dernier-post,
+body.mode-simple .doc-proofs-grid,
+body.mode-simple .mode-simple-hide {
+  display: none !important;
+}
+
+/* Bouton de bascule dans la barre de navigation */
+.nav-simple-mode-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--accent);
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.nav-simple-mode-btn:hover {
+  background: var(--accent);
+  color: #064e3b;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+body.mode-simple .nav-simple-mode-btn,
+.nav-simple-mode-btn.is-active {
+  background: #10b981 !important;
+  color: #064e3b !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+}
+
+/* Bouton héro vue épurée */
+.hero-toggle-simple-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--accent);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+.hero-toggle-simple-btn:hover {
+  background: var(--accent);
+  color: #064e3b;
+}
+body.mode-simple .hero-toggle-simple-btn {
+  background: #10b981;
+  color: #064e3b;
+}
+
+/* Pilule flottante en bas en mode simple */
+.simple-mode-indicator-bar {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  border: 1.5px solid #10b981;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.25);
+  z-index: 1000;
+  font-size: 12.5px;
+  align-items: center;
+  gap: 12px;
+}
+body.mode-simple .simple-mode-indicator-bar {
+  display: flex !important;
+}
+.simple-mode-indicator-bar .btn-restore-full {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.simple-mode-indicator-bar .btn-restore-full:hover {
+  background: #ffffff;
+  color: #0f172a;
+}
+
 
 
 

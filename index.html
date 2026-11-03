@@ -1070,6 +1070,13 @@
 <meta property="og:image:alt" content="William Guindon — Militant écologiste">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<script>
+  try {
+    if (localStorage.getItem('wg_simple_view_mode') === '1' || window.location.search.includes('mode=simple')) {
+      document.documentElement.classList.add('mode-simple-loading');
+    }
+  } catch(_) {}
+</script>
 <!-- BRANDKIT:END -->
 </head>
 <body><a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -1345,6 +1352,12 @@
         </div>
       </div>
 
+      <!-- Bouton Bascule Mode Simple (Vue épurée sans superflu) -->
+      <button type="button" class="nav-simple-mode-btn js-toggle-simple-mode" aria-label="Activer le mode simple sans superflu" title="Basculer entre la vue complète et la vue épurée">
+        <svg class="mode-icon-bolt" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="mode-status-text">Mode simple</span>
+      </button>
+
       <!-- Panneau des alertes & notifications -->
       <div class="nav-notif-dropdown">
         <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
@@ -1539,6 +1552,13 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
             <span>Comment agir ↗</span>
           </a>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; justify-content: center;">
+          <button type="button" class="hero-toggle-simple-btn js-toggle-simple-mode" aria-label="Basculer en vue épurée">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="mode-status-text">Activer la vue épurée (sans superflu)</span>
+          </button>
         </div>
       </div>
 
@@ -3827,6 +3847,77 @@
 <script src="assets/js/hero-depth-3d.js?v=20261009-v13-aerial3d" defer></script>
 <script src="assets/js/chat-ai.js?v=20261016-v2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2.15.0" integrity="sha384-80vV/KEhBwD5tKGZUNJIP8v35xgzoh4G8XSqB97o794UbhhHRhOfKhrNGPFrhRwY" crossorigin="anonymous" async defer></script>
+
+<!-- Bannière flottante d'indication en mode simple -->
+<div class="simple-mode-indicator-bar" id="simple-mode-indicator" role="status" aria-live="polite">
+  <span style="display:inline-flex; align-items:center; gap:6px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <strong>Vue épurée active</strong> · Superflu masqué
+  </span>
+  <button type="button" class="btn-restore-full js-toggle-simple-mode" aria-label="Afficher la vue complète du site">
+    Afficher la vue complète ↗
+  </button>
+</div>
+
+<script>
+(function initSimpleViewMode() {
+  const STORAGE_KEY = 'wg_simple_view_mode';
+
+  function applyMode(isSimple) {
+    if (isSimple) {
+      document.body.classList.add('mode-simple');
+      document.documentElement.classList.add('mode-simple-loading');
+      document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
+        btn.classList.add('is-active');
+        const text = btn.querySelector('.mode-status-text');
+        if (text) {
+          if (btn.classList.contains('hero-toggle-simple-btn')) {
+            text.textContent = 'Rétablir la vue complète';
+          } else {
+            text.textContent = 'Mode complet';
+          }
+        }
+        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('title', 'Désactiver le mode simple et afficher la vue complète');
+      });
+    } else {
+      document.body.classList.remove('mode-simple');
+      document.documentElement.classList.remove('mode-simple-loading');
+      document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
+        btn.classList.remove('is-active');
+        const text = btn.querySelector('.mode-status-text');
+        if (text) {
+          if (btn.classList.contains('hero-toggle-simple-btn')) {
+            text.textContent = 'Activer la vue épurée (sans superflu)';
+          } else {
+            text.textContent = 'Mode simple';
+          }
+        }
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('title', 'Activer le mode simple sans superflu');
+      });
+    }
+  }
+
+  try {
+    const urlParam = new URLSearchParams(window.location.search).get('mode');
+    let isSimple = urlParam === 'simple' || localStorage.getItem(STORAGE_KEY) === '1';
+    applyMode(isSimple);
+
+    document.addEventListener('click', function(e) {
+      const toggleBtn = e.target.closest('.js-toggle-simple-mode');
+      if (toggleBtn) {
+        e.preventDefault();
+        isSimple = !document.body.classList.contains('mode-simple');
+        applyMode(isSimple);
+        try {
+          localStorage.setItem(STORAGE_KEY, isSimple ? '1' : '0');
+        } catch (_) {}
+      }
+    });
+  } catch (_) {}
+})();
+</script>
 
 </body>
 </html>
