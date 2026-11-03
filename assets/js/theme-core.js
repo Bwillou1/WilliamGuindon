@@ -643,9 +643,9 @@
           const p = new URLSearchParams(window.location.search);
           if (!p.has('portail')) p.set('portail', 'cce-sem26003');
           if (!p.has('sig')) p.set('sig', '72rsp');
-          return '/reciprocite.html?' + p.toString() + window.location.hash;
+          return '/transmission-sem26003.html?' + p.toString() + window.location.hash;
         } catch (_) {
-          return '/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp';
+          return '/transmission-sem26003.html?portail=cce-sem26003&transmission=officielle&sig=72rsp';
         }
       }
 

