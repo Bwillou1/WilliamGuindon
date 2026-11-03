@@ -134,7 +134,9 @@ a:hover {
   padding: 0 28px;
 }
 
-header.site { background: var(--bg); 
+header.site { background: rgba(247, 249, 247, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
   padding: 6px 0;
   position: sticky;
@@ -144,7 +146,7 @@ header.site { background: var(--bg);
   z-index: var(--z-header);
   transition: background-color 0.2s ease, border-color 0.2s ease;
  }
-[data-theme="dark"] header.site { background: var(--bg); 
+[data-theme="dark"] header.site { background: rgba(11, 15, 12, 0.85);
   
  }
 
@@ -1011,7 +1013,7 @@ footer a:hover {
   border-radius: 9999px;
   padding: 13px 28px;
   box-shadow: var(--shadow);
-  transition: all 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .btn-primary {
   background: var(--accent);
@@ -1021,8 +1023,8 @@ footer a:hover {
 .btn-primary:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
-  transform: none;
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.25);
 }
 .btn-ghost {
   color: var(--accent-deep);
@@ -1031,8 +1033,17 @@ footer a:hover {
 }
 .btn-ghost:hover {
   background: var(--accent-wash);
-  transform: none;
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+  .btn-primary:hover, .btn-ghost:hover {
+    transform: none;
+  }
 }
 .btn-copied {
   border-color: var(--accent, #10b981) !important;
@@ -1087,7 +1098,7 @@ footer a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.25) 0%, rgba(11, 15, 12, 0.40) 50%, rgba(11, 15, 12, 0.65) 100%), url('tourbiere.webp');
+  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.15) 0%, rgba(11, 15, 12, 0.50) 50%, rgba(11, 15, 12, 0.85) 100%), url('tourbiere.webp');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
@@ -1100,7 +1111,7 @@ footer a:hover {
 }
 
 [data-theme="dark"] .hero-immersive {
-  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.32) 0%, rgba(11, 15, 12, 0.48) 50%, rgba(11, 15, 12, 0.72) 100%), url('tourbiere.webp');
+  background-image: linear-gradient(to bottom, rgba(11, 15, 12, 0.25) 0%, rgba(11, 15, 12, 0.60) 50%, rgba(11, 15, 12, 0.90) 100%), url('tourbiere.webp');
 }
 
 .hero-curtains-container {
@@ -1199,12 +1210,21 @@ footer a:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(34, 197, 94, 0.25);
   background: var(--bg-card, #131d16);
   display: block;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-portrait-avatar:hover {
-  transform: scale(1.06);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 0 6px rgba(34, 197, 94, 0.4);
+  transform: scale(1.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait-avatar {
+    transition: none;
+  }
+  .hero-portrait-avatar:hover {
+    transform: none;
+  }
 }
 
 .hero-immersive .kicker {
@@ -1382,10 +1402,25 @@ footer a:hover {
 .tracker-card {
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 16px 14px;
   text-align: center;
   box-shadow: var(--shadow);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.tracker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tracker-card {
+    transition: none;
+  }
+  .tracker-card:hover {
+    transform: none;
+  }
 }
 
 .tracker-card-compact {
@@ -4896,7 +4931,7 @@ body.dark-theme .notif-link-ghost {
   font-size: 13px;
   cursor: pointer;
   font-family: inherit;
-  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
   user-select: none;
   -webkit-user-select: none;
@@ -6785,12 +6820,25 @@ h1, h2, h3, h4, h5, h6 {
   left: auto;
   background: var(--bg-card);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 16px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--shadow);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.press-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  .press-card {
+    transition: none;
+  }
+  .press-card:hover {
+    transform: none;
+  }
 }
 
 [data-theme="dark"] .press-card,
@@ -8349,14 +8397,20 @@ html.nav-drawer-open .ai-modal-overlay,
   min-width: 0;
   background: var(--bg-card);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
   scroll-snap-align: start;
   box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-preview-card {
+    transition: none;
+  }
 }
 
 @media (max-width: 992px) {
@@ -8376,7 +8430,14 @@ html.nav-drawer-open .ai-modal-overlay,
 
 .blog-preview-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-preview-card:hover {
+    transform: none;
+  }
 }
 
 .blog-preview-thumb {
