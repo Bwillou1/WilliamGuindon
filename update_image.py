@@ -157,6 +157,11 @@ def fetch_layer(evalscript_code, target_file):
         timeout=60
     )
     if res.status_code == 200 and res.content:
+        # Garde-fou strict : une tuile Sentinel-2 réelle de 1200x1000 pèse au moins 50 Ko.
+        # Une réponse vide/transparente de l'API pèse ~4.6 Ko et ne doit JAMAIS écraser la capture.
+        if len(res.content) < 30000:
+            print(f"Avertissement: Image reçue trop petite ou vide ({len(res.content)} octets) pour {target_file}. Écrasement annulé pour préserver l'image satellite existante.")
+            return False
         tmp = target_file + ".tmp"
         with open(tmp, "wb") as f:
             f.write(res.content)

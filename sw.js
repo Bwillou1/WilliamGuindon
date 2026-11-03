@@ -176,7 +176,7 @@ function isCacheable(request, response) {
   }
 
   // 2. Exclure les requêtes dynamiques d'API, images satellites et les pages privées protégées par Zero Trust
-  if (url.pathname === '/blainville_latest.png' || url.pathname === '/meta.json' || url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
+  if (url.pathname.startsWith('/blainville_') || url.pathname === '/meta.json' || url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
     return false;
   }
 
