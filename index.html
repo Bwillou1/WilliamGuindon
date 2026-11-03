@@ -1514,6 +1514,15 @@
       <link itemprop="sameAs" href="https://github.com/Bwillou1">
       <link itemprop="sameAs" href="https://g.dev/williamguindondev">
 
+      <!-- Texte fixe de bascule rapide vers la version courte -->
+      <div class="hero-version-quick-switch" style="margin: 16px 0 18px 0; text-align: center;">
+        <span class="version-switch-prompt" style="font-size: 0.95rem; color: var(--text-muted); font-weight: 500;">Vous préférez une version courte ?</span>
+        <button type="button" class="btn-text-simple-switch js-toggle-simple-mode" aria-label="Afficher la version courte sans superflu" style="background: none; border: none; padding: 0 0 0 6px; color: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
+          <span class="version-switch-action-label">Cliquez ici</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </button>
+      </div>
+
       <!-- Carte CCE Sobre, Aérée et Directe (Étape 3 · Version légère post-échéance) -->
       <div class="hero-stage3-card" id="hero-stage3-card" style="display: block;">
         <a href="#tracker" class="hero-stage3-eyebrow" aria-label="Consulter l'état d'examen dans le tableau de bord">
@@ -1552,13 +1561,6 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
             <span>Comment agir ↗</span>
           </a>
-        </div>
-
-        <div style="margin-top: 12px; display: flex; justify-content: center;">
-          <button type="button" class="hero-toggle-simple-btn js-toggle-simple-mode" aria-label="Basculer en vue épurée">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span class="mode-status-text">Activer la vue épurée (sans superflu)</span>
-          </button>
         </div>
       </div>
 
@@ -2026,7 +2028,7 @@
 
         <div class="events-banner-grid">
           <!-- Événement Vedette : Revue de l'année 2026 — Le Grand Documentaire -->
-          <article class="event-documentary-featured" id="documentaire-2026" itemscope itemtype="https://schema.org/BroadcastEvent">
+          <article class="event-documentary-featured mode-simple-hide" id="documentaire-2026" itemscope itemtype="https://schema.org/BroadcastEvent">
             <meta itemprop="eventStatus" content="https://schema.org/EventScheduled">
             <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode">
             <meta itemprop="image" content="https://williamguindon.me/assets/media/affiche-documentaire-sem26003.webp">
@@ -2034,7 +2036,7 @@
               <div class="docu-badges-group">
                 <span class="docu-badge-live">
                   <span class="docu-pulse-dot"></span>
-                  Événement Spécial · Avant-Première Documentaire
+                  Avant-Première Documentaire
                 </span>
                 <span class="docu-badge-date">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -2043,64 +2045,59 @@
                 </span>
                 <a href="https://wg.s.gy/film" target="_blank" rel="noopener noreferrer" class="steps-sub-badge" style="background:rgba(24,119,242,0.2); color:#93c5fd; border:1px solid rgba(59,130,246,0.45); display:inline-flex; align-items:center; gap:5px; text-decoration:none;" title="Accéder à l'événement Facebook officiel (wg.s.gy/film)">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                  Événement Facebook (wg.s.gy/film) ↗
+                  Facebook (wg.s.gy/film) ↗
                 </a>
               </div>
               <span class="steps-sub-badge" style="background:rgba(99,102,241,0.25); color:#c7d2fe; border:1px solid rgba(129,140,248,0.4);">Diffusion Libre &amp; Gratuite</span>
             </div>
 
-            <div class="docu-content-grid">
-              <div class="docu-poster-wrap">
+            <div class="docu-content-grid" style="grid-template-columns: 140px 1fr; gap: 20px; align-items: start;">
+              <div class="docu-poster-wrap" style="max-width: 140px; margin: 0;">
                 <picture>
                   <source srcset="assets/media/affiche-documentaire-sem26003.webp" type="image/webp">
-                  <img src="assets/media/affiche-documentaire-sem26003.jpg" alt="Affiche officielle du documentaire SEM-26-003 L'envers du décor" class="docu-poster-img" width="682" height="1024" loading="lazy" decoding="async">
+                  <img src="assets/media/affiche-documentaire-sem26003.jpg" alt="Affiche officielle du documentaire SEM-26-003 L'envers du décor" class="docu-poster-img" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" width="140" height="210" loading="lazy" decoding="async">
                 </picture>
                 <a href="assets/media/affiche-documentaire-sem26003.png" target="_blank" rel="noopener noreferrer" class="docu-poster-badge" title="Afficher l'affiche originale haute résolution (PNG)">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-                  <span>Plein écran</span>
+                  <span>Plein écran ↗</span>
                 </a>
               </div>
 
               <div class="docu-details-wrap">
                 <div>
-                  <h3 class="docu-header-title" itemprop="name">SEM-26-003 : L'envers du décor</h3>
-                  <div class="docu-header-sub">Une année de preuves. Une tourbière menacée. Deux pages du gouvernement pour tout fermer.</div>
+                  <h3 class="docu-header-title" itemprop="name" style="font-size: 1.3rem; margin: 0 0 4px 0;">SEM-26-003 : L'envers du décor</h3>
+                  <div class="docu-header-sub" style="font-size: 0.95rem; color: #a5b4fc; font-weight: 600; margin-bottom: 10px;">Une année de preuves. Une tourbière menacée. Deux pages du gouvernement pour tout fermer.</div>
                 </div>
 
-                <div class="docu-synopsis" itemprop="description">
-                  <p style="margin: 0 0 12px 0; font-size: 1.15rem; font-weight: 700; color: #ffffff; line-height: 1.5; border-left: 3px solid #818cf8; padding-left: 12px;">
-                    Une année de preuves.<br>
-                    Une tourbière menacée.<br>
-                    Deux pages du gouvernement pour tout fermer.
-                  </p>
-                  <strong>Ce que les caméras et les communiqués n'ont jamais montré.</strong> 
-                  1 an de combat acharné contre l'expansion de Stablex à Blainville. 222 pièces déposées à la Commission de coopération environnementale (CCE), 119 jours de silence ministériel, des alertes de cadmium 320x supérieures aux normes, et les révélations exclusives sur les coulisses de la Loi 93 sous bâillon. Le 27 décembre à 19h30, plongez au cœur de l'enquête citoyenne qui a ébranlé l'impunité environnementale. <em>Diffusé sur Facebook en format Reel et accessible librement à tous.</em>
+                <div class="docu-synopsis" itemprop="description" style="font-size: 0.88rem; line-height: 1.55; color: var(--text-muted); margin-bottom: 14px;">
+                  1 an d'enquête citoyenne contre l'expansion de Stablex à Blainville : 222 pièces déposées à la CCE, 119 jours de silence ministériel, alertes de cadmium 320x la norme et coulisses de la Loi 93 sous bâillon. Le 27 décembre à 19h30 sur Facebook en format Reel.
                 </div>
 
                 <!-- COMPTE À REBOURS DU DOCUMENTAIRE -->
-                <div class="docu-countdown-wrap notranslate" translate="no">
-                  <div class="docu-countdown-label">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <span>Compte à rebours avant la première mondiale :</span>
+                <div class="docu-countdown-wrap notranslate" translate="no" style="padding: 10px 14px; margin-bottom: 14px;">
+                  <div class="docu-countdown-label" style="font-size: 12px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Première mondiale dans :</span>
                   </div>
-                  <div class="docu-countdown-grid" role="timer" aria-label="Compte à rebours avant la première du documentaire du 27 décembre 2026 à 19h30 EST">
-                    <div class="docu-time-unit">
-                      <span class="docu-time-val" id="docu-cd-days">--</span>
-                      <span class="docu-time-lbl">Jours</span>
-                    </div>
-                    <div class="docu-time-unit">
-                      <span class="docu-time-val" id="docu-cd-hours">--</span>
-                      <span class="docu-time-lbl">Heures</span>
-                    </div>
-                    <div class="docu-time-unit">
-                      <span class="docu-time-val" id="docu-cd-mins">--</span>
-                      <span class="docu-time-lbl">Min</span>
-                    </div>
-                    <div class="docu-time-unit">
-                      <span class="docu-time-val" id="docu-cd-secs">--</span>
-                      <span class="docu-time-lbl">Sec</span>
-                    </div>
+                  <div class="docu-countdown-grid" role="timer" aria-label="Compte à rebours avant la première du documentaire" style="gap: 8px;">
+                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-days" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Jours</span></div>
+                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-hours" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Heures</span></div>
+                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-mins" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Min</span></div>
+                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-secs" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Sec</span></div>
                   </div>
+                </div>
+
+                <!-- ACTIONS RAPIDES COMPACTES -->
+                <div class="docu-actions-bar" style="margin-top: 0; gap: 8px; flex-wrap: wrap;">
+                  <a href="https://wg.s.gy/film" target="_blank" rel="noopener noreferrer" class="btn-docu-cal btn-docu-facebook" style="padding: 7px 14px; font-size: 12.5px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <span>Événement Facebook (wg.s.gy/film) ↗</span>
+                  </a>
+                  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=SEM-26-003+%3A+L%27envers+du+d%C3%A9cor+%28Documentaire+William+Guindon%29&dates=20261228T003000Z/20261228T020000Z&details=Une+ann%C3%A9e+de+preuves.%0AUne+tourbi%C3%A8re+menac%C3%A9e.%0ADeux+pages+du+gouvernement+pour+tout+fermer.%0A%0AAvant-premi%C3%A8re+mondiale+diffus%C3%A9e+sur+Facebook+en+Reel+et+sur+https%3A%2F%2Fwilliamguindon.me&location=https%3A%2F%2Fwilliamguindon.me" target="_blank" rel="noopener noreferrer" class="btn-docu-cal btn-docu-google" style="padding: 7px 12px; font-size: 12px;">
+                    <span>Google Agenda</span>
+                  </a>
+                  <a href="assets/calendar/revue-documentaire-2026.ics" download="revue-documentaire-2026-william-guindon.ics" class="btn-docu-cal btn-docu-apple" style="padding: 7px 12px; font-size: 12px;">
+                    <span>Apple / iCal</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -2128,74 +2125,6 @@
               setInterval(updDocu, 1000);
             })();
             </script>
-
-            <!-- CE QUI SERA DÉVOILÉ -->
-            <div class="docu-revelations-grid">
-              <div class="docu-revelation-card">
-                <div class="docu-revelation-head">
-                  <span class="docu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
-                  <span>Archives Inédites</span>
-                </div>
-                <p class="docu-revelation-desc">Incursions exclusives et images immersives au cœur de la Grande Tourbière et des cellules d'enfouissement.</p>
-              </div>
-
-              <div class="docu-revelation-card">
-                <div class="docu-revelation-head">
-                  <span class="docu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
-                  <span>Le Rapport Lobbyisme</span>
-                </div>
-                <p class="docu-revelation-desc">Preuves documentées des rencontres bilatérales d'ECCC pendant que le citoyen était ignoré.</p>
-              </div>
-
-              <div class="docu-revelation-card">
-                <div class="docu-revelation-head">
-                  <span class="docu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31L4.69 17.5a2 2 0 0 0 1.71 2.5h11.2a2 2 0 0 0 1.71-2.5L14 9.31V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14" x2="17" y2="14"/></svg></span>
-                  <span>Cadmium &amp; Eau Potable</span>
-                </div>
-                <p class="docu-revelation-desc">L'analyse technique des risques de lixiviation et de contamination de la nappe phréatique pour 300+ ans.</p>
-              </div>
-
-              <div class="docu-revelation-card">
-                <div class="docu-revelation-head">
-                  <span class="docu-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-                  <span>Cap sur 2027</span>
-                </div>
-                <p class="docu-revelation-desc">Les révélations d'avant-scène sur le vote ministériel trilatéral (Canada, USA, Mexique) de l'ACEUM.</p>
-              </div>
-            </div>
-
-            <!-- BOUTONS D'AJOUT AU CALENDRIER ET DIFFUSION -->
-            <div class="docu-actions-bar">
-              <a href="https://wg.s.gy/film" target="_blank" rel="noopener noreferrer" class="btn-docu-cal btn-docu-facebook" title="Rejoindre l'événement Facebook officiel du mini-documentaire (wg.s.gy/film)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                <span>Événement Facebook (wg.s.gy/film) ↗</span>
-              </a>
-
-              <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=SEM-26-003+%3A+L%27envers+du+d%C3%A9cor+%28Documentaire+William+Guindon%29&dates=20261228T003000Z/20261228T020000Z&details=Une+ann%C3%A9e+de+preuves.%0AUne+tourbi%C3%A8re+menac%C3%A9e.%0ADeux+pages+du+gouvernement+pour+tout+fermer.%0A%0AAvant-premi%C3%A8re+mondiale+diffus%C3%A9e+sur+Facebook+en+Reel+et+sur+https%3A%2F%2Fwilliamguindon.me&location=https%3A%2F%2Fwilliamguindon.me" target="_blank" rel="noopener noreferrer" class="btn-docu-cal btn-docu-google" title="Ajouter l'avant-première à Google Agenda en 1 clic">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
-                <span>Google Agenda</span>
-              </a>
-
-              <a href="assets/calendar/revue-documentaire-2026.ics" download="revue-documentaire-2026-william-guindon.ics" class="btn-docu-cal btn-docu-apple" title="Ajouter à Apple Calendrier (iPhone, iPad, Mac) via fichier .ics">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><polygon points="12 6 12 12 16 14"/></svg>
-                <span>Apple Calendrier</span>
-              </a>
-
-              <a href="https://outlook.live.com/calendar/0/deeplink/compose?subject=SEM-26-003+%3A+L%27envers+du+d%C3%A9cor+%28Documentaire+William+Guindon%29&startdt=2026-12-27T19:30:00-05:00&enddt=2026-12-27T21:00:00-05:00&body=Une+ann%C3%A9e+de+preuves.%0AUne+tourbi%C3%A8re+menac%C3%A9e.%0ADeux+pages+du+gouvernement+pour+tout+fermer.%0A%0AAvant-premi%C3%A8re+mondiale+du+documentaire+sur+https%3A%2F%2Fwilliamguindon.me&location=https%3A%2F%2Fwilliamguindon.me" target="_blank" rel="noopener noreferrer" class="btn-docu-cal btn-docu-outlook" title="Ajouter à Outlook Web">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                <span>Outlook</span>
-              </a>
-
-              <a href="assets/calendar/revue-documentaire-2026.ics" download="revue-documentaire-2026-william-guindon.ics" class="btn-docu-cal btn-docu-ics" title="Télécharger le fichier iCalendar universel .ics">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                <span>Fichier iCal (.ics)</span>
-              </a>
-
-              <button type="button" class="btn-docu-cal btn-docu-ics js-copy-trigger" data-copy="https://williamguindon.me/#documentaire-2026" aria-label="Copier le lien direct de l'avant-première">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span>Partager l'événement</span>
-              </button>
-            </div>
           </article>
 
           <!-- Événement 1 : Mouvement ACTES (CSQ) Mauricie -->
@@ -3848,51 +3777,37 @@
 <script src="assets/js/chat-ai.js?v=20261016-v2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2.15.0" integrity="sha384-80vV/KEhBwD5tKGZUNJIP8v35xgzoh4G8XSqB97o794UbhhHRhOfKhrNGPFrhRwY" crossorigin="anonymous" async defer></script>
 
-<!-- Bannière flottante d'indication en mode simple -->
-<div class="simple-mode-indicator-bar" id="simple-mode-indicator" role="status" aria-live="polite">
-  <span style="display:inline-flex; align-items:center; gap:6px;">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--accent);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    <strong>Vue épurée active</strong> · Superflu masqué
-  </span>
-  <button type="button" class="btn-restore-full js-toggle-simple-mode" aria-label="Afficher la vue complète du site">
-    Afficher la vue complète ↗
-  </button>
-</div>
-
 <script>
 (function initSimpleViewMode() {
   const STORAGE_KEY = 'wg_simple_view_mode';
 
   function applyMode(isSimple) {
+    const promptElem = document.querySelector('.version-switch-prompt');
+    const labelElem = document.querySelector('.version-switch-action-label');
+
     if (isSimple) {
       document.body.classList.add('mode-simple');
       document.documentElement.classList.add('mode-simple-loading');
+      if (promptElem) promptElem.textContent = 'Vous consultez la version épurée (sans superflu) ·';
+      if (labelElem) labelElem.textContent = 'Afficher la version complète';
+
       document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
         btn.classList.add('is-active');
         const text = btn.querySelector('.mode-status-text');
-        if (text) {
-          if (btn.classList.contains('hero-toggle-simple-btn')) {
-            text.textContent = 'Rétablir la vue complète';
-          } else {
-            text.textContent = 'Mode complet';
-          }
-        }
+        if (text) text.textContent = 'Vue complète';
         btn.setAttribute('aria-pressed', 'true');
         btn.setAttribute('title', 'Désactiver le mode simple et afficher la vue complète');
       });
     } else {
       document.body.classList.remove('mode-simple');
       document.documentElement.classList.remove('mode-simple-loading');
+      if (promptElem) promptElem.textContent = 'Vous préférez une version courte ?';
+      if (labelElem) labelElem.textContent = 'Cliquez ici';
+
       document.querySelectorAll('.js-toggle-simple-mode').forEach(function(btn) {
         btn.classList.remove('is-active');
         const text = btn.querySelector('.mode-status-text');
-        if (text) {
-          if (btn.classList.contains('hero-toggle-simple-btn')) {
-            text.textContent = 'Activer la vue épurée (sans superflu)';
-          } else {
-            text.textContent = 'Mode simple';
-          }
-        }
+        if (text) text.textContent = 'Mode simple';
         btn.setAttribute('aria-pressed', 'false');
         btn.setAttribute('title', 'Activer le mode simple sans superflu');
       });
