@@ -1130,6 +1130,10 @@
     </a>
     <button class="menu-toggle" aria-label="Ouvrir le menu de navigation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navigation principale"><div class="mobile-nav-header">
           <span class="mobile-nav-title">Navigation</span>
+          <button type="button" class="nav-simple-mode-btn js-toggle-simple-mode" aria-label="Activer le mode simple sans superflu" title="Basculer entre la vue complète et la vue épurée" style="margin-left: auto; margin-right: 8px;">
+            <svg class="mode-icon-bolt" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="mode-status-text">Mode simple</span>
+          </button>
           <button class="mobile-menu-close-btn" type="button" aria-label="Fermer le menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             <span>Fermer</span>
@@ -1514,13 +1518,15 @@
       <link itemprop="sameAs" href="https://github.com/Bwillou1">
       <link itemprop="sameAs" href="https://g.dev/williamguindondev">
 
-      <!-- Texte fixe de bascule rapide vers la version courte -->
-      <div class="hero-version-quick-switch" style="margin: 16px 0 18px 0; text-align: center;">
-        <span class="version-switch-prompt" style="font-size: 0.95rem; color: var(--text-muted); font-weight: 500;">Vous préférez une version courte ?</span>
-        <button type="button" class="btn-text-simple-switch js-toggle-simple-mode" aria-label="Afficher la version courte sans superflu" style="background: none; border: none; padding: 0 0 0 6px; color: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
-          <span class="version-switch-action-label">Cliquez ici</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </button>
+      <!-- Texte fixe de bascule rapide vers la version courte (Haute visibilité contrastée) -->
+      <div class="hero-version-quick-switch-wrap">
+        <div class="hero-version-quick-switch">
+          <span class="version-switch-prompt">Vous préférez une version courte ?</span>
+          <button type="button" class="btn-text-simple-switch js-toggle-simple-mode" aria-label="Afficher la version courte sans superflu" title="Basculer vers la vue épurée">
+            <span class="version-switch-action-label">Cliquez ici</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </button>
+        </div>
       </div>
 
       <!-- Carte CCE Sobre, Aérée et Directe (Étape 3 · Version légère post-échéance) -->
