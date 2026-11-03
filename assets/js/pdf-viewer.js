@@ -113,20 +113,6 @@
 
   // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
   const DOCS_CATALOG = {
-    'observations-complementaires-1-novembre-2026': {
-      title: "Observations complémentaires et documents internes d'ECCC (1er novembre 2026)",
-      file: "assets/docs/observations-complementaires-sem26003.pdf",
-      badge: "SEM-26-003 · Observations complémentaires (1er nov. 2026)",
-      date: "1 novembre 2026",
-      pages: 4,
-      type: "Observations complémentaires de l'auteur (Art. 24.28 ACEUM & accès à l'info ECCC)",
-      sha256: "b03eaa05296bbec365b6c0ee7c2f8ec0c43ed8f610ba07ca0d81894a8c95af93",
-      author: "William Tristan Logan Théo Guindon (Auteur SEM-26-003)",
-      citation: "Guindon, W. (2026). Communication SEM-26-003 (Enfouissement de matières dangereuses à Blainville) — Observations complémentaires de l'auteur et documents internes d'ECCC obtenus par accès à l'information (demande n° EP2026-0608946). Blainville : Secrétariat de la CCE.",
-      license: "Document officiel déposé auprès de la CCE (CC BY-NC-ND 4.0)",
-      isOriginalWork: true,
-      isCCE: true
-    },
     'observations-reponse-canada-17-octobre-2026': {
       title: "Observations de l'auteur sur la réponse du Canada (17 octobre 2026)",
       file: "assets/docs/observations-reponse-canada-sem26003.pdf",
