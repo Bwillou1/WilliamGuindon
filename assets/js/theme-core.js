@@ -1815,6 +1815,13 @@
           headerTools.appendChild(simpleModeBtn);
         }
 
+        // Nettoyer tout bouton orphelin qui traînerait encore dans nav
+        if (nav) {
+          nav.querySelectorAll('.nav-simple-mode-btn').forEach(b => {
+            if (b !== simpleModeBtn && b.parentElement !== headerTools) b.remove();
+          });
+        }
+
         const langDrop = document.querySelector('.nav-lang-dropdown');
         if (langDrop && langDrop.parentElement !== headerTools) {
           headerTools.appendChild(langDrop);
@@ -4315,15 +4322,16 @@
 
   function initGlobalSimpleMode() {
     try {
-      // Purge systématique de tout résidu localStorage pour garantir la VERSION COMPLÈTE PAR DÉFAUT
-      try {
-        localStorage.removeItem(SIMPLE_MODE_KEY);
-      } catch (_) {}
-
+      // Purge systématique pour garantir la VERSION COMPLÈTE PAR DÉFAUT à l'arrivée
       const isSimpleUrl = new URLSearchParams(window.location.search).get('mode') === 'simple';
-      const isSimpleSession = sessionStorage.getItem(SIMPLE_MODE_KEY) === '1';
-      // La version complète est TOUJOURS active par défaut sauf si demandé explicitement
-      const activeSimple = isSimpleUrl || isSimpleSession;
+      if (!isSimpleUrl) {
+        try {
+          sessionStorage.removeItem(SIMPLE_MODE_KEY);
+          localStorage.removeItem(SIMPLE_MODE_KEY);
+        } catch (_) {}
+      }
+      // La version complète est TOUJOURS active par défaut sauf si demandé explicitement via URL ?mode=simple
+      const activeSimple = isSimpleUrl;
       applyGlobalSimpleMode(activeSimple);
 
       document.addEventListener('click', (e) => {

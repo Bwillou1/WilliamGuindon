@@ -2773,6 +2773,11 @@ body.no-scroll {
   overflow: hidden;
 }
 
+/* Sécurité absolue anti-bouton fantôme : seul le bouton dans .header-tools ou .mobile-nav-header est affiché */
+nav > .nav-simple-mode-btn {
+  display: none !important;
+}
+
 .header-tools {
   display: inline-flex;
   align-items: center;
@@ -2791,13 +2796,13 @@ body.no-scroll {
   gap: 8px;
 }
 
-/* Adaptation fluide pour écrans intermédiaires (1081px - 1360px) pour éviter tout débordement ou coupure */
+/* Adaptation fluide pour écrans intermédiaires (1201px - 1360px) pour centrage parfait et zéro débordement */
 @media (max-width: 1360px) {
   .nav-label-extra {
     display: none !important;
   }
   .nav-dropdown-btn {
-    padding: 0 7px !important;
+    padding: 0 6px !important;
     font-size: 12.5px !important;
     gap: 2px !important;
   }
@@ -2820,17 +2825,8 @@ body.no-scroll {
   }
 }
 
-@media (max-width: 1180px) {
-  .nav-dropdown-btn {
-    padding: 0 5px !important;
-    font-size: 12px !important;
-  }
-  header.site nav {
-    gap: 2px !important;
-  }
-}
-
-@media (max-width: 1080px) {
+/* Bascule responsive en menu mobile tiroir fluide dès 1200px pour éviter toute coupure ou masquage hors écran */
+@media (max-width: 1200px) {
   header.site,
   header.site-header,
   header {
@@ -12313,56 +12309,60 @@ body.stage3-active .stage2-doc-box {
 .simple-btn-pill.secondary {
   background: #ffffff !important;
   color: #0f172a !important;
-  border: 1.5px solid #94a3b8 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  border: 2px solid #0284c7 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 }
 
 .simple-btn-pill.secondary span {
   color: #0f172a !important;
+  font-weight: 800 !important;
 }
 
 .simple-btn-pill.secondary svg {
-  color: #0f172a !important;
-  stroke: #0f172a !important;
+  color: #0284c7 !important;
+  stroke: #0284c7 !important;
 }
 
 .simple-btn-pill.secondary:hover {
-  border-color: #059669 !important;
-  color: #059669 !important;
-  background: #ecfdf5 !important;
-  transform: translateY(-1px);
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+  background: #0284c7 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
 }
 
 .simple-btn-pill.secondary:hover span {
-  color: #059669 !important;
+  color: #ffffff !important;
 }
 
 .simple-btn-pill.secondary:hover svg {
-  color: #059669 !important;
-  stroke: #059669 !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 /* Thème sombre uniquement */
 [data-theme="dark"] .simple-btn-pill.secondary,
 html[data-theme="dark"] .simple-btn-pill.secondary {
   background: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #475569 !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 [data-theme="dark"] .simple-btn-pill.secondary span {
-  color: #f8fafc !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
 }
 
 [data-theme="dark"] .simple-btn-pill.secondary svg {
-  color: #f8fafc !important;
-  stroke: #f8fafc !important;
+  color: #38bdf8 !important;
+  stroke: #38bdf8 !important;
 }
 
 [data-theme="dark"] .simple-btn-pill.secondary:hover {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
-  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  background: #0284c7 !important;
 }
 
 /* En-tête de décompte en Mode 3 */
