@@ -1789,13 +1789,35 @@
         toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
       };
 
-      // Regroupement des utilitaires d'en-tête (Notifs, Thème, Menu Mobile)
+      // Regroupement des utilitaires d'en-tête (Mode Simple, Langue, Notifs, Thème, Menu Mobile)
       if (headerWrap) {
         let headerTools = headerWrap.querySelector('.header-tools');
         if (!headerTools) {
           headerTools = document.createElement('div');
           headerTools.className = 'header-tools';
           headerWrap.appendChild(headerTools);
+        }
+
+        // Bouton Mode Simple Global
+        let simpleModeBtn = document.querySelector('.nav-simple-mode-btn');
+        if (!simpleModeBtn) {
+          simpleModeBtn = document.createElement('button');
+          simpleModeBtn.type = 'button';
+          simpleModeBtn.className = 'nav-simple-mode-btn js-toggle-simple-mode';
+          simpleModeBtn.setAttribute('aria-label', 'Activer le mode simple sans superflu');
+          simpleModeBtn.setAttribute('title', 'Basculer entre la vue complète et la vue épurée');
+          simpleModeBtn.innerHTML = `
+            <svg class="mode-icon-bolt" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="mode-status-text">Mode simple</span>
+          `;
+        }
+        if (simpleModeBtn && simpleModeBtn.parentElement !== headerTools) {
+          headerTools.appendChild(simpleModeBtn);
+        }
+
+        const langDrop = document.querySelector('.nav-lang-dropdown');
+        if (langDrop && langDrop.parentElement !== headerTools) {
+          headerTools.appendChild(langDrop);
         }
 
         const notifDrop = document.querySelector('.nav-notif-dropdown');
@@ -1807,38 +1829,22 @@
         }
       }
 
-      // Bouton Mode Simple Global (Vue épurée / Vue complète sur toutes les pages)
-      let simpleModeBtn = document.querySelector('.nav-simple-mode-btn');
-      if (!simpleModeBtn) {
-        simpleModeBtn = document.createElement('button');
-        simpleModeBtn.type = 'button';
-        simpleModeBtn.className = 'nav-simple-mode-btn js-toggle-simple-mode';
-        simpleModeBtn.setAttribute('aria-label', 'Activer le mode simple sans superflu');
-        simpleModeBtn.setAttribute('title', 'Basculer entre la vue complète et la vue épurée');
-        simpleModeBtn.innerHTML = `
-          <svg class="mode-icon-bolt" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span class="mode-status-text">Mode simple</span>
-        `;
-        if (nav) {
-          const notifDrop = nav.querySelector('.nav-notif-dropdown');
-          if (notifDrop) {
-            nav.insertBefore(simpleModeBtn, notifDrop);
-          } else {
-            nav.appendChild(simpleModeBtn);
+      // Raccourcissement dynamique et propre des libellés avec '&' pour adaptation fluide aux écrans réduits
+      if (nav) {
+        nav.querySelectorAll('.nav-dropdown-btn').forEach(btn => {
+          const span = btn.querySelector('span');
+          if (span && !span.querySelector('.nav-label-extra')) {
+            const rawText = span.textContent || '';
+            if (rawText.includes(' & ')) {
+              const parts = rawText.split(' & ');
+              const mainPart = parts[0].trim();
+              const rest = parts.slice(1).join(' & ');
+              const hasArrow = rest.includes('▾') || rawText.includes('▾');
+              const cleanRest = rest.replace('▾', '').trim();
+              span.innerHTML = `${mainPart}<span class="nav-label-extra"> &amp; ${cleanRest}</span>${hasArrow ? ' ▾' : ''}`;
+            }
           }
-        }
-      }
-
-      // Toolbar interne au menu tiroir (pour la langue en mobile)
-      let navToolbar = nav.querySelector('.nav-mobile-toolbar');
-      if (!navToolbar) {
-        navToolbar = document.createElement('div');
-        navToolbar.className = 'nav-mobile-toolbar';
-        nav.appendChild(navToolbar);
-      }
-      const langDrop = nav.querySelector('.nav-lang-dropdown');
-      if (langDrop && langDrop.parentElement !== navToolbar) {
-        navToolbar.appendChild(langDrop);
+        });
       }
     }
 
@@ -2938,7 +2944,7 @@
       const items = dropdown.querySelectorAll('.nav-dropdown-item');
       items.forEach(item => {
         item.addEventListener('click', () => {
-          if (window.innerWidth > 992) {
+          if (window.innerWidth > 1080) {
             dropdown.classList.remove('active');
             btn.setAttribute('aria-expanded', 'false');
           } else {
@@ -2984,7 +2990,7 @@
       });
 
       dropdown.addEventListener('mouseenter', () => {
-        if (window.innerWidth > 992) {
+        if (window.innerWidth > 1080) {
           dropdowns.forEach(d => {
             if (d !== dropdown && d.classList.contains('active')) {
               d.classList.remove('active');

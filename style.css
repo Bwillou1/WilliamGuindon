@@ -153,10 +153,12 @@ header.site .wrap {
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-  max-width: 1240px;
+  max-width: 1440px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 0 16px;
-  gap: 10px;
+  padding: 0 clamp(12px, 2vw, 28px);
+  gap: clamp(8px, 1.2vw, 16px);
 }
 
 .brand {
@@ -169,6 +171,8 @@ header.site .wrap {
   color: var(--text);
   white-space: nowrap;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
   transition: color 0.2s;
 }
 .brand span.accent,
@@ -180,12 +184,17 @@ header.site .wrap {
   color: var(--text) !important;
 }
 
-nav {
+header.site nav {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: clamp(4px, 0.7vw, 10px);
+  flex: 1 1 auto;
+  margin: 0 auto;
+  min-width: 0;
   flex-wrap: nowrap;
 }
+
 nav a {
   color: var(--text-muted);
   text-decoration: none;
@@ -2767,8 +2776,9 @@ body.no-scroll {
 .header-tools {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 0.6vw, 8px);
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .header-tools .menu-toggle {
@@ -2781,7 +2791,46 @@ body.no-scroll {
   gap: 8px;
 }
 
-@media (max-width: 992px) {
+/* Adaptation fluide pour écrans intermédiaires (1081px - 1360px) pour éviter tout débordement ou coupure */
+@media (max-width: 1360px) {
+  .nav-label-extra {
+    display: none !important;
+  }
+  .nav-dropdown-btn {
+    padding: 0 7px !important;
+    font-size: 12.5px !important;
+    gap: 2px !important;
+  }
+  header.site nav {
+    gap: 4px !important;
+  }
+  .nav-search-btn .nav-search-text,
+  .nav-search-btn .nav-search-kbd {
+    display: none !important;
+  }
+  .nav-search-btn {
+    padding: 0 8px !important;
+    min-width: 32px !important;
+  }
+  .nav-simple-mode-btn .mode-status-text {
+    display: none !important;
+  }
+  .nav-simple-mode-btn {
+    padding: 6px 9px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .nav-dropdown-btn {
+    padding: 0 5px !important;
+    font-size: 12px !important;
+  }
+  header.site nav {
+    gap: 2px !important;
+  }
+}
+
+@media (max-width: 1080px) {
   header.site,
   header.site-header,
   header {
@@ -4860,7 +4909,7 @@ body.dark-theme .notif-link-ghost {
   border-color: #10b981;
 }
 
-@media (min-width: 993px) {
+@media (min-width: 1081px) {
   .site nav {
     display: flex;
     align-items: center;
@@ -5018,7 +5067,7 @@ body.dark-theme .notif-link-ghost {
   transform: translateY(0) scale(1);
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 993px) {
+@media (hover: hover) and (pointer: fine) and (min-width: 1081px) {
   .nav-dropdown:hover .nav-dropdown-menu {
     visibility: visible;
     opacity: 1;
