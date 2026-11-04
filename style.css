@@ -12260,30 +12260,60 @@ body.stage3-active .stage2-doc-box {
   transform: translateY(-1px);
 }
 
+/* Boutons secondaires : NOIR/SOMBRE par défaut en thème clair pour zéro blanc sur blanc */
 .simple-btn-pill.secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: #f1f5f9 !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+.simple-btn-pill.secondary span {
+  color: #0f172a !important;
+}
+
+.simple-btn-pill.secondary svg {
+  color: #0f172a !important;
+  stroke: #0f172a !important;
 }
 
 .simple-btn-pill.secondary:hover {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-  transform: translateY(-1px);
-}
-
-[data-theme="light"] .simple-btn-pill.secondary {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .simple-btn-pill.secondary:hover {
   border-color: #059669 !important;
   color: #059669 !important;
   background: #ecfdf5 !important;
+  transform: translateY(-1px);
+}
+
+.simple-btn-pill.secondary:hover span {
+  color: #059669 !important;
+}
+
+.simple-btn-pill.secondary:hover svg {
+  color: #059669 !important;
+  stroke: #059669 !important;
+}
+
+/* Thème sombre uniquement */
+[data-theme="dark"] .simple-btn-pill.secondary,
+html[data-theme="dark"] .simple-btn-pill.secondary {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+[data-theme="dark"] .simple-btn-pill.secondary span {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .simple-btn-pill.secondary svg {
+  color: #f8fafc !important;
+  stroke: #f8fafc !important;
+}
+
+[data-theme="dark"] .simple-btn-pill.secondary:hover {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
 }
 
 /* En-tête de décompte en Mode 3 */
@@ -13850,15 +13880,6 @@ body.mode-simple .nav-simple-mode-btn,
   box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
 }
 
-/* Allègement global de la barre de navigation sur tout le site en mode simple */
-body.mode-simple header.site nav .nav-dropdown-right {
-  display: none !important;
-}
-
-body.mode-simple header.site nav {
-  gap: 10px !important;
-}
-
 /* En mode simple : affichage immédiat de la synthèse express et masquage des blocs encombrants */
 body.mode-simple #hero-stage3-card {
   display: none !important;
@@ -13871,13 +13892,20 @@ body.mode-simple .simple-mode-only {
   opacity: 1 !important;
 }
 
-/* Allègement du contenu des pages en mode simple sur tout le site */
+/* Allègement du contenu des pages en mode simple sur tout le site (masquage des enquêtes lourdes et trucs techniques pour le grand public) */
 body.mode-simple .secondary-appendix,
 body.mode-simple .social-sync-section,
 body.mode-simple .docu-revelations-grid,
 body.mode-simple .press-archive-accordion,
 body.mode-simple .long-biography-chapter,
-body.mode-simple .audio-player-widget {
+body.mode-simple .audio-player-widget,
+body.mode-simple #accordion-chiffre,
+body.mode-simple .official-card-session-sub,
+body.mode-simple .apropos-fiche-block,
+body.mode-simple .signature-block,
+body.mode-simple .cce-alert-banner,
+body.mode-simple .investigation-card,
+body.mode-simple .investigation-block {
   display: none !important;
 }
 
