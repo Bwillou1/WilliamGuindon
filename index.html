@@ -1054,7 +1054,7 @@
 
 
 
-<script src="assets/js/theme-core.js?v=20261101-v137" defer></script>
+<script src="assets/js/theme-core.js?v=20261103-v138" defer></script>
 <script src="assets/js/page-home.js?v=20260923-v2" defer></script>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
@@ -1072,8 +1072,13 @@
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <script>
   try {
-    if (localStorage.getItem('wg_simple_view_mode') === '1' || window.location.search.includes('mode=simple')) {
-      document.documentElement.classList.add('mode-simple-loading');
+    // Version COMPLÈTE par défaut toujours
+    if (window.location.search.includes('mode=simple')) {
+      document.documentElement.classList.add('mode-simple');
+    } else {
+      document.documentElement.classList.remove('mode-simple');
+      document.documentElement.classList.remove('mode-simple-loading');
+      localStorage.removeItem('wg_simple_view_mode');
     }
   } catch(_) {}
 </script>

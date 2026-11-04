@@ -4267,6 +4267,10 @@
   const SIMPLE_MODE_KEY = 'wg_simple_view_mode';
 
   function applyGlobalSimpleMode(isSimple) {
+    // Retirer tout reliquat de classe de chargement bloquante
+    document.documentElement.classList.remove('mode-simple-loading');
+    document.body.classList.remove('mode-simple-loading');
+
     const synthese = document.getElementById('synthese-rapide');
     if (synthese) {
       synthese.style.display = isSimple ? 'block' : 'none';
@@ -4305,19 +4309,31 @@
 
   function initGlobalSimpleMode() {
     try {
+      // Purge systématique de tout résidu localStorage pour garantir la VERSION COMPLÈTE PAR DÉFAUT
+      try {
+        localStorage.removeItem(SIMPLE_MODE_KEY);
+      } catch (_) {}
+
       const isSimpleUrl = new URLSearchParams(window.location.search).get('mode') === 'simple';
-      const isSimpleSaved = localStorage.getItem(SIMPLE_MODE_KEY) === '1';
-      const activeSimple = isSimpleUrl || isSimpleSaved;
+      const isSimpleSession = sessionStorage.getItem(SIMPLE_MODE_KEY) === '1';
+      // La version complète est TOUJOURS active par défaut sauf si demandé explicitement
+      const activeSimple = isSimpleUrl || isSimpleSession;
       applyGlobalSimpleMode(activeSimple);
 
       document.addEventListener('click', (e) => {
         const toggleBtn = e.target.closest('.js-toggle-simple-mode');
         if (toggleBtn) {
           e.preventDefault();
-          const nextState = !document.body.classList.contains('mode-simple');
+          const isCurrentlySimple = document.body.classList.contains('mode-simple') || document.documentElement.classList.contains('mode-simple');
+          const nextState = !isCurrentlySimple;
           applyGlobalSimpleMode(nextState);
           try {
-            localStorage.setItem(SIMPLE_MODE_KEY, nextState ? '1' : '0');
+            if (nextState) {
+              sessionStorage.setItem(SIMPLE_MODE_KEY, '1');
+            } else {
+              sessionStorage.removeItem(SIMPLE_MODE_KEY);
+              localStorage.removeItem(SIMPLE_MODE_KEY);
+            }
           } catch (_) {}
 
           if (nextState) {
