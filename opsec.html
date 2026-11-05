@@ -110,8 +110,124 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=20261018-v87">
-<script src="assets/js/theme-core.js?v=20260930-v70" defer></script>
+<link rel="stylesheet" href="style.css?v=20261105-v92">
+<script src="assets/js/theme-core.js?v=20261105-v141" defer></script>
+<style>
+  /* Bandeau & Bouton Flottant Sortie Rapide (Quick Exit) */
+  .quick-exit-banner {
+    background: linear-gradient(90deg, #b91c1c 0%, #dc2626 50%, #b91c1c 100%);
+    color: #ffffff;
+    padding: 10px 16px;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  }
+  .quick-exit-banner-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .quick-exit-banner-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .quick-exit-btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #b91c1c;
+    font-weight: 800;
+    font-size: 0.88rem;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .quick-exit-btn-action:hover,
+  .quick-exit-btn-action:focus-visible {
+    background: #fee2e2;
+    transform: scale(1.03);
+    outline: 2px solid #ffffff;
+  }
+  .quick-exit-kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    color: #b91c1c;
+    margin-left: 2px;
+  }
+
+  /* Bouton Flottant persistant en bas à droite */
+  .quick-exit-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #dc2626;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 12px 22px;
+    border-radius: 9999px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.55), 0 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .quick-exit-fab:hover,
+  .quick-exit-fab:focus-visible {
+    background: #b91c1c;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 12px 28px rgba(185, 28, 28, 0.65);
+    outline: 3px solid #fecaca;
+  }
+  .quick-exit-fab svg {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .quick-exit-banner-inner {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+    .quick-exit-banner-text {
+      justify-content: center;
+      font-size: 0.82rem;
+    }
+    .quick-exit-btn-action {
+      justify-content: center;
+      width: 100%;
+    }
+    .quick-exit-fab {
+      bottom: 16px;
+      right: 16px;
+      padding: 10px 16px;
+      font-size: 0.85rem;
+    }
+    .quick-exit-fab .quick-exit-kbd {
+      display: none;
+    }
+  }
+</style>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
 <link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
@@ -498,6 +614,20 @@
   </div>
 </header>
 
+<!-- Bandeau d'avertissement et Sortie Rapide (Quick Exit) -->
+<div class="quick-exit-banner" role="region" aria-label="Bandeau de sécurité et sortie d'urgence">
+  <div class="quick-exit-banner-inner">
+    <div class="quick-exit-banner-text">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span><strong>Zone sensible (OpSec) :</strong> Besoin de fermer cet écran immédiatement ? Appuyez sur <kbd class="quick-exit-kbd">Échap</kbd> ou cliquez sur le bouton.</span>
+    </div>
+    <button type="button" class="quick-exit-btn-action js-quick-exit" aria-label="Quitter cette page immédiatement et basculer vers Météo Canada">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Sortie Rapide (Météo Canada) <kbd class="quick-exit-kbd">Échap</kbd></span>
+    </button>
+  </div>
+</div>
+
 <main id="main-content">
   <section class="hero">
     <div class="wrap">
@@ -697,6 +827,43 @@
     </div>
   </div>
 </footer>
+
+<!-- Bouton Flottant Fixe Sortie Rapide (Impossible à manquer) -->
+<button type="button" class="quick-exit-fab js-quick-exit" aria-label="Quitter cette page immédiatement (Sortie rapide)">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+  <span>Sortie Rapide <kbd class="quick-exit-kbd" style="background:#ffffff; color:#b91c1c;">Échap</kbd></span>
+</button>
+
+<script>
+  (function() {
+    'use strict';
+    var EXIT_URL = 'https://meteo.gc.ca/?zoom=7&center=46.23130720,-72.69489997';
+
+    function triggerQuickExit() {
+      // 1. Remplacement de l'historique direct pour empêcher le bouton "Précédent"
+      try {
+        window.location.replace(EXIT_URL);
+      } catch (_) {
+        window.location.href = EXIT_URL;
+      }
+    }
+
+    // Clic sur les boutons de sortie rapide
+    document.querySelectorAll('.js-quick-exit').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        triggerQuickExit();
+      });
+    });
+
+    // Raccourci clavier universel : Touche Échap (Escape)
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        triggerQuickExit();
+      }
+    });
+  })();
+</script>
 
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
