@@ -10163,6 +10163,40 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   min-height: 44px;
   padding: 4px 6px;
 }
+.contact-hero-channels-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 780px;
+}
+.contact-hero-channel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.contact-hero-channel-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.contact-hero-channel-pill.messenger {
+  border-color: rgba(0, 132, 255, 0.35);
+  background: rgba(0, 132, 255, 0.05);
+}
+.contact-hero-channel-pill.messenger:hover {
+  border-color: #0084ff;
+  color: #0084ff;
+}
 
 /* ==========================================================================
    MODULE ANTI-CAPTURE & CONFIDENTIALITÉ (Inspiré de react-anticapture)
@@ -13343,6 +13377,17 @@ body {
     width: 100% !important;
     gap: 6px !important;
     text-align: center !important;
+  }
+  .contact-hero-channels-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .contact-hero-channel-pill {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
   }
   .contact-hero-meta-grid {
     grid-template-columns: 1fr !important;
