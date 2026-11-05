@@ -2951,7 +2951,7 @@
       const items = dropdown.querySelectorAll('.nav-dropdown-item');
       items.forEach(item => {
         item.addEventListener('click', () => {
-          if (window.innerWidth > 1080) {
+          if (window.innerWidth > 1024) {
             dropdown.classList.remove('active');
             btn.setAttribute('aria-expanded', 'false');
           } else {
@@ -2997,7 +2997,7 @@
       });
 
       dropdown.addEventListener('mouseenter', () => {
-        if (window.innerWidth > 1080) {
+        if (window.innerWidth > 1024) {
           dropdowns.forEach(d => {
             if (d !== dropdown && d.classList.contains('active')) {
               d.classList.remove('active');

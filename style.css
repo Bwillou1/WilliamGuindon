@@ -140,7 +140,6 @@ header.site { background: var(--bg);
   position: sticky;
   top: 0;
   min-height: 52px;
-  contain: layout;
   z-index: var(--z-header);
   transition: background-color 0.2s ease, border-color 0.2s ease;
  }
@@ -189,9 +188,8 @@ header.site nav {
   align-items: center;
   justify-content: center;
   gap: clamp(4px, 0.7vw, 10px);
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   margin: 0 auto;
-  min-width: 0;
   flex-wrap: nowrap;
 }
 
@@ -2796,18 +2794,32 @@ nav > .nav-simple-mode-btn {
   gap: 8px;
 }
 
-/* Adaptation fluide pour écrans intermédiaires (1201px - 1360px) pour centrage parfait et zéro débordement */
-@media (max-width: 1360px) {
+/* Adaptation fluide par paliers (1025px - 1560px) : zéro superposition et bannière 100% visible sur iPad & ordinateurs portables */
+@media (max-width: 1560px) {
   .nav-label-extra {
     display: none !important;
   }
+  .nav-search-btn .nav-search-kbd {
+    display: none !important;
+  }
+  .nav-dropdown-btn {
+    padding: 0 8px !important;
+    font-size: 13px !important;
+    gap: 3px !important;
+  }
+  header.site nav {
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 1240px) {
   .nav-dropdown-btn {
     padding: 0 6px !important;
-    font-size: 12.5px !important;
+    font-size: 12.2px !important;
     gap: 2px !important;
   }
   header.site nav {
-    gap: 4px !important;
+    gap: 3px !important;
   }
   .nav-search-btn .nav-search-text,
   .nav-search-btn .nav-search-kbd {
@@ -2823,10 +2835,13 @@ nav > .nav-simple-mode-btn {
   .nav-simple-mode-btn {
     padding: 6px 9px !important;
   }
+  .brand {
+    font-size: 13.5px !important;
+  }
 }
 
-/* Bascule responsive en menu mobile tiroir fluide dès 1200px pour éviter toute coupure ou masquage hors écran */
-@media (max-width: 1200px) {
+/* Bascule responsive en menu mobile tiroir fluide sous 1024px (iPhone & iPad portrait) */
+@media (max-width: 1024px) {
   header.site,
   header.site-header,
   header {
@@ -2865,7 +2880,8 @@ nav > .nav-simple-mode-btn {
     border-bottom: 1px solid var(--line) !important;
     margin-bottom: 12px !important;
     box-sizing: border-box !important;
-    order: 1 !important;
+    order: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .mobile-nav-title {
@@ -2939,7 +2955,8 @@ nav > .nav-simple-mode-btn {
     width: min(340px, 86vw) !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
-    background: var(--bg-card) !important;
+    background: var(--bg-card, #ffffff) !important;
+    color: var(--text, #0f172a) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border-left: 1px solid var(--line) !important;
@@ -2948,6 +2965,8 @@ nav > .nav-simple-mode-btn {
     border-right: none !important;
     border-radius: 0 !important;
     flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
     padding: 16px 16px 20px 16px !important;
     gap: 0 !important;
     box-shadow: -10px 0 35px rgba(0, 0, 0, 0.3) !important;
@@ -2982,19 +3001,20 @@ nav > .nav-simple-mode-btn {
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
-    flex: 1 1 auto !important;
+    flex: 1 0 auto !important;
     box-sizing: border-box !important;
     position: relative !important;
-    min-height: 0 !important;
+    min-height: auto !important;
+    order: 2 !important;
   }
 
   .mmenu-slider {
     position: relative !important;
     width: 100% !important;
-    flex: 1 1 auto !important;
+    flex: 1 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
-    min-height: 0 !important;
+    min-height: auto !important;
   }
 
   /* Panneaux coulissants avec glissement horizontal fluide */
@@ -4905,7 +4925,7 @@ body.dark-theme .notif-link-ghost {
   border-color: #10b981;
 }
 
-@media (min-width: 1081px) {
+@media (min-width: 1025px) {
   .site nav {
     display: flex;
     align-items: center;
@@ -5063,7 +5083,7 @@ body.dark-theme .notif-link-ghost {
   transform: translateY(0) scale(1);
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 1081px) {
+@media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
   .nav-dropdown:hover .nav-dropdown-menu {
     visibility: visible;
     opacity: 1;

@@ -41,6 +41,32 @@ async function syncDossierStatus() {
     },
     registre_url_fr: REGISTRY_URL_FR,
     registre_url_en: REGISTRY_URL_EN,
+    legislation_fr: [
+      "Loi de 1994 sur la convention concernant les oiseaux migrateurs (LC 1994, ch 22), articles 5 et 5.1(1)",
+      "Règlement sur les oiseaux migrateurs (DORS/2022-105), article 5(1)a), b) et c)",
+      "Loi sur les espèces en péril (LC 2002, ch 29), préambule (paragraphe 13), articles 10.1, 18.1, 32, 33, 34, 39(1)c), 58, 73, 79 et 83",
+      "Loi sur les pêches (LRC 1985, ch F-14), articles 34.4, 35, 36(3), 36(4), 37 et 38",
+      "Loi canadienne sur la protection de l’environnement (1999) (LC 1999, ch 33), articles 2(1)(a.2), 2(1)(a.3), 5.1(1), 64, 68, 71, 90, 91 et 93",
+      "Loi sur l’évaluation d’impact (LC 2019, ch 28, art. 1), article 2(i)(ii)(iii)",
+      "Règlement sur les activités concrètes (DORS/2019-285), article 2 (articles 56 et 57 de l’annexe)",
+      "Loi sur la Déclaration des Nations Unies sur les droits des peuples autochtones (LC 2021, ch 14), article 5",
+      "Accord Canada-États-Unis-Mexique, article 24.4",
+      "Principes directeurs nord-américains relatifs à l’intégration des connaissances écologiques traditionnelles de la Commission de coopération environnementale (2017)",
+      "Loi constitutionnelle de 1982, constituant l'annexe B de la Loi sur 1982 sur le Canada (R-U 1982, c 11), article 35"
+    ],
+    legislation_en: [
+      "Migratory Birds Convention Act, 1994 (S.C. 1994, c. 22), sections 5 and 5.1(1)",
+      "Migratory Birds Regulations, 2022 (SOR/2022-105), paragraphs 5(1)(a), (b) and (c)",
+      "Species at Risk Act (S.C. 2002, c. 29), preamble (paragraph 13), sections 10.1, 18.1, 32, 33, 34, 39(1)(c), 58, 73, 79 and 83",
+      "Fisheries Act (R.S.C. 1985, c. F-14), sections 34.4, 35, 36(3), 36(4), 37 and 38",
+      "Canadian Environmental Protection Act, 1999 (S.C. 1999, c. 33), paragraphs 2(1)(a.2), 2(1)(a.3), sections 5.1(1), 64, 68, 71, 90, 91 and 93",
+      "Impact Assessment Act (S.C. 2019, c. 28, s. 1), section 2(i)(ii)(iii)",
+      "Physical Activities Regulations (SOR/2019-285), section 2 (items 56 and 57 of the schedule)",
+      "United Nations Declaration on the Rights of Indigenous Peoples Act (S.C. 2021, c. 14), section 5",
+      "Canada-United States-Mexico Agreement, Article 24.4",
+      "CEC North American Principles on Traditional Ecological Knowledge (2017)",
+      "Constitution Act, 1982, being Schedule B to the Canada Act 1982 (U.K.), 1982, c. 11, section 35"
+    ],
     veille_folo: {
       url: "https://folo.is/feed/1320323670668607488",
       rss: "https://folo.is/feed/1320323670668607488/rss",
@@ -84,6 +110,7 @@ async function syncDossierStatus() {
     existingData.etat_fr !== data.etat_fr ||
     existingData.prochaine_echeance !== data.prochaine_echeance ||
     existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr ||
+    JSON.stringify(existingData.legislation_fr) !== JSON.stringify(data.legislation_fr) ||
     JSON.stringify(existingData.veille_folo) !== JSON.stringify(data.veille_folo) ||
     JSON.stringify(existingData.reseaux_sociaux) !== JSON.stringify(data.reseaux_sociaux);
 
