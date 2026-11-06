@@ -2017,9 +2017,9 @@
                     <span>${mSvg.clock}</span>
                     <small>Horloge 16 oct.</small>
                   </a>
-                  <a href="autochtone.html" class="mmenu-quick-item">
-                    <span>${mSvg.leaf}</span>
-                    <small>Autochtone</small>
+                  <a href="presse.html" class="mmenu-quick-item">
+                    <span>${mSvg.news}</span>
+                    <small>${isEn ? 'Press' : (isEs ? 'Prensa' : 'Presse')}</small>
                   </a>
                 </div>
               </div>
@@ -2262,6 +2262,8 @@
         document.documentElement.classList.remove('nav-drawer-open');
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.innerHTML = hamburgerSvg;
+        const floatAi = document.querySelector('.floating-ai-btn');
+        if (floatAi) floatAi.style.display = '';
         setTimeout(resetMmenuPanels, 320);
       }
 
@@ -2277,6 +2279,8 @@
         document.documentElement.classList.add('nav-drawer-open');
         menuToggle.setAttribute('aria-expanded', 'true');
         menuToggle.innerHTML = closeSvg;
+        const floatAi = document.querySelector('.floating-ai-btn');
+        if (floatAi) floatAi.style.display = 'none';
       }
 
       menuToggle.addEventListener('click', (e) => {

@@ -448,7 +448,11 @@
         <div class="actions-404">
           <a class="btn btn-primary" href="/">← Retour à l'accueil</a>
           <a class="btn btn-ghost" href="presse.html">Espace Presse</a>
-          <a class="btn btn-ghost" href="live.html">Horloge Live CCE</a>
+          <a class="btn btn-ghost" href="registre.html">Registre CCE</a>
+          <a class="btn btn-ghost" id="wayback-link" href="https://web.archive.org/web/*/https://williamguindon.me" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px;vertical-align:text-bottom;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            Wayback Machine ↗
+          </a>
         </div>
 
         <nav class="shortcuts shortcuts-404" aria-label="Raccourcis">
@@ -495,6 +499,14 @@
   </div>
 </footer>
 
+<script>
+  (function() {
+    var wb = document.getElementById('wayback-link');
+    if (wb && window.location.href) {
+      wb.href = 'https://web.archive.org/web/*/' + encodeURI(window.location.href);
+    }
+  })();
+</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
 </html>
