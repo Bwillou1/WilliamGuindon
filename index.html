@@ -113,7 +113,7 @@
 <link rel="alternate" type="text/markdown" href="https://williamguindon.me/llms.txt" title="SEM-26-003 Full Markdown Knowledge Base">
 <link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
 <meta name="color-scheme" content="light dark">
-<link rel="stylesheet" href="style.css?v=20261106-v93">
+<link rel="stylesheet" href="style.css?v=20261106-v94">
 <link rel="preload" as="image" href="assets/media/william-guindon.webp" type="image/webp" fetchpriority="high">
 <meta name="google-site-verification" content="google57da095d83ebd58e">
 <meta name="google-site-verification" content="vKxtipo0mg9PwfZzf6RQihUUPMnswLsXMYqYcKFJe20">
@@ -1057,7 +1057,7 @@
 
 
 
-<script src="assets/js/theme-core.js?v=20261106-v142" defer></script>
+<script src="assets/js/theme-core.js?v=20261106-v143" defer></script>
 <script src="assets/js/page-home.js?v=20260923-v2" defer></script>
 <!-- BRANDKIT:START -->
 <link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
@@ -1093,38 +1093,9 @@
 <div class="scroll-progress-bar"></div>
 <script>
 (function() {
-  function tickImmediateCountdown() {
-    var target = new Date('2026-12-15T23:59:59-05:00').getTime();
-    var now = Date.now();
-    var diff = Math.max(0, target - now);
-    var d = String(Math.floor(diff / (1000 * 60 * 60 * 24)));
-    var h = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-    var m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-    var s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
-
-    document.querySelectorAll('.js-cd-days, #cd-days').forEach(function(el) {
-      if (el.textContent !== d) el.textContent = d;
-    });
-    document.querySelectorAll('.js-cd-hours, #cd-hours').forEach(function(el) {
-      if (el.textContent !== h) el.textContent = h;
-    });
-    document.querySelectorAll('.js-cd-mins, #cd-mins').forEach(function(el) {
-      if (el.textContent !== m) el.textContent = m;
-    });
-    document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(function(el) {
-      if (el.textContent !== s) el.textContent = s;
-    });
-
+  try {
     var trackerStage2 = document.getElementById('tracker-stage2-state');
     if (trackerStage2) trackerStage2.style.display = 'block';
-  }
-  try {
-    tickImmediateCountdown();
-    window.__wg_tickDeadline = tickImmediateCountdown;
-    if (!window.__wg_deadlineTimer) {
-      window.__wg_deadlineTimer = setInterval(tickImmediateCountdown, 1000);
-    }
-    document.addEventListener('DOMContentLoaded', tickImmediateCountdown);
   } catch (_) {}
 })();
 </script>
@@ -1502,96 +1473,42 @@
 <main id="main-content" itemscope="" itemtype="https://schema.org/ProfilePage">
   <article itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Person" itemid="https://williamguindon.me/#person">
 
-  <section class="hero-immersive" id="accueil">
-    <div id="hero-curtains-canvas" class="hero-curtains-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;pointer-events:none;" aria-hidden="true">
-      <div id="hero-curtains-plane" class="hero-curtains-plane" style="position:absolute;top:-10%;left:-10%;width:120%;height:120%;pointer-events:none;"></div>
-      <div class="hero-curtains-overlay"></div>
-    </div>
+  <section class="hero-immersive hero-prestige" id="accueil">
     <div class="wrap">
-      <div class="hero-portrait-badge">
-        <picture>
-          <source srcset="assets/media/william-guindon.webp" type="image/webp">
-          <img src="assets/media/william-guindon.jpg" alt="Portrait de William Guindon" class="hero-portrait-avatar" width="104" height="104" loading="eager" decoding="async" fetchpriority="high">
-        </picture>
-      </div>
-      <span class="kicker">Militant écologiste · Étudiant · Québec, Canada</span>
-      <h1><span itemprop="name" class="hero-title-main">William Guindon</span></h1>
-      <p class="hero-bio-lead" id="hero-bio-lead" style="display: block;">Militant écologiste québécois reconnu pour son engagement en faveur de la protection des écosystèmes et des droits des générations futures. À 15 ans, il porte le dossier de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (ACEUM) et les Nations unies.</p>
-      <meta itemprop="description" content="Militant écologiste québécois reconnu pour son engagement en faveur de la protection des écosystèmes et des droits des générations futures. À 15 ans, il porte le dossier de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (ACEUM) et les Nations unies.">
-      <link itemprop="sameAs" href="https://www.linkedin.com/in/william-guindon/">
-      <link itemprop="sameAs" href="https://www.wikidata.org/wiki/Q141439370">
-      <link itemprop="sameAs" href="https://orcid.org/0009-0009-8845-4456">
-      <link itemprop="sameAs" href="https://isni.org/isni/0000000531719103">
-      <link itemprop="sameAs" href="https://www.youtube.com/@william-guindon">
-      <link itemprop="sameAs" href="https://www.facebook.com/williamguindon.officiel">
-      <link itemprop="sameAs" href="https://github.com/Bwillou1">
-      <link itemprop="sameAs" href="https://g.dev/williamguindondev">
+      <!-- Carte Prestige Centrale Givrée (Glassmorphism Épuré) -->
+      <div class="hero-prestige-card">
+        <span class="hero-prestige-kicker">Militant écologiste · Québec</span>
+        <h1 class="hero-prestige-title"><span itemprop="name">William Guindon</span></h1>
+        
+        <p class="hero-prestige-lead" id="hero-bio-lead">
+          Militant engagé pour la protection des écosystèmes et les droits des générations futures. À 15 ans, il porte le dossier historique de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (CCE SEM-26-003) et les instances internationales pour exiger la transparence et défendre notre avenir commun.
+        </p>
+        <meta itemprop="description" content="Militant engagé pour la protection des écosystèmes et les droits des générations futures. À 15 ans, il porte le dossier historique de la Grande Tourbière de Blainville devant la Commission de coopération environnementale (CCE SEM-26-003) et les instances internationales pour exiger la transparence et défendre notre avenir commun.">
+        <link itemprop="sameAs" href="https://www.linkedin.com/in/william-guindon/">
+        <link itemprop="sameAs" href="https://www.wikidata.org/wiki/Q141439370">
+        <link itemprop="sameAs" href="https://orcid.org/0009-0009-8845-4456">
+        <link itemprop="sameAs" href="https://isni.org/isni/0000000531719103">
+        <link itemprop="sameAs" href="https://www.youtube.com/@william-guindon">
+        <link itemprop="sameAs" href="https://www.facebook.com/williamguindon.officiel">
+        <link itemprop="sameAs" href="https://github.com/Bwillou1">
+        <link itemprop="sameAs" href="https://g.dev/williamguindondev">
 
-      <!-- Texte fixe de bascule rapide vers la version courte (Haute visibilité contrastée) -->
-      <div class="hero-version-quick-switch-wrap" style="display: flex; justify-content: center; align-items: center; width: 100%; margin: 20px 0 24px 0; position: relative; z-index: 5;">
-        <div class="hero-version-quick-switch" style="display: inline-flex; align-items: center; justify-content: center; gap: 12px; background: rgba(15, 23, 42, 0.96) !important; border: 1.5px solid #10b981 !important; border-radius: 9999px; padding: 8px 18px 8px 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 18px rgba(16, 185, 129, 0.35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);">
-          <span class="version-switch-prompt" style="color: #ffffff !important; font-size: 0.96rem; font-weight: 700; letter-spacing: -0.01em; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);">Vous préférez une version courte ?</span>
-          <button type="button" class="btn-text-simple-switch js-toggle-simple-mode" aria-label="Afficher la version courte sans superflu" title="Basculer vers la vue épurée" style="background: #10b981 !important; color: #064e3b !important; font-size: 0.9rem; font-weight: 800; border: none; border-radius: 9999px; padding: 6px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.45); text-decoration: none; white-space: nowrap;">
-            <span class="version-switch-action-label" style="color: #064e3b !important; font-weight: 800;">Cliquez ici</span>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true" style="color: #064e3b !important;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </button>
-        </div>
-      </div>
+        <hr class="hero-prestige-divider" aria-hidden="true">
 
-      <!-- Carte CCE Sobre, Aérée et Directe (Étape 3 · Version légère post-échéance) -->
-      <div class="hero-stage3-card" id="hero-stage3-card" style="display: block;">
-        <a href="#tracker" class="hero-stage3-eyebrow" aria-label="Consulter l'état d'examen dans le tableau de bord">
-          <span class="hero-stage3-dot"></span>
-          <span>DOSSIER CCE SEM-26-003 · EN COURS D'EXAMEN ▾</span>
-        </a>
-        <h2 class="hero-stage3-title">Sauvegarde de la Grande Tourbière de Blainville</h2>
-        <p class="hero-stage3-desc">Le Secrétariat de la CCE évalue actuellement la recommandation d'un dossier factuel indépendant.</p>
+        <blockquote class="hero-prestige-quote">
+          <p>« Même que l'usine soit conforme ou pas conforme, je veux juste la vérité. C'est ça mon but. »</p>
+          <cite>— William Guindon, <a href="https://youtu.be/lC7uBOXQsQs?si=aR6AgXZo0oJBdB6u" target="_blank" rel="noopener noreferrer">entrevue TVBL ↗</a></cite>
+        </blockquote>
 
-        <!-- Deux pilules / badges compacts -->
-        <div class="hero-pills-row">
-          <a href="statut-mineur.html" class="hero-pill-badge pill-blue" title="Confirmation officielle écrite du Secrétariat CCE">
-            <span class="pill-dot"></span>
-            <span>Premier auteur mineur de l'histoire SEM (1994) ↗</span>
+        <div class="hero-prestige-actions">
+          <a href="registre-cce-sem26003.html" class="hero-prestige-btn primary">
+            <span>Consulter le dossier CCE ↗</span>
           </a>
-          <a href="#tracker" class="hero-pill-badge pill-green" title="Consulter l'échéance du 10 nov. dans le tableau de bord">
-            <span class="pill-dot"></span>
-            <span>Prochaine échéance : 10 nov. 2026 (BVG) ▾</span>
-          </a>
-        </div>
-
-        <div class="hero-stage3-actions">
-          <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="hero-stage3-btn primary">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            <span>Observations (PDF) ↗</span>
-          </a>
-          <a href="registre-cce-sem26003.html" class="hero-stage3-btn outline">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" x2="22" y1="22" y2="22"/><line x1="6" x2="6" y1="18"/><line x1="10" x2="10" y1="18"/><line x1="14" x2="14" y1="18"/><line x1="18" x2="18" y1="18"/><polygon points="12 2 20 7 4 7"/></svg>
-            <span>Registre CCE ↗</span>
-          </a>
-          <a href="presse.html" class="hero-stage3-btn outline">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+          <a href="presse.html" class="hero-prestige-btn secondary">
             <span>Espace presse ↗</span>
           </a>
-          <a href="agir.html" class="hero-stage3-btn outline">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            <span>Comment agir ↗</span>
-          </a>
         </div>
       </div>
-
-      <!-- Widget audio & Bannière verte de citation officielle -->
-      <div class="audio-player-widget">
-        <button type="button" id="btn-audio-read" class="audio-btn" aria-label="Écouter la biographie en version audio">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-          <span>Écouter la biographie</span>
-        </button>
-        <span id="audio-status-text" class="audio-status-label" aria-live="polite"></span>
-      </div>
-
-      <blockquote class="citation-hero citation-hero-spaced">
-        <p>« Même que l’usine soit conforme ou pas conforme, je veux juste la vérité. C’est ça mon but. »</p>
-        <cite>— William Guindon, <a href="https://youtu.be/lC7uBOXQsQs?si=aR6AgXZo0oJBdB6u" target="_blank" rel="noopener noreferrer">entrevue TVBL ↗</a></cite>
-      </blockquote>
     </div>
     <a href="#tracker" class="scroll-indicator" aria-label="Défiler vers le tableau de suivi CCE">
       <span>Tableau de bord CCE ▾</span>
@@ -2000,17 +1917,11 @@
 
         <article class="tracker-card tracker-card-compact tracker-card-countdown notranslate" translate="no">
           <div class="tracker-card-head">
-            <svg class="tracker-icon-sm" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
-            <div class="counter-lbl">Détermination CCE (15 déc. 2026)</div>
-            <span class="tracker-tz-pill js-cd-tz-badge" style="display: none;"></span>
+            <svg class="tracker-icon-sm" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <div class="counter-lbl">Échéance Secrétariat CCE</div>
           </div>
-          <div class="precision-countdown-grid precision-countdown-compact notranslate" translate="no" aria-live="off" role="timer" aria-label="Décompte jusqu'à la recommandation du Secrétariat CCE du 15 décembre 2026">
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-days">54</span><span class="precision-time-lbl">J</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-hours">04</span><span class="precision-time-lbl">H</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-mins">50</span><span class="precision-time-lbl">M</span></div>
-            <div class="precision-time-unit"><span class="precision-time-val" id="cd-secs">00</span><span class="precision-time-lbl">S</span></div>
-          </div>
-          <script>if(window.__wg_tickDeadline)window.__wg_tickDeadline();</script>
+          <div class="counter-num" style="font-size: 1.55rem; letter-spacing: -0.02em;">15 déc. 2026</div>
+          <p class="counter-desc">Délai statutaire de 60 jours ouvrables (Art. 24.28 ACEUM) pour recommander un dossier factuel.</p>
           <div style="margin-top: 10px; display: flex; justify-content: center; min-height: 42px;">
             <add-to-calendar-button 
               name="Échéance CCE — Recommandation Dossier Factuel (Dossier Stablex SEM-26-003)"
@@ -2018,6 +1929,18 @@
               start-date="2026-12-15"
               start-time="00:00"
               end-date="2026-12-15"
+              time-zone="America/Toronto"
+              location="Commission de coopération environnementale (CCE / CEC)"
+              options="'Google','Apple','iCal'"
+              buttons-list
+              hide-icon
+              hide-background
+              light-mode="dark"
+              size="2"
+              label="Ajouter à l'agenda"
+            ></add-to-calendar-button>
+          </div>
+        </article>
               end-time="23:59"
               time-zone="America/Toronto"
               location="blainville"
@@ -2152,21 +2075,16 @@
                 </div>
 
                 <div class="docu-synopsis" itemprop="description" style="font-size: 0.88rem; line-height: 1.55; color: var(--text-muted); margin-bottom: 14px;">
-                  1 an d'enquête citoyenne contre l'expansion de Stablex à Blainville : 222 pièces déposées à la CCE, 119 jours de silence ministériel, alertes de cadmium 320x la norme et coulisses de la Loi 93 sous bâillon. Le 27 décembre à 19h30 sur Facebook en format Reel.
+                  1 an d'enquête citoyenne contre l'expansion de Stablex à Blainville : 222 pièces déposées à la CCE, 119 jours de silence ministériel, alertes de cadmium 320x la norme et coulisses de la Loi 93 sous bâillon. Diffusion le 27 décembre 2026 à 19h30 sur Facebook en format Reel.
                 </div>
 
-                <!-- COMPTE À REBOURS DU DOCUMENTAIRE -->
-                <div class="docu-countdown-wrap notranslate" translate="no" style="padding: 10px 14px; margin-bottom: 14px;">
-                  <div class="docu-countdown-label" style="font-size: 12px;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    <span>Première mondiale dans :</span>
+                <!-- DATE OFFICIELLE DU DOCUMENTAIRE -->
+                <div class="docu-countdown-wrap notranslate" translate="no" style="padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                  <div class="docu-countdown-label" style="font-size: 13px; font-weight: 700; color: #e2e8f0; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Avant-première officielle : <strong>27 décembre 2026 à 19 h 30 HNE</strong></span>
                   </div>
-                  <div class="docu-countdown-grid" role="timer" aria-label="Compte à rebours avant la première du documentaire" style="gap: 8px;">
-                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-days" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Jours</span></div>
-                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-hours" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Heures</span></div>
-                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-mins" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Min</span></div>
-                    <div class="docu-time-unit"><span class="docu-time-val" id="docu-cd-secs" style="font-size: 1.25rem;">--</span><span class="docu-time-lbl" style="font-size: 10px;">Sec</span></div>
-                  </div>
+                  <span style="font-size: 11px; padding: 3px 8px; border-radius: 9999px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); color: #c7d2fe;">Accès libre &amp; direct</span>
                 </div>
 
                 <!-- ACTIONS RAPIDES COMPACTES -->
@@ -2327,115 +2245,6 @@
       <span class="kicker">Couverture Médiatique &amp; Entrevues</span>
       <h2>Revue de presse officielle</h2>
       <p>Retrouvez les reportages d'enquête, entrevues audiovisuelles et publications dans les grands médias nationaux et régionaux.</p>
-
-      <!-- Politique d'exactitude : Bannière interactive d'intégrité médiatique -->
-      <details class="press-policy-card" style="margin: 22px 0 30px; background: var(--bg-card, #ffffff); border: 2px solid var(--accent, #059669); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.12);">
-        <summary class="press-policy-summary" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 22px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.09) 0%, rgba(16, 185, 129, 0.03) 100%); cursor: pointer; user-select: none; list-style: none;">
-          <span class="press-policy-header-left" style="display: flex; align-items: center; gap: 14px; flex: 1;">
-            <span class="press-policy-badge-icon" aria-hidden="true" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 11px; background: var(--accent, #059669); color: #ffffff; flex-shrink: 0; box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-            </span>
-            <span class="press-policy-titles" style="display: flex; flex-direction: column; gap: 3px;">
-              <span class="press-policy-kicker" style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-deep, #047857);">Transparence &amp; Rigueur Éditoriale</span>
-              <strong class="press-policy-heading" style="font-size: 1.05rem; font-weight: 700; color: var(--text, #111827); line-height: 1.35;">Politique d'exactitude : Pourquoi certains médias ne sont-ils pas répertoriés ici ?</strong>
-            </span>
-          </span>
-          <span class="press-policy-toggle-pill" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--bg, #ffffff); border: 1.5px solid var(--accent, #059669); border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: var(--accent-deep, #047857); flex-shrink: 0;">
-            <span class="press-policy-toggle-text">Consulter les critères</span>
-            <svg class="press-policy-toggle-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </span>
-        </summary>
-        <div class="press-policy-body">
-          <div class="press-policy-intro-alert">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <span><strong>Note de transparence :</strong> La revue de presse ci-dessous constitue une sélection documentaire non exhaustive des principaux reportages et entrevues consacrés au dossier. L’absence d’un article ou d’une couverture n’emporte aucun jugement de valeur ni présomption d'inexactitude à l’égard du média concerné.</span>
-          </div>
-
-          <p class="press-policy-subtitle">
-            Afin de préserver la clarté et l'exactitude du dossier juridique et environnemental, cette sélection privilégie les reportages répondant aux critères suivants :
-          </p>
-
-          <div class="press-policy-grid">
-            <div class="press-policy-item">
-              <span class="press-policy-num">01</span>
-              <div>
-                <strong>Vérification factuelle des citations</strong>
-                <p>Les propos cités reflètent fidèlement les déclarations émises et le contexte des échanges.</p>
-              </div>
-            </div>
-            <div class="press-policy-item">
-              <span class="press-policy-num">02</span>
-              <div>
-                <strong>Démarche équitable et consultation</strong>
-                <p>Le média a sollicité les précisions requises ou accordé l'opportunité d'éclairer les faits juridiques et techniques complexes.</p>
-              </div>
-            </div>
-            <div class="press-policy-item">
-              <span class="press-policy-num">03</span>
-              <div>
-                <strong>Rigueur de fond sur le dossier</strong>
-                <p>L'angle traite des enjeux scientifiques, légaux (SEM-26-003, BAPE 371) et environnementaux au-delà du seul fait divers.</p>
-              </div>
-            </div>
-            <div class="press-policy-item">
-              <span class="press-policy-num">04</span>
-              <div>
-                <strong>Exactitude des données</strong>
-                <p>Les dates, seuils environnementaux, critères de toxicité et étapes de procédure sont rapportés avec fidélité aux pièces officielles.</p>
-              </div>
-            </div>
-            <div class="press-policy-item">
-              <span class="press-policy-num">05</span>
-              <div>
-                <strong>Respect de la perspective citoyenne</strong>
-                <p>Traitement équilibré et respectueux de la participation publique, sans condescendance liée à l'âge.</p>
-              </div>
-            </div>
-            <div class="press-policy-item">
-              <span class="press-policy-num">06</span>
-              <div>
-                <strong>Rectification diligente en cas d'erreur</strong>
-                <p>Disponibilité pour corriger promptement d'éventuelles coquilles matérielles ou confusions de procédure.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="press-policy-footer">
-            <div class="press-policy-conclusion">
-              <strong>Rigueur et intégrité documentaire :</strong> La précision des faits et le respect du cadre juridique international (CCE / ACEUM) permettent d'informer le public avec la plus haute clarté sur la protection de la Grande Tourbière de Blainville.
-            </div>
-
-            <div class="press-policy-contact-box">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent); flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <strong style="color: var(--accent-deep, var(--accent));">Votre reportage est rigoureux et légitime mais n'apparaît pas ici ?</strong>
-              </div>
-              <p style="margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.55;">
-                Cette sélection est mise à jour manuellement au fil des publications. Si votre publication traite du dossier et respecte la rigueur factuelle, contactez-moi directement à <!--email_off--><a href="mailto:contact@williamguindon.me" style="font-weight: 700; color: var(--accent-deep, var(--accent)); text-decoration: underline;">contact@williamguindon.me</a><!--/email_off--> avec le lien afin qu'elle puisse être examinée pour ajout.
-              </p>
-            </div>
-
-            <div class="press-policy-actions-row" style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line, rgba(0,0,0,0.08));">
-              <a href="apparitions-publiques.html" class="press-policy-all-btn" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--accent, #059669); color: #ffffff; border-radius: 8px; font-weight: 700; font-size: 0.92rem; text-decoration: none; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25); transition: all 0.2s ease;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <span>Accéder à toutes les parutions &amp; entrevues (Registre complet) →</span>
-              </a>
-              <a href="embargo.html#politique-exactitude-medias" class="press-policy-full-link">
-                Consulter les lignes directrices et préférences de collaboration dans la Politique Médias ↗
-              </a>
-            </div>
-          </div>
-        </div>
-      </details>
 
       <!-- Ruban défilant continu des logos médias -->
       <div class="media-logos-ticker-wrapper" role="region" aria-label="Partenaires médias et diffuseurs">
@@ -2880,13 +2689,18 @@
         <div class="blog-carousel-track" id="home-photos-track"></div>
       </div>
 
-      <div class="press-carousel-controls" style="margin-top: 14px; margin-bottom: 20px;">
-        <button class="carousel-nav-btn js-home-feed-prev" type="button" aria-label="Publications précédentes">
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="carousel-nav-btn js-home-feed-next" type="button" aria-label="Publications suivantes">
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
+      <div class="press-carousel-controls" style="margin-top: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: inline-flex; gap: 8px;">
+          <button class="carousel-nav-btn js-home-feed-prev" type="button" aria-label="Publications précédentes">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="carousel-nav-btn js-home-feed-next" type="button" aria-label="Publications suivantes">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <a href="blog.html" class="btn btn-outline" style="border-radius: 9999px; font-size: 0.88rem; font-weight: 700; padding: 8px 18px; text-decoration: none;">
+          Voir toutes les actualités et le carnet complet →
+        </a>
       </div>
 
       <div class="blog-actions-bar">
@@ -3136,21 +2950,7 @@
         </div>
       </div>
 
-      <div class="apropos-fiche-block bio-read-block" style="margin-top: 24px;">
-        <h4 class="factgrid-heading">Fiche d'identité</h4>
-        <dl class="factgrid">
-          <div><dt>Naissance</dt><dd><time itemprop="birthDate" datetime="2011">2011</time></dd></div>
-          <div><dt>Lieu de naissance</dt><dd>Québec, Canada</dd></div>
-          <div><dt>Nationalité</dt><dd itemprop="nationality">Canadienne</dd></div>
-          <div><dt>Ville</dt><dd>Blainville, Québec, Canada</dd></div>
-          <div><dt>Formation</dt><dd>Études secondaires dans les Laurentides</dd></div>
-          <div><dt>Profession</dt><dd itemprop="jobTitle">Militant, étudiant</dd></div>
-          <div><dt>Cause principale</dt><dd>Grande Tourbière de Blainville</dd></div>
-          <div><dt>Dossier international</dt><dd>SEM-26-003 (CCE / ACEUM)</dd></div>
-        </dl>
-      </div>
-
-      <aside class="notice-box-important notice-box-compact" role="note" style="margin-top: 20px;">
+      <aside class="notice-box-important notice-box-compact" role="note" style="margin-top: 24px;">
         <div class="notice-compact-content">
           <span class="notice-badge">Indépendance &amp; Rigueur Scientifique</span>
           <p><strong>Démarche citoyenne autonome :</strong> Action menée sans affiliation partisane ni intérêt commercial. La soumission SEM-26-003 est appuyée par les conseils consultatifs bénévoles de <strong>16 chercheurs, scientifiques, biologistes et juristes</strong> indépendants.</p>
@@ -3739,109 +3539,21 @@
         </details>
 
 
-        <!-- Accordéon 2 : Méthodes chiffrées & Gros fichiers (Session, SwissTransfer, OpenPGP, Proton) -->
-        <details class="contact-details-accordion" id="accordion-chiffre">
-          <summary class="contact-details-summary">
-            <span class="contact-summary-left">
-              <span class="contact-summary-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-              <span class="contact-summary-text">
-                <strong class="contact-summary-title">Canaux confidentiels, gros fichiers &amp; Méthodes chiffrées (Session, SwissTransfer, OpenPGP, Proton)</strong>
-                <span class="contact-summary-desc">Communications chiffrées, transferts volumineux (&le; 50 Go) et anonymat pour lanceurs d'alerte, journalistes et citoyens</span>
-              </span>
+        <!-- Volet Canaux Sécurisés & Lanceurs d'alerte (Isolé avec renvoi dédié) -->
+        <div style="margin-top: 24px; padding: 18px 22px; background: rgba(14, 165, 233, 0.05); border: 1.5px solid rgba(14, 165, 233, 0.25); border-radius: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 260px;">
+            <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: rgba(14, 165, 233, 0.15); color: #0284c7; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </span>
-            <span class="contact-summary-arrow" aria-hidden="true">▾</span>
-          </summary>
-          <div class="contact-details-body">
-            <!-- Canal Session -->
-            <div class="official-card-session-sub">
-              <div class="official-card-session-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <span>Canal Confidentiel Décentralisé (Application Session)</span>
-              </div>
-              <p class="official-card-session-desc">
-                Pour transmettre des documents sans exposer votre adresse IP ni associer de numéro de téléphone, l'application chiffrée décentralisée <strong>Session</strong> est disponible :
-              </p>
-              <div class="official-card-session-actions">
-                <a href="https://sessionweb.org/app" target="_blank" rel="noopener noreferrer" class="btn btn-primary footer-session-btn" style="background:#059669; color:#fff; border-color:#059669;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  <span>Ouvrir Session Web ↗</span>
-                </a>
-                <button class="btn btn-outline footer-session-btn-outline btn-copy-session" type="button" data-copy="05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                  <span>Copier l'identifiant</span>
-                </button>
-                <a href="https://getsession.org/" target="_blank" rel="noopener noreferrer" class="btn btn-outline footer-session-btn-outline">
-                  <span>Télécharger l'app ↗</span>
-                </a>
-              </div>
-              <div class="official-card-id-row">
-                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text);">ID Session :</span>
-                <code class="official-card-id-code">05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072</code>
-                <button class="official-card-btn-copy btn-copy-session" type="button" data-copy="05dc60b62a6ed477b1f0dc5ce1b6a9db7603bf39f1a0efe13c68d63a6cb8a7c072" aria-label="Copier l'identifiant Session">Copier</button>
-              </div>
-              <p style="margin: 10px 0 0 0; font-size: 0.84rem; color: var(--text-muted);">
-                <em>État du service : Le module de clavardage web direct est temporairement désactivé pour maintenance. Veuillez privilégier Session ou le courriel.</em> (<a href="messagerie.html" style="color: var(--accent); text-decoration: underline;">Voir la page messagerie ↗</a>)
-              </p>
-            </div>
-
-            <!-- Bloc Clé Publique OpenPGP -->
-            <div class="official-card-session-sub" style="margin-top: 20px;">
-              <div class="official-card-session-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                <span>Courriel Chiffré — Clé Publique OpenPGP</span>
-              </div>
-              <p class="official-card-session-desc">
-                Pour chiffrer vos communications par courriel de bout en bout ou vérifier l'authenticité de mes messages signés :
-              </p>
-              <div class="official-card-session-actions">
-                <a href="publickey.asc" download="publickey.asc" class="btn btn-primary footer-session-btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                  <span>Télécharger la clé (.asc)</span>
-                </a>
-                <a href="https://keys.openpgp.org/search?q=1CAF48B153AC7DA2996D65B21EFC7E5863D8FD77" target="_blank" rel="noopener noreferrer" class="btn btn-outline footer-session-btn-outline">
-                  <span>Vérifier sur keys.openpgp.org ↗</span>
-                </a>
-              </div>
-              <div class="official-card-id-row">
-                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text);">Empreinte (Fingerprint) :</span>
-                <code class="official-card-id-code">1CAF 48B1 53AC 7DA2 996D 65B2 1EFC 7E58 63D8 FD77</code>
-                <button class="official-card-btn-copy btn-copy-session" type="button" data-copy="1CAF48B153AC7DA2996D65B21EFC7E5863D8FD77" aria-label="Copier l'empreinte PGP">Copier</button>
-              </div>
-            </div>
-
-            <!-- Bloc Proton Mail Anonyme -->
-            <div class="official-card-session-sub" style="margin-top: 20px; background: rgba(14, 165, 233, 0.06); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 16px 20px;">
-              <div class="official-card-session-title" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <span style="display: flex; align-items: center; gap: 8px;">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
-                  <span>Vous ne souhaitez pas utiliser votre courriel personnel ?</span>
-                </span>
-                <a href="https://account.proton.me/fr/mail/signup?plan=free&noPromo=1" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size: 0.84rem; font-weight: 700; padding: 6px 14px; border-radius: 9999px; text-decoration: none; border-color: #0284c7; color: #0284c7; background: transparent;">
-                  Créer un compte Proton gratuit ↗
-                </a>
-              </div>
-              <p class="official-card-session-desc" style="margin-top: 8px; margin-bottom: 0;">
-                Pour communiquer par courriel tout en préservant votre anonymat complet (sans numéro de téléphone exigé ni traçage publicitaire), vous pouvez créer une adresse chiffrée gratuite sur <strong>Proton Mail</strong>.
-              </p>
-            </div>
-
-            <!-- Bloc SwissTransfer / Infomaniak pour gros fichiers (Épuré) -->
-            <div class="official-card-session-sub" style="margin-top: 16px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 14px 18px;">
-              <div class="official-card-session-title" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
-                <span style="display: flex; align-items: center; gap: 8px; color: var(--text);">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: #059669;" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  <span>Envoi de gros fichiers ou dossiers volumineux (jusqu'à 50 Go)</span>
-                </span>
-                <a href="https://www.swisstransfer.com/fr" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size: 0.84rem; font-weight: 700; padding: 6px 14px; border-radius: 9999px; text-decoration: none; border-color: #059669; color: #059669; background: transparent;">
-                  SwissTransfer ↗
-                </a>
-              </div>
-              <p class="official-card-session-desc" style="margin: 0; font-size: 0.84rem; line-height: 1.5; color: var(--text-muted);">
-                Pour transférer des dossiers lourds ou des pièces volumineuses sans inscription, le service suisse sécurisé <strong>SwissTransfer</strong> (Infomaniak, serveurs 100 % suisses, chiffrement LUKS/AES-256) est recommandé. Détails des garanties : <a href="privacy.html#swisstransfer" style="color: var(--accent); text-decoration: underline;">Politique de confidentialité ↗</a> et <a href="opsec.html#swisstransfer" style="color: var(--accent); text-decoration: underline;">Protocole OPSEC ↗</a>.
-              </p>
+            <div>
+              <strong style="color: var(--text); font-size: 0.98rem; display: block; margin-bottom: 2px;">Transmettre un document sensible ou confidentiel (OpSec)</strong>
+              <span style="color: var(--text-muted); font-size: 0.86rem; line-height: 1.4; display: block;">Canal Session chiffré décentralisé, clé publique OpenPGP, Proton Mail anonyme et transferts sécurisés jusqu'à 50 Go.</span>
             </div>
           </div>
-        </details>
+          <a href="opsec.html" class="btn btn-outline" style="border-color: #0284c7; color: #0284c7; font-weight: 700; font-size: 0.88rem; padding: 8px 18px; border-radius: 9999px; text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+            <span>Consulter le protocole OpSec ↗</span>
+          </a>
+        </div>
       </section>
     </div>
   </section>
@@ -3871,8 +3583,6 @@
 </footer>
 
 <!-- Scripts complémentaires différés hors du chemin critique -->
-<script src="assets/vendor/curtains/curtains.umd.min.js?v=20260920-v7" defer></script>
-<script src="assets/js/hero-depth-3d.js?v=20261009-v13-aerial3d" defer></script>
 <script src="assets/js/chat-ai.js?v=20261016-v2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2.15.0" integrity="sha384-80vV/KEhBwD5tKGZUNJIP8v35xgzoh4G8XSqB97o794UbhhHRhOfKhrNGPFrhRwY" crossorigin="anonymous" async defer></script>
 

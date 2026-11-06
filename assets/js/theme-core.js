@@ -1632,23 +1632,12 @@
               <span class="site-deadline-dot" aria-hidden="true"></span>
               <span>15 DÉCEMBRE 2026</span>
             </span>
-            <span class="site-deadline-title">Prochaine échéance CCE · Détermination Dossier factuel (Art. 24.28) :</span>
-          </div>
-          <div class="site-deadline-center">
-            <div class="site-deadline-clock notranslate" translate="no">
-              <span class="site-deadline-val js-cd-days">—</span><span class="site-deadline-unit">j</span>
-              <span class="site-deadline-sep">:</span>
-              <span class="site-deadline-val js-cd-hours">—</span><span class="site-deadline-unit">h</span>
-              <span class="site-deadline-sep">:</span>
-              <span class="site-deadline-val js-cd-mins">—</span><span class="site-deadline-unit">m</span>
-              <span class="site-deadline-sep">:</span>
-              <span class="site-deadline-val js-cd-secs">—</span><span class="site-deadline-unit">s</span>
-            </div>
+            <span class="site-deadline-title">Prochaine échéance CCE · Détermination Dossier factuel (Art. 24.28 ACEUM)</span>
           </div>
           <div class="site-deadline-right">
             <span class="site-deadline-tz js-cd-tz-badge" id="site-deadline-tz" style="display: none;"></span>
-            <a href="live.html" class="site-deadline-btn">
-              <span>Suivre en direct ↗</span>
+            <a href="live.html" class="site-deadline-btn" title="Consulter le registre direct CCE et le décompte légal">
+              <span>Registre CCE direct ↗</span>
             </a>
           </div>
         </div>
