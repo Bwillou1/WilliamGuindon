@@ -4460,9 +4460,18 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   }
 }
 
-  // Tente d'interroger l'API avec un délai de sécurité de 2,5 s avant bascule sur la liste certifiée
+  // Affichage immédiat 0 ms depuis la liste certifiée locale, sans attendre le réseau externe
+  let hasRendered = false;
+  try {
+    processFiles(fallbackList);
+    hasRendered = true;
+  } catch (e) {
+    console.warn("Échec rendu initial fallbackList:", e);
+  }
+
+  // Tente ensuite d'actualiser discrètement en arrière-plan si Archive.org répond rapidement (timeout 1.5 s)
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 2500);
+  const timeoutId = setTimeout(() => controller.abort(), 1500);
 
   fetch(apiUrl, { signal: controller.signal })
     .then(r => {
@@ -4472,14 +4481,17 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     })
     .then(data => {
       if (data && data.result && data.result.length > 50) {
-        processFiles(data.result);
-      } else {
-        processFiles(fallbackList);
+        // Met à jour silencieusement uniquement s'il y a plus de pièces
+        if (!hasRendered || data.result.length > fallbackList.length) {
+          processFiles(data.result);
+        }
       }
     })
     .catch(() => {
       clearTimeout(timeoutId);
-      processFiles(fallbackList);
+      if (!hasRendered) {
+        processFiles(fallbackList);
+      }
     });
 
   // Gestion du redimensionnement glissant et du repli de la barre latérale gauche
