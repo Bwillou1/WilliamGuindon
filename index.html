@@ -113,7 +113,7 @@
 <link rel="alternate" type="text/markdown" href="https://williamguindon.me/llms.txt" title="SEM-26-003 Full Markdown Knowledge Base">
 <link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
 <meta name="color-scheme" content="light dark">
-<link rel="stylesheet" href="style.css?v=20261106-v94">
+<link rel="stylesheet" href="style.css?v=20261106-v95">
 <link rel="preload" as="image" href="assets/media/william-guindon.webp" type="image/webp" fetchpriority="high">
 <meta name="google-site-verification" content="google57da095d83ebd58e">
 <meta name="google-site-verification" content="vKxtipo0mg9PwfZzf6RQihUUPMnswLsXMYqYcKFJe20">
@@ -1493,12 +1493,12 @@
         <link itemprop="sameAs" href="https://github.com/Bwillou1">
         <link itemprop="sameAs" href="https://g.dev/williamguindondev">
 
-        <hr class="hero-prestige-divider" aria-hidden="true">
-
-        <blockquote class="hero-prestige-quote">
-          <p>« Même que l'usine soit conforme ou pas conforme, je veux juste la vérité. C'est ça mon but. »</p>
-          <cite>— William Guindon, <a href="https://youtu.be/lC7uBOXQsQs?si=aR6AgXZo0oJBdB6u" target="_blank" rel="noopener noreferrer">entrevue TVBL ↗</a></cite>
-        </blockquote>
+        <div class="hero-prestige-quote-box">
+          <blockquote class="hero-prestige-quote">
+            <p>« Même que l'usine soit conforme ou pas conforme, je veux juste la vérité. C'est ça mon but. »</p>
+            <cite>— William Guindon, <a href="https://youtu.be/lC7uBOXQsQs?si=aR6AgXZo0oJBdB6u" target="_blank" rel="noopener noreferrer">entrevue TVBL ↗</a></cite>
+          </blockquote>
+        </div>
 
         <div class="hero-prestige-actions">
           <a href="registre-cce-sem26003.html" class="hero-prestige-btn primary">
@@ -1507,6 +1507,20 @@
           <a href="presse.html" class="hero-prestige-btn secondary">
             <span>Espace presse ↗</span>
           </a>
+        </div>
+
+        <!-- Raccourcis discrets dans la bulle : Audio & Version courte -->
+        <div class="hero-prestige-footer-tools">
+          <button type="button" id="btn-audio-read" class="hero-mini-tool-btn" aria-label="Écouter la biographie en version audio">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            <span>Écouter la biographie (audio)</span>
+          </button>
+          <span id="audio-status-text" class="audio-status-label" style="display:none;" aria-live="polite"></span>
+
+          <button type="button" class="hero-mini-tool-btn js-toggle-simple-mode" aria-label="Activer la version courte sans superflu" title="Basculer vers la vue épurée">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span>Version courte</span>
+          </button>
         </div>
       </div>
     </div>
@@ -1929,21 +1943,9 @@
               start-date="2026-12-15"
               start-time="00:00"
               end-date="2026-12-15"
-              time-zone="America/Toronto"
-              location="Commission de coopération environnementale (CCE / CEC)"
-              options="'Google','Apple','iCal'"
-              buttons-list
-              hide-icon
-              hide-background
-              light-mode="dark"
-              size="2"
-              label="Ajouter à l'agenda"
-            ></add-to-calendar-button>
-          </div>
-        </article>
               end-time="23:59"
               time-zone="America/Toronto"
-              location="blainville"
+              location="Blainville, Québec, Canada"
               organizer="William Guindon|contact@williamguindon.me"
               availability="free"
               options="'apple','google','ical','outlookcom','yahoo','msteams','ms365'"
@@ -1951,6 +1953,7 @@
               hide-icon-modal
               light-mode="system"
               language="fr"
+              label="Ajouter à l'agenda"
             ></add-to-calendar-button>
           </div>
         </article>
@@ -2897,25 +2900,6 @@
     </div>
   </section>
 
-  <section id="autochtones" class="indigenous-section">
-    <div class="wrap">
-      <h2>Espace Nations Autochtones</h2>
-      <h3>Territoire ancestral et solidarité environnementale</h3>
-      <p>La Grande Tourbière de Blainville et les basses terres du Saint-Laurent sont situées sur des territoires traditionnels non cédés des Premières Nations, notamment les <strong>Kanien'kehá:ka (Mohawks)</strong> et les peuples <strong>Anishinaabeg</strong>.</p>
-      
-      <div class="indigenous-box">
-        <h4 class="indigenous-title">Garde de la Terre &amp; Justice Environnementale Intergénérationnelle</h4>
-        <p class="indigenous-body">« Nous n'héritons pas de la terre de nos parents, nous l'empruntons à nos enfants. » Le dossier SEM-26-003 s'appuie sur la responsabilité partagée de préserver les milieux humides rares contre l'enfouissement de matières toxiques et industrielles.</p>
-        <div style="margin-top: 14px;">
-          <a href="autochtone.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
-            <span>Explorer le mémoire autochtone complet</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section id="apropos">
     <div class="wrap">
       <div class="apropos-header-layout">
@@ -3088,7 +3072,7 @@
             <span class="doc-ref-tag">SEM-26-003 · Art. 24.28 ACEUM</span>
           </div>
           <h4>Observations de l'auteur sur la réponse du Canada (17 octobre 2026)</h4>
-          <p>Mémoire formel en 7 moyens de droit réfutant la tentative de rejet du Canada (pétition BVG 0546) et exigeant la poursuite de l'examen vers un Dossier factuel indépendant. Inclut la réponse officielle d'Ottawa (72-RSP).</p>
+          <p>Mémoire formel en 7 moyens de droit réfutant la tentative de rejet du Canada (pétition BVG 0546) et exigeant la constitution d'un Dossier factuel indépendant. Accompagné de la réponse officielle d'Ottawa (72-RSP) et de l'accusé formel de la CCE.</p>
           <div class="doc-card-actions">
             <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Observations du 17 oct. (PDF) ↗</a>
             <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Réponse Canada (72-RSP) ↗</a>
@@ -3096,18 +3080,18 @@
           </div>
         </div>
 
-        <!-- Pièce 2 : Enquête Lobbyisme fédéral (Stablex / ECCC) -->
+        <!-- Pièce 2 : Détermination officielle CCE & Soumission initiale -->
         <div class="doc-card">
           <div class="doc-card-top">
-            <span class="doc-badge" style="background: rgba(124, 58, 237, 0.12); color: #7c3aed; border: 1px solid rgba(124, 58, 237, 0.3);">Lobbyisme fédéral · Commissariat au lobbying</span>
-            <span class="doc-ref-tag">Rapport n° 385380-701620</span>
+            <span class="doc-badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Décision CCE · Art. 24.27(2)(3)</span>
+            <span class="doc-ref-tag">DET-26-003 &amp; Soumission</span>
           </div>
-          <h4>Rapport d'enregistrement n° 385380-701620 (Stablex / ECCC)</h4>
-          <p>Preuve de communication officielle entre la haute direction d'ECCC et la représentante de Stablex concernant les matières dangereuses et la cellule 6 en plein examen CCE.</p>
+          <h4>Détermination officielle CCE &amp; Soumission citoyenne</h4>
+          <p>Décision formelle du Secrétariat CCE sommant le gouvernement du Canada de répondre aux allégations de défaut d'application des lois environnementales, faisant suite au dépôt de la soumission SEM-26-003 par William Guindon.</p>
           <div class="doc-card-actions">
-            <a href="lobby.html" class="btn btn-primary btn-doc-action">Enquête Lobbying complète ↗</a>
-            <a href="https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/cmmLgPblcVw?comlogId=701620&amp;lang=fra" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Registre officiel ↗</a>
-            <a href="https://replayweb.page/?source=https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Archive WACZ ↗</a>
+            <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-doc-action">Détermination CCE (PDF) ↗</a>
+            <a href="viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm btn-doc-action">Soumission initiale (PDF) ↗</a>
+            <a href="registre.html" class="btn btn-ghost btn-sm btn-doc-action">Registre CCE ↗</a>
           </div>
         </div>
       </div>
@@ -3216,46 +3200,6 @@
       <div class="social-sync-header">
         <h2>Dernières publications &amp; vidéos</h2>
         <p class="social-sync-subtitle">Actualités, interventions et déclarations publiques en direct des réseaux officiels</p>
-      </div>
-
-      <!-- Déclaration vidéo officielle de William Guindon (Protection 2-clics anti-cookies) -->
-      <div class="video-declaration-box" style="margin: 0 auto 36px; max-width: 440px; text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12)); border-radius: 16px; padding: 22px 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
-        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(225, 29, 72, 0.15); color: #fecdd3; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 12px; border: 1px solid rgba(244, 63, 94, 0.35); letter-spacing: 0.05em;">
-          <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
-          Déclaration vidéo officielle · Dossier CCE SEM-26-003
-        </div>
-        <h3 style="font-size: 1.15rem; margin: 0 0 6px; color: var(--text); font-weight: 800;">Réponse de William Guindon au dépôt du Canada</h3>
-        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0 0 16px; line-height: 1.5;">Intervention citoyenne sur les faits matériels et la sauvegarde de la Grande Tourbière de Blainville.</p>
-        
-        <div id="hero-reel-container" onclick="window.loadHeroReel && window.loadHeroReel()" role="button" tabindex="0" aria-label="Lancer la réponse vidéo de William Guindon" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadHeroReel&amp;&amp;window.loadHeroReel();}" style="position: relative; width: 100%; max-width: 267px; height: 476px; margin: 0 auto 12px; border-radius: 14px; overflow: hidden; background: #0b0f19 url('assets/media/tourbiere-hero-3d.webp') center/cover no-repeat; box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(225,29,72,0.2); border: 2px solid rgba(244, 63, 94, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px 16px; box-sizing: border-box; cursor: pointer;">
-          <!-- Voile dégradé cinéma -->
-          <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.8) 100%); pointer-events: none;"></div>
-
-          <!-- Badge supérieur -->
-          <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">
-            <span style="width: 7px; height: 7px; background: #f43f5e; border-radius: 50%; box-shadow: 0 0 6px #f43f5e;"></span>
-            <span>Grande Tourbière</span>
-          </div>
-
-          <!-- Bouton central de lecture -->
-          <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-            <div class="hero-reel-play-btn" style="width: 64px; height: 64px; border-radius: 50%; background: #e11d48; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.7), 0 0 0 4px rgba(255, 255, 255, 0.25); transition: transform 0.2s ease, box-shadow 0.2s ease;">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffffff" style="margin-left: 3px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </div>
-            <span style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
-              Visionner la vidéo
-            </span>
-          </div>
-
-          <!-- Note discrète au bas -->
-          <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #cbd5e1; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>1 clic pour lancer · Zéro traceur avant clic</span>
-          </div>
-        </div>
-        <a href="https://www.facebook.com/reel/1796254438299162/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 6px; background: rgba(225, 29, 72, 0.18); border: 1px solid rgba(244, 63, 94, 0.4); color: #ffffff; text-decoration: none; font-size: 11.5px; font-weight: 700;">
-          <span>Visionner directement sur Facebook Reel ↗</span>
-        </a>
       </div>
 
       <!-- Sélecteur d'onglets réseaux sociaux -->
