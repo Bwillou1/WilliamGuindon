@@ -52,10 +52,8 @@ const currentRootCid = (mirrorsData.mirrors.web3_ipfs && mirrorsData.mirrors.web
   : 'bafybeieuo3kcsapwwy5l373zezhpi6pre4il26nzb2d3ynf5lhep2l3hfe';
 
 mirrorsData.mirrors.web3_ipfs = {
-  name: 'InterPlanetary File System (IPFS) & IPNS',
+  name: 'InterPlanetary File System (IPFS)',
   status: 'Disponible',
-  ipnsAddress: 'k51qzi5uqu5dkg35m04w3558q1pnmx813f88dgu873n129g54u7v4m9b',
-  ipnsGateway: 'https://dweb.link/ipns/k51qzi5uqu5dkg35m04w3558q1pnmx813f88dgu873n129g54u7v4m9b',
   ensDomain: 'williamguindon.eth.limo',
   latestRootCid: currentRootCid,
   gateways: [
