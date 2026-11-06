@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v223';
+const CACHE_NAME = 'wg-pwa-v224';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -126,6 +126,7 @@ const ASSETS_TO_CACHE = [
   '/assets/media/signalement-faunique-plan-bouchard.webp',
   '/assets/media/coulisses-replique-cce-sem26003.jpg',
   '/assets/media/coulisses-replique-cce-sem26003.webp',
+  '/assets/media/rencontre-nadine-le-gal-6-nov-2026.webp',
   '/assets/media/affiche-documentaire-sem26003.webp',
   '/manifest.json',
   '/favicon.svg',
