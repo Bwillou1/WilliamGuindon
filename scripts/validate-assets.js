@@ -45,6 +45,7 @@ const CORE_FILES = [
   'liens.html',
   'dev.html',
   'portrait.html',
+  'diplomatie.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
   'sitemap-news.xml',
