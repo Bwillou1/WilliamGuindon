@@ -3145,9 +3145,23 @@ nav > .nav-simple-mode-btn {
   }
 
   .mmenu-cat-icon {
-    font-size: 20px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: var(--accent-wash, rgba(16, 185, 129, 0.1)) !important;
+    border: 1px solid rgba(16, 185, 129, 0.22) !important;
+    color: var(--accent, #059669) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     margin-right: 12px !important;
     flex-shrink: 0 !important;
+  }
+
+  [data-theme="dark"] .mmenu-cat-icon {
+    background: rgba(16, 185, 129, 0.14) !important;
+    border-color: rgba(52, 211, 153, 0.28) !important;
+    color: #34d399 !important;
   }
 
   .mmenu-cat-text {
@@ -3222,7 +3236,19 @@ nav > .nav-simple-mode-btn {
   }
 
   .mmenu-quick-item span {
-    font-size: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+    background: var(--accent-wash, rgba(16, 185, 129, 0.1)) !important;
+    color: var(--accent, #059669) !important;
+  }
+
+  [data-theme="dark"] .mmenu-quick-item span {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
   }
 
   .mmenu-quick-item small {
@@ -3276,10 +3302,18 @@ nav > .nav-simple-mode-btn {
   }
 
   .mmenu-panel-heading {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
     font-size: 13px !important;
     font-weight: 700 !important;
     color: var(--text) !important;
     letter-spacing: 0.02em !important;
+  }
+
+  .mmenu-panel-heading svg {
+    color: var(--accent, #059669) !important;
+    flex-shrink: 0 !important;
   }
 
   /* Liste des liens complets dans chaque sous-panneau */
@@ -3334,9 +3368,21 @@ nav > .nav-simple-mode-btn {
   }
 
   .mobile-link-icon {
-    font-size: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 7px !important;
+    background: var(--accent-wash, rgba(16, 185, 129, 0.1)) !important;
+    color: var(--accent, #059669) !important;
     line-height: 1 !important;
     flex-shrink: 0 !important;
+  }
+
+  [data-theme="dark"] .mobile-link-icon {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
   }
 
   .mobile-link-text {
@@ -3443,17 +3489,32 @@ nav > .nav-simple-mode-btn {
   .header-tools {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 6px !important;
+    gap: 5px !important;
     z-index: var(--z-modal);
+    flex-shrink: 0 !important;
   }
 
   .header-tools .menu-toggle {
-    display: flex !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     min-width: 38px !important;
     min-height: 38px !important;
     width: 38px !important;
     height: 38px !important;
-    padding: 6px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: 1.5px solid var(--line) !important;
+    background: var(--bg-card, #ffffff) !important;
+    color: var(--text) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    flex-shrink: 0 !important;
+  }
+
+  [data-theme="dark"] .header-tools .menu-toggle {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    color: #f8fafc !important;
   }
 
   .header-tools .nav-notif-btn,
@@ -3466,6 +3527,7 @@ nav > .nav-simple-mode-btn {
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .nav-notif-panel {
@@ -3498,6 +3560,69 @@ nav > .nav-simple-mode-btn {
 
   .nav-notif-footer {
     flex-shrink: 0 !important;
+  }
+}
+
+/* Adaptation mobile compacte (< 640px) pour que le bouton menu 3 lignes soit 100 % visible sans jamais déborder */
+@media (max-width: 640px) {
+  header.site .wrap {
+    padding: 0 10px !important;
+    gap: 6px !important;
+  }
+
+  .brand {
+    font-size: 12.2px !important;
+    letter-spacing: 0.01em !important;
+    min-width: 0 !important;
+  }
+
+  .brand svg,
+  .brand img {
+    width: 22px !important;
+    height: 22px !important;
+    margin-right: 5px !important;
+  }
+
+  .header-tools {
+    gap: 4px !important;
+  }
+
+  .header-tools .nav-simple-mode-btn,
+  .header-tools .nav-notif-btn,
+  .header-tools .theme-toggle-btn,
+  .header-tools .menu-toggle {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .header-tools .menu-toggle svg {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .header-tools .nav-lang-dropdown .nav-lang-btn {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 7px !important;
+    font-size: 11px !important;
+    gap: 2px !important;
+    border-radius: 999px !important;
+    border: 1px solid var(--line) !important;
+  }
+
+  .header-tools .nav-lang-dropdown .nav-lang-btn svg {
+    display: none !important;
+  }
+
+  .mobile-flat-nav {
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 
@@ -7282,8 +7407,12 @@ body.ai-sidebar-active {
 body.ai-sidebar-active .floating-ai-btn,
 body:has(.ai-modal-overlay.active) .floating-ai-btn,
 .ai-modal-overlay.active ~ .floating-ai-btn,
+body.no-scroll .floating-ai-btn,
+body:has(nav.active) .floating-ai-btn,
+body:has(.mobile-nav-backdrop.active) .floating-ai-btn,
 body.nav-drawer-open .floating-ai-btn,
 html.nav-drawer-open .floating-ai-btn,
+body.no-scroll .ai-modal-overlay,
 body.nav-drawer-open .ai-modal-overlay,
 html.nav-drawer-open .ai-modal-overlay,
 .hidden-by-nav-drawer {

@@ -36,6 +36,7 @@
     --color-yellow: #eab308;
     --color-orange: #f97316;
     --color-red: #ef4444;
+    --color-purple: #a855f7;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
@@ -141,6 +142,7 @@
   .legend-dot.yellow { background: var(--color-yellow); }
   .legend-dot.orange { background: var(--color-orange); }
   .legend-dot.red { background: var(--color-red); }
+  .legend-dot.purple { background: var(--color-purple); }
 
   /* Carte générale */
   .card-panel {
@@ -276,6 +278,7 @@
   .day-tick.yellow { background: var(--color-yellow); }
   .day-tick.orange { background: var(--color-orange); }
   .day-tick.red { background: var(--color-red); }
+  .day-tick.purple { background: var(--color-purple); }
 
   /* Curseur info-bulle dynamique lors du survol */
   .tick-hover-card {
@@ -379,6 +382,12 @@
     background: rgba(239, 68, 68, 0.12);
   }
 
+  .badge-circle.purple {
+    border: 2px solid var(--color-purple);
+    color: #e9d5ff;
+    background: rgba(168, 85, 247, 0.18);
+  }
+
   /* Boîte de détails révélée uniquement au clic */
   .incident-details-box {
     margin-top: 18px;
@@ -430,6 +439,12 @@
     background: rgba(239, 68, 68, 0.15);
     color: var(--color-red);
     border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .severity-pill.purple {
+    background: rgba(168, 85, 247, 0.18);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.38);
   }
 
   .severity-pill.green {
@@ -649,6 +664,7 @@
     <span class="legend-item"><span class="legend-dot yellow"></span> Moyen</span>
     <span class="legend-item"><span class="legend-dot orange"></span> Important</span>
     <span class="legend-item"><span class="legend-dot red"></span> Critique</span>
+    <span class="legend-item"><span class="legend-dot purple"></span> Site indisponible</span>
   </div>
 
   <!-- 1. Carte : Disponibilité des systèmes (avec barres journalières interactives) -->
@@ -660,7 +676,7 @@
       </div>
       <div class="date-switcher">
         <button class="date-switcher-btn" type="button" aria-label="Période précédente" onclick="shiftDayWindow(-1)">‹</button>
-        <span id="uptimeWindowLabel">3 sept. – 1 nov. 2026</span>
+        <span id="uptimeWindowLabel">8 sept. – 6 nov. 2026</span>
         <button class="date-switcher-btn" type="button" aria-label="Période suivante" onclick="shiftDayWindow(1)">›</button>
       </div>
     </div>
@@ -672,7 +688,7 @@
         <strong style="color:var(--text-head);">Bot Sentinelle &amp; Surveillance Ahrefs</strong>
         <span style="color:var(--text-muted);">· Audit quotidien automatisé</span>
       </div>
-      <div id="sentinelStatusLabel" style="color:#a7f3d0;">Dernier contrôle : 2 nov. 2026 · Anomalie détectée</div>
+      <div id="sentinelStatusLabel" style="color:#d8b4fe;">Dernier contrôle : 6 nov. 2026 · Rétabli après indisponibilité</div>
     </div>
 
     <!-- Composant 1 : Site web & Carnet de bord -->
@@ -1006,6 +1022,22 @@
       summary: 'Bascule automatique saisonnière et ajustement du contraste sur le panorama enneigé.',
       desc: 'Au 1er novembre 2026, le déclenchement automatique du modèle 3D hivernal a affiché le paysage enneigé de la tourbière. Le fond blanc diminuait la lisibilité du texte de présentation.',
       resolution: 'Préservation du panorama lumineux d\'origine et ajout d\'un encadré en verre dépoli vert givré avec effet de flou pour une lisibilité parfaite.'
+    },
+    '2026-11-05': {
+      severity: 'purple',
+      severityLabel: 'Site indisponible',
+      title: 'Indisponibilité de la navigation mobile (panneau blanc) & superposition du bandeau sur iPad/ordinateur',
+      summary: 'Menu mobile ouvrant un panneau blanc inutilisable, superposition de la barre de navigation et masquage de la bannière sur iPad.',
+      desc: 'Sur smartphone, l\'ouverture du menu hamburger affichait un panneau latéral entièrement blanc empêchant toute navigation entre les pages du site. En parallèle, sur iPad et écrans intermédiaires, la bannière de suivi CCE était masquée et les éléments de la barre de navigation se superposaient.',
+      resolution: 'Reconstruction complète du tiroir de navigation mobile multi-panneaux (mmenu), rétablissement de la bannière responsive sur iPad et regroupement dynamique des outils d\'en-tête.'
+    },
+    '2026-11-06': {
+      severity: 'purple',
+      severityLabel: 'Site indisponible',
+      title: 'Indisponibilité de l\'explorateur documentaire (blocage Archive.org 35 s) & bouton menu mobile hors écran',
+      summary: 'Gel de 35 s sur dossier-journalistes.html, bouton menu 3 lignes coupé hors de l\'écran sur mobile et superposition du bouton Chat IA.',
+      desc: 'L\'explorateur des 222 pièces (dossier-journalistes.html) attendait de manière synchrone la réponse de l\'API externe Archive.org (35,39 secondes de latence), laissant la page bloquée sur un écran de chargement. De plus, sur téléphone mobile, le bouton menu à 3 lignes débordait hors du bord droit de l\'écran et la bulle flottante Chat IA restait superposée par-dessus le menu ouvert.',
+      resolution: 'Rendu instantané (0 ms) des 222 pièces depuis l\'index local embarqué avec enrichissement asynchrone en arrière-plan, compactage responsive de l\'en-tête mobile (< 640px), masquage automatique du bouton Chat IA à l\'ouverture du menu et remplacement intégral des émojis par des icônes vectorielles SVG.'
     }
   };
 
@@ -1017,7 +1049,7 @@
     if (serviceKey === 'web') {
       return inc; // Le site web subit tous les incidents de routage/frontend
     } else if (serviceKey === 'cce') {
-      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31') {
+      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06') {
         return inc;
       }
       return null;
@@ -1038,8 +1070,8 @@
     if (!container) return;
     container.innerHTML = '';
 
-    // Fenêtre des 60 derniers jours se terminant le 1er novembre 2026
-    var endDate = new Date(2026, 10, 1); // 1er nov. 2026
+    // Fenêtre des 60 derniers jours se terminant le 6 novembre 2026
+    var endDate = new Date(2026, 10, 6); // 6 nov. 2026
     var totalDays = 60;
 
     for (var i = totalDays - 1; i >= 0; i--) {
@@ -1097,6 +1129,7 @@
     if (severity === 'Moyen') dotColor = '#eab308';
     if (severity === 'Important') dotColor = '#f97316';
     if (severity === 'Critique') dotColor = '#ef4444';
+    if (severity === 'Site indisponible') dotColor = '#a855f7';
 
     tooltipEl.innerHTML = '<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:' + dotColor + '; margin-right:5px;"></span>' +
                           '<strong>' + humanDate + '</strong> · ' + severity + ' : ' + summary;
@@ -1120,7 +1153,7 @@
     if (step > 0) {
       lbl.textContent = 'Novembre 2026 – En cours';
     } else {
-      lbl.textContent = '3 sept. – 1 nov. 2026';
+      lbl.textContent = '8 sept. – 6 nov. 2026';
     }
   }
 

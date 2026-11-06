@@ -1905,14 +1905,39 @@
         const isEs = document.documentElement.lang && document.documentElement.lang.startsWith('es');
 
         const ctaTitle = isEn ? 'How to Act & Support' : (isEs ? 'Cómo Actuar y Apoyar' : 'Comment Agir & Soutenir');
-        const ctaSub = isEn ? 'Citizen petition and advocacy' : (isEs ? 'Petición ciudadana y apoyo' : 'Pétition, dons et mobilisation citoyenne');
+        const ctaSub = isEn ? 'Citizen petition and advocacy' : (isEs ? 'Petición ciudadana y apoyo' : 'Petición, dons et mobilisation citoyenne'.replace('Petición', 'Pétition'));
+
+        const mSvg = {
+          bolt: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+          folder: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`,
+          news: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>`,
+          scale: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>`,
+          cpu: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><path d="M9 1v3"></path><path d="M15 1v3"></path><path d="M9 20v3"></path><path d="M15 20v3"></path><path d="M20 9h3"></path><path d="M20 14h3"></path><path d="M1 9h3"></path><path d="M1 14h3"></path></svg>`,
+          shield: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+          book: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`,
+          clock: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+          leaf: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>`,
+          search: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
+          landmark: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="22" x2="21" y2="22"></line><line x1="6" y1="18" x2="6" y2="11"></line><line x1="10" y1="18" x2="10" y2="11"></line><line x1="14" y1="18" x2="14" y2="11"></line><line x1="18" y1="18" x2="18" y2="11"></line><polygon points="12 2 20 7 4 7"></polygon></svg>`,
+          file: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`,
+          globe: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+          pen: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>`,
+          megaphone: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg>`,
+          camera: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`,
+          rss: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>`,
+          heart: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>`,
+          mail: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>`,
+          chat: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+          git: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>`,
+          lock: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`
+        };
 
         flatNav.innerHTML = `
           <div class="mmenu-slider">
             <!-- 1. PANNEAU RACINE PRINCIPAL -->
             <div class="mmenu-panel is-active" id="mmenu-root">
               <a href="agir.html" class="mobile-cta-btn">
-                <span class="mobile-cta-badge">✊ ${isEn ? 'Priority Action' : (isEs ? 'Acción prioritaria' : 'Action prioritaire')}</span>
+                <span class="mobile-cta-badge">${mSvg.bolt}${isEn ? 'Priority Action' : (isEs ? 'Acción prioritaria' : 'Action prioritaire')}</span>
                 <div class="mobile-cta-body">
                   <strong>${ctaTitle}</strong>
                   <span>${ctaSub}</span>
@@ -1923,7 +1948,7 @@
               <div class="mmenu-categories">
                 <!-- Passerelle 1 : Dossier CCE & Enquêtes -->
                 <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-dossier">
-                  <span class="mmenu-cat-icon">📁</span>
+                  <span class="mmenu-cat-icon">${mSvg.folder}</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'Investigation & Evidence' : (isEs ? 'Expediente e Investigación' : 'Dossier CCE & Enquêtes')}</span>
                     <span class="mmenu-cat-desc">Stablex, registre, 222 pièces, partis...</span>
@@ -1936,7 +1961,7 @@
 
                 <!-- Passerelle 2 : Actualités & Presse -->
                 <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-medias">
-                  <span class="mmenu-cat-icon">📰</span>
+                  <span class="mmenu-cat-icon">${mSvg.news}</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'News, Press & Media' : (isEs ? 'Noticias y Medios' : 'Actualités & Espace Presse')}</span>
                     <span class="mmenu-cat-desc">Blog, kit média, communiqués, photos...</span>
@@ -1949,7 +1974,7 @@
 
                 <!-- Passerelle 3 : Autonomie & Âgisme -->
                 <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-autonomie">
-                  <span class="mmenu-cat-icon">⚖️</span>
+                  <span class="mmenu-cat-icon">${mSvg.scale}</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'Autonomy & Ageism' : (isEs ? 'Autonomía y Edadismo' : 'Autonomie & Âgisme')}</span>
                     <span class="mmenu-cat-desc">${isEn ? 'Wmail — Public redacted annex' : (isEs ? 'Wmail — Anexo público redactado' : 'Wmail — Annexe publique caviardée')}</span>
@@ -1962,7 +1987,7 @@
 
                 <!-- Passerelle 4 : Outils, IA & Échanges -->
                 <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-outils">
-                  <span class="mmenu-cat-icon">🤖</span>
+                  <span class="mmenu-cat-icon">${mSvg.cpu}</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'Tools, AI & Contact' : (isEs ? 'Herramientas, IA y Contacto' : 'Outils, IA & Contact')}</span>
                     <span class="mmenu-cat-desc">Messagerie Nostr, IA, projets GitHub...</span>
@@ -1975,7 +2000,7 @@
 
                 <!-- Passerelle 5 : Chartes & Politiques -->
                 <button type="button" class="mmenu-category-btn" data-mmenu-target="mmenu-politiques">
-                  <span class="mmenu-cat-icon">🛡️</span>
+                  <span class="mmenu-cat-icon">${mSvg.shield}</span>
                   <div class="mmenu-cat-text">
                     <span class="mmenu-cat-title">${isEn ? 'Charters & Legal Framework' : (isEs ? 'Cartas y Marco Legal' : 'Chartes & Cadre Légal')}</span>
                     <span class="mmenu-cat-desc">Registre 00-12, Anti-SLAPP, déontologie...</span>
@@ -1992,19 +2017,19 @@
                 <span class="mobile-flat-group-title">${isEn ? 'Quick Shortcuts' : (isEs ? 'Accesos rápidos' : 'Accès rapides')}</span>
                 <div class="mmenu-quick-grid">
                   <a href="apercu.html" class="mmenu-quick-item">
-                    <span>💡</span>
+                    <span>${mSvg.book}</span>
                     <small>Vulgarisation</small>
                   </a>
                   <a href="registre.html" class="mmenu-quick-item">
-                    <span>⚖️</span>
+                    <span>${mSvg.scale}</span>
                     <small>Registre CCE</small>
                   </a>
                   <a href="live.html" class="mmenu-quick-item">
-                    <span>⏱️</span>
+                    <span>${mSvg.clock}</span>
                     <small>Horloge 16 oct.</small>
                   </a>
                   <a href="autochtone.html" class="mmenu-quick-item">
-                    <span>🌿</span>
+                    <span>${mSvg.leaf}</span>
                     <small>Autochtone</small>
                   </a>
                 </div>
@@ -2015,51 +2040,51 @@
             <div class="mmenu-panel" id="mmenu-dossier">
               <div class="mmenu-sub-header">
                 <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
-                <span class="mmenu-panel-heading">📁 ${isEn ? 'Investigation & CEC' : (isEs ? 'Expediente CCE' : 'Dossier CCE & Enquêtes')}</span>
+                <span class="mmenu-panel-heading">${mSvg.folder} ${isEn ? 'Investigation & CEC' : (isEs ? 'Expediente CCE' : 'Dossier CCE & Enquêtes')}</span>
               </div>
               <div class="mmenu-links-list">
                 <a href="stablex.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📁</span>
+                  <span class="mobile-link-icon">${mSvg.folder}</span>
                   <span class="mobile-link-text">Dossier d'enquête Stablex</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="apercu.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">💡</span>
+                  <span class="mobile-link-icon">${mSvg.book}</span>
                   <span class="mobile-link-text">Dossier expliqué (SEM-26-003)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="registre.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">⚖️</span>
+                  <span class="mobile-link-icon">${mSvg.scale}</span>
                   <span class="mobile-link-text">Registre officiel CCE (Direct)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="dossier-journalistes.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🔍</span>
+                  <span class="mobile-link-icon">${mSvg.search}</span>
                   <span class="mobile-link-text">Explorateur documentaire (222 pièces)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="enquete-partis.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🗳️</span>
+                  <span class="mobile-link-icon">${mSvg.landmark}</span>
                   <span class="mobile-link-text">Enquête : Partis politiques (Cellule 6)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="autochtone.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🌿</span>
+                  <span class="mobile-link-icon">${mSvg.leaf}</span>
                   <span class="mobile-link-text">Histoire autochtone &amp; Écologie</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="live.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">⏱️</span>
+                  <span class="mobile-link-icon">${mSvg.clock}</span>
                   <span class="mobile-link-text">Horloge Échéance 16 oct. 2026</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="viewer.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📄</span>
+                  <span class="mobile-link-icon">${mSvg.file}</span>
                   <span class="mobile-link-text">Consulter les pièces (PDF interactif)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="miroirs.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🌐</span>
+                  <span class="mobile-link-icon">${mSvg.globe}</span>
                   <span class="mobile-link-text">Miroirs Décentralisés (IPFS/Tor)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
@@ -2070,36 +2095,36 @@
             <div class="mmenu-panel" id="mmenu-medias">
               <div class="mmenu-sub-header">
                 <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
-                <span class="mmenu-panel-heading">📰 ${isEn ? 'News & Media' : (isEs ? 'Noticias y Prensa' : 'Actualités & Presse')}</span>
+                <span class="mmenu-panel-heading">${mSvg.news} ${isEn ? 'News & Media' : (isEs ? 'Noticias y Prensa' : 'Actualités & Presse')}</span>
               </div>
               <div class="mmenu-links-list">
                 <a href="blog.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📝</span>
+                  <span class="mobile-link-icon">${mSvg.pen}</span>
                   <span class="mobile-link-text">Blog officiel &amp; Carnet</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="presse.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📰</span>
+                  <span class="mobile-link-icon">${mSvg.news}</span>
                   <span class="mobile-link-text">Espace Presse &amp; Kit Média</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="communiques.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📢</span>
+                  <span class="mobile-link-icon">${mSvg.megaphone}</span>
                   <span class="mobile-link-text">Communiqués officiels</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="photos.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📸</span>
+                  <span class="mobile-link-icon">${mSvg.camera}</span>
                   <span class="mobile-link-text">Galerie Photos de terrain</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="flux.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📡</span>
+                  <span class="mobile-link-icon">${mSvg.rss}</span>
                   <span class="mobile-link-text">Flux RSS, Atom &amp; JSON</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="edition-speciale-reconciliation.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🧡</span>
+                  <span class="mobile-link-icon">${mSvg.heart}</span>
                   <span class="mobile-link-text">Édition spéciale Réconciliation</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
@@ -2110,11 +2135,11 @@
             <div class="mmenu-panel" id="mmenu-autonomie">
               <div class="mmenu-sub-header">
                 <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
-                <span class="mmenu-panel-heading">⚖️ ${isEn ? 'Autonomy & Ageism' : (isEs ? 'Autonomía y Edadismo' : 'Autonomie & Âgisme')}</span>
+                <span class="mmenu-panel-heading">${mSvg.scale} ${isEn ? 'Autonomy & Ageism' : (isEs ? 'Autonomía y Edadismo' : 'Autonomie & Âgisme')}</span>
               </div>
               <div class="mmenu-links-list">
                 <a href="age.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">✉️</span>
+                  <span class="mobile-link-icon">${mSvg.mail}</span>
                   <span class="mobile-link-text">Wmail — Annexe publique caviardée</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
@@ -2125,31 +2150,31 @@
             <div class="mmenu-panel" id="mmenu-outils">
               <div class="mmenu-sub-header">
                 <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
-                <span class="mmenu-panel-heading">🤖 ${isEn ? 'Tools & AI' : (isEs ? 'Herramientas e IA' : 'Outils, IA & Contact')}</span>
+                <span class="mmenu-panel-heading">${mSvg.cpu} ${isEn ? 'Tools & AI' : (isEs ? 'Herramientas e IA' : 'Outils, IA & Contact')}</span>
               </div>
               <div class="mmenu-links-list">
                 <a href="messagerie.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">💬</span>
+                  <span class="mobile-link-icon">${mSvg.chat}</span>
                   <span class="mobile-link-text">Messagerie Sécurisée (Nostr)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="ai.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🤖</span>
+                  <span class="mobile-link-icon">${mSvg.cpu}</span>
                   <span class="mobile-link-text">Espace IA &amp; Hub LLM</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="projets.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🐙</span>
+                  <span class="mobile-link-icon">${mSvg.git}</span>
                   <span class="mobile-link-text">Projets &amp; Constellation GitHub</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="index.html#contact" class="mobile-flat-link">
-                  <span class="mobile-link-icon">✉️</span>
+                  <span class="mobile-link-icon">${mSvg.mail}</span>
                   <span class="mobile-link-text">Coordonnées &amp; Contact direct</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="txt.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📄</span>
+                  <span class="mobile-link-icon">${mSvg.file}</span>
                   <span class="mobile-link-text">Version texte ultra-légère (&lt; 10 Ko)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
@@ -2160,46 +2185,46 @@
             <div class="mmenu-panel" id="mmenu-politiques">
               <div class="mmenu-sub-header">
                 <button type="button" class="mmenu-back-btn">‹ ${isEn ? 'Back' : (isEs ? 'Volver' : 'Retour')}</button>
-                <span class="mmenu-panel-heading">🛡️ ${isEn ? 'Charters & Policies' : (isEs ? 'Cartas y Políticas' : 'Chartes & Cadre Légal')}</span>
+                <span class="mmenu-panel-heading">${mSvg.shield} ${isEn ? 'Charters & Policies' : (isEs ? 'Cartas y Políticas' : 'Chartes & Cadre Légal')}</span>
               </div>
               <div class="mmenu-links-list">
                 <a href="politiques.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🛡️</span>
+                  <span class="mobile-link-icon">${mSvg.shield}</span>
                   <span class="mobile-link-text">00. Registre des politiques (Hub 00-12)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="deontologie.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-icon">${mSvg.file}</span>
                   <span class="mobile-link-text">01. Charte de déontologie</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="independance.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">⚖️</span>
+                  <span class="mobile-link-icon">${mSvg.scale}</span>
                   <span class="mobile-link-text">02. Indépendance &amp; Intégrité</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="ia-ethique.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🤖</span>
+                  <span class="mobile-link-icon">${mSvg.cpu}</span>
                   <span class="mobile-link-text">03. Éthique de l'IA</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="anti-slapp.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🛡️</span>
+                  <span class="mobile-link-icon">${mSvg.shield}</span>
                   <span class="mobile-link-text">04. Déclaration Anti-SLAPP</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="opsec.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">🔒</span>
+                  <span class="mobile-link-icon">${mSvg.lock}</span>
                   <span class="mobile-link-text">08. Sécurité lanceurs d'alerte (OpSec)</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="protection-archive.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-icon">${mSvg.file}</span>
                   <span class="mobile-link-text">12. Protection de l'archive &amp; Retrait</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
                 <a href="dependances-licences.html" class="mobile-flat-link">
-                  <span class="mobile-link-icon">📜</span>
+                  <span class="mobile-link-icon">${mSvg.file}</span>
                   <span class="mobile-link-text">Crédits, licences &amp; tiers</span>
                   <span class="mobile-link-arrow">›</span>
                 </a>
@@ -2244,7 +2269,8 @@
       function closeMobileNav() {
         nav.classList.remove('active');
         backdrop.classList.remove('active');
-        document.body.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll', 'nav-drawer-open');
+        document.documentElement.classList.remove('nav-drawer-open');
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.innerHTML = hamburgerSvg;
         setTimeout(resetMmenuPanels, 320);
@@ -2258,7 +2284,8 @@
         });
         nav.classList.add('active');
         backdrop.classList.add('active');
-        document.body.classList.add('no-scroll');
+        document.body.classList.add('no-scroll', 'nav-drawer-open');
+        document.documentElement.classList.add('nav-drawer-open');
         menuToggle.setAttribute('aria-expanded', 'true');
         menuToggle.innerHTML = closeSvg;
       }
@@ -2964,7 +2991,8 @@
               const toggleEl = document.querySelector('.menu-toggle');
               if (navEl) navEl.classList.remove('active');
               if (backdropEl) backdropEl.classList.remove('active');
-              document.body.classList.remove('no-scroll');
+              document.body.classList.remove('no-scroll', 'nav-drawer-open');
+              document.documentElement.classList.remove('nav-drawer-open');
               if (toggleEl) toggleEl.setAttribute('aria-expanded', 'false');
             }, 80);
           }
@@ -3060,7 +3088,8 @@
         if (navEl && navEl.classList.contains('active')) {
           navEl.classList.remove('active');
           if (backdropEl) backdropEl.classList.remove('active');
-          document.body.classList.remove('no-scroll');
+          document.body.classList.remove('no-scroll', 'nav-drawer-open');
+          document.documentElement.classList.remove('nav-drawer-open');
           if (toggleEl) {
             toggleEl.setAttribute('aria-expanded', 'false');
             toggleEl.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>`;
