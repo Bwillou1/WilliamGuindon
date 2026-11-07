@@ -116,33 +116,42 @@ COMMON_REPLACEMENTS = {
         'Dossier documentaire pour journalistes': 'Media Documentary Dossier',
         'Photos haute résolution &amp; Licences': 'High-Res Photos &amp; Licenses',
         'Charte de déontologie de l\'information': 'Journalistic Code of Ethics',
-        'Déclaration Anti-SLAPP': 'Anti-SLAPP Declaration',
+        'Déclaration Anti-SLAPP': 'Anti-SLAPP Statement',
         'Gouvernance &amp; Indépendance': 'Governance &amp; Independence',
         'Politique de modération': 'Moderation Policy',
         'Cadre éthique de l\'IA': 'AI Ethical Framework',
         'Accueil': 'Home',
         'Biographie': 'Biography',
         'Dossier Stablex': 'Stablex Case',
-        'Tableau CCE': 'CEC Tracker',
+        'Tableau CCE': 'CEC Dashboard',
         'Contact': 'Contact',
         'Presse': 'Press',
         'Diplomatie': 'Diplomacy',
-        'Horloge Live': 'Live Countdown'
+        'Horloge Live': 'Live Clock',
+        'Actions clés': 'Key Actions',
+        'Consulter le dossier CCE ↗': 'View CEC docket ↗',
+        'Espace presse ↗': 'Press room ↗',
+        'Écouter la biographie (audio)': 'Listen to biography (audio)',
+        'Version courte': 'Short version',
+        'Signaler une erreur': 'Report an error',
+        'Imprimer ce document': 'Print this document',
+        'Imprimer la page': 'Print page',
+        'Imprimer': 'Print'
     },
     'es': {
         'En-tête du site': 'Encabezado del sitio',
-        'Dossier CCE &amp; Stablex': 'Expediente CCA y Stablex',
-        'Dossier CCE & Stablex': 'Expediente CCA y Stablex',
-        'Enquêtes &amp; Analyses': 'Investigaciones y análisis',
-        'Enquêtes & Analyses': 'Investigaciones y análisis',
-        'Registre CCE &amp; Pièces': 'Registro CCA y pruebas',
-        'Registre CCE & Pièces': 'Registro CCA y pruebas',
-        'Suivi &amp; Outils Direct': 'Seguimiento y herramientas directas',
-        'Suivi & Outils Direct': 'Seguimiento y herramientas directas',
-        'Espace Presse &amp; Médias': 'Prensa y medios',
-        'Espace Presse & Médias': 'Prensa y medios',
-        'Mobilisation &amp; Action': 'Movilización y acción',
-        'Mobilisation & Action': 'Movilización y acción',
+        'Dossier CCE &amp; Stablex': 'Expediente CCA &amp; Stablex',
+        'Dossier CCE & Stablex': 'Expediente CCA & Stablex',
+        'Enquêtes &amp; Analyses': 'Investigaciones &amp; Análisis',
+        'Enquêtes & Analyses': 'Investigaciones & Análisis',
+        'Registre CCE &amp; Pièces': 'Registro CCA &amp; Pruebas',
+        'Registre CCE & Pièces': 'Registro CCA & Pruebas',
+        'Suivi &amp; Outils Direct': 'Seguimiento &amp; Herramientas',
+        'Suivi & Outils Direct': 'Seguimiento & Herramientas',
+        'Espace Presse &amp; Médias': 'Sala de Prensa &amp; Medios',
+        'Espace Presse & Médias': 'Sala de Prensa & Medios',
+        'Mobilisation &amp; Action': 'Movilización &amp; Acción',
+        'Mobilisation & Action': 'Movilización & Acción',
         'Fermer': 'Cerrar',
         'Fermer le menu': 'Cerrar menú',
         'Ouvrir le menu de navigation': 'Abrir menú de navegación',
@@ -185,7 +194,16 @@ COMMON_REPLACEMENTS = {
         'Contact': 'Contacto',
         'Presse': 'Prensa',
         'Diplomatie': 'Diplomacia',
-        'Horloge Live': 'Reloj en vivo'
+        'Horloge Live': 'Reloj en vivo',
+        'Actions clés': 'Acciones clave',
+        'Consulter le dossier CCE ↗': 'Ver expediente CCA ↗',
+        'Espace presse ↗': 'Sala de prensa ↗',
+        'Écouter la biographie (audio)': 'Escuchar biografía (audio)',
+        'Version courte': 'Versión corta',
+        'Signaler une erreur': 'Informar de un error',
+        'Imprimer ce document': 'Imprimir este documento',
+        'Imprimer la page': 'Imprimir página',
+        'Imprimer': 'Imprimir'
     }
 }
 
@@ -195,12 +213,63 @@ KEY_ENTITIES = [
     'Jerry DeMarco', 'Marcos A. Orellana', 'Madeleine Chenette'
 ]
 
-def parse_txt_file(filepath):
+def extract_units(filepath):
+    """
+    Extrait les unités textuelles sémantiques atomiques d'un fichier Markdown (.txt).
+    Sépare strictement :
+    - Les titres (heading)
+    - Les éléments de liste (list_item)
+    - Les paragraphes normaux (p)
+    """
     if not os.path.exists(filepath):
-        return '', '', []
+        return []
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
+    parts = content.split('══════════════════════════════════════════════════════════════════════════\n\n')
+    if len(parts) < 2:
+        return []
+    body = parts[1].split('\n\n══════════════════════════════════════════════════════════════════════════')[0]
     
+    units = []
+    for block in body.split('\n\n'):
+        block = block.strip()
+        if not block:
+            continue
+        lines = block.splitlines()
+        current_type = None
+        current_lines = []
+        for line in lines:
+            line_str = line.strip()
+            if not line_str:
+                continue
+            # Titres Markdown (#, ##, ###)
+            if re.match(r'^#{1,6}\s+', line_str):
+                if current_lines:
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                units.append(('heading', line_str))
+                current_type = None
+            # Éléments de liste (- ou * ou 1. ) mais PAS les continuations avec indentation
+            elif re.match(r'^([\-\*]|\d+\.)\s+[^\s\-]', line) and not line.startswith('-   ') and not line.startswith('    '):
+                if current_lines:
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                current_type = 'list_item'
+                current_lines.append(re.sub(r'^([\-\*]|\d+\.)\s+', '', line_str))
+            else:
+                if current_type is None:
+                    current_type = 'p'
+                cleaned = re.sub(r'^[\-\*\s]{2,4}', '', line_str) if current_type == 'list_item' else line_str
+                current_lines.append(cleaned)
+        if current_lines:
+            units.append((current_type, ' '.join(current_lines)))
+    return units
+
+def get_meta_info(filepath):
+    if not os.path.exists(filepath):
+        return '', ''
+    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+        content = f.read()
     title = ''
     desc = ''
     for line in content.splitlines()[:25]:
@@ -208,25 +277,7 @@ def parse_txt_file(filepath):
             title = line.split(':', 1)[1].strip()
         elif line.startswith('DESCRIPTION') and ':' in line:
             desc = line.split(':', 1)[1].strip()
-            
-    parts = content.split('══════════════════════════════════════════════════════════════════════════\n\n')
-    if len(parts) < 2:
-        return title, desc, []
-    body = parts[1].split('\n\n══════════════════════════════════════════════════════════════════════════')[0]
-    blocks = [b.strip() for b in body.split('\n\n') if b.strip()]
-    return title, desc, blocks
-
-def clean_block_lines(block):
-    """Sépare les lignes signifiantes d'un bloc en retirant les marqueurs Markdown."""
-    lines = []
-    for l in block.splitlines():
-        l = l.strip()
-        if not l:
-            continue
-        cleaned = re.sub(r'^[#>\-\*]+\s*', '', l).strip()
-        if cleaned:
-            lines.append(cleaned)
-    return lines
+    return title, desc
 
 def build_page(page_name, lang):
     if page_name == 'index':
@@ -252,84 +303,76 @@ def build_page(page_name, lang):
     fr_txt = os.path.join(SOURCE_TXT_DIR, 'fr', f'{page_name}.txt')
     tr_txt = os.path.join(SOURCE_TXT_DIR, lang, f'{page_name}.txt')
 
-    t_fr, d_fr, b_fr = parse_txt_file(fr_txt)
-    t_tr, d_tr, b_tr = parse_txt_file(tr_txt)
+    t_tr, d_tr = get_meta_info(tr_txt)
+    u_fr = extract_units(fr_txt)
+    u_tr = extract_units(tr_txt)
 
     # 1. Mise à jour de la langue HTML
     lang_attr = 'en' if lang == 'en' else 'es'
     html = re.sub(r'<html[^>]*lang=["\'][^"\']*["\'][^>]*>', f'<html lang="{lang_attr}">', html, count=1)
 
-    # 2. Mise à jour du Titre
+    def escape_attr(val):
+        return val.replace('"', '&quot;')
+
+    # 2. Mise à jour de la balise Title et Meta Description
     if t_tr:
-        html = re.sub(r'<title>.*?</title>', f'<title>{t_tr}</title>', html, count=1, flags=re.DOTALL)
+        clean_t = escape_attr(t_tr)
+        html = re.sub(r'<title>.*?</title>', f'<title>{clean_t}</title>', html, count=1)
+        html = re.sub(r'<meta\s+property=["\']og:title["\']\s+content="[^"]*"', f'<meta property="og:title" content="{clean_t}"', html)
+        html = re.sub(r'<meta\s+name=["\']twitter:title["\']\s+content="[^"]*"', f'<meta name="twitter:title" content="{clean_t}"', html)
 
-    # 3. Mise à jour de la Méta Description
     if d_tr:
-        html = re.sub(r'<meta\s+name=["\']description["\']\s+content=["\'].*?["\']\s*/?>', f'<meta name="description" content="{d_tr}">', html, count=1, flags=re.DOTALL)
-        html = re.sub(r'<meta\s+content=["\'].*?["\']\s+name=["\']description["\']\s*/?>', f'<meta name="description" content="{d_tr}">', html, count=1, flags=re.DOTALL)
+        clean_d = escape_attr(d_tr)
+        html = re.sub(r'<meta\s+name=["\']description["\']\s+content="[^"]*"', f'<meta name="description" content="{clean_d}"', html)
+        html = re.sub(r'<meta\s+property=["\']og:description["\']\s+content="[^"]*"', f'<meta property="og:description" content="{clean_d}"', html)
+        html = re.sub(r'<meta\s+name=["\']twitter:description["\']\s+content="[^"]*"', f'<meta name="twitter:description" content="{clean_d}"', html)
 
-    # 4. Canonical & Hreflang (Clean URLs sans jamais de .html)
-    if not clean_slug:
-        canonical_url = f'https://williamguindon.me/{lang}/'
-        fr_href = 'https://williamguindon.me/'
-        en_href = 'https://williamguindon.me/en/'
-        es_href = 'https://williamguindon.me/es/'
-    else:
-        canonical_url = f'https://williamguindon.me/{lang}/{clean_slug}'
-        fr_href = f'https://williamguindon.me/{clean_slug}'
-        en_href = f'https://williamguindon.me/en/{clean_slug}'
-        es_href = f'https://williamguindon.me/es/{clean_slug}'
+    # 3. Canonical et balises hreflang
+    base_url = f'https://williamguindon.me/{lang}/' if clean_slug == '' else f'https://williamguindon.me/{lang}/{clean_slug}'
+    html = re.sub(r'<link rel=["\']canonical["\'] href=["\'][^"\']*["\']', f'<link rel="canonical" href="{base_url}"', html)
 
-    html = re.sub(r'<link\s+rel=["\']canonical["\'][^>]*>', f'<link rel="canonical" href="{canonical_url}">', html, count=1)
-
-    hreflang_tags = (
-        f'<link rel="alternate" hreflang="fr-CA" href="{fr_href}">\n'
-        f'  <link rel="alternate" hreflang="en" href="{en_href}">\n'
-        f'  <link rel="alternate" hreflang="es" href="{es_href}">\n'
-        f'  <link rel="alternate" hreflang="x-default" href="{fr_href}">'
-    )
-    if '<link rel="alternate" hreflang=' in html:
-        html = re.sub(r'(<link\s+rel=["\']alternate["\']\s+hreflang=[^>]*>\s*)+', hreflang_tags + '\n  ', html, count=1)
-    else:
-        html = html.replace('</head>', f'  {hreflang_tags}\n</head>', 1)
-
-    # 5. Ajustement des chemins d'assets relatifs (le fichier est situé dans /{lang}/)
-    html = re.sub(r'href=["\']style\.css(["\'])', r'href="../style.css\1', html)
-    html = re.sub(r'href=["\']style\.css\?([^"\']+)["\']', r'href="../style.css?\1"', html)
-
-    html = re.sub(r'src=["\']assets/', 'src="../assets/', html)
-    html = re.sub(r'href=["\']assets/', 'href="../assets/', html)
-    html = re.sub(r'src=["\']data/', 'src="../data/', html)
-    html = re.sub(r'href=["\']data/', 'href="../data/', html)
-
-    html = re.sub(r'src=["\']theme\.js(["\'])', r'src="../theme.js\1', html)
-    html = re.sub(r'src=["\']theme\.js\?([^"\']+)["\']', r'src="../theme.js?\1"', html)
-
-    html = re.sub(r'href=["\']favicon', 'href="../favicon', html)
-    html = re.sub(r'href=["\']apple-touch-icon\.png["\']', 'href="../apple-touch-icon.png"', html)
-    html = re.sub(r'href=["\']site\.webmanifest["\']', 'href="../site.webmanifest"', html)
-    html = re.sub(r'href=["\']manifest\.json["\']', 'href="../manifest.json"', html)
-    html = re.sub(r'href=["\']feed\.xml["\']', 'href="../feed.xml"', html)
+    # 4. Normalisation absolue des chemins de ressources vers la racine (/assets/, /style.css, etc.)
+    html = re.sub(r'(src|href)=["\']style\.css(["\']|\?)', r'\1="/style.css\2', html)
+    html = re.sub(r'(src|href)=["\']theme\.js(["\']|\?)', r'\1="/theme.js\2', html)
+    html = re.sub(r'(src|href)=["\']sw\.js(["\']|\?)', r'\1="/sw.js\2', html)
+    html = re.sub(r'(src|href|srcset)=["\']assets/', r'\1="/assets/', html)
+    html = re.sub(r'(src|href|srcset)=["\']\.\./assets/', r'\1="/assets/', html)
 
     for asset in ROOT_ASSETS:
-        html = re.sub(rf'href=["\']{re.escape(asset)}(["\']|#|\?)', rf'href="../{asset}\1', html)
-        html = re.sub(rf'src=["\']{re.escape(asset)}(["\']|#|\?)', rf'src="../{asset}\1', html)
+        html = re.sub(rf'(src|href|srcset)=["\']{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
+        html = re.sub(rf'(src|href|srcset)=["\']\.\./{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
 
-    html = re.sub(r'src=["\']api/', 'src="../api/', html)
-    html = re.sub(r'href=["\']api/', 'href="../api/', html)
-    if page_name == 'api_index':
-        html = re.sub(r'href=["\']v1/', 'href="../api/v1/', html)
+    # 5. Sélecteur de langue natif propre
+    page_target = f'/{clean_slug}' if clean_slug else '/'
+    en_target = f'/en/{clean_slug}' if clean_slug else '/en/'
+    es_target = f'/es/{clean_slug}' if clean_slug else '/es/'
 
-    html = html.replace("this.src='assets/", "this.src='../assets/")
-    html = html.replace("this.src='tourbiere.jpg'", "this.src='../tourbiere.jpg'")
+    lang_btn_text = 'EN' if lang == 'en' else 'ES'
+    html = re.sub(r'<span class="current-lang-code">.*?</span>', f'<span class="current-lang-code">{lang_btn_text}</span>', html)
 
-    # 5b. Mise à jour de l'état du sélecteur de langue dans la navbar statique
-    code_upper = 'EN' if lang == 'en' else 'ES'
-    html = html.replace('<span class="current-lang-code">FR</span>', f'<span class="current-lang-code">{code_upper}</span>')
-    html = html.replace('class="nav-dropdown-item lang-select-btn active" data-lang="fr"', 'class="nav-dropdown-item lang-select-btn" data-lang="fr"')
-    html = html.replace(f'class="nav-dropdown-item lang-select-btn" data-lang="{lang}"', f'class="nav-dropdown-item lang-select-btn active" data-lang="{lang}"')
+    active_fr = ' active' if lang == 'fr' else ''
+    active_en = ' active' if lang == 'en' else ''
+    active_es = ' active' if lang == 'es' else ''
 
-    # 6. Redirection des liens vers pages exclues françaises (vers ../page propre sans .html)
+    lang_menu_replacement = f'''<div class="nav-dropdown-menu nav-lang-menu" role="menu">
+          <span class="nav-dropdown-group-title">Langue / Language</span>
+          <a href="{page_target}" class="nav-dropdown-item lang-select-btn{active_fr}" data-lang="fr" role="menuitem">
+            <span class="lang-name">Français</span>
+            <span class="lang-tag">FR</span>
+          </a>
+          <a href="{en_target}" class="nav-dropdown-item lang-select-btn{active_en}" data-lang="en" role="menuitem">
+            <span class="lang-name">English</span>
+            <span class="lang-tag">EN</span>
+          </a>
+          <a href="{es_target}" class="nav-dropdown-item lang-select-btn{active_es}" data-lang="es" role="menuitem">
+            <span class="lang-name">Español</span>
+            <span class="lang-tag">ES</span>
+          </a>
+        </div>'''
+
+    html = re.sub(r'<div class="nav-dropdown-menu nav-lang-menu"[\s\S]*?</div>\s*</div>', f'{lang_menu_replacement}\n      </div>', html)
+
+    # 6. Routage des liens internes
     for excl in EXCLUDED_PAGES:
         clean_excl = excl.replace('.html', '')
         target_excl = '../' if clean_excl == 'index' else f'../{clean_excl}'
@@ -337,76 +380,102 @@ def build_page(page_name, lang):
         if clean_excl != 'index':
             html = re.sub(rf'href=["\']{re.escape(clean_excl)}(["\']|#|\?)', rf'href="../{clean_excl}\1', html)
 
-    # 6b. Nettoyage systématique des extensions .html pour des URLs propres (Clean URLs)
     html = re.sub(r'href=["\']index\.html(["\']|#|\?)', r'href="./\1', html)
     html = re.sub(r'href=["\']api/index\.html(["\']|#|\?)', r'href="api\1', html)
     html = re.sub(r'href=["\']([a-zA-Z0-9_\-]+)\.html(["\']|#|\?)', r'href="\1\2', html)
 
-    # 7. Remplacement précis du contenu des balises textuelles (p, h1-h6, blockquote, li, summary)
-    if b_fr and b_tr:
-        # Construction des paires probe -> translated text
-        replacements = []
-        for idx in range(min(len(b_fr), len(b_tr))):
-            fr_lines = clean_block_lines(b_fr[idx])
-            tr_lines = clean_block_lines(b_tr[idx])
+    # 7. Remplacement du contenu de TOUTES les balises textuelles terminales
+    if u_fr and u_tr:
+        pairs = []
+        for idx in range(min(len(u_fr), len(u_tr))):
+            u_type, fr_raw = u_fr[idx]
+            _, tr_raw = u_tr[idx]
 
-            if not fr_lines or not tr_lines:
-                continue
+            fr_clean = re.sub(r'^#{1,6}\s+', '', fr_raw).strip()
+            tr_clean = re.sub(r'^#{1,6}\s+', '', tr_raw).strip()
 
-            # Cas 1 : bloc multilignes régulier
-            if len(fr_lines) == len(tr_lines):
-                for fl, tl in zip(fr_lines, tr_lines):
-                    words = fl.split()
-                    if len(words) >= 3:
-                        probe = ' '.join(words[:4]).lower()
-                        replacements.append((probe, tl, len(words)))
-            else:
-                # Cas 2 : paragraphe complet regroupé
-                full_fl = ' '.join(fr_lines)
-                full_tl = ' '.join(tr_lines)
-                words = full_fl.split()
-                if len(words) >= 3:
-                    probe = ' '.join(words[:4]).lower()
-                    replacements.append((probe, full_tl, len(words)))
+            words = fr_clean.split()
+            if len(words) >= 3:
+                probe = ' '.join(words[:4]).lower()
+                pairs.append((probe, tr_clean, len(words), u_type, fr_clean))
 
-        # Tri par spécificité décroissante (les probes les plus longues d'abord)
-        replacements.sort(key=lambda x: x[2], reverse=True)
+        pairs.sort(key=lambda x: x[2], reverse=True)
 
-        # Remplacement au niveau des balises HTML terminales
-        tag_pattern = r'<(?P<tag>p|h[1-6]|blockquote|summary)\b[^>]*>([\s\S]*?)</(?P=tag)>'
+        tag_pattern = r'<(?P<tag>p|li|h[1-6]|blockquote|summary|figcaption|dt|dd)\b(?P<attrs>[^>]*)>(?P<inner>[\s\S]*?)</(?P=tag)>'
 
         def replace_tag_content(m):
             tag = m.group('tag')
-            full = m.group(0)
-            open_tag = full[:full.index('>') + 1]
-            close_tag = f'</{tag}>'
-            inner = m.group(2)
-            
-            # Ne pas écraser si le tag contient déjà des sous-balises structurelles majeures
-            if '<div' in inner or '<article' in inner or '<section' in inner or '<table' in inner:
-                return full
+            attrs = m.group('attrs')
+            inner = m.group('inner')
+
+            # Ne pas remplacer si la balise contient des blocs structurels majeurs
+            if '<div' in inner or '<article' in inner or '<section' in inner or '<table' in inner or '<form' in inner:
+                return m.group(0)
+
+            # Éviter de gonfler démesurément un titre (sécurité h1-h6)
+            is_heading = tag.startswith('h')
 
             inner_clean = ' '.join(re.sub(r'<[^>]+>', ' ', inner).split()).lower()
 
-            for probe, tr_text, _ in replacements:
+            for probe, tr_text, _, u_type, fr_orig in pairs:
                 if probe in inner_clean:
+                    # Si c'est un titre et que le texte de traduction contient plusieurs phrases ou paragraphes,
+                    # ne garder que la première ligne / titre court
+                    if is_heading:
+                        tr_first = tr_text.splitlines()[0]
+                        if len(tr_first.split()) > 14 and ':' in tr_first:
+                            tr_first = tr_first.split(':', 1)[0].strip()
+                        formatted_text = tr_first
+                    else:
+                        formatted_text = tr_text
+
+                    # Restaurer les liens existants s'ils étaient présents dans l'original
+                    links_match = re.findall(r'<a\b[^>]*>[\s\S]*?</a>', inner)
+                    # Si l'élément entier était un lien unique (<a ...>texte</a>)
+                    single_link = re.match(r'^\s*<a\b(?P<a_attrs>[^>]*)>[\s\S]*?</a>\s*$', inner)
+                    if single_link:
+                        a_attrs = single_link.group('a_attrs')
+                        return f'<{tag}{attrs}><a{a_attrs}>{formatted_text}</a></{tag}>'
+
+                    # Restaurer le préfixe <strong>... :</strong> s'il était présent
+                    strong_match = re.match(r'^\s*<strong[^>]*>([\s\S]*?)</strong>\s*(.*)', inner, re.DOTALL)
+                    if strong_match and ':' in formatted_text:
+                        parts = formatted_text.split(':', 1)
+                        formatted_text = f'<strong>{parts[0].strip()} :</strong> {parts[1].strip()}'
+
+                    # Si des liens internes étaient en fin de phrase (ex: (voir <a ...>...</a>))
+                    if links_match and not single_link:
+                        # Si le lien n'est pas déjà dans le texte formaté
+                        for l_html in links_match:
+                            if l_html not in formatted_text:
+                                # Attacher le lien proprement s'il contient une référence
+                                href_match = re.search(r'href=["\']([^"\']+)["\']', l_html)
+                                if href_match:
+                                    target_href = href_match.group(1)
+                                    clean_target = target_href.replace('.html', '')
+                                    formatted_text += f' <a href="{clean_target}">↗</a>'
+
                     # Rétablissement des <strong> pour les entités clés
-                    formatted_text = tr_text
                     for ent in KEY_ENTITIES:
                         if ent in formatted_text and f'<strong>{ent}</strong>' not in formatted_text:
                             formatted_text = formatted_text.replace(ent, f'<strong>{ent}</strong>', 1)
-                    return f'{open_tag}\n          {formatted_text}\n        {close_tag}'
 
-            return full
+                    return f'<{tag}{attrs}>\n          {formatted_text}\n        </{tag}>'
+
+            return m.group(0)
 
         html = re.sub(tag_pattern, replace_tag_content, html)
 
-    # 8. Remplacements des chaînes d'interface communes (menus, boutons, métas)
+    # 8. Remplacements des signatures dans les chartes et politiques
+    sig_text = 'Original signed' if lang == 'en' else 'Original firmado'
+    html = re.sub(r'<span class="signature-caption">.*?</span>', f'<span class="signature-caption">{sig_text}</span>', html)
+
+    # 9. Remplacements des chaînes d'interface communes (menus, boutons, métas)
     repl_dict = COMMON_REPLACEMENTS.get(lang, {})
     for fr_str, tr_str in repl_dict.items():
         html = html.replace(fr_str, tr_str)
 
-    # 9. Écriture du fichier HTML de sortie
+    # 10. Écriture du fichier HTML de sortie
     out_dir = os.path.join(WORKSPACE_DIR, lang)
     os.makedirs(out_dir, exist_ok=True)
     out_html_path = os.path.join(out_dir, out_html_rel)

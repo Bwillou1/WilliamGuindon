@@ -13,11 +13,9 @@
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://williamguindon.me/en/tracabilite">
-<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/tracabilite">
-  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/tracabilite">
-  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/tracabilite">
-  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/tracabilite">
-  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/tracabilite.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/tracabilite.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
 
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -27,13 +25,13 @@
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="William Guindon — Site officiel">
-<meta property="og:title" content="Protocole de Chaîne de Traçabilité des Preuves Numériques — William Guindon">
-<meta property="og:description" content="Horodatage décentralisé OpenTimestamps, intégrité cryptographique et conservation probatoire">
+<meta property="og:title" content="Traceability of Digital Evidence — William Guindon">
+<meta property="og:description" content="Evidence tracking protocol: OpenTimestamps decentralized timestamp on Bitcoin and cryptographic integrity of the SEM-26-003 folder.">
 <meta property="og:url" content="https://williamguindon.me/tracabilite.html">
 <meta property="og:locale" content="fr_CA">
 
-<meta name="twitter:title" content="Protocole de Chaîne de Traçabilité des Preuves Numériques — William Guindon">
-<meta name="twitter:description" content="Horodatage décentralisé OpenTimestamps, intégrité cryptographique et conservation probatoire">
+<meta name="twitter:title" content="Traceability of Digital Evidence — William Guindon">
+<meta name="twitter:description" content="Evidence tracking protocol: OpenTimestamps decentralized timestamp on Bitcoin and cryptographic integrity of the SEM-26-003 folder.">
 
 <script type="application/ld+json">
 {
@@ -282,7 +280,7 @@
               <span class="nav-submenu-arrow">▾</span>
             </summary>
             <div class="nav-submenu-items">
-              <a href="anti-slapp" class="nav-dropdown-item">04. Anti-SLAPP Declaration</a>
+              <a href="anti-slapp" class="nav-dropdown-item">04. Anti-SLAPP Statement</a>
               <a href="embargo" class="nav-dropdown-item">05. Embargo &amp; Press</a>
               <a href="experts" class="nav-dropdown-item">06. Cadre consultatif experts</a>
               <a href="tracabilite" class="nav-dropdown-item">07. Traçabilité des preuves</a>
@@ -326,7 +324,7 @@
               <a href="dev" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
               <a href="statut" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
               <a href="ai" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
-              <a href="../api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
+              <a href="api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
             </div>
           </details>
           <details class="nav-submenu">
@@ -511,9 +509,9 @@
           <span class="legal-toolbar-kicker">Document officiel</span>
           <span>Statut : Publique (principes) + Interne (procédures) · Version 1.0 — Septembre 2026 · Référence : Lignes directrices ISO/IEC 27037</span>
         </div>
-        <button class="legal-print-button" type="button" aria-label="Imprimer ce document">
+        <button class="legal-print-button" type="button" aria-label="Print this document">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
-          <span>Imprimer</span>
+          <span>Print</span>
         </button>
       </div>
 
@@ -524,7 +522,7 @@
           Cryptographic integrity checker SHA-256 (100% local)
         </h2>
         <p style="font-size:0.9rem; color:#cbd5e1; margin:0 0 14px; line-height:1.55;">
-          Verify in one click or drag a downloaded PDF file to locally calculate its SHA-256 footprint via the
+          Verify in one click or drag a downloaded PDF file to locally calculate its SHA-256 footprint via the crypto.subtle.digest native API and check its compliance with the deposited documents register (<strong>SEM-26-003</strong>):
         </p>
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
           <button type="button" onclick="verifyTraceSha256('assets/docs/observations-reponse-canada-sem26003.pdf')" style="padding:7px 13px; border-radius:8px; font-size:12px; font-weight:700; border:1px solid rgba(59,130,246,0.45); background:rgba(37,99,235,0.18); color:#93c5fd; cursor:pointer;">Vérifier : Observations 17 oct.</button>
@@ -624,31 +622,49 @@
           This protocol documents the method by which <strong>William Guindon</strong> and his site guarantee the provenance, authenticity and cryptographic integrity of all probative elements (official documents, field data, water and soil analyses, screenshots, correspondence, CCE (Commission for Environmental Cooperation) and UN depositions), in order to be able to demonstrate, before any jurisdiction or international body, that a part has not undergone any modification and existed on a certified date.
         </p>
       <p>
-          A rigorous evidentiary “chain of custody” is based on three inseparable pillars: authenticity
+          A rigorous evidentiary “chain of custody” is based on three inseparable pillars: authenticity (identified source of origin), integrity (absence of alteration), and traceability (complete history of technical manipulations and transfers).
         </p>
 
       <h2>
           2. General principles
         </h2>
       <ol>
-        <li><strong>Conserver l'original</strong> brut et travailler exclusivement sur des copies.</li>
-        <li><strong>Minimiser les manipulations</strong> ; documenter chaque manipulation technique.</li>
-        <li><strong>Horodater de façon fiable et indépendante</strong> chaque élément important.</li>
-        <li><strong>Sécuriser</strong> le stockage (accès contrôlé) et conserver des sauvegardes redondantes.</li>
-        <li><strong>Documenter</strong> la méthode de collecte (source, date, appareil, contexte).</li>
+        <li>
+          Keep the raw original and work exclusively on copies.
+        </li>
+        <li>
+          Minimize handling; document each technical manipulation.
+        </li>
+        <li>
+          Reliably and independently timestamp each important element.
+        </li>
+        <li>
+          Secure storage (controlled access) and maintain redundant backups.
+        </li>
+        <li>
+          Document the collection method (source, date, device, context).
+        </li>
       </ol>
 
       <h2>
           3. Using OpenTimestamps (decentralized timestamping)
         </h2>
       <p>
-          The site notably uses OpenTimestamps to prove, independently and verifiable by a third party, that a
+          The site notably uses OpenTimestamps to prove, independently and verifiable by a third party, that a file existed in a given state at a specific time:
         </p>
       <ul>
-        <li>On calcule l'<strong>empreinte cryptographique (hash SHA-256)</strong> du fichier original ;</li>
-        <li>Cette empreinte est <strong>ancrée dans la blockchain Bitcoin</strong> par OpenTimestamps, ce qui produit un <strong>reçu (.ots)</strong> ;</li>
-        <li>Le reçu .ots et le fichier original sont conservés ensemble ;</li>
-        <li>À tout moment, un tiers ou un tribunal peut <strong>vérifier gratuitement</strong> que le fichier n'a pas changé.</li>
+        <li>
+          We calculate the cryptographic fingerprint (hash SHA-256) of the original file;
+        </li>
+        <li>
+          This fingerprint is anchored in the Bitcoin blockchain by OpenTimestamps, which produces a receipt (.ots);
+        </li>
+        <li>
+          The .ots receipt and the original file are kept together;
+        </li>
+        <li>
+          At any time, a third party or a court can verify for free that the file has not changed.
+        </li>
       </ul>
       <p>
           Honest Transparency: OpenTimestamps proves the existence and integrity of a file on a date, but does not alone prove the veracity of its contents. It adds to the context documentation.
@@ -658,26 +674,26 @@
           4. Email archiving and internal registry
         </h2>
       <p>
-          William's professional emails are archived in their entirety (headers, body, attachments). The email
+          William's professional emails are archived in their entirety (headers, body, attachments). The email measurement tool (mail tracker) only reports an approximate number of opens and does not collect any personally identifying data. A dated internal register records identifiers, hashes, dates and transfer histories.
         </p>
 
       <h2>
           5. Secure storage
         </h2>
       <p>
-          Sensitive elements are kept in a secure storage space with controlled access (William and his
+          Sensitive elements are kept in a secure storage space with controlled access (William and his parents), with regular backups. Keys and identifiers are never transmitted to a third party or to an AI model.
         </p>
 
       <p class="legal-no-log">
-          This protocol is an independent policy of williamguindon.me. Operational details remain internal. No
+          This protocol is an independent policy of williamguindon.me. Operational details remain internal. No signature is required.
         </p>
 
 
       <div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>Document autonome · williamguindon.me</div>
-        <button class="legal-print-button" type="button" aria-label="Imprimer la page">
+        <button class="legal-print-button" type="button" aria-label="Print page">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
-          <span>Imprimer ce document</span>
+          <span>Print this document</span>
         </button>
       </div>
     </div>

@@ -8,10 +8,8 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical" href="https://williamguindon.me/en/api">
-  <link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/api">
-  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/api">
-  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/api">
-  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/api">
+  <link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/api/">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/api/">
   <link rel="alternate" type="application/json" href="https://williamguindon.me/apis.json" title="APIs.json Manifest">
   <link rel="alternate" type="application/json" href="https://williamguindon.me/openapi.json" title="OpenAPI 3.1 Specification">
 
@@ -103,12 +101,12 @@
   <!-- OpenGraph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="William Guindon">
-  <meta property="og:title" content="API Publique Ouverte &amp; Registre Machine — William Guindon">
-  <meta property="og:description" content="Accès complet pour modèles d'IA, LLMs, chercheurs et développeurs à tout le corpus plein texte et aux 222 pièces probatoires du dossier SEM-26-003.">
+  <meta property="og:title" content="Open Public API & Machine Registry — William Guindon">
+  <meta property="og:description" content="Public, open and free REST API giving machine and AI access to the entire documentary corpus, site texts and 222 evidentiary documents (SEM-26-003).">
   <meta property="og:url" content="https://williamguindon.me/api/">
   <meta property="og:image" content="https://williamguindon.me/og-image.jpg">
 
-  <link rel="stylesheet" href="/style.css?v=20260904-slider">
+  <link rel="stylesheet" href="../style.css?v=20260904-slider">
   <script src="/assets/js/theme-core.js" defer></script>
   <style>
     .api-hero {
@@ -215,13 +213,13 @@
           Open Public API & Machine Registry
         </h1>
       <p style="max-width: 760px; margin: 0 auto; color: var(--text-muted); font-size: 1.1rem; line-height: 1.6;">
-          Standardized, direct and keyless access point for language models (LLMs), researchers, developers
+          Standardized, direct and keyless access point for language models (LLMs), researchers, developers and autonomous agents wishing to query the entire textual corpus, official documents and 222 evidentiary documents in the <strong>SEM-26-003</strong> file.
         </p>
       <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <a href="../apis.json" target="_blank" class="btn btn-primary" style="font-weight: 700;">Manifeste apis.json (apisjson.org) ↗</a>
+        <a href="/apis.json" target="_blank" class="btn btn-primary" style="font-weight: 700;">Manifeste apis.json (apisjson.org) ↗</a>
         <a href="https://huggingface.co/datasets/Williesssss/sem-26-003" target="_blank" rel="noopener" class="btn btn-ghost" style="border-color:#ffcc00; color:#ffcc00; font-weight:700;">🤗 Dataset Hugging Face ↗</a>
-        <a href="../openapi.json" target="_blank" class="btn btn-ghost">Spécification OpenAPI 3.1 ↗</a>
-        <a href="../llms-full.txt" target="_blank" class="btn btn-ghost">Corpus brut llms-full.txt ↗</a>
+        <a href="/openapi.json" target="_blank" class="btn btn-ghost">Spécification OpenAPI 3.1 ↗</a>
+        <a href="/llms-full.txt" target="_blank" class="btn btn-ghost">Corpus brut llms-full.txt ↗</a>
       </div>
     </div>
   </section>
@@ -245,13 +243,13 @@
           Complete Corpus Full Text
         </h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-          Returns the raw and structured text of all the pages of the site, the 12 fundamental charters,
+          Returns the raw and structured text of all the pages of the site, the 12 fundamental charters, ecological analyses, the citizen survey and governance metadata (+46,000 words).
         </p>
             <div class="code-box">
               <code>curl -s https://williamguindon.me/api/v1/corpus.json | jq '.statistics'</code>
             </div>
           </div>
-          <a href="../api/v1/corpus.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+          <a href="v1/corpus.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
         <!-- 2. Dataset Hugging Face -->
@@ -265,7 +263,7 @@
           Hugging Face Dataset (AI & LLMs)
         </h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-          Official dataset structured and ready for machine learning, fine-tuning, benchmarks and RAG
+          Official dataset structured and ready for machine learning, fine-tuning, benchmarks and RAG pipelines, distributed on the Hugging Face hub.
         </p>
             <div class="code-box">
               <code>from datasets import load_dataset<br>ds = load_dataset("Williesssss/sem-26-003")</code>
@@ -282,16 +280,16 @@
               <span class="api-endpoint-url">/api/v1/documents.json</span>
             </div>
             <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">
-          Directory of 222 Probative Documents Exhaustive index of the 222 items in the <strong>SEM-26-003</strong> archive: <strong>BAPE 371</strong> reports, GIS maps, Sentinel-2 NDVI satellite data, well tests and matches with their Internet Archive URLs and SHA-256 hashes.
+          Directory of 222 Probative Documents
         </h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-              Index exhaustif des 222 pièces de l'archive SEM-26-003 : rapports du BAPE 371, cartes SIG, données satellites Sentinel-2 NDVI, tests de puits et correspondances avec leurs URLs Internet Archive et hashs SHA-256.
-            </p>
+          Exhaustive index of the 222 items in the <strong>SEM-26-003</strong> archive: <strong>BAPE 371</strong> reports, GIS maps, Sentinel-2 NDVI satellite data, well tests and matches with their Internet Archive URLs and SHA-256 hashes.
+        </p>
             <div class="code-box">
               <code>curl -s https://williamguindon.me/api/v1/documents.json | jq '.total_documents'</code>
             </div>
           </div>
-          <a href="../api/v1/documents.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+          <a href="v1/documents.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
         <!-- 4. Statut CCE temps réel -->
@@ -303,13 +301,13 @@
             </div>
             <h3 style="font-size: 1.25rem; margin: 6px 0 10px;">Statut Juridique &amp; Échéance CCE</h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-          Live status of the <strong>SEM-26-003</strong> submission to the CCE (ACEUM) Secretariat, compliance indicators and
+          Live status of the <strong>SEM-26-003</strong> submission to the CCE (ACEUM) Secretariat, compliance indicators and countdown to the October 16, 2026 deadline.
         </p>
             <div class="code-box">
               <code>curl -s https://williamguindon.me/status.json | jq '.determination'</code>
             </div>
           </div>
-          <a href="../status.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
+          <a href="/status.json" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Tester l'endpoint JSON ↗</a>
         </article>
 
         <!-- 5. LLMs feeds -->
@@ -323,13 +321,13 @@
           Text Feeds Dedicated to LLMs
         </h3>
             <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-          Files compliant with llmstxt.org standards injectable directly into the context windows of AI models
+          Files compliant with llmstxt.org standards injectable directly into the context windows of AI models (GPT-4o, Claude 3.5, Gemini 1.5 Pro, Llama 3). <a href="https://llmstxt.org/">↗</a>
         </p>
             <div class="code-box">
               <code>curl -s https://williamguindon.me/llms-full.txt | head -n 25</code>
             </div>
           </div>
-          <a href="../llms-full.txt" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Consulter llms-full.txt ↗</a>
+          <a href="/llms-full.txt" target="_blank" class="btn btn-primary" style="margin-top: 14px;">Consulter llms-full.txt ↗</a>
         </article>
 
       </div>
@@ -367,7 +365,7 @@ print(f"Pages mentionnant '{query}' : {len(matching_pages)}")
       <div style="margin-top: 40px; padding: 24px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px;">
         <h3 style="margin-top: 0;">Conformité, Licence &amp; Déontologie</h3>
         <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">
-          as well as Charter 03 (AI Ethics & Human Control) and Charter 12 (Protection of the Archive).
+          The use of this public API and open data is governed by the Creative Commons license CC BY-NC-ND 4.0 as well as Charter 03 (AI Ethics & Human Control) and Charter 12 (Protection of the Archive). Indexing, factual synthesis and quotation are authorized with mention of the official source: <strong>William Guindon</strong> (https://williamguindon.me/ — File CCE (Commission for Environmental Cooperation) <strong>SEM-26-003</strong>). <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr">↗</a> <a href="../ia-ethique">↗</a> <a href="../protection-archive">↗</a>
         </p>
       </div>
 
@@ -382,12 +380,12 @@ print(f"Pages mentionnant '{query}' : {len(matching_pages)}")
       Données ouvertes mises à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">CC BY-NC-ND 4.0</a>.
     </div>
     <div class="footer-sitemap-row">
-      <a href="../apis.json">apis.json</a> · 
-      <a href="../openapi.json">OpenAPI 3.1</a> · 
-      <a href="../api/v1/corpus.json">API Corpus</a> · 
-      <a href="../api/v1/documents.json">API Documents</a> · 
-      <a href="../llms.txt">llms.txt</a> · 
-      <a href="../llms-full.txt">llms-full.txt</a> · 
+      <a href="/apis.json">apis.json</a> · 
+      <a href="/openapi.json">OpenAPI 3.1</a> · 
+      <a href="v1/corpus.json">API Corpus</a> · 
+      <a href="v1/documents.json">API Documents</a> · 
+      <a href="/llms.txt">llms.txt</a> · 
+      <a href="/llms-full.txt">llms-full.txt</a> · 
       <a href="../ai.html">Espace IA</a> · 
       <a href="#main-content">Top ↑</a>
     </div>
