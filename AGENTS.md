@@ -242,6 +242,13 @@ réduit la charge de ~80 % sans changer le comportement.
 - **Français** dans les commentaires, les messages d'erreur utilisateur, les commits et les issues.
 - **Données bilingues :** toute clé de contenu porte un suffixe `_fr` et `_en`
   (voir `status.json`, `sync-cec.js`). Ne jamais ajouter une clé dans une seule langue.
+- **Pages dédiées traduites (FR / EN / ES) :** lors de la création d'une nouvelle page de fond,
+  d'un compte rendu majeur ou d'une modification substantielle de contenu, répercuter systématiquement
+  la modification dans la page dédiée traduite dans la langue (`/en/` pour l'anglais, `/es/` pour
+  l'espagnol). Rigueur terminologique humaine obligatoire : la CCE étant une instance trilatérale
+  (Canada, États-Unis, Mexique), le vocabulaire juridique et environnemental (*Factual Record*,
+  *citizen submission*, *ombrotrophic peatland*, *leachate*, etc.) doit être rigoureusement fidèle
+  et ne jamais reposer sur un outil de traduction automatique approximatif.
 - **Nommage des fichiers :** minuscules, tirets, sans accents (`registre-cce-sem26003.html`).
 - **JSON :** 2 espaces d'indentation, UTF-8, pas de commentaire (la CI les validerait mal).
 - **Accessibilité :** conserver le HTML5 sémantique, les FAQ en accordéons visibles et les

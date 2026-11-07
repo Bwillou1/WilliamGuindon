@@ -151,7 +151,10 @@ fait la CI), puis existence réelle de tout chemin référencé dans `sw.js` et 
 
 **Conventions :** commits en Conventional Commits **français** ; données bilingues `_fr` / `_en` ;
 commentaires et messages utilisateur en français ; ne jamais affaiblir la CSP ni la liste blanche
-de domaines de la fonction Groq.
+de domaines de la fonction Groq ; **pages dédiées traduites :** répercuter systématiquement les créations
+et modifications substantielles de pages dans les pages dédiées traduites dans la langue (`/en/` pour l'anglais,
+`/es/` pour l'espagnol) avec une terminologie juridique et environnementale exacte et rigoureuse (non issue
+d'une simple traduction automatique approximative).
 
 ---
 

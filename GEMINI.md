@@ -161,6 +161,13 @@ Un code de sortie à zéro n'est pas une réussite quand le contenu est faux.
   `chore(repo):`, `ci(security):`. Le bot de sync utilise `chore(sync): … [skip ci]` :
   **toujours conserver `[skip ci]`**.
 - **Données bilingues :** toute clé de contenu porte `_fr` et `_en`. Jamais une seule langue.
+- **Pages dédiées traduites (FR / EN / ES) :** lors de la création d'une nouvelle page de fond,
+  d'un compte rendu majeur ou d'une modification substantielle, répercuter systématiquement la
+  modification dans la page dédiée traduite dans la langue (`/en/` pour l'anglais, `/es/` pour
+  l'espagnol). Rigueur terminologique humaine obligatoire : la CCE étant une instance trilatérale
+  (Canada, États-Unis, Mexique), le vocabulaire juridique et environnemental (*Factual Record*,
+  *citizen submission*, *ombrotrophic peatland*, *leachate*, etc.) doit être rigoureusement fidèle
+  et ne jamais reposer sur un outil de traduction automatique approximatif.
 - **Langue :** commentaires, messages d'erreur utilisateur, issues et commits en français.
 - **Nommage :** minuscules, tirets, sans accents.
 - **Images :** `.jpg` + `.webp` (+ `.svg` pour les logos de presse).
