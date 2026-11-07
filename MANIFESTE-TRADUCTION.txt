@@ -1,0 +1,202 @@
+==============================================================================
+WILLIAM GUINDON — TRADUCTION EN ANGLAIS ET EN ESPAGNOL DU SITE williamguindon.me
+DOSSIER DE LIVRAISON · MANIFESTE, MÉTHODE, EXCLUSIONS ET CONTRÔLE QUALITÉ
+==============================================================================
+
+Date de génération   : 7 novembre 2026
+Source du périmètre  : https://williamguindon.me/sitemap.xml (lastmod 2026-10-22)
+Pages du sitemap     : 57 URL
+Pages traduites      : 50 × 2 langues = 100 fichiers .txt
+Pages exclues        : 7 URL présentes au sitemap (voir § 3) + 8 URL citées dans la consigne mais absentes du sitemap (§ 4)
+
+ARBORESCENCE
+  williamguindon-me-txt/
+    ├── fr/           50 fichiers .txt — texte intégral français (référence)
+    ├── en/           50 fichiers .txt — traduction anglaise
+    ├── es/           50 fichiers .txt — traduction espagnole
+    ├── llms-fr.txt   corpus français compilé (50 pages, un seul fichier)
+    ├── llms-en.txt   corpus anglais compilé (50 pages)
+    ├── llms-es.txt   corpus espagnol compilé (50 pages)
+    ├── pages-index.csv  index tabulaire FR/EN/ES avec volumétrie
+    └── MANIFESTE-TRADUCTION.txt  le présent document
+
+1. MÉTHODE
+  a) Périmètre établi à partir de sitemap.xml (57 URL), exclusion des 7 URL listées au § 3.
+  b) Extraction du contenu principal de chaque page (<main> / <article>), suppression de la
+     navigation, des infobulles, des scripts, des formulaires et du pied de page.
+  c) Traduction automatique neuronale (Google NMT) paragraphe par paragraphe, avec un
+     GLOSSAIRE PROTÉGÉ (§ 5) : les désignations officielles françaises ne sont jamais
+     traduites ; elles sont conservées telles quelles et glosées une seule fois entre
+     parenthèses à leur première occurrence dans chaque page.
+  d) Protection automatique des éléments non traduisibles : URL, adresses courriel,
+     empreintes SHA-256, cotes de pièces (26-1-SUB, 72-RSP), identifiants de dossier
+     (SEM-26-003, A24.27/SEM-26-003/06/DET).
+  e) Restitution d'une mise en forme texte stable : titres #, listes -, citations >,
+     tableaux ▸ / ·, lignes de registre techniques en retrait de 4 espaces, lignes ≤ 105
+     caractères pour lecture et différenciation (diff) sans outil particulier.
+
+2. AVERTISSEMENT JURIDIQUE — VALEUR DES FICHIERS
+  Les fichiers en/ et es/ sont des TRADUCTIONS AUTOMATIQUES INFORMATIVES. Elles n'ont
+  aucune valeur juridique, probatoire ou contractuelle et ne se substituent pas au texte
+  français de référence, seul opposable. Chaque fichier porte cet avertissement en en-tête.
+  Conformément à la consigne : aucune page dont la traduction briserait la valeur
+  juridique, technique ou probatoire n'a été traduite (§ 3, catégorie A).
+
+3. PAGES EXCLUES DE LA TRADUCTION (présentes au sitemap)
+
+  CATÉGORIE A — valeur juridique, technique ou probatoire (ne pas traduire)
+  --------------------------------------------------------------------------
+  A1. loi-93.html
+      Contenu : Droit québécois pur : citations mot à mot du projet de loi 93, de la Charte québécoise, des clauses privatives et de l'arrêt de la Cour d'appel du 16 avril 2025.
+      Risque  : Une traduction dénaturerait les termes de droit civil québécois sans équivalent exact en common law.
+
+  A2. registre.html / registre-cce-sem26003.html
+      Contenu : Registre des 222 pièces probatoires officielles : cotes CCE (26-1-SUB, 72-RSP), décrets du MELCCFP, certificats d'autorisation.
+      Risque  : Un titre de décret ou un avis de conformité traduit rendrait la pièce introuvable dans les archives de l'État.
+
+  A3. cle.html / opsec.html / transmission-sem26003.html
+      Contenu : Clés cryptographiques, hachages SHA-256, protocole de transmission probatoire, intégrité numérique.
+      Risque  : Un traducteur automatique risque d'altérer des balises, des hachages ou des instructions de chiffrement.
+
+  A4. console-admin.html / admin.html / editeur.html
+      Contenu : Outils de gestion interne, kill-switches, authentification GitHub et Nostr.
+      Risque  : Un traducteur automatique peut casser le DOM JavaScript, bloquer les formulaires ou corrompre les requêtes API.
+
+  CATÉGORIE B — 100 % franco-québécois et locaux (« pour nous seulement »)
+  --------------------------------------------------------------------------
+  B1. enquete-partis.html
+      Rôle local : Enquête sur les partis politiques québécois (CAQ, PLQ, QS, PQ, PCQ) et leurs députés à l'Assemblée nationale.
+      Motif      : Débat électoraliste et parlementaire strictement québécois, sans portée pour un lecteur étranger.
+
+  B2. commentaires.html
+      Rôle local : Le Mur Citoyen : témoignages bruts des citoyens de Blainville et des Laurentides.
+      Motif      : Citations citoyennes authentiques en français d'ici : les traduire détruirait leur sincérité et leur valeur probatoire d'intérêt public.
+
+  B3. statut-mineur.html / vie-privee-parents.html
+      Rôle local : Encadrement légal selon le Code civil du Québec et la protection de la jeunesse locale.
+      Motif      : Cadre juridique spécifiquement québécois.
+
+  B4. 11-novembre.html / cadet.html
+      Rôle local : Hommage au Souvenir et parcours personnel au sein des Cadets de l'Aviation royale canadienne.
+      Motif      : Dimension personnelle et commémorative locale.
+
+4. URL CITÉES DANS LA CONSIGNE MAIS ABSENTES DU SITEMAP
+  --------------------------------------------------------------------------
+  Ces adresses ne figurent pas dans sitemap.xml au 7 novembre 2026 : elles n'ont donc pas
+  pu être traitées depuis le sitemap. Elles restent de toute façon exclues par la consigne.
+    - registre-cce-sem26003.html
+    - transmission-sem26003.html
+    - console-admin.html
+    - admin.html
+    - editeur.html
+    - commentaires.html
+    - 11-novembre.html
+    - cadet.html
+
+  Remarque complémentaire : /messagerie.html et /admin.html & co. sont en outre interdits
+  aux robots par robots.txt ; /messagerie.html ne contient de toute façon aucun texte
+  rédactionnel (interface vide hors JavaScript).
+
+5. GLOSSAIRE PROTÉGÉ (jamais traduit, glosé une fois)
+  --------------------------------------------------------------------------
+  Terme français (conservé)                            Glose EN                                     Glose ES
+  Ministère de l'Environnement, de la Lutte contre l   Québec Ministry of the Environment, the Fi   Ministerio de Medio Ambiente, Lucha cont
+  Bureau d'audiences publiques sur l'environnement     Québec Bureau of Public Environmental Hear   Oficina de Audiencias Públicas sobre el 
+  Centre québécois du droit de l'environnement         Québec Centre for Environmental Law          Centro de Derecho Ambiental de Quebec
+  Commission de coopération environnementale           Commission for Environmental Cooperation     Comisión para la Cooperación Ambiental
+  Cadets de l'Aviation royale canadienne               Royal Canadian Air Cadets                    Cadetes de la Real Fuerza Aérea Canadian
+  Loi sur la qualité de l'environnement                Environment Quality Act                      Ley sobre la Calidad del Medio Ambiente
+  Union des municipalités du Québec                    Union of Québec Municipalities               Unión de Municipalidades de Quebec
+  Grande Tourbière de Blainville                       Great Blainville Peat Bog                    Gran Turbera de Blainville
+  Assemblée nationale du Québec                        National Assembly of Québec                  Asamblea Nacional de Quebec
+  MRC de Thérèse-De Blainville                         Thérèse-De Blainville regional county muni   Municipalidad regional de condado de Thé
+  Cour supérieure du Québec                            Superior Court of Québec                     Tribunal Superior de Quebec
+  Cour d'appel du Québec                               Québec Court of Appeal                       Corte de Apelaciones de Quebec
+  Code civil du Québec                                 Civil Code of Québec                         Código Civil de Quebec
+  Assemblée nationale                                  National Assembly of Québec                  Asamblea Nacional de Quebec
+  Ville de Blainville                                  City of Blainville                           Ciudad de Blainville
+  Charte québécoise                                    Québec Charter of Human Rights and Freedom   Carta de Derechos Humanos de Quebec
+  Projet de loi 93                                     Bill 93                                      Proyecto de Ley 93
+  Grande Tourbière                                     Great Peat Bog                               Gran Turbera
+  SNAP Québec                                          Society for Nature and Parks                 Sociedad para la Naturaleza y los Parque
+  MELCCFP                                              Québec Ministry of the Environment, the Fi   Ministerio de Medio Ambiente, Lucha cont
+  Loi 93                                               Bill 93                                      Ley 93
+  RCAANC                                               Crown-Indigenous Relations and Northern Af   Relaciones Corona-Pueblos Indígenas y As
+  Loi 25                                               Québec privacy modernization Act             Ley de modernización de la protección de
+  ACEUM                                                Canada–United States–Mexico Agreement        Tratado entre México, Estados Unidos y C
+  BAPE                                                 Québec Bureau of Public Environmental Hear   Oficina de Audiencias Públicas sobre el 
+  CCE                                                  Commission for Environmental Cooperation     Comisión para la Cooperación Ambiental
+  MRC                                                  regional county municipality                 municipalidad regional de condado
+
+  En plus de ce glossaire, sont protégés mécaniquement : URL, courriels, empreintes
+  SHA-256, cotes de pièces CCE et identifiants de procédure.
+
+6. CONTRÔLE QUALITÉ
+  - 3384 blocs de texte traités par langue.
+  - 0 marqueur de protection résiduel dans les fichiers livrés.
+  - 7,8 % (EN) et 2,4 % (ES) des blocs sont identiques au français : il s'agit de titres
+    déjà rédigés en anglais par l'auteur, de noms propres, de chiffres et de cotes.
+  - Contenu en double (légendes reprise du titre) supprimé automatiquement.
+  - Ponctuation française (guillemets « », espaces insécables) normalisée.
+  - ATTENTION : la page presse.html contient publiquement une clé de routage média
+    (TOKEN: VERIF-MEDIA-...). Elle a été conservée telle quelle, sans altération ;
+    si ce jeton ne doit plus être public, il faut le retirer de la page source.
+
+7. INDEX DES PAGES ET VOLUMÉTRIE
+  --------------------------------------------------------------------------
+    #  Page                            Blocs      FR      EN      ES
+    1  index.txt                          98   16420   15729   17026
+    2  adultisme.txt                      50   11935   11436   12452
+    3  agir.txt                          156   17540   15963   17666
+    4  ai.txt                            251   24160   23661   25791
+    5  anti-slapp.txt                     33    4851    4333    4679
+    6  apercu.txt                        556   80723   76497   81739
+    7  api_index.txt                      35    2880    2684    3033
+    8  apparitions-publiques.txt          60    8159    7757    6864
+    9  autochtone.txt                    292   51433   48773   51924
+   10  blog.txt                           36    6158    5984    6330
+   11  communiques.txt                    59   13673   13014   13703
+   12  contamination.txt                  43    5788    5555    5856
+   13  correspondance.txt                 22    4017    3757    3991
+   14  deontologie.txt                    41    6668    6396    6857
+   15  dependances-licences.txt           47   13741   12541   13861
+   16  dev.txt                           124   12527   11635   12846
+   17  diplomatie.txt                     23    4306    4136    4512
+   18  dossier-journalistes.txt           21    2416    2240    2484
+   19  edition-speciale-reconciliation.txt    114   15857   14980   16192
+   20  embargo.txt                        16    2543    2330    2523
+   21  experts.txt                        23    2935    2879    2969
+   22  flux.txt                           83   18175   17477   18625
+   23  halloween.txt                      17    1457    1435    1541
+   24  ia-ethique.txt                     61   12546   11338   12422
+   25  independance.txt                   53   12753   12023   12909
+   26  lecteur.txt                         0       0       0       0
+   27  lexique.txt                        54    7768    7389    7994
+   28  licence-et-charte.txt              47    6192    5759    6257
+   29  liens.txt                           7     480     504     536
+   30  live.txt                           11    1405    1527    1610
+   31  lobby.txt                         108   10044    9533   10336
+   32  messagerie.txt                      0       0       0       0
+   33  miroirs.txt                         7    1221    1051    1178
+   34  netiquette.txt                     38    4620    4178    4603
+   35  photos.txt                         12    2679    2543    2697
+   36  politiques.txt                     46    4656    4408    4383
+   37  portrait.txt                      156   33140   31483   33352
+   38  presse.txt                        113   14990   14213   15453
+   39  privacy.txt                       112   23784   21427   23423
+   40  projets.txt                        20    1174    1076    1230
+   41  protection-archive.txt             92   17267   16361   17488
+   42  reciprocite.txt                     7    1283    1327    1386
+   43  satellite.txt                      12    1403    1387    1499
+   44  stablex.txt                        77   14700   13970   14984
+   45  statut.txt                          6    1028     904    1053
+   46  telechargement-archive.txt          2     165     202     217
+   47  terms.txt                          59   12542   11671   12539
+   48  tracabilite.txt                    25    3226    2971    3391
+   49  txt.txt                            51   11695   10840   11620
+   50  viewer.txt                          8    1461    1459    1604
+       TOTAL                            3384  530584  500736  537628
+
+==============================================================================
+FIN DU MANIFESTE
+==============================================================================
