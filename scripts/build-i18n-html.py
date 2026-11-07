@@ -232,15 +232,15 @@ def build_page(page_name, lang):
     if page_name == 'index':
         src_html_rel = 'index.html'
         out_html_rel = 'index.html'
-        page_slug = ''
+        clean_slug = ''
     elif page_name == 'api_index':
         src_html_rel = 'api/index.html'
         out_html_rel = 'api.html'
-        page_slug = 'api.html'
+        clean_slug = 'api'
     else:
         src_html_rel = f'{page_name}.html'
         out_html_rel = f'{page_name}.html'
-        page_slug = f'{page_name}.html'
+        clean_slug = page_name
 
     src_html_path = os.path.join(WORKSPACE_DIR, src_html_rel)
     if not os.path.exists(src_html_path):
@@ -268,15 +268,25 @@ def build_page(page_name, lang):
         html = re.sub(r'<meta\s+name=["\']description["\']\s+content=["\'].*?["\']\s*/?>', f'<meta name="description" content="{d_tr}">', html, count=1, flags=re.DOTALL)
         html = re.sub(r'<meta\s+content=["\'].*?["\']\s+name=["\']description["\']\s*/?>', f'<meta name="description" content="{d_tr}">', html, count=1, flags=re.DOTALL)
 
-    # 4. Canonical & Hreflang
-    canonical_url = f'https://williamguindon.me/{lang}/{page_slug}'
+    # 4. Canonical & Hreflang (Clean URLs sans jamais de .html)
+    if not clean_slug:
+        canonical_url = f'https://williamguindon.me/{lang}/'
+        fr_href = 'https://williamguindon.me/'
+        en_href = 'https://williamguindon.me/en/'
+        es_href = 'https://williamguindon.me/es/'
+    else:
+        canonical_url = f'https://williamguindon.me/{lang}/{clean_slug}'
+        fr_href = f'https://williamguindon.me/{clean_slug}'
+        en_href = f'https://williamguindon.me/en/{clean_slug}'
+        es_href = f'https://williamguindon.me/es/{clean_slug}'
+
     html = re.sub(r'<link\s+rel=["\']canonical["\'][^>]*>', f'<link rel="canonical" href="{canonical_url}">', html, count=1)
 
     hreflang_tags = (
-        f'<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/{page_slug}">\n'
-        f'  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/{page_slug}">\n'
-        f'  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/{page_slug}">\n'
-        f'  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/{page_slug}">'
+        f'<link rel="alternate" hreflang="fr-CA" href="{fr_href}">\n'
+        f'  <link rel="alternate" hreflang="en" href="{en_href}">\n'
+        f'  <link rel="alternate" hreflang="es" href="{es_href}">\n'
+        f'  <link rel="alternate" hreflang="x-default" href="{fr_href}">'
     )
     if '<link rel="alternate" hreflang=' in html:
         html = re.sub(r'(<link\s+rel=["\']alternate["\']\s+hreflang=[^>]*>\s*)+', hreflang_tags + '\n  ', html, count=1)
@@ -319,12 +329,18 @@ def build_page(page_name, lang):
     html = html.replace('class="nav-dropdown-item lang-select-btn active" data-lang="fr"', 'class="nav-dropdown-item lang-select-btn" data-lang="fr"')
     html = html.replace(f'class="nav-dropdown-item lang-select-btn" data-lang="{lang}"', f'class="nav-dropdown-item lang-select-btn active" data-lang="{lang}"')
 
-    # 6. Redirection des liens vers pages exclues françaises (vers ../page.html)
+    # 6. Redirection des liens vers pages exclues françaises (vers ../page propre sans .html)
     for excl in EXCLUDED_PAGES:
-        html = re.sub(rf'href=["\']{re.escape(excl)}(["\']|#|\?)', rf'href="../{excl}\1', html)
-        clean_slug = excl.replace('.html', '')
-        if clean_slug != 'index':
-            html = re.sub(rf'href=["\']{re.escape(clean_slug)}(["\']|#|\?)', rf'href="../{clean_slug}\1', html)
+        clean_excl = excl.replace('.html', '')
+        target_excl = '../' if clean_excl == 'index' else f'../{clean_excl}'
+        html = re.sub(rf'href=["\']{re.escape(excl)}(["\']|#|\?)', rf'href="{target_excl}\1', html)
+        if clean_excl != 'index':
+            html = re.sub(rf'href=["\']{re.escape(clean_excl)}(["\']|#|\?)', rf'href="../{clean_excl}\1', html)
+
+    # 6b. Nettoyage systématique des extensions .html pour des URLs propres (Clean URLs)
+    html = re.sub(r'href=["\']index\.html(["\']|#|\?)', r'href="./\1', html)
+    html = re.sub(r'href=["\']api/index\.html(["\']|#|\?)', r'href="api\1', html)
+    html = re.sub(r'href=["\']([a-zA-Z0-9_\-]+)\.html(["\']|#|\?)', r'href="\1\2', html)
 
     # 7. Remplacement précis du contenu des balises textuelles (p, h1-h6, blockquote, li, summary)
     if b_fr and b_tr:

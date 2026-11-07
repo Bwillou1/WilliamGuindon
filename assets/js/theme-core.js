@@ -911,6 +911,15 @@
     }, 4000);
   }
 
+  function cleanUrlPath(p) {
+    if (!p) return '/';
+    // Supprimer .html s'il est présent
+    let clean = p.replace(/\.html(\?|#|$)/i, '$1');
+    // Supprimer index ou index/
+    clean = clean.replace(/\/index(\/|$)/i, '/');
+    return clean || '/';
+  }
+
   function getTargetLanguageUrl(targetLang) {
     targetLang = (targetLang || 'fr').toLowerCase();
 
@@ -921,15 +930,22 @@
       altLink = document.querySelector('link[rel="alternate"][hreflang="x-default"]');
     }
     if (altLink && altLink.href) {
-      return altLink.href;
+      try {
+        const parsed = new URL(altLink.href, window.location.origin);
+        parsed.pathname = cleanUrlPath(parsed.pathname);
+        return parsed.pathname + parsed.search + parsed.hash;
+      } catch (_) {
+        return cleanUrlPath(altLink.href);
+      }
     }
 
-    // 2. Détermination dynamique de l'URL avec préfixe (/en/, /es/ ou racine pour fr)
-    const path = window.location.pathname;
+    // 2. Détermination dynamique de l'URL propre sans .html (/en/, /es/ ou racine pour fr)
+    let path = cleanUrlPath(window.location.pathname);
+    // Retirer les préfixes /en/ ou /es/ ou /fr/ existants
     let cleanPath = path.replace(/^\/(en|es|fr)(\/|$)/i, '/');
     if (!cleanPath.startsWith('/')) cleanPath = '/' + cleanPath;
 
-    const isHome = cleanPath === '/' || cleanPath === '/index.html' || cleanPath === '';
+    const isHome = cleanPath === '/' || cleanPath === '';
 
     if (targetLang === 'fr') {
       return (isHome ? '/' : cleanPath) + window.location.search + window.location.hash;
