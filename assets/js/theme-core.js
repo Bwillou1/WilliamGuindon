@@ -892,6 +892,10 @@
     document.querySelectorAll('.nav-lang-dropdown .lang-select-btn').forEach(btn => {
       const btnLang = (btn.getAttribute('data-lang') || '').toLowerCase();
       btn.classList.toggle('active', btnLang === lang);
+      const targetUrl = getTargetLanguageUrl(btnLang);
+      if (btn.tagName === 'A' && targetUrl) {
+        btn.setAttribute('href', targetUrl);
+      }
     });
   }
 
@@ -1599,18 +1603,18 @@
           </button>
           <div class="nav-dropdown-menu nav-lang-menu" role="menu">
             <span class="nav-dropdown-group-title">Langue / Language</span>
-            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'fr' ? 'active' : ''}" data-lang="fr" role="menuitem">
+            <a href="${getTargetLanguageUrl('fr')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'fr' ? 'active' : ''}" data-lang="fr" role="menuitem">
               <span class="lang-name">Français</span>
               <span class="lang-tag">FR</span>
-            </button>
-            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'en' ? 'active' : ''}" data-lang="en" role="menuitem">
+            </a>
+            <a href="${getTargetLanguageUrl('en')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'en' ? 'active' : ''}" data-lang="en" role="menuitem">
               <span class="lang-name">English</span>
               <span class="lang-tag">EN</span>
-            </button>
-            <button type="button" class="nav-dropdown-item lang-select-btn ${savedLang === 'es' ? 'active' : ''}" data-lang="es" role="menuitem">
+            </a>
+            <a href="${getTargetLanguageUrl('es')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'es' ? 'active' : ''}" data-lang="es" role="menuitem">
               <span class="lang-name">Español</span>
               <span class="lang-tag">ES</span>
-            </button>
+            </a>
           </div>
         `;
 
@@ -1625,12 +1629,10 @@
         updateLangUI(savedLang);
       }
 
-      // Attacher les écouteurs sur tous les boutons de sélection de langue
+      // Attacher les écouteurs sur tous les boutons/liens de sélection de langue
       document.querySelectorAll('.lang-select-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const targetLang = btn.getAttribute('data-lang');
+          const targetLang = (btn.getAttribute('data-lang') || 'fr').toLowerCase();
           const parentDrop = btn.closest('.nav-lang-dropdown') || langDropdown;
           if (parentDrop) {
             parentDrop.classList.remove('active');
@@ -1640,7 +1642,34 @@
               navBtn.blur();
             }
           }
-          applyLanguage(targetLang);
+
+          const curFile = window.location.pathname.split('/').pop().toLowerCase();
+          if (targetLang !== 'fr' && EXCLUDED_FR_PAGES.has(curFile)) {
+            e.preventDefault();
+            e.stopPropagation();
+            showLangNotice('Ce document juridique ou administratif est conservé en version originale française.');
+            return;
+          }
+
+          try {
+            localStorage.setItem(LANG_STORAGE_KEY, targetLang);
+            sessionStorage.setItem(LANG_STORAGE_KEY, targetLang);
+          } catch (_) {}
+          clearGoogTransCookies();
+
+          const targetUrl = getTargetLanguageUrl(targetLang);
+          if (btn.tagName === 'A' && targetUrl) {
+            btn.setAttribute('href', targetUrl);
+            if (targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
+              return; // Navigation native fluide
+            }
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+          if (targetUrl && targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
+            window.location.href = targetUrl;
+          }
         });
       });
 
