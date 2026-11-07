@@ -975,11 +975,8 @@
 
     // Vérifier si la page courante est exclue de la traduction (conservée uniquement en français)
     const curFile = window.location.pathname.split('/').pop().toLowerCase();
-    const hreflangKey = (targetLang === 'fr' ? 'fr-CA' : targetLang);
-    const hasAlt = !!document.querySelector(`link[rel="alternate"][hreflang="${hreflangKey}"]`);
-
-    if (targetLang !== 'fr' && (EXCLUDED_FR_PAGES.has(curFile) || !hasAlt)) {
-      showLangNotice('Ce document juridique probatoire est conservé en version originale française.');
+    if (targetLang !== 'fr' && EXCLUDED_FR_PAGES.has(curFile)) {
+      showLangNotice('Ce document juridique ou administratif est conservé en version originale française.');
       return;
     }
 
