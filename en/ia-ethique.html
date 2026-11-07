@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="../assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' '' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+<title>Ethics and Supervision of AI — William Guindon</title>
+<meta name="description" content="Ethical charter for the supervision of artificial intelligence, transparency of sources and editorial responsibility on williamguindon.me.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://williamguindon.me/en/ia-ethique.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/ia-ethique.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/ia-ethique.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/ia-ethique.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/ia-ethique.html">
+  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Politique d'Éthique et d'Encadrement de l'Intelligence Artificielle — William Guindon">
+<meta property="og:description" content="Règles d'utilisation des outils d'IA, transparence envers les lecteurs et responsabilité éditoriale">
+<meta property="og:url" content="https://williamguindon.me/ia-ethique.html">
+<meta property="og:locale" content="fr_CA">
+
+<meta name="twitter:title" content="Politique d'Éthique et d'Encadrement de l'Intelligence Artificielle — William Guindon">
+<meta name="twitter:description" content="Règles d'utilisation des outils d'IA, transparence envers les lecteurs et responsabilité éditoriale">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "givenName": "William",
+      "additionalName": "Tristan Logan Théo",
+      "familyName": "Guindon",
+      "gender": "https://schema.org/Male",
+      "birthDate": "2011-08-03",
+      "birthPlace": {
+        "@type": "Place",
+        "name": "Saint-Eustache, Québec, Canada"
+      },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Blainville, Québec, Canada"
+      },
+      "jobTitle": "Militant écologiste et climatique",
+      "disambiguatingDescription": "Militant écologiste et citoyen canadien, auteur de la soumission internationale SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).",
+      "description": "Militant pour les générations futures, auteur de la communication citoyenne SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM) et chercheur citoyen indépendant.",
+      "url": "https://williamguindon.me/",
+      "mainEntityOfPage": "https://williamguindon.me/",
+      "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
+      "sameAs": [
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://g.dev/williamguindondev",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://www.linkedin.com/in/william-guindon/",
+        "https://www.youtube.com/@william-guindon",
+        "https://www.facebook.com/williamguindon.officiel",
+        "https://independent.academia.edu/GuindonWilliam",
+        "https://github.com/Bwillou1",
+        "https://codeberg.org/Bwillou1/WilliamGuindon",
+        "https://doi.org/10.5281/zenodo.21416989"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://williamguindon.me/ia-ethique.html#webpage",
+      "url": "https://williamguindon.me/ia-ethique.html",
+      "name": "Politique d'Éthique et d'Encadrement de l'Intelligence Artificielle — William Guindon",
+      "description": "Règles d'utilisation des outils d'IA, transparence envers les lecteurs et responsabilité éditoriale",
+      "inLanguage": "fr-CA",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://williamguindon.me/#website",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/ia-ethique.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Gouvernance & Éthique de l'IA",
+          "item": "https://williamguindon.me/ia-ethique.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../style.css?v=20261018-v87">
+<script src="../assets/js/theme-core.js?v=20260930-v70" defer></script>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
+<link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=20261017" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
+<link rel="manifest" href="/manifest.json?v=20261017">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Militant écologiste">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<!-- BRANDKIT:END -->
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site" aria-label="Site Header">
+  <div id="ai-chat" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
+      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Open navigation menu" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Main navigation"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Close le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Close</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : CEC Case & Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>CEC Case &amp; Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Investigations &amp; Analyses</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="stablex.html" class="nav-dropdown-item">Stablex Investigation Dossier</a>
+              <a href="contamination.html" class="nav-dropdown-item">Investigation: Contamination &amp; Testing</a>
+              <a href="../loi-93.html" class="nav-dropdown-item">Législation : Loi 93 &amp; Expropriation</a>
+              <a href="../enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
+              <a href="lobby.html" class="nav-dropdown-item">Enquête fédérale : Volet Lobbying</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Indigenous History &amp; Ecology</a>
+              <a href="apercu.html" class="nav-dropdown-item">Case Explained &amp; Overview (SEM-26-003)</a>
+              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Citizen Glossary &amp; Lexicon</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>CEC Registry &amp; Evidence</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Submitter Observations (Oct. 17)</a>
+              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="nav-dropdown-item">Canada's Response (Oct. 16)</a>
+              <a href="../registre.html" class="nav-dropdown-item">Official CEC Registry (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">View documents (PDF)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Document Explorer</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Decentralized Mirrors (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Monitoring &amp; Direct Tools</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>How to Act &amp; Support</a>
+              <a href="live.html" class="nav-dropdown-item">Countdown &amp; Canada Response (Oct. 16)</a>
+              <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="../commentaires.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Le Mur Citoyen (Témoignages)</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Indigenous History &amp; Ecology</a>
+              <a href="apercu.html" class="nav-dropdown-item">Case Explained &amp; Overview (SEM-26-003)</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Press &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Press &amp; Kit Média</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Autonomie & Adultisme -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Autonomie &amp; Adultisme ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="adultisme.html" class="nav-dropdown-item">01. Appui scientifique &amp; Adultisme (Liebel &amp; Meade)</a>
+          <a href="../statut-mineur.html" class="nav-dropdown-item">02. Statut citoyen mineur &amp; Attestation CCE</a>
+          <a href="../age.html" class="nav-dropdown-item">03. Wmail — Archive des correspondances</a>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : Chartes & Politiques (Cadre légal) -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Chartes &amp; Politiques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="politiques.html" class="nav-dropdown-item" style="font-weight: 700; color: var(--accent);">00. Registre des chartes (Hub)</a>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Anti-SLAPP Declaration</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Press</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="../opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–12. Statut, Archives &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="../statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
+              <a href="licence-et-charte.html" class="nav-dropdown-item">Licence &amp; Charte graphique</a>
+              <a href="terms.html" class="nav-dropdown-item">Terms of Use</a>
+              <a href="privacy.html" class="nav-dropdown-item">Privacy Policy</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 5 : À propos & Contact -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="./#apropos" class="nav-dropdown-item">Biography de William Guindon</a>
+              <a href="liens.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Liens officiels (Réseaux &amp; Bio)</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="dev.html" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
+              <a href="statut.html" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+              <a href="../api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contact</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #10b981;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>How to Act &amp; Support</a>
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Sélecteur de langue unique (FR / EN / ES) -->
+      <div class="nav-dropdown nav-lang-dropdown">
+        <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
+          <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="current-lang-code">FR</span>
+          <span>▾</span>
+        </button>
+        <div class="nav-dropdown-menu nav-lang-menu" role="menu">
+          <span class="nav-dropdown-group-title">Langue / Language</span>
+          <button type="button" class="nav-dropdown-item lang-select-btn active" data-lang="fr" role="menuitem">
+            <span class="lang-name">Français</span>
+            <span class="lang-tag">FR</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
+            <span class="lang-name">English</span>
+            <span class="lang-tag">EN</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
+            <span class="lang-name">Español</span>
+            <span class="lang-tag">ES</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panneau des alertes & notifications -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" role="status" aria-label="3 nouvelles alertes actives" title="3 nouvelles alertes actives"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Close les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
+              <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal (députée de Blainville) et Madeleine Chenette (députée fédérale)</h5>
+              <p class="notif-item-desc">Deux rencontres bilatérales confirmées. Nadine Le Gal a souhaité fixer cet échange avant même d'avoir ouvert son bureau permanent. Enjeux au programme : Loi 93, BAPE 371, réponse fédérale au BVG (10 nov.) et suite CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article du carnet ↗</a>
+                <a href="agir.html" class="notif-link-btn notif-link-ghost">Mobilisation &amp; Élus</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
+              <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (Pétition BVG 0546)</h5>
+              <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'une pétition citoyenne au BVG (art. 22 LVG) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'article 24.27(4)(a) de l'ACEUM.</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
+                <a href="../registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
+              <p class="notif-item-desc">Ottawa invoque sa propre pétition au BVG pour demander la fin ou le report de l'examen, sans contester les rejets critiques de cadmium (320x la norme) ni l'atteinte à la tourbière. Examen CCE en cours (art. 24.28).</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
+              <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>
+              <p class="notif-item-desc">Dans sept jours (16 octobre), le Canada doit répondre à la communication SEM-26-003 jugée recevable par la CCE (ACEUM). Déclaration de presse officielle de William Guindon.</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-09-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="https://ia601006.us.archive.org/29/items/communique_presse_SEM-26-003/communique_presse_SEM-26-003.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Télécharger le PDF ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
+              <h5 class="notif-item-title">SEM-26-003 expliqué simplement : Le dossier complet et accessible</h5>
+              <p class="notif-item-desc">Publication d'une grande synthèse vulgarisée en 12 parties décortiquant la soumission citoyenne, la décision CCE du 17 août 2026, les allégations retenues et les pièges de chiffres.</p>
+              <div class="notif-item-links">
+                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
+                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">26 septembre 2026 · Cadre Juridique</div>
+              <h5 class="notif-item-title">Adoption de la Charte Fondamentale 12 (Protection de l'archive)</h5>
+              <p class="notif-item-desc">Adoption formelle de la politique encadrant la fixité probatoire, la conformité au droit d'auteur et la procédure de biffure/retrait des 222 pièces.</p>
+              <div class="notif-item-links">
+                <a href="protection-archive.html" class="notif-link-btn notif-link-primary">Consulter la Charte 12 ↗</a>
+                <a href="politiques.html" class="notif-link-btn notif-link-ghost">Hub des chartes</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="../statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Press</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">22 septembre 2026 · Kit Press &amp; Transparence</div>
+              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (En ligne)</h5>
+              <p class="notif-item-desc">Mise en ligne officielle du moteur de recherche interne plein texte (OCR) et du kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Accéder au Kit Média ↗</a>
+                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
+              <h5 class="notif-item-title">Enquête : Positionnement des partis politiques (Cellule 6)</h5>
+              <p class="notif-item-desc">Publication du rapport d'enquête citoyenne évaluant la position des formations politiques québécoises et canadiennes face à la décision CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="../enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter le rapport ↗</a>
+                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Archive Zenodo</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <a href="../dossier-confidentiel-non-biffe-sem26003.html" class="sr-only" tabindex="-1" aria-hidden="true" style="display:none!important;position:absolute;left:-9999px;opacity:0;pointer-events:none;">Accès interne non biffé aux pièces confidentielles SEM-26-003</a>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">Encadrement technologique & contrôle humain</span>
+      <h1>
+          Ethics and Supervision Policy for Artificial Intelligence
+        </h1>
+      <p>
+          Rules for using AI tools, transparency towards readers and editorial responsibility
+        </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap legal-wrap">
+      <div class="legal-toolbar" role="toolbar" aria-label="Actions du document légal">
+        <div class="legal-toolbar-label">
+          <span class="legal-toolbar-kicker">Document officiel</span>
+          <span>Statut : Publique (site) — transparence envers les lecteurs · Version 1.0 — Septembre 2026 · Référence : Principe 14.7 Guide CPQ (2024)</span>
+        </div>
+        <button class="legal-print-button" type="button" aria-label="Imprimer ce document">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
+          <span>Imprimer</span>
+        </button>
+      </div>
+
+
+      <div class="legal-callout">
+        <h3 class="legal-callout-title">
+          Principle position & transversal scope of application
+        </h3>
+        <p class="legal-callout-desc">
+          a source of truth nor an autonomous author. Responsibility for any approach or publication remains
+        </p>
+      </div>
+
+      <h2>
+          1. Purpose and scope
+        </h2>
+      <p>
+          This policy governs the responsible and ethical use of computer technologies and artificial
+        </p>
+      <ul>
+        <li>des recherches documentaires et de l'organisation des données probatoires ;</li>
+        <li>de la rédaction des soumissions citoyennes, mémoires, communiqués et lettres ouvertes ;</li>
+        <li>des communications électroniques et correspondances publiques ;</li>
+        <li>des outils et services déployés sur le site <em>williamguindon.me</em>.</li>
+      </ul>
+
+      <h2>
+          2. Terms and framework for using AI infrastructures
+        </h2>
+      <p>
+          order to compensate for the substantial asymmetry of resources in the analysis of environmental
+        </p>
+
+      <h3>
+          2.1 Documentary analysis and exploration of complex corpora
+        </h3>
+      <p>
+          and cutting-edge language models) to identify, categorize and cross-reference evidentiary passages
+        </p>
+
+      <h3>
+          2.2 Running local models for common tasks For elementary linguistic operations that do not require any remote computing power — such as syntactic revision, optimization of sentence structures and occasional textual corrections — I give priority to the Bonsai 27B model (derived from the Qwen open source architecture), executed entirely locally on my computer hardware. This protocol ensures the strict confidentiality of the data processed and prevents any unnecessary transfer of requests to third-party servers.
+        </h3>
+      <p>Pour les opérations linguistiques élémentaires ne requérant aucune puissance de calcul déportée — telles que la révision syntaxique, l'optimisation des structures de phrases et les corrections textuelles ponctuelles —, j'accorde la priorité au modèle <strong>Bonsai 27B (dérivé de l'architecture open source Qwen)</strong>, exécuté <strong>intégralement en local</strong> sur mon matériel informatique. Ce protocole assure la stricte confidentialité des données traitées et prévient tout transfert inutile de requêtes vers des serveurs tiers.</p>
+
+      <h3>
+          2.3 Technical assistance for source code and web tools
+        </h3>
+      <p>
+          I use models to assist in the development, debugging and standardization of programming files (HTML,
+        </p>
+
+      <h3>
+          2.4 Proportionality and environmental assessment
+        </h3>
+      <p>
+          The energy consumption induced by the hosted calculations (estimated at a few tens of kilowatt hours
+        </p>
+
+      <h2>
+          3. Prohibited uses
+        </h2>
+      <ol>
+        <li><strong>Publier</strong> un texte, une image, un son ou une vidéo <strong>substantiellement générés par IA générative sans les identifier</strong> comme tels (principe 14.7 du Conseil de presse du Québec).</li>
+        <li>Présenter comme <strong>fait vérifié</strong> une sortie d'IA non vérifiée (les modèles peuvent générer des erreurs factuelles).</li>
+        <li>Utiliser l'IA pour <strong>fabriquer des preuves</strong>, altérer des documents ou créer de faux témoignages.</li>
+        <li>Transmettre à un modèle d'IA des <strong>renseignements personnels, confidentiels ou sensibles</strong> (sources, documents internes, données de personnes mineures).</li>
+        <li>Se reposer sur l'IA pour des <strong>décisions éditoriales</strong> ou pour déformer les déclarations de sources.</li>
+      </ol>
+
+      <h2>
+          4. Human editorial control — procedure
+        </h2>
+      <p>
+          Before any publication or sending:
+        </p>
+      <ul>
+        <li>Le contenu final est <strong>écrit ou rédigé</strong> par William à partir de sources vérifiées ;</li>
+        <li>Toute sortie d'IA utilisée est <strong>relue, recoupée avec les sources et corrigée</strong> par William ;</li>
+        <li>Les faits, chiffres, citations et documents sont <strong>vérifiés contre les sources originales</strong>, jamais contre la seule sortie d'IA ;</li>
+        <li>Les <strong>publications sur les réseaux sociaux et les courriels</strong> préparés avec une assistance d'IA sont <strong>toujours revérifiés par William</strong> avant envoi/publication ;</li>
+        <li>Tout contenu publié <strong>substantiellement généré par IA</strong> est identifié de façon visible et indissociable.</li>
+      </ul>
+
+      <h2>
+          5. Transparency, attribution and primacy of human inquiry
+        </h2>
+      <p>
+          Automated systems are by nature incapable of carrying out a legal investigation process, determining an evidentiary strategy or understanding the material reality of the premises. The entire investigation of my files is based on my personal investigation work: Archive examination and evidentiary conservation: I myself carry out the identification in the public archives of historical documents, judgments or court reports not indexed by the usual search engines, of which I ensure the manual capture, temporal authentication, classification and inclusion in the proof annexes. Exercise of rights of access to information: I personally ensure the formulation, legal qualification, formal filing and monitoring of requests for access to documents from public bodies as well as related administrative appeals with provincial and federal authorities. Direct obtaining of technical documents: I obtained and assembled administrative correspondence, specialized hydrogeological studies and engineering plans not publicly disseminated by direct approaches to information custodians. Physical findings in the field: I conducted the in situ examination of topography, receiving watercourses and threatened wetlands, while personally cross-checking these observations with geospatial data and consulting with independent scientific experts. Counter-expertise and detection of anomalies: I myself identify methodological deviations, toxicological anomalies and excesses of standards in industrial and government reports. Legal theory and formulation of appeals: I developed all of the legal argumentation in support of my efforts (in particular under the mechanisms of ACEUM (Canada–United States–Mexico Agreement)/CUSMA). AI does not intervene at any time in the design of the theses defended. Methodological transparency: My use of data processing technologies is fully explained. It constitutes a method of technical organization proportionate to ensuring the exhaustive processing of thousands of regulatory pages. Traceability and opposability by primary sources: The validity of my work is based on the probative force of officially referenced official acts, engineering studies and legal provisions. No assertion arises from autonomous algorithmic processing not corroborated by a verifiable material source. Accountability and personal editorial responsibility: Any content made public or filed before a court or an international organization engages my exclusive personal responsibility, without intellectual delegation or release of liability.
+        </p>
+      <ul>
+        <li><strong>Examen d'archives et conservation probatoire :</strong> J'effectue moi-même le repérage dans les fonds d'archives publiques de pièces historiques, de jugements ou de rapports d'audience non indexés par les moteurs de recherche usuels, dont j'assure la capture manuelle, l'authentification temporelle, la classification et le versement aux annexes de preuve.</li>
+        <li><strong>Exercice des droits d'accès à l'information :</strong> J'assure personnellement la formulation, la qualification juridique, le dépôt formel et le suivi des demandes d'accès aux documents des organismes publics ainsi que des recours administratifs afférents auprès des instances provinciales et fédérales.</li>
+        <li><strong>Obtention directe de pièces techniques :</strong> J'ai obtenu et réuni des correspondances administratives, des études hydrogéologiques spécialisées et des plans d'ingénierie non diffusés publiquement par des démarches directes auprès des dépositaires d'information.</li>
+        <li><strong>Constatations matérielles sur le terrain :</strong> J'ai mené l'examen <em>in situ</em> de la topographie, des cours d'eau récepteurs et des milieux humides menacés, tout en recoupant personnellement ces observations avec des données géospatiales et en consultant des experts scientifiques indépendants.</li>
+        <li><strong>Contre-expertise et détection des anomalies :</strong> J'identifie moi-même les écarts méthodologiques, les anomalies toxicologiques et les dépassements de normes dans les rapports industriels et gouvernementaux.</li>
+        <li><strong>Théorie juridique et formulation des recours :</strong> J'ai élaboré l'ensemble de l'argumentation légale au soutien de mes démarches (notamment sous les mécanismes de l'ACEUM/CUSMA). L'IA n'intervient à aucun moment dans la conception des thèses défendues.</li>
+        <li><strong>Transparence méthodologique :</strong> Mon recours aux technologies de traitement de données est pleinement explicité. Il constitue une modalité d'organisation technique proportionnée pour assurer le traitement exhaustif de milliers de pages réglementaires.</li>
+        <li><strong>Traçabilité et opposabilité par les sources primaires :</strong> La validité de mes travaux repose sur la force probante des actes officiels, études d'ingénierie et dispositions légales formellement référencés. Aucune assertion ne découle d'un traitement algorithmique autonome non corroboré par une source matérielle vérifiable.</li>
+        <li><strong>Imputabilité et responsabilité éditoriale personnelle :</strong> Tout contenu rendu public ou déposé devant une juridiction ou un organisme international engage ma responsabilité personnelle exclusive, sans délégation intellectuelle ni décharge de responsabilité.</li>
+      </ul>
+
+      <h2>6. Responsabilité</h2>
+      <p>
+          comes from an AI tool. The use of an AI tool is not an excuse and does not waive the rules of
+        </p>
+
+      <div id="exclusion-assistant-ia"></div>
+      <div id="exclusion-responsabilite"></div>
+      <h2>
+          7. AI Documentary Assistant — Formal exclusion of liability, independence and absence of legal value
+        </h2>
+      <div class="legal-callout" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.08);">
+        <h3 class="legal-callout-title" style="color: #ef4444;">Avertissement formel &amp; Décharge légale stricte</h3>
+        <p class="legal-callout-desc">
+          strictly separate from <strong>William Guindon</strong>. This tool is made available to the public to facilitate
+        </p>
+      </div>
+
+      <p>
+          Any person accessing or conversing with the AI ​​Documentary Assistant expressly acknowledges and agrees to the following provisions: Absolute statutory distinction: The AI ​​Documentary Assistant is an automated algorithmic system and has no status as agent, spokesperson or representative of <strong>William Guindon</strong>, his relatives or his technical advisors. Statements or responses produced by the assistant in no way reflect the opinions, wishes or statements of William Guindon. Total absence of legal advice or evidentiary authority: This automated assistant does not replace professional legal advice, legal advice from an attorney or official scientific analysis. The summaries generated have no legal or probative value before the Commission de coopération environnementale (CCE / ACEUM), the courts, the BAPE (Québec Bureau of Public Environmental Hearings) or any government ministry or agency. Only briefs, decisions and supporting documents officially listed and filed in the register are authentic. Strict confidentiality & Prohibition of posting sensitive data: Do not submit any confidential information, personally identifiable information, identifying information, sensitive documents or trade secrets in this chat. Conversations are processed by software interfaces (local browser or language model API). William Guindon cannot be held responsible for the information that users voluntarily choose to enter in the chat interface. Full exclusion of liability: William Guindon, his relatives and his collaborators disclaim any direct, indirect or subsidiary liability for any factual errors, omissions, approximations, algorithmic hallucinations or erroneous conclusions generated by the AI ​​Documentary Assistant, as well as for any decision or action taken on the basis of its responses.
+        </p>
+
+      <ul>
+        <li><strong>Distinction statutaire absolue :</strong> L'Assistant Documentaire IA est un système algorithmique automatisé et n'a aucun statut de mandataire, porte-parole ou représentant de William Guindon, de ses proches ou de ses conseillers techniques. Les déclarations ou réponses produites par l'assistant ne reflètent en aucun cas les opinions, volontés ou déclarations de William Guindon.</li>
+        <li><strong>Absence totale d'avis juridique ou d'autorité probatoire :</strong> Cet assistant automatisé <em>ne remplace en aucun cas un avis juridique</em> professionnel, un conseil légal d'avocat ou une analyse scientifique officielle. Les synthèses générées n'ont aucune valeur juridique ou probatoire devant la Commission de coopération environnementale (CCE / ACEUM), les tribunaux, le BAPE ou tout ministère ou organisme gouvernemental. Seuls les mémoires, décisions et pièces justificatives officiellement cotés et déposés dans le registre font foi.</li>
+        <li><strong>Confidentialité stricte &amp; Interdiction de verser des données sensibles :</strong> <em>Ne soumettez aucune information confidentielle, donnée nominative personnelle, renseignement d'identification, pièce sensible ou secret d'affaires dans ce clavardage.</em> Les conversations sont traitées par des interfaces logicielles (navigateur local ou API de modèles de langage). William Guindon ne peut être tenu responsable des informations que les utilisateurs choisiraient volontairement de saisir dans l'interface de clavardage.</li>
+        <li><strong>Exclusion intégrale de responsabilité :</strong> William Guindon, ses proches et ses collaborateurs déclinent toute responsabilité directe, indirecte ou accessoire quant aux éventuelles erreurs factuelles, omissions, approximations, hallucinations algorithmiques ou conclusions erronées générées par l'Assistant Documentaire IA, ainsi que pour toute décision ou action entreprise sur la foi de ses réponses.</li>
+      </ul>
+
+      <div id="confidentialite-cles-api"></div>
+      <h2>
+          8. Absolute confidentiality and non-consultation of personal API keys (BYO-API)
+        </h2>
+      <div class="legal-callout" style="border-left-color: #10b981; background: rgba(16, 185, 129, 0.08);">
+        <h3 class="legal-callout-title" style="color: #10b981;">
+          Formal commitment: Your API keys remain 100% local and private <strong>William Guindon</strong> has no access to, does not store on any server, and never sees your API keys or personal access tokens (Google Gemini, OpenAI, Anthropic Claude, Mistral AI, OpenRouter, Hugging Face, etc.). Storage exclusively confined to the user's terminal: Your API keys and local instance addresses (Ollama, LM Studio) are saved exclusively within your own browser's local sandbox (multi-level localStorage, IndexedDB and CacheStorage to resist session cookie dumps without ever leaving your machine). Direct and encrypted client-provider connection: The requests made pass directly and without intermediary from your browser to the official gateways of AI providers (e.g. generativelanguage.googleapis.com, api.openai.com, api.anthropic.com, api.mistral.ai, openrouter.ai). No proxy, mirror server or log managed by William Guindon intercepts, sees or logs your identifiers or the content of your exchanges. Control and right to immediate oblivion: You can view your key in plain text at any time using the display button (), modify it or irrevocably purge it from your browser via the “Forget” button.
+        </h3>
+        <p class="legal-callout-desc">
+          <strong>William Guindon n'a aucun accès, ne conserve sur aucun serveur et ne voit jamais vos clés API ou jetons d'accès personnels</strong> (Google Gemini, OpenAI, Anthropic Claude, Mistral AI, OpenRouter, Hugging Face, etc.).
+        </p>
+      </div>
+
+      <ul>
+        <li><strong>Stockage exclusivement confiné au terminal de l'utilisateur :</strong> Vos clés API et adresses d'instances locales (Ollama, LM Studio) sont enregistrées exclusivement au sein du bac à sable local de votre propre navigateur (coffre multi-niveaux <code>localStorage</code>, <code>IndexedDB</code> et <code>CacheStorage</code> pour résister aux vidages de cookies de session sans jamais quitter votre machine).</li>
+        <li><strong>Connexion directe et chiffrée client-fournisseur :</strong> Les requêtes formulées transitent directement et sans intermédiaire de votre navigateur vers les passerelles officielles des fournisseurs d'IA (ex. <code>generativelanguage.googleapis.com</code>, <code>api.openai.com</code>, <code>api.anthropic.com</code>, <code>api.mistral.ai</code>, <code>openrouter.ai</code>). Aucun proxy, serveur miroir ou journal géré par William Guindon n'intercepte, ne voit ni ne consigne vos identifiants ou le contenu de vos échanges.</li>
+        <li><strong>Contrôle et droit à l'oubli immédiat :</strong> Vous pouvez à tout instant visualiser votre clé en clair grâce au bouton d'affichage (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>), la modifier ou la purger irrévocablement de votre navigateur via le bouton <em>« Oublier »</em>.</li>
+      </ul>
+
+      <p class="legal-no-log">
+          This policy is a stand-alone policy of williamguindon.me, published for public transparency. No
+        </p>
+
+
+      <div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>Document autonome · williamguindon.me</div>
+        <button class="legal-print-button" type="button" aria-label="Imprimer la page">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
+          <span>Imprimer ce document</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></div>
+    <div class="footer-licence-box">
+      Content made available under license <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="deontologie.html">Déontologie</a> · 
+      <a href="independance.html">Indépendance</a> · 
+      <a href="ia-ethique.html">Éthique IA</a> · 
+      <a href="anti-slapp.html">Anti-SLAPP</a> · 
+      <a href="embargo.html">Embargo &amp; Press</a> · 
+      <a href="protection-archive.html">Protection archive</a> · 
+      <a href="terms.html">Terms of Use</a> · 
+      <a href="privacy.html">Confidentialité</a> · 
+      <a href="netiquette.html">Nétiquette</a> · 
+      <a href="blog.html">Blog</a> · 
+      <a href="viewer.html">Documents</a> · 
+      <a href="stablex.html">Stablex Case</a> · 
+      <a href="#main-content">Top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

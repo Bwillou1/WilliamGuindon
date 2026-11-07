@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<script src="../assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare (voir README → Sécurité) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' '' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+<title>Espejos descentralizados y anticensura - William Guindon</title>
+<meta name="description" content="Registro de mirrors descentralizados oficiales de la carpeta SEM-26-003: Web3 (IPFS/IPNS), Tor Onion v3, repositorios Git Raw y huellas dactilares SHA-256 certificadas.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://williamguindon.me/es/miroirs.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/miroirs.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/miroirs.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/miroirs.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/miroirs.html">
+  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Miroirs Décentralisés &amp; Résilience Anti-Censure — William Guindon">
+<meta property="og:description" content="Registre des miroirs officiels décentralisés : Web3 IPFS, Tor v3, Git Raw et empreintes SHA-256.">
+<meta property="og:url" content="https://williamguindon.me/miroirs.html">
+<meta property="og:locale" content="fr_CA">
+
+<meta name="twitter:title" content="Miroirs Décentralisés &amp; Résilience Anti-Censure — William Guindon">
+<meta name="twitter:description" content="Registre des miroirs officiels décentralisés : Web3 IPFS, Tor v3, Git Raw et empreintes SHA-256.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "givenName": "William",
+      "additionalName": "Tristan Logan Théo",
+      "familyName": "Guindon",
+      "gender": "https://schema.org/Male",
+      "birthDate": "2011-08-03",
+      "birthPlace": {
+        "@type": "Place",
+        "name": "Saint-Eustache, Québec, Canada"
+      },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Blainville, Québec, Canada"
+      },
+      "jobTitle": "Militant écologiste et climatique",
+      "disambiguatingDescription": "Militant écologiste et citoyen canadien, auteur de la soumission internationale SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).",
+      "description": "Militant pour les générations futures, auteur de la communication citoyenne SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM) et chercheur citoyen indépendant.",
+      "url": "https://williamguindon.me/",
+      "mainEntityOfPage": "https://williamguindon.me/",
+      "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
+      "sameAs": [
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://g.dev/williamguindondev",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://www.linkedin.com/in/william-guindon/",
+        "https://www.youtube.com/@william-guindon",
+        "https://www.facebook.com/williamguindon.officiel",
+        "https://independent.academia.edu/GuindonWilliam",
+        "https://github.com/Bwillou1",
+        "https://doi.org/10.5281/zenodo.21416989"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://williamguindon.me/miroirs.html#webpage",
+      "url": "https://williamguindon.me/miroirs.html",
+      "name": "Miroirs Décentralisés & Résilience Anti-Censure — William Guindon",
+      "description": "Guide et registre des miroirs officiels décentralisés : Web3 (IPFS/IPNS), Tor Onion v3, Git Raw et empreintes SHA-256.",
+      "inLanguage": "fr-CA",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://williamguindon.me/#website",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/miroirs.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Réseau de miroirs & Disponibilité",
+          "item": "https://williamguindon.me/miroirs.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../style.css?v=20261018-v87">
+<script src="../assets/js/theme-core.js?v=20260930-v70" defer></script>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
+<link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=20261017" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
+<link rel="manifest" href="/manifest.json?v=20261017">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Militant écologiste">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<!-- BRANDKIT:END -->
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site" aria-label="Encabezado del sitio">
+  <div id="ai-chat" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
+      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Abrir menú de navegación" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navegación principal"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Cerrar le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Cerrar</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : Expediente CCA y Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Expediente CCA y Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Investigaciones y análisis</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="stablex.html" class="nav-dropdown-item">Expediente de investigación Stablex</a>
+              <a href="contamination.html" class="nav-dropdown-item">Investigación: Contaminación y medidas</a>
+              <a href="../loi-93.html" class="nav-dropdown-item">Législation : Loi 93 &amp; Expropriation</a>
+              <a href="../enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
+              <a href="lobby.html" class="nav-dropdown-item">Enquête fédérale : Volet Lobbying</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Historia indígena y ecología</a>
+              <a href="apercu.html" class="nav-dropdown-item">Expediente explicado y divulgación (SEM-26-003)</a>
+              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Glosario y diccionario ciudadano</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Registro CCA y pruebas</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Observaciones del autor (17 oct.)</a>
+              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="nav-dropdown-item">Respuesta de Canadá (16 oct.)</a>
+              <a href="../registre.html" class="nav-dropdown-item">Registro oficial CCA (Directo)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consultar documentos (PDF)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Explorador documental</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Espejos descentralizados (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Seguimiento y herramientas directas</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Cómo actuar y apoyar</a>
+              <a href="live.html" class="nav-dropdown-item">Reloj y respuesta de Canadá (16 oct.)</a>
+              <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="../commentaires.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Le Mur Citoyen (Témoignages)</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Historia indígena y ecología</a>
+              <a href="apercu.html" class="nav-dropdown-item">Expediente explicado y divulgación (SEM-26-003)</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Prensa &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Prensa &amp; Kit Média</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Autonomie & Adultisme -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Autonomie &amp; Adultisme ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="adultisme.html" class="nav-dropdown-item">01. Appui scientifique &amp; Adultisme (Liebel &amp; Meade)</a>
+          <a href="../statut-mineur.html" class="nav-dropdown-item">02. Statut citoyen mineur &amp; Attestation CCE</a>
+          <a href="../age.html" class="nav-dropdown-item">03. Wmail — Archive des correspondances</a>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : Chartes & Politiques (Cadre légal) -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Chartes &amp; Politiques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="politiques.html" class="nav-dropdown-item" style="font-weight: 700; color: var(--accent);">00. Registre des chartes (Hub)</a>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Declaración Anti-SLAPP</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Prensa</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="../opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–12. Statut, Archives &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="../statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
+              <a href="licence-et-charte.html" class="nav-dropdown-item">Licence &amp; Charte graphique</a>
+              <a href="terms.html" class="nav-dropdown-item">Términos de uso</a>
+              <a href="privacy.html" class="nav-dropdown-item">Política de privacidad</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 5 : À propos & Contacto -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contacto ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="./#apropos" class="nav-dropdown-item">Biografía de William Guindon</a>
+              <a href="liens.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Liens officiels (Réseaux &amp; Bio)</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="dev.html" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
+              <a href="statut.html" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+              <a href="../api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contacto</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #10b981;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Cómo actuar y apoyar</a>
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contacto</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Sélecteur de langue unique (FR / EN / ES) -->
+      <div class="nav-dropdown nav-lang-dropdown">
+        <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
+          <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="current-lang-code">FR</span>
+          <span>▾</span>
+        </button>
+        <div class="nav-dropdown-menu nav-lang-menu" role="menu">
+          <span class="nav-dropdown-group-title">Langue / Language</span>
+          <button type="button" class="nav-dropdown-item lang-select-btn active" data-lang="fr" role="menuitem">
+            <span class="lang-name">Français</span>
+            <span class="lang-tag">FR</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
+            <span class="lang-name">English</span>
+            <span class="lang-tag">EN</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
+            <span class="lang-name">Español</span>
+            <span class="lang-tag">ES</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panneau des alertes & notifications -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" role="status" aria-label="3 nouvelles alertes actives" title="3 nouvelles alertes actives"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Cerrar les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
+              <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal (députée de Blainville) et Madeleine Chenette (députée fédérale)</h5>
+              <p class="notif-item-desc">Deux rencontres bilatérales confirmées. Nadine Le Gal a souhaité fixer cet échange avant même d'avoir ouvert son bureau permanent. Enjeux au programme : Loi 93, BAPE 371, réponse fédérale au BVG (10 nov.) et suite CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article du carnet ↗</a>
+                <a href="agir.html" class="notif-link-btn notif-link-ghost">Mobilisation &amp; Élus</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
+              <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (Pétition BVG 0546)</h5>
+              <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'une pétition citoyenne au BVG (art. 22 LVG) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'article 24.27(4)(a) de l'ACEUM.</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
+                <a href="../registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
+              <p class="notif-item-desc">Ottawa invoque sa propre pétition au BVG pour demander la fin ou le report de l'examen, sans contester les rejets critiques de cadmium (320x la norme) ni l'atteinte à la tourbière. Examen CCE en cours (art. 24.28).</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
+              <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>
+              <p class="notif-item-desc">Dans sept jours (16 octobre), le Canada doit répondre à la communication SEM-26-003 jugée recevable par la CCE (ACEUM). Déclaration de presse officielle de William Guindon.</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-09-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="https://ia601006.us.archive.org/29/items/communique_presse_SEM-26-003/communique_presse_SEM-26-003.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Télécharger le PDF ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
+              <h5 class="notif-item-title">SEM-26-003 expliqué simplement : Le dossier complet et accessible</h5>
+              <p class="notif-item-desc">Publication d'une grande synthèse vulgarisée en 12 parties décortiquant la soumission citoyenne, la décision CCE du 17 août 2026, les allégations retenues et les pièges de chiffres.</p>
+              <div class="notif-item-links">
+                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
+                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">26 septembre 2026 · Cadre Juridique</div>
+              <h5 class="notif-item-title">Adoption de la Charte Fondamentale 12 (Protection de l'archive)</h5>
+              <p class="notif-item-desc">Adoption formelle de la politique encadrant la fixité probatoire, la conformité au droit d'auteur et la procédure de biffure/retrait des 222 pièces.</p>
+              <div class="notif-item-links">
+                <a href="protection-archive.html" class="notif-link-btn notif-link-primary">Consulter la Charte 12 ↗</a>
+                <a href="politiques.html" class="notif-link-btn notif-link-ghost">Hub des chartes</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="../statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Prensa</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">22 septembre 2026 · Kit Prensa &amp; Transparence</div>
+              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (En ligne)</h5>
+              <p class="notif-item-desc">Mise en ligne officielle du moteur de recherche interne plein texte (OCR) et du kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Accéder au Kit Média ↗</a>
+                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
+              <h5 class="notif-item-title">Enquête : Positionnement des partis politiques (Cellule 6)</h5>
+              <p class="notif-item-desc">Publication du rapport d'enquête citoyenne évaluant la position des formations politiques québécoises et canadiennes face à la décision CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="../enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter le rapport ↗</a>
+                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Archive Zenodo</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">Le gouvernement du Canada est officiellement sommé de répondre d'ici le <strong>16 octobre 2026</strong> dans le dossier Stablex et la Grande Tourbière de Blainville (SEM-26-003).</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <a href="../dossier-confidentiel-non-biffe-sem26003.html" class="sr-only" tabindex="-1" aria-hidden="true" style="display:none!important;position:absolute;left:-9999px;opacity:0;pointer-events:none;">Accès interne non biffé aux pièces confidentielles SEM-26-003</a>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">Résilience P2P · Immutabilité · Anti-Censure</span>
+      <h1>
+          Red espejo permanente y descentralizada
+        </h1>
+      <p>
+          Para garantizar el acceso universal e inalterable a los elementos de comunicación ciudadana
+        </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      
+      <!-- Moniteur d'état des miroirs en temps réel (Feature 51) -->
+      <div style="background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; box-shadow: var(--shadow);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+          <h2 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+          Estado de disponibilidad de la matriz reflejada (<strong>SEM-26-003</strong>)
+        </h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-family: ui-monospace, monospace;">Dernière vérification : 24 octobre 2026</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Site Principal (HTTPS)</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● En ligne (200 OK)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">williamguindon.me</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Statut &amp; Bogues</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;"><a href="statut.html" style="color: inherit; text-decoration: underline;">● 100% Opérationnel ↗</a></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">williamguindon.me/statut</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Internet Archive (72-RSP)</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Répliqué (Archive.org)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">sem-26-003-canada-response</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miroir IPFS / IPNS</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● 154 fichiers épinglés</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Pinata + dweb.link + ENS</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Routage Tor v3</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Actif (Cloudflare Onion)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Tor Browser direct</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miroir GitHub Pages</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Synchronisé (Git main)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">bwillou1.github.io</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Forge Éthique (Codeberg)</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Synchronisé (Miroir auto)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Codeberg Mirror</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miroirs Vidéo Invidious</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● Actifs (Canada &amp; Chili)</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">nerdvpn.de + nadeko.net</div>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lobbying Canada (WACZ)</div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: #22c55e; margin-top: 2px;">● ReplayWeb interactif</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Rencontre 17 sept. (WACZ)</div>
+          </div>
+        </div>
+      </div>
+      
+    
+
+      <!-- Miroir 1 : Tor Onion v3 & Cloudflare Onion Routing -->
+      <div class="ipfs-archive-card" style="margin-bottom: 28px;">
+        <div class="ipfs-card-header">
+          <div class="ipfs-title-group">
+            <span class="ipfs-icon-badge" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            <div>
+              <div class="ipfs-card-kicker">Réseau d'Anonymisation · Tor v3</div>
+              <div class="ipfs-card-heading">Routage Tor &amp; Cloudflare Onion Routing (24h/24)</div>
+            </div>
+          </div>
+          <span class="ipfs-badge-verified">✓ Routage Tor Actif</span>
+        </div>
+        <p class="ipfs-card-desc">
+          El dominio está optimizado de forma nativa con Cloudflare Onion Routing. Los periodistas, científicos y ciudadanos pueden abrir el sitio directamente en el navegador Tor sin pasar por los nodos de salida abiertos, lo que garantiza el cifrado del tráfico y enmascara su dirección IP.
+        </p>
+        <div class="ipfs-docs-list">
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Accès Tor Browser Direct :</strong></span>
+              <span class="ipfs-doc-sub">Ouvrez l'URL officielle directement dans le Navigateur Tor : <code>https://williamguindon.me</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://williamguindon.me" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir dans Tor Browser ↗</a>
+              <a href="https://www.torproject.org/download/" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Télécharger Tor Browser ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Mécanisme de routage interne :</strong></span>
+              <span class="ipfs-doc-sub">Routage direct géré au niveau de l'infrastructure réseau (pas de service caché v3 auto-hébergé distinct nécessaire).</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="../opsec.html" class="ipfs-link-btn">Guide OpSec &amp; Tor ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Miroir 3 : Git Raw & Registre Officiel -->
+      <div class="ipfs-archive-card" style="margin-bottom: 28px;">
+        <div class="ipfs-card-header">
+          <div class="ipfs-title-group">
+            <span class="ipfs-icon-badge" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+            <div>
+              <div class="ipfs-card-kicker">Immutabilité Git &amp; Registre Officiel</div>
+              <div class="ipfs-card-heading">Copies Certifiées Git Raw &amp; Archives Officielles CCE</div>
+            </div>
+          </div>
+          <span class="ipfs-badge-verified">✓ Historique Cryptographique Git</span>
+        </div>
+        <p class="ipfs-card-desc">
+          Los archivos originales se versionan en el árbol público de Git con firmas de confirmación a prueba
+        </p>
+        <div class="ipfs-docs-list">
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Dépôt Source GitHub :</strong></span>
+              <span class="ipfs-doc-sub">Dépôt source public et historique complet des commits certifiés</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://github.com/Bwillou1/WilliamGuindon" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir sur GitHub ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Registre officiel de la CCE (Direct) :</strong></span>
+              <span class="ipfs-doc-sub">Fiche officielle SEM-26-003 sur le site de la CCE</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir sur cec.org ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Web Archive (Wayback Machine — Registre CCE SEM-26-003) :</strong></span>
+              <span class="ipfs-doc-sub">Capture immuable tierce de l'Internet Archive pour le registre officiel de la CCE</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://web.archive.org/web/2/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter la capture Web Archive ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Web Archive (Wayback Machine — Portail williamguindon.me) :</strong></span>
+              <span class="ipfs-doc-sub">Instantanés et captures immuables du site officiel complet sur la Wayback Machine</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://web.archive.org/web/https://williamguindon.me/" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter la capture Web Archive ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row" style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name" style="color: var(--accent);"><strong>Internet Archive — Réponse du Canada &amp; Accusé CCE (16 oct. 2026) :</strong></span>
+              <span class="ipfs-doc-sub">Dépôt permanent certifié de la réponse du Canada (72-RSP FR &amp; EN), de l'accusé de réception CCE (73-REC FR &amp; EN) et de l'archive torrent</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://archive.org/details/sem-26-003-canada-response" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn" style="background: var(--accent); color: #000; font-weight: 700;">Consulter sur Archive.org ↗</a>
+              <a href="https://archive.org/download/sem-26-003-canada-response/sem-26-003-canada-response_archive.torrent" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn" title="Télécharger l'archive via BitTorrent (.torrent)">Torrent P2P ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Internet Archive — Dossier Journalistes &amp; Pièces (Archive.org) :</strong></span>
+              <span class="ipfs-doc-sub">Dépôt pérenne complet des pièces probatoires, documents et kit média sur Internet Archive</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://archive.org/details/dossier-journalistes-tourbiere-blainville-stablex" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir sur Archive.org ↗</a>
+              <a href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn" title="Télécharger l'archive via BitTorrent (.torrent)">Torrent P2P ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row" style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name" style="color: var(--accent);"><strong>Archive Web Interactive WACZ (ReplayWeb.page) — Registre du Lobbying du Canada :</strong></span>
+              <span class="ipfs-doc-sub">Archive Web interactive certifiée (format standard WACZ / Web Recorder) hébergée sur Internet Archive et capturée le 24 octobre 2026. Documente la déclaration officielle du Registre des lobbyistes du Canada relative à la rencontre du 17 septembre concernant les représentations fédérales dans le dossier Stablex / SEM-26-003.</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://replayweb.page/?source=https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn" style="background: var(--accent); color: #000; font-weight: 700;">Consulter sur ReplayWeb.page ↗</a>
+              <a href="https://archive.org/details/lobby_canada_17" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn" title="Consulter la notice descriptive sur Internet Archive">Notice Archive.org ↗</a>
+              <a href="https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz" download class="ipfs-link-btn" title="Télécharger le fichier d'archive ISO/WACZ brut">Télécharger .wacz ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Dépôt Perpétuel Zenodo (CERN) — DOI Officiel SEM-26-003 :</strong></span>
+              <span class="ipfs-doc-sub">Identifiant persistant officiel certifié : <code>10.5281/zenodo.21416989</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://doi.org/10.5281/zenodo.21416989" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter le DOI Zenodo ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Perma.cc (Harvard Library) — Portail officiel williamguindon.me :</strong></span>
+              <span class="ipfs-doc-sub">Archive légale permanente et immuable opérée par les bibliothèques universitaires de droit · Identifiant : <code>G6VJ-7KBQ</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://perma.cc/G6VJ-7KBQ" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter sur Perma.cc ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Perma.cc — Détermination positive CCE (26-2-det2_fr.pdf) :</strong></span>
+              <span class="ipfs-doc-sub">Capture légale immuable de la décision du Secrétariat CCE du 17 août 2026 · Identifiant : <code>Q3NF-UKWD</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://perma.cc/Q3NF-UKWD" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter sur Perma.cc ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Perma.cc — Soumission révisée SEM-26-003 (26-3-rsub_fr_redacted.pdf) :</strong></span>
+              <span class="ipfs-doc-sub">Capture légale immuable du mémoire officiel de William Guindon du 16 juillet 2026 · Identifiant : <code>M54R-7HJU</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://perma.cc/M54R-7HJU" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Consulter sur Perma.cc ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Miroir 4 : Vidéo Libre & Miroirs Invidious (Anti-Censure) -->
+      <div class="ipfs-archive-card" style="margin-bottom: 28px;">
+        <div class="ipfs-card-header">
+          <div class="ipfs-title-group">
+            <span class="ipfs-icon-badge" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
+            <div>
+              <div class="ipfs-card-kicker">Diffusion Multimédia · Respect de la Vie Privée</div>
+              <div class="ipfs-card-heading">Miroirs Vidéo Libres (Instances Invidious Décentralisées)</div>
+            </div>
+          </div>
+          <span class="ipfs-badge-verified">✓ Sans cookies Google ni pistage</span>
+        </div>
+        <p class="ipfs-card-desc">
+          En caso de restricción de acceso, indisponibilidad técnica de YouTube o visualización de nuestro
+        </p>
+        <div class="ipfs-docs-list">
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Miroir Invidious Canada (nerdvpn.de) :</strong></span>
+              <span class="ipfs-doc-sub">Serveurs canadiens · Accès direct haute disponibilité et respect de la vie privée</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://invidious.nerdvpn.de/channel/UCwyMQWt9CHN12kkWmzIiogw" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir Miroir Canada ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Miroir Invidious Chili / Amérique du Sud (inv.nadeko.net) :</strong></span>
+              <span class="ipfs-doc-sub">Serveurs localisés au Chili · Redondance internationale et résilience anti-blocage</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://inv.nadeko.net/channel/UCwyMQWt9CHN12kkWmzIiogw" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Ouvrir Miroir Chili ↗</a>
+            </div>
+          </div>
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Chaîne Principale YouTube Officielle :</strong></span>
+              <span class="ipfs-doc-sub">Chaîne vérifiée <code>@william-guindon</code> (ID : <code>UCwyMQWt9CHN12kkWmzIiogw</code>)</span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <a href="https://www.youtube.com/channel/UCwyMQWt9CHN12kkWmzIiogw" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Accéder à YouTube ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empreintes Cryptographiques SHA-256 -->
+      <div class="ipfs-archive-card">
+        <div class="ipfs-card-header">
+          <div class="ipfs-title-group">
+            <span class="ipfs-icon-badge" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <div>
+              <div class="ipfs-card-kicker">Authenticité Probatoire</div>
+              <div class="ipfs-card-heading">Empreintes SHA-256 des Pièces Juridiques Officielles</div>
+            </div>
+          </div>
+          <span class="ipfs-badge-verified">✓ Calculées au bit près</span>
+        </div>
+        <p class="ipfs-card-desc">
+          digital calculada localmente (con el comando shasum -a 256 filename.pdf) con los valores de
+        </p>
+
+        <div class="ipfs-docs-list">
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Détermination positive CCE (17 août 2026)</strong> — 28 p.</span>
+              <span class="ipfs-doc-sub">Fichier : <code>26-2-det2_fr.pdf</code> · CID IPFS : <code>QmQkos64r4ddnqvNJTA1PJVhVsdyFXNvSqbDdhUkNk8Vvf</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <span class="sha256-code">SHA256: 33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c</span>
+              <button type="button" class="ipfs-link-btn" onclick="navigator.clipboard.writeText('33dc8c088e6b9d24b8c8f2ca45b279a7ac4dd2ab15e83c19b3af76e93715e59c'); this.textContent = '✔ Copié !';">Copier SHA-256</button>
+              <a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Git Raw ↗</a>
+              <a href="https://perma.cc/Q3NF-UKWD" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Perma.cc ↗</a>
+            </div>
+          </div>
+
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Soumission révisée SEM-26-003 (16 juillet 2026)</strong> — 15 p.</span>
+              <span class="ipfs-doc-sub">Fichier : <code>26-3-rsub_fr_redacted.pdf</code> · CID IPFS : <code>QmbB7oBxudna3cYDGr5XK2iUhDf3qcvzNHCwEqVAQ8zfaV</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <span class="sha256-code">SHA256: d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710</span>
+              <button type="button" class="ipfs-link-btn" onclick="navigator.clipboard.writeText('d8aade13059b957f7bc6dde13a73b4e996871d95907af1ee42b4f7137b773710'); this.textContent = '✔ Copié !';">Copier SHA-256</button>
+              <a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/assets/docs/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Git Raw ↗</a>
+              <a href="https://perma.cc/M54R-7HJU" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Perma.cc ↗</a>
+            </div>
+          </div>
+
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Déposition formelle à l'ONU (Mai 2026)</strong></span>
+              <span class="ipfs-doc-sub">Fichier : <code>26-3-formal-deposition-and-urgent-appeal.pdf</code> · CID IPFS : <code>QmQ8dva4AQ98StCWdVZFK7jNGWGbX91PgmPbNyuFTyh3Dx</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <span class="sha256-code">SHA256: db8818c7668e85efa4e977f5a7a3478f811933fbc20562b22c92fdc193b9767f</span>
+              <button type="button" class="ipfs-link-btn" onclick="navigator.clipboard.writeText('db8818c7668e85efa4e977f5a7a3478f811933fbc20562b22c92fdc193b9767f'); this.textContent = '✔ Copié !';">Copier SHA-256</button>
+              <a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Git Raw ↗</a>
+            </div>
+          </div>
+
+          <div class="ipfs-doc-row">
+            <div class="ipfs-doc-info">
+              <span class="ipfs-doc-name"><strong>Décision préliminaire CCE (3 juin 2026)</strong> — 17 p.</span>
+              <span class="ipfs-doc-sub">Fichier : <code>26-3-det_fr.pdf</code> · CID IPFS : <code>QmTKmiUFHimaFx2n2KGqSY6L7ccknSazes6Zb2YkgK8Kug</code></span>
+            </div>
+            <div class="ipfs-doc-actions">
+              <span class="sha256-code">SHA256: 8f8998becc91e8398852a048a5472d498dd888e79874265fe86aa387422aad5b</span>
+              <button type="button" class="ipfs-link-btn" onclick="navigator.clipboard.writeText('8f8998becc91e8398852a048a5472d498dd888e79874265fe86aa387422aad5b'); this.textContent = '✔ Copié !';">Copier SHA-256</button>
+              <a href="https://raw.githubusercontent.com/Bwillou1/WilliamGuindon/main/assets/docs/26-3-det_fr.pdf" target="_blank" rel="noopener noreferrer" class="ipfs-link-btn">Git Raw ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></div>
+    <div class="footer-licence-box">
+      Contenido puesto a disposición bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="deontologie.html">Déontologie</a> · 
+      <a href="independance.html">Indépendance</a> · 
+      <a href="ia-ethique.html">Éthique IA</a> · 
+      <a href="anti-slapp.html">Anti-SLAPP</a> · 
+      <a href="embargo.html">Embargo &amp; Prensa</a> · 
+      <a href="terms.html">Términos de uso</a> · 
+      <a href="privacy.html">Confidentialité</a> · 
+      <a href="netiquette.html">Nétiquette</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a> · 
+      <a href="miroirs.html">Miroirs Décentralisés</a> · 
+      <a href="statut.html">État des systèmes &amp; Bogues</a> · 
+      <a href="blog.html">Blog</a> · 
+      <a href="viewer.html">Documents</a> · 
+      <a href="stablex.html">Caso Stablex</a> · 
+      <a href="#main-content">Arriba ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

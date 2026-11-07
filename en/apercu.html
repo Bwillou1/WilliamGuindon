@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+(function(){
+  try {
+    var raw = '';
+    var h = window.location.hash ? window.location.hash.substring(1) : '';
+    if (h) {
+      if (h.indexOf('=') !== -1) {
+        var hp = new URLSearchParams(h);
+        raw = hp.get('cle') || hp.get('code') || hp.get('pass') || hp.get('acces') || '';
+      } else if (h.length === 6) { raw = h; }
+    }
+    if (!raw && window.location.search) {
+      var sp = new URLSearchParams(window.location.search);
+      raw = sp.get('cle') || sp.get('code') || sp.get('pass') || sp.get('acces') || '';
+    }
+    if (raw && raw.trim().length === 6) {
+      raw = raw.trim().toUpperCase();
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+      try {
+        window.__wg_pending_key = raw;
+        sessionStorage.setItem('wg_cand_key', raw);
+      } catch (_) {}
+    }
+  } catch (_) {}
+})();
+</script>
+<script src="../assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File SEM-26-003 Blainville Explained — William Guindon</title>
+<meta name="description" content="ACCEssible explanation of the SEM-26-003 communication for Grande Tourbière de Blainville and the positive decision of the CCE Secretariat.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://williamguindon.me/en/apercu.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/apercu.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/apercu.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/apercu.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/apercu.html">
+  <!-- Open Graph / Meta Réseaux Sociaux -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="SEM-26-003 — Blainville : le dossier complet expliqué">
+<meta property="og:description" content="Synthèse complète et vulgarisée en 12 parties du dossier international SEM-26-003 : histoire, allégations, décision CCE du 17 août 2026 et calendrier officiel.">
+<meta property="og:url" content="https://williamguindon.me/apercu.html">
+<meta property="og:locale" content="fr_CA">
+<meta name="twitter:title" content="SEM-26-003 — Blainville : le dossier complet expliqué">
+<meta name="twitter:description" content="Synthèse complète et vulgarisée en 12 parties de la communication citoyenne SEM-26-003 auprès de la CCE / ACEUM.">
+
+<!-- Métadonnées Académiques Google Scholar & Highwire Press (SEM-26-003) -->
+<meta name="citation_title" content="SEM-26-003 — Blainville : le dossier complet expliqué (Synthèse et analyse du dossier CCE / ACEUM)">
+<meta name="citation_author" content="Guindon, William">
+<meta name="citation_publication_date" content="2026/07/16">
+<meta name="citation_online_date" content="2026/08/17">
+<meta name="citation_pdf_url" content="https://williamguindon.me/assets/docs/26-3-rsub_fr_redacted.pdf">
+<meta name="citation_abstract_html_url" content="https://williamguindon.me/apercu.html">
+<meta name="citation_technical_report_number" content="SEM-26-003">
+<meta name="citation_technical_report_institution" content="Commission de coopération environnementale (CCE / ACEUM)">
+<meta name="citation_doi" content="10.5281/zenodo.21416989">
+<meta name="citation_language" content="fr">
+<meta name="citation_keywords" content="Grande Tourbière de Blainville; Stablex; SEM-26-003; CCE; ACEUM; Déchets dangereux; BAPE 371; Cadmium; Droit environnemental">
+<!-- Dublin Core Metadata for Academic Crawlers -->
+<meta name="DC.title" content="SEM-26-003 — Blainville : le dossier complet expliqué">
+<meta name="DC.creator" content="Guindon, William">
+<meta name="DC.issued" content="2026-07-16">
+<meta name="DC.publisher" content="Commission de coopération environnementale (CCE / CEC)">
+<meta name="DC.identifier" scheme="DOI" content="10.5281/zenodo.21416989">
+<meta name="DC.language" scheme="ISO639-1" content="fr">
+<meta name="DC.format" content="text/html">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "url": "https://williamguindon.me/",
+      "jobTitle": "Militant écologiste et climatique",
+      "sameAs": [
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://g.dev/williamguindondev",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://isni.org/isni/0000000531719103",
+        "https://doi.org/10.5281/zenodo.21416989",
+        "https://policycommons.net/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/",
+        "https://canadacommons.ca/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/"
+      ]
+    },
+    {
+      "@type": "Article",
+      "@id": "https://williamguindon.me/apercu.html#article",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://williamguindon.me/#website",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/"
+      },
+      "headline": "SEM-26-003 — Blainville : le dossier complet expliqué",
+      "description": "Synthèse documentaire vulgarisée en 12 parties expliquant la communication SEM-26-003, la décision CCE et les enjeux environnementaux de la Grande Tourbière de Blainville.",
+      "inLanguage": "fr-CA",
+      "author": {
+        "@type": "Person",
+        "@id": "https://williamguindon.me/#person",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/"
+      },
+      "publisher": {
+        "@type": "Person",
+        "@id": "https://williamguindon.me/#person",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://williamguindon.me/assets/media/william-guindon.jpg"
+        }
+      },
+      "datePublished": "2026-09-27T08:00:00-04:00",
+      "dateModified": "2026-09-27T12:00:00-04:00",
+      "isAccessibleForFree": true,
+      "mainEntityOfPage": "https://williamguindon.me/apercu.html",
+      "image": {
+        "@type": "ImageObject",
+        "@id": "https://williamguindon.me/apercu.html#banner-image",
+        "url": "https://williamguindon.me/assets/media/sem-26-003-apercu-banniere.webp",
+        "contentUrl": "https://williamguindon.me/assets/media/sem-26-003-apercu-banniere.webp",
+        "caption": "Bannière documentaire synthétique SEM-26-003",
+        "creator": {
+          "@type": "Person",
+          "@id": "https://williamguindon.me/#person",
+          "name": "William Guindon"
+        },
+        "copyrightHolder": {
+          "@type": "Person",
+          "@id": "https://williamguindon.me/#person"
+        },
+        "creditText": "William Guindon",
+        "copyrightNotice": "© 2026 William Guindon. Tous droits réservés / CC BY-NC-ND 4.0",
+        "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+        "acquireLicensePage": "https://williamguindon.me/politiques.html#licences"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          ".cover-sub",
+          ".cover-lede"
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/apercu.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Aperçu & Vulgarisation SEM-26-003",
+          "item": "https://williamguindon.me/apercu.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../style.css?v=20261018-v87">
+<script src="../assets/js/theme-core.js?v=20261101-v137" defer></script>
+
+<style>
+:root{
+  --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,Georgia,'Times New Roman',serif;
+  --sans:'Inter','Helvetica Neue',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  --bg-doc:#EFEDE7;
+  --paper:#FFFFFF;
+  --ink:#171C1A;
+  --soft:#565F5B;
+  --faint:#949C97;
+  --line:#E4E1D9;
+  --line-soft:#EFEDE7;
+  --tint:#F7F6F2;
+  --green:#14614A;
+  --green-dk:#0B3A2C;
+  --green-tint:#F0F5F2;
+  --rose:#9E3B38;
+  --rose-tint:#FBF3F2;
+  --amber:#9A7412;
+  --amber-tint:#FBF6EA;
+}
+.sheet{
+  max-width:1000px;
+  margin:36px auto 60px;
+  background:var(--paper);
+  box-shadow:0 1px 2px rgba(18,32,27,.05),0 24px 70px -24px rgba(18,42,33,.22);
+  border-radius:12px;
+  overflow:hidden;
+  font:400 18px/1.75 var(--serif);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-variant-numeric:oldstyle-nums proportional-nums;
+}
+.sheet-main{padding:0 clamp(22px,12vw,150px) 30px}
+
+/* ---------- couverture ---------- */
+.cover{position:relative;padding:clamp(54px,9vw,104px) clamp(22px,12vw,150px) 0;border-bottom:1px solid var(--line)}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--green-dk) 0%,var(--green) 52%,#79B39B 100%)}
+.eyebrow{font:700 10.5px/1.6 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--green);margin:0 0 28px}
+h1{font:400 clamp(44px,9vw,84px)/.98 var(--serif);letter-spacing:-.035em;margin:0;font-variant-numeric:lining-nums}
+.cover-sub{font:400 clamp(20px,3.2vw,30px)/1.28 var(--serif);font-style:italic;color:var(--soft);margin:18px 0 0;max-width:24ch}
+.cover-lede{font-size:19px;line-height:1.66;color:var(--soft);max-width:60ch;margin:28px 0 0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--line);
+  border-top:1px solid var(--line);margin:52px 0 0}
+.facts>div{background:var(--paper);padding:20px 22px 18px}
+.facts dt{font:700 9.5px/1.45 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:0 0 9px}
+.facts dd{margin:0;font:600 15.5px/1.35 var(--sans);color:var(--ink);font-variant-numeric:lining-nums;white-space:nowrap}
+.facts .g{color:var(--green)} .facts .r{color:var(--rose)}
+
+/* ---------- mode d'emploi ---------- */
+.howto{padding:36px clamp(22px,12vw,150px);background:var(--tint);border-bottom:1px solid var(--line);font-size:16.5px;line-height:1.7}
+.howto p{margin:0 0 12px;color:var(--soft);max-width:72ch}
+.howto p:last-child{margin-bottom:0}
+.howto .warnline{color:var(--ink)}
+.howto strong{color:var(--ink)}
+.howto strong.sig{color:var(--rose)}
+
+/* ---------- sommaire ---------- */
+.toc{padding:58px clamp(22px,12vw,150px);border-bottom:1px solid var(--line)}
+.toc-list{counter-reset:t;list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:0 52px;column-count:auto}
+.toc-list li{counter-increment:t;margin:0;border-bottom:1px solid var(--line-soft)}
+.toc-list a{display:flex;gap:18px;align-items:baseline;padding:14px 2px;border:0;
+  font:500 16.5px/1.4 var(--sans);color:var(--ink);letter-spacing:-.005em;transition:color .15s}
+.toc-list a::before{content:counter(t,decimal-leading-zero);flex:none;
+  font:600 11.5px/1.8 var(--sans);letter-spacing:.08em;color:var(--faint)}
+.toc-list a:hover{color:var(--green);background:none}
+.toc-list a:hover::before{color:var(--green)}
+
+/* ---------- sections ---------- */
+section{margin-top:98px;padding-top:46px;border-top:1px solid var(--line);scroll-margin-top:18px}
+section:first-of-type{margin-top:60px;border-top:0;padding-top:0}
+h2{margin:0 0 36px}
+.sec-num{display:block;font:700 10.5px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--green);margin-bottom:16px}
+.sec-title{display:block;font:400 clamp(27px,4.4vw,39px)/1.16 var(--serif);letter-spacing:-.018em;max-width:26ch}
+h3{font:600 21.5px/1.35 var(--serif);letter-spacing:-.01em;margin:52px 0 12px}
+h4{font:700 12px/1.4 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:34px 0 10px}
+p{margin:0 0 20px}
+.lede{font-size:20.5px;line-height:1.62}
+.sm{font-size:16px;line-height:1.6}
+strong{font-weight:700}
+.sig{color:var(--rose)}
+.lab{font-family:var(--sans);font-size:15px;letter-spacing:-.01em}
+em{font-style:italic}
+ul,ol{padding-left:24px;margin:0 0 22px}
+li{margin-bottom:10px}
+li::marker{color:var(--faint)}
+a{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(20,97,74,.3);transition:border-color .15s,background .15s}
+a:hover{border-bottom-color:var(--green);background:rgba(20,97,74,.07)}
+sup{font-size:.68em;vertical-align:.5em;line-height:0}
+u{text-decoration:none;box-shadow:inset 0 -.42em 0 rgba(154,116,18,.18)}
+
+/* ---------- citation de loi ---------- */
+.law{margin:30px 0;padding:2px 0 2px 30px;border-left:2px solid var(--green);
+  font-style:italic;font-size:17.5px;line-height:1.66;color:var(--soft);background:none}
+.law strong{color:var(--ink);font-style:normal;font-weight:600}
+
+/* ---------- EN CLAIR ---------- */
+.clair{margin:26px 0;padding:24px 28px;background:var(--green-tint)}
+.badge{display:inline-block;font:700 10px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--green)}
+.badge::after{content:'';display:inline-block;width:24px;height:1px;background:var(--green);opacity:.45;vertical-align:middle;margin-left:11px}
+.clair p{margin:12px 0 0;font-size:17.5px}
+.clair p.lede{font-size:18.5px}
+.clair>p:first-child{margin-top:0}
+
+/* ---------- encadrés ---------- */
+.alert{margin:26px 0;padding:22px 26px;background:var(--rose-tint);font-size:17px;line-height:1.68}
+.note{margin:26px 0;padding:22px 26px;background:var(--tint);font-size:17px;line-height:1.68}
+.note--ui{font-family:var(--sans);font-size:15.5px;line-height:1.66}
+.note--law,.note--rose,.note--muted{background:none;border:0;padding:0;margin:60px 0 0}
+.note--law::before,.note--rose::before,.note--muted::before{content:'';display:block;width:44px;height:2px;margin-bottom:22px;background:var(--green)}
+.note--rose::before{background:var(--rose)}
+.note--muted::before{background:var(--faint)}
+.note--law>h3,.note--rose>h3,.note--muted>h3{margin:10px 0 14px;font-size:26px;font-weight:400}
+.note--rose>.panel-title{color:var(--rose)}
+.note--muted>.panel-title{color:var(--faint)}
+.alert p:last-child,.note p:last-child,.clair p:last-child,.panel p:last-child{margin-bottom:0}
+.note-title{font:700 11px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.note-title--rose{color:var(--rose)}
+.note-title--amber{color:var(--amber)}
+.kicker{font:700 10.5px/1.55 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.deck{font-family:var(--sans);font-size:15.5px;line-height:1.65;color:var(--soft);margin-bottom:22px;max-width:68ch}
+.muted{color:var(--faint)}
+.ok{color:var(--green)}
+.no{color:var(--rose)}
+.stack{display:grid;gap:16px;margin:24px 0}
+.stack>*{margin:0}
+
+/* ---------- panneaux retenu / écarté ---------- */
+.panel{margin:28px 0;padding:28px 30px}
+.panel--green{background:var(--green-tint)}
+.panel--rose{background:var(--rose-tint)}
+.panel-title{font:700 11px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:18px}
+.panel-title--rose{color:var(--rose)}
+.panel .tbl{width:100%;margin:0}
+.panel .tbl td{border-bottom:1px solid rgba(23,28,26,.09);background:none}
+.panel .tbl tr:last-child td{border-bottom:0}
+
+/* ---------- fiches ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(262px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:28px 0}
+.card{background:var(--paper);padding:24px 26px;font-size:16.5px;line-height:1.6}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+.card--green{background:var(--green-tint)}
+.card--rose{background:var(--rose-tint)}
+.card--muted{background:var(--tint)}
+.card-title{font:600 17px/1.3 var(--serif);color:var(--green-dk);margin-bottom:10px;letter-spacing:-.01em}
+.card-title--rose{color:var(--rose)}
+.card-title--muted{color:var(--soft)}
+.card ul{margin:0;padding-left:20px}
+
+/* ---------- étapes ---------- */
+.step{padding:14px 0 14px 40px;text-indent:-40px;border-bottom:1px solid var(--line-soft);font-size:16.5px;line-height:1.6}
+.num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+  font:700 11.5px/1 var(--sans);text-indent:0;margin-right:14px;vertical-align:-7px;font-variant-numeric:lining-nums}
+.num--done{background:var(--green);color:#fff}
+.num--todo{background:transparent;color:var(--faint);border:1px solid var(--line)}
+.num--now{background:var(--amber);color:#fff}
+.step--todo{color:var(--faint)}
+.step--todo strong{font-weight:600;color:var(--soft)}
+.step--now{background:var(--amber-tint);padding:18px 22px 18px 62px;text-indent:-40px;border-bottom:0;margin:6px 0}
+
+/* ---------- tableaux ---------- */
+.tbl{width:100%;border-collapse:collapse;font:400 15px/1.55 var(--sans);margin:28px 0;
+  font-variant-numeric:lining-nums tabular-nums}
+@media(min-width:1040px){
+  .tbl,.grid{width:calc(100% + 160px);margin-left:-80px}
+  .panel .tbl,.note .tbl{width:100%;margin-left:0}
+}
+.tbl th{font:700 10px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  text-align:left;padding:0 14px 12px;border-bottom:1px solid var(--ink);vertical-align:bottom}
+.tbl thead th:first-child,.tbl .hrow th:first-child{padding-left:0}
+.tbl td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink)}
+.tbl td:first-child{padding-left:0}
+.tbl td:last-child{padding-right:0}
+.hrow th{background:none;color:var(--faint)}
+.alt{background:var(--tint)}
+.panel .alt,.tbl--plain .alt{background:none}
+.tbl .b{font-weight:600}
+.tbl .i{font-style:italic;color:var(--soft)}
+.tbl .ok{color:var(--green);font-weight:600}
+.tbl .no{color:var(--rose);font-weight:600}
+.tbl .wkey{width:32%;font-weight:600}
+.w1{width:7%} .w2{width:34%} .w3{width:38%} .w4{width:21%}
+.tbl--rose td{border-bottom-color:#EEDFDE}
+
+/* ---------- glossaire & sources ---------- */
+.glossary{margin:26px 0 0}
+.glossary dt{font:600 17px/1.4 var(--serif);color:var(--green-dk);margin-top:26px;letter-spacing:-.01em}
+.glossary dd{margin:5px 0 0;padding:0;border:0;color:var(--soft);font-size:17px;line-height:1.65}
+@media(min-width:1040px){
+  .glossary{display:grid;grid-template-columns:210px 1fr;column-gap:0;width:calc(100% + 160px);margin-left:-80px;
+    border-bottom:1px solid var(--line-soft)}
+  .glossary dt{grid-column:1;margin:0;padding:22px 40px 22px 0;border-top:1px solid var(--line-soft)}
+  .glossary dd{grid-column:2;margin:0;padding:22px 0;border-top:1px solid var(--line-soft)}
+}
+.srcs{list-style:none;padding:0;margin:8px 0 0;font-size:16.5px}
+.srcs li{margin:0;padding:15px 0;border-bottom:1px solid var(--line-soft);line-height:1.6}
+.srcs li strong{display:block;font-weight:600}
+.srcs a{font-family:var(--sans);font-size:14.5px}
+
+/* ---------- FAQ ---------- */
+.faq p{margin:0;padding:24px 0;border-bottom:1px solid var(--line-soft)}
+.faq p:last-child{border-bottom:0}
+.faq strong{display:block;font:600 19.5px/1.4 var(--serif);color:var(--green-dk);margin-bottom:8px;letter-spacing:-.01em}
+.faq strong+br{display:none}
+
+/* ---------- note de fin de document (Haute lisibilité & contraste AAA) ---------- */
+.doc-footer-note{background:#0b1713;color:#f3f8f5;padding:64px clamp(22px,12vw,150px) 76px;
+  font:400 15.5px/1.8 var(--sans);border-top:1px solid rgba(138,232,189,0.3);box-shadow:inset 0 3px 12px rgba(0,0,0,0.4)}
+.doc-footer-note p{color:#e2efe9 !important;margin:0 0 18px;max-width:76ch;font-size:15.5px;line-height:1.8}
+.doc-footer-note p:last-child{margin-bottom:0}
+.doc-footer-note strong{color:#ffffff !important;font-weight:700}
+.doc-footer-note .flabel{font:800 12px/1.2 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#8ae8bd !important;margin-bottom:22px;display:block;text-shadow:0 1px 2px rgba(0,0,0,0.6)}
+.doc-footer-note a{color:#8ae8bd !important;text-decoration:underline !important;text-underline-offset:4px;text-decoration-thickness:1.5px;font-weight:600;transition:all .2s ease}
+.doc-footer-note a:hover{color:#ffffff !important;text-decoration-color:#ffffff !important}
+.doc-policy-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.policy-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12) !important;color:#ffffff !important;padding:10px 16px;border-radius:8px;border:1.5px solid rgba(138,232,189,0.45) !important;text-decoration:none !important;font-size:13.5px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.25);transition:all .2s ease}
+.policy-pill:hover{background:rgba(138,232,189,0.25) !important;border-color:#8ae8bd !important;color:#ffffff !important;transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.4),0 0 12px rgba(138,232,189,0.3)}
+
+/* ---------- bandeau de statut site non officiel ---------- */
+.official-status-banner {
+  margin: 0 0 36px;
+  padding: 24px 28px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-left: 6px solid #d97706;
+  border-radius: 8px;
+  color: #78350f;
+  font-family: var(--sans);
+}
+.status-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.status-banner-icon {
+  flex-shrink: 0;
+  color: #d97706;
+}
+.status-banner-header h2 {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.3;
+}
+.official-status-banner p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #92400e;
+}
+.official-status-banner p:last-of-type {
+  margin-bottom: 16px;
+}
+.status-banner-links {
+  background: rgba(254, 243, 199, 0.6);
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+.status-links-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #b45309;
+  margin-bottom: 8px;
+}
+.status-pdf-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.status-pdf-list li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9a3412;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.status-pdf-list li a:hover {
+  color: #c2410c;
+}
+.status-pdf-list .doc-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: #b45309;
+  text-decoration: none;
+}
+
+/* ---------- légende des 3 registres probatoires ---------- */
+.registre-legend {
+  margin: 24px 0 32px;
+  padding: 18px 22px;
+  background: #f5f8f6;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--sans);
+}
+.registre-legend-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--soft);
+  margin-bottom: 12px;
+}
+.registre-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.reg-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.reg-item strong {
+  display: block;
+  font-weight: 700;
+}
+.reg-icon-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.reg-icon-box--blue { background: #2563eb; }
+.reg-icon-box--yellow { background: #d97706; }
+.reg-icon-box--red { background: #dc2626; }
+
+/* ---------- styles d'encadrés de registres ---------- */
+.reg-constat {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #1e3a8a;
+}
+.reg-allegation {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #fefce8;
+  border-left: 4px solid #d97706;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #78350f;
+}
+.reg-rapporte {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px;
+  line-height: 1.68;
+  color: #7f1d1d;
+}
+.reg-tag {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.reg-tag--constat { background: #dbeafe; color: #1e40af; }
+.reg-tag--allegation { background: #fef3c7; color: #92400e; }
+.reg-tag--rapporte { background: #fee2e2; color: #991b1b; }
+
+.alert--reserve {
+  margin: 20px 0;
+  padding: 18px 22px;
+  background: #fffbeb;
+  border-left: 4px solid #d97706;
+  border-radius: 0 6px 6px 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #92400e;
+}
+.note--nuance {
+  margin: 18px 0;
+  padding: 16px 20px;
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  border-radius: 0 6px 6px 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #14532d;
+}
+
+/* ---------- chrome ---------- */
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;background:transparent;pointer-events:none}
+.progress i{display:block;height:100%;width:0;background:var(--green)}
+.totop{position:fixed;right:26px;bottom:26px;width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:var(--paper);color:var(--green);
+  border:1px solid var(--line);box-shadow:0 6px 22px -8px rgba(18,42,33,.35);
+  font:400 18px/1 var(--sans);opacity:0;visibility:hidden;transition:opacity .25s,transform .25s;transform:translateY(8px);z-index:60}
+.totop.show{opacity:1;visibility:visible;transform:none}
+.totop:hover{background:var(--green);color:#fff;border-color:var(--green)}
+
+@media(max-width:700px){
+  body{font-size:17px}
+  .eyebrow{letter-spacing:.14em}
+  .sec-title{font-size:26px}
+  .tbl{font-size:13.5px}
+  .tbl td,.tbl th{padding:11px 9px}
+  .facts>div{padding:16px 18px}
+}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .sheet{box-shadow:none;max-width:none}
+  .progress,.totop{display:none}
+  section{page-break-inside:auto;margin-top:34px;padding-top:22px}
+  h2,h3{page-break-after:avoid}
+  .clair,.panel,.alert,.note,.grid,.tbl{page-break-inside:avoid}
+  a{border:0;color:var(--green-dk)}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
+<link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=20261017" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
+<link rel="manifest" href="/manifest.json?v=20261017">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Militant écologiste">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<!-- BRANDKIT:END -->
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="progress"><i id="bar"></i></div>
+
+<header class="site" aria-label="Site Header">
+  <div id="ai-chat" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
+      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Open navigation menu" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Main navigation"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Close le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Close</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : CEC Case & Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>CEC Case &amp; Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Investigations &amp; Analyses</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="stablex.html" class="nav-dropdown-item">Stablex Investigation Dossier</a>
+              <a href="contamination.html" class="nav-dropdown-item">Investigation: Contamination &amp; Testing</a>
+              <a href="../loi-93.html" class="nav-dropdown-item">Législation : Loi 93 &amp; Expropriation</a>
+              <a href="../enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
+              <a href="lobby.html" class="nav-dropdown-item">Enquête fédérale : Volet Lobbying</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Indigenous History &amp; Ecology</a>
+              <a href="apercu.html" class="nav-dropdown-item">Case Explained &amp; Overview (SEM-26-003)</a>
+              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Citizen Glossary &amp; Lexicon</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>CEC Registry &amp; Evidence</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Submitter Observations (Oct. 17)</a>
+              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="nav-dropdown-item">Canada's Response (Oct. 16)</a>
+              <a href="../registre.html" class="nav-dropdown-item">Official CEC Registry (Direct)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">View documents (PDF)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Document Explorer</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Decentralized Mirrors (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Monitoring &amp; Direct Tools</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>How to Act &amp; Support</a>
+              <a href="live.html" class="nav-dropdown-item">Countdown &amp; Canada Response (Oct. 16)</a>
+              <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="../commentaires.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Le Mur Citoyen (Témoignages)</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Indigenous History &amp; Ecology</a>
+              <a href="apercu.html" class="nav-dropdown-item">Case Explained &amp; Overview (SEM-26-003)</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Press &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Press &amp; Kit Média</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Autonomie & Adultisme -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Autonomie &amp; Adultisme ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="adultisme.html" class="nav-dropdown-item">01. Appui scientifique &amp; Adultisme (Liebel &amp; Meade)</a>
+          <a href="../statut-mineur.html" class="nav-dropdown-item">02. Statut citoyen mineur &amp; Attestation CCE</a>
+          <a href="../age.html" class="nav-dropdown-item">03. Wmail — Archive des correspondances</a>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : Chartes & Politiques (Cadre légal) -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Chartes &amp; Politiques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="politiques.html" class="nav-dropdown-item" style="font-weight: 700; color: var(--accent);">00. Registre des chartes (Hub)</a>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Anti-SLAPP Declaration</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Press</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="../opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–12. Statut, Archives &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="../statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
+              <a href="licence-et-charte.html" class="nav-dropdown-item">Licence &amp; Charte graphique</a>
+              <a href="terms.html" class="nav-dropdown-item">Terms of Use</a>
+              <a href="privacy.html" class="nav-dropdown-item">Privacy Policy</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 5 : À propos & Contact -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contact ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="./#apropos" class="nav-dropdown-item">Biography de William Guindon</a>
+              <a href="liens.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Liens officiels (Réseaux &amp; Bio)</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="dev.html" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
+              <a href="statut.html" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+              <a href="../api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contact</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #10b981;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>How to Act &amp; Support</a>
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contact</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Sélecteur de langue unique (FR / EN / ES) -->
+      <div class="nav-dropdown nav-lang-dropdown">
+        <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
+          <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="current-lang-code">FR</span>
+          <span>▾</span>
+        </button>
+        <div class="nav-dropdown-menu nav-lang-menu" role="menu">
+          <span class="nav-dropdown-group-title">Langue / Language</span>
+          <button type="button" class="nav-dropdown-item lang-select-btn active" data-lang="fr" role="menuitem">
+            <span class="lang-name">Français</span>
+            <span class="lang-tag">FR</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
+            <span class="lang-name">English</span>
+            <span class="lang-tag">EN</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
+            <span class="lang-name">Español</span>
+            <span class="lang-tag">ES</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panneau des alertes & notifications -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" role="status" aria-label="3 nouvelles alertes actives" title="3 nouvelles alertes actives"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Close les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
+              <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal (députée de Blainville) et Madeleine Chenette (députée fédérale)</h5>
+              <p class="notif-item-desc">Deux rencontres bilatérales confirmées. Nadine Le Gal a souhaité fixer cet échange avant même d'avoir ouvert son bureau permanent. Enjeux au programme : Loi 93, BAPE 371, réponse fédérale au BVG (10 nov.) et suite CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article du carnet ↗</a>
+                <a href="agir.html" class="notif-link-btn notif-link-ghost">Mobilisation &amp; Élus</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
+              <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (Pétition BVG 0546)</h5>
+              <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'une pétition citoyenne au BVG (art. 22 LVG) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'article 24.27(4)(a) de l'ACEUM.</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
+                <a href="../registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
+              <p class="notif-item-desc">Ottawa invoque sa propre pétition au BVG pour demander la fin ou le report de l'examen, sans contester les rejets critiques de cadmium (320x la norme) ni l'atteinte à la tourbière. Examen CCE en cours (art. 24.28).</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
+              <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>
+              <p class="notif-item-desc">Dans sept jours (16 octobre), le Canada doit répondre à la communication SEM-26-003 jugée recevable par la CCE (ACEUM). Déclaration de presse officielle de William Guindon.</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-09-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="https://ia601006.us.archive.org/29/items/communique_presse_SEM-26-003/communique_presse_SEM-26-003.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Télécharger le PDF ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
+              <h5 class="notif-item-title">SEM-26-003 expliqué simplement : Le dossier complet et accessible</h5>
+              <p class="notif-item-desc">Publication d'une grande synthèse vulgarisée en 12 parties décortiquant la soumission citoyenne, la décision CCE du 17 août 2026, les allégations retenues et les pièges de chiffres.</p>
+              <div class="notif-item-links">
+                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
+                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">26 septembre 2026 · Cadre Juridique</div>
+              <h5 class="notif-item-title">Adoption de la Charte Fondamentale 12 (Protection de l'archive)</h5>
+              <p class="notif-item-desc">Adoption formelle de la politique encadrant la fixité probatoire, la conformité au droit d'auteur et la procédure de biffure/retrait des 222 pièces.</p>
+              <div class="notif-item-links">
+                <a href="protection-archive.html" class="notif-link-btn notif-link-primary">Consulter la Charte 12 ↗</a>
+                <a href="politiques.html" class="notif-link-btn notif-link-ghost">Hub des chartes</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="../statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Press</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">22 septembre 2026 · Kit Press &amp; Transparence</div>
+              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (En ligne)</h5>
+              <p class="notif-item-desc">Mise en ligne officielle du moteur de recherche interne plein texte (OCR) et du kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Accéder au Kit Média ↗</a>
+                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
+              <h5 class="notif-item-title">Enquête : Positionnement des partis politiques (Cellule 6)</h5>
+              <p class="notif-item-desc">Publication du rapport d'enquête citoyenne évaluant la position des formations politiques québécoises et canadiennes face à la décision CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="../enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter le rapport ↗</a>
+                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Archive Zenodo</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">
+          legal obligation for the Government of Canada to provide a detailed response on the application of
+        </p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <a href="../dossier-confidentiel-non-biffe-sem26003.html" class="sr-only" tabindex="-1" aria-hidden="true" style="display:none!important;position:absolute;left:-9999px;opacity:0;pointer-events:none;">Accès interne non biffé aux pièces confidentielles SEM-26-003</a>
+  </div>
+</header>
+
+<main id="main-content">
+<div class="sheet" id="top">
+
+<aside class="official-status-banner" role="note" aria-labelledby="banner-status-title" style="border-left-color: var(--accent); background: var(--accent-wash);">
+  <div class="status-banner-header">
+    <svg class="status-banner-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent);">
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+    </svg>
+    <h2 id="banner-status-title" style="color: var(--text);">Guide d'analyse citoyenne &amp; Synthèse du dossier SEM-26-003</h2>
+  </div>
+  <p>
+          Commission de coopération environnementale, created in 1994, is headquartered at 1001 Robert-Bourassa Boulevard in Montreal. It has three bodies: the Council (the Ministers of the Environment of the three countries - it is he who votes), the Secretariat (the permanent administration, which investigates complaints) and the Joint Public Consultative Committee (of citizens of the three countries, consultative role).
+        </p>
+  <div class="status-banner-links">
+    <span class="status-links-title">Actes et pièces clés du registre public de la CCE :</span>
+    <ul class="status-pdf-list">
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det2_fr.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter la décision du Secrétariat du 17 août 2026 (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Détermination positive du Secrétariat (17 août 2026) <span class="doc-tag">(PDF officiel, cec.org) ↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-rsub_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter la communication révisée du 16 juillet 2026 (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Communication révisée de William Guindon (16 juillet 2026) <span class="doc-tag">(PDF officiel, cec.org) ↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/09-l-appui-sem-26-003_fr_redacted.pdf" target="_blank" rel="noopener noreferrer" aria-label="Consulter les informations à l'appui de 102 pages (PDF officiel sur cec.org)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Annexe analytique &amp; Informations à l'appui (102 p.) <span class="doc-tag">(PDF officiel, cec.org) ↗</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<header class="cover">
+  <div class="cover-banner-wrap" style="margin-bottom: 32px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
+    <picture>
+      <source srcset="assets/media/sem-26-003-apercu-banniere.webp" type="image/webp">
+      <img src="../assets/media/sem-26-003-apercu-banniere.png" alt="Bannière officielle SEM-26-003 — Commission de coopération environnementale — Élimination de déchets dangereux à Blainville" width="1024" height="384" style="width: 100%; height: auto; display: block;" loading="eager" fetchpriority="high" decoding="async">
+    </picture>
+  </div>
+  <p class="eyebrow">Commission de coopération environnementale · ACEUM, chapitre 24</p>
+  <h1>SEM-26-003</h1>
+  <p class="cover-sub">Enfouissement de matières dangereuses à Blainville</p>
+  <p class="cover-lede">Le dossier complet, expliqué de bout en bout, en langage ordinaire : ce que documente la plainte, les fondements de la détermination historique du Secrétariat du 17 août 2026, et les enjeux de la réponse fédérale attendue.</p>
+  <dl class="facts">
+    <div><dt>Statut</dt><dd class="g">Dossier ouvert</dd></div>
+    <div><dt>Avancement</dt><dd>Étape 4 sur 10</dd></div>
+    <div><dt>Réponse du Canada</dt><dd class="r">16 octobre 2026</dd></div>
+    <div><dt>Document établi le</dt><dd>27 septembre 2026</dd></div>
+  </dl>
+</header>
+
+<div class="howto">
+  <p>
+          time you come across the words En clair, this is the translation into current French of the point of
+        </p>
+  <p class="warnline" style="border-left-color: var(--accent); background: var(--accent-wash); color: var(--text);">
+          Species at risk The articles, in plain English: Art. 32 — prohibits killing, injuring, harassing, capturing or taking an individual of a species listed as extinct, endangered or threatened. Art. 33 — prohibits damaging or destroying the residence of these individuals (their nest, their burrow, their hibernacula). Art. 58 — prohibits destruction of critical habitat. Crucial point: this ban applies to aquatic species and migratory birds even outside federal lands. It is the gateway to private land. Art. 73 — this is the article of the permit. The Minister may authorize an activity affecting a listed species, but only if all other options have been considered, if all minimization measures are taken, and if the survival of the species is not jeopardized. The decision must be reasoned and entered in the public register. Art. 79 — requires anyone assessing the environmental effects of a project to notify the Minister if a listed species is likely to be affected.
+        </p>
+  
+  <div class="registre-legend">
+    <div class="registre-legend-title">Rigueur documentaire et sources :</div>
+    <div class="registre-legend-grid">
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--blue"></span>
+        <div><strong>Détermination du Secrétariat</strong> Constats officiels et validation formelle de recevabilité par la CCE (17 août 2026).</div>
+      </div>
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--yellow"></span>
+        <div><strong>Corpus probatoire du plaignant</strong> 222 pièces scientifiques, techniques, cartographiques et administratives versées au registre public.</div>
+      </div>
+      <div class="reg-item">
+        <span class="reg-icon-box reg-icon-box--red"></span>
+        <div><strong>Témoignages et expertises</strong> Entretiens techniques horodatés et relevés citoyens documentant la réalité du terrain.</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: 12px; font-size: 0.92rem; opacity: 0.95;"><strong>Note méthodologique &amp; cadre juridique :</strong> Synthèse informative issue de l'analyse citoyenne de pièces publiques. Consultez la <a href="#note-methodologique" style="text-decoration: underline; font-weight: 600;">note méthodologique, le cadre de bonne foi et la déclaration Anti-SLAPP ↓</a>.</p>
+</div>
+
+<nav class="toc">
+  <div class="kicker">Sommaire — 13 parties &amp; cadre méthodologique</div>
+  <ol class="toc-list">
+<li><a href="#p1">01 · L'histoire, racontée simplement</a></li>
+<li><a href="#p2">02 · Qui est qui : les acteurs</a></li>
+<li><a href="#p3">03 · Le lieu : tourbière, cellule n° 6, Camp Bouchard</a></li>
+<li><a href="#p4">04 · Le mécanisme, de A à Z</a></li>
+<li><a href="#p5">05 · La plainte, allégation par allégation</a></li>
+<li><a href="#p6">06 · La décision, décortiquée</a></li>
+<li><a href="#p7">07 · Repères clés et portée de la procédure</a></li>
+<li><a href="#p8">08 · La suite : dates et scénarios</a></li>
+<li><a href="#p9">09 · Repères méthodologiques et lecture des données techniques</a></li>
+<li><a href="#p10">10 · Questions que tout le monde se pose</a></li>
+<li><a href="#p11">11 · Glossaire complet</a></li>
+<li><a href="#p12-contradictions">12 · Rigueur procédurale et consolidation documentaire</a></li>
+<li><a href="#p13">13 · Sources</a></li>
+<li><a href="#note-methodologique">Note méthodologique, bonne foi &amp; Anti-SLAPP</a></li>
+  </ol>
+</nav>
+
+<div class="sheet-main">
+
+
+<!-- ================================================================= -->
+<!-- PARTIE 1 -->
+<!-- ================================================================= -->
+<section id="p1">
+<h2>
+          Part 01 The story, told simply
+        </h2>
+
+<p class="lede">
+          In Blainville, in the Laurentians north of Montreal, there is a large swamp called Grande Tourbière
+        </p>
+
+<p>
+          Next door is a company called Stablex. Its job: to receive dangerous industrial waste – sludge filled with heavy metals, for example – to mix it with cement to “freeze” it, then to bury it in large airtight pits called cells. Its first five cells reach saturation. He needs a sixth.
+        </p>
+
+<p>
+          The land coveted for this cell no. 6 belonged to the Ville de Blainville (City of Blainville), which
+        </p>
+
+<p>
+          citizen of Blainville then aged 14 at the start of his efforts (now 15 years old), opened an
+        </p>
+
+<div class="clair">
+<p class="lede">
+          His legal reasoning is implacable:
+        </p>
+<p class="lede">
+          Species at risk The articles, in plain English: Art. 32 — prohibits killing, injuring, harassing, capturing or taking an individual of a species listed as extinct, endangered or threatened. Art. 33 — prohibits damaging or destroying the residence of these individuals (their nest, their burrow, their hibernacula). Art. 58 — prohibits destruction of critical habitat. Crucial point: this ban applies to aquatic species and migratory birds even outside federal lands. It is the gateway to private land. Art. 73 — this is the article of the permit. The Minister may authorize an activity affecting a listed species, but only if all other options have been considered, if all minimization measures are taken, and if the survival of the species is not jeopardized. The decision must be reasoned and entered in the public register. Art. 79 — requires anyone assessing the environmental effects of a project to notify the Minister if a listed species is likely to be affected.
+        </p>
+</div>
+
+<p>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+
+<p>
+          102-page analytical annex and 222 evidentiary documents -, he has built a file that stands the test
+        </p>
+
+<p class="lede">
+          Commission de coopération environnementale, created in 1994, is headquartered at 1001 Robert-Bourassa Boulevard in Montreal. It has three bodies: the Council (the Ministers of the Environment of the three countries - it is he who votes), the Secretariat (the permanent administration, which investigates complaints) and the Joint Public Consultative Committee (of citizens of the three countries, consultative role).
+        </p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 2 -->
+<!-- ================================================================= -->
+<section id="p2">
+<h2>
+          Part 02 Who's who
+        </h2>
+
+<div class="grid">
+
+<div class="card">
+<div class="card-title">William Guindon</div>
+<div class="kicker">L'auteur de la communication citoyenne</div>
+<p class="sm">
+          Environmental activist and citizen researcher residing in Blainville, born in 2011 (official name in the register: William Tristan Logan Théo Guindon). At the age of 15, he became the first minor author in the history of the SEM mechanism (since 1994) to successfully cross the threshold of international admissibility for citizen communication. Acting voluntarily and autonomously — without a legal firm or partisan funding — he assembled a body of evidence of 222 documents to preserve Grande Tourbière de Blainville (Great Blainville Peat Bog) and defend the environmental rights of future generations.
+        </p>
+</div>
+
+<div class="card card--rose">
+<div class="card-title card-title--rose">Le gouvernement du Canada</div>
+<div class="kicker">La « Partie visée »</div>
+<p class="sm">
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+</div>
+
+<div class="card card--muted">
+<div class="card-title card-title--muted">Stablex Canada inc.</div>
+<div class="kicker">L'entreprise — mais pas une partie à la procédure</div>
+<p class="sm">
+          Operator of the hazardous waste landfill site. It is a subsidiary of two American companies: Republic Services and US Ecology. Crucial point: Stablex is not being sued here. The SEM mechanism never targets a company, only a State. She has no formal right of reply in this procedure.
+        </p>
+</div>
+
+<div class="card card--muted">
+<div class="card-title card-title--muted">Le gouvernement du Québec</div>
+<div class="kicker">Présent partout, visé nulle part</div>
+<p class="sm">
+          Quebec adopted <strong>Loi 93</strong>, issued authorization decree 515-2025, conducted provincial inspections. But the SEM process is only aimed at central governments. The Quebec documents only serve as proof of the facts here: they demonstrate that work, rejections and overruns exist.
+        </p>
+</div>
+
+<div class="card">
+<div class="card-title">La CCE</div>
+<div class="kicker">L'arbitre — situé à Montréal</div>
+<p class="sm">
+          Commission de coopération environnementale, created in 1994, is headquartered at 1001 Robert-Bourassa Boulevard in Montreal. It has three bodies: the Council (the Ministers of the Environment of the three countries - it is he who votes), the Secretariat (the permanent administration, which investigates complaints) and the Joint Public Consultative Committee (of citizens of the three countries, consultative role).
+        </p>
+</div>
+
+<div class="card">
+<div class="card-title">Paolo Solano</div>
+<div class="kicker">Le signataire de la décision</div>
+<p class="sm">
+          Isabel Zepeda Lizama for Mexico, Usha-Maria Turner for the United States) and to the executive
+        </p>
+</div>
+
+</div>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 3 -->
+<!-- ================================================================= -->
+<section id="p3">
+<h2>
+          Part 03 The place: three superimposed layers
+        </h2>
+
+<h3>
+          3.1 — The Grande Tourbière de Blainville A wetland complex which, according to provincial inspection reports on file, includes “a marsh, a swamp, shallow water and a peat bog”. There we find plants indicative of wetlands — pitcher plant (a carnivorous plant), cotton grass — growing on permanent sphagnum mats. The Bureau d'audiences publiques sur l'environnement (BAPE), in its report No. 371, highlighted the “exceptional ecological value” of the sector and advised the government against authorizing the project.
+        </h3>
+<p>
+          Bureau d'audiences publiques sur l'environnement (Québec Bureau of Public Environmental Hearings),
+        </p>
+
+<p>
+          the Champlain Sea — a sea that covered the St. Lawrence Valley about 10,000 years ago. These clays,
+        </p>
+
+<h3>
+          3.2 — Cell No. 6
+        </h3>
+<p>
+          The land in question is lot 6 695 053 of the Quebec land register. According to media coverage and
+        </p>
+
+<p>
+          24 hours a day, 7 days a week operation. The new site would allow Stablex to operate for around
+        </p>
+
+<div class="note">
+<strong class="lab">La réalité physique de l'enfouissement soulevée au dossier</strong><br>
+<span>Si le discours promotionnel évoque des « blocs » solidifiés, l'expertise technique versée au dossier (transcription horodatée) décrit plutôt une <strong>boue cimenteuse semi-liquide</strong> sujette à une séparation de phase : « C'est comme du ciment mal fait. […] Il y a de l'eau qui flotte sur le ciment. […] Ce ne sont pas des blocs, c'est des boues qui sont enfouies. » Quant à la géomembrane étanche, le spécialiste interrogé y voit « une fausse sécurité » à long terme face à la dégradation chimique, aux mouvements de terrain ou aux séismes. Ces éléments techniques versés au registre visent à éclairer les risques hydrogéologiques à long terme pour le milieu récepteur.</span>
+</div>
+
+<h3>
+          3.3 — What was there before: Camp Bouchard
+        </h3>
+<p>
+          This is perhaps the most surprising element of the file. From 1942 to 1980, this same land was home
+        </p>
+
+<p>
+          The site still appears on the Federal Contaminated Sites Inventory (number 06875001), maintained by the Treasury Board Secretariat. According to the data cited in the complaint: Identified contaminants: metals, metalloids and organometallics in groundwater and soil File status: “Active” — it is not closed Management strategy: “Additional assessment” — work is not completed Expenditures in 2025-2026: $0 on evaluation, $0 on restoration, $0 on monitoring Area restored in 2025-2026: 0 hectare Historical total expenditures: approximately $147,000 for a 4-hectare military site operated for 38 years
+        </p>
+<ul>
+<li>Contaminants identifiés : métaux, métalloïdes et organométalliques <strong>dans l'eau souterraine et dans le sol</strong></li>
+<li>Statut du dossier : <strong>« Actif »</strong> — il n'est pas fermé</li>
+<li>Stratégie de gestion : <strong>« Évaluation complémentaire »</strong> — les travaux ne sont pas terminés</li>
+<li>Dépenses en 2025-2026 : <strong>0 $</strong> en évaluation, <strong>0 $</strong> en restauration, <strong>0 $</strong> en suivi</li>
+<li>Superficie restaurée en 2025-2026 : <strong>0 hectare</strong></li>
+<li>Dépenses totales historiques : environ <strong>147 000 $</strong> pour un site militaire de 4 hectares exploité pendant 38 ans</li>
+</ul>
+
+<p>
+          Department of National Defense. In other words: the soil was first contaminated by the federal
+        </p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 4 -->
+<!-- ================================================================= -->
+<section id="p4">
+<h2>
+          Part 04 The mechanism, from A to Z
+        </h2>
+
+<h3>
+          4.1 — Where does this tool come from In 1994, when signing NAFTA, the three countries feared that one state would be tempted to attract factories by turning a blind eye to pollution. They therefore created, in parallel, an environmental agreement equipped with a citizen valve. When NAFTA was replaced by ACEUM on July 1, 2020, this valve was retained and written directly into the trade treaty, in articles 24.27 and 24.28.
+        </h3>
+<p>En 1994, au moment de signer l'ALENA, les trois pays ont craint qu'un État soit tenté d'attirer les usines en fermant les yeux sur la pollution. Ils ont donc créé, en parallèle, un accord environnemental doté d'une soupape citoyenne. Quand l'ALENA a été remplacé par l'<strong>ACEUM</strong> le 1<sup>er</sup> juillet 2020, cette soupape a été conservée et inscrite directement dans le traité commercial, aux <strong>articles 24.27 et 24.28</strong>.</p>
+
+<p>
+          thing: a citizen complaint. The acronym SEM comes from the English Submissions on Enforcement
+        </p>
+
+<h3>
+          4.2 — First question: what is an “environmental law”? All the legal sorting of the decision follows from this definition. Here is the official text, in article 24.1 of ACEUM: “environmental law means a law or regulation of a Party, or one of its provisions […] the primary object of which is the protection of the environment, or the prevention of a danger to health or human life, by, as the case may be: a) the prevention, reduction or control of the discharge […] of pollutants or contaminants; (b) the control of dangerous or toxic chemicals, substances, materials or waste […]; (c) the protection or conservation of wild flora and fauna, including endangered species, their habitat and specially protected natural areas […]” “law or regulation means […] for Canada, an Act of the Parliament of Canada or a regulation made under an Act of the Parliament of Canada which may be enforced by action of the central government. »
+        </h3>
+<p>Tout le tri juridique de la décision découle de cette définition. Voici le texte officiel, à l'article 24.1 de l'ACEUM :</p>
+
+<blockquote class="law">
+« <strong>loi environnementale</strong> désigne une loi ou un règlement d'une Partie, ou une de ses dispositions […] dont l'<strong>objet premier</strong> est la protection de l'environnement, ou la prévention d'un danger pour la santé ou la vie humaine, par, selon le cas : a) la prévention, la réduction ou le contrôle du rejet […] de polluants ou de contaminants ; b) le contrôle des produits chimiques, substances, matières ou déchets dangereux ou toxiques […] ; c) la protection ou la conservation de la flore et de la faune sauvages, y compris des espèces menacées, de leur habitat et des zones naturelles spécialement protégées […] »
+<br><br>
+« <strong>loi ou règlement</strong> désigne […] pour le Canada, une <strong>loi du Parlement du Canada</strong> ou un règlement pris sous le régime d'une loi du Parlement du Canada <strong>pouvant être mis en application par une action du gouvernement central</strong>. »
+</blockquote>
+
+<div class="clair">
+<span class="badge">EN CLAIR</span>
+<p>
+          For an article of law to be retained by the CCE (Commission for Environmental Cooperation), it must meet three strict conditions: (1) have as its primary purpose the protection of the environment or human health; (2) be a federal law or regulation passed in Ottawa; (3) fall under the application of the federal government. It is this surgical filter that allowed the Secretariat to focus the investigation on the four federal ecological pillars invoked in the communication (Fisheries Act, SARA, LCOM, CEPA), while ruling out provisions of a purely commercial or general constitutional nature.
+        </p>
+</div>
+
+<h3>
+          4.3 — The five formal criteria (article 24.27(2))
+        </h3>
+<p>
+          First filter. The complaint must satisfy all five — not three out of five, not “overall.” Official
+        </p>
+
+<table class="tbl">
+<thead><tr class="hrow"><th class="w1"></th><th class="w2">Texte de l'ACEUM</th><th class="w3">En clair</th><th class="w4">Verdict</th></tr></thead>
+<tbody>
+<tr><td class="b">a)</td><td class="i">« sont faites par écrit, en français, en anglais ou en espagnol »</td><td>Écrire, dans l'une des trois langues officielles du continent.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+<tr class="alt"><td class="b">b)</td><td class="i">« identifient clairement la personne qui les présente »</td><td>Signer. Pas de plainte anonyme.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+<tr><td class="b">c)</td><td class="i">« donnent suffisamment d'information pour permettre d'examiner les observations, y compris les preuves documentaires […] et l'indication de la loi environnementale qui n'aurait pas été appliquée »</td><td>Fournir de vraies preuves, et dire précisément quel article de quelle loi n'est pas appliqué. C'est le critère le plus exigeant.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(consolidation du 17 août)</span></td></tr>
+<tr class="alt"><td class="b">d)</td><td class="i">« semblent viser à promouvoir l'application de la loi plutôt qu'à harceler l'industrie »</td><td>Ne pas se servir du mécanisme comme d'une arme commerciale contre un concurrent.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+<tr><td class="b">e)</td><td class="i">« indiquent si la question a été communiquée par écrit aux autorités compétentes de la Partie, et, le cas échéant, la réponse de la Partie »</td><td>Avoir d'abord prévenu le gouvernement par écrit, et lui avoir laissé une chance d'agir. On ne court pas à l'international sans avoir frappé à la porte d'Ottawa.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(consolidation du 17 août)</span></td></tr>
+</tbody>
+</table>
+
+<h3>
+          4.4 — The four criteria of opportunity (article 24.27(3))
+        </h3>
+<p>
+          Second filter: does the complaint merit disturbing a government?
+        </p>
+
+<table class="tbl">
+<thead><tr class="hrow"><th class="w1"></th><th class="w2">Texte de l'ACEUM</th><th class="w3">En clair</th><th class="w4">Verdict</th></tr></thead>
+<tbody>
+<tr><td class="b">a)</td><td class="i">« s'il est allégué qu'un préjudice a été subi par la personne qui présente les observations »</td><td>Être personnellement touché. L'auteur invoque un préjudice environnemental (son milieu de vie), sanitaire (l'exposition) et intergénérationnel (il héritera du site).</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+<tr class="alt"><td class="b">b)</td><td class="i">« si les observations […] soulèvent des questions pour lesquelles une étude approfondie serait propice à la réalisation des objectifs du présent chapitre »</td><td>Est-ce que creuser le sujet servirait à quelque chose d'utile pour l'Amérique du Nord ?</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+<tr><td class="b">c)</td><td class="i">« si les recours privés prévus par le droit de la Partie ont été exercés »</td><td>Avoir d'abord essayé les recours disponibles chez soi — ou expliquer de façon crédible pourquoi c'était impossible.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(consolidation du 17 août)</span></td></tr>
+<tr class="alt"><td class="b">d)</td><td class="i">« si les observations ne sont pas tirées exclusivement d'informations provenant de moyens de communication de masse »</td><td>Ne pas se contenter d'une pile de coupures de journaux. Il faut des documents officiels, des études, des données.</td><td class="b ok">✔ Validé<br><span style="font-size:0.82em; font-weight:normal; color:var(--text-muted);">(examen initial du 3 juin)</span></td></tr>
+</tbody>
+</table>
+
+<div class="alert" style="border-left-color: var(--accent); background: var(--accent-wash); color: var(--text);">
+<strong style="color: var(--accent-deep, #047857);">Une validation individuelle de 100 % des critères d'admissibilité.</strong> Dans sa détermination du 17 août 2026, le Secrétariat souligne la rigueur de son examen : il ne se contente pas d'une appréciation globale de l'existence d'une « question sérieuse », mais évalue <strong>chaque critère des paragraphes 24.27(1), (2) et (3) individuellement</strong>. Un seul critère manquant suffit à entraîner le rejet d'une communication — le sort réservé à la grande majorité des plaintes déposées en Amérique du Nord. En s'appuyant sur sa jurisprudence constante (<em>Tortue caouanne</em> 2021, <em>Terminal Fairview</em> 2021, <em>Marsouin du golfe de Californie</em> 2021), le Secrétariat conclut que le dossier consolidé par William Guindon <strong>franchit avec succès chacun de ces filtres exigeants</strong>.
+</div>
+
+<p>
+          An important counterbalance, that said: the Secretariat also recalls that these criteria “must not
+        </p>
+
+<h3>
+          4.5 — Deadlines, calculated to the nearest day
+        </h3>
+<p>
+          The Secretariat explains in a footnote how it counts: in calendar days; the day of departure is not
+        </p>
+
+<div class="note">
+<strong>Vérification, pour ceux que ça intéresse :</strong><br>
+• Communication initiale reçue le <strong>lundi 4 mai 2026</strong> → +30 jours → décision le <strong>mercredi 3 juin 2026</strong>. ✔<br>
+• Communication révisée reçue le <strong>jeudi 16 juillet 2026</strong> → +30 jours → le samedi 15 août → reporté au <strong>lundi 17 août 2026</strong>. ✔ <em>Le Secrétariat a donc respecté son délai à la journée près.</em><br>
+• Décision du 17 août 2026 → +60 jours → <strong>vendredi 16 octobre 2026</strong>. ✔ Jour ouvrable : pas de report.
+</div>
+
+<h3>
+          4.6 — The complete journey, step by step
+        </h3>
+
+<div class="note note--ui">
+<div class="step step--done"><span class="num num--done">✓</span><strong>1 · Dépôt de la communication initiale</strong> — <span class="muted">1er / 4 mai 2026</span></div>
+<div class="step step--done"><span class="num num--done">✓</span><strong>2 · Consolidation méthodologique et probatoire (art. 24.27(2))</strong> — <span class="muted">Dépôt des 222 pièces le 16 juillet 2026, recevabilité validée le 17 août 2026</span></div>
+<div class="step step--done"><span class="num num--done">✓</span><strong>3 · Examen d'opportunité et injonction de répondre (art. 24.27(3))</strong> — <span class="muted">Validé le 17 août 2026</span></div>
+<div class="step step--now"><span class="num num--now">4</span><strong>4 · Réponse officielle du gouvernement du Canada (art. 24.27(4))</strong> — <strong class="sig">EN COURS · 60 jours · échéance vendredi 16 octobre 2026</strong><br><span class="muted">Le Canada doit dire s'il existe une procédure judiciaire ou administrative en instance, et peut fournir tout renseignement sur les mesures prises.</span></div>
+<div class="step step--todo"><span class="num num--todo">5</span><strong>5 · Recommandation du Secrétariat</strong> (art. 24.28(1)) — dans les <strong>60 jours</strong> suivant la réception de la réponse</div>
+<div class="step step--todo"><span class="num num--todo">6</span><strong>6 · Vote du Conseil</strong> (art. 24.28(2)) — il faut <strong>au moins 2 membres sur 3</strong></div>
+<div class="step step--todo"><span class="num num--todo">7</span><strong>7 · Projet de dossier factuel</strong> (art. 24.28(5)) — <strong>120 jours</strong></div>
+<div class="step step--todo"><span class="num num--todo">8</span><strong>8 · Commentaires des trois pays</strong> — <strong>30 jours</strong>, uniquement sur l'exactitude des faits</div>
+<div class="step step--todo"><span class="num num--todo">9</span><strong>9 · Version finale remise au Conseil</strong></div>
+<div class="step step--todo"><span class="num num--todo">10</span><strong>10 · Publication</strong> (art. 24.28(6)) — normalement dans les <strong>30 jours</strong>, sauf si 2 membres du Conseil s'y opposent</div>
+</div>
+
+<p>
+          Committee. This is where the file could become a real field investigation.
+        </p>
+
+<div class="alert" style="border-left-color: var(--accent); background: var(--accent-wash); color: var(--text);">
+<strong style="color: var(--accent-deep, #047857);">L'anticipation stratégique de l'article 24.27(4)a) :</strong> Le traité prévoit que si la question fait déjà l'objet d'une procédure judiciaire ou administrative en instance, le Secrétariat met fin à l'examen. William Guindon a neutralisé cet obstacle dès la rédaction de sa plainte en démontrant l'absence totale de double emploi : les litiges tranchés au Québec en avril 2025 portaient exclusivement sur la <em>Loi 93</em> provinciale, alors qu'aucun tribunal ni processus administratif ne porte sur l'inaction d'Ottawa face aux lois fédérales à Blainville.
+</div>
+
+<h3>
+          4.7 — The nature of the SEM mechanism: the power of the international investigation
+        </h3>
+<div class="grid">
+<div class="card card--green">
+<strong class="lab">✔ Les pouvoirs et leviers d'action internationale</strong>
+<ul class="sm">
+<li><strong>Contraindre le gouvernement fédéral à sortir du silence</strong> en déposant une réponse écrite, officielle et publique sur l'application de ses lois.</li>
+<li><strong>Exposer les faits à l'échelle nord-américaine</strong> devant le Conseil des ministres de l'Environnement du Canada, des États-Unis et du Mexique.</li>
+<li><strong>Mandater une enquête indépendante (le dossier factuel)</strong> mobilisant des experts scientifiques, des entrevues avec les autorités et des vérifications techniques inattaquables.</li>
+<li><strong>Constituer un socle probatoire officiel</strong> utilisable par les parlementaires, les chercheurs, les médias et les tribunaux.</li>
+</ul>
+</div>
+<div class="card card--rose">
+<strong class="sig">Distinction avec un tribunal judiciaire interne</strong>
+<ul class="sm">
+<li>Le Secrétariat n'est pas un tribunal civil ou pénal prononçant des amendes ou des injonctions directes de chantier contre des entreprises privées.</li>
+<li>Son autorité s'exerce au niveau supérieur de la <strong>reddition de comptes interétatique</strong> et de la transparence de l'action publique environnementale.</li>
+</ul>
+</div>
+</div>
+<p>
+          The CCE Secretariat is not a court of first instance, but a higher international institution of
+        </p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 5 -->
+<!-- ================================================================= -->
+<section id="p5">
+<h2>
+          Part 05 The complaint, allegation by allegation
+        </h2>
+
+<p>
+          than 200 documents. It was signed in Blainville on July 16, 2026 and ends with this sentence:
+        </p>
+
+<div class="note">
+<strong class="lab">La règle que l'auteur s'impose lui-même</strong><br>
+<span>En ouverture, il précise que les mots « omission », « manquement », « rejet » ou « contamination » qu'il emploie désignent des <strong>allégations de fait et de droit</strong> soumises à vérification, et non des conclusions de responsabilité. Il ajoute que toutes les références aux lois et décrets <strong>québécois</strong> ne sont versées qu'à titre de <em>trame factuelle et de preuve matérielle</em>, pour démontrer que les travaux, les rejets et la contamination existent. Sa cible est « strictement et uniquement l'omission du gouvernement du CANADA d'appliquer ses propres lois fédérales ». Cette discipline lui a servi : le Secrétariat s'appuie explicitement dessus pour écarter les instruments provinciaux de son analyse juridique tout en les acceptant comme preuve des faits.</span>
+</div>
+
+<!-- --------- ALLEGATION 1 --------- -->
+<div class="note note--law">
+<div class="panel-title">Allégation 1</div>
+<h3>
+          Species at risk The articles, in plain English: Art. 32 — prohibits killing, injuring, harassing, capturing or taking an individual of a species listed as extinct, endangered or threatened. Art. 33 — prohibits damaging or destroying the residence of these individuals (their nest, their burrow, their hibernacula). Art. 58 — prohibits destruction of critical habitat. Crucial point: this ban applies to aquatic species and migratory birds even outside federal lands. It is the gateway to private land. Art. 73 — this is the article of the permit. The Minister may authorize an activity affecting a listed species, but only if all other options have been considered, if all minimization measures are taken, and if the survival of the species is not jeopardized. The decision must be reasoned and entered in the public register. Art. 79 — requires anyone assessing the environmental effects of a project to notify the Minister if a listed species is likely to be affected.
+        </h3>
+<div class="deck">Loi sur les espèces en péril (LEP), articles 32, 33, 58, 73 et 79</div>
+
+<p><strong>Les articles, en clair :</strong></p>
+<ul>
+<li><strong>Art. 32</strong> — interdit de tuer, blesser, harceler, capturer ou prendre un individu d'une espèce inscrite comme disparue, en voie de disparition ou menacée.</li>
+<li><strong>Art. 33</strong> — interdit d'endommager ou de détruire la <em>résidence</em> de ces individus (leur nid, leur terrier, leur hibernacle).</li>
+<li><strong>Art. 58</strong> — interdit de détruire l'<em>habitat essentiel</em>. Point capital : cette interdiction s'applique aux espèces aquatiques et aux oiseaux migrateurs <strong>même en dehors des terres fédérales</strong>. C'est la porte d'entrée sur un terrain privé.</li>
+<li style="list-style:none; margin:12px 0;">
+  <div class="note--nuance" style="border-left-color: var(--accent); background: var(--accent-wash); color: var(--text);">
+    <strong style="color: var(--accent-deep, #047857);">Art. 58 (Habitat essentiel) — Une démonstration juridique de précision :</strong> Plutôt que d'invoquer l'article 58 de manière générique, l'annexe analytique de 102 pages (section 3.2.3) cible chirurgicalement le paragraphe <strong>58(5.1)</strong> relatif aux oiseaux migrateurs ainsi que les obligations de protection hors terres fédérales. Cette précision juridique a porté ses fruits : alors que l'article 58 n'avait pas été retenu au premier tour, <strong>le Secrétariat l'a formellement validé et intégré à l'instruction le 17 août 2026</strong>.
+  </div>
+</li>
+<li><strong>Art. 73</strong> — c'est l'article du <em>permis</em>. Le ministre peut autoriser une activité touchant une espèce inscrite, mais seulement si toutes les autres options ont été envisagées, si toutes les mesures de minimisation sont prises, et si la survie de l'espèce n'est pas mise en péril. La décision doit être <strong>motivée et inscrite au registre public</strong>.</li>
+<li><strong>Art. 79</strong> — oblige quiconque évalue les effets environnementaux d'un projet à <strong>notifier le ministre</strong> si une espèce inscrite risque d'être touchée.</li>
+</ul>
+
+<p>
+          The reproach: deforestation and backfilling work takes place where species protected by federal law
+        </p>
+
+<p>
+          Species documented in the area:
+        </p>
+<table class="tbl">
+<thead><tr><th>Espèce</th><th>Statut</th><th>Source</th></tr></thead>
+<tbody>
+<tr><td>Paruline du Canada, Goglu des prés, Grive des bois, Hirondelle de rivage, Hirondelle rustique, Sturnelle des prés</td><td><strong>Menacées</strong> (annexe 1 de la LEP)</td><td>Plainte, tableau 4.1</td></tr>
+<tr class="alt"><td>Grèbe esclavon (population du Québec)</td><td>Préoccupante</td><td>Plainte, tableau 4.1</td></tr>
+<tr><td>Couleuvre tachetée</td><td>Préoccupante</td><td>Étude d'impact Englobe 2020</td></tr>
+<tr class="alt"><td>Petite chauve-souris brune, Chauve-souris nordique, Pipistrelle de l'Est</td><td><strong>En voie de disparition</strong></td><td>Étude d'impact, potentiellement présentes</td></tr>
+<tr><td>Engoulevent bois-pourri</td><td>À statut</td><td>Étude d'impact : « utilise largement la zone pour s'alimenter et potentiellement pour nicher » ; mâles entendus chantant sur territoire</td></tr>
+<tr class="alt"><td>Engoulevent d'Amérique, Pioui de l'Est</td><td>À statut</td><td>Rapport MELCCFP 2025 : habitat favorable</td></tr>
+<tr><td>Salamandre à quatre orteils — <strong>27 spécimens</strong> observés en mai 2016</td><td>Non en péril (fédéral) / Susceptible d'être désignée menacée ou vulnérable (Québec)</td><td>Inventaires marécages MH-5, MH-19, MH-20, MH-24</td></tr>
+<tr class="alt"><td>Frêne noir</td><td>Recommandée par le COSEPAC</td><td>Plainte, tableau 4.1 ; cartographie MRNF du 12 septembre 2023</td></tr>
+<tr><td>Tortue peinte, « trouvée en abondance »</td><td>À statut fédéral</td><td>Étude d'impact Englobe 2020</td></tr>
+<tr class="alt"><td>Grand pic, Grand Héron, Héron vert</td><td>Observés lors d'inventaires</td><td>Demande d'engagements du MELCCFP 2024</td></tr>
+</tbody>
+</table>
+<p class="tbl-note" style="font-size: 0.85rem; color: var(--text-muted, #555); margin-top: 8px;">
+          federal statuses. The 27 specimens recorded in the marshes MH-5, MH-19, MH-20 and MH-24
+        </p>
+
+<p>
+          The three basic arguments:
+        </p>
+<ol>
+<li><strong>Le calendrier de déboisement est biologiquement absurde.</strong> L'autorisation impose de terminer le déboisement <em>avant le 15 avril</em>, afin d'éviter la saison de nidification des oiseaux. Mais, souligne un expert du Zoo Ecomuseum cité au dossier, les espèces à sang froid sont alors <strong>encore immobiles</strong> : les tortues hibernent, les couleuvres sont dans leurs hibernacles, les salamandres sont sous la sphaigne. Elles sont inaccessibles, donc invisibles, donc impossibles à sauver. Protéger les oiseaux en écrasant les reptiles.</li>
+<li><strong>L'inventaire a été fait à la mauvaise saison.</strong> L'étude de caractérisation du milieu naturel, validée par les autorités provinciales en octobre 2023, a été réalisée <strong>en plein automne</strong>. À cette période, on ne peut observer ni la nidification des oiseaux, ni la reproduction des amphibiens et des reptiles. Le portrait est donc structurellement incomplet — et c'est ce portrait qui a servi de base à l'autorisation.</li>
+<li><strong>Il n'y a aucune trace d'un permis.</strong> L'absence est déduite de la consultation du Registre public des espèces en péril, des déclarations publiques du MPO aux médias, et d'une demande d'accès à l'information adressée à la Ville de Blainville, dont la réponse officielle du 30 juin 2026 indique qu'elle ne détient <strong>aucune trace documentaire</strong> d'un permis fédéral, d'études fauniques ou de suivis environnementaux émanant d'Ottawa pour ce site.</li>
+</ol>
+</div>
+
+<!-- --------- ALLEGATION 2 --------- -->
+<div class="note note--law">
+<div class="panel-title">Allégation 2</div>
+<h3>
+          Migratory birds
+        </h3>
+<div class="deck">Loi de 1994 sur la convention concernant les oiseaux migrateurs, art. 5.1(1) · Règlement sur les oiseaux migrateurs (2022), art. 5(1)</div>
+
+<p><strong>Les articles, en clair :</strong></p>
+<ul>
+<li><strong>Art. 5.1(1) de la Loi</strong> — interdit de rejeter une substance nocive pour les oiseaux migrateurs dans les eaux ou régions qu'ils fréquentent, <strong>ou en tout autre endroit d'où cette substance pourrait y parvenir</strong>. Cette dernière précision est décisive : il n'est pas nécessaire de déverser directement dans l'étang ; il suffit que le produit puisse y arriver.</li>
+<li><strong>Art. 5(1) du Règlement</strong> — interdit, sauf permis : a) de capturer, tuer, blesser ou <strong>harceler</strong> un oiseau migrateur ; b) de détruire ou déranger un œuf ; c) d'endommager, détruire, enlever ou <strong>déranger un nid</strong>.</li>
+</ul>
+<p>
+          The heaviest word in this regulation is “disturb”. It is not necessary to kill a bird or destroy a
+        </p>
+
+<p>
+          What is being said:
+        </p>
+<ul>
+<li><strong>132 espèces d'oiseaux</strong> recensées en période de reproduction dans les parcelles de l'Atlas des oiseaux nicheurs du Québec correspondant au secteur ; selon le rapport provincial de 2025, <strong>66 % étaient nicheuses</strong> et 34 % nicheuses probables ou possibles.</li>
+<li>Lors de relevés spécifiques en juin 2016 : <strong>172 individus de 51 espèces</strong> d'oiseaux migrateurs protégés dénombrés dans la zone de coupe projetée — dont le Carouge à épaulettes, la Paruline masquée, la Grive fauve, la Paruline couronnée, le Bruant à gorge blanche.</li>
+<li>Le <strong>22 mai 2026</strong>, en pleine période critique de nidification protégée, des citoyens documentent par photographie l'arrivée d'un semi-remorque livrant plusieurs tours d'éclairage industriel sur le chantier. Avec une rigueur factuelle stricte, le dossier distingue la preuve matérielle du déploiement d'équipements nocturnes de leur utilisation continue, tout en démontrant le risque direct de perturbation lumineuse au sens de l'article 5(1) du Règlement.</li>
+<li>Mortalité de <strong>plongeons huards</strong>, oiseaux migrateurs protégés, rapportée par <em>Radio-Canada Enquête</em> le 9 octobre 2025.</li>
+<li>Les rejets documentés de cadmium, de chrome et de matières en suspension dans un réseau connecté au ruisseau — soit précisément le scénario visé par l'article 5.1(1).</li>
+<li><strong>Aucun permis d'ECCC</strong> identifié dans les registres publics.</li>
+</ul>
+
+<p>
+          measures to be put in place to protect the nests” of the pileated woodpecker, the great blue heron
+        </p>
+</div>
+
+<!-- --------- ALLEGATION 3 --------- -->
+<div class="note note--rose">
+<div class="panel-title">Allégation 3 — l'axe principal</div>
+<h3>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </h3>
+<div class="deck">Articles 34.4, 35, 36(3), 36(4), 37 et 38</div>
+
+<p>C'est le cœur du dossier, et de loin l'arme juridique la plus puissante. Pourquoi ? Parce que ces interdictions s'appliquent <strong>peu importe à qui appartient le terrain</strong>. La Loi 93 a pu transférer la propriété, elle n'a rien changé au fait qu'il y a des poissons en aval.</p>
+
+<p><strong>Les articles, en clair :</strong></p>
+<ul>
+<li><strong>Art. 34.4</strong> — interdit d'exploiter un ouvrage, une entreprise ou une activité qui <strong>entraîne la mort du poisson</strong> (sauf la pêche elle-même), à moins d'une autorisation.</li>
+<li><strong>Art. 35</strong> — interdit toute activité entraînant la <strong>détérioration, la destruction ou la perturbation de l'habitat du poisson</strong>, à moins d'une autorisation du ministre. C'est l'article le plus cité au Canada en matière de milieux humides.</li>
+<li><strong>Art. 36(3)</strong> — interdit d'immerger ou de rejeter une <strong>substance nocive</strong> dans des eaux où vivent des poissons, <strong>ou en tout autre lieu d'où elle risque d'y parvenir</strong>. Là encore : le fossé compte.</li>
+<li><strong>Art. 36(4)</strong> — prévoit les exceptions : rejets autorisés par règlement, en quantités et conditions précises. <em>Ajouté à l'analyse dans la seconde décision.</em></li>
+<li><strong>Art. 37</strong> — permet au ministre d'<strong>exiger des documents</strong> de l'exploitant, puis de modifier, restreindre ou <strong>faire cesser</strong> l'activité.</li>
+<li><strong>Art. 38</strong> — organise les <strong>inspections</strong>. Il crée aussi une <strong>obligation de dénoncer</strong> : toute personne doit signaler aux autorités la mort de poissons, la destruction de leur habitat ou le rejet non autorisé d'une substance nocive, prendre des mesures correctives et produire un rapport.</li>
+</ul>
+
+<h4>
+          a) Are there really fish? This is the first thing a government could challenge. The response to the file is massive. Scientific fishing carried out in August 2016 in the site's ditches — using electricity and fishing rods — captured 155 specimens of 9 species: mudfish (108), redfin shiner (17), fivespine stickleback (14), pumpkinseed, white sucker, pearl mullet, yellow-bellied darter, fathead minnow.
+        </h4>
+<p>C'est la première chose qu'un gouvernement pourrait contester. La réponse du dossier est massive. Des pêches scientifiques menées en août 2016 dans les fossés du site — à l'électricité et à la bourolle — ont capturé <strong>155 spécimens de 9 espèces</strong> : umbre de vase (108), méné à nageoires rouges (17), épinoche à cinq épines (14), crapet-soleil, meunier noir, mulet perlé, dard à ventre jaune, tête-de-boule.</p>
+<p>
+          the streams in the study area are in fact ditches […] and the water in the ditches comes from
+        </p>
+<p>
+          Logical conclusion of the file: it is not an isolated hole in the middle of a field. It is a
+        </p>
+
+<h4>
+          b) Contamination measures
+        </h4>
+<table class="tbl tbl--rose">
+<thead><tr><th>Quoi</th><th>Quand</th><th>Combien</th><th>Qui a mesuré</th></tr></thead>
+<tbody>
+<tr><td>Cadmium dans l'eau de surface</td><td>2 déc. 2023</td><td>0,016 mg/L = <strong>320 fois</strong> le seuil de protection de la vie aquatique</td><td>Échantillonnage citoyen</td></tr>
+<tr class="alt"><td>Cadmium dans l'eau, station FS-STB-2</td><td>oct.-nov. 2025</td><td>0,0014 mg/L = <strong>4,7 fois</strong> le seuil</td><td>WaterShed Monitoring, analyses ICP-MS</td></tr>
+<tr><td>Cadmium dans les sédiments</td><td>oct.-nov. 2025</td><td><strong>31,8 fois</strong> (jusqu'à 57,6 selon le tableau détaillé) le critère d'effet rare</td><td>WaterShed Monitoring</td></tr>
+<tr class="alt"><td>Chrome dans les sédiments</td><td>oct.-nov. 2025</td><td><strong>14,23 fois</strong> le critère d'effet rare</td><td>WaterShed Monitoring</td></tr>
+<tr><td>Turbidité / matières en suspension</td><td>oct.-nov. 2025</td><td><strong>4,2 à 8,1 fois</strong> le seuil</td><td>WaterShed Monitoring</td></tr>
+<tr class="alt"><td>Métaux après déversement routier</td><td>21 août 2025</td><td><strong>17 métaux sur 17 recherchés</strong> ; plomb ×42, mercure ×38, cadmium ×4 les normes de la CMM</td><td>Bureau Veritas</td></tr>
+<tr><td>Arsenic, cuivre, zinc</td><td>déc. 2023</td><td>Dépassements des normes</td><td>Campagne indépendante de surface</td></tr>
+</tbody>
+</table>
+<p class="sm">
+          What do these thresholds mean? The CVAC (chronic aquatic life criterion) is the concentration beyond
+        </p>
+
+<h4>
+          c) Incidents, in order February 11, 2013 — fire involving hazardous materials at 760, boulevard Industriel: combustion of wood, plastics, glass and used activated carbon contaminated with chrome, lead and cadmium (Urgence-Environnement file T-15-2013-02-11-292). June 11, 2021 — major industrial fire at the same location. Mobilization of three fire departments and the Laurentides Public Health Department. Release estimated at 20 tonnes of nitric acid and chlorinated solids affecting the air and ground (file 301537240). August 21, 2025 — spill estimated at more than 1,300 liters; 17 metals detected. March 13 to April 15, 2026 — fish mortality at Lacs Fauvel: cyprinids, centrarchids and northern pike, photographed and time-stamped, with ocher and rust coloring characteristic of water and ice. April 14, 2026 — hydraulic oil spill at 755 Industriel Boulevard. Locke Head Creek is directly affected; intervention by Urgence-Environnement, the City and the fire department (file 301886321). June 18, 2026 — overflow of containment ditches towards the creek after ordinary summer precipitation (file 301899969, release of suspended solids). July 2, 2026 — recurrence noted by citizens after 20 to 30 mm of rain, observations around 10 p.m., “identical in every way” to the event of June 18.
+        </h4>
+<ul>
+<li><strong>11 février 2013</strong> — incendie impliquant des matières dangereuses au 760, boulevard Industriel : combustion de bois, plastiques, verre et charbon actif usé contaminés au chrome, au plomb et au cadmium (dossier Urgence-Environnement T-15-2013-02-11-292).</li>
+<li><strong>11 juin 2021</strong> — incendie industriel majeur au même endroit. Mobilisation de trois services d'incendie et de la Direction de la santé publique des Laurentides. Rejet estimé à <strong>20 tonnes d'acide nitrique</strong> et de solides chlorés touchant l'air et le sol (dossier 301537240).</li>
+<li><strong>21 août 2025</strong> — déversement estimé à plus de <strong>1 300 litres</strong> ; 17 métaux détectés.</li>
+<li><strong>13 mars au 15 avril 2026</strong> — <strong>mortalité de poissons</strong> aux lacs Fauvel : cyprinidés, centrarchidés et grands brochets, photographiés et horodatés, avec une coloration ocre et rouille caractéristique des eaux et des glaces.</li>
+<li><strong>14 avril 2026</strong> — déversement d'huile hydraulique au 755, boulevard Industriel. Le ruisseau Locke Head est directement touché ; intervention d'Urgence-Environnement, de la Ville et du service incendie (dossier 301886321).</li>
+<li><strong>18 juin 2026</strong> — débordement des fossés de confinement vers le ruisseau <strong>après des précipitations estivales ordinaires</strong> (dossier 301899969, rejet de matières en suspension).</li>
+<li><strong>2 juillet 2026</strong> — récurrence constatée par des citoyens après 20 à 30 mm de pluie, observations vers 22 h, « identique en tout point » à l'événement du 18 juin.</li>
+</ul>
+<p>
+          The argument drawn from these last two events is frighteningly simple: if the containment measures fail in an ordinary summer rain, they are not designed for the actual climate of the site.
+        </p>
+
+<h4>
+          The strength of the case lies in this demonstration: it does not criticize the federal government
+        </h4>
+
+<p>
+          1. “Anoxia is an effect, not a cause. »
+        </p>
+<p>
+          The Ville de Blainville explained the fish mortality by a lack of oxygen (press release of April 15,
+        </p>
+<p>
+          meeting of July 7, before the mayor admits that the City did not have any results of its own
+        </p>
+
+<p>
+          2. The fox who guards the henhouse.
+        </p>
+<p>
+          The file supports, on the basis of corroborating testimonies and public documents: the private Stablex laboratory is accredited by the Quebec ministry, which gives it the status of an independent laboratory; sampling at observation wells is carried out jointly by the Ministry and Stablex, the Ministry not having independent equipment; the analyzes are carried out in the Stablex laboratory. In other words, the regulated entity analyzes its own pollution. The file also mentions a practice of pumping wells before re-sampling, which would have the effect of diluting the concentrations, and divergent results for the same well depending on whether they come from the Ministry or the company. The author draws a legal conclusion: in the absence of any independent federal inspection, Ottawa bases its abstention on data produced by the operator itself.
+        </p>
+<p>
+          into a road ditch connected to Lockheed Creek and Lake Fauvel, which would not appear in the
+        </p>
+
+<p>
+          3. The missing declaration.
+        </p>
+<p>
+          Stablex's 2024 report to the National Pollutant Release Inventory — a mandatory federal registry — does not report any releases to any watercourse. The company publicly claims “zero discharge into water for 26 years”. However, the file contrasts this with the overflows of June and July 2026, the analyzes of October-November 2025 and the spill of August 2025. A cited expert makes the tax analogy: “if you do not declare a rejection, it can be considered fraud, in the same way as when you declare your income to Revenue Canada”. The question asked is simple: did ECCC even verify?
+        </p>
+</div>
+
+<!-- --------- ALLEGATION 4 --------- -->
+<div class="note note--muted">
+<div class="panel-title">Allégation 4 — présentée comme subsidiaire</div>
+<h3>
+          Toxic substances and the right to a healthy environment A major legal novelty, still little known. Since the Right to a Healthy Environment Act, assented to on June 13, 2023, CEPA requires the federal government to “protect the right of every individual in Canada to a healthy environment […] subject to reasonable limits”, respecting the principles of non-regression, intergenerational equity and environmental justice — which includes the prevention of harmful effects disproportionately affecting vulnerable populations.
+        </h3>
+<div class="deck">Loi canadienne sur la protection de l'environnement (1999), art. 2(1)a.2) et a.3), 64, 68, 71, 90, 91, 93</div>
+
+<p>
+          environment.
+        </p>
+
+<div class="clair">
+<span class="badge">EN CLAIR</span>
+<p>
+          those who come after him is therefore not using a figure of speech: he is relying on a brand new
+        </p>
+</div>
+
+<p>
+          What is being said:
+        </p>
+<ul>
+<li>Entre 2019 et 2024, le site aurait reçu <strong>120 837 tonnes de sols</strong> en provenance du site d'Orrington (Maine, États-Unis), lié à l'entreprise Mallinckrodt. <strong>84 % de ce volume — 101 951 tonnes — serait classé comme résidu dangereux en raison de sa teneur en mercure.</strong> Le mercure est un métal très volatil.</li>
+<li>Ces opérations se déroulent à <strong>370 à 400 mètres</strong> de zones résidentielles et commerciales.</li>
+<li>L'inventaire des rejets de l'entreprise fait état de particules fines PM2,5, de <strong>chrome hexavalent</strong> (cancérogène reconnu), de mercure, d'arsenic, de nickel, de silice cristalline et d'ammoniac. Un rapport d'Englobe confirmerait la présence physique de chrome hexavalent et de silice cristalline dans les poussières du site.</li>
+<li>Le cadre de mise en œuvre du droit à un environnement sain, exigé par l'article 5.1(1) de la LCPE, était dû au plus tard le <strong>13 juin 2025</strong>.</li>
+</ul>
+<p>
+          of information (art. 71) or risk management (art. 90 and 91) with regard to this site.
+        </p>
+</div>
+
+<h3>
+          5.5 — Cross-cutting arguments Articulation with commercial (art. 24.4) and constitutional (art. 35) law. The communication highlights the overall context of the matter: on the one hand, the competitive distortion created by the massive importation of American waste without rigorous application of federal standards; on the other hand, the location of the site on the traditional unceded territory of the <strong>Kanien'kehá:ka</strong> Nation and the principles of the two-row Wampum. If the Secretariat has limited the formal scope of the investigation to only federal “environmental laws” in the strict sense of Article 24.1 (thus excluding the aspects relating to Chapter 31 on commerce or general constitutional law), this contextual insight remains in the public register to document the extent of the issues raised.
+        </h3>
+
+<p>
+          Two-row wampum
+        </p>
+
+<p>
+          The <strong>Loi 93</strong> as a lock. This is the most political argument. When a provincial government uses its parliament to neutralize local counter-powers and close legal recourse, the author maintains, the application of federal laws becomes “the one and only bulwark”. Ottawa's inaction would then create “a total legal vacuum”. It relies on precedents from CCE (British Columbia Mines, SEM-98-004; British Columbia Salmon Farms, SEM-12-001) where the existence of provincial authorizations was not considered sufficient to exempt the federal government from acting.
+        </p>
+
+<p>
+          around: we can only speak of a discretionary choice if a power has first been exercised. Here, there
+        </p>
+
+<p>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+
+<h3>
+          5.6 — The personal injury invoked Three components: environmental (destruction of wetlands which constitute its immediate environment); health (exposure to contaminants in surface water and sediments near one's place of residence); intergenerational (the perpetual burial of dangerous materials that he and future generations will inherit). The summary table in the complaint places it 3.5 km from the site.
+        </h3>
+<p>Trois volets : <strong>environnemental</strong> (destruction des milieux humides qui constituent son environnement immédiat) ; <strong>sanitaire</strong> (exposition aux contaminants des eaux de surface et des sédiments près de son lieu de résidence) ; <strong>intergénérationnel</strong> (l'enfouissement à perpétuité de matières dangereuses dont lui et les générations futures hériteront). Le tableau récapitulatif de la plainte le situe à <strong>3,5 km</strong> du site.</p>
+
+<h3>
+          5.7 — What he asks, concretely He is not asking for condemnation. It asks the Secretariat to declare the complaint admissible, to request a detailed response from Canada for each of the four laws, to verify the existence of permits, and to assess whether there is a need to compile a factual file. It specifically requests clarification on: the compatibility of the deforestation schedule with the biology of cold-blooded species; measures taken after fish mortality; the exercise of the powers of sections 37 and 38 of the Fisheries Act. And he expressly specifies that he is not asking the Secretariat to rule on the civil, criminal or administrative liability of Stablex or Quebec.
+        </h3>
+<p>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+
+<h3>
+          5.8 — Exemplary ethical rigor
+        </h3>
+<p>
+          <strong>Kanien'kehá:ka</strong> Nation — while assuming sole and full responsibility for its analyzes and legal
+        </p>
+
+<h3>
+          5.9 — Field elements documented in the file
+        </h3>
+<div class="reg-allegation" style="border-left-color: var(--accent); background: var(--accent-wash);">
+  <span class="reg-tag" style="background: var(--accent); color: #fff;">Pièces et données probatoires</span>
+  <p>
+          The elements below summarize the solid body of documentation assembled by <strong>William Guindon</strong>:
+        </p>
+</div>
+
+<h4>
+          a) Provincial inspection report No. 402462402 (April 2025)
+        </h4>
+<ul>
+  <li><strong>Zone de protection riveraine de 10 m prévue :</strong> balisage totalement absent sur le terrain lors du constat.</li>
+  <li><strong>Circulation de machinerie lourde :</strong> observée à environ 5 m du cours d'eau sans nom, en contravention des bandes de recul prescrites.</li>
+  <li><strong>Gestion du roseau commun (<em>Phragmites australis</em>) :</strong> secteurs colonisés non balisés et machinerie non nettoyée en sortie de zone contaminée, risquant d'accélérer l'invasion biologique.</li>
+  <li><strong>Cinq manquements distincts au décret identifiés :</strong> intervention provinciale close sur la recommandation d'un simple avis de non-conformité, au motif administratif de la « faible longueur de rive touchée » et du caractère d'un « site déjà perturbé ».</li>
+</ul>
+
+<h4>
+          b) Chronology of incidents recorded in the file
+        </h4>
+<table class="tbl">
+  <caption>Incidents environnementaux, déversements et avis d'inspection recensés dans les pièces de la communication</caption>
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Incident documenté</th>
+      <th scope="col">Référence</th>
+      <th scope="col">Disposition visée</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2010</td>
+      <td>Dépassement de mercure</td>
+      <td>Pièce C07</td>
+      <td>Caractère récurrent</td>
+    </tr>
+    <tr class="alt">
+      <td>4 juin 2025</td>
+      <td>Avis de non-conformité provincial</td>
+      <td>n° 402555956</td>
+      <td>Décret 515-2025</td>
+    </tr>
+    <tr>
+      <td>Mai 2025 / 22 mai 2026</td>
+      <td>Transport de tours d'éclairage en période de nidification (voir note de datation en Partie 09)</td>
+      <td>Photo citoyenne</td>
+      <td>ROM art. 5(1)</td>
+    </tr>
+    <tr class="alt">
+      <td>21 août 2025</td>
+      <td>Déversement routier &gt; 1 300 L ; Bureau Veritas : 17 métaux détectés sur 17 recherchés ; plomb × 42, mercure × 38, cadmium × 4 des normes CMM</td>
+      <td>Pièces LP-9, LP-10, RC-3</td>
+      <td>LP art. 36(3)</td>
+    </tr>
+    <tr>
+      <td>Oct.-nov. 2025</td>
+      <td>Campagne WaterShed Monitoring : dépassements multiples</td>
+      <td>Pièce F01</td>
+      <td>LP art. 36(3), LCPE</td>
+    </tr>
+    <tr class="alt">
+      <td>10 février 2026</td>
+      <td>Avis de non-conformité — barrières à sédiments</td>
+      <td>n° 402467797</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>13 mars – 15 avril 2026</td>
+      <td>Mortalité piscicole aux lacs Fauvel (cyprinidés, centrarchidés, grands brochets)</td>
+      <td>Pièces LP-13 à LP-15</td>
+      <td>LP art. 34.4, 38</td>
+    </tr>
+    <tr class="alt">
+      <td>14 avril 2026</td>
+      <td>Déversement d'huile hydraulique, ruisseau Locke Head touché</td>
+      <td>Dossier 301886321, cat. 1</td>
+      <td>LP art. 36(3)</td>
+    </tr>
+    <tr>
+      <td>18 juin 2026</td>
+      <td>Débordement des fossés de confinement après pluies estivales ordinaires</td>
+      <td>Dossier 301899969, cat. 1</td>
+      <td>LP art. 36(3), 38</td>
+    </tr>
+    <tr class="alt">
+      <td>2 juillet 2026</td>
+      <td>Récurrence après 20 à 30 mm de pluie, constat identique</td>
+      <td>Observation citoyenne</td>
+      <td>LP art. 36(3), 38</td>
+    </tr>
+    <tr>
+      <td>Non daté au dossier</td>
+      <td>Rejet estimé à 20 tonnes d'acide nitrique et de solides chlorés, 760 boul. Industriel ; mobilisation de trois services incendie et de la Santé publique des Laurentides</td>
+      <td>Dossier 301537240, cat. 1</td>
+      <td>LCPE</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>
+          c) The hydrogeology of the receiving environment (joint study Chair of Urban Hydrogeology of UQAM – COBAMIL)
+        </h4>
+<ul>
+  <li><strong>Perméabilité :</strong> « Très forte perméabilité des sédiments dans la zone de recharge ».</li>
+  <li><strong>Connectivité hydrogéologique :</strong> « Très bonne réponse nappe-lac » concernant le lac Fauvel.</li>
+  <li><strong>Vulnérabilité terminale :</strong> Le lac Point Zéro constitue un « système terminal sans exutoire », classé « particulièrement vulnérable » aux apports contaminants.</li>
+  <li><strong>Modélisation de toxicité :</strong> La modélisation versée au dossier indique qu'un rejet à 2,0 mg/L de cadmium produirait une concentration <strong>180 fois supérieure</strong> au critère de toxicité aquatique chronique dans le ruisseau.</li>
+</ul>
+
+<h4>
+          d) The discharge pipe
+        </h4>
+<p>
+          road ditch connected to Lockheed Creek and then to Lake Fauvel. The complaint contends that it would
+        </p>
+
+<h4>
+          e) Self-monitoring — the alleged conflict of interest The complaint develops a grievance of self-surveillance: the private Stablex laboratory is accredited by the Quebec ministry; sampling at observation wells is carried out jointly due to lack of independent ministerial equipment; and an alleged practice of prior pumping of wells would dilute the samples, leading to divergent Ministry/Stablex results for the same well. The author refers to section 272 of CEPA prohibiting false declarations.
+        </h4>
+<p>La plainte développe un grief d'auto-surveillance : le laboratoire privé de Stablex est accrédité par le ministère québécois ; les échantillonnages aux puits d'observation sont réalisés conjointement faute d'équipement ministériel autonome ; et une pratique alléguée de pompage préalable des puits diluerait les prélèvements, aboutissant à des résultats divergents Ministère/Stablex pour un même puits. L'auteur renvoie à l'article 272 de la LCPE réprimant les fausses déclarations.</p>
+<div class="reg-rapporte">
+  <span class="reg-tag reg-tag--rapporte">Propos rapportés</span>
+  <p>
+          the citizen file. These are reported comments and assertions by the author, and not an official
+        </p>
+</div>
+
+<h4>
+          f) The municipal component Municipal council meetings of July 7 and 14, 2026: The hypothesis of anoxia, first presented as a “scientific certainty” in the municipal press release of April 15, 2026, was reclassified as a simple “hypothesis” during the debates; the City admitted that it had no own analysis results. Request for access to information of June 30, 2026: The municipal legal department responded that there was “no document corresponding to what you are looking for” concerning federal reports or independent expertise. Public health measures: Refusal to issue a preventive alert or install no-swimming advisories for the summer of 2026 at Lacs Fauvel. Allocation of the expropriation fund: Citizen proposal — declined — to allocate the interest from the expropriation fund of $17 million (frozen) to the financing of independent citizen and university environmental monitoring, with the City prioritizing the use of its reserves for the appeal against the <strong>Loi 93</strong>.
+        </h4>
+<ul>
+  <li><strong>Séances du conseil municipal des 7 et 14 juillet 2026 :</strong> L'hypothèse de l'anoxie, d'abord présentée comme une « certitude scientifique » dans le communiqué municipal du 15 avril 2026, a été requalifiée en simple « hypothèse » lors des débats ; la Ville a admis ne détenir aucun résultat d'analyse propre.</li>
+  <li><strong>Demande d'accès à l'information du 30 juin 2026 :</strong> La direction juridique municipale a répondu qu'il n'existait « aucun document correspondant à ce que vous recherchez » concernant des rapports fédéraux ou expertises indépendantes.</li>
+  <li><strong>Mesures de santé publique :</strong> Refus d'émettre une alerte préventive ou d'installer des avis de non-baignade pour l'été 2026 aux lacs Fauvel.</li>
+  <li><strong>Affectation du fonds d'expropriation :</strong> Proposition citoyenne — déclinée — d'affecter les intérêts du fonds d'expropriation de 17 M$ (gelé) au financement d'une surveillance environnementale citoyenne et universitaire indépendante, la Ville priorisant l'usage de ses réserves pour le pourvoi contre la Loi 93.</li>
+</ul>
+
+<h4>
+          g) The Blainville–Stablex agreement of March 11, 2020
+        </h4>
+<p>
+          Part” (lot 2,272,801) for the purposes of environmental compensatory measures. The complaint
+        </p>
+
+<h3>
+          5.10 — The legal bases invoked in the annex In addition to the strict legislative texts, the 102-page analytical annex mobilizes several pillars of jurisprudence and general principles of Canadian law: R. v. Sault Ste. Marie, [1978] 2 R.C.S. 1299: Principle judgment establishing strict liability in environmental regulatory matters (the absence of guilty intent does not exempt from due diligence). R. v. Cadillac Fairview Corp. , 2013 ONCJ 94: Confirms that the prohibition in article 32 of LEP fully applies to unintentional harm resulting from industrial or commercial activities. Reference re Impact Assessment Act, 2023 SCC 23: Scope of residual federal constitutional jurisdiction over the protection of fisheries, birds and species at risk. Imperial affair: Principle according to which the historical polluter remains responsible for its contaminants even after the transfer of land (invoked in the file for the liabilities of Camp Bouchard). Sections 97 to 101 of SARA: Penal provisions providing for fines of up to $1,000,000 and imprisonment of up to 5 years for serious offenses. Article 6 of SARA & Precautionary Principle: The fundamental purpose of the law requires preventing the extinction of wild species without waiting for absolute scientific certainty to be established.
+        </h3>
+<p>Outre les textes législatifs stricts, l'annexe analytique de 102 pages mobilise plusieurs piliers de jurisprudence et principes généraux de droit canadien :</p>
+<ul>
+  <li><strong><em>R. c. Sault Ste. Marie</em>, [1978] 2 R.C.S. 1299 :</strong> Arrêt de principe consacrant la <em>responsabilité stricte</em> en matière réglementaire environnementale (l'absence d'intention coupable ne dispense pas de la diligence raisonnable).</li>
+  <li><strong><em>R. c. Cadillac Fairview Corp.</em>, 2013 ONCJ 94 :</strong> Confirme que l'interdiction de l'article 32 de la LEP s'applique pleinement aux atteintes non intentionnelles résultant d'activités industrielles ou commerciales.</li>
+  <li><strong><em>Reference re Impact Assessment Act</em>, 2023 CSC 23 :</strong> Portée de la compétence constitutionnelle fédérale résiduelle en matière de protection des pêches, des oiseaux et des espèces en péril.</li>
+  <li><strong><em>Affaire Impérial</em> :</strong> Principe selon lequel le pollueur historique demeure responsable de ses contaminants même après la cession d'un terrain (invoqué au dossier pour les passifs du Camp Bouchard).</li>
+  <li><strong>Articles 97 à 101 de la LEP :</strong> Dispositions pénales prévoyant des amendes pouvant atteindre 1 000 000 $ et des peines d'emprisonnement jusqu'à 5 ans pour les infractions graves.</li>
+  <li><strong>Article 6 de la LEP &amp; Principe de précaution :</strong> L'objet fondamental de la loi exige de prévenir la disparition des espèces sauvages sans attendre que la certitude scientifique absolue ne soit établie.</li>
+</ul>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 6 -->
+<!-- ================================================================= -->
+<section id="p6">
+<h2>
+          Part 06 The decision of August 17, 2026, dissected
+        </h2>
+
+<h3>
+          6.1 — The Secretariat’s action framework The Secretariat of the CCE first clarified the statutory powers conferred on it by the international treaty, guaranteeing the neutrality and rigor of its instruction: Its role is to identify the provisions constituting environmental laws and to evaluate the eligibility criteria provided for in chapter 24 of the ACEUM. “It is not the responsibility of the Secretariat to confirm, refute, or offer an interpretation other than that presented by the Author. » It does not render a declaratory judgment on the action of a Party at this preliminary stage, its mandate being to instruct the opening of a factual investigation file. He recalls that the SEM process is intended to document the effective application of environmental laws and to shed light on the facts, to enlighten the Trinational Council and the public. It examined all the information and substantial additions provided by the revised version of July 16, 2026.
+        </h3>
+<p>
+          The CCE Secretariat is not a court of first instance, but a higher international institution of
+        </p>
+<ul>
+<li>Son rôle consiste à <strong>identifier les dispositions constituant des lois environnementales</strong> et à <strong>évaluer les critères d'admissibilité</strong> prévus au chapitre 24 de l'ACEUM.</li>
+<li>« Il n'appartient pas au Secrétariat de confirmer, de réfuter, ou d'offrir une interprétation autre que celle présentée par l'Auteur. »</li>
+<li>Il ne rend pas de jugement déclaratif sur l'action d'une Partie à ce stade préliminaire, son mandat étant d'instruire l'ouverture d'un dossier factuel d'enquête.</li>
+<li>Il rappelle que le processus SEM a vocation à documenter l'application effective des lois environnementales et à faire la lumière sur les faits, pour éclairer le Conseil trinational et le public.</li>
+<li>Il a examiné l'ensemble des <strong>informations et compléments substantiels</strong> apportés par la version révisée du 16 juillet 2026.</li>
+</ul>
+
+<h3>
+          6.2 — The environmental provisions adopted
+        </h3>
+<p>
+          This is the most technical part of the decision: the Secretariat has validated a set of major
+        </p>
+
+<div class="panel panel--green">
+<div class="panel-title">✔ Retenu — le gouvernement du Canada doit s'en expliquer</div>
+<table class="tbl tbl--plain">
+<tbody>
+<tr><td class="b wkey">Loi sur les pêches</td><td>art. 34.4, 35, 36(3), <strong>36(4) — validé dans la version révisée</strong>, 37, 38 <sup><a href="#reserve-peches" title="Voir la réserve sur la numérotation au paragraphe 80" style="color:var(--green); font-weight:bold; text-decoration:underline;">[*]</a></sup></td></tr>
+<tr><td class="b">Loi sur les espèces en péril</td><td>art. 32(1) et 33 <em>(déjà retenus le 3 juin)</em> ; <strong>58, 73 et 79 — nouvellement retenus</strong></td></tr>
+<tr><td class="b">Loi de 1994 sur les oiseaux migrateurs</td><td>art. 5.1(1)</td></tr>
+<tr><td class="b">Règlement sur les oiseaux migrateurs (2022)</td><td>art. 5(1) a), b) et c)</td></tr>
+<tr><td class="b">LCPE (1999)</td><td>art. 2(1)a.2) et a.3), 68, 71, 90(1.1), 90(1.2), 90(3), 91</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="panel panel--muted" style="border: 1px solid var(--line); border-radius: 8px; margin-top: 16px; padding: 16px; background: var(--bg-card);">
+<div class="panel-title" style="color: var(--text-muted); font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">Éclairages sur les dispositions non retenues pour le fond</div>
+<table class="tbl tbl--rose">
+<tbody>
+<tr><td class="b wkey">LCOM, art. 5</td><td>Reconnue comme loi environnementale, mais écartée car visant le commerce et la possession d'oiseaux. Le Secrétariat retient en revanche l'article central <strong>5.1(1)</strong> et le Règlement sur les oiseaux migrateurs (art. 5(1)), qui protègent directement les nids et les habitats contre la destruction.</td></tr>
+<tr><td class="b">LEP, art. 18.1</td><td>Référence écartée en raison d'une divergence de numérotation textuelle, le Secrétariat ayant validé en contrepartie l'ensemble des articles opérationnels majeurs de la LEP (art. 32(1), 33, 58, 73 et 79).</td></tr>
+<tr><td class="b">LEP : préambule ¶13, art. 10.1, 34, 39(1)c), 83</td><td>Qualifiées de lois environnementales, le Secrétariat les retient comme cadre d'interprétation contextuel pour apprécier la portée des obligations fédérales de conservation.</td></tr>
+<tr><td class="b">LCPE, art. 64</td><td>Qualifiée de définition de référence de « substance toxique », elle s'articule aux articles normatifs 68, 71, 90 et 91 qui sont pleinement retenus.</td></tr>
+<tr><td class="b">LCPE, art. 5.1(1)</td><td>Retenue à titre de contexte interprétatif général sur le développement durable.</td></tr>
+<tr><td class="b">LCPE, art. 93 et art. 90(1)</td><td>Le Secrétariat distingue le pouvoir discrétionnaire de réglementer de l'obligation d'appliquer les textes en vigueur. Il retient avec précision les paragraphes <strong>90(1.1), 90(1.2) et 90(3)</strong>, qui encadrent les modalités vérifiables d'intervention de l'État.</td></tr>
+<tr><td class="b">Loi sur l'évaluation d'impact, art. 2 ; Règlement sur les activités concrètes, art. 2, 56 et 57</td><td>Reconnus comme lois environnementales et retenus à titre interprétatif. L'article 57 demeure un repère clé pour la suite : il vise l'agrandissement d'une installation de déchets dangereux située à 500 m ou moins d'un plan d'eau naturel lorsque la capacité augmente de 50 % ou plus.</td></tr>
+<tr><td class="b">Loi sur la DNUDPA (art. 5) &amp; Constitution de 1982 (art. 35)</td><td>Le Secrétariat rappelle que son mandat statutaire se limite aux seules lois environnementales fédérales de protection, et ne s'étend pas au contentieux constitutionnel général, confirmant la primauté du volet écologique.</td></tr>
+<tr><td class="b">Principes directeurs CCE sur les CET (2017)</td><td>Considérés comme des orientations directrices plutôt que des lois formelles votées par le Parlement du Canada.</td></tr>
+<tr><td class="b">ACEUM, art. 24.4</td><td>Le Secrétariat rappelle que les différends commerciaux relèvent du chapitre 31 de l'accord. En circonscrivant l'instruction aux lois écologiques du chapitre 24, le Secrétariat recentre l'examen sur le terrain probatoire le plus robuste : la protection des espèces et des écosystèmes aquatiques.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>
+          6.3 — Criterion (2)(c): The probative force of the documentary corpus To assess the sufficiency of the supporting information (criterion 24.27(2)(c)), the Secretariat examined the critical mass of the more than 200 documents submitted by <strong>William Guindon</strong>. Faced with the exceptional scale of the file for a citizen initiative, the Secretariat methodically structured the documents into ten evidentiary categories, concentrating its examination on the nerve center of the file: fish, migratory birds, threatened species and preservation of habitats.
+        </h3>
+<p>
+          proceeded to a methodical structuring of the file into ten major categories of evidentiary analysis:
+        </p>
+
+<p>
+          The Secretariat underlined the probative value of the scientific and field elements included in the
+        </p>
+<ul>
+<li>L'<strong>étude d'impact d'Englobe (novembre 2020)</strong>, fondée sur des inventaires documentant notamment l'Engoulevent bois-pourri et une dizaine d'espèces d'oiseaux à statut.</li>
+<li>La <strong>caractérisation d'Englobe d'octobre 2023</strong> — dont le Secrétariat note factuellement qu'aucun inventaire faunique spécifique n'y a été réalisé, corroborant les préoccupations soulevées par le plaignant quant aux lacunes d'évaluation saisonnière.</li>
+<li>Le <strong>rapport d'analyse environnementale du MELCCFP (2025)</strong>, recensant 132 espèces et des habitats favorables majeurs.</li>
+<li>La <strong>demande d'engagements du MELCCFP (2024)</strong>, qui renvoie explicitement aux outils et responsabilités fédérales d'ECCC.</li>
+<li>Le <strong>rapport scientifique de WaterShed Monitoring</strong>, avec ses mesures comparées aux critères de qualité pour le cadmium, le plomb, l'arsenic, le cobalt, le cuivre et le zinc, identifiant une station particulièrement préoccupante et documentant des phénomènes de lessivage par temps de pluie.</li>
+<li>Les <strong>relevés photographiques</strong> de turbidité et de mortalité de poissons à proximité des berges.</li>
+<li>Les révélations de presse (notamment <em>Le Devoir</em>, 19 mars 2025) indiquant que Pêches et Océans Canada avait requis le dépôt d'une demande d'examen des impacts sur l'habitat du poisson.</li>
+</ul>
+
+<p>
+          The decisive legal reasoning: <strong>William Guindon</strong> based his appeal on the total absence of an
+        </p>
+
+<h3>
+          6.4 — Criterion (2)(e): the five approaches
+        </h3>
+<table class="tbl">
+<thead><tr class="hrow"><th>Date</th><th>Destinataires</th><th>Objet</th><th>Réponse</th></tr></thead>
+<tbody>
+<tr><td>3 juin 2026</td><td>Cabinet de la ministre de l'Environnement, MPO</td><td>« Demande formelle d'enquête — Violations présumées de la <em>Loi de 1994 sur la convention concernant les oiseaux migrateurs</em> et de la <em>Loi sur les pêches</em> au site Stablex, Blainville »</td><td>Deux accusés automatiques</td></tr>
+<tr class="alt"><td>10 juin 2026</td><td>ECCC, MPO</td><td>Suivi : demande d'un numéro de dossier et d'information sur l'équipe qui analyse</td><td>Accusé automatique</td></tr>
+<tr><td><strong>16 juin 2026</strong></td><td>Stablex, avec en copie la <strong>Direction générale de l'application de la loi d'ECCC</strong> et le bureau régional du Québec du MPO</td><td>Questions à l'entreprise sur ses mesures de conformité</td><td><strong>Pièce décisive.</strong> Le Secrétariat écrit : « Force est de constater que, par l'entremise de ce courriel, l'entité d'ECCC chargée de faire respecter la LEP, la LCPE, la LP, la LCOM et le RCOM a été avisée. »</td></tr>
+<tr class="alt"><td>19 juin 2026</td><td>Fonctionnaires, ministres, divisions de protection de la faune et boîtes générales d'ECCC, du MPO et de Ressources naturelles Canada</td><td>« Notification préalable officielle » exposant les faits et les violations alléguées</td><td>Accusés de réception de plusieurs cabinets</td></tr>
+<tr><td>28 juin 2026</td><td>ECCC, MPO</td><td>Demande de rencontre + « 10 questions factuelles précises »</td><td><strong>Le 29 juin</strong>, un accusé qui « en apparence ne semble pas automatisé » : les courriels ont été « transmis au bureau de la ministre Julie Dabrusin ainsi qu'aux experts du programme d'ECCC », et « toute réponse relève de leur discrétion ».</td></tr>
+</tbody>
+</table>
+<p>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+
+<h3>
+          6.5 — Criterion (3)(c): remedies
+        </h3>
+<p>
+          sense”; it can be satisfied by relying on a complaint filed by someone else; it is evaluated
+        </p>
+<p>
+          The obstacles invoked by the author: he is a minor and therefore cannot take legal action
+        </p>
+<p>
+          communication between the public and ministers” and requires them to respond. The title of the
+        </p>
+
+<h3>
+          6.6 — The device
+        </h3>
+<div class="panel panel--green">
+<p>
+          24.27(1), (2) and (3) of ACEUM […] and merits a response from the Party. »
+        </p>
+<p>
+          Pursuant to Article 24.27(4), Canada may respond within 60 days, or before October 16, 2026. The Secretariat will make the response public. If Canada includes confidential information, it must clearly identify it and justify its basis. Explicit warning: “In the absence of a clear, specific and substantiated designation […] the Secretariat will not be able to infer the confidentiality of the information and will treat the information in accordance with the principle of transparency. »
+        </p>
+</div>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 7 -->
+<!-- ================================================================= -->
+<section id="p7">
+<h2>
+          Part 07 Key benchmarks and legal scope of the procedure
+        </h2>
+<div class="stack">
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">1. Une recevabilité internationale historique</strong><br>La CCE a conclu que la communication de William Guindon est juridiquement et scientifiquement solide, satisfaisant l'ensemble des critères d'admissibilité de l'ACEUM. Cette décision ouvre formellement la phase d'instruction contradictoire avec le Canada.</div>
+
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">2. Une obligation formelle de reddition de comptes pour Ottawa</strong><br>Le Secrétariat a formellement mis en demeure le gouvernement fédéral de fournir une réponse circonstanciée d'ici le 16 octobre 2026. C'est la toute première fois qu'un palier gouvernemental est contraint de s'expliquer publiquement sur la protection de la Grande Tourbière.</div>
+
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">3. La cible d'action : l'application effective des lois par l'État</strong><br>Le mécanisme SEM vise la responsabilité régalienne de l'État : il vérifie si les ministères fédéraux (ECCC, MPO) ont fait respecter les normes de protection de la faune, des cours d'eau et de la santé publique, au-delà des autorisations accordées au niveau provincial.</div>
+
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">4. Un levier stratégique face au verrouillage de la Loi 93</strong><br>Tandis que le Projet de loi 93 adopté sous bâillon à Québec a fermé les recours judiciaires provinciaux ordinaires, le recours international de William Guindon a permis d'ouvrir une voie fédérale inédite de transparence et de droit.</div>
+
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">5. Un socle juridique centré sur les lois écologiques fondamentales</strong><br>En retenant les dispositions les plus puissantes du droit canadien — <em>Loi sur les pêches</em>, <em>Loi sur les espèces en péril</em>, <em>Loi sur la convention concernant les oiseaux migrateurs</em> et <em>LCPE</em> —, la CCE focalise l'enquête sur les impacts écologiques réels subis par les habitats et les espèces.</div>
+
+<div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-card);"><strong style="color: var(--accent-deep, #047857); font-size: 1.05rem;">6. La perspective d'un dossier factuel indépendant</strong><br>Si la recommandation du Secrétariat est confirmée par le Conseil trinational, une équipe d'experts indépendants sera mandatée pour mener une enquête publique approfondie, interroger les fonctionnaires et établir les faits de manière irréfutable.</div>
+</div>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 8 -->
+<!-- ================================================================= -->
+<section id="p8">
+<h2>
+          Part 08 The rest
+        </h2>
+
+<div class="grid">
+<div class="card">
+<div class="note-title">Scénario A · Ottawa produit des documents inédits</div>
+<p class="sm">
+          mentioned by Le Devoir. Even if the Secretariat then believed that it did not need a factual file,
+        </p>
+</div>
+<div class="card">
+<div class="note-title note-title--amber">Scénario B · Le Canada confirme son absence d'intervention (dossier factuel)</div>
+<p class="sm">
+          60 days. Since the vote in the Trinational Council is taken by a majority (2 votes out of 3 between
+        </p>
+</div>
+<div class="card card--rose">
+<div class="note-title note-title--rose">Scénario C · L'exception de procédure en instance (art. 24.27(4)a))</div>
+<p class="sm">
+          has not opened any procedure that the complaint was filed: invoking such an exception would
+        </p>
+</div>
+</div>
+
+<h3>
+          Dates to watch out for
+        </h3>
+<table class="tbl">
+<tbody>
+<tr><td class="b">Vendredi 16 octobre 2026</td><td><strong>Réponse du Canada déposée (Pièce 72-RSP — 59 p.) :</strong> Ottawa demande la clôture procédurale en invoquant le contrôle judiciaire municipal de Blainville et la pétition fédérale n° 0546.</td></tr>
+<tr class="alt"><td class="b">Samedi 17 octobre 2026</td><td><strong>Réplique citoyenne déposée (Mémoire d'observations) :</strong> William Guindon démontre l'inapplicabilité de l'art. 24.27(4)(a) (aucune identité d'objet avec le litige municipal) et demande la constitution d'un dossier factuel.</td></tr>
+<tr><td class="b">Mardi 10 novembre 2026</td><td><strong>Échéance légale BVG n° 0546 :</strong> Date limite obligatoire pour la réponse des ministres fédéraux à la <strong>pétition environnementale n° 0546</strong> déposée auprès du Bureau du vérificateur général (art. 22 LVG).</td></tr>
+<tr class="alt"><td class="b">Novembre 2026</td><td><strong>Rencontres parlementaires à Ottawa :</strong> Rencontres de suivi confirmées au Parlement avec <strong>Nadine Le Gal</strong> (Cabinet du chef du Bloc Québécois) et la sénatrice <strong>Madeleine Chenette</strong> (Sénat du Canada).</td></tr>
+<tr><td class="b">Janvier 2027 (60 jours ouvrables)</td><td>Fin du délai de 60 jours ouvrables (art. 24.28(1) ACEUM, pièce 73-REC) dont dispose le Secrétariat de la CCE pour recommander au Conseil ministériel la constitution d'un <strong>dossier factuel</strong>.</td></tr>
+<tr class="alt"><td class="b">2027</td><td>Si le Conseil donne son feu vert (vote aux 2/3) : 120 jours de rédaction, 30 jours de commentaires des Parties, puis publication officielle du rapport d'enquête international.</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<strong class="lab">Le paradoxe du silence</strong><br>
+<span>Le texte du traité dit que la Partie « peut » fournir une réponse — c'est une faculté, pas une obligation absolue. Mais si le Canada ne répond pas, ou répond peu, le Secrétariat évalue la plainte « à la lumière de toute réponse fournie » : une réponse vide ne réfute rien. C'est exactement le calcul que l'auteur a exposé à l'avance dans sa plainte. Ottawa se trouve donc devant un choix inconfortable : documenter son action — si elle existe — ou laisser le vide parler.</span>
+</div>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 9 -->
+<!-- ================================================================= -->
+<section id="p9">
+<h2>
+          Part 09 Methodological benchmarks and reading of technical data
+        </h2>
+
+<h3>
+          9.1 — Cartographic precision: four distinct reference perimeters
+        </h3>
+<p>
+          Public documents relating to the Stablex project mention four different areas which do not
+        </p>
+<ul>
+<li><strong>9 ha de milieux humides et 58 ha de boisés :</strong> superficies rattachées au lot exproprié par la Loi 93, citées par le BAPE et les médias.</li>
+<li><strong>29,2 ha de milieux humides (56 % d'une zone d'étude de 52 ha) :</strong> périmètre biophysique évalué dans l'étude d'impact d'Englobe.</li>
+<li><strong>27,8 ha (278 000 m²) :</strong> empreinte directe du remblayage projeté pour la cellule n° 6.</li>
+<li><strong>13 ha :</strong> superficie de défrichage de milieux humides visée dans les autorisations sectorielles.</li>
+</ul>
+
+<h3>
+          9.2 — Hydrochemical complementarity: surface water (320×) and sediments (31.8× to 57.6×)
+        </h3>
+<p>
+          The evidentiary corpus documents two series of cadmium measurements which clarify each other
+        </p>
+<ul>
+<li><strong>L'échantillonnage citoyen du 2 décembre 2023</strong> (eau de surface) a révélé un pic aigu de 0,016 mg/L, soit <strong>320 fois</strong> le critère de protection de la vie aquatique.</li>
+<li><strong>La campagne scientifique accréditée de WaterShed Monitoring (octobre-novembre 2025)</strong> (analyses ICP-MS) a mesuré un dépassement de <strong>4,7 fois</strong> le seuil dans la colonne d'eau, et une concentration atteignant <strong>31,8 à 57,6 fois</strong> le critère d'effet rare (CER) dans les <strong>sédiments</strong>.</li>
+</ul>
+<p>
+          As the communication demonstrates, these two matrices reflect two complementary dynamics: the concentration in surface water varies rapidly depending on episodes of rain and runoff, while sediments act as a geochemical memory accumulating heavy metals over time.
+        </p>
+
+<h3>
+          9.3 — Waste of American origin: three economic and physical indicators The proportions associated with American inputs in the file refer to three distinct units of measurement: Nearly 50% of revenues: share of turnover mentioned by the company's management in 2025. Nearly 30% of buried volumes: historical proportion documented during the BAPE work. 17% of imported volumes (2024): annual data cited in media coverage.
+        </h3>
+<p>Les proportions associées aux intrants américains dans le dossier renvoient à trois unités de mesure distinctes :</p>
+<ul>
+<li><strong>Près de 50 % des revenus :</strong> part du chiffre d'affaires évoquée par la direction de l'entreprise en 2025.</li>
+<li><strong>Près de 30 % des volumes enfouis :</strong> proportion historique documentée lors des travaux du BAPE.</li>
+<li><strong>17 % des volumes importés (2024) :</strong> donnée annuelle citée dans la couverture médiatique.</li>
+</ul>
+
+<h3>
+          9.4 — Citation benchmarks in the official determination (62/DET)
+        </h3>
+<p>
+          For researchers and jurists wishing to cite directly the official PDF of the decision of August 17,
+        </p>
+<ul>
+<li>L'analyse des recours privés (article <strong>24.27(3)c)</strong>) figure sous l'intitulé de section mentionnant « 24.27(3)(b) », bien que le texte cité et la conclusion au paragraphe 79 visent expressément l'alinéa <strong>(3)c)</strong>.</li>
+<li>L'examen de la communication écrite préalable aux autorités (article <strong>24.27(2)e)</strong>) est traité aux paragraphes 71 à 73.</li>
+<li id="reserve-peches">Au dispositif final (paragraphe 80), un saut de puce typographique passe de <em>(iii)</em> à <em>(v)</em> : pour citer la validation formelle des articles 34.4, 35, 36(3), 36(4), 37 et 38 de la <strong>Loi sur les pêches</strong>, il convient de renvoyer directement aux <strong>paragraphes 29 à 33</strong> de la détermination.</li>
+</ul>
+
+<h3>
+          9.5 — Filing and registration dates
+        </h3>
+<p>
+          The initial communication bears the date of signature and electronic filing of May 1, 2026 (retained
+        </p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 10 -->
+<!-- ================================================================= -->
+<section id="p10">
+<h2>
+          Part 10 The Questions Everyone Asks
+        </h2>
+
+<div class="faq">
+<p>
+          Can a minor really file an international complaint? Yes. The treaty speaks of “any person of a Party”: no age requirement. A tasty paradox: he cannot go before a court in his own country without legal representation, but he can refer the matter to a trinational commission. Moreover, it is precisely this internal impossibility which allowed it to satisfy the criterion of private remedies.
+        </p>
+
+<p>
+          Why target Ottawa and not Quebec, when it is Quebec that authorized everything? Two reasons. First,
+        </p>
+
+<p>
+          The Fisheries Act This is the heart of the case, and by far the most powerful legal weapon. For what ? Because these prohibitions apply regardless of who owns the land. The <strong>Loi 93</strong> was able to transfer ownership, it did not change the fact that there are fish downstream. Art. 34.4 — prohibits the exploitation of a work, business or activity that results in the death of fish (except fishing itself), unless authorized. Art. 35 — prohibits any activity resulting in the deterioration, destruction or disturbance of fish habitat, unless authorized by the Minister. It is the most cited article in Canada on wetlands. Art. 36(3) — prohibits the dumping or discharge of a harmful substance into waters frequented by fish, or in any other place from which it may reach them. Here again: the gap matters. Art. 36(4) — provides for exceptions: discharges authorized by regulation, in specific quantities and conditions. Added to the analysis in the second decision. Art. 37 — allows the Minister to require documents from the operator, then modify, restrict or cease the activity. Art. 38 — organizes inspections. It also creates an obligation to report: everyone must report to the authorities the death of fish, the destruction of their habitat or the unauthorized discharge of a harmful substance, take corrective measures and produce a report.
+        </p>
+
+<p>
+          If the factual record is published, what is its real impact? Its institutional, scientific and political impact is major. The factual record is an independent international investigation led by the three governments of North America. It allows neutral experts to be commissioned, the law enforcement practices of federal departments to be examined, and the public factual and scientific truth to be set in stone. In several historical precedents (such as the SEM-97-005 or North Atlantic Right Whale affair), these reports have forced administrative reforms, fueled parliamentary work and served as key evidence in the public space.
+        </p>
+
+<p>
+          Has this mechanism already worked? He produced published factual files, including against Canada.
+        </p>
+
+<p>
+          How long can the procedure last given the progress of the work? Submitted in May 2026, the process is moving through its stages at a sustained pace: following the submission of Canada's response (72-RSP) on October 16, 2026 and the citizen's reply of October 17, 2026, the Secretariat has 60 working days (art. 24.28(1) ACEUM) to recommend a factual file, while federal ministers are legally required to respond to BVG Petition No. 0546 by November 10, 2026. If the construction machinery operates in the short term, the SEM mechanism establishes federal responsibility over time: each destruction of habitat or release of contaminants occurring during Ottawa's inaction increases the factual toll for which the government will have to answer to its ACEUM partners.
+        </p>
+
+<p>
+          What is the value and scope of the file filed by <strong>William Guindon</strong>? The legal result is exceptional: while the vast majority of citizen communications are rejected at the preliminary stage of admissibility by the Secretariat of the CCE, that of William Guindon successfully passed all the admissibility criteria of articles 24.27(1), (2) and (3) of the ACEUM. The Secretariat has validated the probative force of its corpus of 222 documentary pieces (university hydrogeological studies, wildlife characterizations, accredited laboratory analyzes of cadmium exceedances, ministerial inspection records). It is a tour de force all the more remarkable because it was accomplished in a completely autonomous and voluntary manner by a 15-year-old citizen, reaching where no municipality or any Quebec legal action had succeeded in forcing the State to be publicly accountable.
+        </p>
+</div>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 11 -->
+<!-- ================================================================= -->
+<section id="p11">
+<h2>
+          Part 11 Complete Glossary
+        </h2>
+<dl class="glossary">
+<dt>ACEUM</dt><dd>Accord Canada–États-Unis–Mexique, en vigueur depuis le 1<sup>er</sup> juillet 2020. Remplace l'ALENA. Son chapitre 24 porte sur l'environnement. Appelé USMCA en anglais, T-MEC en espagnol.</dd>
+<dt>ACE</dt><dd>Accord de coopération environnementale, signé en parallèle de l'ACEUM. C'est lui qui organise la CCE elle-même.</dd>
+<dt>Anoxie</dt><dd>Absence d'oxygène dans l'eau. Cause fréquente de mortalité de poissons — mais, comme le souligne le dossier, c'est le <em>mécanisme</em> de la mort, pas son origine.</dd>
+<dt>BAPE</dt><dd>Bureau d'audiences publiques sur l'environnement, organisme québécois qui tient des audiences et remet des avis au gouvernement. Son rapport n° 371 portait sur ce projet et en déconseillait l'autorisation.</dd>
+<dt>Bâillon</dt><dd>Procédure parlementaire d'exception qui limite le temps de débat pour forcer l'adoption rapide d'un projet de loi. Utilisée pour la Loi 93 les 27-28 mars 2025.</dd>
+<dt>CCE</dt><dd>Commission de coopération environnementale. Organisme trinational créé en 1994, siégeant à Montréal. Trois organes : Conseil, Secrétariat, Comité consultatif public mixte.</dd>
+<dt>Cellule (d'enfouissement)</dt><dd>Compartiment étanche creusé dans le sol, isolé par une membrane, où l'on dépose les déchets. Stablex en exploite cinq ; la sixième est l'objet du litige.</dd>
+<dt>CER (critère d'effet rare)</dt><dd>Seuil de référence pour les <em>sédiments</em> : niveau en dessous duquel on n'attend pratiquement aucun effet toxique sur les organismes vivant au fond.</dd>
+<dt>CVAC (critère de vie aquatique chronique)</dt><dd>Seuil de référence pour l'<em>eau</em> : concentration au-delà de laquelle une exposition prolongée nuit aux organismes aquatiques.</dd>
+<dt>Chrome hexavalent</dt><dd>Forme particulièrement toxique du chrome, cancérogène reconnu par inhalation. À ne pas confondre avec le chrome trivalent, bien moins dangereux.</dd>
+<dt>Communication / Observation</dt><dd>Les deux noms de la même chose : la plainte citoyenne. Le traité dit « observations », la Commission dit « communications ».</dd>
+<dt>Conseil (de la CCE)</dt><dd>Les ministres de l'Environnement des trois pays, ou leurs représentants. C'est l'organe qui vote la constitution d'un dossier factuel — à 2 voix sur 3.</dd>
+<dt>Décret 515-2025</dt><dd>Décret québécois autorisant le projet et fixant ses conditions. Les avis de non-conformité provinciaux mentionnés au dossier portent sur le respect de ces conditions.</dd>
+<dt>Détermination</dt><dd>La décision écrite et motivée du Secrétariat à chaque étape du filtrage. Ce n'est pas un jugement.</dd>
+<dt>Dossier factuel</dt><dd>Le produit final possible du processus : un rapport d'enquête public réunissant données techniques, scientifiques et juridiques, entrevues avec des fonctionnaires et analyses d'experts indépendants. Il expose les faits <strong>sans conclure</strong>, pour que le public juge.</dd>
+<dt>ECCC</dt><dd>Environnement et Changement climatique Canada. Sa Direction générale de l'application de la loi est l'organe chargé de faire respecter les lois environnementales fédérales.</dd>
+<dt>Ester en justice</dt><dd>Expression juridique signifiant « pouvoir agir devant un tribunal ». Un mineur ne peut pas ester en justice seul.</dd>
+<dt>Habitat essentiel</dt><dd>Notion de la LEP : l'habitat nécessaire à la survie ou au rétablissement d'une espèce inscrite. Sa destruction est interdite par l'article 58.</dd>
+<dt>Hibernacle</dt><dd>Abri souterrain où les reptiles passent l'hiver. Argument central du dossier : les couleuvres y sont inaccessibles avant mai, donc invisibles lors d'un déboisement clos le 15 avril.</dd>
+<dt>ICP-MS</dt><dd>Spectrométrie de masse à plasma à couplage inductif : technique de laboratoire de référence pour doser des métaux à très faible concentration. C'est la méthode employée par la campagne WaterShed.</dd>
+<dt>INRP</dt><dd>Inventaire national des rejets de polluants : registre fédéral où les entreprises déclarent obligatoirement leurs rejets. Une déclaration inexacte est passible de poursuite sous la LCPE.</dd>
+<dt>LCOM / RCOM</dt><dd>Loi de 1994 sur la convention concernant les oiseaux migrateurs, et son Règlement (version 2022). Parfois abrégés ROM dans la plainte.</dd>
+<dt>LCPE</dt><dd>Loi canadienne sur la protection de l'environnement (1999), modernisée en 2023 pour y inscrire le droit à un environnement sain.</dd>
+<dt>LEP</dt><dd>Loi sur les espèces en péril (2002). Son annexe 1 liste les espèces protégées, classées de « préoccupante » à « disparue ».</dd>
+<dt>Loi 93</dt><dd>Loi québécoise (L.Q. 2025, c. 7), titre officiel : <em>Loi concernant notamment le transfert de propriété d'un immeuble de la Ville de Blainville</em>. Adoptée sous bâillon le 28 mars 2025 par 61 voix contre 31. Elle exproprie la Ville contre 17 M$ et n'autorise « aucun pourvoi en contrôle judiciaire […] sauf sur une question de compétence ».</dd>
+<dt>MELCCFP</dt><dd>Ministère de l'Environnement, de la Lutte contre les changements climatiques, de la Faune et des Parcs du Québec.</dd>
+<dt>MES</dt><dd>Matières en suspension : particules solides flottant dans l'eau. Elles rendent l'eau trouble, colmatent les branchies et étouffent les frayères.</dd>
+<dt>MPO</dt><dd>Pêches et Océans Canada, responsable de l'application de la <em>Loi sur les pêches</em>.</dd>
+<dt>« Omettre d'appliquer de manière effective »</dt><dd>La formule clé de tout le chapitre 24. Elle ne vise pas la qualité des lois, mais le fait de les faire respecter concrètement : inspecter, enquêter, autoriser, sanctionner.</dd>
+<dt>Pétition environnementale</dt><dd>Mécanisme fédéral canadien administré par le Bureau du vérificateur général : toute personne résidant au Canada peut transmettre des préoccupations environnementales aux ministres fédéraux, <strong>qui sont tenus de répondre</strong>. C'est ce mécanisme qui a débloqué le critère des recours privés.</dd>
+<dt>Prima facie</dt><dd>Locution latine : « à première vue ». Une preuve prima facie suffit à justifier un examen, pas à établir une culpabilité.</dd>
+<dt>SEM</dt><dd>Sigle anglais de <em>Submissions on Enforcement Matters</em>. Désigne tout le processus de plainte citoyenne des articles 24.27 et 24.28.</dd>
+<dt>Sphaigne</dt><dd>Mousse caractéristique des tourbières, qui retient l'eau comme une éponge et acidifie le milieu. Ses buttes servent d'abri à la salamandre à quatre orteils.</dd>
+<dt>Tourbière</dt><dd>Milieu humide où la matière organique s'accumule sans se décomposer complètement, faute d'oxygène. Filtre l'eau, stocke d'énormes quantités de carbone, abrite une faune spécialisée. Une fois détruite, elle ne se reconstitue pas à l'échelle d'une vie humaine.</dd>
+<dt>Turbidité</dt><dd>Mesure du trouble de l'eau. Une forte turbidité après la pluie, en aval d'un chantier, indique un lessivage de sédiments.</dd>
+<dt>Wampum à deux rangs</dt><dd>Traité ancestral entre les nations haudenosaunee et les Européens, matérialisé par une ceinture de perles à deux rangées parallèles : deux embarcations naviguant sur la même rivière sans que l'une dirige l'autre. Invoqué dans la plainte, mais écarté de l'analyse juridique.</dd>
+</dl>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 12 -->
+<!-- ================================================================= -->
+<section id="p12-contradictions">
+<h2>
+          Part 12 Procedural rigor and consolidation of the documentary file
+        </h2>
+
+<p class="sub-lead" style="font-weight: 500; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;">
+          evolution between the procedural acts and the way in which the documents were analyzed and
+        </p>
+
+<h3>
+          12.1 — Textual evolution and correspondences between procedural documents
+        </h3>
+<table class="tbl">
+  <caption>Précisions textuelles, dates et numérotations entre les versions successives des actes de procédure</caption>
+  <thead>
+    <tr>
+      <th scope="col">Objet</th>
+      <th scope="col">Version initiale / Mémoire</th>
+      <th scope="col">Pièce complémentaire / Décision</th>
+      <th scope="col">Point retenu par le Secrétariat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Date de la communication révisée</strong></td>
+      <td>Mémoire daté du 16 juillet 2026</td>
+      <td>Annexe analytique de 102 p.</td>
+      <td>16 juillet 2026 (décision ¶6)</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Dispositions de la LCPE</strong></td>
+      <td>Section 3 du mémoire : articles 2(1)a.2), 64, 91</td>
+      <td>Erratum consolidé de l'annexe</td>
+      <td>Ensemble des articles normatifs retenus (art. 2(1), 68, 71, 90, 91)</td>
+    </tr>
+    <tr>
+      <td><strong>Article 36(4) de la Loi sur les pêches</strong></td>
+      <td>Développé dans le corpus probatoire révisé</td>
+      <td>Décision ¶31 : article nouvellement cité</td>
+      <td>Retenu et intégré au périmètre officiel</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Relevés photographiques sur le terrain</strong></td>
+      <td>Documentation de récurrence (2025-2026)</td>
+      <td>Rapports d'observations géoréférencés</td>
+      <td>Indices matériels de turbidité et d'éclairage retenus</td>
+    </tr>
+    <tr>
+      <td><strong>Cote de référence de la décision</strong></td>
+      <td>Référence de l'étape préliminaire (36/DET)</td>
+      <td>Détermination finale du 17 août (62/DET)</td>
+      <td>Acte officiel A24.27(2)(3)/SEM/26-003/62/DET</td>
+    </tr>
+    <tr class="alt">
+      <td><strong>Numérotation des lois (décision ¶80)</strong></td>
+      <td>Texte officiel de la décision</td>
+      <td>Coquille matérielle au sous-alinéa (iv)</td>
+      <td><em>Loi sur les pêches</em> expressément retenue aux ¶29-33</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>
+          12.2 — Methodical instruction and categorization by the Secretariat
+        </h3>
+<p>
+          Faced with the exceptional richness of the evidentiary corpus submitted by <strong>William Guindon</strong> - more
+        </p>
+<ul>
+  <li><strong>Études d'impact et caractérisations écologiques :</strong> Intégration des rapports Englobe (2020 et 2023) et des inventaires gouvernementaux québécois documentant les espèces protégées et leurs habitats.</li>
+  <li><strong>Campagnes hydrochimiques indépendantes :</strong> Analyse des données de WaterShed Monitoring mettant en évidence les dépassements en métaux lourds (notamment cadmium, arsenic, plomb).</li>
+  <li><strong>Inspections ministérielles et conformité :</strong> Prise en compte des rapports d'inspection provinciaux constatant l'empiétement en bande riveraine et la gestion de la végétation.</li>
+  <li><strong>Absence de délivrance d'autorisations fédérales :</strong> Exploitation des demandes d'accès à l'information démontrant l'inaction de l'appareil fédéral canadien.</li>
+  <li><strong>Vérifications de terrain et documentation visuelle :</strong> Relevés photographiques attestant des épisodes de mortalité aquatique et des transferts de sédiments par temps pluvieux.</li>
+</ul>
+<p>
+          This rigorous educational approach made it possible to validate the admissibility of the
+        </p>
+</section>
+
+<!-- ================================================================= -->
+<!-- PARTIE 13 -->
+<!-- ================================================================= -->
+<section id="p13">
+<span id="p12"></span>
+<h2>
+          Part 13 Sources
+        </h2>
+<ul class="srcs">
+<li><strong>Décision du Secrétariat, 17 août 2026</strong> (cote A24.27(2)(3)/SEM/26-003/62/DET) — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det2_fr.pdf">26-3-det2_fr.pdf</a> · <a href="https://policycommons.net/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer">Policy Commons (Handle 20.500.12592/5vrf8jc) ↗</a> · <a href="https://canadacommons.ca/artifacts/57315245/enfouissement-de-matieres-dangereuses-a-blainville/58213463/" target="_blank" rel="noopener noreferrer">Canada Commons ↗</a></li>
+<li><strong>Communication révisée, 16 juillet 2026</strong> — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-rsub_fr_redacted.pdf">26-3-rsub_fr_redacted.pdf</a></li>
+<li><strong>Première décision, 3 juin 2026</strong> — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det_fr.pdf">26-3-det_fr.pdf</a></li>
+<li><strong>Communication initiale, 1<sup>er</sup> mai 2026</strong> — <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-sub-redacted_fr.pdf">26-3-sub-redacted_fr.pdf</a></li>
+<li><strong>Registre officiel du dossier</strong> (chronologie et toutes les pièces) — <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/">cec.org — SEM-26-003</a></li>
+<li><strong>Texte officiel de l'ACEUM, chapitre 24</strong> (articles 24.1, 24.4, 24.27, 24.28) — <a href="https://www.international.gc.ca/trade-commerce/trade-agreements-accords-commerciaux/agr-acc/cusma-aceum/text-texte/24.aspx?lang=fra">international.gc.ca</a></li>
+<li><strong>Le processus SEM expliqué par la CCE</strong> — <a href="https://www.cec.org/fr/communications/">cec.org/fr/communications</a></li>
+<li><strong>Dossier documentaire de l'auteur</strong> (222 pièces) — <a href="https://williamguindon.me/dossier-journalistes.html">williamguindon.me/dossier-journalistes.html</a></li>
+</ul>
+</section>
+
+
+</div>
+
+<div class="doc-footer-note" id="note-methodologique">
+  <span class="flabel">Note méthodologique et nature du document</span>
+  <p><strong>Nature éditoriale et vocation de ce guide :</strong> Cette page propose une synthèse analytique et pédagogique conçue pour rendre accessibles au grand public, aux chercheurs et aux journalistes l'architecture juridique, les données scientifiques et le cheminement procédural de la communication citoyenne <em>SEM-26-003</em>. Rédigée dans un objectif d'intérêt public et de vulgarisation rigoureuse, elle accompagne la lecture des actes officiels sans constituer un avis juridique formel.</p>
+  <p>
+          legal obligation for the Government of Canada to provide a detailed response on the application of
+        </p>
+  <p><strong>Démarche de bonne foi, intérêt public &amp; protection Anti-SLAPP :</strong> Cette démarche d'information citoyenne s'inscrit dans le respect rigoureux de la bonne foi, de la liberté d'expression sur des débats d'intérêt public et du cadre éditorial du site. Pour en savoir plus sur nos engagements et protections juridiques :</p>
+  <div class="doc-policy-links">
+    <a href="anti-slapp.html" class="policy-pill"><span>04. Anti-SLAPP Declaration (art. 51 C.p.c.) ↗</span></a>
+    <a href="deontologie.html" class="policy-pill"><span>01. Déontologie &amp; Bonne foi ↗</span></a>
+    <a href="independance.html" class="policy-pill"><span>02. Indépendance citoyenne ↗</span></a>
+    <a href="ia-ethique.html" class="policy-pill"><span>03. Éthique IA &amp; Traitement automatisé ↗</span></a>
+    <a href="protection-archive.html" class="policy-pill"><span>12. Protection de l'archive (222 pièces) ↗</span></a>
+    <a href="politiques.html" class="policy-pill"><span>Hub des chartes &amp; politiques éditoriales ↗</span></a>
+  </div>
+</div>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></div>
+    <div class="footer-licence-box">
+      Content made available under license <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-official-notice" style="font-size: 0.85rem; color: #a0aec0; margin: 12px 0; line-height: 1.5; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
+      Portail documentaire indépendant · Registre public CCE : <a href="https://www.cec.org/wp-content/uploads/wpallimport/files/26-3-det2_fr.pdf" target="_blank" rel="noopener noreferrer" style="color: #8ae8bd; text-decoration: underline;">Détermination historique du Secrétariat (17 août 2026) ↗</a>
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="footer-social-link">Registre CCE ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="apercu.html">Aperçu SEM-26-003</a> · 
+      <a href="dossier-journalistes.html">Dossier Journalistes</a> · 
+      <a href="deontologie.html">Déontologie</a> · 
+      <a href="independance.html">Indépendance</a> · 
+      <a href="ia-ethique.html">Éthique IA</a> · 
+      <a href="anti-slapp.html">Anti-SLAPP</a> · 
+      <a href="embargo.html">Embargo &amp; Press</a> · 
+      <a href="protection-archive.html">Protection archive</a> · 
+      <a href="terms.html">Terms of Use</a> · 
+      <a href="privacy.html">Confidentialité</a> · 
+      <a href="netiquette.html">Nétiquette</a> · 
+      <a href="blog.html">Blog</a> · 
+      <a href="viewer.html">Documents</a> · 
+      <a href="stablex.html">Stablex Case</a> · 
+      <a href="#top">Top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<a class="totop" id="totop" href="#top" aria-label="Revenir en haut">&#8593;</a>
+<script>
+(function(){
+  var bar=document.getElementById('bar'),btn=document.getElementById('totop');
+  function upd(){
+    var d=document.documentElement,
+        max=d.scrollHeight-d.clientHeight,
+        y=d.scrollTop||document.body.scrollTop;
+    if(bar) bar.style.width=(max>0?(y/max*100):0)+'%';
+    if(btn){
+      if(y>640){btn.classList.add('show');}else{btn.classList.remove('show');}
+    }
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd);upd();
+})();
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

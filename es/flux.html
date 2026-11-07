@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<script src="../assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- frame-ancestors/base-uri/form-action sont servis en en-tête HTTP par Cloudflare -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://cdn.jsdelivr.net https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://cdn.jsdelivr.net https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+<title>Feed RSS y monitoreo ambiental - William Guindon</title>
+
+<meta name="description" content="Lector de feeds y centro de seguimiento en tiempo real: noticias de William Guindon, decisiones CCE SEM-26-003, comunicados de prensa y alertas ecológicas.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://williamguindon.me/es/flux.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/flux.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/flux.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/flux.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/flux.html">
+  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités &amp; Dossier SEM-26-003" href="https://williamguindon.me/feed.xml">
+<link rel="alternate" type="text/plain" href="https://williamguindon.me/llms-full.txt" title="SEM-26-003 Full Plain-Text Knowledge Base">
+<link rel="llms-txt" type="text/markdown" href="https://williamguindon.me/llms.txt">
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="William Guindon — Site officiel">
+<meta property="og:title" content="Flux RSS &amp; Veille Environnementale — William Guindon">
+<meta property="og:description" content="Lecteur de flux et hub de veille en temps réel : actualités de William Guindon, décisions CCE SEM-26-003, communiqués de presse et alertes écologiques.">
+<meta property="og:url" content="https://williamguindon.me/flux.html">
+<meta property="og:locale" content="fr_CA">
+
+<meta name="twitter:title" content="Flux RSS &amp; Veille Environnementale — William Guindon">
+<meta name="twitter:description" content="Lecteur de flux et hub de veille en temps réel : actualités de William Guindon, décisions CCE SEM-26-003, communiqués de presse et alertes écologiques.">
+
+<script type="application/ld+json">{
+
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "givenName": "William",
+      "additionalName": "Tristan Logan Théo",
+      "familyName": "Guindon",
+      "gender": "https://schema.org/Male",
+      "birthDate": "2011-08-03",
+      "birthPlace": {
+        "@type": "Place",
+        "name": "Saint-Eustache, Québec, Canada"
+      },
+      "homeLocation": {
+        "@type": "Place",
+        "name": "Blainville, Québec, Canada"
+      },
+      "jobTitle": "Militant écologiste et climatique",
+      "disambiguatingDescription": "Militant écologiste et citoyen canadien, auteur de la soumission internationale SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM).",
+      "description": "Militant pour les générations futures, auteur de la communication citoyenne SEM-26-003 auprès de la Commission de coopération environnementale (CCE / ACEUM) et chercheur citoyen indépendant.",
+      "url": "https://williamguindon.me/",
+      "mainEntityOfPage": "https://williamguindon.me/",
+      "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
+      "sameAs": [
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://g.dev/williamguindondev",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://www.linkedin.com/in/william-guindon/",
+        "https://www.youtube.com/@william-guindon",
+        "https://www.facebook.com/williamguindon.officiel",
+        "https://independent.academia.edu/GuindonWilliam",
+        "https://github.com/Bwillou1",
+        "https://codeberg.org/Bwillou1/WilliamGuindon",
+        "https://doi.org/10.5281/zenodo.21416989"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": "https://williamguindon.me/flux.html#webpage",
+      "url": "https://williamguindon.me/flux.html",
+      "name": "Flux RSS & Veille Environnementale — William Guindon",
+      "description": "Lecteur de flux et hub de veille en direct pour le dossier CCE SEM-26-003, communiqués et alertes environnementales.",
+      "inLanguage": "fr-CA",
+      "publisher": {
+        "@type": "Person",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/#person"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/flux.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Flux RSS & Veille Environnementale",
+          "item": "https://williamguindon.me/flux.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="../style.css?v=20261018-v87">
+<script src="../assets/js/theme-core.js?v=20260930-v70" defer></script>
+
+<style>
+.flux-container {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3.5rem;
+}
+.flux-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 24px 0 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.flux-search-wrap {
+  flex: 1;
+  min-width: 240px;
+  position: relative;
+}
+.flux-search-input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg, #f8fafc);
+  color: var(--text, #1e293b);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+.flux-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted, #64748b);
+  pointer-events: none;
+}
+.flux-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.flux-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg-card, #ffffff);
+  color: var(--text, #1e293b);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.flux-btn:hover {
+  background: var(--bg-hover, #f1f5f9);
+  border-color: var(--primary, #059669);
+  color: var(--primary, #059669);
+}
+.flux-btn-primary {
+  background: var(--primary, #059669);
+  color: #ffffff;
+  border-color: var(--primary, #059669);
+}
+.flux-btn-primary:hover {
+  background: var(--primary-hover, #047857);
+  color: #ffffff;
+}
+.flux-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+  scrollbar-width: thin;
+}
+.flux-filter-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid var(--border, #cbd5e1);
+  background: var(--bg-card, #ffffff);
+  color: var(--muted, #64748b);
+  transition: all 0.2s ease;
+}
+.flux-filter-pill.active,
+.flux-filter-pill:hover {
+  background: var(--primary, #059669);
+  color: #ffffff;
+  border-color: var(--primary, #059669);
+}
+.flux-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.flux-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.flux-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  border-color: var(--primary, #059669);
+}
+.flux-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.flux-card-date {
+  font-size: 0.82rem;
+  color: var(--muted, #64748b);
+  font-weight: 500;
+}
+.flux-card-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--primary, #059669);
+}
+.flux-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+.flux-card-title a {
+  color: var(--text, #0f172a);
+  text-decoration: none;
+}
+.flux-card-title a:hover {
+  color: var(--primary, #059669);
+  text-decoration: underline;
+}
+.flux-card-thumb {
+  max-width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border, #e2e8f0);
+  margin: 6px 0;
+}
+.flux-card-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted, #475569);
+}
+.flux-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light, #f1f5f9);
+}
+.flux-fusion-box {
+  margin: 48px 0 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.04), rgba(37, 99, 235, 0.04));
+  border: 1px solid var(--border, #cbd5e1);
+}
+.flux-fusion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.flux-fusion-logo {
+  font-size: 1.6rem;
+}
+</style>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
+<link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=20261017" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
+<link rel="manifest" href="/manifest.json?v=20261017">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Militant écologiste">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<!-- BRANDKIT:END -->
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site" aria-label="Encabezado del sitio">
+  <div id="ai-chat" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
+      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Abrir menú de navegación" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button><nav aria-label="Navegación principal"><div class="mobile-nav-header">
+          <span class="mobile-nav-title">Navigation</span>
+          <button class="mobile-menu-close-btn" type="button" aria-label="Cerrar le menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Cerrar</span>
+          </button>
+        </div>
+      <!-- Rubrique 1 : Expediente CCA y Stablex -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Expediente CCA y Stablex ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Investigaciones y análisis</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="stablex.html" class="nav-dropdown-item">Expediente de investigación Stablex</a>
+              <a href="contamination.html" class="nav-dropdown-item">Investigación: Contaminación y medidas</a>
+              <a href="../loi-93.html" class="nav-dropdown-item">Législation : Loi 93 &amp; Expropriation</a>
+              <a href="../enquete-partis.html" class="nav-dropdown-item">Enquête : Partis politiques (Cellule 6)</a>
+              <a href="lobby.html" class="nav-dropdown-item">Enquête fédérale : Volet Lobbying</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Historia indígena y ecología</a>
+              <a href="apercu.html" class="nav-dropdown-item">Expediente explicado y divulgación (SEM-26-003)</a>
+              <a href="lexique.html" class="nav-dropdown-item" style="font-weight: 600; color: var(--accent);">Glosario y diccionario ciudadano</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Registro CCA y pruebas</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Observaciones del autor (17 oct.)</a>
+              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="nav-dropdown-item">Respuesta de Canadá (16 oct.)</a>
+              <a href="../registre.html" class="nav-dropdown-item">Registro oficial CCA (Directo)</a>
+              <a href="https://web.archive.org/web/20260829205913/https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" class="nav-dropdown-item">Registre CCE (Archive Web) ↗</a>
+              <a href="viewer.html" class="nav-dropdown-item">Consultar documentos (PDF)</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Explorador documental</a>
+              <a href="miroirs.html" class="nav-dropdown-item">Espejos descentralizados (IPFS/Tor)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Seguimiento y herramientas directas</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #059669;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Cómo actuar y apoyar</a>
+              <a href="live.html" class="nav-dropdown-item">Reloj y respuesta de Canadá (16 oct.)</a>
+              <a href="satellite.html" class="nav-dropdown-item">Imagerie Satellite Copernicus</a>
+              <a href="./#tracker" class="nav-dropdown-item">Tableau de suivi CCE</a>
+              <a href="./#carte" class="nav-dropdown-item">Carte interactive SIG</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA sur le dossier</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 2 : Actualités & Médias -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Actualités &amp; Médias ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Terrain &amp; Réseaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="blog.html" class="nav-dropdown-item">Blog officiel &amp; Carnet</a>
+              <a href="../commentaires.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Le Mur Citoyen (Témoignages)</a>
+              <a href="autochtone.html" class="nav-dropdown-item">Dossier: Historia indígena y ecología</a>
+              <a href="apercu.html" class="nav-dropdown-item">Expediente explicado y divulgación (SEM-26-003)</a>
+              <a href="photos.html" class="nav-dropdown-item">Galerie Photos de terrain</a>
+              <a href="./#dernier-post" class="nav-dropdown-item">Publications Facebook</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Prensa &amp; Déclarations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="apparitions-publiques.html" class="nav-dropdown-item">Apparitions publiques &amp; Médias</a>
+              <a href="communiques.html" class="nav-dropdown-item">Communiqués officiels</a>
+              <a href="presse.html" class="nav-dropdown-item">Espace Prensa &amp; Kit Média</a>
+              <a href="dossier-journalistes.html" class="nav-dropdown-item">Dossier pour Journalistes</a>
+              <a href="./#revue-presse" class="nav-dropdown-item">Revue de presse nationale</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 3 : Autonomie & Adultisme -->
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Autonomie &amp; Adultisme ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="adultisme.html" class="nav-dropdown-item">01. Appui scientifique &amp; Adultisme (Liebel &amp; Meade)</a>
+          <a href="../statut-mineur.html" class="nav-dropdown-item">02. Statut citoyen mineur &amp; Attestation CCE</a>
+          <a href="../age.html" class="nav-dropdown-item">03. Wmail — Archive des correspondances</a>
+        </div>
+      </div>
+
+      <!-- Rubrique 4 : Chartes & Politiques (Cadre légal) -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>Chartes &amp; Politiques ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="politiques.html" class="nav-dropdown-item" style="font-weight: 700; color: var(--accent);">00. Registre des chartes (Hub)</a>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>01–03. Chartes &amp; Déontologie</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="deontologie.html" class="nav-dropdown-item">01. Charte de déontologie</a>
+              <a href="independance.html" class="nav-dropdown-item">02. Indépendance &amp; Intégrité</a>
+              <a href="ia-ethique.html" class="nav-dropdown-item">03. Éthique de l'IA</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>04–08. Protection &amp; Procédures</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="anti-slapp.html" class="nav-dropdown-item">04. Declaración Anti-SLAPP</a>
+              <a href="embargo.html" class="nav-dropdown-item">05. Embargo &amp; Prensa</a>
+              <a href="experts.html" class="nav-dropdown-item">06. Cadre consultatif experts</a>
+              <a href="tracabilite.html" class="nav-dropdown-item">07. Traçabilité des preuves</a>
+              <a href="../opsec.html" class="nav-dropdown-item">08. Sécurité lanceurs d'alerte (OpSec)</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>09–12. Statut, Archives &amp; Textes légaux</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="../statut-mineur.html" class="nav-dropdown-item">09. Statut citoyen mineur</a>
+              <a href="protection-archive.html" class="nav-dropdown-item">12. Protection de l'archive (Fixité &amp; Retrait)</a>
+              <a href="licence-et-charte.html" class="nav-dropdown-item">Licence &amp; Charte graphique</a>
+              <a href="terms.html" class="nav-dropdown-item">Términos de uso</a>
+              <a href="privacy.html" class="nav-dropdown-item">Política de privacidad</a>
+              <a href="netiquette.html" class="nav-dropdown-item">Nétiquette &amp; Modération</a>
+              <a href="dependances-licences.html" class="nav-dropdown-item">Crédits, licences &amp; tiers</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Rubrique 5 : À propos & Contacto -->
+      <div class="nav-dropdown nav-dropdown-right">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>À propos &amp; Contacto ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Profil &amp; Réalisations</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="portrait.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Grand Portrait : Qui est William Guindon ?</a>
+              <a href="./#apropos" class="nav-dropdown-item">Biografía de William Guindon</a>
+              <a href="liens.html" class="nav-dropdown-item" style="color: #10b981; font-weight: 600;">Liens officiels (Réseaux &amp; Bio)</a>
+              <a href="projets.html" class="nav-dropdown-item">Projets &amp; Constellation GitHub</a>
+              <a href="dev.html" class="nav-dropdown-item">Portail Développeurs &amp; Open Data</a>
+              <a href="statut.html" class="nav-dropdown-item"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:6px;" aria-hidden="true"></span>État des systèmes &amp; Bogues</a>
+              <a href="ai.html" class="nav-dropdown-item">Espace IA &amp; LLM (Base documentaire)</a>
+              <a href="../api/" class="nav-dropdown-item">API Publique Ouverte &amp; Endpoints</a>
+            </div>
+          </details>
+          <details class="nav-submenu">
+            <summary class="nav-submenu-summary">
+              <span>Échanges &amp; Contacto</span>
+              <span class="nav-submenu-arrow">▾</span>
+            </summary>
+            <div class="nav-submenu-items">
+              <a href="agir.html" class="nav-dropdown-item" style="font-weight: 700; color: #10b981;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:6px;"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Cómo actuar y apoyar</a>
+              <a href="./#contact" class="nav-dropdown-item">Coordonnées &amp; Contacto</a>
+              <a href="messagerie.html" class="nav-dropdown-item"><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Messagerie Sécurisée (Nostr)</a>
+              <a href="#ai-chat" class="nav-dropdown-item js-trigger-ai-chat" data-open-ai-chat><svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Clavarder avec l'IA (Mode direct)</a>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Sélecteur de langue unique (FR / EN / ES) -->
+      <div class="nav-dropdown nav-lang-dropdown">
+        <button class="nav-dropdown-btn nav-lang-btn" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Langue / Language">
+          <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="current-lang-code">FR</span>
+          <span>▾</span>
+        </button>
+        <div class="nav-dropdown-menu nav-lang-menu" role="menu">
+          <span class="nav-dropdown-group-title">Langue / Language</span>
+          <button type="button" class="nav-dropdown-item lang-select-btn active" data-lang="fr" role="menuitem">
+            <span class="lang-name">Français</span>
+            <span class="lang-tag">FR</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
+            <span class="lang-name">English</span>
+            <span class="lang-tag">EN</span>
+          </button>
+          <button type="button" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
+            <span class="lang-name">Español</span>
+            <span class="lang-tag">ES</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panneau des alertes & notifications -->
+      <div class="nav-notif-dropdown">
+        <button class="nav-notif-btn" type="button" aria-label="Notifications et alertes médias CCE" aria-expanded="false" aria-haspopup="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="nav-notif-badge" role="status" aria-label="3 nouvelles alertes actives" title="3 nouvelles alertes actives"></span>
+        </button>
+        <div class="nav-notif-panel" role="region" aria-label="Panneau d'alertes médias">
+          <div class="nav-notif-header">
+            <div class="nav-notif-title-group">
+              <span class="nav-notif-pulse"></span>
+              <h4>Alertes &amp; Publications</h4>
+            </div>
+            <button class="nav-notif-close" type="button" aria-label="Cerrar les notifications">&times;</button>
+          </div>
+          <div class="nav-notif-body">
+            <article class="notif-item">
+              <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
+              <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal (députée de Blainville) et Madeleine Chenette (députée fédérale)</h5>
+              <p class="notif-item-desc">Deux rencontres bilatérales confirmées. Nadine Le Gal a souhaité fixer cet échange avant même d'avoir ouvert son bureau permanent. Enjeux au programme : Loi 93, BAPE 371, réponse fédérale au BVG (10 nov.) et suite CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article du carnet ↗</a>
+                <a href="agir.html" class="notif-link-btn notif-link-ghost">Mobilisation &amp; Élus</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
+              <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (Pétition BVG 0546)</h5>
+              <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'une pétition citoyenne au BVG (art. 22 LVG) n'est pas une procédure judiciaire ou quasi-judiciaire pendante sous l'article 24.27(4)(a) de l'ACEUM.</p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
+                <a href="../registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
+              <h5 class="notif-item-title">Le Canada dépose sa réponse officielle et tente un rejet procédural (SEM-26-003)</h5>
+              <p class="notif-item-desc">
+          noviembre de 2026, sin cuestionar los vertidos críticos de cadmio (320 veces la norma) ni la
+        </p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">9 octobre 2026 · Communiqué de presse officiel</div>
+              <h5 class="notif-item-title">Un adolescent de 15 ans somme le Canada d'appliquer ses propres lois environnementales (J-7)</h5>
+              <p class="notif-item-desc">Dans sept jours (16 octobre), le Canada doit répondre à la communication SEM-26-003 jugée recevable par la CCE (ACEUM). Déclaration de presse officielle de William Guindon.</p>
+              <div class="notif-item-links">
+                <a href="communiques.html#communique-2026-10-09-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
+                <a href="https://ia601006.us.archive.org/29/items/communique_presse_SEM-26-003/communique_presse_SEM-26-003.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Télécharger le PDF ↗</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">27 septembre 2026 · Vulgarisation &amp; Synthèse</div>
+              <h5 class="notif-item-title">
+          <strong>SEM-26-003</strong> explicado de manera simple: El archivo completo y accesible en Grande Tourbière de Blainville
+        </h5>
+              <p class="notif-item-desc">
+          Publicación de un gran resumen documental popularizado en 12 partes que explica simplemente la
+        </p>
+              <div class="notif-item-links">
+                <a href="apercu.html" class="notif-link-btn notif-link-primary">Consulter le dossier expliqué ↗</a>
+                <a href="blog.html#sem-26-003-blainville-dossier-complet-explique-vulgarisation" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">26 septembre 2026 · Cadre Juridique</div>
+              <h5 class="notif-item-title">Adoption de la Charte Fondamentale 12 (Protection de l'archive)</h5>
+              <p class="notif-item-desc">Adoption formelle de la politique encadrant la fixité probatoire, la conformité au droit d'auteur et la procédure de biffure/retrait des 222 pièces.</p>
+              <div class="notif-item-links">
+                <a href="protection-archive.html" class="notif-link-btn notif-link-primary">Consulter la Charte 12 ↗</a>
+                <a href="politiques.html" class="notif-link-btn notif-link-ghost">Hub des chartes</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">25 septembre 2026 · Confirmation Officielle CCE</div>
+              <h5 class="notif-item-title">Attestation CCE : Premier auteur mineur de l'histoire du mécanisme SEM (depuis 1994)</h5>
+              <p class="notif-item-desc">Confirmation officielle du Secrétariat de la CCE attestant que William Guindon (15 ans) est le premier citoyen mineur de l'histoire à soumettre une communication internationale SEM depuis la création du traité en 1994.</p>
+              <div class="notif-item-links">
+                <a href="../statut-mineur.html#preuve-officielle-cce" class="notif-link-btn notif-link-primary">Voir l'attestation CCE ↗</a>
+                <a href="presse.html#statut-mineur" class="notif-link-btn notif-link-ghost">Kit Prensa</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">22 septembre 2026 · Kit Prensa &amp; Transparence</div>
+              <h5 class="notif-item-title">Moteur de recherche &amp; Archive ZIP des pièces (En ligne)</h5>
+              <p class="notif-item-desc">Mise en ligne officielle du moteur de recherche interne plein texte (OCR) et du kit ZIP téléchargeable réunissant plus de 96 % des pièces justificatives du dossier SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="presse.html#moteur-recherche-pieces" class="notif-link-btn notif-link-primary">Accéder au Kit Média ↗</a>
+                <a href="blog.html#moteur-recherche-pieces-justificatives-archive-zip" class="notif-link-btn notif-link-ghost">Article du blog</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">11 septembre 2026 · Enquête citoyenne</div>
+              <h5 class="notif-item-title">Enquête : Positionnement des partis politiques (Cellule 6)</h5>
+              <p class="notif-item-desc">Publication du rapport d'enquête citoyenne évaluant la position des formations politiques québécoises et canadiennes face à la décision CCE SEM-26-003.</p>
+              <div class="notif-item-links">
+                <a href="../enquete-partis.html" class="notif-link-btn notif-link-primary">Consulter le rapport ↗</a>
+                <a href="https://zenodo.org/records/22714995" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-ghost">Archive Zenodo</a>
+              </div>
+            </article>
+            <article class="notif-item">
+              <div class="notif-item-tag">17 août 2026 · CCE / ACEUM</div>
+              <h5 class="notif-item-title">Détermination positive historique de la CCE</h5>
+              <p class="notif-item-desc">
+          El Gobierno de Canadá presentó su respuesta oficial (72-RSP) al Commission de coopération
+        </p>
+              <div class="notif-item-links">
+                <a href="viewer.html?file=assets/docs/26-2-det2_fr.pdf" target="_blank" rel="noopener noreferrer" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+                <a href="communiques.html" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
+                <a href="live.html" class="notif-link-btn notif-link-ghost">Horloge live</a>
+              </div>
+            </article>
+          </div>
+          <div class="nav-notif-footer" style="padding: 10px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid var(--border-color, rgba(255,255,255,0.1)); display: flex; gap: 8px; justify-content: center; align-items: center;">
+            <button type="button" class="btn-enable-push notif-link-btn notif-link-primary" style="font-size: 11px; padding: 6px 14px; cursor: pointer; width: 100%; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 6px;" aria-label="S'abonner aux alertes de notification">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block; vertical-align:text-bottom; margin-right:4px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>S'abonner aux notifications
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <a href="../dossier-confidentiel-non-biffe-sem26003.html" class="sr-only" tabindex="-1" aria-hidden="true" style="display:none!important;position:absolute;left:-9999px;opacity:0;pointer-events:none;">Accès interne non biffé aux pièces confidentielles SEM-26-003</a>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">Veille citoyenne &amp; Syndication</span>
+      <h1>Flux RSS &amp; Veille Documentaire en Direct</h1>
+      <p>
+          Agregador de flujos de información ciudadana, novedades del fichero <strong>SEM-26-003</strong>, comunicados y
+        </p>
+    </div>
+  </section>
+
+  <div class="flux-container">
+    <!-- Barre de contrôle et recherche -->
+    <div class="flux-controls-bar">
+      <div class="flux-search-wrap">
+        <svg class="flux-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="flux-search" class="flux-search-input" placeholder="Filtrer les actualités, mots-clés, articles..." aria-label="Rechercher dans les flux">
+      </div>
+      <div class="flux-actions">
+        <button id="btn-refresh" class="flux-btn" type="button" title="Rafraîchir le flux">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          <span>Actualiser</span>
+        </button>
+        <a href="../feed.xml" target="_blank" class="flux-btn flux-btn-primary" title="Flux RSS brut">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+          <span>Flux RSS (feed.xml)</span>
+        </a>
+        <a href="https://folo.is/feed/1320323670668607488" target="_blank" rel="noopener noreferrer" class="flux-btn" title="Suivre en direct les modifications de la page SEM-26-003 sur cec.org via Folo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span>Alertes CCE (Folo) ↗</span>
+        </a>
+        <button id="btn-export-opml" class="flux-btn" type="button" title="Exporter en OPML">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Exporter OPML</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Carte de veille en direct CCE sur cec.org via Folo -->
+    <div class="flux-folo-card" style="background: var(--bg-card, #ffffff); border: 1px solid var(--border, #e2e8f0); border-left: 4px solid #059669; border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 260px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);"></span>
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #059669;">Veille en temps réel · cec.org</span>
+          </div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0 0 6px 0; color: var(--text, #0f172a);">
+          Suscripción a alertas: Cambios en cec.org
+        </h2>
+          <p style="font-size: 0.92rem; color: var(--muted, #64748b); margin: 0; line-height: 1.5;">
+          expediente <strong>SEM-26-003</strong>. Reciba una notificación instantánea cada vez que la Secretaría cambie el
+        </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <a href="https://folo.is/feed/1320323670668607488" target="_blank" rel="noopener noreferrer" class="flux-btn flux-btn-primary" style="font-size: 0.85rem; padding: 8px 14px; background: #064e3b; color: white;" title="Lien de partage et abonnement public Folo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span>S'abonner sur Folo ↗</span>
+          </a>
+          <a href="https://folo.is/feed/1320323670668607488/rss" target="_blank" rel="noopener noreferrer" class="flux-btn" style="font-size: 0.85rem; padding: 8px 14px;" title="Flux RSS / XML direct selon le protocole Folo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+            <span>Flux RSS Folo ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres par catégorie -->
+    <div class="flux-filters" role="tablist" aria-label="Filtres thématiques">
+      <button class="flux-filter-pill active" data-filter="all" role="tab" aria-selected="true">Tous les articles</button>
+      <button class="flux-filter-pill" data-filter="SEM-26-003" role="tab" aria-selected="false">Dossier SEM-26-003</button>
+      <button class="flux-filter-pill" data-filter="Communiqués" role="tab" aria-selected="false">Communiqués officiels</button>
+      <button class="flux-filter-pill" data-filter="Preuve" role="tab" aria-selected="false">Preuves &amp; Attestations</button>
+      <button class="flux-filter-pill" data-filter="Enquête" role="tab" aria-selected="false">Enquêtes citoyennes</button>
+      <button class="flux-filter-pill" data-filter="Environnement" role="tab" aria-selected="false">Écologie &amp; Tourbière</button>
+    </div>
+
+    <!-- Conteneur des articles -->
+    <div id="flux-feed-container" class="flux-grid" role="feed" aria-busy="false">
+<!--PRERENDER:feed:START-->
+<div class="flux-feed-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin: 24px 0;">
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 06 Nov 2026 12:30:00 -0500</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Diplomacia ciudadana: reunión bilateral oficial con <strong>Nadine Le Gal</strong>, diputada del Parlamento por Blainville
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          1.000 dólares por tonelada para los residuos peligrosos, rechazo del <strong>Loi 93</strong> (<strong>Ley 93</strong>), creación de un
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/diplomatie.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 01 Nov 2026 13:50:00 -0500</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          El Muro Ciudadano - Voz del Grande Tourbière (más de 130.000 visitas)
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          de <strong>William Guindon</strong> para la protección del agua potable y Grande Tourbière de Blainville (Gran
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/commentaires.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 01 Nov 2026 13:30:00 -0500</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Reunión informativa diplomática para delegaciones de Estados Unidos y México (CUSMA / T-MEC Art. 24.28) Información ejecutiva jurídica y fáctica en inglés y español para las delegaciones de la EPA y la SEMARNAT de EE.UU. ante el Consejo de la CCA sobre la presentación ciudadana <strong>SEM-26-003</strong> y los fundamentos para ordenar un expediente de hechos independiente sobre la turbera Grande Tourbière de Blainville.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">Executive legal and factual briefing in English and Spanish for the US EPA and SEMARNAT delegations to the CEC Council regarding citizen submission SEM-26-003 and the grounds for ordering an independent Factual Record on the Grande Tourbière de Blainville peatland.</p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/delegation.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Mon, 26 Oct 2026 18:40:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Informe especial de Halloween: Los monstruos reales no usan máscaras — Investigación en seis episodios Lanzamiento de la investigación especial de Halloween sobre Grande Tourbière de Blainville y el expediente <strong>SEM-26-003</strong>. Seis días, cinco expedientes clasificados: Camp Bouchard (expediente n° 06875001), las mediciones de cadmio a 320x y 1.300 L de lixiviado, las contradicciones del calendario de sacrificio de las salamandras de cuatro dedos, la reunión con el lobbyista el 17 de septiembre de 2026 y el plazo CCE de 60 días para un expediente fáctico. Desbloqueo diario a medianoche.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Blainville y del vertedero de residuos peligrosos Stablex, proporcionado diariamente por el programa
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/halloween.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 25 Oct 2026 08:05:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Gran Formato: ¿Quién es <strong>William Guindon</strong>, el joven activista que desafía a los gobiernos en la cuestión Stablex?
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          2026 de siete maneras contra Ottawa, la certificación histórica del CCE (primer menor desde 1994),
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/portrait.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 25 Oct 2026 07:45:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;"><a href="https://williamguindon.me/dev.html" style="color: var(--text); text-decoration: none;">Portail Développeurs &amp; Open Data : API REST, Prompts IA, Widgets iFrame et Jeux de Données Ouverts</a></h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación online de la guía práctica de acción ciudadana para Grande Tourbière de Blainville:
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/dev.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sat, 24 Oct 2026 19:10:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Investigación federal — Componente de lobby: La reunión del 17 de septiembre de 2026 en el Registro de Lobbistas
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          385380-701620 en el Registro de Lobbyistas de Canadá: reunión formal entre la alta dirección de ECCC
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/lobby.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sat, 24 Oct 2026 18:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Revelación documental: Reunión Stablex/ECCC inscrita en el Registro de Lobistas en examen completo CCE
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          el 17 de septiembre de 2026 entre la alta dirección de las ECCC y el lobista de Stablex en la celda
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/actualites.html#lobbyisme-septembre-2026" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Thu, 22 Oct 2026 20:25:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;"><a href="https://williamguindon.me/lexique.html" style="color: var(--text); text-decoration: none;">Lexique &amp; Dictionnaire Citoyen : Comprendre tous les termes juridiques et scientifiques du dossier SEM-26-003</a></h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          información sobre herramientas en el sitio con el fin de traducir en un lenguaje claro y accesible
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/lexique.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Thu, 22 Oct 2026 16:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Reuniones parlamentarias en noviembre: <strong>Nadine Le Gal</strong> (diputada por Blainville) y <strong>Madeleine Chenette</strong> (diputada federal) escuchando el expediente ciudadano Confirmación de dos reuniones de trabajo oficiales en noviembre de 2026 con los representantes parlamentarios de la circunscripción: Nadine Le Gal, nueva diputada provincial por Blainville en Assemblée nationale (Asamblea Nacional de Quebec) du Québec (que deseaba planificar este intercambio incluso antes de haber abierto su oficina permanente en la circunscripción), y Madeleine Chenette, diputada federal por Thérèse-De Blainville en la Cámara de los Comunes de Canadá. En el programa: protección total de Grande Tourbière, <strong>BAPE 371</strong>, <strong>Loi 93</strong>, plazo ministerial federal del 10 de noviembre de 2026 (Petición 0546 a la BVG) y seguimiento de la comunicación <strong>SEM-26-003</strong> antes de CCE (ACEUM).
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">Confirmation de deux rencontres de travail officielles en novembre 2026 avec les représentantes parlementaires de la circonscription : Nadine Le Gal, nouvelle députée provinciale de Blainville à l'Assemblée nationale du Québec (qui a tenu à planifier cet échange avant même d'avoir ouvert son bureau de circonscription permanent), et Madeleine Chenette, députée fédérale de Thérèse-De Blainville à la Chambre des communes du Canada. Au programme : protection intégrale de la Grande Tourbière, BAPE 371, Loi 93, échéance ministérielle fédérale du 10 novembre 2026 (Pétition 0546 au BVG) et suivi de la communication SEM-26-003 devant la CCE (ACEUM).</p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Wed, 21 Oct 2026 16:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Política Oficial de Comunicaciones, Correspondencia y Difusión Pública
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación oficial de la Política de Comunicaciones, Correspondencia y Difusión Pública de William
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/correspondance.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Mon, 19 Oct 2026 19:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Enlaces oficiales — <strong>William Guindon</strong>: centro de acceso directo y perfil limpio para redes sociales Publicación de la página oficial de enlaces de William Guindon (links.html) optimizada para perfiles de redes sociales. Acceso directo y sin rastreadores de terceros a las últimas observaciones del expediente <strong>SEM-26-003</strong>, del registro CCE, documentos documentales, medios y canales oficiales.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">Publication de la page officielle de liens de William Guindon (liens.html) optimisée pour les profils de réseaux sociaux. Accès direct et sans traqueur tiers aux dernières observations du dossier SEM-26-003, au registre de la CCE, aux pièces documentaires, aux médias et aux canaux officiels.</p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/liens.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sat, 17 Oct 2026 13:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Observaciones de <strong>William Guindon</strong> (<strong>SEM-26-003</strong>): Refutación en 7 fundamentos jurídicos de la solicitud de Canadá de rechazar
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Observaciones de <strong>William Guindon</strong> (<strong>SEM-26-003</strong>): Refutación en 7 fundamentos jurídicos de la solicitud de Canadá de rechazar
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/communiques.html#communique-2026-10-17-observations" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 16 Oct 2026 20:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Respuesta oficial de Canadá (<strong>SEM-26-003</strong>): El gobierno federal está intentando un rechazo procesal ante la evidencia de contaminación de Grande Tourbière
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          noviembre de 2026, sin cuestionar los vertidos críticos de cadmio (320 veces la norma) ni la
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/communiques.html#communique-2026-10-16-cce" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 09 Oct 2026 08:50:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Vigilancia geoespacial: despliegue de imágenes de satélite Copernicus Sentinel-2 L2A en vivo
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación de la biografía oficial, el kit de prensa y la cronología completa del expediente
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/satellite.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 09 Oct 2026 08:15:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Comunicado de prensa oficial: joven de 15 años pide a Canadá que haga cumplir sus propias leyes medioambientales
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          <strong>William Guindon</strong> (15 años). La Secretaría del CCE (ACEUM) consideró admisible la denuncia: Ottawa
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/communiques.html#communique-2026-10-09-cce" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Tue, 06 Oct 2026 18:35:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Expediente judicial: El <strong>Loi 93</strong>, la expropiación forzosa del Ville de Blainville y el <strong>BAPE 371</strong>
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación del análisis jurídico completo del <strong>Loi 93</strong> adoptado bajo orden de silencio el 28 de marzo
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/loi-93.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Tue, 06 Oct 2026 18:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Investigación hidroquímica: contaminación alrededor de Stablex, cadmio 320x y derrames documentados
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          de Stablex en Blainville: mediciones de cadmio que superan hasta 320 veces los criterios de calidad
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/contamination.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Mon, 05 Oct 2026 19:50:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Monitoreo CCE en vivo: Suscripción a alertas de modificación de registro de cec.org (Folo)
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          La Secretaría CCE publica su decisión conforme al Artículo 24.27(2) y (3) de ACEUM, invitando al
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/flux.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 04 Oct 2026 16:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Apertura del directorio oficial: Apariciones públicas, medios y canal de YouTube
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación de la biografía oficial, el kit de prensa y la cronología completa del expediente
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/apparitions-publiques.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 02 Oct 2026 20:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Apéndice público redactado: Reconstrucción de la correspondencia ciudadana y obstáculos a la discriminación por edad
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación de la biografía oficial, el kit de prensa y la cronología completa del expediente
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/age.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Tue, 29 Sep 2026 16:18:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Informes de campo: Incidentes de vida silvestre y vertidos ilegales en el sector Plan-Bouchard Informe formal elaborado sobre los recientes incidentes relacionados con la fauna (restos de fauna), así como sobre la presencia de depósitos silvestres observados en el sector forestal de Plan-Bouchard en Blainville, transmitido a la Protección de la fauna de Quebec (MELCCFP), a Hydro-Québec y a los servicios municipales.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">Signalement formel effectué concernant des incidents fauniques récents (dépouilles fauniques) ainsi que la présence de dépôts sauvages observés dans le secteur du boisé du Plan-Bouchard à Blainville, transmis à la Protection de la faune du Québec (MELCCFP), Hydro-Québec et aux services municipaux.</p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/blog.html#signalement-terrain-incidents-fauniques-depots-sauvages-plan-bouchard" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Tue, 29 Sep 2026 15:25:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Petición Ambiental No. 546: Registro oficial ante el Auditor General de Canadá (CEDD)
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          SARA) en el vertedero de Stablex en Blainville.
+        </p>
+    </div>
+    <div>
+      <a href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 27 Sep 2026 15:50:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;"><a href="https://williamguindon.me/agir.html" style="color: var(--text); text-decoration: none;">Cómo actuar y apoyar la Grande Tourbière : Guide pratique de mobilisation citoyenne (iNaturalist, lettres modèles et soutien)</a></h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación online de la guía práctica de acción ciudadana para Grande Tourbière de Blainville:
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/agir.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sun, 27 Sep 2026 11:50:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          <strong>SEM-26-003</strong> explicado de manera simple: El archivo completo y accesible en Grande Tourbière de Blainville
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          historia, las acusaciones, la decisión CCE del 17 de agosto de 2026, los actores y las trampas
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/apercu.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Sat, 26 Sep 2026 11:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Aprobación oficial de la Carta Fundamental 12: Protección del archivo documental publicado (Fijación, conformidad y retirada)
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación y entrada inmediata en vigor de la Carta Fundamental 12 que regula el Archivo Documental
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/protection-archive.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 25 Sep 2026 16:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Gran archivo documental: La turbera que recuerda — Historia indígena, ecología y territorios acuáticos
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Con motivo de la Semana Nacional de la Verdad y la Reconciliación, <strong>William Guindon</strong> publica una
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/autochtone.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 25 Sep 2026 14:53:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Confirmación oficial de CCE: <strong>William Guindon</strong> es el primer minero en la historia del mecanismo SEM desde 1994
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          primera vez que un autor nos indica que es menor de edad al enviar un archivo a la CCE. » La prueba
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/statut-mineur.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Thu, 24 Sep 2026 19:15:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Aviso público aclaratorio: Falta de colaboración e independencia estricta
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Aclaración oficial de <strong>William Guindon</strong> recordando la total independencia y el carácter estrictamente
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/blog.html#avis-clarification-publique-absence-collaboration-stricte-independance" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Wed, 23 Sep 2026 17:15:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Abogar por la autonomía jurídica de los adolescentes: romper el techo de cristal de la discriminación por edad institucional
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          paternalismo burocrático y la discriminación por edad institucional que priva a los adolescentes de
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/blog.html#plaidoyer-autonomie-juridique-adolescents-agisme-institutionnel" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Tue, 22 Sep 2026 19:30:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Lanzamiento oficial: motor de búsqueda en línea para documentos de respaldo y el archivo ZIP (más del 96% del archivo)
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación online de la guía práctica de acción ciudadana para Grande Tourbière de Blainville:
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/presse.html#moteur-recherche-pieces" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 11 Sep 2026 16:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Encuesta ciudadana: Posicionamiento de los partidos políticos en el expediente Stablex (Celda 6) y la decisión CCE <strong>SEM-26-003</strong>
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          políticos provinciales (CAQ, PLQ, PQ, QS, PCQ, Climat Québec) sobre la ampliación del sitio de
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/enquete-partis.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Mon, 17 Aug 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Determinación positiva de CCE sobre <strong>SEM-26-003</strong>: respuesta de Canadá requerida antes del 16 de octubre de 2026
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          La Secretaría CCE publica su decisión conforme al Artículo 24.27(2) y (3) de ACEUM, invitando al
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/viewer.html?file=assets/docs/26-2-det2_fr.pdf" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 17 Jul 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Presentación de la comunicación revisada <strong>SEM-26-003</strong> a CCE (Zenodo) <strong>William Guindon</strong> presenta su comunicación revisada en el formato oficial CCE con todos los informes científicos e información adicional que respalda la protección de Grande Tourbière de Blainville.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Grande Tourbière de Blainville. Recorre la cronología completa, la respuesta del 17 de octubre de
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/viewer.html?file=assets/docs/26-3-rsub_fr_redacted.pdf" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Wed, 03 Jun 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Determinación de la Secretaría de CCE el <strong>SEM-26-003</strong>
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          La Secretaría CCE publica su decisión conforme al Artículo 24.27(2) y (3) de ACEUM, invitando al
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/viewer.html?file=assets/docs/26-3-det_fr.pdf" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Thu, 11 Jun 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Lanzamiento del sitio web oficial de <strong>William Guindon</strong>
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          Publicación de la biografía oficial, el kit de prensa y la cronología completa del expediente
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Mon, 04 May 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          El CCE acusa recibo de la comunicación <strong>SEM-26-003</strong>
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          La Secretaría CCE publica su decisión conforme al Artículo 24.27(2) y (3) de ACEUM, invitando al
+        </p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/stablex.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 15 May 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Comunicado formal transmitido al Relator Especial de la ONU sobre sustancias tóxicas El escrito “Deposición formal y llamamiento urgente: violaciones de los derechos humanos y denegación de justicia – El caso Stablex y la imposición del proyecto de ley 93 en Quebec” se transmite al Dr. <strong>Marcos A. Orellana</strong> en nombre de la comunidad de Blainville y de las generaciones futuras.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">Le mémoire « Formal Deposition and Urgent Appeal: Human Rights Violations and Denial of Justice – The Stablex Case and the Imposition of Bill 93 in Quebec » est transmis au Dr Marcos A. Orellana au nom de la communauté de Blainville et des générations futures.</p>
+    </div>
+    <div>
+      <a href="https://williamguindon.me/stablex.html" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+  <article class="flux-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Fri, 01 May 2026 12:00:00 -0400</div>
+      <h3 style="margin: 0 0 10px; font-size: 1.15rem; line-height: 1.4;">
+          Presentación de la comunicación revisada <strong>SEM-26-003</strong> a CCE (Zenodo) <strong>William Guindon</strong> presenta su comunicación revisada en el formato oficial CCE con todos los informes científicos e información adicional que respalda la protección de Grande Tourbière de Blainville.
+        </h3>
+      <p style="margin: 0 0 16px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.55;">
+          las aves migratorias, las especies en riesgo y la calidad del agua en el expediente Stablex.
+        </p>
+    </div>
+    <div>
+      <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" class="btn-flux-read" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-deep); text-decoration: underline;">Leer artículo ↗</a>
+    </div>
+  </article>
+</div>
+<!--PRERENDER:feed:END-->
+    </div>
+
+    <!-- Section d'inspiration et remerciements open source : Fusion (0x2E/fusion) -->
+    <div class="flux-fusion-box">
+      <div class="flux-fusion-header">
+        <span class="flux-fusion-logo" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--text, #0f172a);">Architecture de Veille &amp; Remerciements Open Source</h3>
+          <p style="margin: 4px 0 0; font-size: 0.88rem; color: var(--muted, #64748b);">Inspiration technique et ergonomie inspirée du projet open source <strong>Fusion</strong>.</p>
+        </div>
+      </div>
+      <p style="font-size: 0.92rem; line-height: 1.6; color: var(--text, #334155); margin-bottom: 12px;">
+          digital y ligereza popularizados por el agregador RSS gratuito Fusion (0x2E/fusion ↗), diseñado por
+        </p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <a href="https://github.com/0x2E/fusion" target="_blank" rel="noopener noreferrer" class="flux-btn" style="font-size: 0.82rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Dépôt GitHub 0x2E/fusion ↗</span>
+        </a>
+        <a href="dependances-licences.html" class="flux-btn" style="font-size: 0.82rem;">
+          <span>Voir le registre des licences &amp; tiers</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Script interactif du lecteur de flux RSS -->
+<script>
+(function() {
+  'use strict';
+
+  const container = document.getElementById('flux-feed-container');
+  const searchInput = document.getElementById('flux-search');
+  const filterPills = document.querySelectorAll('.flux-filter-pill');
+  const refreshBtn = document.getElementById('btn-refresh');
+  const exportOpmlBtn = document.getElementById('btn-export-opml');
+
+  let feedItems = [];
+  let currentFilter = 'all';
+  let currentQuery = '';
+
+  // Formatage de la date en français
+  function formatDate(dateStr) {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return new Intl.DateTimeFormat('fr-CA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(d);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  // Échappement HTML sécurisé
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, function(m) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[m];
+    });
+  }
+
+  // Chargement et parsing du flux RSS feed.xml
+  async function loadFeed() {
+    container.setAttribute('aria-busy', 'true');
+    // conserver les cartes statiques pendant la synchronisation
+
+    try {
+      const res = await fetch('feed.xml?_t=' + Date.now());
+      if (!res.ok) throw new Error('Impossible de charger feed.xml');
+      const xmlText = await res.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const items = xmlDoc.querySelectorAll('item');
+
+      feedItems = Array.from(items).map(item => {
+        const title = item.querySelector('title')?.textContent || 'Sans titre';
+        const link = item.querySelector('link')?.textContent || '#';
+        const pubDate = item.querySelector('pubDate')?.textContent || '';
+        const description = item.querySelector('description')?.textContent || '';
+        const category = item.querySelector('category')?.textContent || 'Actualité';
+        const enclosure = item.querySelector('enclosure');
+        const enclosureUrl = enclosure ? enclosure.getAttribute('url') : null;
+        const enclosureType = enclosure ? enclosure.getAttribute('type') : null;
+
+        return {
+          title,
+          link,
+          pubDate,
+          description,
+          category,
+          enclosureUrl,
+          enclosureType
+        };
+      });
+
+      renderFeed();
+    } catch (err) {
+      console.error('Erreur chargement flux:', err);
+      container.innerHTML = `
+        <div style="text-align: center; padding: 30px; background: rgba(239, 68, 68, 0.08); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
+          <p style="color: #dc2626; font-weight: 600; margin: 0 0 8px;">Impossible de synchroniser le flux en direct.</p>
+          <p style="font-size: 0.9rem; margin: 0 0 14px; color: var(--text);">Vous pouvez consulter directement le fichier brut XML :</p>
+          <a href="../feed.xml" class="flux-btn flux-btn-primary">Ouvrir feed.xml ↗</a>
+        </div>
+      `;
+    } finally {
+      container.setAttribute('aria-busy', 'false');
+    }
+  }
+
+  // Rendu de la liste d'articles filtrée
+  function renderFeed() {
+    const q = currentQuery.toLowerCase().trim();
+    const filtered = feedItems.filter(item => {
+      const matchFilter = (currentFilter === 'all') ||
+        (currentFilter === 'SEM-26-003' && (item.category.includes('SEM') || item.title.includes('SEM') || item.description.includes('SEM') || item.title.includes('CCE') || item.title.includes('mineur'))) ||
+        (currentFilter === 'Communiqués' && (item.category.includes('Communiqué') || item.title.includes('Communiqué'))) ||
+        (currentFilter === 'Preuve' && (item.category.includes('Preuve') || item.category.includes('Officiel') || item.title.includes('Attestation') || item.title.includes('mineur'))) ||
+        (currentFilter === 'Enquête' && (item.category.includes('Enquête') || item.title.includes('Enquête') || item.title.includes('Partis'))) ||
+        (currentFilter === 'Environnement' && (item.category.includes('Environnement') || item.title.includes('Tourbière') || item.title.includes('Stablex')));
+
+      if (!matchFilter) return false;
+      if (!q) return true;
+
+      return item.title.toLowerCase().includes(q) ||
+             item.description.toLowerCase().includes(q) ||
+             item.category.toLowerCase().includes(q);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--muted, #64748b);">
+          <p style="font-size: 1.1rem; margin: 0 0 6px;">Aucun article ne correspond à votre recherche.</p>
+          <p style="font-size: 0.88rem; margin: 0;">Essayez d'autres mots-clés ou réinitialisez les filtres.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const isImage = item.enclosureUrl && (item.enclosureType?.startsWith('image/') || /\.(png|webp|jpg|jpeg)$/i.test(item.enclosureUrl));
+      
+      return `
+        <article class="flux-card">
+          <div class="flux-card-header">
+            <span class="flux-card-date">${formatDate(item.pubDate)}</span>
+            <span class="flux-card-badge">${escapeHtml(item.category)}</span>
+          </div>
+          <h2 class="flux-card-title">
+            <a href="${escapeHtml(item.link)}">${escapeHtml(item.title)}</a>
+          </h2>
+          ${isImage ? `
+            <a href="${escapeHtml(item.enclosureUrl)}" target="_blank" rel="noopener noreferrer">
+              <img src="${escapeHtml(item.enclosureUrl)}" alt="${escapeHtml(item.title)}" class="flux-card-thumb" loading="lazy">
+            </a>
+          ` : ''}
+          <p class="flux-card-desc">${escapeHtml(item.description)}</p>
+          <div class="flux-card-footer">
+            <a href="${escapeHtml(item.link)}" class="flux-btn flux-btn-primary" style="font-size: 0.82rem;">
+              <span>Consulter la source</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <button class="flux-btn btn-share" type="button" data-title="${escapeHtml(item.title)}" data-url="${escapeHtml(item.link)}" style="font-size: 0.82rem;" title="Compartir">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>Compartir</span>
+            </button>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Événements de partage
+    container.querySelectorAll('.btn-share').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const title = btn.getAttribute('data-title');
+        const url = btn.getAttribute('data-url');
+        if (navigator.share) {
+          navigator.share({ title, url }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(url).then(() => {
+            const span = btn.querySelector('span');
+            const oldText = span.textContent;
+            span.textContent = 'Copié !';
+            setTimeout(() => { span.textContent = oldText; }, 2000);
+          });
+        }
+      });
+    });
+  }
+
+  // Export OPML
+  function exportOpml() {
+    const opmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Flux Officiels et Veille Citoyenne — William Guindon</title>
+    <dateCreated>${new Date().toUTCString()}</dateCreated>
+    <ownerName>William Guindon</ownerName>
+  </head>
+  <body>
+    <outline text="William Guindon (Actualités &amp; Dossier SEM-26-003)" type="rss" xmlUrl="https://williamguindon.me/feed.xml" htmlUrl="https://williamguindon.me/" category="Environnement, Droit international"/>
+    <outline text="Commission de Coopération Environnementale (CCE / CEC)" type="rss" xmlUrl="https://www.cec.org/feed/" htmlUrl="https://www.cec.org" category="Droit international, ACEUM"/>
+    <outline text="Veille en direct modifications cec.org SEM-26-003 (Folo)" type="rss" xmlUrl="https://folo.is/feed/1320323670668607488/rss" htmlUrl="https://folo.is/feed/1320323670668607488" category="Droit international, ACEUM, Veille en direct"/>
+  </body>
+</opml>`;
+
+    const blob = new Blob([opmlContent], { type: 'text/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'williamguindon-feeds.opml';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Événements
+  searchInput.addEventListener('input', e => {
+    currentQuery = e.target.value;
+    renderFeed();
+  });
+
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
+      });
+      pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
+      currentFilter = pill.getAttribute('data-filter');
+      renderFeed();
+    });
+  });
+
+  refreshBtn.addEventListener('click', loadFeed);
+  exportOpmlBtn.addEventListener('click', exportOpml);
+
+  // Initialisation
+  loadFeed();
+})();
+</script>
+
+<!-- Pied de page global -->
+<footer class="site-footer" role="contentinfo">
+  <div class="wrap footer-wrap">
+    <div class="footer-col">
+      <h3>William Guindon</h3>
+      <p>
+          environnementale (CCE) el 16 de octubre de 2026. Solicita el rechazo o el aplazamiento invocando la
+        </p>
+      <p><a href="../statut-mineur.html">Statut légal de citoyen mineur (15 ans)</a> · <a href="../vie-privee-parents.html">Rôle des parents</a></p>
+    </div>
+    <div class="footer-col">
+      <h3>Accès direct</h3>
+      <ul>
+        <li><a href="../registre-cce-sem26003.html">Registre documentaire SEM-26-003</a></li>
+        <li><a href="live.html">Compte à rebours de l'échéance CCE</a></li>
+        <li><a href="flux.html">Flux RSS &amp; Veille en direct</a></li>
+        <li><a href="presse.html">Espace Prensa &amp; Kit Média</a></li>
+        <li><a href="ai.html">Espace IA &amp; LLM</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Transparence &amp; Cadre</h3>
+      <ul>
+        <li><a href="politiques.html">Registre des politiques</a></li>
+        <li><a href="dependances-licences.html">Dépendances &amp; Licences tierces</a></li>
+        <li><a href="privacy.html">Política de privacidad</a></li>
+        <li><a href="terms.html">Términos de uso</a></li>
+        <li><a href="deontologie.html">Charte de déontologie</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="wrap">
+      <p>© 2026 William Guindon. Contenido puesto a disposición bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>. Code source et dépendances libres selon leurs licences respectives (MIT, Apache-2.0, MPL-2.0).</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

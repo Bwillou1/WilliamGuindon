@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<script src="../assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de disponibilidad y anomalías - William Guindon</title>
+<meta name="description" content="Disponibilidad técnica por día, registro público de defectos e historial de parches de williamguindon.me.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://williamguindon.me/es/statut.html">
+<link rel="alternate" hreflang="fr-CA" href="https://williamguindon.me/statut.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/statut.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/statut.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/statut.html">
+  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+
+<meta name="theme-color" content="#121316">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="William Guindon — Disponibilité &amp; Anomalies">
+<meta property="og:title" content="Disponibilité &amp; Registre des anomalies — William Guindon">
+<meta property="og:description" content="Suivi journalier de l'infrastructure, anomalies classées par criticité et historique des correctifs de williamguindon.me.">
+<meta property="og:url" content="https://williamguindon.me/statut.html">
+<meta property="og:image" content="https://williamguindon.me/og-image.jpg">
+
+<style>
+  :root {
+    --bg-page: #121316;
+    --bg-card: #17181c;
+    --border-card: #272a31;
+    --border-cell: #20232a;
+    --text-head: #ffffff;
+    --text-body: #d1d5db;
+    --text-muted: #8b929e;
+    --text-faint: #59616e;
+    --color-green: #10b981;
+    --color-yellow: #eab308;
+    --color-orange: #f97316;
+    --color-red: #ef4444;
+    --color-purple: #a855f7;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-body);
+    font-family: var(--font);
+    line-height: 1.5;
+    padding: 36px 16px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 760px;
+  }
+
+  /* Barre supérieure : Marque à gauche, Signaler un bogue à droite */
+  .top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-head);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-monogram {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #22252c;
+    border: 1px solid var(--border-card);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-head);
+  }
+
+  .btn-report {
+    background: #ffffff;
+    color: #000000;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-report:hover {
+    opacity: 0.9;
+  }
+
+  /* Légende de sévérité */
+  .status-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.green { background: var(--color-green); }
+  .legend-dot.yellow { background: var(--color-yellow); }
+  .legend-dot.orange { background: var(--color-orange); }
+  .legend-dot.red { background: var(--color-red); }
+  .legend-dot.purple { background: var(--color-purple); }
+
+  /* Carte générale */
+  .card-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .card-header-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-head);
+    letter-spacing: -0.01em;
+  }
+
+  .card-header-subtitle {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Sélecteur de période / mois */
+  .date-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    user-select: none;
+  }
+
+  .date-switcher-btn {
+    background: #1e2026;
+    border: 1px solid var(--border-card);
+    color: var(--text-muted);
+    border-radius: 5px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .date-switcher-btn:hover {
+    color: var(--text-head);
+    background: #252830;
+  }
+
+  /* Lignes de services et barres de jours */
+  .system-service-row {
+    margin-bottom: 26px;
+    position: relative;
+  }
+
+  .system-service-row:last-child {
+    margin-bottom: 6px;
+  }
+
+  .system-service-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+  }
+
+  .system-service-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-head);
+    font-weight: 500;
+  }
+
+  .check-icon {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--color-green);
+    font-size: 11px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  .uptime-percentage {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uptime-bar {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 24px;
+    position: relative;
+  }
+
+  /* Chaque trait vertical représente exactement 1 jour */
+  .day-tick {
+    flex: 1;
+    height: 22px;
+    border-radius: 2px;
+    background: var(--color-green);
+    cursor: pointer;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+    position: relative;
+  }
+
+  .day-tick:hover, .day-tick.active {
+    transform: scaleY(1.35);
+    opacity: 0.9;
+    z-index: 10;
+  }
+
+  .day-tick.yellow { background: var(--color-yellow); }
+  .day-tick.orange { background: var(--color-orange); }
+  .day-tick.red { background: var(--color-red); }
+  .day-tick.purple { background: var(--color-purple); }
+
+  /* Curseur info-bulle dynamique lors du survol */
+  .tick-hover-card {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1d2027;
+    border: 1px solid var(--border-card);
+    border-radius: 6px;
+    padding: 7px 11px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    color: var(--text-head);
+    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    z-index: 50;
+    display: none;
+  }
+
+  .tick-hover-card::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -4px;
+    border-width: 4px;
+    border-style: solid;
+    border-color: #1d2027 transparent transparent transparent;
+  }
+
+  /* Grille Calendrier */
+  .calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border-cell);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .calendar-table th,
+  .calendar-table td {
+    border: 1px solid var(--border-cell);
+    text-align: center;
+    vertical-align: middle;
+    width: 14.285%;
+  }
+
+  .calendar-table th {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 12px 0;
+    background: #141518;
+  }
+
+  .calendar-table td {
+    height: 52px;
+    font-size: 0.94rem;
+    color: var(--text-body);
+    position: relative;
+    padding: 4px;
+  }
+
+  .calendar-table td.empty {
+    color: transparent;
+  }
+
+  /* Cercle autour des jours ayant eu une anomalie */
+  .badge-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .badge-circle:hover {
+    transform: scale(1.15);
+  }
+
+  .badge-circle.yellow {
+    border: 2px solid var(--color-yellow);
+    color: #fef08a;
+    background: rgba(234, 179, 8, 0.12);
+  }
+
+  .badge-circle.orange {
+    border: 2px solid var(--color-orange);
+    color: #fed7aa;
+    background: rgba(249, 115, 22, 0.12);
+  }
+
+  .badge-circle.red {
+    border: 2px solid var(--color-red);
+    color: #fecaca;
+    background: rgba(239, 68, 68, 0.12);
+  }
+
+  .badge-circle.purple {
+    border: 2px solid var(--color-purple);
+    color: #e9d5ff;
+    background: rgba(168, 85, 247, 0.18);
+  }
+
+  /* Boîte de détails révélée uniquement au clic */
+  .incident-details-box {
+    margin-top: 18px;
+    padding: 16px 20px;
+    background: #131418;
+    border: 1px solid var(--border-card);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: none;
+  }
+
+  .incident-details-box.active {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .severity-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .severity-pill.yellow {
+    background: rgba(234, 179, 8, 0.15);
+    color: var(--color-yellow);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+  }
+
+  .severity-pill.orange {
+    background: rgba(249, 115, 22, 0.15);
+    color: var(--color-orange);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+  }
+
+  .severity-pill.red {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-red);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .severity-pill.purple {
+    background: rgba(168, 85, 247, 0.18);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.38);
+  }
+
+  .severity-pill.green {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--color-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .incident-resolution {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #a7f3d0;
+    background: rgba(16, 185, 129, 0.08);
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 3px solid var(--color-green);
+  }
+
+  /* Indication discrète invitant au clic */
+  .click-hint {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  /* Pied de page */
+  .page-footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.84rem;
+    color: var(--text-faint);
+  }
+
+  .page-footer a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .page-footer a:hover {
+    color: var(--text-head);
+  }
+
+  /* Section Contacto & Signalement GitHub (2 options) */
+  .contact-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 28px;
+  }
+
+  .contact-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+
+  .contact-card {
+    background: #14161b;
+    border: 1px solid #232730;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-2px);
+    border-color: #3b4252;
+  }
+
+  .contact-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .contact-card-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .contact-card-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #252830;
+    color: var(--text-muted);
+  }
+
+  .contact-card-title {
+    color: var(--text-head);
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.35;
+  }
+
+  .contact-card-desc {
+    color: var(--text-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  .contact-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-bug {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+
+  .btn-bug:hover {
+    background: rgba(239, 68, 68, 0.25);
+    color: #fff;
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
+  .btn-question {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+  }
+
+  .btn-question:hover {
+    background: rgba(59, 130, 246, 0.25);
+    color: #fff;
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  /* Boîte de clause de sécurité stricte */
+  .security-warning-box {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 10px;
+  }
+
+  .security-warning-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fcd34d;
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+  }
+
+  .security-warning-text {
+    color: #d1d5db;
+    font-size: 0.83rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .security-warning-text a {
+    color: #fcd34d;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .security-warning-text a:hover {
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- En-tête : Marque & Bouton Signaler un bogue -->
+  <header class="top-header">
+    <a href="index.html" class="brand-logo" title="Retour à l'accueil de williamguindon.me">
+      <span class="brand-monogram">WG</span>
+      <span>William Guindon</span>
+    </a>
+    <a href="#contact-options" class="btn-report" title="Ouvrir les options de contact ou de signalement GitHub">
+      <span>Signaler un bogue / Écrire</span>
+    </a>
+  </header>
+
+  <!-- Légende des couleurs par sévérité -->
+  <div class="status-legend" aria-label="Légende des états">
+    <span class="legend-item"><span class="legend-dot green"></span> Tout bon</span>
+    <span class="legend-item"><span class="legend-dot yellow"></span> Moyen</span>
+    <span class="legend-item"><span class="legend-dot orange"></span> Important</span>
+    <span class="legend-item"><span class="legend-dot red"></span> Critique</span>
+    <span class="legend-item"><span class="legend-dot purple"></span> Site indisponible</span>
+  </div>
+
+  <!-- 1. Carte : Disponibilité des systèmes (avec barres journalières interactives) -->
+  <section class="card-panel">
+    <div class="card-header-row">
+      <div>
+        <h1 class="card-header-title">Disponibilité des systèmes</h1>
+        <p class="card-header-subtitle">Historique des 60 derniers jours de production (1 trait = 1 jour)</p>
+      </div>
+      <div class="date-switcher">
+        <button class="date-switcher-btn" type="button" aria-label="Période précédente" onclick="shiftDayWindow(-1)">‹</button>
+        <span id="uptimeWindowLabel">8 sept. – 6 nov. 2026</span>
+        <button class="date-switcher-btn" type="button" aria-label="Période suivante" onclick="shiftDayWindow(1)">›</button>
+      </div>
+    </div>
+
+    <!-- Indicateur du Bot Sentinelle & Ahrefs -->
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:#14161b; border:1px solid #232730; border-radius:8px; padding:10px 14px; margin-bottom:20px; font-size:0.83rem;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 6px #10b981;" aria-hidden="true"></span>
+        <strong style="color:var(--text-head);">Bot Sentinelle &amp; Surveillance Ahrefs</strong>
+        <span style="color:var(--text-muted);">· Audit quotidien automatisé</span>
+      </div>
+      <div id="sentinelStatusLabel" style="color:#d8b4fe;">Dernier contrôle : 6 nov. 2026 · Rétabli après indisponibilité</div>
+    </div>
+
+    <!-- Composant 1 : Site web & Carnet de bord -->
+    <div class="system-service-row">
+      <div class="system-service-meta">
+        <div class="system-service-name">
+          <div class="check-icon" aria-hidden="true">✓</div>
+          <span>Site web &amp; Carnet de bord (williamguindon.me)</span>
+        </div>
+        <div class="uptime-percentage">99.93% disponibilité</div>
+      </div>
+      <div class="uptime-bar" id="uptimeBarWeb" aria-label="Historique des 60 jours pour le site web"></div>
+    </div>
+
+    <!-- Composant 2 : Registre documentaire CCE -->
+    <div class="system-service-row">
+      <div class="system-service-meta">
+        <div class="system-service-name">
+          <div class="check-icon" aria-hidden="true">✓</div>
+          <span>Registre documentaire CCE &amp; Visionneuses PDF hors-ligne</span>
+        </div>
+        <div class="uptime-percentage">99.96% disponibilité</div>
+      </div>
+      <div class="uptime-bar" id="uptimeBarCce" aria-label="Historique des 60 jours pour le registre"></div>
+    </div>
+
+    <!-- Composant 3 : API Cloudflare Worker -->
+    <div class="system-service-row">
+      <div class="system-service-meta">
+        <div class="system-service-name">
+          <div class="check-icon" aria-hidden="true">✓</div>
+          <span>API Cloudflare Worker, status.json &amp; Flux RSS</span>
+        </div>
+        <div class="uptime-percentage">99.94% disponibilité</div>
+      </div>
+      <div class="uptime-bar" id="uptimeBarApi" aria-label="Historique des 60 jours pour l'API"></div>
+    </div>
+
+    <div class="click-hint">Survolez un jour pour voir son état, ou cliquez dessus pour ouvrir son compte-rendu complet.</div>
+  </section>
+
+  <!-- 2. Carte : Calendrier des anomalies & correctifs (allant jusqu'à décembre 2026) -->
+  <section class="card-panel">
+    <div class="card-header-row">
+      <div>
+        <h2 class="card-header-title">Calendrier des anomalies &amp; correctifs</h2>
+        <p class="card-header-subtitle">Cliquez sur une date entourée pour afficher la fiche de l'incident</p>
+      </div>
+      <div class="date-switcher">
+        <button class="date-switcher-btn" type="button" aria-label="Mois précédent" onclick="prevMonth()">‹</button>
+        <span id="calendarMonthLabel">Nov. 2026</span>
+        <button class="date-switcher-btn" type="button" aria-label="Mois suivant" onclick="nextMonth()">›</button>
+      </div>
+    </div>
+
+    <div id="calendarContainer"></div>
+
+    <div class="click-hint">Cliquez sur un jour pour consulter la fiche technique du correctif.</div>
+  </section>
+
+  <!-- Boîte de détails (affichée uniquement au clic sur un jour ou une barre) -->
+  <section class="incident-details-box" id="incidentDetailsBox" aria-live="polite">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; flex-wrap:wrap; gap:8px;">
+      <strong id="incidentDetailsDate" style="color:var(--text-head); font-size:1rem;"></strong>
+      <span id="incidentSeverityBadge" class="severity-pill"></span>
+    </div>
+    <div id="incidentTitle" style="color:var(--text-head); font-weight:600; margin-bottom: 6px;"></div>
+    <p id="incidentDetailsDesc" style="color:var(--text-body); font-size:0.88rem;"></p>
+    <div id="incidentResolutionBox" class="incident-resolution"></div>
+  </section>
+
+  <!-- Info-bulle flottante au survol -->
+  <div id="tickHoverTooltip" class="tick-hover-card"></div>
+
+  <!-- 3. Section : Deux options de contact & Signalement public (Modèles GitHub) -->
+  <section id="contact-options" class="contact-panel">
+    <div class="card-header-row" style="margin-bottom:6px;">
+      <div>
+        <h2 class="card-header-title" style="font-size:1.15rem;">Nous contacter ou signaler une anomalie</h2>
+        <p class="card-header-subtitle">Deux options publiques via notre système de suivi GitHub officiel — ouvrez un modèle prêt à remplir en un clic</p>
+      </div>
+    </div>
+
+    <!-- Grille des 2 options -->
+    <div class="contact-options-grid">
+      <!-- Option 1 : Problème technique / Bogue -->
+      <div class="contact-card">
+        <div>
+          <div class="contact-card-header">
+            <span class="contact-card-icon" style="background:rgba(239, 68, 68, 0.15); color:var(--color-red); display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+            <span class="contact-card-badge">Option 1</span>
+          </div>
+          <h3 class="contact-card-title">
+          Informar un problema técnico en el sitio.
+        </h3>
+          <p class="contact-card-desc">
+          ¿Una página inaccesible, un error de visualización en un teléfono inteligente, un lector de PDF
+        </p>
+        </div>
+        <a href="https://github.com/Bwillou1/WilliamGuindon/issues/new?template=bogue_site.yml" target="_blank" rel="noopener noreferrer" class="contact-btn btn-bug">
+          <span>Ouvrir le modèle de bogue</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+      </div>
+
+      <!-- Option 2 : Question publique -->
+      <div class="contact-card">
+        <div>
+          <div class="contact-card-header">
+            <span class="contact-card-icon" style="background:rgba(59, 130, 246, 0.15); color:#60a5fa; display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+            <span class="contact-card-badge">Option 2</span>
+          </div>
+          <h3 class="contact-card-title">
+          Haga una pregunta pública (Registrarse y presentar)
+        </h3>
+          <p class="contact-card-desc">
+          ¿Una pregunta general o solicitud documental que se pueda hacer pública? Nada que sea confidencial,
+        </p>
+        </div>
+        <a href="https://github.com/Bwillou1/WilliamGuindon/issues/new?template=question_publique.yml" target="_blank" rel="noopener noreferrer" class="contact-btn btn-question">
+          <span>Ouvrir le modèle de question</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Encadré strict de clauses de sécurité -->
+    <div class="security-warning-box">
+      <div class="security-warning-header">
+        <span class="security-warning-icon" aria-hidden="true" style="display:flex; align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        <strong>Clause stricte de confidentialité &amp; Sécurité — GitHub n'est pas un canal sécurisé</strong>
+      </div>
+      <p class="security-warning-text">
+          Tenga en cuenta: todas las discusiones y problemas abiertos en GitHub son estrictamente públicos,
+        </p>
+      <p class="security-warning-text" style="margin-top:8px;">
+          Nuestras disposiciones de seguridad no son equivalentes a GitHub: los informes de vulnerabilidades
+        </p>
+    </div>
+  </section>
+
+  <!-- Pied de page -->
+  <footer class="page-footer">
+    <p>Surveillance technique et traçabilité opérées pour l'infrastructure publique de William Guindon.</p>
+    <p style="margin-top: 6px;"><a href="index.html">← Revenir au site officiel</a> · <a href="../feed.xml">Flux RSS</a> · <a href="#contact-options">Signaler un bogue / Poser une question</a> · <a href="../opsec.html">Canaux sécurisés OPSEC</a></p>
+  </footer>
+</div>
+
+<script>
+  /* ---------- Données réelles des anomalies (classées par sévérité) ---------- */
+  var incidentsByDate = {
+    // 2 nov. 2026 (Contrôle automatique sentinelle)
+    '2026-11-02': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Audit sentinelle & Suivi Ahrefs',
+      summary: 'Avertissement mineur sur les temps de réponse ou balises d\'indexation.',
+      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
+      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
+    },
+
+    // 28 oct. 2026 (Contrôle automatique sentinelle)
+    '2026-10-28': {
+      severity: 'green',
+      severityLabel: 'Tout bon',
+      title: 'Audit sentinelle & Suivi Ahrefs',
+      summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
+      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
+      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
+    },
+
+    // Septembre 2026
+    '2026-09-24': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Anomalie de syntaxe Schema.org',
+      summary: 'Bloc JSON-LD dupliqué causant une erreur de validation Google Rich Results.',
+      desc: 'Lors de l\'audit automatisé de structure SEO, une double déclaration de balises d\'auteur a été détectée sur la page principale.',
+      resolution: 'Nettoyage des balises dupliquées et validation du format structuré.'
+    },
+    '2026-09-27': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Régression du menu mobile tactile',
+      summary: 'Tiroir de navigation bloqué lors d\'un balayage tactile sous iOS Safari.',
+      desc: 'Le tiroir coulissant refusait de se rétracter lors de balayages répétés sur mobile, bloquant temporairement la navigation interne.',
+      resolution: 'Refonte complète du panneau en CSS natif avec fermeture tactile fiabilisée.'
+    },
+    '2026-09-28': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Superposition z-index des menus déroulants',
+      summary: 'Les sous-menus déroulants passaient sous le bandeau d\'alerte supérieur.',
+      desc: 'Un conflit d\'empilement CSS masquait les derniers éléments des sous-menus de navigation.',
+      resolution: 'Ajustement strict des strates de z-index (header: 1000, dropdown: 1050).'
+    },
+    '2026-09-30': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Défilement restreint du panneau de notifications',
+      summary: 'Impossibilité de faire défiler le panneau sur les écrans étroits.',
+      desc: 'L\'absence de règle de défilement tactile empêchait d\'atteindre les notifications les plus anciennes sur smartphone.',
+      resolution: 'Ajout de overflow-y: auto et activation du défilement inertiel natif.'
+    },
+
+    // Octobre 2026
+    '2026-10-05': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Obfuscation des liens de courriel mailto',
+      summary: 'Le filtre de sécurité masquait les adresses de contact et brisait les liens.',
+      desc: 'L\'activation automatique de la protection anti-moissonnage Cloudflare remplaçait les adresses de contact direct par des scripts bloqués par la CSP.',
+      resolution: 'Protection explicite des ancres et exclusion du masquage sur les courriels officiels.'
+    },
+    '2026-10-08': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Blocage de sécurité du visualiseur 360',
+      summary: 'La politique Content-Security-Policy restreignait les frames de la visionneuse.',
+      desc: 'L\'autotour panoramique 360 était bloqué par l\'absence de domaine dans la directive frame-src.',
+      resolution: 'Ajustement précis des autorisations d\'en-têtes HTTP de sécurité.'
+    },
+    '2026-10-09': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Distorsion graphique WebGL & Conflit de cache',
+      summary: 'Étirements visuels sur certains GPU et désynchronisation du service worker.',
+      desc: 'Sur certains processeurs graphiques intégrés, le calcul des shaders provoquait des étirements géométriques.',
+      resolution: 'Optimisation de la précision du fragment shader et forçage de dimensions en puissances de deux.'
+    },
+    '2026-10-12': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Cookies tiers non sollicités',
+      summary: 'Intégration vidéo chargeant des scripts tiers sans clic préalable.',
+      desc: 'Une intégration externe déposait des cookies sans recueil préalable du consentement de l\'utilisateur.',
+      resolution: 'Déploiement d\'un bouclier 2-clics strict sans aucun pistage automatique.'
+    },
+    '2026-10-15': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Saturation de la passerelle IA sous affluence',
+      summary: 'Pic de trafic provoquant des dépassements de quotas et des latences.',
+      desc: 'Un volume important de requêtes simultanées a entraîné des temps de réponse élevés sur le modèle d\'assistance.',
+      resolution: 'Bascule automatique sur les clusters haute disponibilité et activation du mode affluence.'
+    },
+    '2026-10-18': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Désalignement textuel dans le lecteur PDF',
+      summary: 'La surbrillance et la sélection textuelle sur les documents officiels étaient décalées.',
+      desc: 'Dans le lecteur haute fidélité, la couche de sélection de texte était décalée de plusieurs millimètres par rapport aux glyphes affichés.',
+      resolution: 'Recalcul géométrique des coordonnées de la couche texte et alignement des matrices de rendu.'
+    },
+    '2026-10-19': {
+      severity: 'red',
+      severityLabel: 'Critique',
+      title: 'Rechargement brutal de page & échec WASM',
+      summary: 'Le Service Worker rechargeait brutalement la page active en cours de lecture.',
+      desc: 'L\'écouteur d\'événement de mise à jour du cache PWA déclenchait un rechargement brutal sans avertissement, et le moteur WASM hors-ligne ne s\'initialisait pas.',
+      resolution: 'Suppression du rechargement forcé automatique et rétablissement du module WASM local.'
+    },
+    '2026-10-21': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Alerte sur les paramètres d\'URL',
+      summary: 'Manque d\'échappement strict sur certains paramètres lus depuis l\'URL.',
+      desc: 'Une inspection de sécurité automatisée a signalé un risque potentiel lors de l\'injection de paramètres de recherche dans le DOM.',
+      resolution: 'Remplacement systématique par textContent et assainissement strict des entrées.'
+    },
+    '2026-10-22': {
+      severity: 'red',
+      severityLabel: 'Critique',
+      title: 'Boucles de redirection HTTP 307 & Cache d\'erreurs',
+      summary: 'Cloudflare Worker renvoyait des boucles 307 et mettait en cache des erreurs serveur.',
+      desc: 'Une règle d\'acheminement du Worker provoquait des redirections en boucle et servait une page d\'erreur 500 en cache CDN.',
+      resolution: 'Rétablissement de la résolution directe vers index.html et application d\'en-têtes no-store sur les erreurs.'
+    },
+    '2026-10-24': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Redirection intempestive de la version texte',
+      summary: 'La version texte ultra-légère subissait une redirection non désirée.',
+      desc: 'Un script de détection de résolution d\'écran redirigeait automatiquement la page txt.html vers l\'accueil graphique.',
+      resolution: 'Suppression immédiate du script de redirection pour maintenir la version texte 100% autonome.'
+    },
+    '2026-10-25': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Écran noir anti-framing & Décalage barre fixe',
+      summary: 'Écran noir sur cadres légitimes et masquage des titres sous le menu.',
+      desc: 'La protection anti-framing affichait un écran noir d\'erreur sur les lecteurs intégrés, et les ancres masquaient les titres sous la barre fixe.',
+      resolution: 'Remplacement du blocage par une détection ciblée et ajout de scroll-margin-top sur les titres.'
+    },
+    '2026-10-26': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Gel de la boucle d\'animation Canvas',
+      summary: 'Exception JavaScript non interceptée bloquant le rendu visuel dynamique.',
+      desc: 'Une erreur de contexte WebGL interrompait la boucle de rafraîchissement d\'image sur certains navigateurs.',
+      resolution: 'Encapsulation dans un bloc try/catch et réinitialisation automatique du contexte.'
+    },
+    '2026-10-27': {
+      severity: 'red',
+      severityLabel: 'Critique',
+      title: 'Écran bloquant « Certificat non certifié »',
+      summary: 'Les internautes voulant lire les articles du carnet étaient bloqués par une alerte erronée.',
+      desc: 'Une vérification de certificat fictif s\'interposait entre les visiteurs et les billets du carnet de bord, bloquant l\'accès aux articles.',
+      resolution: 'Suppression complète du filtre bloquant et rétablissement des routes d\'articles du blog.'
+    },
+    '2026-10-29': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Conflit de jeton de déverrouillage & Cache Service Worker',
+      summary: 'Nettoyage prématuré de l\'URL empêchant la synchronisation du déblocage.',
+      desc: 'Le script d\'en-tête effaçait le paramètre de déverrouillage de l\'URL via replaceState avant l\'exécution différée de theme-core.js et sans purger le drapeau du Service Worker, réactivant le verrouillage de réciprocité.',
+      resolution: 'Synchronisation immédiate du déverrouillage avec BroadcastChannel, CacheStorage et priorisation absolue du drapeau d\'immunité locale.'
+    },
+    '2026-10-30': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Gel CPU (MutationObserver / Viewer.js), badge CSS & liens Markdown dans le blog',
+      summary: 'Boucle infinie (« Page ne répondant pas ») à l\'ouverture d\'un article, ovale CSS et URL tronquées.',
+      desc: 'Lors du clic sur une carte de blog.html, l\'injection de l\'image de bannière dans la modale déclenchait le MutationObserver de site-photo-viewer.js qui rappelait Viewer.update() sur .blog-grid et recréait des nœuds .viewer-container en boucle infinie de microtâches (figeant l\'onglet Chrome avec « Page ne répondant pas »). En parallèle, l\'héritage simultané de top et bottom étirait le badge de catégorie en ovale sombre géant, et les tirets bas dans les URL Markdown étaient convertis en italique.',
+      resolution: 'Exclusion stricte de .viewer-container, .blog-grid et des bannières de modale dans site-photo-viewer.js avec anti-rebond (debounce), réinitialisation de top: auto sur le badge et isolation préalable des liens Markdown.'
+    },
+    '2026-10-31': {
+      severity: 'red',
+      severityLabel: 'Critique',
+      title: 'Boucle de redirection infinie SW, gel CPU du blog & agencement des apparitions',
+      summary: 'Chargement infini (i) via Service Worker, blocage de l\'ouverture des articles et masquage des parutions médias.',
+      desc: 'Une désynchronisation entre le drapeau wg-sec-flags du Service Worker et l\'immunité locale dans reciprocite.html, combinée à une variable searchParams non déclarée, enfermait le navigateur dans une boucle de redirection 302 infinie (ERR_TOO_MANY_REDIRECTS) affichant l\'avertissement (i). De plus, une boucle récursive entre MutationObserver et Viewer.js figeait le thread principal lors du clic sur un article de blog.html. Enfin, l\'encadré d\'agenda parlementaire masquait la visibilité des vraies apparitions médiatiques en haut de page et le lien du registre des chartes était enfoui dans un sous-dépliant de navigation.',
+      resolution: 'Retrait de l\'interception de navigation 302 dans sw.js (v193), purge de wg-sec-flags, désactivation du balayage Viewer.js sur le blog, déplacement de l\'agenda parlementaire après la grille des apparitions publiques et mise en avant de 00. Registre des chartes au premier rang du menu.'
+    },
+    '2026-11-01': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Contraste et lisibilité du Hero en mode hivernal',
+      summary: 'Bascule automatique saisonnière et ajustement du contraste sur le panorama enneigé.',
+      desc: 'Au 1er novembre 2026, le déclenchement automatique du modèle 3D hivernal a affiché le paysage enneigé de la tourbière. Le fond blanc diminuait la lisibilité du texte de présentation.',
+      resolution: 'Préservation du panorama lumineux d\'origine et ajout d\'un encadré en verre dépoli vert givré avec effet de flou pour une lisibilité parfaite.'
+    },
+    '2026-11-05': {
+      severity: 'purple',
+      severityLabel: 'Site indisponible',
+      title: 'Indisponibilité de la navigation mobile (panneau blanc) & superposition du bandeau sur iPad/ordinateur',
+      summary: 'Menu mobile ouvrant un panneau blanc inutilisable, superposition de la barre de navigation et masquage de la bannière sur iPad.',
+      desc: 'Sur smartphone, l\'ouverture du menu hamburger affichait un panneau latéral entièrement blanc empêchant toute navigation entre les pages du site. En parallèle, sur iPad et écrans intermédiaires, la bannière de suivi CCE était masquée et les éléments de la barre de navigation se superposaient.',
+      resolution: 'Reconstruction complète du tiroir de navigation mobile multi-panneaux (mmenu), rétablissement de la bannière responsive sur iPad et regroupement dynamique des outils d\'en-tête.'
+    },
+    '2026-11-06': {
+      severity: 'purple',
+      severityLabel: 'Site indisponible',
+      title: 'Indisponibilité de l\'explorateur documentaire (blocage Archive.org 35 s) & bouton menu mobile hors écran',
+      summary: 'Gel de 35 s sur dossier-journalistes.html, bouton menu 3 lignes coupé hors de l\'écran sur mobile et superposition du bouton Chat IA.',
+      desc: 'L\'explorateur des 222 pièces (dossier-journalistes.html) attendait de manière synchrone la réponse de l\'API externe Archive.org (35,39 secondes de latence), laissant la page bloquée sur un écran de chargement. De plus, sur téléphone mobile, le bouton menu à 3 lignes débordait hors du bord droit de l\'écran et la bulle flottante Chat IA restait superposée par-dessus le menu ouvert.',
+      resolution: 'Rendu instantané (0 ms) des 222 pièces depuis l\'index local embarqué avec enrichissement asynchrone en arrière-plan, compactage responsive de l\'en-tête mobile (< 640px), masquage automatique du bouton Chat IA à l\'ouverture du menu et remplacement intégral des émojis par des icônes vectorielles SVG.'
+    }
+  };
+
+  /* Service-specific filter (pour attribuer les anomalies au bon composant) */
+  function getServiceStatusForDate(serviceKey, dateStr) {
+    var inc = incidentsByDate[dateStr];
+    if (!inc) return null;
+
+    if (serviceKey === 'web') {
+      return inc; // Le site web subit tous les incidents de routage/frontend
+    } else if (serviceKey === 'cce') {
+      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06') {
+        return inc;
+      }
+      return null;
+    } else if (serviceKey === 'api') {
+      if (dateStr === '2026-10-15' || dateStr === '2026-10-22') {
+        return inc;
+      }
+      return null;
+    }
+    return null;
+  }
+
+  /* ---------- 1. Génération des 60 traits (1 trait = 1 jour exact) ---------- */
+  var tooltipEl = document.getElementById('tickHoverTooltip');
+
+  function renderDayTicks(containerId, serviceKey) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Fenêtre des 60 derniers jours se terminant le 6 novembre 2026
+    var endDate = new Date(2026, 10, 6); // 6 nov. 2026
+    var totalDays = 60;
+
+    for (var i = totalDays - 1; i >= 0; i--) {
+      var d = new Date(endDate);
+      d.setDate(endDate.getDate() - i);
+
+      var year = d.getFullYear();
+      var month = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      var dateKey = year + '-' + month + '-' + day;
+
+      var tick = document.createElement('div');
+      tick.className = 'day-tick';
+      tick.setAttribute('data-date', dateKey);
+
+      var inc = getServiceStatusForDate(serviceKey, dateKey);
+      if (inc) {
+        tick.classList.add(inc.severity);
+        tick.setAttribute('data-severity', inc.severityLabel);
+        tick.setAttribute('data-title', inc.title);
+        tick.setAttribute('data-summary', inc.summary);
+      } else {
+        tick.setAttribute('data-severity', 'Tout bon');
+        tick.setAttribute('data-title', 'Opérationnel');
+        tick.setAttribute('data-summary', 'Aucun incident signalé');
+      }
+
+      // Format affichage date en français
+      var dateHuman = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' });
+      tick.setAttribute('data-human-date', dateHuman);
+
+      // Survol : affiche le curseur info-bulle dynamique
+      tick.addEventListener('mouseenter', handleTickHover);
+      tick.addEventListener('mouseleave', handleTickLeave);
+
+      // Clic : ouvre la fiche d'incident détaillée en dessous
+      tick.addEventListener('click', (function(dKey) {
+        return function() {
+          showIncidentDetail(dKey);
+        };
+      })(dateKey));
+
+      container.appendChild(tick);
+    }
+  }
+
+  function handleTickHover(e) {
+    var tick = e.currentTarget;
+    var rect = tick.getBoundingClientRect();
+    var humanDate = tick.getAttribute('data-human-date');
+    var severity = tick.getAttribute('data-severity');
+    var summary = tick.getAttribute('data-summary');
+
+    var dotColor = '#10b981';
+    if (severity === 'Moyen') dotColor = '#eab308';
+    if (severity === 'Important') dotColor = '#f97316';
+    if (severity === 'Critique') dotColor = '#ef4444';
+    if (severity === 'Site indisponible') dotColor = '#a855f7';
+
+    tooltipEl.innerHTML = '<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:' + dotColor + '; margin-right:5px;"></span>' +
+                          '<strong>' + humanDate + '</strong> · ' + severity + ' : ' + summary;
+
+    tooltipEl.style.display = 'block';
+    var tipRect = tooltipEl.getBoundingClientRect();
+    tooltipEl.style.left = (rect.left + rect.width / 2) + 'px';
+    tooltipEl.style.top = (rect.top - tipRect.height - 8 + window.scrollY) + 'px';
+  }
+
+  function handleTickLeave() {
+    tooltipEl.style.display = 'none';
+  }
+
+  renderDayTicks('uptimeBarWeb', 'web');
+  renderDayTicks('uptimeBarCce', 'cce');
+  renderDayTicks('uptimeBarApi', 'api');
+
+  function shiftDayWindow(step) {
+    var lbl = document.getElementById('uptimeWindowLabel');
+    if (step > 0) {
+      lbl.textContent = 'Novembre 2026 – En cours';
+    } else {
+      lbl.textContent = '8 sept. – 6 nov. 2026';
+    }
+  }
+
+  /* ---------- 2. Calendrier interactif (Septembre à Décembre 2026) ---------- */
+  var monthsData = {
+    '2026-09': {
+      label: 'Sept. 2026',
+      firstDayOffset: 1, // 1er sept 2026 = Mardi (index 1 si L=0)
+      daysInMonth: 30
+    },
+    '2026-10': {
+      label: 'Oct. 2026',
+      firstDayOffset: 3, // 1er oct 2026 = Jeudi (index 3 si L=0)
+      daysInMonth: 31
+    },
+    '2026-11': {
+      label: 'Nov. 2026',
+      firstDayOffset: 6, // 1er nov 2026 = Dimanche (index 6)
+      daysInMonth: 30
+    },
+    '2026-12': {
+      label: 'Déc. 2026',
+      firstDayOffset: 1, // 1er déc 2026 = Mardi (index 1)
+      daysInMonth: 31
+    }
+  };
+
+  var monthKeysOrder = ['2026-09', '2026-10', '2026-11', '2026-12'];
+  var currentMonthIdx = 2; // Commence sur Novembre 2026
+
+  function renderCalendar(monthKey) {
+    var data = monthsData[monthKey];
+    if (!data) return;
+    document.getElementById('calendarMonthLabel').textContent = data.label;
+
+    var html = '<table class="calendar-table">';
+    html += '<thead><tr><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead>';
+    html += '<tbody><tr>';
+
+    // Cellules vides avant le 1er du mois
+    for (var i = 0; i < data.firstDayOffset; i++) {
+      html += '<td class="empty"></td>';
+    }
+
+    var col = data.firstDayOffset;
+    for (var day = 1; day <= data.daysInMonth; day++) {
+      var dayStr = String(day).padStart(2, '0');
+      var dateKey = monthKey + '-' + dayStr;
+      var inc = incidentsByDate[dateKey];
+
+      if (inc) {
+        html += '<td><span class="badge-circle ' + inc.severity + '" onclick="showIncidentDetail(\'' + dateKey + '\')" title="' + inc.severityLabel + ' : ' + inc.title + '">' + day + '</span></td>';
+      } else {
+        html += '<td onclick="showIncidentDetail(\'' + dateKey + '\')" style="cursor:pointer;" title="Aucun incident">' + day + '</td>';
+      }
+
+      col++;
+      if (col === 7 && day < data.daysInMonth) {
+        html += '</tr><tr>';
+        col = 0;
+      }
+    }
+
+    // Cellules vides après le dernier jour
+    if (col < 7 && col > 0) {
+      for (var j = col; j < 7; j++) {
+        html += '<td class="empty"></td>';
+      }
+    }
+
+    html += '</tr></tbody></table>';
+    document.getElementById('calendarContainer').innerHTML = html;
+  }
+
+  function showIncidentDetail(dateKey) {
+    var box = document.getElementById('incidentDetailsBox');
+    var inc = incidentsByDate[dateKey];
+
+    // Calcul date lisible en français
+    var parts = dateKey.split('-');
+    var dObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    var humanDate = dObj.toLocaleDateString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    document.getElementById('incidentDetailsDate').textContent = humanDate;
+
+    var badge = document.getElementById('incidentSeverityBadge');
+    var titleEl = document.getElementById('incidentTitle');
+    var descEl = document.getElementById('incidentDetailsDesc');
+    var resEl = document.getElementById('incidentResolutionBox');
+
+    if (inc) {
+      badge.className = 'severity-pill ' + inc.severity;
+      badge.textContent = inc.severityLabel;
+      titleEl.textContent = inc.title;
+      descEl.textContent = inc.desc;
+      resEl.style.display = 'block';
+      resEl.innerHTML = '<strong>Correctif :</strong> ' + inc.resolution;
+    } else {
+      badge.className = 'severity-pill green';
+      badge.textContent = 'Tout bon';
+      titleEl.textContent = 'Tous les services étaient opérationnels';
+      descEl.textContent = 'Aucune anomalie ni interruption de service signalée ce jour-là.';
+      resEl.style.display = 'none';
+    }
+
+    box.classList.add('active');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function prevMonth() {
+    if (currentMonthIdx > 0) {
+      currentMonthIdx--;
+      renderCalendar(monthKeysOrder[currentMonthIdx]);
+    }
+  }
+
+  function nextMonth() {
+    if (currentMonthIdx < monthKeysOrder.length - 1) {
+      currentMonthIdx++;
+      renderCalendar(monthKeysOrder[currentMonthIdx]);
+    }
+  }
+
+  renderCalendar(monthKeysOrder[currentMonthIdx]);
+</script>
+
+</body>
+</html>
