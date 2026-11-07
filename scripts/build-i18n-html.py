@@ -2,24 +2,28 @@
 """
 scripts/build-i18n-html.py
 
-Génère automatiquement l'intégralité des 50 pages HTML en anglais (/en/) et en espagnol (/es/)
-à partir des pages françaises de référence et des fichiers de traduction du corpus williamguindon-me-txt.
+Génère automatiquement l'intégralité des pages HTML statiques en anglais (/en/) et en espagnol (/es/)
+à partir des pages françaises de référence, du corpus de traduction williamguindon-me-txt (50 pages)
+et du dictionnaire complémentaire scripts/i18n-extra-translations.json.
 
 Architecture :
-- Français (langue initiale) : racine du site (/ et /*.html) sans aucun préfixe /fr/
-- Anglais : /en/ et /en/*.html
-- Espagnol : /es/ et /es/*.html
+- Français (langue initiale faisant foi) : racine du site (/ et /*.html) avec lang="fr" et hreflang="fr"
+- Anglais : /en/ et /en/*.html avec lang="en"
+- Espagnol : /es/ et /es/*.html avec lang="es"
 """
 
 import os
 import re
 import csv
 import sys
+import json
+import html as htmllib
 
 WORKSPACE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 SOURCE_TXT_DIR = '/Users/williamguindon/Library/Mobile Documents/com~apple~CloudDocs/Téléchargements/workspace-01a1b612-322f-75df-a0d9-1ed4c72a6a68/williamguindon-me-txt'
+EXTRA_JSON_PATH = os.path.join(WORKSPACE_DIR, 'scripts', 'i18n-extra-translations.json')
 
-# Pages exclues de la traduction qui doivent toujours renvoyer vers le fichier français d'origine
+# Pages exclues de la traduction qui doivent toujours renvoyer vers le fichier français d'origine à la racine
 EXCLUDED_PAGES = {
     '11-novembre.html',
     '404.html',
@@ -67,7 +71,10 @@ ROOT_ASSETS = [
     'status.json',
     'apis.json',
     'openapi.json',
-    'security.txt'
+    'security.txt',
+    'manifest.json',
+    'feed.xml',
+    'sitemap.xml'
 ]
 
 COMMON_REPLACEMENTS = {
@@ -87,6 +94,7 @@ COMMON_REPLACEMENTS = {
         'Mobilisation & Action': 'Mobilization & Action',
         'Fermer': 'Close',
         'Fermer le menu': 'Close menu',
+        'Fermer les notifications': 'Close notifications',
         'Ouvrir le menu de navigation': 'Open navigation menu',
         'Navigation principale': 'Main navigation',
         'Contenu mis à disposition sous licence': 'Content made available under license',
@@ -154,6 +162,7 @@ COMMON_REPLACEMENTS = {
         'Mobilisation & Action': 'Movilización & Acción',
         'Fermer': 'Cerrar',
         'Fermer le menu': 'Cerrar menú',
+        'Fermer les notifications': 'Cerrar notificaciones',
         'Ouvrir le menu de navigation': 'Abrir menú de navegación',
         'Navigation principale': 'Navegación principal',
         'Contenu mis à disposition sous licence': 'Contenido puesto a disposición bajo licencia',
@@ -213,12 +222,33 @@ KEY_ENTITIES = [
     'Jerry DeMarco', 'Marcos A. Orellana', 'Madeleine Chenette'
 ]
 
+NESTED_BLOCK_RE = re.compile(
+    r'<(div|p|section|article|table|thead|tbody|tr|ul|ol|dl|h[1-6]|li|blockquote|details|aside|header|footer|nav|form|figure)\b',
+    re.I
+)
+
+
+def norm(s, strip_prefix=False):
+    """Normalise une chaîne HTML ou texte pour comparaison exacte sans faux positifs."""
+    s = re.sub(r'<[^>]+>', ' ', s)
+    s = htmllib.unescape(s)
+    s = s.replace('\u2019', "'").replace('\u2018', "'").replace('\u00a0', ' ').replace('\u202f', ' ')
+    s = ' '.join(s.split()).strip().lower()
+    if strip_prefix:
+        s = re.sub(r'^(\d+[\.\)]\s*|[•▸·✓✔✕✗→➔🔒📄⚖️🏛️🔬📊📡🛡️⚡🌐📥🔗📌]+\s*)', '', s)
+    return s
+
+
 def extract_units(filepath):
     """
     Extrait les unités textuelles sémantiques atomiques d'un fichier Markdown (.txt).
     Sépare strictement :
-    - Les titres (heading)
-    - Les éléments de liste (list_item)
+    - Les titres (heading : # .. ######)
+    - Les en-têtes de tableau (th : ▸ ...)
+    - Les cellules de tableau (td : · ...)
+    - Les légendes de tableau (caption : [Légende] / [Caption] / [Leyenda])
+    - Les citations (quote : > ...)
+    - Les éléments de liste (list_item : - / * / 1..99.)
     - Les paragraphes normaux (p)
     """
     if not os.path.exists(filepath):
@@ -229,7 +259,7 @@ def extract_units(filepath):
     if len(parts) < 2:
         return []
     body = parts[1].split('\n\n══════════════════════════════════════════════════════════════════════════')[0]
-    
+
     units = []
     for block in body.split('\n\n'):
         block = block.strip()
@@ -242,28 +272,99 @@ def extract_units(filepath):
             line_str = line.strip()
             if not line_str:
                 continue
-            # Titres Markdown (#, ##, ###)
             if re.match(r'^#{1,6}\s+', line_str):
                 if current_lines:
                     units.append((current_type, ' '.join(current_lines)))
                     current_lines = []
-                units.append(('heading', line_str))
+                units.append(('heading', re.sub(r'^#{1,6}\s+', '', line_str).strip()))
                 current_type = None
-            # Éléments de liste (- ou * ou 1. ) mais PAS les continuations avec indentation
-            elif re.match(r'^([\-\*]|\d+\.)\s+[^\s\-]', line) and not line.startswith('-   ') and not line.startswith('    '):
+            elif line_str.startswith('▸ '):
+                if current_lines:
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                units.append(('th', line_str[2:].strip()))
+                current_type = None
+            elif line_str.startswith('· '):
+                if current_lines:
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                current_type = 'td'
+                current_lines.append(line_str[2:].strip())
+            elif re.match(r'^\[(Légende|Caption|Leyenda)\]\s*', line_str, re.I):
+                if current_lines:
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                units.append(('caption', re.sub(r'^\[(Légende|Caption|Leyenda)\]\s*', '', line_str, flags=re.I).strip()))
+                current_type = None
+            elif line_str.startswith('> '):
+                if current_lines and current_type != 'quote':
+                    units.append((current_type, ' '.join(current_lines)))
+                    current_lines = []
+                current_type = 'quote'
+                current_lines.append(line_str[2:].strip())
+            elif (
+                re.match(r'^([\-\*]|\d{1,2}\.)\s+[^\s\-]', line)
+                and not line.startswith('-   ')
+                and not line.startswith('    ')
+                and not line_str.startswith('- Pas de Modification')
+            ):
                 if current_lines:
                     units.append((current_type, ' '.join(current_lines)))
                     current_lines = []
                 current_type = 'list_item'
-                current_lines.append(re.sub(r'^([\-\*]|\d+\.)\s+', '', line_str))
+                current_lines.append(re.sub(r'^([\-\*]|\d{1,2}\.)\s+', '', line_str))
             else:
                 if current_type is None:
                     current_type = 'p'
-                cleaned = re.sub(r'^[\-\*\s]{2,4}', '', line_str) if current_type == 'list_item' else line_str
+                cleaned = re.sub(r'^[\-\*\s]{2,4}', '', line_str) if current_type in ('list_item', 'td') else line_str
                 current_lines.append(cleaned)
         if current_lines:
             units.append((current_type, ' '.join(current_lines)))
     return units
+
+
+def split_by_headings(units):
+    sections = [[]]
+    for t, txt in units:
+        if t == 'heading':
+            sections.append([(t, txt)])
+        else:
+            sections[-1].append((t, txt))
+    return sections
+
+
+def align_units(uf, ut):
+    """Aligne les unités FR et EN/ES section par section et par type d'unité."""
+    pairs = []
+    sf = split_by_headings(uf)
+    st = split_by_headings(ut)
+    if len(sf) == len(st):
+        for sec_f, sec_t in zip(sf, st):
+            by_type_f = {}
+            by_type_t = {}
+            for t, txt in sec_f:
+                by_type_f.setdefault(t, []).append(txt)
+            for t, txt in sec_t:
+                by_type_t.setdefault(t, []).append(txt)
+            for t in by_type_f:
+                lf = by_type_f[t]
+                lt = by_type_t.get(t, [])
+                for f_txt, t_txt in zip(lf, lt):
+                    pairs.append((t, f_txt, t_txt))
+    else:
+        by_type_f = {}
+        by_type_t = {}
+        for t, txt in uf:
+            by_type_f.setdefault(t, []).append(txt)
+        for t, txt in ut:
+            by_type_t.setdefault(t, []).append(txt)
+        for t in by_type_f:
+            lf = by_type_f[t]
+            lt = by_type_t.get(t, [])
+            for f_txt, t_txt in zip(lf, lt):
+                pairs.append((t, f_txt, t_txt))
+    return pairs
+
 
 def get_meta_info(filepath):
     if not os.path.exists(filepath):
@@ -275,74 +376,271 @@ def get_meta_info(filepath):
     for line in content.splitlines()[:25]:
         if (line.startswith('TITLE') or line.startswith('TITRE') or line.startswith('TÍTULO')) and ':' in line:
             title = line.split(':', 1)[1].strip()
-        elif line.startswith('DESCRIPTION') and ':' in line:
+        elif (line.startswith('DESCRIPTION') or line.startswith('DESCRIPCIÓN')) and ':' in line:
             desc = line.split(':', 1)[1].strip()
     return title, desc
 
-def build_page(page_name, lang):
-    if page_name == 'index':
-        src_html_rel = 'index.html'
-        out_html_rel = 'index.html'
-        clean_slug = ''
-    elif page_name == 'api_index':
-        src_html_rel = 'api/index.html'
-        out_html_rel = 'api.html'
-        clean_slug = 'api'
+
+MONTHS_MAP = {
+    'en': {
+        'janvier': 'January', 'février': 'February', 'mars': 'March', 'avril': 'April',
+        'mai': 'May', 'juin': 'June', 'juillet': 'July', 'août': 'August',
+        'septembre': 'September', 'octobre': 'October', 'novembre': 'November', 'décembre': 'December',
+        'janv.': 'Jan.', 'févr.': 'Feb.', 'avr.': 'Apr.', 'juill.': 'Jul.',
+        'sept.': 'Sept.', 'oct.': 'Oct.', 'nov.': 'Nov.', 'déc.': 'Dec.'
+    },
+    'es': {
+        'janvier': 'enero', 'février': 'febrero', 'mars': 'marzo', 'avril': 'abril',
+        'mai': 'mayo', 'juin': 'junio', 'juillet': 'julio', 'août': 'agosto',
+        'septembre': 'septiembre', 'octobre': 'octubre', 'novembre': 'noviembre', 'décembre': 'diciembre',
+        'janv.': 'ene.', 'févr.': 'feb.', 'avr.': 'abr.', 'juill.': 'jul.',
+        'sept.': 'sept.', 'oct.': 'oct.', 'nov.': 'nov.', 'déc.': 'dic.'
+    }
+}
+
+
+def translate_dates_and_bylines(html, lang):
+    """Traduit automatiquement les mentions 'Par William Guindon' et dates françaises restantes hors attributs."""
+    by_word = 'By' if lang == 'en' else 'Por'
+    html = re.sub(r'(\b\d{4}-\d{2}-\d{2}\s*·\s*)Par\s+William Guindon', rf'\1{by_word} William Guindon', html)
+    html = re.sub(r'(·\s*)Par\s+William Guindon', rf'\1{by_word} William Guindon', html)
+    html = re.sub(r'(>\s*)Par\s+William Guindon(\s*<)', rf'\1{by_word} William Guindon\2', html)
+
+    months = MONTHS_MAP[lang]
+    month_pattern = '|'.join(re.escape(m) for m in sorted(months.keys(), key=len, reverse=True))
+
+    # Format: 16 octobre 2026 / 1er mai 2026 / 1ᵉʳ mai 2026
+    def repl_full_date(m):
+        day = m.group('day')
+        day_num = re.sub(r'(er|ᵉʳ)$', '', day)
+        mon_fr = m.group('mon').lower()
+        year = m.group('year')
+        mon_tr = months.get(mon_fr, m.group('mon'))
+        if lang == 'en':
+            return f'{mon_tr} {day_num}, {year}'
+        else:
+            return f'{day_num} de {mon_tr} de {year}'
+
+    html = re.sub(
+        rf'(?<![a-zA-Z0-9_/=-])\b(?P<day>\d{{1,2}}(?:er|ᵉʳ)?)\s+(?P<mon>{month_pattern})\s+(?P<year>20\d{{2}})\b',
+        repl_full_date,
+        html,
+        flags=re.I
+    )
+
+    # Format: Juillet 2026 / Octobre 2026 en début de balise (>Juillet 2026<)
+    def repl_month_year(m):
+        prefix = m.group(1)
+        mon_fr = m.group(2)
+        year = m.group(3)
+        suffix = m.group(4)
+        mon_tr = months.get(mon_fr.lower(), mon_fr)
+        if lang == 'en':
+            return f'{prefix}{mon_tr.capitalize()} {year}{suffix}'
+        else:
+            return f'{prefix}{mon_tr.capitalize()} de {year}{suffix}'
+
+    html = re.sub(
+        rf'(>\s*)(?P<mon>{month_pattern})\s+(?P<year>20\d{{2}})(\s*<)',
+        repl_month_year,
+        html,
+        flags=re.I
+    )
+    return html
+
+
+def build_global_maps(pages):
+    """Construit la mémoire de traduction globale (50 fichiers .txt + dictionnaire JSON)."""
+    extra_data = {'en': {}, 'es': {}}
+    if os.path.exists(EXTRA_JSON_PATH):
+        with open(EXTRA_JSON_PATH, 'r', encoding='utf-8') as f:
+            extra_data = json.load(f)
+
+    global_exact = {'en': {}, 'es': {}}
+    page_data = {'en': {}, 'es': {}}
+
+    for lang in ('en', 'es'):
+        # 1. Charger les paires des 50 fichiers .txt
+        for p in pages:
+            uf = extract_units(os.path.join(SOURCE_TXT_DIR, 'fr', f'{p}.txt'))
+            ut = extract_units(os.path.join(SOURCE_TXT_DIR, lang, f'{p}.txt'))
+            aligned = align_units(uf, ut)
+
+            local_exact = {}
+            local_units = []
+            for t, f_txt, t_txt in aligned:
+                nf = norm(f_txt)
+                nf_s = norm(f_txt, True)
+                if len(nf) >= 2:
+                    local_exact[nf] = t_txt
+                    local_exact[nf_s] = t_txt
+                    global_exact[lang].setdefault(nf, t_txt)
+                    global_exact[lang].setdefault(nf_s, t_txt)
+                    local_units.append((t, nf, nf_s, f_txt, t_txt))
+            page_data[lang][p] = (local_exact, local_units)
+
+        # 2. Ajouter COMMON_REPLACEMENTS et EXTRA_JSON dans global_exact (priorité haute)
+        merged_dict = dict(COMMON_REPLACEMENTS.get(lang, {}))
+        merged_dict.update(extra_data.get(lang, {}))
+        outer_tag_re = re.compile(r'^\s*<([a-zA-Z0-9]+)\b[^>]*>([\s\S]*?)</\1>\s*$')
+        for fr_k, tr_v in merged_dict.items():
+            if NESTED_BLOCK_RE.search(fr_k):
+                continue
+            m_f = outer_tag_re.match(fr_k)
+            m_t = outer_tag_re.match(tr_v)
+            if m_f and m_t and m_f.group(1).lower() == m_t.group(1).lower():
+                inner_fk = m_f.group(2).strip()
+                inner_tv = m_t.group(2).strip()
+                if not NESTED_BLOCK_RE.search(inner_fk):
+                    nf = norm(inner_fk)
+                    nf_s = norm(inner_fk, True)
+                    if len(nf) >= 2:
+                        global_exact[lang][nf] = inner_tv
+                        global_exact[lang][nf_s] = inner_tv
+            elif not (fr_k.strip().startswith('<') and fr_k.strip().endswith('>')):
+                nf = norm(fr_k)
+                nf_s = norm(fr_k, True)
+                if len(nf) >= 2:
+                    global_exact[lang][nf] = tr_v
+                    global_exact[lang][nf_s] = tr_v
+
+    return global_exact, page_data, extra_data
+
+
+def format_leaf_replacement(tag, attrs, inner, tr_text, is_heading=False):
+    """Formate le texte traduit en préservant les sous-balises critiques (sec-num, liens, strong)."""
+    if is_heading:
+        tr_first = tr_text.splitlines()[0]
+        if len(tr_first.split()) > 16 and ':' in tr_first and '<' not in tr_first:
+            tr_first = tr_first.split(':', 1)[0].strip()
+        formatted_text = tr_first
     else:
-        src_html_rel = f'{page_name}.html'
-        out_html_rel = f'{page_name}.html'
-        clean_slug = page_name
+        formatted_text = tr_text
 
-    src_html_path = os.path.join(WORKSPACE_DIR, src_html_rel)
-    if not os.path.exists(src_html_path):
-        return False
+    # Si tr_text contient déjà la structure HTML voulue (ex: issu de EXTRA_JSON), l'utiliser directement
+    if '<span' in formatted_text or '<a ' in formatted_text or '<strong' in formatted_text:
+        return f'<{tag}{attrs}>{formatted_text}</{tag}>'
 
-    with open(src_html_path, 'r', encoding='utf-8', errors='ignore') as f:
-        html = f.read()
+    # Préserver <span class="sec-num">01</span> dans les titres
+    sec_num_match = re.match(r'^\s*(<span\s+class=["\']sec-num["\'][^>]*>[\s\S]*?</span>\s*)', inner)
+    if sec_num_match:
+        sec_span = sec_num_match.group(1)
+        # Retirer un éventuel numéro doublon en début de formatted_text (ex: "1. " ou "01 ")
+        clean_heading = re.sub(r'^\d{1,2}[\.\s·\-]+\s*', '', formatted_text)
+        return f'<{tag}{attrs}>{sec_span}{clean_heading}</{tag}>'
 
-    fr_txt = os.path.join(SOURCE_TXT_DIR, 'fr', f'{page_name}.txt')
-    tr_txt = os.path.join(SOURCE_TXT_DIR, lang, f'{page_name}.txt')
+    # Si l'élément entier était un lien unique (<a ...>texte</a>)
+    single_link = re.match(r'^\s*<a\b(?P<a_attrs>[^>]*)>[\s\S]*?</a>\s*$', inner)
+    if single_link:
+        a_attrs = single_link.group('a_attrs')
+        return f'<{tag}{attrs}><a{a_attrs}>{formatted_text}</a></{tag}>'
 
-    t_tr, d_tr = get_meta_info(tr_txt)
-    u_fr = extract_units(fr_txt)
-    u_tr = extract_units(tr_txt)
+    # Si l'élément commence par <strong>Question ?</strong><br>Réponse (ex: FAQ apercu.html)
+    faq_br_match = re.match(r'^\s*<strong(?P<s_attrs>[^>]*)>(?P<q>[\s\S]*?)</strong>\s*<br\s*/?>\s*(?P<a>[\s\S]*)$', inner, re.I)
+    if faq_br_match and '?' in formatted_text:
+        q_part, a_part = formatted_text.split('?', 1)
+        s_attrs = faq_br_match.group('s_attrs')
+        return f'<{tag}{attrs}><strong{s_attrs}>{q_part.strip()}?</strong><br>{a_part.strip()}</{tag}>'
 
-    # 1. Mise à jour de la langue HTML
+    # Restaurer le préfixe <strong>... :</strong> s'il était présent
+    strong_match = re.match(r'^\s*<strong(?P<s_attrs>[^>]*)>([\s\S]*?)</strong>\s*(.*)', inner, re.DOTALL)
+    if strong_match and ':' in formatted_text:
+        s_attrs = strong_match.group('s_attrs')
+        parts = formatted_text.split(':', 1)
+        if len(parts[0].split()) <= 12:
+            formatted_text = f'<strong{s_attrs}>{parts[0].strip()}:</strong> {parts[1].strip()}'
+
+    # Restaurer les liens existants s'ils étaient présents dans l'original
+    links_match = re.findall(r'<a\b[^>]*>[\s\S]*?</a>', inner)
+    if links_match and not single_link:
+        for l_html in links_match:
+            if l_html not in formatted_text:
+                href_match = re.search(r'href=["\']([^"\']+)["\']', l_html)
+                if href_match:
+                    target_href = href_match.group(1)
+                    clean_target = target_href.replace('.html', '')
+                    formatted_text += f' <a href="{clean_target}">↗</a>'
+
+    # Rétablissement des <strong> pour les entités clés dans les paragraphes
+    if tag in ('p', 'li', 'dd', 'blockquote'):
+        for ent in KEY_ENTITIES:
+            if ent in formatted_text and f'<strong>{ent}</strong>' not in formatted_text:
+                formatted_text = formatted_text.replace(ent, f'<strong>{ent}</strong>', 1)
+
+    return f'<{tag}{attrs}>{formatted_text}</{tag}>'
+
+
+def apply_extra_replacements(html, lang, extra_dict):
+    """Applique les remplacements directs de chaînes en protégeant <script> et <style>."""
+    # Protéger temporairement les blocs <script> et <style>
+    protected_blocks = []
+
+    def save_block(m):
+        protected_blocks.append(m.group(0))
+        return f'__PROTECTED_BLOCK_{len(protected_blocks) - 1}__'
+
+    html_work = re.sub(r'<(script|style)\b[^>]*>[\s\S]*?</\1>', save_block, html, flags=re.I)
+
+    merged = dict(COMMON_REPLACEMENTS.get(lang, {}))
+    merged.update(extra_dict)
+
+    # Trier par longueur décroissante pour remplacer d'abord les phrases complètes
+    sorted_items = sorted(merged.items(), key=lambda x: len(x[0]), reverse=True)
+
+    for fr_str, tr_str in sorted_items:
+        if not fr_str or fr_str == tr_str:
+            continue
+        if '<' in fr_str or '>' in fr_str or len(fr_str) >= 20:
+            html_work = html_work.replace(fr_str, tr_str)
+        else:
+            # Pour les chaînes courtes sans balise (< 20 car.), remplacer uniquement entre >...< ou dans aria-label/title
+            html_work = re.sub(
+                rf'(>\s*){re.escape(fr_str)}(\s*<)',
+                lambda m: f'{m.group(1)}{tr_str}{m.group(2)}',
+                html_work
+            )
+            html_work = re.sub(
+                rf'((?:aria-label|title|placeholder|alt|data-tooltip)=["\']){re.escape(fr_str)}(["\'])',
+                lambda m: f'{m.group(1)}{tr_str}{m.group(2)}',
+                html_work
+            )
+
+    # Restaurer les blocs <script> et <style>
+    for idx, blk in enumerate(protected_blocks):
+        html_work = html_work.replace(f'__PROTECTED_BLOCK_{idx}__', blk)
+
+    return html_work
+
+
+def normalize_links_and_assets(html, lang, clean_slug):
+    """Normalise la langue, les URLs d'assets, le sélecteur de langue et les liens internes."""
     lang_attr = 'en' if lang == 'en' else 'es'
+    locale_meta = 'en_CA' if lang == 'en' else 'es_MX'
+
     html = re.sub(r'<html[^>]*lang=["\'][^"\']*["\'][^>]*>', f'<html lang="{lang_attr}">', html, count=1)
+    html = re.sub(
+        r'<meta\s+property=["\']og:locale["\']\s+content=["\'][^"\']*["\']',
+        f'<meta property="og:locale" content="{locale_meta}"',
+        html
+    )
 
-    def escape_attr(val):
-        return val.replace('"', '&quot;')
-
-    # 2. Mise à jour de la balise Title et Meta Description
-    if t_tr:
-        clean_t = escape_attr(t_tr)
-        html = re.sub(r'<title>.*?</title>', f'<title>{clean_t}</title>', html, count=1)
-        html = re.sub(r'<meta\s+property=["\']og:title["\']\s+content="[^"]*"', f'<meta property="og:title" content="{clean_t}"', html)
-        html = re.sub(r'<meta\s+name=["\']twitter:title["\']\s+content="[^"]*"', f'<meta name="twitter:title" content="{clean_t}"', html)
-
-    if d_tr:
-        clean_d = escape_attr(d_tr)
-        html = re.sub(r'<meta\s+name=["\']description["\']\s+content="[^"]*"', f'<meta name="description" content="{clean_d}"', html)
-        html = re.sub(r'<meta\s+property=["\']og:description["\']\s+content="[^"]*"', f'<meta property="og:description" content="{clean_d}"', html)
-        html = re.sub(r'<meta\s+name=["\']twitter:description["\']\s+content="[^"]*"', f'<meta name="twitter:description" content="{clean_d}"', html)
-
-    # 3. Canonical et balises hreflang
+    # Canonical
     base_url = f'https://williamguindon.me/{lang}/' if clean_slug == '' else f'https://williamguindon.me/{lang}/{clean_slug}'
     html = re.sub(r'<link rel=["\']canonical["\'] href=["\'][^"\']*["\']', f'<link rel="canonical" href="{base_url}"', html)
 
-    # 4. Normalisation absolue des chemins de ressources vers la racine (/assets/, /style.css, etc.)
+    # Chemins d'assets vers la racine (/assets/, /style.css, url('/assets/...'), etc.)
     html = re.sub(r'(src|href)=["\']style\.css(["\']|\?)', r'\1="/style.css\2', html)
     html = re.sub(r'(src|href)=["\']theme\.js(["\']|\?)', r'\1="/theme.js\2', html)
     html = re.sub(r'(src|href)=["\']sw\.js(["\']|\?)', r'\1="/sw.js\2', html)
-    html = re.sub(r'(src|href|srcset)=["\']assets/', r'\1="/assets/', html)
-    html = re.sub(r'(src|href|srcset)=["\']\.\./assets/', r'\1="/assets/', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src)=["\']assets/', r'\1="/assets/', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src)=["\']\.\./assets/', r'\1="/assets/', html)
+    html = re.sub(r'url\((["\']?)(?:\.\./)?assets/', r'url(\1/assets/', html)
 
     for asset in ROOT_ASSETS:
         html = re.sub(rf'(src|href|srcset)=["\']{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
         html = re.sub(rf'(src|href|srcset)=["\']\.\./{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
 
-    # 5. Sélecteur de langue natif propre
+    # Sélecteur de langue natif propre
     page_target = f'/{clean_slug}' if clean_slug else '/'
     en_target = f'/en/{clean_slug}' if clean_slug else '/en/'
     es_target = f'/es/{clean_slug}' if clean_slug else '/es/'
@@ -372,110 +670,147 @@ def build_page(page_name, lang):
 
     html = re.sub(r'<div class="nav-dropdown-menu nav-lang-menu"[\s\S]*?</div>\s*</div>', f'{lang_menu_replacement}\n      </div>', html)
 
-    # 6. Routage des liens internes
+    # Routage des liens internes
     for excl in EXCLUDED_PAGES:
         clean_excl = excl.replace('.html', '')
-        target_excl = '../' if clean_excl == 'index' else f'../{clean_excl}'
-        html = re.sub(rf'href=["\']{re.escape(excl)}(["\']|#|\?)', rf'href="{target_excl}\1', html)
+        target_excl = '/' if clean_excl == 'index' else f'/{clean_excl}'
+        html = re.sub(rf'href=["\'](?:\.\./)?{re.escape(excl)}(["\']|#|\?)', rf'href="{target_excl}\1', html)
         if clean_excl != 'index':
-            html = re.sub(rf'href=["\']{re.escape(clean_excl)}(["\']|#|\?)', rf'href="../{clean_excl}\1', html)
+            html = re.sub(rf'href=["\'](?:\.\./)?{re.escape(clean_excl)}(["\']|#|\?)', rf'href="/{clean_excl}\1', html)
 
     html = re.sub(r'href=["\']index\.html(["\']|#|\?)', r'href="./\1', html)
     html = re.sub(r'href=["\']api/index\.html(["\']|#|\?)', r'href="api\1', html)
     html = re.sub(r'href=["\']([a-zA-Z0-9_\-]+)\.html(["\']|#|\?)', r'href="\1\2', html)
 
-    # 7. Remplacement du contenu de TOUTES les balises textuelles terminales
-    if u_fr and u_tr:
-        pairs = []
-        for idx in range(min(len(u_fr), len(u_tr))):
-            u_type, fr_raw = u_fr[idx]
-            _, tr_raw = u_tr[idx]
+    return html
 
-            fr_clean = re.sub(r'^#{1,6}\s+', '', fr_raw).strip()
-            tr_clean = re.sub(r'^#{1,6}\s+', '', tr_raw).strip()
 
-            words = fr_clean.split()
-            if len(words) >= 3:
-                probe = ' '.join(words[:4]).lower()
-                pairs.append((probe, tr_clean, len(words), u_type, fr_clean))
+def build_page(page_name, lang, global_exact, page_data, extra_data):
+    if page_name == 'index':
+        src_html_rel = 'index.html'
+        out_html_rel = 'index.html'
+        clean_slug = ''
+    elif page_name == 'api_index':
+        src_html_rel = 'api/index.html'
+        out_html_rel = 'api.html'
+        clean_slug = 'api'
+    else:
+        src_html_rel = f'{page_name}.html'
+        out_html_rel = f'{page_name}.html'
+        clean_slug = page_name
 
-        pairs.sort(key=lambda x: x[2], reverse=True)
+    src_html_path = os.path.join(WORKSPACE_DIR, src_html_rel)
+    if not os.path.exists(src_html_path):
+        return False
 
-        tag_pattern = r'<(?P<tag>p|li|h[1-6]|blockquote|summary|figcaption|dt|dd)\b(?P<attrs>[^>]*)>(?P<inner>[\s\S]*?)</(?P=tag)>'
+    with open(src_html_path, 'r', encoding='utf-8', errors='ignore') as f:
+        html = f.read()
 
-        def replace_tag_content(m):
-            tag = m.group('tag')
-            attrs = m.group('attrs')
-            inner = m.group('inner')
+    tr_txt = os.path.join(SOURCE_TXT_DIR, lang, f'{page_name}.txt')
+    t_tr, d_tr = get_meta_info(tr_txt)
 
-            # Ne pas remplacer si la balise contient des blocs structurels majeurs
-            if '<div' in inner or '<article' in inner or '<section' in inner or '<table' in inner or '<form' in inner:
+    def escape_attr(val):
+        return val.replace('"', '&quot;')
+
+    # 1. Title et Meta Description
+    if t_tr:
+        clean_t = escape_attr(t_tr)
+        html = re.sub(r'<title>[\s\S]*?</title>', f'<title>{clean_t}</title>', html, count=1)
+        html = re.sub(r'<meta\s+property=["\']og:title["\']\s+content="[^"]*"', f'<meta property="og:title" content="{clean_t}"', html)
+        html = re.sub(r'<meta\s+name=["\']twitter:title["\']\s+content="[^"]*"', f'<meta name="twitter:title" content="{clean_t}"', html)
+
+    if d_tr:
+        clean_d = escape_attr(d_tr)
+        html = re.sub(r'<meta\s+name=["\']description["\']\s+content="[^"]*"', f'<meta name="description" content="{clean_d}"', html)
+        html = re.sub(r'<meta\s+property=["\']og:description["\']\s+content="[^"]*"', f'<meta property="og:description" content="{clean_d}"', html)
+        html = re.sub(r'<meta\s+name=["\']twitter:description["\']\s+content="[^"]*"', f'<meta name="twitter:description" content="{clean_d}"', html)
+
+    # 2. Normalisation des liens, assets et sélecteur de langue
+    html = normalize_links_and_assets(html, lang, clean_slug)
+
+    # 3. Remplacement balise par balise sur tous les conteneurs terminaux (leaf containers)
+    local_exact, local_units = page_data[lang].get(page_name, ({}, []))
+    g_exact = global_exact[lang]
+
+    leaf_tags = [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'p', 'summary', 'figcaption', 'dt', 'dd',
+        'th', 'td', 'caption', 'li', 'blockquote',
+        'div', 'span', 'a', 'button', 'label'
+    ]
+
+    for tag in leaf_tags:
+        is_heading = tag.startswith('h')
+        pat = re.compile(rf'<({tag})\b([^>]*)>([\s\S]*?)</\1>', re.I)
+
+        def repl_leaf(m):
+            t_name = m.group(1)
+            attrs = m.group(2)
+            inner = m.group(3)
+
+            if 'notranslate' in attrs or 'lang-tag' in attrs or 'lang-name' in attrs or 'current-lang-code' in attrs:
+                return m.group(0)
+            if NESTED_BLOCK_RE.search(inner) or 'class="year"' in inner:
                 return m.group(0)
 
-            # Éviter de gonfler démesurément un titre (sécurité h1-h6)
-            is_heading = tag.startswith('h')
+            ni = norm(inner)
+            ni_s = norm(inner, True)
+            if len(ni) < 2:
+                return m.group(0)
 
-            inner_clean = ' '.join(re.sub(r'<[^>]+>', ' ', inner).split()).lower()
+            tr_match = None
+            # Priorité 1 : correspondance exacte normalisée sur la page courante (.txt)
+            if ni in local_exact:
+                tr_match = local_exact[ni]
+            elif ni_s in local_exact and len(ni_s) >= 3:
+                tr_match = local_exact[ni_s]
+            # Priorité 2 : correspondance exacte normalisée dans le corpus global (.txt + JSON)
+            elif ni in g_exact:
+                tr_match = g_exact[ni]
+            elif ni_s in g_exact and len(ni_s) >= 3:
+                tr_match = g_exact[ni_s]
+            # Priorité 3 : correspondance par préfixe/suffixe long (≥ 30 car.) et ratio de longueur strict
+            else:
+                for u_type, nf, nf_s, f_txt, t_txt in local_units:
+                    if is_heading and u_type != 'heading':
+                        continue
+                    if not is_heading and u_type == 'heading':
+                        continue
+                    if len(nf) >= 30 and len(ni) >= 30:
+                        ratio = len(ni) / len(nf)
+                        if 0.68 <= ratio <= 1.42 and (
+                            ni[:32] == nf[:32] or ni_s[:32] == nf_s[:32] or ni[-32:] == nf[-32:]
+                        ):
+                            tr_match = t_txt
+                            break
 
-            for probe, tr_text, _, u_type, fr_orig in pairs:
-                if probe in inner_clean:
-                    # Si c'est un titre et que le texte de traduction contient plusieurs phrases ou paragraphes,
-                    # ne garder que la première ligne / titre court
-                    if is_heading:
-                        tr_first = tr_text.splitlines()[0]
-                        if len(tr_first.split()) > 14 and ':' in tr_first:
-                            tr_first = tr_first.split(':', 1)[0].strip()
-                        formatted_text = tr_first
-                    else:
-                        formatted_text = tr_text
-
-                    # Restaurer les liens existants s'ils étaient présents dans l'original
-                    links_match = re.findall(r'<a\b[^>]*>[\s\S]*?</a>', inner)
-                    # Si l'élément entier était un lien unique (<a ...>texte</a>)
-                    single_link = re.match(r'^\s*<a\b(?P<a_attrs>[^>]*)>[\s\S]*?</a>\s*$', inner)
-                    if single_link:
-                        a_attrs = single_link.group('a_attrs')
-                        return f'<{tag}{attrs}><a{a_attrs}>{formatted_text}</a></{tag}>'
-
-                    # Restaurer le préfixe <strong>... :</strong> s'il était présent
-                    strong_match = re.match(r'^\s*<strong[^>]*>([\s\S]*?)</strong>\s*(.*)', inner, re.DOTALL)
-                    if strong_match and ':' in formatted_text:
-                        parts = formatted_text.split(':', 1)
-                        formatted_text = f'<strong>{parts[0].strip()} :</strong> {parts[1].strip()}'
-
-                    # Si des liens internes étaient en fin de phrase (ex: (voir <a ...>...</a>))
-                    if links_match and not single_link:
-                        # Si le lien n'est pas déjà dans le texte formaté
-                        for l_html in links_match:
-                            if l_html not in formatted_text:
-                                # Attacher le lien proprement s'il contient une référence
-                                href_match = re.search(r'href=["\']([^"\']+)["\']', l_html)
-                                if href_match:
-                                    target_href = href_match.group(1)
-                                    clean_target = target_href.replace('.html', '')
-                                    formatted_text += f' <a href="{clean_target}">↗</a>'
-
-                    # Rétablissement des <strong> pour les entités clés
-                    for ent in KEY_ENTITIES:
-                        if ent in formatted_text and f'<strong>{ent}</strong>' not in formatted_text:
-                            formatted_text = formatted_text.replace(ent, f'<strong>{ent}</strong>', 1)
-
-                    return f'<{tag}{attrs}>\n          {formatted_text}\n        </{tag}>'
-
+            if tr_match:
+                return format_leaf_replacement(t_name, attrs, inner, tr_match, is_heading=is_heading)
             return m.group(0)
 
-        html = re.sub(tag_pattern, replace_tag_content, html)
+        html = pat.sub(repl_leaf, html)
 
-    # 8. Remplacements des signatures dans les chartes et politiques
+    # 4. Application des remplacements directs de chaînes (navigation, tiroir de notifications, lignes complexes, attributs)
+    html = apply_extra_replacements(html, lang, extra_data.get(lang, {}))
+
+    # 5. Remplacements des signatures dans les chartes et politiques
     sig_text = 'Original signed' if lang == 'en' else 'Original firmado'
-    html = re.sub(r'<span class="signature-caption">.*?</span>', f'<span class="signature-caption">{sig_text}</span>', html)
+    html = re.sub(r'<span class="signature-caption">[\s\S]*?</span>', f'<span class="signature-caption">{sig_text}</span>', html)
+    html = re.sub(
+        r'Signé électroniquement par\s*<strong>William Guindon</strong>',
+        f'<strong>{sig_text}</strong> (William Guindon)',
+        html
+    )
+    html = re.sub(
+        r'Signé par\s*<strong>William Guindon</strong>',
+        f'<strong>{sig_text}</strong> (William Guindon)',
+        html
+    )
 
-    # 9. Remplacements des chaînes d'interface communes (menus, boutons, métas)
-    repl_dict = COMMON_REPLACEMENTS.get(lang, {})
-    for fr_str, tr_str in repl_dict.items():
-        html = html.replace(fr_str, tr_str)
+    # 6. Traduction automatique des dates et mentions 'Par William Guindon' restantes
+    html = translate_dates_and_bylines(html, lang)
 
-    # 10. Écriture du fichier HTML de sortie
+    # 7. Écriture du fichier HTML de sortie
     out_dir = os.path.join(WORKSPACE_DIR, lang)
     os.makedirs(out_dir, exist_ok=True)
     out_html_path = os.path.join(out_dir, out_html_rel)
@@ -484,6 +819,22 @@ def build_page(page_name, lang):
         f.write(html)
 
     return True
+
+
+def post_process_standalone_page(rel_path, lang, clean_slug, extra_data):
+    """Met à jour l'en-tête, les notifications, les liens et le pied de page des pages traduites autonomes (ex: politique-traduction.html)."""
+    full_path = os.path.join(WORKSPACE_DIR, lang, rel_path)
+    if not os.path.exists(full_path):
+        return False
+    with open(full_path, 'r', encoding='utf-8') as f:
+        html = f.read()
+    html = normalize_links_and_assets(html, lang, clean_slug)
+    html = apply_extra_replacements(html, lang, extra_data.get(lang, {}))
+    html = translate_dates_and_bylines(html, lang)
+    with open(full_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+    return True
+
 
 def main():
     csv_file = os.path.join(WORKSPACE_DIR, 'pages-index.csv')
@@ -495,20 +846,29 @@ def main():
         reader = csv.DictReader(f)
         pages = [r['page'] for r in reader]
 
-    print(f"🚀 Lancement de la génération automatisée pour {len(pages)} pages...")
+    print(f"🚀 Construction de la mémoire de traduction globale pour {len(pages)} pages...")
+    global_exact, page_data, extra_data = build_global_maps(pages)
+    print(f"   → Unités exactes EN : {len(global_exact['en'])} | ES : {len(global_exact['es'])}")
 
     success_en = 0
     success_es = 0
 
     for page in pages:
-        if build_page(page, 'en'):
+        if build_page(page, 'en', global_exact, page_data, extra_data):
             success_en += 1
-        if build_page(page, 'es'):
+        if build_page(page, 'es', global_exact, page_data, extra_data):
             success_es += 1
+
+    # Post-traitement de politique-traduction.html dans /en/ et /es/
+    if post_process_standalone_page('politique-traduction.html', 'en', 'politique-traduction', extra_data):
+        success_en += 1
+    if post_process_standalone_page('politique-traduction.html', 'es', 'politique-traduction', extra_data):
+        success_es += 1
 
     print(f"✔ Génération EN : {success_en} pages HTML créées dans /en/")
     print(f"✔ Génération ES : {success_es} pages HTML créées dans /es/")
     print("🎉 Compilation globale multilingue terminée avec succès !")
+
 
 if __name__ == '__main__':
     main()
