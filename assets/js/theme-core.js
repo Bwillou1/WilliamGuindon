@@ -928,10 +928,9 @@
     targetLang = (targetLang || 'fr').toLowerCase();
 
     // 1. Priorité aux balises canoniques hreflang déclarées dans le document
-    const hreflangKey = (targetLang === 'fr' ? 'fr-CA' : targetLang);
-    let altLink = document.querySelector(`link[rel="alternate"][hreflang="${hreflangKey}"]`);
+    let altLink = document.querySelector(`link[rel="alternate"][hreflang="${targetLang}"]`);
     if (!altLink && targetLang === 'fr') {
-      altLink = document.querySelector('link[rel="alternate"][hreflang="x-default"]');
+      altLink = document.querySelector('link[rel="alternate"][hreflang="fr-CA"]') || document.querySelector('link[rel="alternate"][hreflang="x-default"]');
     }
     if (altLink && altLink.href) {
       try {
