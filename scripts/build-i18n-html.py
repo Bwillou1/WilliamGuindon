@@ -313,6 +313,12 @@ def build_page(page_name, lang):
     html = html.replace("this.src='assets/", "this.src='../assets/")
     html = html.replace("this.src='tourbiere.jpg'", "this.src='../tourbiere.jpg'")
 
+    # 5b. Mise à jour de l'état du sélecteur de langue dans la navbar statique
+    code_upper = 'EN' if lang == 'en' else 'ES'
+    html = html.replace('<span class="current-lang-code">FR</span>', f'<span class="current-lang-code">{code_upper}</span>')
+    html = html.replace('class="nav-dropdown-item lang-select-btn active" data-lang="fr"', 'class="nav-dropdown-item lang-select-btn" data-lang="fr"')
+    html = html.replace(f'class="nav-dropdown-item lang-select-btn" data-lang="{lang}"', f'class="nav-dropdown-item lang-select-btn active" data-lang="{lang}"')
+
     # 6. Redirection des liens vers pages exclues françaises (vers ../page.html)
     for excl in EXCLUDED_PAGES:
         html = re.sub(rf'href=["\']{re.escape(excl)}(["\']|#|\?)', rf'href="../{excl}\1', html)
