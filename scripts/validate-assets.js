@@ -64,7 +64,8 @@ const CORE_FILES = [
   '.well-known/security.txt',
   'security.txt',
   '.assetsignore',
-  'wrangler.toml'
+  'wrangler.toml',
+  'william-guindon.vcf'
 ];
 
 let errors = [];

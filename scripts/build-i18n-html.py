@@ -84,7 +84,7 @@ def localize_all_links(html, lang):
         extra_part = url_match.group(2) or '' if url_match else ''
 
         # Ignorer ressources et documents statiques (vérifié sur le chemin, sans la query)
-        if path_part.startswith(('/assets/', '/data/', 'assets/', 'data/')) or re.search(r'\.(css|js|png|jpg|jpeg|webp|svg|pdf|xml|json|txt|zip|woff2?|ttf|ico)$', path_part, re.I):
+        if path_part.startswith(('/assets/', '/data/', 'assets/', 'data/')) or re.search(r'\.(css|js|png|jpg|jpeg|webp|svg|pdf|xml|json|txt|zip|woff2?|ttf|ico|vcf)$', path_part, re.I):
             return full
 
         clean = path_part.strip().lstrip('./').lstrip('/')
@@ -125,7 +125,9 @@ ROOT_ASSETS = [
     'security.txt',
     'manifest.json',
     'feed.xml',
-    'sitemap.xml'
+    'sitemap.xml',
+    'william-guindon.vcf',
+    'vcard.vcf'
 ]
 
 COMMON_REPLACEMENTS = {
@@ -668,7 +670,15 @@ def normalize_links_and_assets(html, lang, clean_slug):
     lang_attr = 'en' if lang == 'en' else 'es'
     locale_meta = 'en_CA' if lang == 'en' else 'es_MX'
 
-    html = re.sub(r'<html[^>]*lang=["\'][^"\']*["\'][^>]*>', f'<html lang="{lang_attr}">', html, count=1)
+    def _sub_html_tag(m):
+        attrs = m.group(1).replace('\\"', '"').replace("\\'", "'")
+        if re.search(r'\blang=["\'][^"\']*["\']', attrs):
+            attrs = re.sub(r'\blang=["\'][^"\']*["\']', f'lang="{lang_attr}"', attrs)
+        else:
+            attrs = f'lang="{lang_attr}" ' + attrs.strip()
+        return f'<html {attrs.strip()}>'
+
+    html = re.sub(r'<html\b([^>]*)>', _sub_html_tag, html, count=1)
     html = re.sub(
         r'<meta\s+property=["\']og:locale["\']\s+content=["\'][^"\']*["\']',
         f'<meta property="og:locale" content="{locale_meta}"',

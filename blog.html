@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=\"fr\" data-theme="dark">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <script src="/assets/js/security-guard.js" defer></script>
@@ -1825,13 +1825,23 @@
     return `${window.location.origin}${window.location.pathname}#${slug}`;
   }
 
+  function getPageLang() {
+    const p = (window.location.pathname || '').toLowerCase();
+    if (p.startsWith('/en/') || p === '/en') return 'en';
+    if (p.startsWith('/es/') || p === '/es') return 'es';
+    const l = (document.documentElement.getAttribute('lang') || 'fr').toLowerCase().replace(/[^a-z]/g, '');
+    if (l.startsWith('en')) return 'en';
+    if (l.startsWith('es')) return 'es';
+    return 'fr';
+  }
+
   function getLocalizedField(post, field) {
     if (!post) return '';
-    const lang = (document.documentElement.lang || 'fr').toLowerCase();
-    if (lang.startsWith('en')) {
+    const lang = getPageLang();
+    if (lang === 'en') {
       return post[field + '_en'] || post[field] || '';
     }
-    if (lang.startsWith('es')) {
+    if (lang === 'es') {
       return post[field + '_es'] || post[field] || '';
     }
     return post[field] || '';
@@ -1855,10 +1865,10 @@
     }
     empty.style.display = "none";
 
-    const langCode = (document.documentElement.lang || 'fr').toLowerCase();
-    const readMoreText = langCode.startsWith('en') ? 'Read article ↗' : langCode.startsWith('es') ? 'Leer artículo ↗' : 'Lire l\'article ↗';
-    const copyLinkText = langCode.startsWith('en') ? 'Copy link' : langCode.startsWith('es') ? 'Copiar enlace' : 'Copier le lien';
-    const byAuthorText = langCode.startsWith('en') ? 'By' : langCode.startsWith('es') ? 'Por' : 'Par';
+    const langCode = getPageLang();
+    const readMoreText = langCode === 'en' ? 'Read article ↗' : langCode === 'es' ? 'Leer artículo ↗' : 'Lire l\'article ↗';
+    const copyLinkText = langCode === 'en' ? 'Copy link' : langCode === 'es' ? 'Copiar enlace' : 'Copier le lien';
+    const byAuthorText = langCode === 'en' ? 'By' : langCode === 'es' ? 'Por' : 'Par';
 
     posts.forEach(post => {
       const card = document.createElement("article");
@@ -1946,8 +1956,8 @@
     const isSpecial = post.category === "Spécial" || postCat === "Special" || postCat === "Especial";
     const postTitle = getLocalizedField(post, 'title');
     const postContent = getLocalizedField(post, 'content');
-    const langCode = (document.documentElement.lang || 'fr').toLowerCase();
-    const actionBtnText = langCode.startsWith('en') ? 'View official report ↗' : langCode.startsWith('es') ? 'Consultar el informe oficial ↗' : 'Consulter le rapport officiel ↗';
+    const langCode = getPageLang();
+    const actionBtnText = langCode === 'en' ? 'View official report ↗' : langCode === 'es' ? 'Consultar el informe oficial ↗' : 'Consulter le rapport officiel ↗';
     const actionBtn = post.externalUrl
       ? `<a href="${post.externalUrl}" class="btn btn-primary" style="margin-right:10px;">${actionBtnText}</a>`
       : "";

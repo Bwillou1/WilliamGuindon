@@ -871,10 +871,10 @@
   }
 
   function getCurrentPageLanguage() {
-    const path = window.location.pathname.toLowerCase();
+    const path = (window.location.pathname || '').toLowerCase();
     if (path.startsWith('/en/') || path === '/en' || path.endsWith('/en')) return 'en';
     if (path.startsWith('/es/') || path === '/es' || path.endsWith('/es')) return 'es';
-    const htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+    const htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase().replace(/[^a-z]/g, '');
     if (htmlLang.startsWith('en')) return 'en';
     if (htmlLang.startsWith('es')) return 'es';
     return 'fr';
@@ -894,17 +894,21 @@
     try {
       const saved = localStorage.getItem(LANG_STORAGE_KEY);
       const current = getCurrentPageLanguage();
-      // On redirige UNIQUEMENT si le visiteur arrive de l'extérieur sur la racine '/' ou '/index.html'
-      // et qu'il a explicitement enregistré une préférence non-française lors d'un choix volontaire.
-      // Jamais sur les sous-pages spécifiques pour éliminer tout rechargement secondaire (0 ms).
-      const p = window.location.pathname.toLowerCase();
-      const isRoot = p === '/' || p === '/index.html' || p === '';
-      if (isRoot && saved && (saved === 'en' || saved === 'es') && current === 'fr') {
-        const targetUrl = `/${saved}/` + window.location.search + window.location.hash;
-        if (targetUrl !== window.location.pathname) {
-          window.location.replace(targetUrl);
-          return true;
-        }
+      if (!saved || saved === current || (saved !== 'en' && saved !== 'es')) {
+        return false;
+      }
+
+      // Si la page courante est exclue de la traduction (conservée uniquement en français)
+      const curFile = (window.location.pathname || '').split('/').pop().toLowerCase().replace(/\.html$/i, '');
+      if (EXCLUDED_FR_PAGES.has(curFile) || EXCLUDED_FR_PAGES.has(curFile + '.html')) {
+        return false;
+      }
+
+      const targetUrl = getTargetLanguageUrl(saved);
+      const currentFullUrl = cleanUrlPath(window.location.pathname) + window.location.search + window.location.hash;
+      if (targetUrl && targetUrl !== currentFullUrl && !window.location.pathname.startsWith(`/${saved}/`)) {
+        window.location.replace(targetUrl);
+        return true;
       }
     } catch (_) {}
     return false;
@@ -1018,10 +1022,21 @@
   // Nettoyage immédiat des résidus Google Translate et initialisation de l'UI
   clearGoogTransCookies();
   const _bootLang = getCurrentPageLanguage();
+  if (_bootLang === 'en' || _bootLang === 'es') {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, _bootLang);
+      sessionStorage.setItem(LANG_STORAGE_KEY, _bootLang);
+    } catch (_) {}
+  }
   updateLangUI(_bootLang);
 
-  // Vérifier et appliquer la persistance linguistique uniquement sur l'arrivée à la racine du site
+  // Vérifier et appliquer la persistance linguistique
   checkAndAutoRedirectLanguage();
+
+  // Réactivation instantanée lors de la navigation dans l'historique (Back / Forward du navigateur via bfcache)
+  window.addEventListener('pageshow', () => {
+    checkAndAutoRedirectLanguage();
+  });
 
   // Préservation dynamique de la langue active sur les liens internes si besoin
   document.addEventListener('click', (e) => {
