@@ -39,6 +39,7 @@ EXCLUDED_PAGES = {
     'delegation.html',
     'dossier-confidentiel-non-biffe-sem26003.html',
     'editeur.html',
+    'embed-chronologie.html',
     'enquete-partis.html',
     'google57da095d83ebd58e.html',
     'loi-93.html',
@@ -65,7 +66,7 @@ TRANSLATED_SLUGS = {
     'liens', 'live', 'lobby', 'messagerie', 'miroirs', 'netiquette', 'photos',
     'politique-traduction', 'politiques', 'portrait', 'presse', 'privacy', 'projets',
     'protection-archive', 'reciprocite', 'satellite', 'stablex', 'statut',
-    'telechargement-archive', 'terms', 'tracabilite', 'txt', 'viewer'
+    'telechargement-archive', 'terms', 'tracabilite', 'txt', 'viewer', 'chronologie'
 }
 
 def localize_all_links(html, lang):
