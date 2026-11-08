@@ -1,7 +1,8 @@
-const CACHE_NAME = 'wg-pwa-v229';
+const CACHE_NAME = 'wg-pwa-v230';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/assets/media/carte-importations-dechets-usa-stablex.webp',
   '/william-guindon.vcf',
   '/diplomatie.html',
   '/state.html',

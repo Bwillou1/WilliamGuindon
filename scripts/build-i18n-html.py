@@ -276,7 +276,7 @@ KEY_ENTITIES = [
 ]
 
 NESTED_BLOCK_RE = re.compile(
-    r'<(div|p|section|article|table|thead|tbody|tr|ul|ol|dl|h[1-6]|li|blockquote|details|aside|header|footer|nav|form|figure)\b',
+    r'<(div|p|section|article|table|thead|tbody|tr|ul|ol|dl|h[1-6]|li|blockquote|details|aside|header|footer|nav|form|figure|picture|img|video|audio|svg|canvas|iframe)\b',
     re.I
 )
 
