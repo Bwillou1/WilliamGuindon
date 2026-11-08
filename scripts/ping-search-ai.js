@@ -44,7 +44,6 @@ const PROTOCOL_URLS = [
   `https://${HOST}/llms-full.txt`,
   `https://${HOST}/feed.xml`,
   `https://${HOST}/sitemap.xml`,
-  `https://${HOST}/sitemap-news.xml`,
   `https://${HOST}/api/v1/corpus.json`,
   `https://${HOST}/api/v1/documents.json`,
   `https://${HOST}/.well-known/agent-skills/index.json`,
@@ -177,9 +176,6 @@ async function main() {
   console.log('\n📰 [2/5] Notification WebSub / PubSubHubbub (Google News, agrégateurs temps réel)...');
   const googleHub = await pingWebSub('https://pubsubhubbub.appspot.com/publish', `https://${HOST}/feed.xml`);
   console.log(`   ➜ Google WebSub Hub (feed.xml) : HTTP ${googleHub.status} ${googleHub.error ? `(${googleHub.error})` : ''}`);
-
-  const googleNewsHub = await pingWebSub('https://pubsubhubbub.appspot.com/publish', `https://${HOST}/sitemap-news.xml`);
-  console.log(`   ➜ Google WebSub Hub (sitemap-news.xml) : HTTP ${googleNewsHub.status} ${googleNewsHub.error ? `(${googleNewsHub.error})` : ''}`);
 
   const superfeedrHub = await pingWebSub('https://pubsubhubbub.superfeedr.com/hub/publish', `https://${HOST}/feed.xml`);
   console.log(`   ➜ Superfeedr Hub (pubsubhubbub.superfeedr.com) : HTTP ${superfeedrHub.status} ${superfeedrHub.error ? `(${superfeedrHub.error})` : ''}`);

@@ -66,8 +66,6 @@ ROOT_ASSETS = [
     'transcriptions.txt',
     'llms-full.txt',
     'llms.txt',
-    'llms-en.txt',
-    'llms-es.txt',
     'robots.txt',
     'status.json',
     'apis.json',

@@ -48,7 +48,6 @@ const CORE_FILES = [
   'diplomatie.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',
-  'sitemap-news.xml',
   'feed.xml',
   'manifest.json',
   'status.json',
