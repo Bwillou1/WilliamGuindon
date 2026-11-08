@@ -16,7 +16,8 @@
                              currentPath.includes('viewer') ||
                              currentPath.includes('lecteur') ||
                              currentPath.includes('live') ||
-                             currentPath.includes('satellite');
+                             currentPath.includes('satellite') ||
+                             currentPath.includes('chronologie');
 
   let isFramed = false;
   try { if (window.self !== window.top) isFramed = true; } catch (_) { isFramed = true; }

@@ -407,7 +407,8 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'dossier-confidentiel-non-biffe-sem26003.html',
   'cle.html',
   'delegation.html',
-  'commentaires.html'
+  'commentaires.html',
+  'embed-chronologie.html'
 ]);
 
 let publicPagesAudited = 0;

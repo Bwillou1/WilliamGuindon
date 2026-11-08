@@ -18,7 +18,8 @@
                              currentPath.includes('viewer') ||
                              currentPath.includes('lecteur') ||
                              currentPath.includes('live') ||
-                             currentPath.includes('satellite');
+                             currentPath.includes('satellite') ||
+                             currentPath.includes('chronologie');
 
   function isEmbedRequested() {
     try {
@@ -181,6 +182,8 @@
         title = 'Surveillance Satellite Copernicus Sentinel-2';
       } else if (rawPath.includes('live')) {
         title = 'Horloge Live & Décompte CCE SEM-26-003';
+      } else if (rawPath.includes('chronologie')) {
+        title = 'Frise Chronologique CCE SEM-26-003';
       } else if (rawPath.includes('dossier-journalistes')) {
         title = 'Dossier Journalistes · Archive SEM-26-003';
       } else if (rawPath.includes('viewer') || rawPath.includes('lecteur')) {

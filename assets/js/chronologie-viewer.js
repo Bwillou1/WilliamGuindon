@@ -3,6 +3,11 @@
  * Visualiseur interactif vectoriel (SVG) de la frise chronologique officielle
  * du dossier CCE SEM-26-003, propulsé par la bibliothèque libre svg-pan-zoom.
  *
+ * Fonctionnalités :
+ * - Navigation fluide : Pan (glisser-déposer), Zoom (molette et pincement tactile), Ajustement (100%), Plein écran
+ * - Téléchargement multi-formats : SVG (vectoriel), PNG (haute résolution), PDF (document imprimable) et Pack Trilingue
+ * - Mode Embed (iFrame sur d'autres sites) : Affiche uniquement la frise vectorielle avec une petite bannière verte officielle menant à williamguindon.me
+ *
  * Attribution et Remerciements :
  * svg-pan-zoom v3.6.2 — Copyright © 2009-2010 Andrea Leofreddi, Alex Bumbu & contributeurs.
  * Licence BSD-2-Clause (voir THIRD-PARTY-NOTICES.md et assets/vendor/svg-pan-zoom/LICENSE).
@@ -16,48 +21,75 @@
       subtitle: "10 étapes de la procédure ACEUM · BAPE 371 & Loi 93 · Litige compensatoire jusqu'en 2040",
       loading: "Chargement de la frise vectorielle haute résolution...",
       error: "Impossible de charger la frise vectorielle.",
-      download: "Télécharger le SVG",
+      downloadSvg: "Télécharger en SVG (Vectoriel, 456 Ko)",
+      downloadPng: "Télécharger en PNG (Image HD, 830 Ko)",
+      downloadPdf: "Télécharger en PDF (Document officiel, 750 Ko)",
+      downloadPack: "Télécharger le pack trilingue PDF (3,3 Mo)",
       zoomIn: "Zoom avant (+)",
       zoomOut: "Zoom arrière (−)",
       reset: "Vue globale (100%)",
       fullscreen: "Plein écran",
       exitFullscreen: "Quitter le plein écran",
       instructions: "Déplacez à la souris ou au doigt · Molette ou pincement pour zoomer · Double-clic pour centrer",
-      credits: "Interactions vectorielles propulsées par la bibliothèque libre <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (Licence BSD-2-Clause, © Andrea Leofreddi & Alex Bumbu). Remerciements aux auteurs de ce composant ouvert d'utilité publique."
+      credits: "Interactions vectorielles propulsées par la bibliothèque libre <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (Licence BSD-2-Clause, © Andrea Leofreddi & Alex Bumbu).",
+      embedBrand: "Dossier officiel CCE SEM-26-003 · William Guindon",
+      embedButton: "Voir le site officiel williamguindon.me ↗"
     },
     en: {
       title: "Official CEC SEM-26-003 Procedure Timeline",
       subtitle: "10 USMCA procedural steps · BAPE 371 & Bill 93 · Ongoing litigation horizon through 2040",
       loading: "Loading high-resolution vector timeline...",
       error: "Unable to load vector timeline.",
-      download: "Download SVG",
+      downloadSvg: "Download SVG (Vector, 414 KB)",
+      downloadPng: "Download PNG (HD Image, 818 KB)",
+      downloadPdf: "Download PDF (Official Document, 1.3 MB)",
+      downloadPack: "Download Trilingual PDF Pack (3.3 MB)",
       zoomIn: "Zoom In (+)",
       zoomOut: "Zoom Out (−)",
       reset: "Fit to screen (100%)",
       fullscreen: "Fullscreen",
       exitFullscreen: "Exit Fullscreen",
       instructions: "Drag to pan · Scroll wheel or pinch to zoom · Double-click to focus",
-      credits: "Vector interactions powered by the open-source library <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (BSD-2-Clause License, © Andrea Leofreddi & Alex Bumbu). Acknowledgments to the authors of this public interest component."
+      credits: "Vector interactions powered by the open-source library <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (BSD-2-Clause License, © Andrea Leofreddi & Alex Bumbu).",
+      embedBrand: "Official CEC SEM-26-003 Dossier · William Guindon",
+      embedButton: "Visit official website williamguindon.me ↗"
     },
     es: {
       title: "Cronología oficial del procedimiento CCA SEM-26-003",
       subtitle: "10 etapas procesales T-MEC · BAPE 371 y Ley 93 · Horizonte de litigio hasta 2040",
       loading: "Cargando cronología vectorial de alta resolución...",
       error: "No se pudo cargar la cronología vectorial.",
-      download: "Descargar SVG",
+      downloadSvg: "Descargar SVG (Vectorial, 419 KB)",
+      downloadPng: "Descargar PNG (Imagen HD, 835 KB)",
+      downloadPdf: "Descargar PDF (Documento oficial, 1.3 MB)",
+      downloadPack: "Descargar paquete trilingüe PDF (3.3 MB)",
       zoomIn: "Acercar (+)",
       zoomOut: "Alejar (−)",
       reset: "Vista general (100%)",
       fullscreen: "Pantalla completa",
       exitFullscreen: "Salir de pantalla completa",
       instructions: "Arrastre para desplazarse · Rueda o pellizco para zoom · Doble clic para enfocar",
-      credits: "Interacciones vectoriales impulsadas por la biblioteca de código abierto <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (Licencia BSD-2-Clause, © Andrea Leofreddi & Alex Bumbu). Agradecimientos a los autores de este componente de interés público."
+      credits: "Interacciones vectoriales impulsadas por la biblioteca libre <a href=\"https://github.com/bumbu/svg-pan-zoom\" target=\"_blank\" rel=\"noopener noreferrer\">svg-pan-zoom</a> (Licencia BSD-2-Clause, © Andrea Leofreddi & Alex Bumbu).",
+      embedBrand: "Expediente oficial CCA SEM-26-003 · William Guindon",
+      embedButton: "Ver sitio web oficial williamguindon.me ↗"
     }
   };
 
   function getLang() {
     const lang = (document.documentElement.lang || 'fr').toLowerCase().slice(0, 2);
     return I18N[lang] ? lang : 'fr';
+  }
+
+  function checkIsEmbed() {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('embed') === '1' || p.get('widget') === '1' || p.get('iframe') === '1') return true;
+    } catch (_) {}
+    if (window.location.pathname.includes('embed-chronologie')) return true;
+    try {
+      if (window.self !== window.top) return true;
+    } catch (_) { return true; }
+    return false;
   }
 
   function ensureSvgPanZoom(callback) {
@@ -81,10 +113,27 @@
 
     const lang = getLang();
     const t = I18N[lang];
-    let svgUrl = container.getAttribute('data-svg-url') || '/chronologie-cce-sem26003.svg';
+    const isEmbed = checkIsEmbed();
+
+    if (isEmbed) {
+      document.documentElement.classList.add('is-embedded-widget');
+      document.body.classList.add('is-embed-mode');
+    }
+
+    // Détermination dynamique des URL de fichiers selon la langue
+    const svgLangSuffix = (lang === 'en') ? '-en' : ((lang === 'es') ? '-es' : '-fr');
+    let svgUrl = container.getAttribute('data-svg-url') || `/chronologie-cce-sem26003${svgLangSuffix}.svg`;
     if (!svgUrl.startsWith('/') && !svgUrl.startsWith('http')) {
       svgUrl = '/' + svgUrl;
     }
+
+    const pngUrl = `/chronologie-cce-sem26003${svgLangSuffix}.png`;
+    const pdfUrl = `/chronologie-cce-sem26003${svgLangSuffix}.pdf`;
+    const packUrl = `/chronologie-cce-sem26003-trilingue-fr-en-es.pdf`;
+
+    const svgFilename = `chronologie-cce-sem26003${svgLangSuffix}.svg`;
+    const pngFilename = `chronologie-cce-sem26003${svgLangSuffix}.png`;
+    const pdfFilename = `chronologie-cce-sem26003${svgLangSuffix}.pdf`;
 
     container.classList.add('wg-chronologie-container');
 
@@ -97,25 +146,37 @@
         </div>
         <div class="wg-chronologie-toolbar" role="toolbar" aria-label="Contrôles d'interaction de la frise">
           <button type="button" class="wg-chronologie-btn wg-btn-zoom-in" title="${t.zoomIn}" aria-label="${t.zoomIn}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
             <span>+</span>
           </button>
           <button type="button" class="wg-chronologie-btn wg-btn-zoom-out" title="${t.zoomOut}" aria-label="${t.zoomOut}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
             <span>−</span>
           </button>
           <button type="button" class="wg-chronologie-btn wg-btn-reset" title="${t.reset}" aria-label="${t.reset}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
             <span>${t.reset}</span>
           </button>
           <button type="button" class="wg-chronologie-btn wg-btn-fullscreen" title="${t.fullscreen}" aria-label="${t.fullscreen}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             <span class="wg-fs-label">${t.fullscreen}</span>
           </button>
-          <a href="${svgUrl}" download="chronologie-cce-sem26003.svg" class="wg-chronologie-btn wg-btn-download" title="${t.download}" target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            <span>.SVG</span>
-          </a>
+
+          <!-- TÉLÉCHARGEMENT MULTI-FORMATS (SVG, PNG, PDF) -->
+          <div class="wg-chronologie-downloads" role="group" aria-label="Télécharger en plusieurs formats">
+            <a href="${svgUrl}" download="${svgFilename}" class="wg-chronologie-btn" title="${t.downloadSvg}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>SVG</span>
+            </a>
+            <a href="${pngUrl}" download="${pngFilename}" class="wg-chronologie-btn" title="${t.downloadPng}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>PNG</span>
+            </a>
+            <a href="${pdfUrl}" download="${pdfFilename}" class="wg-chronologie-btn" title="${t.downloadPdf}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <span>PDF</span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -132,8 +193,28 @@
       </div>
 
       <div class="wg-chronologie-footer">
-        <p class="wg-chronologie-credits">${t.credits}</p>
+        <p class="wg-chronologie-credits">
+          ${t.credits}
+          <span style="margin-left: 10px;">
+            <a href="${packUrl}" download="chronologie-cce-sem26003-trilingue-fr-en-es.pdf" style="font-weight:700;">
+              📄 ${t.downloadPack} ↗
+            </a>
+          </span>
+        </p>
       </div>
+
+      <!-- BANNIÈRE DISCRÈTE POUR LE MODE EMBED -->
+      ${isEmbed ? `
+      <div class="wg-embed-brand-banner">
+        <div class="wg-embed-brand-left">
+          <span class="wg-embed-brand-dot"></span>
+          <span class="wg-embed-brand-text">${t.embedBrand}</span>
+        </div>
+        <a href="https://williamguindon.me/${lang === 'en' ? 'en/chronologie' : (lang === 'es' ? 'es/chronologie' : 'chronologie.html')}" target="_blank" rel="noopener noreferrer" class="wg-embed-brand-btn">
+          ${t.embedButton}
+        </a>
+      </div>
+      ` : ''}
     `;
 
     const stage = container.querySelector('.wg-chronologie-stage');
@@ -244,7 +325,11 @@
         stage.innerHTML = `
           <div class="wg-chronologie-error">
             <p><strong>${t.error}</strong></p>
-            <p style="margin-top:8px;"><a href="${svgUrl}" target="_blank" class="btn btn-outline" style="color:#22c55e;">${t.download} ↗</a></p>
+            <p style="margin-top:8px;">
+              <a href="${svgUrl}" target="_blank" class="btn btn-outline" style="color:#22c55e;">SVG ↗</a>
+              <a href="${pngUrl}" target="_blank" class="btn btn-outline" style="color:#22c55e; margin-left:6px;">PNG ↗</a>
+              <a href="${pdfUrl}" target="_blank" class="btn btn-outline" style="color:#22c55e; margin-left:6px;">PDF ↗</a>
+            </p>
           </div>
         `;
       });

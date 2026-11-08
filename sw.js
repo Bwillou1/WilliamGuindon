@@ -1,8 +1,9 @@
-const CACHE_NAME = 'wg-pwa-v231';
+const CACHE_NAME = 'wg-pwa-v232';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
   '/chronologie.html',
+  '/embed-chronologie.html',
   '/chronologie-cce-sem26003.svg',
   '/assets/vendor/svg-pan-zoom/svg-pan-zoom.min.js',
   '/assets/js/chronologie-viewer.js',
