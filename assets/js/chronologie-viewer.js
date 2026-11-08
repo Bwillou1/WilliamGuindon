@@ -243,6 +243,53 @@
         svgEl.style.userSelect = 'none';
         svgEl.style.webkitUserSelect = 'none';
 
+        // Configuration et renforcement des liens interactifs intégrés dans le SVG
+        const svgLinks = svgEl.querySelectorAll('a');
+        svgLinks.forEach(link => {
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener noreferrer');
+          const href = link.getAttribute('href') || link.getAttribute('xlink:href');
+          if (href && !link.getAttribute('title')) {
+            link.setAttribute('title', `${href} ↗`);
+          }
+        });
+
+        // Détection fine glisser (pan) vs clic direct sur les liens du SVG
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+
+        stage.addEventListener('pointerdown', (e) => {
+          isDragging = false;
+          startX = e.clientX;
+          startY = e.clientY;
+        }, { capture: true, passive: true });
+
+        stage.addEventListener('pointermove', (e) => {
+          if (Math.hypot(e.clientX - startX, e.clientY - startY) > 7) {
+            isDragging = true;
+          }
+        }, { capture: true, passive: true });
+
+        stage.addEventListener('click', (e) => {
+          const link = e.target.closest('a');
+          if (isDragging) {
+            // L'utilisateur glissait/déplaçait la vue : on annule l'activation accidentelle du lien
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = false;
+            return;
+          }
+          if (link) {
+            const href = link.getAttribute('href') || link.getAttribute('xlink:href') || link.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            if (href && href !== '#' && !href.startsWith('javascript:')) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open(href, '_blank', 'noopener,noreferrer');
+            }
+          }
+        }, { capture: true });
+
         ensureSvgPanZoom(() => {
           panZoomInstance = window.svgPanZoom(svgEl, {
             zoomEnabled: true,
@@ -254,7 +301,7 @@
             zoomScaleSensitivity: 0.22,
             dblClickZoomEnabled: true,
             mouseWheelZoomEnabled: true,
-            preventMouseEventsDefault: true
+            preventMouseEventsDefault: false
           });
 
           // Mobile touch pinch-to-zoom support
