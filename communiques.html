@@ -815,7 +815,7 @@
   // Chargement et affichage dynamique des communiqués
   async function loadAllCommuniques() {
     try {
-      const res = await fetch("data/communiques.json?v=" + Date.now());
+      const res = await fetch("/data/communiques.json?v=" + Date.now());
       if (!res.ok) return;
       const list = await res.json();
       if (!Array.isArray(list) || list.length <= 1) return;

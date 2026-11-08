@@ -1118,7 +1118,7 @@
     <div class="photo-card" data-photo-id="photo-2026-06-13-coulisses-replique-cce-sem26003">
       <div class="photo-img-wrap">
         <a href="/assets/media/coulisses-replique-cce-sem26003.webp" class="photo-link-wrap" target="_blank" rel="noopener noreferrer" title="Detrás de escena de la réplica SEM-26-003 — Trabajo de investigación ciudadana (Agrandir en haute résolution)">
-          <img src="/assets/media/coulisses-replique-cce-sem26003.webp" data-original="assets/media/coulisses-replique-cce-sem26003.webp" alt="Detrás de escena de la réplica SEM-26-003 — Trabajo de investigación ciudadana" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="450">
+          <img src="/assets/media/coulisses-replique-cce-sem26003.webp" data-original="/assets/media/coulisses-replique-cce-sem26003.webp" alt="Detrás de escena de la réplica SEM-26-003 — Trabajo de investigación ciudadana" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="450">
         </a>
         <span class="photo-badge">Parcours</span>
         <span class="photo-license-badge" title="Licence d'utilisation">CC BY-NC-ND 4.0</span>
@@ -1358,9 +1358,9 @@
     const grid = document.getElementById("photos-grid");
     try {
       const [resPhotos, resCommons, resGooglePhotos] = await Promise.allSettled([
-        fetch("data/photos.json?v=" + Date.now()).then(r => r.json()),
-        fetch("data/wikimedia-sync-log.json?v=" + Date.now()).then(r => r.json()),
-        fetch("data/google-photos-sync-log.json?v=" + Date.now()).then(r => r.json())
+        fetch("/data/photos.json?v=" + Date.now()).then(r => r.json()),
+        fetch("/data/wikimedia-sync-log.json?v=" + Date.now()).then(r => r.json()),
+        fetch("/data/google-photos-sync-log.json?v=" + Date.now()).then(r => r.json())
       ]);
       if (resPhotos.status === "fulfilled" && Array.isArray(resPhotos.value)) {
         allPhotos = resPhotos.value;
@@ -1386,6 +1386,13 @@
     }
   }
 
+  function resolveMediaUrl(url) {
+    if (!url || typeof url !== 'string') return '/assets/media/grande-tourbiere-couverture.webp';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (url.startsWith('/')) return url;
+    return '/' + url;
+  }
+
   function getOptimizedImageUrl(url, width = 600) {
     if (!url || typeof url !== 'string') return url;
     try {
@@ -1408,30 +1415,40 @@
       return;
     }
 
+    const langCode = (document.documentElement.lang || 'fr').toLowerCase();
+    const isEn = langCode.startsWith('en');
+    const isEs = langCode.startsWith('es');
+    const dlText = isEn ? 'Download' : isEs ? 'Descargar' : 'Télécharger';
+    const photoAltDefault = isEn ? 'Photograph' : isEs ? 'Fotografía' : 'Photographie';
+
     photos.forEach(item => {
       const card = document.createElement("div");
       card.className = "photo-card";
       if (item.id) card.setAttribute("data-photo-id", item.id);
 
+      const itemTitle = (isEn && item.title_en) ? item.title_en : (isEs && item.title_es) ? item.title_es : (item.title || photoAltDefault);
+      const itemDesc = (isEn && item.description_en) ? item.description_en : (isEs && item.description_es) ? item.description_es : (item.description || '');
+
       const licenseHtml = item.license ? `<span class="photo-license-badge" title="Licence d'utilisation">${item.license}</span>` : "";
-      const thumbUrl = getOptimizedImageUrl(item.imageUrl, 600);
-      const hdUrl = item.imageUrl || thumbUrl;
-      const descHtml = item.description ? `<p class="photo-card-desc" style="font-size:12.5px; line-height:1.5; color:var(--text); padding:10px 14px 6px; margin:0;">${item.description}</p>` : "";
+      const rawImg = resolveMediaUrl(item.imageUrl);
+      const thumbUrl = getOptimizedImageUrl(rawImg, 600);
+      const hdUrl = rawImg;
+      const descHtml = itemDesc ? `<p class="photo-card-desc" style="font-size:12.5px; line-height:1.5; color:var(--text); padding:10px 14px 6px; margin:0;">${itemDesc}</p>` : "";
 
       card.innerHTML = `
         <div class="photo-img-wrap">
-          <a href="${hdUrl}" class="photo-link-wrap" target="_blank" rel="noopener noreferrer" title="${item.title || 'Photographie'} (Agrandir en haute résolution)">
-            <img src="${thumbUrl}" data-original="${hdUrl}" alt="${item.title || 'Photographie'}" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="400">
+          <a href="${hdUrl}" class="photo-link-wrap" target="_blank" rel="noopener noreferrer" title="${itemTitle} (Agrandir en haute résolution)">
+            <img src="${thumbUrl}" data-original="${hdUrl}" alt="${itemTitle}" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="400">
           </a>
           <span class="photo-badge">${item.category || "Terrain"}</span>
           ${licenseHtml}
           <div class="photo-overlay">
-            <div class="photo-title">${item.title || "Photographie"}</div>
+            <div class="photo-title">${itemTitle}</div>
             <div class="photo-meta">
               <span>${item.location ? item.location + " · " : ""}${item.date || ""}</span>
-              <a href="${hdUrl}" download class="photo-card-download-btn" title="Télécharger cette photo" aria-label="Télécharger l'image ${item.title || ''}">
+              <a href="${hdUrl}" download class="photo-card-download-btn" title="${dlText} cette photo" aria-label="${dlText} l'image ${itemTitle}">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                <span>Descargar</span>
+                <span>${dlText}</span>
               </a>
             </div>
           </div>

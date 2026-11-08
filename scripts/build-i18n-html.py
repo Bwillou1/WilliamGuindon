@@ -57,6 +57,7 @@ EXCLUDED_PAGES = {
 
 ROOT_ASSETS = [
     'tourbiere.jpg',
+    'tourbiere-thumb.webp',
     'blainville_latest.png',
     'blainville_capture_3.png',
     'navbar.js',
@@ -629,16 +630,20 @@ def normalize_links_and_assets(html, lang, clean_slug):
     html = re.sub(r'<link rel=["\']canonical["\'] href=["\'][^"\']*["\']', f'<link rel="canonical" href="{base_url}"', html)
 
     # Chemins d'assets vers la racine (/assets/, /style.css, url('/assets/...'), etc.)
-    html = re.sub(r'(src|href)=["\']style\.css(["\']|\?)', r'\1="/style.css\2', html)
-    html = re.sub(r'(src|href)=["\']theme\.js(["\']|\?)', r'\1="/theme.js\2', html)
-    html = re.sub(r'(src|href)=["\']sw\.js(["\']|\?)', r'\1="/sw.js\2', html)
-    html = re.sub(r'(src|href|srcset|poster|data-src)=["\']assets/', r'\1="/assets/', html)
-    html = re.sub(r'(src|href|srcset|poster|data-src)=["\']\.\./assets/', r'\1="/assets/', html)
+    html = re.sub(r'(src|href)=(["\'])style\.css(\2|\?)', r'\1=\2/style.css\3', html)
+    html = re.sub(r'(src|href)=(["\'])theme\.js(\2|\?)', r'\1=\2/theme.js\3', html)
+    html = re.sub(r'(src|href)=(["\'])sw\.js(\2|\?)', r'\1=\2/sw.js\3', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src|data-original)=(["\'])assets/', r'\1=\2/assets/', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src|data-original)=(["\'])\.\./assets/', r'\1=\2/assets/', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src)=(["\'])data/', r'\1=\2/data/', html)
+    html = re.sub(r'(src|href|srcset|poster|data-src)=(["\'])\.\./data/', r'\1=\2/data/', html)
     html = re.sub(r'url\((["\']?)(?:\.\./)?assets/', r'url(\1/assets/', html)
+    html = re.sub(r'fetch\((["\'])data/', r'fetch(\1/data/', html)
+    html = re.sub(r'fetch\((["\'])assets/', r'fetch(\1/assets/', html)
 
     for asset in ROOT_ASSETS:
-        html = re.sub(rf'(src|href|srcset)=["\']{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
-        html = re.sub(rf'(src|href|srcset)=["\']\.\./{re.escape(asset)}(["\']|\?)', rf'\1="/{asset}\2', html)
+        html = re.sub(rf'(src|href|srcset)=(["\']){re.escape(asset)}(\2|\?)', rf'\1=\2/{asset}\3', html)
+        html = re.sub(rf'(src|href|srcset)=(["\'])\.\./{re.escape(asset)}(\2|\?)', rf'\1=\2/{asset}\3', html)
 
     # Sélecteur de langue natif propre
     page_target = f'/{clean_slug}' if clean_slug else '/'
@@ -683,6 +688,57 @@ def normalize_links_and_assets(html, lang, clean_slug):
     html = re.sub(r'href=["\']([a-zA-Z0-9_\-]+)\.html(["\']|#|\?)', r'href="\1\2', html)
 
     return html
+
+
+def generate_blog_cards_html(lang):
+    import json
+    blog_json_path = os.path.join(WORKSPACE_DIR, 'data', 'blog.json')
+    if not os.path.exists(blog_json_path):
+        return ''
+    with open(blog_json_path, 'r', encoding='utf-8') as f:
+        posts = json.load(f)
+
+    posts.sort(key=lambda p: p.get('date', ''), reverse=True)
+    cards = []
+    by_txt = 'By' if lang == 'en' else ('Por' if lang == 'es' else 'Par')
+    read_txt = 'Read article ↗' if lang == 'en' else ('Leer artículo ↗' if lang == 'es' else "Lire l'article ↗")
+    copy_aria = 'Copy link to this article' if lang == 'en' else ('Copiar enlace a este artículo' if lang == 'es' else 'Copier le lien direct de cet article')
+    copy_txt = 'Copy link' if lang == 'en' else ('Copiar enlace' if lang == 'es' else 'Copier le lien')
+
+    for p in posts:
+        slug = p.get('slug') or p.get('id', '')
+        title = p.get(f'title_{lang}') or p.get('title', '')
+        summary = p.get(f'summary_{lang}') or p.get('summary', '')
+        cat = p.get(f'category_{lang}') or p.get('category', '')
+        cover = p.get('coverImage', '/assets/media/grande-tourbiere-couverture.webp')
+        if not cover.startswith('/') and not cover.startswith('http'):
+            cover = '/' + cover
+
+        tags = p.get('tags', [])
+        tags_html = ''.join(f'<span class="blog-tag">#{t}</span>' for t in tags)
+
+        card = f'''    <article class="blog-card">
+      <div class="blog-card-img-wrap" style="position:relative;">
+        <img src="{cover}" alt="{title.replace('"', '&quot;')}" class="blog-card-img" loading="lazy" decoding="async" width="380" height="215" onerror="this.onerror=null; this.src='/assets/media/grande-tourbiere-couverture.webp';">
+        <span class="blog-card-category">{cat}</span>
+      </div>
+      <div class="blog-card-body">
+        <time class="blog-card-date">{p.get("date", "")} · {by_txt} {p.get("author", "William Guindon")}</time>
+        <h2 class="blog-card-title"><a href="#{slug}" class="blog-card-title-link">{title}</a></h2>
+        <p class="blog-card-summary">{summary}</p>
+        <div class="blog-card-tags">{tags_html}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:10px;border-top:1px solid var(--line, rgba(255,255,255,0.08));">
+          <a href="#{slug}" class="blog-card-read-more" style="font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;">{read_txt}</a>
+          <button type="button" class="btn-copy-card-link" aria-label="{copy_aria}" title="{copy_aria}">
+            <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>{copy_txt}</span>
+          </button>
+        </div>
+      </div>
+    </article>'''
+        cards.append(card)
+
+    return '\n\n'.join(cards)
 
 
 def build_page(page_name, lang, global_exact, page_data, extra_data):
@@ -809,6 +865,17 @@ def build_page(page_name, lang, global_exact, page_data, extra_data):
 
     # 6. Traduction automatique des dates et mentions 'Par William Guindon' restantes
     html = translate_dates_and_bylines(html, lang)
+
+    # 6b. Pour blog.html, injection des fiches pré-traduites et normalisées
+    if page_name == 'blog':
+        cards_html = generate_blog_cards_html(lang)
+        if cards_html:
+            html = re.sub(
+                r'<div class="blog-grid" id="blog-posts-grid">[\s\S]*?</div>\s*<div class="empty-state blog-empty-state"',
+                f'<div class="blog-grid" id="blog-posts-grid">\n{cards_html}\n  </div>\n\n  <div class="empty-state blog-empty-state"',
+                html,
+                count=1
+            )
 
     # 7. Écriture du fichier HTML de sortie
     out_dir = os.path.join(WORKSPACE_DIR, lang)

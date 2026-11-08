@@ -269,32 +269,49 @@
     const blogTrack = document.getElementById('home-blog-track');
     const photosTrack = document.getElementById('home-photos-track');
     if (blogTrack || photosTrack) {
+      const pageLang = (document.documentElement.lang || 'fr').toLowerCase();
+      const isEn = pageLang.startsWith('en');
+      const isEs = pageLang.startsWith('es');
+      const langPrefix = isEn ? '/en/' : (isEs ? '/es/' : '/');
+
+      function resolveUrl(url) {
+        if (!url) return '';
+        if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('#')) return url;
+        return url.startsWith('/') ? url : '/' + url;
+      }
+
       function loadPhotosIfEmpty() {
         if (photosTrack && photosTrack.children.length === 0) {
-          fetch('data/photos.json')
+          fetch('/data/photos.json')
             .then(res => res.json())
             .then(photos => {
               if (!photos || photos.length === 0) return;
-              // Trier par date la plus récente en premier
               photos.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-              photosTrack.innerHTML = photos.map(ph => `
+              photosTrack.innerHTML = photos.map(ph => {
+                const title = isEn ? (ph.title_en || ph.title) : (isEs ? (ph.title_es || ph.title) : ph.title);
+                const desc = isEn ? (ph.description_en || ph.description || '') : (isEs ? (ph.description_es || ph.description || '') : (ph.description || ''));
+                const cat = isEn ? (ph.category_en || ph.category || 'Field') : (isEs ? (ph.category_es || ph.category || 'Campo') : (ph.category || 'Terrain'));
+                const viewTxt = isEn ? 'View full size ↗' : (isEs ? 'Ver en grande ↗' : 'Voir en grand ↗');
+                const photoLink = isEn ? '/en/photos' : (isEs ? '/es/photos' : '/photos');
+                const imgSrc = resolveUrl(ph.imageUrl);
+                return `
                 <article class="blog-preview-card">
                   <div class="blog-preview-thumb">
-                    <img src="${ph.imageUrl}" alt="${ph.title || 'Photographie de la Grande Tourbière'}" loading="lazy" decoding="async" width="380" height="215">
-                    <span class="blog-preview-category">${ph.category || 'Terrain'}</span>
+                    <img src="${imgSrc}" alt="${title || 'Photographie'}" loading="lazy" decoding="async" width="380" height="215" onerror="this.onerror=null; this.src='/tourbiere.jpg';">
+                    <span class="blog-preview-category">${cat}</span>
                   </div>
                   <div class="blog-preview-body">
                     <time class="blog-preview-date">${ph.date || ''} ${ph.location ? '· ' + ph.location : ''}</time>
-                    <h3 class="blog-preview-title">${ph.title}</h3>
-                    <p class="blog-preview-excerpt">${ph.description || ''}</p>
+                    <h3 class="blog-preview-title">${title}</h3>
+                    <p class="blog-preview-excerpt">${desc}</p>
                     <div class="blog-preview-footer">
-                      <a href="photos.html" class="blog-preview-link" aria-label="Voir la photographie : ${ph.title || 'Photographie'} en grand">Voir en grand ↗</a>
+                      <a href="${photoLink}" class="blog-preview-link" aria-label="${viewTxt}: ${title}">${viewTxt}</a>
                     </div>
                   </div>
                 </article>
-              `).join('');
+              `;
+              }).join('');
 
-              // Réalignement du scroll si la page a été chargée avec une ancre (#contact, etc.)
               if (window.location.hash && typeof window.__wg_scrollToHash === 'function') {
                 setTimeout(() => window.__wg_scrollToHash(window.location.hash, false), 50);
               }
@@ -305,30 +322,39 @@
 
       function loadBlogFeed() {
         if (blogTrack) {
-          fetch('data/blog.json')
+          fetch('/data/blog.json')
             .then(res => res.json())
             .then(posts => {
               if (!posts || posts.length === 0) return;
-              // Trier par date la plus récente en tête
               posts.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-              blogTrack.innerHTML = posts.map(p => `
+              blogTrack.innerHTML = posts.map(p => {
+                const title = isEn ? (p.title_en || p.title) : (isEs ? (p.title_es || p.title) : p.title);
+                const summary = isEn ? (p.summary_en || p.summary || (p.content_en || p.content || '').substring(0, 120) + '...') :
+                                (isEs ? (p.summary_es || p.summary || (p.content_es || p.content || '').substring(0, 120) + '...') :
+                                (p.summary || (p.content || '').substring(0, 120) + '...'));
+                const cat = isEn ? (p.category_en || p.category || 'News') : (isEs ? (p.category_es || p.category || 'Actualidad') : (p.category || 'Actualité'));
+                const byTxt = isEn ? 'By' : (isEs ? 'Por' : 'Par');
+                const readTxt = isEn ? 'Read full article ↗' : (isEs ? 'Leer artículo completo ↗' : 'Lire l\'article complet ↗');
+                const targetLink = p.externalUrl ? p.externalUrl : (isEn ? `/en/blog#${p.slug || p.id}` : (isEs ? `/es/blog#${p.slug || p.id}` : `/blog#${p.slug || p.id}`));
+                const imgSrc = resolveUrl(p.coverImage || 'tourbiere-thumb.webp');
+                return `
                 <article class="blog-preview-card ${p.category === 'Preuve CCE' || p.category === 'Spécial' ? 'special-card' : ''}">
                   <div class="blog-preview-thumb">
-                    <img src="${p.coverImage || 'tourbiere-thumb.webp'}" alt="${p.title || 'Article du carnet de bord'}" loading="lazy" decoding="async" width="380" height="215">
-                    <span class="blog-preview-category ${p.category === 'Preuve CCE' || p.category === 'Spécial' ? 'special' : ''}">${p.category || 'Actualité'}</span>
+                    <img src="${imgSrc}" alt="${title || 'Article'}" loading="lazy" decoding="async" width="380" height="215" onerror="this.onerror=null; this.src='/tourbiere.jpg';">
+                    <span class="blog-preview-category ${p.category === 'Preuve CCE' || p.category === 'Spécial' ? 'special' : ''}">${cat}</span>
                   </div>
                   <div class="blog-preview-body">
-                    <time class="blog-preview-date">${p.date} · Par ${p.author || 'William Guindon'}</time>
-                    <h3 class="blog-preview-title">${p.title}</h3>
-                    <p class="blog-preview-excerpt">${p.summary || p.content.substring(0, 120) + '...'}</p>
+                    <time class="blog-preview-date">${p.date} · ${byTxt} ${p.author || 'William Guindon'}</time>
+                    <h3 class="blog-preview-title">${title}</h3>
+                    <p class="blog-preview-excerpt">${summary}</p>
                     <div class="blog-preview-footer">
-                      <a href="${p.externalUrl || ('blog.html#' + (p.slug || p.id))}" class="blog-preview-link" aria-label="Lire l'article complet : ${p.title}">Lire l'article complet ↗</a>
+                      <a href="${targetLink}" class="blog-preview-link" aria-label="${readTxt}: ${title}">${readTxt}</a>
                     </div>
                   </div>
                 </article>
-              `).join('');
+              `;
+              }).join('');
 
-              // Réalignement immédiat du scroll si la page a été chargée avec une ancre (#contact, etc.)
               if (window.location.hash && typeof window.__wg_scrollToHash === 'function') {
                 setTimeout(() => window.__wg_scrollToHash(window.location.hash, false), 50);
               }
@@ -499,7 +525,7 @@
           createFloatingPlayer();
 
           try {
-            const res = await fetch('data/biographie-audio-cues.json');
+            const res = await fetch('/data/biographie-audio-cues.json');
             const data = await res.json();
             cues = data.cues;
           } catch (_) {
@@ -775,10 +801,10 @@
     const satImg = document.getElementById('satellite-live-img');
     const satLabel = document.getElementById('satellite-live-label');
     if (satImg) {
-      fetch('meta.json?_t=' + Date.now())
+      fetch('/meta.json?_t=' + Date.now())
         .then(res => res.json())
         .then(meta => {
-          satImg.src = 'blainville_latest.png?_t=' + Date.now();
+          satImg.src = '/blainville_latest.png?_t=' + Date.now();
           if (meta.updated_at && satLabel) {
             satLabel.textContent = 'Capture Sentinel-2 · ' + meta.updated_at;
           }

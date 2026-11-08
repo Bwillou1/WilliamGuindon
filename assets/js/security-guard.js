@@ -594,7 +594,7 @@
 
     try {
       const ts = Date.now();
-      const res = await fetch('data/site-state.json?_t=' + ts, {
+      const res = await fetch('/data/site-state.json?_t=' + ts, {
         cache: 'no-store',
         headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
       });

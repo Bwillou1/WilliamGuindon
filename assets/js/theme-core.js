@@ -881,7 +881,34 @@
   }
 
   function getSavedLanguage() {
+    try {
+      const saved = localStorage.getItem(LANG_STORAGE_KEY) || sessionStorage.getItem(LANG_STORAGE_KEY);
+      if (saved && (saved === 'en' || saved === 'es' || saved === 'fr')) {
+        return saved;
+      }
+    } catch (_) {}
     return getCurrentPageLanguage();
+  }
+
+  function checkAndAutoRedirectLanguage() {
+    try {
+      const saved = localStorage.getItem(LANG_STORAGE_KEY);
+      const current = getCurrentPageLanguage();
+      // Si l'utilisateur a explicitement sélectionné en ou es, mais qu'il atterrit sur la version française
+      // (ex: clic sur logo racine, bouton retour/historique du navigateur ou lien externe sans préfixe),
+      // on préserve automatiquement sa langue choisie.
+      if (saved && (saved === 'en' || saved === 'es') && current === 'fr') {
+        const curFile = window.location.pathname.split('/').pop().toLowerCase().replace(/\.html$/i, '');
+        if (!EXCLUDED_FR_PAGES.has(curFile) && !EXCLUDED_FR_PAGES.has(curFile + '.html')) {
+          const targetUrl = getTargetLanguageUrl(saved);
+          if (targetUrl && targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
+            window.location.replace(targetUrl);
+            return true;
+          }
+        }
+      }
+    } catch (_) {}
+    return false;
   }
 
   function updateLangUI(lang) {
@@ -992,7 +1019,51 @@
   // Nettoyage immédiat des résidus Google Translate et initialisation de l'UI
   clearGoogTransCookies();
   const _bootLang = getCurrentPageLanguage();
+  if (_bootLang === 'en' || _bootLang === 'es') {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, _bootLang);
+    } catch (_) {}
+  }
   updateLangUI(_bootLang);
+
+  // Vérifier et appliquer la persistance linguistique (bouton retour du navigateur, bfcache et navigation)
+  checkAndAutoRedirectLanguage();
+  window.addEventListener('pageshow', () => {
+    checkAndAutoRedirectLanguage();
+  });
+
+  // Préservation dynamique de la langue active sur tous les liens internes
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link || !link.href) return;
+    const currentLang = getCurrentPageLanguage();
+    if (currentLang === 'fr') return; // En français, liens normaux
+
+    // Ne pas intercepter les sélecteurs de langue eux-mêmes
+    if (link.closest('.nav-lang-dropdown') || link.classList.contains('lang-select-btn')) return;
+
+    try {
+      const url = new URL(link.href, window.location.origin);
+      if (url.origin !== window.location.origin) return; // Liens externes ignorés
+
+      const path = url.pathname;
+      if (path.startsWith('/assets/') || path.startsWith('/data/') || path.endsWith('.pdf') || path.endsWith('.xml') || path.endsWith('.json') || path.endsWith('.txt')) return;
+      if (path.includes('admin') || path.includes('editeur') || path.includes('console')) return;
+
+      // Déjà préfixé par la langue active ?
+      if (path.startsWith(`/${currentLang}/`) || path === `/${currentLang}`) return;
+
+      const targetFile = path.split('/').pop().replace(/\.html$/i, '');
+      if (EXCLUDED_FR_PAGES.has(targetFile) || EXCLUDED_FR_PAGES.has(targetFile + '.html')) return;
+
+      // Réécrire le lien pour rester dans la langue active
+      let clean = cleanUrlPath(path).replace(/^\/(en|es|fr)(\/|$)/i, '/');
+      if (!clean.startsWith('/')) clean = '/' + clean;
+      const localizedPath = clean === '/' ? `/${currentLang}/` : `/${currentLang}${clean}`;
+      url.pathname = localizedPath;
+      link.href = url.pathname + url.search + url.hash;
+    } catch (_) {}
+  }, true);
 
   // Suppression immédiate de toute balise/iframe Google Translate résiduelle
   try {
@@ -2387,7 +2458,7 @@
 
       // 2. Synchronisation réseau en tâche de fond
       try {
-        const res = await fetch('status.json');
+        const res = await fetch('/status.json');
         if (!res.ok) return;
         const data = await res.json();
         try {
@@ -2730,7 +2801,7 @@
     // Synchronisation rapide de site-state pour réactivité immédiate du statut
     async function syncFastSiteState() {
       try {
-        const res = await fetch('data/site-state.json?_t=' + Date.now());
+        const res = await fetch('/data/site-state.json?_t=' + Date.now());
         if (res.ok) {
           const data = await res.json();
           if (data && typeof data === 'object') {
