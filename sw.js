@@ -1,7 +1,12 @@
-const CACHE_NAME = 'wg-pwa-v230';
+const CACHE_NAME = 'wg-pwa-v231';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/chronologie.html',
+  '/chronologie-cce-sem26003.svg',
+  '/assets/vendor/svg-pan-zoom/svg-pan-zoom.min.js',
+  '/assets/js/chronologie-viewer.js',
+  '/assets/css/chronologie-viewer.css',
   '/assets/media/carte-importations-dechets-usa-stablex.webp',
   '/william-guindon.vcf',
   '/diplomatie.html',

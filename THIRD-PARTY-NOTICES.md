@@ -603,6 +603,40 @@ THE SOFTWARE.
 
 ---
 
+### svg-pan-zoom (v3.6.2)
+- **Auteurs :** Copyright © 2009-2010 Andrea Leofreddi (<a.leofreddi@vleo.net>), Alex Bumbu (<http://bumbu.me>), et les contributeurs de svg-pan-zoom.
+- **Licence :** BSD-2-Clause
+- **URL :** https://github.com/bumbu/svg-pan-zoom
+- **Rôle :** Moteur d'interaction vectorielle, de zoom et de panoramique fluide (pan, zoom tactile/molette, centrage et plein écran) pour la frise chronologique officielle du dossier CCE SEM-26-003 (`chronologie-cce-sem26003.svg`).
+
+```text
+Copyright 2009-2010 Andrea Leofreddi <a.leofreddi@vleo.net>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+---
+
 ## 3. Ressources et services tiers
 
 - **Umami Analytics :** Licence MIT (mesure d'audience sans traceurs publicitaires ni collecte de données personnelles nominatives).

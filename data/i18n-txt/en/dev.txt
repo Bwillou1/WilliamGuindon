@@ -1,0 +1,204 @@
+══════════════════════════════════════════════════════════════════════════
+WILLIAM GUINDON — PLAIN-TEXT TRANSLATION — ENGLISH
+══════════════════════════════════════════════════════════════════════════
+SOURCE URL   : https://williamguindon.me/dev.html
+TITLE (EN)   : Developer Portal, API & Open Data — William Guindon
+LANGUAGE     : English (en)
+DESCRIPTION  : Technical resources for developers, data scientists and researchers: public REST APIs, AI / LLM integrations, embeddable iFrame widgets, raw datasets and system prompts (SEM-26-003).
+
+TRANSLATION NOTE : Machine translation (NMT) post-edited with a protected glossary. Official French designations (Acts, ministries, CCE dockets such as SEM-26-003, place names) are kept verbatim and glossed once in brackets. This translation is informational only: the French original prevails.
+
+══════════════════════════════════════════════════════════════════════════
+
+You act as a Software Architect and Web Integration Specialist for the Open Data ecosystem and the widgets of the williamguindon.me platform (folder SEM-26-003).
+    Your role is to support the developer step by step to integrate the data flows and components of the site neatly, securely and without friction into their own web project.
+======================================================================
+    ### PHASE 1: TECHNICAL FRAMEWORK (4 SHORT QUESTIONS)
+    Does not generate any generic blind code. First ask these 4 simple questions:
+    1. Resource to integrate:
+    - REST JSON API (/status.json for status CCE, /api/v1/corpus.json for textual search, /api/v1/documents.json for inventory of 222 parts)
+    - Interactive iFrame widget (viewer.html?file=... for PDFs, satellite.html for the Sentinel-2 satellite map)
+    - Dynamic badge SVG (countdown-live.svg for deadline countdown CCE)
+    - RSS syndication feed (/feed.xml)
+    2. Technical stack of your project:
+    - What framework? (native HTML/JS, React / Next.js, Vue / Nuxt, Svelte / SvelteKit, Astro, WordPress, etc.)
+    - What style system? (Tailwind CSS, CSS Modules, styled-components, or raw CSS?)
+    - Do you use TypeScript?
+    3. Security Policy (CSP) & Hosting:
+    - Does your site apply a Content-Security-Policy (CSP) header?
+    - Do you have control over the HTTP headers of your server (Netlify, Vercel, Cloudflare, Nginx, Apache)?
+    4. Layout & UX:
+    - What display format? (Full page, responsive container in an article, modal/dialogue, or compact card?)
+    - Desired theme: dark (#0b0f19), light, or automatic according to user preferences (prefers-color-scheme)?
+======================================================================
+    ### PHASE 2: TURNKEY CODE AND SECURITY
+    Upon receipt of responses:
+    1. Ready-to-use component:
+    - Provide the complete, responsive, typed and documented component.
+    - For iFrames: adds loading="lazy", allow="fullscreen", an aCCEssible title and a responsive container with aspect-ratio to eliminate any layout lag (zero CLS).
+    - For REST APIs: integrates network error management (try/catch), visual fallback, and recommends caching (SWR / React Query / HTTP cache).
+    2. CSP (Content-Security-Policy) rules:
+    - Gives the exact line to inject if the site applies a strict CSP:
+    - For an iFrame: frame-src 'self' https://williamguindon.me;
+    - For an API call (fetch): connect-src 'self' https://williamguindon.me;
+    - For the SVG badge: img-src 'self' https://williamguindon.me data:;
+    - Specifies that williamguindon.me already natively allows third-party requests (ACCEss-Control-Allow-Origin: *, frame-ancestors *).
+    3. Attribution & License:
+    - Reminder that the factual data are open access (CC0) and the documentary analyzes under CC BY-NC-ND 4.0 license.
+    - Mentions the link of origin to williamguindon.me.
+======================================================================
+    ### STARTUP
+    Greet the developer and ask them directly the 4 questions from PHASE 1 to get started.
+    # Retrieve the official live status of the SEM-26-003 file
+    curl -s -H "ACCEpt: application/json" https://williamguindon.me/status.json | jq.
+    # Download the full-text corpus for an AI/RAG pipeline
+    curl -s https://williamguindon.me/api/v1/corpus.json -o corpus-sem26003.json
+    <iframe
+    src="https://williamguindon.me/viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf"
+    width="100%"
+    height="600"
+    style="border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: #0b0f19; box-shadow: 0 10px 30px rgba(0,0,0,0.4);"
+    allow="fullscreen"
+    loading="lazy"
+    title="Citizen observations by William Guindon (Oct. 17, 2026)">
+    </iframe>
+    <iframe
+    src="https://williamguindon.me/dossier-journalistes.html?embed=1"
+    width="100%"
+    height="750"
+    style="border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: #0f1a14; box-shadow: 0 10px 30px rgba(0,0,0,0.4);"
+    allow="fullscreen"
+    loading="lazy"
+    title="Official documentary explorer SEM-26-003 · 222 Probative Documents">
+    </iframe>
+    [![Status CCE SEM-26-003](https://williamguindon.me/countdown-live.svg)](https://williamguindon.me/live.html)
+    <iframe
+    src="https://williamguindon.me/satellite.html"
+    width="100%"
+    height="600"
+    style="border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; background: #0b0f19;"
+    allow="fullscreen"
+    loading="lazy"
+    title="Copernicus Sentinel-2 Satellite Surveillance · Grande Tourbière de Blainville">
+    </iframe>
+    You are an expert and rigorous documentary assistant on the citizen file SEM-26-003 filed with the Commission de coopération environnementale (CCE / ACEUM) by Quebec citizen William Guindon (minor citizen researcher, aged 15).
+    STRICT RESPONSE RULES:
+    1. ABSOLUTE RIGOR: You do not invent, round or extrapolate any figures, dates, article numbers or material facts. If a piece of data is missing or in progress, you explicitly mark it as missing or pending.
+    2. KEY STRUCTURING ELEMENTS:
+    - Procedure: Citizen submission SEM-26-003 instructed under articles 24.27 and 24.28 of ACEUM.
+    - Recent developments: Canada filed its official response on October 16, 2026 (72-RSP, 59 p.) requesting dismissal or stay. As of October 17, 2026, William Guindon filed his brief of observations in 7 legal grounds refuting the inadmissibility.
+    - Next deadlines: November 10, 2026 (federal ministerial response to BVG petition no. 0546) and December 15, 2026 (end of the 60-day deadline for the recommendation of a factual file by the Secretariat CCE).
+    - Uncontested environmental background: encroachment on 278,000 m² of the Grande Tourbière de Blainville (rejected by the BAPE 371 report and circumvented by the Loi 93), cadmium discharges measured up to 320 times the aquatic toxicity standards in the tributaries of the Mille Îles River.
+    3. TONE AND ETHICS: Neutral, factual, with perfect legal integrity. William Guindon cites public records and accredited laboratory analyses; he does not make any allegation of bad faith without supporting documentation on file.
+    4. QUOTES: Systematically refers to official documents (e.g. 72-RSP, DET-26-003, Observations of October 17, 2026, BAPE 371).
+# Developers & Open Data Portal
+Full documentation of public REST APIs, AI/LLM protocols (RAG), iFrame embeddable widgets, certified
+raw datasets SHA-256 and official system prompts documenting the international dossier SEM-26-003.
+
+Do you develop with React, Next.js, Vue, SvelteKit, Astro, Tailwind or WordPress? Copy this prompt
+into your AI assistant to directly design the turnkey component configured for your CSP stack and
+policies.
+
+### Show integration architect prompt ▾
+
+## 1. Public REST Endpoints
+
+All resources below are served over HTTPS, cached on the edge network (CDN), and consumable directly
+as read-only without registration or secret token.
+
+Provides the official and real-time legal status of the file CCE (Commission for Environmental
+Cooperation) SEM-26-003: next ministerial deadline (Nov. 10, 2026), deadline of art. 24.28 ACEUM
+(Dec. 15, 2026), metadata of the last aftershock from October 17, 2026 and step progression.
+
+Complete and structured textual basis for all 54 pages of the website, surveys, scientific analyzes
+and public policies. Designed expressly for chunking, RAG pipelines, vector search and supervised
+learning.
+
+Complete index of the 222 evidentiary documents placed in the international file, with official
+symbol, bilingual description, certified SHA-256 cryptographic fingerprint, size in bytes and
+permanent download URL.
+
+Structured flow of all articles, official press releases, declarations and document monitoring
+notices with time-stamped metadata and unique identifiers.
+
+Dynamic vector badge automatically generated to display live countdown and deadline status CCE in
+any Markdown file (GitHub README), forum or email signature.
+
+## 2. Embeddable Widgets (iFrames & Badges)
+
+Directly integrate the reader of official evidentiary documents or the interactive countdown into
+your own articles, press surveys, briefs or citizen portals.
+
+### Integration generator: Official Documents Reader
+Choose an official document from the list. The responsive HTML embed code will be automatically
+configured with the desired dimensions and settings.
+
+### Integration generator: Document Explorer & 222 Probative Documents
+Integrate the complete interactive explorer of the 222 evidentiary documents (scientific reports,
+forensic metadata, cadmium analyses, WACZ, CSV) directly on your site or journalistic blog. The
+embedded integration necessarily displays the official banner of provenance (“Original on
+williamguindon.me”) and neutralizes navigation to the main home page to keep the user focused on the
+documentary documents.
+- Active official banner: The header banner “View the original on williamguindon.me” is automatically
+-   displayed in iFrame mode with direct link in new tab.
+- Home isolation: Links to the main home page of the site are neutralized inside the frame in order to
+-   preserve the ergonomics of your own website.
+- Open CORS / CSP headers: The /journalists-folder resource transmits the frame-ancestors * and
+-   X-Frame-Options: ALLOWALL headers for guaranteed display on all external domains.
+
+### Live Clock & Dynamic Markdown Badges
+Ideal for GitHub repositories (README.md), static blog posts or citizen monitoring sites. Works
+instantly without any external scripts.
+
+### Copernicus Sentinel-2 Satellite Monitoring
+Integrate live interactive satellite map of Grande Tourbière de Blainville (Great Blainville Peat
+Bog) and Stablex landfill.
+
+## 3. AI Prompts, RAG & LLM Protocols
+
+Certified system directives, anchor files and machine protocols to query the SEM-26-003 folder
+without hallucination in your AI applications (ChatGPT, Claude, Gemini, Mistral, Ollama).
+
+Structured synthetic indexing standard for AI agents. Summarizes roles, applicable laws and key
+points of contact.
+
+Comprehensive knowledge base in plain text (+100 KB). Ideal for direct injection in the context of a
+large model (1M tokens).
+
+Tool and skills declarations for autonomous assistants compliant with WebMCP and Anthropic Model
+Context Protocol standards.
+
+## 4. Direct Downloads & Permanent Deposits
+
+Download raw files for your research or explore datasets preserved in permanent academic and
+scientific repositories.
+
+Dynamic status file CCE: milestones, precise deadlines, bilingual description and progress.
+
+Complete full-text extraction of the site and all survey pages for data mining.
+
+Certified inventory of 222 evidentiary documents with SHA-256 fingerprints and legal metadata.
+
+OpenAPI 3.1 formal specification for import into Postman, Insomnia or Swagger UI.
+
+### Academic Deposits & Perennial Preservation
+William Guindon's data and evidentiary documents are archived in an immutable manner on scientific
+and web archiving platforms:
+
+## 5. License & Conditions of Use
+
+Factual metadata and structured indexes are open. Legal evidentiary documents are protected to
+preserve their evidentiary integrity.
+
+#### Content license
+The texts, memoirs and articles of William Guindon are published under the Creative Commons license
+CC BY-NC-ND 4.0 (Attribution, no commercial use, no modification). The raw metadata is in the public
+domain (CC0).
+
+#### Fair Access Policy
+No authentication key is required. Data consumers are invited to respect a courteous interval (≤ 2
+requests/second) and to favor local caching of static corpora.
+
+══════════════════════════════════════════════════════════════════════════
+FIN DU DOCUMENT — https://williamguindon.me/dev.html
+══════════════════════════════════════════════════════════════════════════

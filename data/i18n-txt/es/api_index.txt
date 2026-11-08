@@ -1,0 +1,71 @@
+══════════════════════════════════════════════════════════════════════════
+WILLIAM GUINDON — TRADUCCIÓN EN TEXTO PLANO — ESPAÑOL
+══════════════════════════════════════════════════════════════════════════
+URL DE ORIGEN: https://williamguindon.me/api/
+TÍTULO (ES)  : API pública abierta y registro de máquinas - William Guindon
+LANGUAGE     : Español (es)
+DESCRIPTION  : API REST pública, abierta y gratuita que brinda acceso de máquina e IA a todo el corpus documental, textos del sitio y 222 documentos probatorios (SEM-26-003).
+
+NOTA DE TRADUCCIÓN : Traducción automática (NMT) revisada con un glosario protegido. Las denominaciones oficiales francesas (leyes, ministerios, expedientes de la CCA como SEM-26-003, topónimos) se conservan literalmente y se glosan una sola vez entre paréntesis. Esta traducción es solo informativa: prevalece el original francés.
+
+══════════════════════════════════════════════════════════════════════════
+
+importar urllib.request
+    importar json
+    # Opción A: Carga directa del corpus completo a través de la API REST
+    URL = "https://williamguindon.me/api/v1/corpus.json"
+    req = urllib.request.Request(url, encabezados={"User-Agent": "AIAgent/1.0"})
+    con urllib.request.urlopen(req) como respuesta:
+    corpus = json.loads(respuesta.read().decode("utf-8"))
+    print(f"Páginas indexadas: {corpus['estadísticas']['total_pages']}")
+    print(f"Número total de palabras: {corpus['estadísticas']['total_palabras']}")
+    # Búsqueda instantánea de texto completo en todas las páginas
+    consulta = "cadmio"
+    páginas_coincidentes = [
+    página por página en corpus["site_pages"]
+    si query.lower() en la página["full_text"].lower()
+    ]
+    print(f"Páginas que mencionan '{query}': {len(matching_pages)}")
+    # Opción B: Carga a través de conjuntos de datos de caras abrazadas
+    # de conjuntos de datos importar load_dataset
+    # conjunto de datos = load_dataset("Williesssss/SEM-26-003")
+# API pública abierta y registro de máquinas
+Punto de acceso estandarizado, directo y sin llave para modelos de lenguaje (LLM), investigadores,
+desarrolladores y agentes autónomos que deseen consultar todo el corpus textual, documentos
+oficiales y 222 documentos probatorios del expediente SEM-26-003.
+
+## Principales puntos de acceso (REST y puntos finales de datos abiertos)
+
+### Corpus completo Texto completo
+Devuelve el texto bruto y estructurado de todas las páginas del sitio, las 12 cartas fundamentales,
+los análisis ecológicos, la encuesta ciudadana y los metadatos de gobernanza (+46.000 palabras).
+
+### Conjunto de datos de caras abrazadas (IA y LLM)
+Conjunto de datos oficial estructurado y listo para aprendizaje automático, ajustes, evaluaciones
+comparativas y canalizaciones RAG, distribuido en el centro Hugging Face.
+
+### Directorio de 222 Documentos Probatorios
+Índice exhaustivo de los 222 elementos del archivo SEM-26-003: BAPE 371 informes, mapas GIS, datos
+del satélite Sentinel-2 NDVI, pruebas de pozos y coincidencias con sus URL de archivos de Internet y
+hashes SHA-256.
+
+### Estado Legal y Plazo CCE
+Estado vivo de la presentación del SEM-26-003 a la Secretaría del CCE (ACEUM), indicadores de
+cumplimiento y cuenta regresiva para la fecha límite del 16 de octubre de 2026.
+
+### Feeds de texto dedicados a LLM
+Archivos que cumplen con los estándares de llmstxt.org y se pueden inyectar directamente en las
+ventanas contextuales de los modelos de IA (GPT-4o, Claude 3.5, Gemini 1.5 Pro, Llama 3).
+
+## Ejemplo de integración de Python (para agentes AI y RAG)
+
+### Cumplimiento, licencias y ética
+El uso de esta API pública y de datos abiertos se rige por la licencia Creative Commons CC BY-NC-ND
+4.0, así como por el Charter 03 (Ética de la IA y control humano) y el Charter 12 (Protección del
+archivo). Se autoriza la indexación, la síntesis fáctica y la cita con mención de la fuente oficial:
+William Guindon (https://williamguindon.me/ — Archivo CCE (Comisión para la Cooperación Ambiental)
+SEM-26-003).
+
+══════════════════════════════════════════════════════════════════════════
+FIN DU DOCUMENT — https://williamguindon.me/api/
+══════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,217 @@
+/**
+ * chronologie-viewer.css — William Guindon (williamguindon.me)
+ * Styles d'intégration pour le visualiseur SVG interactif svg-pan-zoom
+ */
+
+.wg-chronologie-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #042f22 0%, #032017 100%);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  margin: 32px 0;
+  font-family: inherit;
+  color: #e2e8f0;
+}
+
+.wg-chronologie-container:fullscreen,
+.wg-chronologie-container:-webkit-full-screen,
+.wg-chronologie-container.is-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  z-index: 999999 !important;
+}
+
+.wg-chronologie-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  background: rgba(4, 47, 34, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.22);
+}
+
+.wg-chronologie-titles {
+  flex: 1 1 300px;
+}
+
+.wg-chronologie-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.wg-chronologie-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+}
+
+.wg-chronologie-subtitle {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+}
+
+.wg-chronologie-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.wg-chronologie-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  user-select: none;
+}
+
+.wg-chronologie-btn:hover,
+.wg-chronologie-btn:focus-visible {
+  background: rgba(34, 197, 94, 0.28);
+  border-color: #22c55e;
+  color: #ffffff;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.wg-chronologie-btn:active {
+  transform: translateY(0);
+}
+
+.wg-chronologie-instructions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 20px;
+  background: rgba(6, 78, 59, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.77rem;
+  color: #a7f3d0;
+}
+
+.wg-chronologie-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 540px;
+  height: 640px;
+  background: #043927;
+  cursor: grab;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.wg-chronologie-stage:active {
+  cursor: grabbing;
+}
+
+.wg-chronologie-container:fullscreen .wg-chronologie-stage,
+.wg-chronologie-container:-webkit-full-screen .wg-chronologie-stage,
+.wg-chronologie-container.is-fullscreen .wg-chronologie-stage {
+  height: calc(100vh - 145px) !important;
+  min-height: 400px;
+}
+
+.wg-chronologie-loading,
+.wg-chronologie-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #94a3b8;
+  gap: 14px;
+}
+
+.wg-chronologie-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(34, 197, 94, 0.2);
+  border-top-color: #22c55e;
+  border-radius: 50%;
+  animation: wgChronologieSpin 0.8s linear infinite;
+}
+
+@keyframes wgChronologieSpin {
+  to { transform: rotate(360deg); }
+}
+
+.wg-chronologie-footer {
+  padding: 10px 20px;
+  background: rgba(4, 47, 34, 0.95);
+  border-top: 1px solid rgba(34, 197, 94, 0.2);
+  font-size: 0.74rem;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+.wg-chronologie-credits {
+  margin: 0;
+}
+
+.wg-chronologie-credits a {
+  color: #34d399;
+  text-decoration: underline;
+  text-decoration-color: rgba(52, 211, 153, 0.4);
+  text-underline-offset: 2px;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.wg-chronologie-credits a:hover {
+  color: #6ee7b7;
+}
+
+@media (max-width: 640px) {
+  .wg-chronologie-header {
+    padding: 14px 16px;
+  }
+  .wg-chronologie-title {
+    font-size: 1.1rem;
+  }
+  .wg-chronologie-stage {
+    min-height: 420px;
+    height: 480px;
+  }
+  .wg-chronologie-btn span:not(.wg-fs-label) {
+    font-size: 0.8rem;
+  }
+}

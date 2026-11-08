@@ -20,7 +20,8 @@ import json
 import html as htmllib
 
 WORKSPACE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-SOURCE_TXT_DIR = '/Users/williamguindon/Library/Mobile Documents/com~apple~CloudDocs/Téléchargements/workspace-01a1b612-322f-75df-a0d9-1ed4c72a6a68/williamguindon-me-txt'
+LOCAL_TXT_DIR = os.path.join(WORKSPACE_DIR, 'data', 'i18n-txt')
+SOURCE_TXT_DIR = LOCAL_TXT_DIR if os.path.exists(LOCAL_TXT_DIR) else '/Users/williamguindon/Library/Mobile Documents/com~apple~CloudDocs/Téléchargements/workspace-01a1b612-322f-75df-a0d9-1ed4c72a6a68/williamguindon-me-txt'
 EXTRA_JSON_PATH = os.path.join(WORKSPACE_DIR, 'scripts', 'i18n-extra-translations.json')
 
 # Pages exclues de la traduction qui doivent toujours renvoyer vers le fichier français d'origine à la racine
@@ -127,7 +128,8 @@ ROOT_ASSETS = [
     'feed.xml',
     'sitemap.xml',
     'william-guindon.vcf',
-    'vcard.vcf'
+    'vcard.vcf',
+    'chronologie-cce-sem26003.svg'
 ]
 
 COMMON_REPLACEMENTS = {
