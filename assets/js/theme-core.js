@@ -894,17 +894,16 @@
     try {
       const saved = localStorage.getItem(LANG_STORAGE_KEY);
       const current = getCurrentPageLanguage();
-      // Si l'utilisateur a explicitement sélectionné en ou es, mais qu'il atterrit sur la version française
-      // (ex: clic sur logo racine, bouton retour/historique du navigateur ou lien externe sans préfixe),
-      // on préserve automatiquement sa langue choisie.
-      if (saved && (saved === 'en' || saved === 'es') && current === 'fr') {
-        const curFile = window.location.pathname.split('/').pop().toLowerCase().replace(/\.html$/i, '');
-        if (!EXCLUDED_FR_PAGES.has(curFile) && !EXCLUDED_FR_PAGES.has(curFile + '.html')) {
-          const targetUrl = getTargetLanguageUrl(saved);
-          if (targetUrl && targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
-            window.location.replace(targetUrl);
-            return true;
-          }
+      // On redirige UNIQUEMENT si le visiteur arrive de l'extérieur sur la racine '/' ou '/index.html'
+      // et qu'il a explicitement enregistré une préférence non-française lors d'un choix volontaire.
+      // Jamais sur les sous-pages spécifiques pour éliminer tout rechargement secondaire (0 ms).
+      const p = window.location.pathname.toLowerCase();
+      const isRoot = p === '/' || p === '/index.html' || p === '';
+      if (isRoot && saved && (saved === 'en' || saved === 'es') && current === 'fr') {
+        const targetUrl = `/${saved}/` + window.location.search + window.location.hash;
+        if (targetUrl !== window.location.pathname) {
+          window.location.replace(targetUrl);
+          return true;
         }
       }
     } catch (_) {}
@@ -1019,20 +1018,12 @@
   // Nettoyage immédiat des résidus Google Translate et initialisation de l'UI
   clearGoogTransCookies();
   const _bootLang = getCurrentPageLanguage();
-  if (_bootLang === 'en' || _bootLang === 'es') {
-    try {
-      localStorage.setItem(LANG_STORAGE_KEY, _bootLang);
-    } catch (_) {}
-  }
   updateLangUI(_bootLang);
 
-  // Vérifier et appliquer la persistance linguistique (bouton retour du navigateur, bfcache et navigation)
+  // Vérifier et appliquer la persistance linguistique uniquement sur l'arrivée à la racine du site
   checkAndAutoRedirectLanguage();
-  window.addEventListener('pageshow', () => {
-    checkAndAutoRedirectLanguage();
-  });
 
-  // Préservation dynamique de la langue active sur tous les liens internes
+  // Préservation dynamique de la langue active sur les liens internes si besoin
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
     if (!link || !link.href) return;
@@ -1056,14 +1047,14 @@
       const targetFile = path.split('/').pop().replace(/\.html$/i, '');
       if (EXCLUDED_FR_PAGES.has(targetFile) || EXCLUDED_FR_PAGES.has(targetFile + '.html')) return;
 
-      // Réécrire le lien pour rester dans la langue active
+      // Réécrire le lien pour rester dans la langue active de manière fluide
       let clean = cleanUrlPath(path).replace(/^\/(en|es|fr)(\/|$)/i, '/');
       if (!clean.startsWith('/')) clean = '/' + clean;
       const localizedPath = clean === '/' ? `/${currentLang}/` : `/${currentLang}${clean}`;
       url.pathname = localizedPath;
       link.href = url.pathname + url.search + url.hash;
     } catch (_) {}
-  }, true);
+  });
 
   // Suppression immédiate de toute balise/iframe Google Translate résiduelle
   try {
@@ -1112,11 +1103,9 @@
     }
 
     // Préchargement instantané au survol de la souris ou au touch
-    function onPointerEnter(e) {
+    function onPointerOver(e) {
       if (!e.target) return;
-      const el = e.target instanceof Element ? e.target : (e.target.parentElement || null);
-      if (!el || typeof el.closest !== 'function') return;
-      const anchor = el.closest('a');
+      const anchor = e.target.closest ? e.target.closest('a') : null;
       if (!anchor) return;
       const href = anchor.getAttribute('href');
       if (!href || href.startsWith('#')) return;
@@ -1127,8 +1116,8 @@
       } catch (_) {}
     }
 
-    document.addEventListener('pointerenter', onPointerEnter, { passive: true, capture: true });
-    document.addEventListener('touchstart', onPointerEnter, { passive: true, capture: true });
+    document.addEventListener('pointerover', onPointerOver, { passive: true });
+    document.addEventListener('touchstart', onPointerOver, { passive: true });
 
     // Préchargement échelonné des pages de navigation principales au repos
     if ('requestIdleCallback' in window) {

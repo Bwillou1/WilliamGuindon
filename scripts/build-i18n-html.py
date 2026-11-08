@@ -55,6 +55,58 @@ EXCLUDED_PAGES = {
     'vie-privee-parents.html'
 }
 
+TRANSLATED_SLUGS = {
+    'adultisme', 'agir', 'ai', 'anti-slapp', 'apercu', 'api', 'apparitions-publiques',
+    'autochtone', 'blog', 'communiques', 'contamination', 'correspondance', 'deontologie',
+    'dependances-licences', 'dev', 'diplomatie', 'dossier-journalistes',
+    'edition-speciale-reconciliation', 'embargo', 'experts', 'flux', 'halloween',
+    'ia-ethique', 'independance', 'index', 'lecteur', 'lexique', 'licence-et-charte',
+    'liens', 'live', 'lobby', 'messagerie', 'miroirs', 'netiquette', 'photos',
+    'politique-traduction', 'politiques', 'portrait', 'presse', 'privacy', 'projets',
+    'protection-archive', 'reciprocite', 'satellite', 'stablex', 'statut',
+    'telechargement-archive', 'terms', 'tracabilite', 'txt', 'viewer'
+}
+
+def localize_all_links(html, lang):
+    """Localise de manière absolue et sans ambiguïté tous les liens internes vers /{lang}/{slug} (0 ms de redirection)."""
+    def _repl(m):
+        full = m.group(0)
+        attr = m.group(1)
+        quote = m.group(2)
+        raw_url = m.group(3)
+
+        # Ignorer liens externes, ancres pures, protocoles non-web
+        if raw_url.startswith(('http://', 'https://', 'mailto:', 'tel:', 'javascript:', '#')):
+            return full
+
+        url_match = re.match(r'^([^?#]*)([?#].*)?$', raw_url)
+        path_part = url_match.group(1) if url_match else raw_url
+        extra_part = url_match.group(2) or '' if url_match else ''
+
+        # Ignorer ressources et documents statiques (vérifié sur le chemin, sans la query)
+        if path_part.startswith(('/assets/', '/data/', 'assets/', 'data/')) or re.search(r'\.(css|js|png|jpg|jpeg|webp|svg|pdf|xml|json|txt|zip|woff2?|ttf|ico)$', path_part, re.I):
+            return full
+
+        clean = path_part.strip().lstrip('./').lstrip('/')
+        clean_slug = clean.replace('.html', '').lower()
+
+        if clean_slug in ('', 'index'):
+            return f'{attr}{quote}/{lang}/{extra_part}{quote}'
+
+        if clean.startswith(('en/', 'es/')):
+            parts = clean.split('/', 1)
+            clean_slug = parts[1].replace('.html', '').lower() if len(parts) > 1 else ''
+            if clean_slug in ('', 'index'):
+                return f'{attr}{quote}/{lang}/{extra_part}{quote}'
+
+        if clean_slug in TRANSLATED_SLUGS:
+            return f'{attr}{quote}/{lang}/{clean_slug}{extra_part}{quote}'
+
+        # Page exclue (reste en version française à la racine)
+        return f'{attr}{quote}/{clean_slug}{extra_part}{quote}'
+
+    return re.sub(r'(href=)(["\'])([^"\']+)["\']', _repl, html)
+
 ROOT_ASSETS = [
     'tourbiere.jpg',
     'tourbiere-thumb.webp',
@@ -674,16 +726,7 @@ def normalize_links_and_assets(html, lang, clean_slug):
     html = re.sub(r'<div class="nav-dropdown-menu nav-lang-menu"[\s\S]*?</div>\s*</div>', f'{lang_menu_replacement}\n      </div>', html)
 
     # Routage des liens internes
-    for excl in EXCLUDED_PAGES:
-        clean_excl = excl.replace('.html', '')
-        target_excl = '/' if clean_excl == 'index' else f'/{clean_excl}'
-        html = re.sub(rf'href=["\'](?:\.\./)?{re.escape(excl)}(["\']|#|\?)', rf'href="{target_excl}\1', html)
-        if clean_excl != 'index':
-            html = re.sub(rf'href=["\'](?:\.\./)?{re.escape(clean_excl)}(["\']|#|\?)', rf'href="/{clean_excl}\1', html)
-
-    html = re.sub(r'href=["\']index\.html(["\']|#|\?)', r'href="./\1', html)
-    html = re.sub(r'href=["\']api/index\.html(["\']|#|\?)', r'href="api\1', html)
-    html = re.sub(r'href=["\']([a-zA-Z0-9_\-]+)\.html(["\']|#|\?)', r'href="\1\2', html)
+    html = localize_all_links(html, lang)
 
     return html
 
@@ -875,6 +918,9 @@ def build_page(page_name, lang, global_exact, page_data, extra_data):
                 count=1
             )
 
+    # 6c. Ré-application globale de la localisation stricte des liens
+    html = localize_all_links(html, lang)
+
     # 7. Écriture du fichier HTML de sortie
     out_dir = os.path.join(WORKSPACE_DIR, lang)
     os.makedirs(out_dir, exist_ok=True)
@@ -896,6 +942,7 @@ def post_process_standalone_page(rel_path, lang, clean_slug, extra_data):
     html = normalize_links_and_assets(html, lang, clean_slug)
     html = apply_extra_replacements(html, lang, extra_data.get(lang, {}))
     html = translate_dates_and_bylines(html, lang)
+    html = localize_all_links(html, lang)
     with open(full_path, 'w', encoding='utf-8') as f:
         f.write(html)
     return True
