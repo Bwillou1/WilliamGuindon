@@ -721,40 +721,6 @@
       btnLoadYt.addEventListener('click', loadYouTubeEmbed);
     }
 
-    // 6d. Gestionnaire de consentement 2-clics pour le widget LinkedIn (sessionStorage uniquement, zéro traceur sans clic)
-    const btnLoadLinkedin = document.getElementById('btn-load-linkedin-embed');
-
-    function loadLinkedInEmbed() {
-      const container = document.getElementById('linkedin-embed-container');
-      if (!container) return;
-      try {
-        sessionStorage.setItem('wg_linkedin_consent', 'granted');
-      } catch (e) {}
-      container.style.display = 'block';
-      container.style.padding = '0';
-      container.style.minHeight = 'auto';
-      container.innerHTML = `
-        <div style="width:100%; max-width:640px; margin:0 auto; overflow:hidden; border-radius:12px;">
-          <iframe src="https://www.linkedinembed.com/embed/PNnFEEnAcGH2x0DRAQy7" 
-                  title="LinkedIn widget" 
-                  loading="lazy" 
-                  style="width:100%;height:640px;border:0;color-scheme:normal;border-radius:12px;display:block;" 
-                  allowtransparency="true">
-          </iframe>
-        </div>`;
-    }
-    window.loadLinkedInEmbed = loadLinkedInEmbed;
-
-    if (btnLoadLinkedin) {
-      btnLoadLinkedin.addEventListener('click', loadLinkedInEmbed);
-    }
-
-    try {
-      if (sessionStorage.getItem('wg_linkedin_consent') === 'granted') {
-        loadLinkedInEmbed();
-      }
-    } catch (_) {}
-
     // 7. Façade Click-to-Load interactive pour la carte SIG uMap
     const mapFacade = document.getElementById('map-facade');
     const mapPlaceholder = document.getElementById('map-placeholder');
