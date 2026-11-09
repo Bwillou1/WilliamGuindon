@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self';">
+  <title>Mode Hors-Ligne · Registre SEM-26-003 — William Guindon</title>
+  <meta name="description" content="Accès sécurisé hors ligne au dossier documentaire et aux pièces probatoires du recours citoyen SEM-26-003 (CCE / ACEUM).">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://williamguindon.me/offline.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('wg_theme') || localStorage.getItem('william-guindon-theme');
+        var isDark = savedTheme ? (savedTheme === 'dark') : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-color: #f7faf8;
+      --card-bg: #ffffff;
+      --card-border: #dce5df;
+      --text-main: #0b160e;
+      --text-muted: #52796f;
+      --accent-green: #064e3b;
+      --accent-emerald: #10b981;
+      --accent-hover: #04382a;
+      --btn-text: #ffffff;
+      --btn-secondary-bg: #edf3f0;
+      --btn-secondary-border: #cfded6;
+      --btn-secondary-text: #064e3b;
+      --btn-secondary-hover: #e0ece6;
+      --pill-bg: rgba(6, 78, 59, 0.08);
+      --pill-border: rgba(6, 78, 59, 0.18);
+      --pill-text: #064e3b;
+      --pill-dot: #e11d48;
+      --shadow-card: 0 12px 36px rgba(11, 22, 14, 0.06), 0 2px 6px rgba(11, 22, 14, 0.04);
+      --monogram-ink: #0b160e;
+      --monogram-accent: #22c55e;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #080d0a;
+      --card-bg: #111a14;
+      --card-border: #1f3326;
+      --text-main: #f1f5f3;
+      --text-muted: #8fa89b;
+      --accent-green: #10b981;
+      --accent-emerald: #34d399;
+      --accent-hover: #059669;
+      --btn-text: #051a11;
+      --btn-secondary-bg: #18261e;
+      --btn-secondary-border: #284234;
+      --btn-secondary-text: #d1fae5;
+      --btn-secondary-hover: #22352a;
+      --pill-bg: rgba(16, 185, 129, 0.12);
+      --pill-border: rgba(16, 185, 129, 0.25);
+      --pill-text: #a7f3d0;
+      --pill-dot: #f43f5e;
+      --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.45);
+      --monogram-ink: #f1f5f3;
+      --monogram-accent: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .offline-wrapper {
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .offline-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 40px 32px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offline-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #10b981, #064e3b, #10b981);
+    }
+
+    .monogram-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      transition: transform 0.2s ease;
+    }
+
+    .monogram-box:hover {
+      transform: scale(1.03);
+    }
+
+    .monogram-svg {
+      width: 96px;
+      height: auto;
+      display: block;
+    }
+
+    .monogram-svg .path-ink {
+      fill: var(--monogram-ink);
+      transition: fill 0.3s ease;
+    }
+
+    .monogram-svg .path-accent {
+      fill: var(--monogram-accent);
+      transition: fill 0.3s ease;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
+      color: var(--pill-text);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--pill-dot);
+      box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.25);
+    }
+
+    .status-pill.is-online .status-dot {
+      background-color: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+    }
+
+    .status-icon {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .actions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent-green);
+      color: var(--btn-text);
+      border-color: var(--accent-green);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      border-color: var(--btn-secondary-border);
+      color: var(--btn-secondary-text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-reload {
+      background: transparent;
+      border-color: var(--card-border);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .btn-reload:hover {
+      background: var(--btn-secondary-bg);
+      color: var(--text-main);
+    }
+
+    .notice-box {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 6px;
+    }
+
+    .notice-icon {
+      color: var(--accent-emerald);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .notice-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .notice-text strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer-note a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .footer-note a:hover {
+      color: var(--text-main);
+    }
+
+    @media (min-width: 480px) {
+      .actions-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="offline-wrapper" role="main">
+    <div class="offline-card">
+
+      <div class="monogram-box" aria-hidden="true">
+        <svg class="monogram-svg" viewBox="221 339 581 345" width="96" height="57">
+          <g class="path-accent">
+            <path d="M 631.0 407.0 L 618.0 410.0 L 604.0 416.0 L 601.0 419.0 L 584.0 465.0 L 578.0 478.0 L 577.0 483.0 L 574.0 488.0 L 564.0 517.0 L 552.0 545.0 L 552.0 548.0 L 544.0 566.0 L 543.0 572.0 L 537.0 587.0 L 527.0 598.0 L 522.0 600.0 L 512.0 600.0 L 505.0 596.0 L 506.0 601.0 L 508.0 603.0 L 522.0 639.0 L 524.0 641.0 L 529.0 655.0 L 532.0 659.0 Z"/>
+          </g>
+          <g class="path-ink">
+            <path d="M 794.0 490.0 L 689.0 490.0 L 663.0 531.0 L 663.0 533.0 L 750.0 533.0 L 751.0 534.0 L 751.0 601.0 L 745.0 607.0 L 733.0 615.0 L 719.0 622.0 L 699.0 629.0 L 678.0 633.0 L 655.0 634.0 L 654.0 633.0 L 643.0 633.0 L 642.0 632.0 L 630.0 631.0 L 613.0 626.0 L 592.0 616.0 L 577.0 657.0 L 593.0 665.0 L 620.0 673.0 L 640.0 675.0 L 641.0 676.0 L 680.0 676.0 L 681.0 675.0 L 701.0 673.0 L 717.0 669.0 L 737.0 662.0 L 753.0 654.0 L 777.0 638.0 L 794.0 622.0 Z M 657.0 404.0 L 642.0 405.0 L 631.0 408.0 L 630.0 413.0 L 627.0 418.0 L 626.0 423.0 L 610.0 461.0 L 596.0 499.0 L 578.0 542.0 L 570.0 565.0 L 567.0 570.0 L 566.0 575.0 L 554.0 603.0 L 546.0 626.0 L 543.0 631.0 L 542.0 636.0 L 532.0 659.0 L 539.0 676.0 L 553.0 676.0 L 554.0 675.0 L 555.0 670.0 L 576.0 618.0 L 583.0 597.0 L 609.0 532.0 L 616.0 511.0 L 622.0 498.0 L 631.0 472.0 L 655.0 412.0 Z M 784.0 398.0 L 770.0 385.0 L 755.0 374.0 L 731.0 361.0 L 709.0 353.0 L 677.0 347.0 L 639.0 347.0 L 638.0 348.0 L 624.0 349.0 L 607.0 353.0 L 587.0 360.0 L 571.0 368.0 L 550.0 382.0 L 524.0 408.0 L 510.0 429.0 L 505.0 441.0 L 534.0 511.0 L 535.0 493.0 L 538.0 477.0 L 544.0 460.0 L 553.0 443.0 L 562.0 431.0 L 575.0 418.0 L 587.0 409.0 L 606.0 399.0 L 628.0 392.0 L 638.0 391.0 L 639.0 390.0 L 647.0 390.0 L 648.0 389.0 L 667.0 389.0 L 668.0 390.0 L 688.0 392.0 L 702.0 396.0 L 724.0 406.0 L 740.0 417.0 L 755.0 430.0 Z M 229.0 349.0 L 352.0 676.0 L 362.0 676.0 L 364.0 673.0 L 365.0 668.0 L 368.0 663.0 L 384.0 621.0 L 387.0 616.0 L 409.0 559.0 L 412.0 554.0 L 446.0 468.0 L 449.0 463.0 L 451.0 464.0 L 471.0 515.0 L 474.0 520.0 L 490.0 561.0 L 505.0 595.0 L 511.0 599.0 L 520.0 600.0 L 529.0 596.0 L 533.0 592.0 L 540.0 579.0 L 541.0 574.0 L 543.0 571.0 L 450.0 347.0 L 359.0 569.0 L 357.0 567.0 L 353.0 554.0 L 337.0 514.0 L 335.0 506.0 L 328.0 490.0 L 326.0 482.0 L 295.0 401.0 L 277.0 350.0 L 274.0 348.0 L 271.0 349.0 Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="status-pill" id="status-pill">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+            <line x1="12" y1="20" x2="12.01" y2="20"/>
+          </svg>
+        </span>
+        <span id="status-text">Mode Hors-Ligne Probatoire</span>
+      </div>
+
+      <h1>Connexion réseau interrompue</h1>
+      <p class="subtitle">
+        L'accès au réseau est momentanément indisponible. Toutefois, l'environnement sécurisé et les pièces probatoires enregistrées restent accessibles hors ligne sur cet appareil.
+      </p>
+
+      <div class="actions-grid">
+        <a href="/dossier-journalistes.html" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Consulter les pièces hors ligne</span>
+        </a>
+
+        <a href="/viewer.html" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>Ouvrir le lecteur PDF officiel</span>
+        </a>
+
+        <button type="button" class="btn btn-reload" id="btn-reload" onclick="window.location.reload();">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          <span>Réessayer la connexion</span>
+        </button>
+      </div>
+
+      <div class="notice-box">
+        <div class="notice-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="notice-text">
+          <strong>Pièces déjà synchronisées :</strong> Les documents et pièces que vous avez déjà ouverts ou téléchargés sont conservés en mémoire blindée (Cache &amp; IndexedDB) et restent consultables sans connexion.
+        </div>
+      </div>
+
+    </div>
+
+    <p class="footer-note">
+      Recours CCE SEM-26-003 · William Guindon ·
+      <a href="/apercu.html">Aperçu rapide</a> ·
+      <a href="/dependances-licences.html">Licences &amp; Sécurité</a>
+    </p>
+  </main>
+
+  <script>
+    window.addEventListener('online', function() {
+      var statusPill = document.getElementById('status-pill');
+      var statusText = document.getElementById('status-text');
+      if (statusPill && statusText) {
+        statusPill.classList.add('is-online');
+        statusText.textContent = "Connexion rétablie · Actualisation...";
+      }
+      setTimeout(function() {
+        window.location.reload();
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>

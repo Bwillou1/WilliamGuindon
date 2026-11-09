@@ -43,6 +43,7 @@ const CORE_FILES = [
   'dependances-licences.html',
   'licence-et-charte.html',
   'liens.html',
+  'offline.html',
   'dev.html',
   'portrait.html',
   'diplomatie.html',
@@ -408,7 +409,8 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'cle.html',
   'delegation.html',
   'commentaires.html',
-  'embed-chronologie.html'
+  'embed-chronologie.html',
+  'offline.html'
 ]);
 
 let publicPagesAudited = 0;

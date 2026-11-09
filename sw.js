@@ -1,7 +1,8 @@
-const CACHE_NAME = 'wg-pwa-v232';
+const CACHE_NAME = 'wg-pwa-v233';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/offline.html',
   '/chronologie.html',
   '/embed-chronologie.html',
   '/chronologie-cce-sem26003.svg',
@@ -190,7 +191,7 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur et apercu.html
+  // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur, apercu.html et offline.html
   // Le reste du HTML ne doit pas être mis en cache pour préserver le fonctionnement en direct des traductions
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
   if (contentType.includes('text/html')) {
@@ -198,7 +199,8 @@ function isCacheable(request, response) {
                                  url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
                                  url.pathname === '/viewer.html' || url.pathname === '/viewer' ||
                                  url.pathname === '/lecteur.html' || url.pathname === '/lecteur' ||
-                                 url.pathname === '/dependances-licences.html' || url.pathname === '/dependances-licences';
+                                 url.pathname === '/dependances-licences.html' || url.pathname === '/dependances-licences' ||
+                                 url.pathname === '/offline.html' || url.pathname === '/offline';
     if (!isOfflineAllowedHtml) {
       return false;
     }
@@ -303,17 +305,41 @@ self.addEventListener('fetch', (event) => {
 
   const isNavigation = event.request.mode === 'navigate';
 
-  // 2. Pour les navigations HTML : ne traiter en cache hors-ligne que apercu.html et les pièces
-  // Toutes les autres pages naviguent en direct réseau sans interception SW (garantit 0 bug de traduction)
+  // 2. Pour les navigations HTML : mode réseau prioritaire (Network-First) avec repli hors-ligne élégant
+  // Ne met en cache que les pièces autorisées afin de préserver les traductions en direct
   if (isNavigation) {
-    const isOfflineAllowed = url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
-                             url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
-                             url.pathname === '/viewer.html' || url.pathname === '/viewer' ||
-                             url.pathname === '/lecteur.html' || url.pathname === '/lecteur' ||
-                             url.pathname === '/dependances-licences.html' || url.pathname === '/dependances-licences';
-    if (!isOfflineAllowed) {
-      return;
-    }
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (isCacheable(event.request, networkResponse)) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(async (cache) => {
+              await cache.put(event.request, responseClone);
+              await trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          // Recherche dans le cache local
+          let cachedResponse = await caches.match(event.request);
+          if (!cachedResponse && !url.pathname.endsWith('.html')) {
+            cachedResponse = await caches.match(url.pathname + '.html');
+          }
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          // Fallback universel pour toute navigation hors-ligne vers l'écran d'accueil hors-ligne
+          const offlineFallback = await caches.match('/offline.html');
+          if (offlineFallback) {
+            return offlineFallback;
+          }
+
+          return Promise.reject(new Error('Ressource hors-ligne indisponible'));
+        })
+    );
+    return;
   }
 
   event.respondWith(
@@ -336,12 +362,6 @@ self.addEventListener('fetch', (event) => {
         }
         if (cachedResponse) {
           return cachedResponse;
-        }
-
-        // Fallback pour la navigation apercu.html
-        if (isNavigation && (url.pathname === '/apercu.html' || url.pathname === '/apercu')) {
-          const apercuFallback = await caches.match('/apercu.html');
-          if (apercuFallback) return apercuFallback;
         }
 
         return Promise.reject(new Error('Ressource hors-ligne indisponible'));
