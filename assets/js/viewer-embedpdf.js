@@ -166,13 +166,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           clean = parsed.pathname;
         } else if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
           let pathname = parsed.pathname;
-          if (pathname.startsWith('/download/')) {
-            pathname = '/cors/' + pathname.substring(10);
-          } else {
-            const itemsMatch = pathname.match(/^\/\d+\/items\/(.+)$/);
-            if (itemsMatch) {
-              pathname = '/cors/' + itemsMatch[1];
-            }
+          // Corriger tout ancien lien /cors/ qui renvoie 404 sur Archive.org
+          if (pathname.startsWith('/cors/')) {
+            pathname = '/download/' + pathname.substring(6);
           }
           return `https://archive.org${pathname}${parsed.search}`;
         } else {

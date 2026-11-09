@@ -3486,9 +3486,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const totalFiles = allValidFiles.length || 0;
     let cachedCount = 0;
     allValidFiles.forEach(f => {
-      const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(f.fullPath);
-      const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(f.fullPath);
-      if (cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
+      const encodedFp = encodeURI(f.fullPath).replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const downloadUrl = "https://archive.org/download/" + identifier + "/" + encodedFp;
+      const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodedFp;
+      if (cachedUrlsSet.has(downloadUrl) || cachedUrlsSet.has(directStorageUrl)) {
         cachedCount++;
       }
     });
@@ -3496,10 +3497,11 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     // Mise à jour de l'indicateur visuel sur chaque élément de l'arbre
     document.querySelectorAll(".drive-item").forEach(item => {
       const fullPath = item.getAttribute("data-fullpath") || '';
-      const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fullPath);
-      const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fullPath);
+      const encodedFp = encodeURI(fullPath).replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const downloadUrl = "https://archive.org/download/" + identifier + "/" + encodedFp;
+      const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodedFp;
       const isSiteAsset = fullPath.includes("26-3-rsub") || fullPath.includes("72-rsp") || fullPath.includes("73-rec") || fullPath.includes("26-2-det2") || fullPath.includes("26-3-det") || fullPath.includes("declaration-appui-manfred-liebel") || fullPath.includes("petition-546") || fullPath.includes("formal-deposition");
-      if (isSiteAsset || cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
+      if (isSiteAsset || cachedUrlsSet.has(downloadUrl) || cachedUrlsSet.has(directStorageUrl)) {
         item.classList.add("is-cached");
       } else {
         item.classList.remove("is-cached");
@@ -3554,21 +3556,21 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       async function worker() {
         while (currentIndex < allValidFiles.length && !cancelCachingRequested) {
           const fileObj = allValidFiles[currentIndex++];
-          const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
-          const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodeURI(fileObj.fullPath);
-          const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+          const encodedFp = encodeURI(fileObj.fullPath).replace(/\(/g, '%28').replace(/\)/g, '%29');
+          const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodedFp;
+          const rawUrl = "https://archive.org/download/" + identifier + "/" + encodedFp;
 
-          const alreadyCached = cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(directStorageUrl) || cachedUrlsSet.has(rawUrl);
+          const alreadyCached = cachedUrlsSet.has(directStorageUrl) || cachedUrlsSet.has(rawUrl);
           if (!isSync || !alreadyCached) {
             try {
               let res = null;
               try {
-                res = await fetch(corsUrl, { mode: 'cors' });
+                res = await fetch(directStorageUrl, { mode: 'cors' });
               } catch (_) {
                 res = null;
               }
               if (!res || !res.ok) {
-                res = await fetch(directStorageUrl, { mode: 'cors' });
+                res = await fetch(rawUrl, { mode: 'cors' });
               }
 
               if (res && res.ok) {
@@ -3576,7 +3578,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
                 // 1. Stockage CacheStorage pour accès instantané
                 if (cache) {
-                  await cache.put(corsUrl, new Response(blob, {
+                  await cache.put(rawUrl, new Response(blob, {
                     headers: {
                       'Content-Type': 'application/pdf',
                       'Content-Length': String(blob.size)
@@ -3591,10 +3593,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
                 }
 
                 // 2. Stockage dans le coffre persistant IndexedDB (survit aux purges de cache HTTP)
-                await saveDocToVault(corsUrl, blob, fileObj.name);
+                await saveDocToVault(rawUrl, blob, fileObj.name);
                 await saveDocToVault(directStorageUrl, blob, fileObj.name);
 
-                cachedUrlsSet.add(corsUrl);
+                cachedUrlsSet.add(rawUrl);
                 cachedUrlsSet.add(directStorageUrl);
                 newCachedCount++;
               }
@@ -3770,16 +3772,16 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       };
     }
 
-    // URLs multi-serveurs pour résilience maximale contre les pannes Internet Archive
-    const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodeURI(fileObj.fullPath);
-    const corsPdfUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fileObj.fullPath);
-    const fileUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fileObj.fullPath);
+    // URLs multi-serveurs fiables et compatibles CORS sans endpoint obsolète
+    const encodedFullPath = encodeURI(fileObj.fullPath).replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const directStorageUrl = "https://ia601409.us.archive.org/1/items/" + identifier + "/" + encodedFullPath;
+    const fileUrl = "https://archive.org/download/" + identifier + "/" + encodedFullPath;
 
     // 1. Essai prioritaire depuis CacheStorage
     if ('caches' in window) {
       try {
         const cache = await caches.open(LOCAL_CACHE_NAME);
-        const match = await cache.match(corsPdfUrl) || await cache.match(directStorageUrl) || await cache.match(fileUrl);
+        const match = await cache.match(fileUrl) || await cache.match(directStorageUrl);
         if (match) {
           const blob = await match.blob();
           if (currentActiveBlobUrl) {
@@ -3792,7 +3794,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             blob: blob,
             blobUrl: currentActiveBlobUrl,
             rawUrl: fileUrl,
-            corsUrl: corsPdfUrl,
+            corsUrl: fileUrl,
             directStorageUrl: directStorageUrl,
             effectiveUrl: currentActiveBlobUrl
           };
@@ -3804,7 +3806,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
     // 2. Filet de sécurité IndexedDB
     try {
-      const vaultBlob = await getDocFromVault(corsPdfUrl) || await getDocFromVault(directStorageUrl) || await getDocFromVault(fileUrl);
+      const vaultBlob = await getDocFromVault(fileUrl) || await getDocFromVault(directStorageUrl);
       if (vaultBlob) {
         if (currentActiveBlobUrl) {
           URL.revokeObjectURL(currentActiveBlobUrl);
@@ -3816,7 +3818,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           blob: vaultBlob,
           blobUrl: currentActiveBlobUrl,
           rawUrl: fileUrl,
-          corsUrl: corsPdfUrl,
+          corsUrl: fileUrl,
           directStorageUrl: directStorageUrl,
           effectiveUrl: currentActiveBlobUrl
         };
@@ -3830,8 +3832,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       isSiteAsset: false,
       blob: null,
       blobUrl: null,
-      rawUrl: directStorageUrl,
-      corsUrl: corsPdfUrl,
+      rawUrl: fileUrl,
+      corsUrl: fileUrl,
       directStorageUrl: directStorageUrl,
       effectiveUrl: directStorageUrl
     };
@@ -4149,9 +4151,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
               const embeddedPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
               const nativePdfUrl = res.isSiteAsset ? ('/' + res.rawUrl.replace(/^\/+/, '')) : res.directStorageUrl;
               const isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
-              const viewerUrl = isNative ? nativePdfUrl : ("viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
+              const canUseNativeIframe = isNative && (res.isSiteAsset || (res.isLocal && res.blobUrl));
+              const viewerUrl = canUseNativeIframe ? nativePdfUrl : ("viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
               if (fsViewerLink) {
-                fsViewerLink.href = viewerUrl;
+                fsViewerLink.href = isNative ? nativePdfUrl : viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
@@ -4922,7 +4925,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             if (itemRest) {
               return forNative
                 ? ('https://ia601409.us.archive.org/1/items/' + itemRest + parsed.search)
-                : ('https://archive.org/cors/' + itemRest + parsed.search);
+                : ('https://archive.org/download/' + itemRest + parsed.search);
             }
           }
         } catch (_) {}
@@ -4946,12 +4949,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
       const safeViewerParam = encodeURIComponent(safePdfPath);
       const safeThemeParam = encodeURIComponent(currentTheme);
-      const targetViewerUrl = isNative ? safePdfPath : `viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
+      const targetViewerUrl = (isNative && (safePdfPath.startsWith('/') || safePdfPath.startsWith('blob:')))
+        ? safePdfPath
+        : `viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
 
       currentIframe.setAttribute('src', targetViewerUrl);
       const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
       if (fsViewerLink) {
-        fsViewerLink.setAttribute('href', targetViewerUrl);
+        fsViewerLink.setAttribute('href', safePdfPath);
       }
       const translateLink = document.getElementById('btn-translate-preview');
       if (translateLink) {
