@@ -345,10 +345,17 @@ for (const htmlFile of htmlFiles) {
 
     checkedLinksCount++;
 
-    const targetRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
+    const rawRelPath = cleanUrl.startsWith('/') ? cleanUrl.slice(1) : cleanUrl;
+    let decodedRelPath = rawRelPath;
+    try { decodedRelPath = decodeURIComponent(rawRelPath); } catch (_) {}
+    const targetRelPath = decodedRelPath;
     const targetFullPath = path.join(__dirname, '..', targetRelPath);
+    const targetFullPathNfc = path.join(__dirname, '..', targetRelPath.normalize('NFC'));
+    const targetFullPathNfd = path.join(__dirname, '..', targetRelPath.normalize('NFD'));
 
     const fileExists = fs.existsSync(targetFullPath) ||
+                       fs.existsSync(targetFullPathNfc) ||
+                       fs.existsSync(targetFullPathNfd) ||
                        fs.existsSync(targetFullPath + '.html') ||
                        (fs.existsSync(targetFullPath) && fs.statSync(targetFullPath).isDirectory() && fs.existsSync(path.join(targetFullPath, 'index.html')));
 

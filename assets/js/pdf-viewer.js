@@ -258,18 +258,24 @@
    */
   function validateDownloadUrl(url) {
     if (!url || typeof url !== 'string') return null;
-    const clean = url.trim();
+    const clean = url.trim().replace(/^\/+/, '');
     if (ALLOWED_LOCAL_DOCS.has(clean)) return clean;
-    if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) return clean;
+    if (clean.startsWith('assets/docs/') && !clean.includes('..') && !clean.includes('\\')) return clean;
     try {
-      const parsed = new URL(clean, window.location.href);
+      const parsed = new URL(url.trim(), window.location.href);
       if (parsed.origin === window.location.origin) {
-        const path = parsed.pathname.replace(/^\//, '');
-        if (ALLOWED_LOCAL_DOCS.has(path) || /^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(path)) {
+        const path = decodeURIComponent(parsed.pathname).replace(/^\/+/, '');
+        if (ALLOWED_LOCAL_DOCS.has(path) || (path.startsWith('assets/docs/') && !path.includes('..') && !path.includes('\\'))) {
           return path;
         }
       }
       if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+        const decodedPath = decodeURIComponent(parsed.pathname);
+        const idx = decodedPath.indexOf('00_DOSSIER_POUR_JOURNALISTES_BIFFE/');
+        if (idx !== -1) {
+          const sub = decodedPath.substring(idx);
+          if (!sub.includes('..')) return 'assets/docs/' + sub;
+        }
         if (parsed.pathname.toLowerCase().endsWith('.pdf') || parsed.pathname.includes('.pdf')) {
           return parsed.href;
         }
@@ -285,10 +291,10 @@
     const safeBase = 'assets/docs/observations-reponse-canada-sem26003.pdf';
     const cleanHash = (typeof hash === 'string' && /^#page=\d+$/.test(hash)) ? hash : '';
     if (typeof targetPath !== 'string') return '/' + safeBase + cleanHash;
-    const clean = targetPath.trim();
-    if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(clean) && !clean.includes('..') && !clean.includes('//')) {
+    const clean = targetPath.trim().replace(/^(\.\/|\/)+/, '');
+    if (clean.startsWith('assets/docs/') && clean.toLowerCase().endsWith('.pdf') && !clean.includes('..') && !clean.includes('//') && !clean.includes('\\')) {
       try {
-        const safeUrl = new URL(clean, window.location.origin);
+        const safeUrl = new URL(encodeURI(decodeURI(clean)), window.location.origin);
         if (safeUrl.origin === window.location.origin) {
           return safeUrl.pathname + cleanHash;
         }
@@ -301,26 +307,18 @@
     if (!rawUrl || typeof rawUrl !== 'string') {
       return DOCS_CATALOG['decision-17-aout-2026'].file;
     }
-    const clean = rawUrl.trim();
-    for (const doc of Object.values(DOCS_CATALOG)) {
-      if (clean === doc.file || clean.endsWith(doc.file)) {
-        return doc.file;
-      }
-    }
-    if (/^assets\/docs\/[a-zA-Z0-9_\-\.]+\.pdf$/.test(clean)) {
-      return clean;
-    }
+    let clean = rawUrl.trim();
     if (clean.startsWith('blob:')) {
       return clean;
     }
     // Mappage instantané des pièces phares hébergées localement sur williamguindon.me
-    if (clean.includes('26-3-rsub_fr_redacted')) {
+    if (clean.includes('26-3-rsub_fr_redacted') && !clean.includes('00_DOSSIER_POUR_JOURNALISTES_BIFFE')) {
       return 'assets/docs/26-3-rsub_fr_redacted.pdf';
     }
-    if (clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr')) {
+    if ((clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr')) && !clean.includes('00_DOSSIER_POUR_JOURNALISTES_BIFFE')) {
       return 'assets/docs/26-2-det2_fr.pdf';
     }
-    if (clean.includes('26-3-det_fr')) {
+    if (clean.includes('26-3-det_fr') && !clean.includes('00_DOSSIER_POUR_JOURNALISTES_BIFFE')) {
       return 'assets/docs/26-3-det_fr.pdf';
     }
     if (clean.includes('formal-deposition')) {
@@ -332,20 +330,29 @@
     if (clean.includes('declaration-appui-manfred-liebel')) {
       return 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf';
     }
-    // Validation sécurisée des URLs distantes d'archive probatoire avec support natif CORS
+    for (const doc of Object.values(DOCS_CATALOG)) {
+      if (clean === doc.file || clean.endsWith('/' + doc.file)) {
+        return doc.file;
+      }
+    }
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
-        const parsed = new URL(clean);
-        if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+        const parsed = new URL(clean, window.location.origin);
+        if (parsed.origin === window.location.origin) {
+          clean = decodeURIComponent(parsed.pathname);
+        } else if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+          const decodedPath = decodeURIComponent(parsed.pathname);
+          const idx = decodedPath.indexOf('00_DOSSIER_POUR_JOURNALISTES_BIFFE/');
+          if (idx !== -1) {
+            const sub = decodedPath.substring(idx);
+            if (!sub.includes('..') && !sub.includes('\\')) {
+              return 'assets/docs/' + sub;
+            }
+          }
           if (parsed.pathname.toLowerCase().endsWith('.pdf') || parsed.pathname.includes('.pdf')) {
             let pathname = parsed.pathname;
-            if (pathname.startsWith('/download/')) {
-              pathname = '/cors/' + pathname.substring(10);
-            } else {
-              const itemsMatch = pathname.match(/^\/\d+\/items\/(.+)$/);
-              if (itemsMatch) {
-                pathname = '/cors/' + itemsMatch[1];
-              }
+            if (pathname.startsWith('/cors/')) {
+              pathname = '/download/' + pathname.substring(6);
             }
             return `https://archive.org${pathname}${parsed.search}`;
           }
@@ -353,6 +360,15 @@
       }
     } catch (e) {
       // Ignorer URL invalide
+    }
+    const cleanRel = clean.replace(/^(\.\/|\/)+/, '');
+    if (!cleanRel.includes('..') && !cleanRel.includes('\\') && !cleanRel.includes('://')) {
+      if (cleanRel.startsWith('assets/docs/') && cleanRel.toLowerCase().endsWith('.pdf')) {
+        return cleanRel;
+      }
+      if (cleanRel.startsWith('00_DOSSIER_POUR_JOURNALISTES_BIFFE/') && cleanRel.toLowerCase().endsWith('.pdf')) {
+        return 'assets/docs/' + cleanRel;
+      }
     }
     return DOCS_CATALOG['decision-17-aout-2026'].file;
   }
@@ -932,7 +948,7 @@
         isRemoteArchive = false;
       }
       const docOptions = {
-        url: safeUrl.startsWith('assets/') ? ('/' + safeUrl) : safeUrl,
+        url: safeUrl.startsWith('assets/') ? ('/' + encodeURI(decodeURI(safeUrl)).replace(/\(/g, '%28').replace(/\)/g, '%29')) : safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
@@ -3024,7 +3040,7 @@
           if (!item.classList.contains('active')) item.style.background = 'transparent';
         });
 
-        const archiveUrl = 'https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/' + encodeURI(f.originalPath);
+        const localAssetUrl = 'assets/docs/00_DOSSIER_POUR_JOURNALISTES_BIFFE/' + f.cleanPath;
 
         item.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -3036,12 +3052,12 @@
           item.style.background = 'var(--accent-wash)';
 
           if (f.isPdf) {
-            loadPDF(archiveUrl, 1);
+            loadPDF(localAssetUrl, 1);
             if (dom.badge) dom.badge.textContent = 'Archive Probatoire';
             document.title = `${f.name} — Lecteur Officiel · William Guindon`;
             if (window.innerWidth < 900) toggleSidebar(false);
           } else {
-            window.open(archiveUrl, '_blank');
+            window.open('/' + encodeURI(localAssetUrl).replace(/\(/g, '%28').replace(/\)/g, '%29'), '_blank');
           }
         });
 
@@ -4667,7 +4683,7 @@ ER  -
     try {
       const safeUrl = getSafeDocUrl(url);
       const docOptions = {
-        url: safeUrl.startsWith('assets/') ? ('/' + safeUrl) : safeUrl,
+        url: safeUrl.startsWith('assets/') ? ('/' + encodeURI(decodeURI(safeUrl)).replace(/\(/g, '%28').replace(/\)/g, '%29')) : safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',

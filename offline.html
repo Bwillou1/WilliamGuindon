@@ -533,28 +533,30 @@
         } catch (_) {}
       }
 
-      // Vérification dans IndexedDB (wg_sem26003_vault)
+      // Vérification dans IndexedDB (wg_sem26003_vault) avec déduplication exacte des clés
       if ('indexedDB' in window) {
         try {
-          var vaultCount = await new Promise(function(resolve) {
+          var vaultKeys = await new Promise(function(resolve) {
             var req = indexedDB.open('wg_sem26003_vault', 1);
             req.onsuccess = function(e) {
               try {
                 var db = e.target.result;
                 if (db.objectStoreNames.contains('documents')) {
                   var tx = db.transaction('documents', 'readonly');
-                  var countReq = tx.objectStore('documents').count();
-                  countReq.onsuccess = function() { resolve(countReq.result || 0); };
-                  countReq.onerror = function() { resolve(0); };
+                  var keysReq = tx.objectStore('documents').getAllKeys();
+                  keysReq.onsuccess = function() { resolve(keysReq.result || []); };
+                  keysReq.onerror = function() { resolve([]); };
                 } else {
-                  resolve(0);
+                  resolve([]);
                 }
-              } catch (_) { resolve(0); }
+              } catch (_) { resolve([]); }
             };
-            req.onerror = function() { resolve(0); };
+            req.onerror = function() { resolve([]); };
           });
-          if (vaultCount && vaultCount > 0) {
-            for (var v = 0; v < vaultCount; v++) foundUrls.add('vault://doc-' + v);
+          if (Array.isArray(vaultKeys)) {
+            for (var v = 0; v < vaultKeys.length; v++) {
+              foundUrls.add(String(vaultKeys[v]));
+            }
           }
         } catch (_) {}
       }

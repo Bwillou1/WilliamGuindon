@@ -163,10 +163,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         const parsed = new URL(clean, window.location.origin);
         if (parsed.origin === window.location.origin) {
-          clean = parsed.pathname;
+          clean = decodeURIComponent(parsed.pathname);
         } else if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+          const decodedPath = decodeURIComponent(parsed.pathname);
+          const idx = decodedPath.indexOf('00_DOSSIER_POUR_JOURNALISTES_BIFFE/');
+          if (idx !== -1) {
+            const sub = decodedPath.substring(idx);
+            if (!sub.includes('..') && !sub.includes('\\')) {
+              return 'assets/docs/' + sub;
+            }
+          }
           let pathname = parsed.pathname;
-          // Corriger tout ancien lien /cors/ qui renvoie 404 sur Archive.org
           if (pathname.startsWith('/cors/')) {
             pathname = '/download/' + pathname.substring(6);
           }
