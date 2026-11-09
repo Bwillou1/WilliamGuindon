@@ -5497,12 +5497,9 @@ function getCleanDisplayName(fullPath) {
       return;
     }
 
-    const userPass = prompt("Définissez un mot de passe pour verrouiller ce coffre d'annotations .wg (optionnel, laissez vide pour le chiffrement standard du dossier) :", "");
-    if (userPass === null) return; // Annulé
-
     try {
       const jsonStr = JSON.stringify(vault);
-      const encryptedWgPayload = await encryptVaultPayload(jsonStr, userPass);
+      const encryptedWgPayload = await encryptVaultPayload(jsonStr);
 
       const blob = new Blob([encryptedWgPayload], { type: 'application/octet-stream' });
       const url = URL.createObjectURL(blob);
@@ -5516,13 +5513,13 @@ function getCleanDisplayName(fullPath) {
 
       const toast = document.getElementById('drive-toast');
       if (toast) {
-        toast.textContent = `Fichier .wg chiffré téléchargé (${totalAnnots} annotations sur ${docCount} documents) !`;
+        toast.textContent = `Fichier .wg sécurisé téléchargé (${totalAnnots} annotations sur ${docCount} documents) !`;
         toast.classList.add('visible');
         setTimeout(() => toast.classList.remove('visible'), 4000);
       }
     } catch (err) {
-      console.error("Erreur chiffrement .wg:", err);
-      showDriveToast("Erreur lors du chiffrement du fichier .wg", "error", 3000);
+      console.error("Erreur génération .wg:", err);
+      showDriveToast("Erreur lors de la génération du fichier .wg", "error", 3000);
     }
 
     const dd = document.getElementById('dropdown-header-actions');
@@ -5535,15 +5532,7 @@ function getCleanDisplayName(fullPath) {
     reader.onload = async function(e) {
       try {
         const text = e.target.result;
-        let data = null;
-
-        try {
-          data = await decryptVaultPayload(text, null);
-        } catch (_) {
-          const pass = prompt("Ce coffre .wg est protégé par mot de passe. Entrez le mot de passe de déchiffrement :");
-          if (pass === null) return;
-          data = await decryptVaultPayload(text, pass);
-        }
+        const data = await decryptVaultPayload(text);
 
         if (!data || data.format !== 'wg-annotations-v1' || !data.documents) {
           throw new Error('Format de fichier .wg invalide');
@@ -5566,7 +5555,7 @@ function getCleanDisplayName(fullPath) {
 
         const toast = document.getElementById('drive-toast');
         if (toast) {
-          toast.textContent = `${annotCount} annotations déchiffrées et restaurées sur ${docCount} documents !`;
+          toast.textContent = `${annotCount} annotations restaurées avec succès sur ${docCount} documents !`;
           toast.classList.add('visible');
           setTimeout(() => toast.classList.remove('visible'), 4000);
         }
@@ -5583,7 +5572,7 @@ function getCleanDisplayName(fullPath) {
         console.error('Erreur import .wg:', err);
         const toast = document.getElementById('drive-toast');
         if (toast) {
-          toast.textContent = "Erreur : Mot de passe incorrect ou fichier .wg altéré.";
+          toast.textContent = "Erreur : Le fichier sélectionné n'est pas un fichier d'annotations .wg valide.";
           toast.classList.add('visible');
           setTimeout(() => toast.classList.remove('visible'), 4000);
         }
