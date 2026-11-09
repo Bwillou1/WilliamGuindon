@@ -137,11 +137,44 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const DEFAULT_DOC = 'assets/docs/observations-reponse-canada-sem26003.pdf';
     if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_DOC;
     let clean = rawUrl.trim();
+    if (clean.startsWith('blob:')) {
+      return clean;
+    }
+    // Mappage instantané des pièces phares hébergées localement sur williamguindon.me
+    if (clean.includes('26-3-rsub_fr_redacted')) {
+      return 'assets/docs/26-3-rsub_fr_redacted.pdf';
+    }
+    if (clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr')) {
+      return 'assets/docs/26-2-det2_fr.pdf';
+    }
+    if (clean.includes('26-3-det_fr')) {
+      return 'assets/docs/26-3-det_fr.pdf';
+    }
+    if (clean.includes('formal-deposition')) {
+      return 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf';
+    }
+    if (clean.includes('petition-546') || clean.includes('Lettre_CEDD_au_petitionnaire')) {
+      return 'assets/docs/petition-546-cedd-bvg.pdf';
+    }
+    if (clean.includes('declaration-appui-manfred-liebel')) {
+      return 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf';
+    }
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         const parsed = new URL(clean, window.location.origin);
         if (parsed.origin === window.location.origin) {
           clean = parsed.pathname;
+        } else if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+          let pathname = parsed.pathname;
+          if (pathname.startsWith('/download/')) {
+            pathname = '/cors/' + pathname.substring(10);
+          } else {
+            const itemsMatch = pathname.match(/^\/\d+\/items\/(.+)$/);
+            if (itemsMatch) {
+              pathname = '/cors/' + itemsMatch[1];
+            }
+          }
+          return `https://archive.org${pathname}${parsed.search}`;
         } else {
           return DEFAULT_DOC;
         }

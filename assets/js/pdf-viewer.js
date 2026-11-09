@@ -317,14 +317,20 @@
     if (clean.includes('26-3-rsub_fr_redacted')) {
       return 'assets/docs/26-3-rsub_fr_redacted.pdf';
     }
-    if (clean.includes('26-3-det_fr') || clean.includes('26-3-det2_fr')) {
-      return 'assets/docs/26-3-det_fr.pdf';
-    }
-    if (clean.includes('26-2-det2_fr') || clean.includes('62-DET2_fr')) {
+    if (clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr')) {
       return 'assets/docs/26-2-det2_fr.pdf';
+    }
+    if (clean.includes('26-3-det_fr')) {
+      return 'assets/docs/26-3-det_fr.pdf';
     }
     if (clean.includes('formal-deposition')) {
       return 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf';
+    }
+    if (clean.includes('petition-546') || clean.includes('Lettre_CEDD_au_petitionnaire')) {
+      return 'assets/docs/petition-546-cedd-bvg.pdf';
+    }
+    if (clean.includes('declaration-appui-manfred-liebel')) {
+      return 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf';
     }
     // Validation sécurisée des URLs distantes d'archive probatoire avec support natif CORS
     try {
@@ -335,6 +341,11 @@
             let pathname = parsed.pathname;
             if (pathname.startsWith('/download/')) {
               pathname = '/cors/' + pathname.substring(10);
+            } else {
+              const itemsMatch = pathname.match(/^\/\d+\/items\/(.+)$/);
+              if (itemsMatch) {
+                pathname = '/cors/' + itemsMatch[1];
+              }
             }
             return `https://archive.org${pathname}${parsed.search}`;
           }
@@ -921,7 +932,7 @@
         isRemoteArchive = false;
       }
       const docOptions = {
-        url: safeUrl,
+        url: safeUrl.startsWith('assets/') ? ('/' + safeUrl) : safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
@@ -4656,7 +4667,7 @@ ER  -
     try {
       const safeUrl = getSafeDocUrl(url);
       const docOptions = {
-        url: safeUrl,
+        url: safeUrl.startsWith('assets/') ? ('/' + safeUrl) : safeUrl,
         cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true,
         standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',

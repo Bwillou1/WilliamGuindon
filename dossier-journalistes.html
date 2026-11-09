@@ -3057,14 +3057,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   "A - B - C/Rejets polluants/rejet.pdf",
   "A - B - C/Sealosafe/https_www.britishnewspaperarchive.co.uk_search_results_1989-06-20_NewspaperTitle=Birmingham_2BNews&IssueId=BL_2F0003661_2F19890620_2F&County=Warwickshire_2C_20England.png",
   "A - B - C/Sealosafe/pr84.pdf",
-  "A - B - C/Sealosafe/rapport371.pdf",
-  "A - B - C/Sealosafe/seal12.png",
-  "A - B - C/Sealosafe/seal13.png",
-  "A - B - C/Sealosafe/seal14.png",
-  "A - B - C/Sealosafe/seal15.png",
   "A - B - C/Sealosafe/seal16.png",
-  "A - B - C/Sealosafe/seal18.png",
-  "A - B - C/Sealosafe/seal20.png",
   "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/8_oct_fuite_CCBC6S.jpg",
   "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S_2.jpg",
   "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S.jpg",
@@ -3729,7 +3722,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         effectiveUrl: localPath
       };
     }
-    if (rawName.includes("26-2-det2_fr") || fullPath.includes("26-2-det2_fr") || rawName.includes("62-DET2_fr")) {
+    if (rawName.includes("26-2-det2_fr") || fullPath.includes("26-2-det2_fr") || rawName.includes("26-3-det2_fr") || fullPath.includes("26-3-det2_fr") || rawName.includes("62-DET2_fr")) {
       const localPath = "assets/docs/26-2-det2_fr.pdf";
       return {
         isLocal: true,
@@ -4126,15 +4119,16 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             } else if (lower.endsWith(".pdf")) {
               stage.classList.remove("is-media");
               const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-              const targetPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
+              const embeddedPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
+              const nativePdfUrl = res.isSiteAsset ? ('/' + res.rawUrl.replace(/^\/+/, '')) : res.directStorageUrl;
               const isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
-              const viewerUrl = isNative ? targetPdfUrl : ("viewer.html?file=" + encodeURIComponent(targetPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
+              const viewerUrl = isNative ? nativePdfUrl : ("viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
               if (fsViewerLink) {
                 fsViewerLink.href = viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
-                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(targetPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
+                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
                 translateLink.href = translateViewerUrl;
                 translateLink.title = "Traduire ce document en direct (anglais)";
                 translateLink.classList.remove("active");
@@ -4146,7 +4140,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
               iframe.className = "preview-iframe";
               iframe.title = fileObj.name;
               iframe.setAttribute("allow", "fullscreen");
-              iframe.setAttribute("data-raw-pdf", targetPdfUrl);
+              iframe.setAttribute("data-raw-pdf", embeddedPdfUrl);
+              iframe.setAttribute("data-native-pdf", nativePdfUrl);
               iframe.src = viewerUrl;
               iframe.onload = () => {
                 if (!isNative) {
@@ -4873,22 +4868,53 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     actionPdfLinks.forEach(({ id, file }) => {
       const el = document.getElementById(id);
       if (el) {
-        el.href = isNative ? file : `viewer.html?file=${encodeURIComponent(file)}`;
+        el.href = isNative ? ('/' + file.replace(/^\/+/, '')) : `viewer.html?file=${encodeURIComponent(file)}`;
       }
     });
 
+    function getSafeDossierPdfUrl(rawUrl, forNative) {
+      const DEFAULT_PDF = forNative ? '/assets/docs/observations-reponse-canada-sem26003.pdf' : 'assets/docs/observations-reponse-canada-sem26003.pdf';
+      if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_PDF;
+      const clean = rawUrl.trim();
+      if (!forNative && clean.startsWith('blob:')) {
+        return clean;
+      }
+      if (clean.startsWith('http://') || clean.startsWith('https://')) {
+        try {
+          const parsed = new URL(clean);
+          if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+            let itemRest = '';
+            if (parsed.pathname.startsWith('/cors/')) {
+              itemRest = parsed.pathname.substring(6);
+            } else if (parsed.pathname.startsWith('/download/')) {
+              itemRest = parsed.pathname.substring(10);
+            } else {
+              const m = parsed.pathname.match(/^\/\d+\/items\/(.+)$/);
+              if (m) itemRest = m[1];
+            }
+            if (itemRest) {
+              return forNative
+                ? ('https://ia601409.us.archive.org/1/items/' + itemRest + parsed.search)
+                : ('https://archive.org/cors/' + itemRest + parsed.search);
+            }
+          }
+        } catch (_) {}
+        return DEFAULT_PDF;
+      }
+      const cleanRel = clean.replace(/^(\.\/|\/)+/, '');
+      if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel) && !cleanRel.includes('..') && !cleanRel.includes('\\')) {
+        return forNative ? ('/' + encodeURI(cleanRel)) : encodeURI(cleanRel);
+      }
+      return DEFAULT_PDF;
+    }
+
     // Si un aperçu PDF est actuellement affiché dans l'iframe, le recharger dans le format choisi
     const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
-    if (currentIframe && currentIframe.getAttribute('data-raw-pdf')) {
-      const rawPdf = currentIframe.getAttribute('data-raw-pdf');
-      const DEFAULT_PDF = 'assets/docs/observations-reponse-canada-sem26003.pdf';
-      let safePdfPath = DEFAULT_PDF;
-      if (typeof rawPdf === 'string') {
-        const cleanRel = rawPdf.trim().replace(/^(\.\/|\/)+/, '');
-        if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel) && !cleanRel.includes('..') && !cleanRel.includes('\\')) {
-          safePdfPath = encodeURI(cleanRel);
-        }
-      }
+    if (currentIframe && (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'))) {
+      const candidatePdf = isNative
+        ? (currentIframe.getAttribute('data-native-pdf') || currentIframe.getAttribute('data-raw-pdf'))
+        : (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'));
+      const safePdfPath = getSafeDossierPdfUrl(candidatePdf, isNative);
 
       const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
       const safeViewerParam = encodeURIComponent(safePdfPath);
