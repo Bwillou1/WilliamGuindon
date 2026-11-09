@@ -812,19 +812,66 @@
   const themeStorageKey = 'william-guindon-theme';
 
   function getInitialTheme() {
-    const savedTheme = sessionStorage.getItem(themeStorageKey);
-    if (savedTheme) {
+    let savedTheme = null;
+    try {
+      savedTheme = localStorage.getItem(themeStorageKey) || localStorage.getItem('wg_theme') || sessionStorage.getItem(themeStorageKey);
+    } catch (_) {}
+    if (savedTheme === 'dark' || savedTheme === 'light') {
       return savedTheme;
     }
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDark ? 'dark' : 'light';
   }
 
   const currentTheme = getInitialTheme();
   document.documentElement.setAttribute('data-theme', currentTheme);
 
-  const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.38.39-1.02 0-1.41z"/></svg>`;
-  const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.3 22c5.3 0 9.7-4.3 9.7-9.7 0-2.7-1.1-5.1-2.9-6.9-.5-.5-1.3-.1-1.2.6.7 3.5-.3 7.3-3 10-2.7 2.7-6.5 3.7-10 3-.7-.1-1.1.7-.6 1.2 1.8 1.8 4.2 2.8 6.8 2.8zm-2.8-5c2.7-.2 5.1-1.5 6.8-3.5C13 13.3 10 9.9 10 6c0-.8.1-1.6.3-2.4C7.4 4.5 5 7.4 5 10.9 5 14.3 7 16.7 9.5 17z"/></svg>`;
+  // Design limpide outline : Lune (croissant épuré avec pointes douces) et Soleil rayonnant coordonné
+  // Règle d'usage : Lune en mode clair (pour inviter à passer au noir), Soleil en mode sombre (pour inviter au clair)
+  const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+
+  function updateAllThemeButtons(theme) {
+    const isDark = theme === 'dark';
+    const icon = isDark ? sunIcon : moonIcon;
+    const label = isDark ? 'Basculer en mode clair' : 'Basculer en mode sombre';
+    const title = isDark ? 'Passer au mode clair' : 'Passer au mode sombre';
+
+    document.querySelectorAll('.theme-toggle-btn, .theme-btn').forEach(btn => {
+      btn.innerHTML = icon;
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', title);
+    });
+  }
+
+  function applyTheme(newTheme) {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    try {
+      localStorage.setItem(themeStorageKey, newTheme);
+      localStorage.setItem('wg_theme', newTheme);
+      sessionStorage.setItem(themeStorageKey, newTheme);
+    } catch (_) {}
+    updateAllThemeButtons(newTheme);
+
+    try {
+      let meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute('content', newTheme === 'dark' ? '#0b0f0c' : '#ffffff');
+      }
+    } catch (_) {}
+  }
+
+  try {
+    window.addEventListener('storage', (e) => {
+      if (e.key === themeStorageKey || e.key === 'wg_theme') {
+        const updated = e.newValue;
+        if (updated === 'dark' || updated === 'light') {
+          document.documentElement.setAttribute('data-theme', updated);
+          updateAllThemeButtons(updated);
+        }
+      }
+    });
+  } catch (_) {}
 
   // =========================================================================
   // GESTIONNAIRE DE LANGUE ET ROUTAGE PAR PRÉFIXE D'URL (/en/, /es/, /)
@@ -1771,13 +1818,12 @@
         searchBtn.addEventListener('click', () => openQuickSearch());
       }
 
-      // Bouton Mode Sombre / Clair
+      // Bouton Mode Sombre / Clair (Mobile & Desktop)
       let toggleBtn = nav.querySelector('.theme-toggle-btn');
       if (!toggleBtn) {
         toggleBtn = document.createElement('button');
         toggleBtn.className = 'theme-toggle-btn';
         toggleBtn.type = 'button';
-        toggleBtn.setAttribute('aria-label', 'Basculer le mode sombre / clair');
         nav.appendChild(toggleBtn);
       }
 
@@ -1786,15 +1832,14 @@
         allThemeBtns[i].remove();
       }
 
-      const theme = document.documentElement.getAttribute('data-theme');
-      toggleBtn.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+      const currentActiveTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      updateAllThemeButtons(currentActiveTheme);
 
-      toggleBtn.onclick = () => {
-        const activeTheme = document.documentElement.getAttribute('data-theme');
+      toggleBtn.onclick = (e) => {
+        if (e) e.preventDefault();
+        const activeTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
         const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        sessionStorage.setItem(themeStorageKey, newTheme);
-        toggleBtn.innerHTML = newTheme === 'dark' ? sunIcon : moonIcon;
+        applyTheme(newTheme);
       };
 
       // Regroupement des utilitaires d'en-tête (Mode Simple, Langue, Notifs, Thème, Menu Mobile)
