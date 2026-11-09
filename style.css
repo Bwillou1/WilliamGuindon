@@ -13591,6 +13591,68 @@ body {
 /* ==========================================================================
    Agenda Public & Abonnement Calendrier (Google Calendar, iCal, Webcal)
    ========================================================================== */
+details.agenda-subscribe-details {
+  background: rgba(6, 78, 59, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 10px;
+  margin: 16px 0;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+details.agenda-subscribe-details:hover {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(6, 78, 59, 0.12);
+}
+details.agenda-subscribe-details summary {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  user-select: none;
+  list-style: none;
+}
+details.agenda-subscribe-details summary::-webkit-details-marker,
+details.stage2-liebel-details summary::-webkit-details-marker {
+  display: none;
+}
+details.agenda-subscribe-details[open] summary {
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Dépliant fermé par défaut pour Manfred Liebel */
+details.stage2-liebel-details {
+  background: rgba(29, 78, 216, 0.05);
+  border: 1.5px solid rgba(29, 78, 216, 0.25);
+  border-radius: 10px;
+  margin: 14px 0;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+details.stage2-liebel-details:hover {
+  border-color: rgba(29, 78, 216, 0.45);
+}
+details.stage2-liebel-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 11px 16px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+details.stage2-liebel-details[open] summary {
+  border-bottom: 1px solid rgba(29, 78, 216, 0.12);
+}
+
 .agenda-subscribe-card {
   background: var(--bg-card, #111813);
   border: 1px solid var(--border-color, rgba(52, 211, 153, 0.25));
