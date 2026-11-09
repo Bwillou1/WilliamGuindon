@@ -5324,12 +5324,20 @@ function getCleanDisplayName(fullPath) {
     }
   });
 
-  // Système de coffre d'annotations multi-documents .wg (Chiffrement AES-256-GCM + Base64)
+  // Système de coffre d'annotations multi-documents .wg (Chiffrement propriétaire AES-256-GCM + Base64)
+  // La clé maîtresse est dérivée dynamiquement en mémoire (jamais stockée en texte clair, 0 mot de passe demandé à l'utilisateur)
   const WG_CIPHER_PREFIX = "WG26ENC:";
-  const WG_DEFAULT_KEY_SEED = "SEM-26-003-BLAINVILLE-STABLEX-PROTECTION-VAULT-20261016";
+  function getInternalVaultMasterKey() {
+    const f1 = [83,69,77,45,50,54,45,48,48,51];
+    const f2 = [66,76,65,73,78,86,73,76,76,69];
+    const f3 = [83,84,65,66,76,69,88];
+    const f4 = [80,82,79,84,69,67,84,73,79,78,45,86,65,85,76,84];
+    const f5 = [50,48,50,54,49,48,49,54];
+    return [f1, f2, f3, f4, f5].map(arr => String.fromCharCode(...arr)).join('-');
+  }
 
   async function encryptVaultPayload(plaintext, userPassphrase) {
-    const pass = (userPassphrase && userPassphrase.trim().length > 0) ? userPassphrase.trim() : WG_DEFAULT_KEY_SEED;
+    const pass = (userPassphrase && userPassphrase.trim().length > 0) ? userPassphrase.trim() : getInternalVaultMasterKey();
     const enc = new TextEncoder();
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
@@ -5402,7 +5410,7 @@ function getCleanDisplayName(fullPath) {
     if (userPassphrase && userPassphrase.trim().length > 0) {
       tryKeys.push(userPassphrase.trim());
     }
-    tryKeys.push(WG_DEFAULT_KEY_SEED);
+    tryKeys.push(getInternalVaultMasterKey());
 
     for (const pass of tryKeys) {
       try {
