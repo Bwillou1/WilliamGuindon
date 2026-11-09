@@ -133,44 +133,54 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     'assets/docs/recours-cour-superieure-blainville.pdf'
   ];
 
+  function encodeLocalDocPath(relPath) {
+    const clean = String(relPath || '').replace(/^(\.\/|\/)+/, '').normalize('NFC');
+    return clean.split('/').map(seg => {
+      let rawSeg = seg;
+      try { rawSeg = decodeURIComponent(seg); } catch (_) {}
+      return encodeURIComponent(rawSeg.normalize('NFC')).replace(/\(/g, '%28').replace(/\)/g, '%29');
+    }).join('/');
+  }
+
   function getSafeDocUrl(rawUrl) {
     const DEFAULT_DOC = 'assets/docs/observations-reponse-canada-sem26003.pdf';
     if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_DOC;
-    let clean = rawUrl.trim();
+    let clean = rawUrl.trim().normalize('NFC');
     if (clean.startsWith('blob:')) {
       return clean;
     }
+    const isDossierSubfile = clean.includes('00_DOSSIER_POUR_JOURNALISTES_BIFFE/');
     // Mappage instantané des pièces phares hébergées localement sur williamguindon.me
-    if (clean.includes('26-3-rsub_fr_redacted')) {
+    if (!isDossierSubfile && clean.includes('26-3-rsub_fr_redacted')) {
       return 'assets/docs/26-3-rsub_fr_redacted.pdf';
     }
-    if (clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr')) {
+    if (!isDossierSubfile && (clean.includes('26-2-det2_fr') || clean.includes('26-3-det2_fr') || clean.includes('62-DET2_fr'))) {
       return 'assets/docs/26-2-det2_fr.pdf';
     }
-    if (clean.includes('26-3-det_fr')) {
+    if (!isDossierSubfile && clean.includes('26-3-det_fr')) {
       return 'assets/docs/26-3-det_fr.pdf';
     }
-    if (clean.includes('formal-deposition')) {
+    if (!isDossierSubfile && clean.includes('formal-deposition')) {
       return 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf';
     }
-    if (clean.includes('petition-546') || clean.includes('Lettre_CEDD_au_petitionnaire')) {
+    if (!isDossierSubfile && (clean.includes('petition-546') || clean.includes('Lettre_CEDD_au_petitionnaire'))) {
       return 'assets/docs/petition-546-cedd-bvg.pdf';
     }
-    if (clean.includes('declaration-appui-manfred-liebel')) {
+    if (!isDossierSubfile && clean.includes('declaration-appui-manfred-liebel')) {
       return 'assets/docs/declaration-appui-manfred-liebel-e7834.pdf';
     }
     try {
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         const parsed = new URL(clean, window.location.origin);
         if (parsed.origin === window.location.origin) {
-          clean = decodeURIComponent(parsed.pathname);
+          clean = decodeURIComponent(parsed.pathname).normalize('NFC');
         } else if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
-          const decodedPath = decodeURIComponent(parsed.pathname);
+          const decodedPath = decodeURIComponent(parsed.pathname).normalize('NFC');
           const idx = decodedPath.indexOf('00_DOSSIER_POUR_JOURNALISTES_BIFFE/');
           if (idx !== -1) {
             const sub = decodedPath.substring(idx);
             if (!sub.includes('..') && !sub.includes('\\')) {
-              return 'assets/docs/' + sub;
+              return ('assets/docs/' + sub).normalize('NFC');
             }
           }
           let pathname = parsed.pathname;
@@ -185,7 +195,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } catch (_) {
       return DEFAULT_DOC;
     }
-    const cleanRel = clean.replace(/^(\.\/|\/)+/, '');
+    let decodedClean = clean;
+    try { decodedClean = decodeURIComponent(clean); } catch (_) {}
+    const cleanRel = decodedClean.replace(/^(\.\/|\/)+/, '').normalize('NFC');
     if (cleanRel.includes('..') || cleanRel.includes('\\') || cleanRel.includes('://')) {
       return DEFAULT_DOC;
     }
@@ -757,7 +769,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
     const fullDocUrl = (currentTargetFile.startsWith('http://') || currentTargetFile.startsWith('https://') || currentTargetFile.startsWith('blob:') || currentTargetFile.startsWith('data:'))
       ? currentTargetFile
-      : `${origin}/${encodeURI(decodeURI(currentTargetFile))}`;
+      : `${origin}/${encodeLocalDocPath(currentTargetFile)}`;
 
     // Si le document est un format image (JPG, PNG, WEBP, TIFF, SVG, etc.)
     if (IMAGE_EXTENSIONS.test(currentTargetFile)) {
