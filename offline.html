@@ -617,12 +617,12 @@
           clearTimeout(tid);
           if (statusPill && statusText) {
             statusPill.className = 'status-pill is-online';
-            statusText.textContent = "Connexion rétablie · Actualisation...";
+            statusText.textContent = "Connexion rétablie · Redirection vers williamguindon.me...";
           }
           if (reloadLabel) reloadLabel.textContent = "Connecté !";
           setTimeout(function() {
-            window.location.reload();
-          }, 600);
+            window.location.replace('/');
+          }, 400);
         })
         .catch(function() {
           clearTimeout(tid);
@@ -638,24 +638,57 @@
         });
     }
 
-    // 3. Écouteur automatique de reconnexion du navigateur
-    window.addEventListener('online', function() {
+    // 3. Écouteur automatique de reconnexion du navigateur : redirection directe vers l'accueil
+    function triggerOnlineRedirect() {
       var statusPill = document.getElementById('status-pill');
       var statusText = document.getElementById('status-text');
       if (statusPill && statusText) {
         statusPill.className = 'status-pill is-online';
-        statusText.textContent = "Connexion rétablie · Actualisation...";
+        statusText.textContent = "Connexion détectée · Redirection vers williamguindon.me...";
       }
       setTimeout(function() {
-        window.location.reload();
-      }, 700);
+        window.location.replace('/');
+      }, 350);
+    }
+
+    window.addEventListener('online', function() {
+      triggerOnlineRedirect();
     });
 
-    // Lancement de l'inventaire au chargement
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', checkOfflineInventory);
-    } else {
+    // 4. Détection immédiate au chargement et surveillance périodique
+    function checkLiveConnectivity() {
+      if (!navigator.onLine) return;
+      var ctrl = new AbortController();
+      var t = setTimeout(function() { ctrl.abort(); }, 1800);
+      fetch('/favicon.ico?_ping=' + Date.now(), { method: 'HEAD', cache: 'no-store', signal: ctrl.signal })
+        .then(function(res) {
+          clearTimeout(t);
+          if (res.ok || res.status === 200 || res.status === 304) {
+            triggerOnlineRedirect();
+          }
+        })
+        .catch(function() {
+          clearTimeout(t);
+        });
+    }
+
+    // Polling discret toutes les 3,5 secondes si la connexion revient en arrière-plan
+    var autoRecheckInterval = setInterval(function() {
+      if (navigator.onLine) {
+        checkLiveConnectivity();
+      }
+    }, 3500);
+
+    // Lancement de l'inventaire et vérification de connexion au chargement
+    function initOfflinePage() {
       checkOfflineInventory();
+      checkLiveConnectivity();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initOfflinePage);
+    } else {
+      initOfflinePage();
     }
   </script>
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v234';
+const CACHE_NAME = 'wg-pwa-v235';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -273,6 +273,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Ne jamais intercepter les requêtes partielles (Range requests : streaming vidéo, audio, lecture PDF par morceaux)
+  // afin de laisser le navigateur et le serveur traiter directement les codes HTTP 206
+  if (event.request.headers.has('range')) {
+    return;
+  }
+
   // 1. Accélération locale maximale pour les images, styles, polices, scripts et données JSON (Cache-First + synchronisation silencieuse)
   const isAcceleratedLocalAsset = event.request.destination === 'image' || 
                                   event.request.destination === 'style' || 
@@ -286,7 +292,22 @@ self.addEventListener('fetch', (event) => {
   if (isAcceleratedLocalAsset) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (cachedResponse) {
+          event.waitUntil(
+            fetch(event.request).then((networkResponse) => {
+              if (isCacheable(event.request, networkResponse)) {
+                const responseClone = networkResponse.clone();
+                caches.open(CACHE_NAME).then(async (cache) => {
+                  await cache.put(event.request, responseClone);
+                  await trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
+                });
+              }
+            }).catch(() => {})
+          );
+          return cachedResponse;
+        }
+
+        return fetch(event.request).then((networkResponse) => {
           if (isCacheable(event.request, networkResponse)) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then(async (cache) => {
@@ -295,14 +316,7 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return networkResponse;
-        }).catch(() => null);
-
-        // Si présent en cache local : rendu immédiat (0 ms) pour une navigation ultra-fluide
-        if (cachedResponse) {
-          event.waitUntil(fetchPromise);
-          return cachedResponse;
-        }
-        return fetchPromise;
+        });
       })
     );
     return;

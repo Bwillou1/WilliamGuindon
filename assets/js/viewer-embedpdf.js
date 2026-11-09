@@ -183,15 +183,15 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       return DEFAULT_DOC;
     }
     if (ALLOWED_DOCS.includes(cleanRel)) return cleanRel;
-    // Vérification stricte des chemins relatifs de documentation officielle (PDF) et dossiers de pièces
-    if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel)) {
+    // Vérification des chemins de documentation officielle (PDF) et dossiers de pièces
+    if (cleanRel.startsWith('assets/docs/') && cleanRel.toLowerCase().endsWith('.pdf')) {
       return cleanRel;
     }
-    if (/^assets\/docs\/00_DOSSIER_POUR_JOURNALISTES_BIFFE\/[^\\?%*:|"<>]+?\.(?:pdf|png|jpe?g|webp|svg)$/i.test(cleanRel)) {
+    if (cleanRel.startsWith('assets/docs/00_DOSSIER_POUR_JOURNALISTES_BIFFE/') && /\.(?:pdf|png|jpe?g|webp|svg|csv|kml|geojson)$/i.test(cleanRel)) {
       return cleanRel;
     }
     // Fichiers images locaux autorisés
-    if (/^assets\/(?:media|docs|uploads|img)\/[a-zA-Z0-9_\-.]+\.(?:jpe?g|png|webp|svg)$/i.test(cleanRel)) {
+    if (/^assets\/(?:media|docs|uploads|img)\/.*\.(?:jpe?g|png|webp|svg)$/i.test(cleanRel)) {
       return cleanRel;
     }
     return DEFAULT_DOC;
@@ -750,7 +750,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const fullWasmUrl = `${origin}/assets/vendor/embedpdf/pdfium.wasm`;
     const fullDocUrl = (currentTargetFile.startsWith('http://') || currentTargetFile.startsWith('https://') || currentTargetFile.startsWith('blob:') || currentTargetFile.startsWith('data:'))
       ? currentTargetFile
-      : `${origin}/${currentTargetFile}`;
+      : `${origin}/${encodeURI(decodeURI(currentTargetFile))}`;
 
     // Si le document est un format image (JPG, PNG, WEBP, TIFF, SVG, etc.)
     if (IMAGE_EXTENSIONS.test(currentTargetFile)) {
@@ -830,6 +830,15 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
                 "document.export": "Exporter",
                 "document.print": "Imprimer",
                 "document.menu": "Menu du document",
+
+                documentError: {
+                  title: "Impossible de charger le document",
+                  close: "Ouvrir dans le navigateur",
+                  errorCode: "Échec de lecture WebAssembly"
+                },
+                "documentError.title": "Impossible de charger le document",
+                "documentError.close": "Ouvrir dans le navigateur",
+                "documentError.errorCode": "Échec de lecture WebAssembly",
 
                 zoom: {
                   in: "Zoom avant",
@@ -1082,6 +1091,29 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         const raw = el.textContent.trim().toLowerCase();
         if (TEXT_MAP[raw]) {
           el.textContent = TEXT_MAP[raw];
+        }
+      }
+    });
+
+    // Filet de sécurité anti-blocage : si une modale d'erreur technique apparaît dans le ShadowRoot,
+    // offrir une bascule instantanée vers le moteur natif sans laisser l'utilisateur bloqué
+    s.querySelectorAll('button').forEach(btn => {
+      const text = btn.textContent ? btn.textContent.trim() : '';
+      if (text.includes('documentError') || text.includes('Ouvrir dans le navigateur') || text.includes('Fermer') || text.includes('close')) {
+        const dialogParent = btn.closest('[role="dialog"]') || btn.parentElement;
+        if (dialogParent && (dialogParent.textContent.includes('Failed to fetch') || dialogParent.textContent.includes('documentError') || dialogParent.textContent.includes('Impossible de charger'))) {
+          btn.textContent = 'Ouvrir avec le lecteur du navigateur';
+          btn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (dom.container) {
+              dom.container.textContent = '';
+              const fallbackIframe = document.createElement('iframe');
+              fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
+              fallbackIframe.src = fullDocUrl;
+              dom.container.appendChild(fallbackIframe);
+            }
+          };
         }
       }
     });

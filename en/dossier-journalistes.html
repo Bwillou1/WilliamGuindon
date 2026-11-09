@@ -4890,7 +4890,13 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       }
       if (clean.startsWith('http://') || clean.startsWith('https://')) {
         try {
-          const parsed = new URL(clean);
+          const parsed = new URL(clean, window.location.origin);
+          if (parsed.origin === window.location.origin) {
+            const relPath = parsed.pathname.replace(/^\/+/, '');
+            if (relPath.startsWith('assets/docs/') && relPath.toLowerCase().endsWith('.pdf') && !relPath.includes('..')) {
+              return forNative ? ('/' + encodeURI(decodeURI(relPath))) : encodeURI(decodeURI(relPath));
+            }
+          }
           if (parsed.protocol === 'https:' && (parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
             let itemRest = '';
             if (parsed.pathname.startsWith('/cors/')) {
@@ -4911,8 +4917,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         return DEFAULT_PDF;
       }
       const cleanRel = clean.replace(/^(\.\/|\/)+/, '');
-      if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel) && !cleanRel.includes('..') && !cleanRel.includes('\\')) {
-        return forNative ? ('/' + encodeURI(cleanRel)) : encodeURI(cleanRel);
+      if (cleanRel.startsWith('assets/docs/') && cleanRel.toLowerCase().endsWith('.pdf') && !cleanRel.includes('..') && !cleanRel.includes('\\')) {
+        return forNative ? ('/' + encodeURI(decodeURI(cleanRel))) : encodeURI(decodeURI(cleanRel));
       }
       return DEFAULT_PDF;
     }
