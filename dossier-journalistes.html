@@ -295,15 +295,36 @@
       transform: translateY(0);
     }
     .drive-item.is-cached .drive-item-name::after {
-      content: "• local";
+      content: "✔ prêt hors-ligne";
       font-size: 9.5px;
       font-weight: 700;
-      color: #059669;
-      background: #eaf5ee;
+      color: #047857;
+      background: #d1fae5;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    body.is-offline-view .drive-item:not(.is-cached) {
+      opacity: 0.38;
+      filter: grayscale(1);
+    }
+    body.is-offline-view .drive-item:not(.is-cached) .drive-item-name::after {
+      content: "réseau requis";
+      font-size: 9px;
+      font-weight: 600;
+      color: #94a3b8;
+      background: #f1f5f9;
       padding: 1px 5px;
       border-radius: 4px;
       margin-left: 6px;
       display: inline-block;
+      vertical-align: middle;
+    }
+    [data-theme="dark"] body.is-offline-view .drive-item:not(.is-cached) .drive-item-name::after {
+      background: #1e293b;
+      color: #64748b;
     }
     .drive-toast {
       position: fixed;
@@ -3474,11 +3495,11 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
     // Mise à jour de l'indicateur visuel sur chaque élément de l'arbre
     document.querySelectorAll(".drive-item").forEach(item => {
-      const fullPath = item.getAttribute("data-fullpath");
-      if (!fullPath) return;
+      const fullPath = item.getAttribute("data-fullpath") || '';
       const corsUrl = "https://archive.org/cors/" + identifier + "/" + encodeURI(fullPath);
       const rawUrl = "https://archive.org/download/" + identifier + "/" + encodeURI(fullPath);
-      if (cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
+      const isSiteAsset = fullPath.includes("26-3-rsub") || fullPath.includes("72-rsp") || fullPath.includes("73-rec") || fullPath.includes("26-2-det2") || fullPath.includes("26-3-det") || fullPath.includes("declaration-appui-manfred-liebel") || fullPath.includes("petition-546") || fullPath.includes("formal-deposition");
+      if (isSiteAsset || cachedUrlsSet.has(corsUrl) || cachedUrlsSet.has(rawUrl)) {
         item.classList.add("is-cached");
       } else {
         item.classList.remove("is-cached");
@@ -4012,6 +4033,12 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         item.addEventListener("click", async (e) => {
           e.preventDefault();
           e.stopPropagation();
+
+          if (document.body.classList.contains('is-offline-view') && !item.classList.contains('is-cached') && !navigator.onLine) {
+            showDriveToast("Cette pièce nécessite une connexion Internet active pour être chargée.", "warning");
+            return;
+          }
+
           document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
           item.classList.add("active");
 
@@ -5205,6 +5232,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     }
     const urlParams = new URLSearchParams(window.location.search);
     const isEmbedParam = urlParams.get('embed') === '1' || urlParams.get('widget') === '1' || urlParams.get('iframe') === '1';
+
+    if (urlParams.has('offline') || !navigator.onLine) {
+      document.body.classList.add('is-offline-view');
+    }
+    window.addEventListener('offline', () => document.body.classList.add('is-offline-view'));
+    window.addEventListener('online', () => {
+      if (!urlParams.has('offline')) document.body.classList.remove('is-offline-view');
+    });
 
     if (isFramed || isEmbedParam) {
       document.documentElement.classList.add('is-embedded-widget');
