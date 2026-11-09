@@ -1,8 +1,11 @@
-const CACHE_NAME = 'wg-pwa-v233';
+const CACHE_NAME = 'wg-pwa-v234';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
   '/offline.html',
+  '/assets/docs/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent',
   '/chronologie.html',
   '/embed-chronologie.html',
   '/chronologie-cce-sem26003.svg',
@@ -191,11 +194,13 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur, apercu.html et offline.html
-  // Le reste du HTML ne doit pas être mis en cache pour préserver le fonctionnement en direct des traductions
+  // 3. Ne mettre en cache hors-ligne QUE les documents, le lecteur, apercu.html, la racine et offline.html
+  // Le reste du HTML dynamique est protégé pour préserver le fonctionnement en direct des traductions
   const contentType = (response.headers.get('content-type') || '').toLowerCase();
   if (contentType.includes('text/html')) {
-    const isOfflineAllowedHtml = url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
+    const isOfflineAllowedHtml = url.pathname === '/' || url.pathname === '' ||
+                                 url.pathname === '/index.html' || url.pathname === '/index' ||
+                                 url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
                                  url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
                                  url.pathname === '/viewer.html' || url.pathname === '/viewer' ||
                                  url.pathname === '/lecteur.html' || url.pathname === '/lecteur' ||
@@ -321,7 +326,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(async () => {
-          // Recherche dans le cache local
+          // 1. Recherche directe dans le cache local
           let cachedResponse = await caches.match(event.request);
           if (!cachedResponse && !url.pathname.endsWith('.html')) {
             cachedResponse = await caches.match(url.pathname + '.html');
@@ -330,13 +335,29 @@ self.addEventListener('fetch', (event) => {
             return cachedResponse;
           }
 
-          // Fallback universel pour toute navigation hors-ligne vers l'écran d'accueil hors-ligne
-          const offlineFallback = await caches.match('/offline.html');
+          // 2. Recherche tolérante pour la page d'accueil (start_url PWA)
+          if (url.pathname === '/' || url.pathname === '' || url.pathname === '/index.html' || url.pathname === '/index') {
+            const homeCached = await caches.match('/index.html') || await caches.match('/');
+            if (homeCached) return homeCached;
+          }
+
+          // 3. Fallback universel pour toute navigation hors-ligne vers l'écran d'accueil hors-ligne
+          const offlineFallback = await caches.match('/offline.html', { ignoreSearch: true }) ||
+                                 await caches.match(new URL('/offline.html', self.location.origin).href) ||
+                                 await caches.match('offline.html');
           if (offlineFallback) {
             return offlineFallback;
           }
 
-          return Promise.reject(new Error('Ressource hors-ligne indisponible'));
+          // 4. Filet de secours synthétique 200 OK : prévient tout rejet WebKit et élimine l'erreur "connexion non sécurisée" sur iOS
+          return new Response(
+            '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Mode Hors-Ligne · William Guindon</title><style>body{background:#0b1310;color:#f1f5f3;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;text-align:center;box-sizing:border-box;}div{max-width:540px;background:#101a15;border:1px solid #1f3329;border-radius:18px;padding:32px 24px;box-shadow:0 12px 30px rgba(0,0,0,0.5);}h1{font-size:1.35rem;margin:0 0 10px 0;color:#34d399;}p{font-size:0.95rem;color:#94a3b8;line-height:1.5;margin:0 0 20px 0;}a{display:inline-block;background:#10b981;color:#051a11;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px;}</style></head><body><div><h1>Mode Hors-Ligne Probatoire</h1><p>L\'environnement sécurisé et les pièces probatoires enregistrées restent opérationnels sur cet appareil.</p><a href="/dossier-journalistes.html">Consulter les pièces hors ligne ↗</a></div></body></html>',
+            {
+              status: 200,
+              statusText: 'OK',
+              headers: { 'Content-Type': 'text/html; charset=utf-8' }
+            }
+          );
         })
     );
     return;

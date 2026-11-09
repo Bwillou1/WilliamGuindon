@@ -183,8 +183,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       return DEFAULT_DOC;
     }
     if (ALLOWED_DOCS.includes(cleanRel)) return cleanRel;
-    // Vérification stricte des chemins relatifs de documentation officielle (PDF)
+    // Vérification stricte des chemins relatifs de documentation officielle (PDF) et dossiers de pièces
     if (/^assets\/docs\/[a-zA-Z0-9_\-.]+\.pdf$/i.test(cleanRel)) {
+      return cleanRel;
+    }
+    if (/^assets\/docs\/00_DOSSIER_POUR_JOURNALISTES_BIFFE\/[^\\?%*:|"<>]+?\.(?:pdf|png|jpe?g|webp|svg)$/i.test(cleanRel)) {
       return cleanRel;
     }
     // Fichiers images locaux autorisés

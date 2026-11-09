@@ -1859,12 +1859,11 @@
             <span>Télécharger l'archive (ZIP) ↗</span>
           </a>
           <a id="btn-download-torrent"
-             href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
+             href="/assets/docs/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
+             download="dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
              class="drive-actions-item item-torrent"
              role="menuitem"
-             target="_blank"
-             rel="noopener noreferrer"
-             title="Télécharger l'archive complète via BitTorrent (.torrent P2P décentralisé)">
+             title="Télécharger l'archive complète via BitTorrent (.torrent officiel hébergé dans le dépôt)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
             <span>Télécharger l'archive (BitTorrent) ↗</span>
           </a>
@@ -2693,12 +2692,11 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
           <span>Archive ZIP ↗</span>
         </a>
-        <a href="https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
-           target="_blank"
-           rel="noopener noreferrer"
+        <a href="/assets/docs/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
+           download="dossier-journalistes-tourbiere-blainville-stablex_archive.torrent"
            class="btn-torrent-p2p"
            style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; text-decoration: none;"
-           title="Télécharger l'archive complète via BitTorrent (.torrent P2P décentralisé)">
+           title="Télécharger l'archive complète via BitTorrent (.torrent officiel hébergé dans le dépôt)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
           <span>Torrent P2P ↗</span>
         </a>
@@ -3769,6 +3767,21 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
         corsUrl: localPath,
         directStorageUrl: localPath,
         effectiveUrl: localPath
+      };
+    }
+
+    // 0.1 Pièces hébergées en local dans le dépôt Git (vitesse maximale 0 ms sans dépendre d'Archive.org)
+    if (fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")) {
+      const gitLocalPath = "assets/docs/" + fullPath;
+      return {
+        isLocal: true,
+        isSiteAsset: true,
+        blob: null,
+        blobUrl: gitLocalPath,
+        rawUrl: gitLocalPath,
+        corsUrl: gitLocalPath,
+        directStorageUrl: gitLocalPath,
+        effectiveUrl: gitLocalPath
       };
     }
 
