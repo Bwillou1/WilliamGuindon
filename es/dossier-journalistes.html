@@ -467,6 +467,24 @@
       background: rgba(14, 165, 233, 0.18);
       border-color: rgba(14, 165, 233, 0.35);
     }
+    .drive-actions-item.item-wg-export {
+      color: #047857;
+      background: rgba(5, 150, 105, 0.08);
+      border-color: rgba(5, 150, 105, 0.22);
+    }
+    .drive-actions-item.item-wg-export:hover {
+      background: rgba(5, 150, 105, 0.18);
+      border-color: rgba(5, 150, 105, 0.38);
+    }
+    .drive-actions-item.item-wg-import {
+      color: #0d9488;
+      background: rgba(13, 148, 136, 0.08);
+      border-color: rgba(13, 148, 136, 0.22);
+    }
+    .drive-actions-item.item-wg-import:hover {
+      background: rgba(13, 148, 136, 0.18);
+      border-color: rgba(13, 148, 136, 0.38);
+    }
     .drive-actions-item.item-video {
       color: #1877f2;
       background: rgba(24, 119, 242, 0.08);
@@ -1313,6 +1331,24 @@
       background: rgba(14, 165, 233, 0.25);
       border-color: rgba(14, 165, 233, 0.5);
     }
+    [data-theme="dark"] .drive-actions-item.item-wg-export {
+      color: #34d399;
+      background: rgba(5, 150, 105, 0.18);
+      border-color: rgba(5, 150, 105, 0.35);
+    }
+    [data-theme="dark"] .drive-actions-item.item-wg-export:hover {
+      background: rgba(5, 150, 105, 0.28);
+      border-color: rgba(5, 150, 105, 0.45);
+    }
+    [data-theme="dark"] .drive-actions-item.item-wg-import {
+      color: #2dd4bf;
+      background: rgba(13, 148, 136, 0.18);
+      border-color: rgba(13, 148, 136, 0.35);
+    }
+    [data-theme="dark"] .drive-actions-item.item-wg-import:hover {
+      background: rgba(13, 148, 136, 0.28);
+      border-color: rgba(13, 148, 136, 0.45);
+    }
     [data-theme="dark"] .drive-actions-item.item-video {
       color: #60a5fa;
       background: rgba(24, 119, 242, 0.15);
@@ -1824,29 +1860,30 @@
         </button>
       </div>
 
-      <!-- Menu déroulant Actions rapides -->
+      <!-- Menu déroulant Actions rapides (essentielles) -->
       <details class="drive-actions-dropdown" id="dropdown-header-actions">
-        <summary class="drive-actions-summary" title="Accéder aux actions et ressources du dossier">
+        <summary class="drive-actions-summary" title="Acceder a las acciones y recursos del expediente">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-          <span>Actions ▾</span>
+          <span>Acciones ▾</span>
         </summary>
         <div class="drive-actions-menu" role="menu">
-          <button type="button" 
-                  id="btn-request-archive"
-                  onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Ley de Derechos de Autor).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Corps officiel copié ! Collez-le dans votre courriel de rédaction.';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3500);}})"
-                  class="drive-actions-item item-archive"
+          <button type="button"
+                  id="btn-export-wg"
+                  onclick="exportAnnotationsVaultFile()"
+                  class="drive-actions-item item-wg-export"
                   role="menuitem"
-                  title="Copier le texte officiel du courriel pour demander l'archive complète (SwissTransfer)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>Demander archive (Copier le texte)</span>
+                  title="Guardar y descargar todas sus anotaciones en un archivo portable .wg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Guardar mis anotaciones (.wg)</span>
           </button>
-          <button id="btn-show-video"
-                  type="button"
-                  class="drive-actions-item item-video"
+          <button type="button"
+                  id="btn-import-wg"
+                  onclick="document.getElementById('wg-vault-file-input').click()"
+                  class="drive-actions-item item-wg-import"
                   role="menuitem"
-                  title="Visionner la déclaration vidéo officielle de William Guindon (Facebook Reel)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-            <span>Déclaration vidéo (Reel)</span>
+                  title="Restaurar sus anotaciones desde un archivo .wg (continuar en otro dispositivo)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Cargar mis anotaciones (.wg)</span>
           </button>
           <a id="btn-download-zip"
              href="https://github.com/Bwillou1/WilliamGuindon/archive/refs/heads/main.zip"
@@ -1868,79 +1905,26 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
             <span>Descargar archivo (BitTorrent) ↗</span>
           </a>
-          <a id="btn-petition-cedd"
-             href="/es/viewer?file=assets/docs/petition-546-cedd-bvg.pdf"
-             class="drive-actions-item item-petition"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter la Pétition environnementale officielle no 0546 et l'accusé formel du CEDD / BVG (PDF, 7 p.)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span>Pétition 0546 (CEDD/BVG PDF) ↗</span>
-          </a>
-          <a id="btn-petition-canada-ca"
-             href="https://www.canada.ca/fr/verificateur-general/petitions-environnementales/catalogue-des-petitions-environnementales/15-546-petiton-202606-application-lois-environnementales-federales-site-stablex-blainville-loi-peches-habitats-aquatiques-oiseaux-migrateurs-especes-susceptibles-etre-concernees.html"
-             class="drive-actions-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter la fiche officielle de la Pétition no 546 au catalogue du Vérificateur général du Canada">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            <span>Fiche Canada.ca ↗</span>
-          </a>
-          <a id="btn-academic-support"
-             href="/es/viewer?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf"
-             class="drive-actions-item item-academic"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter la déclaration d'appui académique officielle (Berlin, 14 de oct. de 2026)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-            <span>Appui scientifique Liebel &amp; Meade (PDF) ↗</span>
-          </a>
-          <a id="btn-rsp-canada"
-             href="/es/viewer?file=assets/docs/72-rsp_fr.pdf"
-             class="drive-actions-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             style="color:#059669; font-weight:700;"
-             title="Consulter la réponse officielle du gouvernement du Canada (16 de oct. de 2026)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            <span>Réponse du Canada (72-RSP, 16 oct.) ↗</span>
-          </a>
-          <a id="btn-rec-cce"
-             href="/es/viewer?file=assets/docs/73-rec_fr.pdf"
-             class="drive-actions-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter l'accusé de réception officiel de la CCE (16 de oct. de 2026)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Acuse de recibo CCA (73-REC) ↗</span>
-          </a>
-          <a id="btn-ia-canada-response"
-             href="https://archive.org/details/sem-26-003-canada-response"
-             class="drive-actions-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter le miroir permanent et décentralisé sur Internet Archive (Archive.org)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span>Miroir Archive.org (72-RSP) ↗</span>
-          </a>
-          <a id="btn-replayweb-lobbying"
-             href="https://replayweb.page/?source=https://archive.org/cors/lobby_canada_17/lobby_canada_17.wacz"
-             class="drive-actions-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             role="menuitem"
-             title="Consulter l'archive Web WACZ interactive de la déclaration de lobbying (Rencontre du 17 de sept. de 2026)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-            <span>Archive Lobbying (ReplayWeb WACZ) ↗</span>
-          </a>
+          <button id="btn-show-video"
+                  type="button"
+                  class="drive-actions-item item-video"
+                  role="menuitem"
+                  title="Ver la declaración en video oficial de William Guindon (Facebook Reel)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+            <span>Declaración en video (Reel)</span>
+          </button>
+          <button type="button" 
+                  id="btn-request-archive"
+                  onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Ley de Derechos de Autor).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Cuerpo oficial copiado. Péguelo en su correo de redacción.';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3500);}})"
+                  class="drive-actions-item item-archive"
+                  role="menuitem"
+                  title="Copiar el texto oficial del correo para solicitar el archivo completo (SwissTransfer)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Solicitar archivo (Correo)</span>
+          </button>
         </div>
       </details>
+      <input type="file" id="wg-vault-file-input" accept=".wg,application/json" style="display:none;" onchange="importAnnotationsVaultFile(this.files[0])">
     </div>
   </div>
 
@@ -5305,16 +5289,156 @@ function getCleanDisplayName(fullPath) {
     }
   });
 
-  // Interdiction absolue d'importer des fichiers externes (archive publique verrouillée en lecture seule)
+  // Sistema de bóveda de anotaciones multidocumento .wg (Copia de seguridad y restauración entre dispositivos)
+  window.exportAnnotationsVaultFile = function() {
+    let vault = null;
+    try {
+      const raw = localStorage.getItem('wg_annotations_vault_v1');
+      if (raw) vault = JSON.parse(raw);
+    } catch (_) {}
+
+    if (!vault || !vault.documents || Object.keys(vault.documents).length === 0) {
+      const docs = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('wg_embedpdf_annotations_')) {
+          const docKey = decodeURIComponent(k.replace('wg_embedpdf_annotations_', ''));
+          try {
+            const items = JSON.parse(localStorage.getItem(k));
+            if (Array.isArray(items) && items.length > 0) {
+              docs[docKey] = {
+                path: docKey,
+                shortCode: typeof getShortDocCode === 'function' ? getShortDocCode(docKey) : '',
+                annotations: items,
+                updatedAt: Date.now()
+              };
+            }
+          } catch (_) {}
+        }
+      }
+      if (Object.keys(docs).length > 0) {
+        vault = {
+          format: 'wg-annotations-v1',
+          app: 'williamguindon.me',
+          dossier: 'SEM-26-003',
+          version: 1,
+          updatedAt: new Date().toISOString(),
+          documents: docs
+        };
+        localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(vault));
+      }
+    }
+
+    const docCount = vault && vault.documents ? Object.keys(vault.documents).length : 0;
+    let totalAnnots = 0;
+    if (docCount > 0) {
+      for (const p in vault.documents) {
+        totalAnnots += (vault.documents[p].annotations || []).length;
+      }
+    }
+
+    if (totalAnnots === 0) {
+      const toast = document.getElementById('drive-toast');
+      if (toast) {
+        toast.textContent = "No hay anotaciones guardadas por el momento. ¡Puede resaltar o anotar documentos primero!";
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 4000);
+      }
+      return;
+    }
+
+    const jsonStr = JSON.stringify(vault, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `annotations-dossier-sem26003-${new Date().toISOString().slice(0, 10)}.wg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    const toast = document.getElementById('drive-toast');
+    if (toast) {
+      toast.textContent = `¡Archivo portable .wg descargado con éxito (${totalAnnots} anotaciones en ${docCount} documentos)!`;
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 4000);
+    }
+    const dd = document.getElementById('dropdown-header-actions');
+    if (dd) dd.removeAttribute('open');
+  };
+
+  window.importAnnotationsVaultFile = function(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const text = e.target.result;
+        const data = JSON.parse(text);
+        if (!data || data.format !== 'wg-annotations-v1' || !data.documents) {
+          throw new Error('Formato de archivo .wg inválido');
+        }
+
+        let docCount = 0;
+        let annotCount = 0;
+        for (const docPath in data.documents) {
+          const docEntry = data.documents[docPath];
+          const annots = docEntry.annotations || [];
+          if (Array.isArray(annots) && annots.length > 0) {
+            docCount++;
+            annotCount += annots.length;
+            const key = `wg_embedpdf_annotations_${encodeURIComponent(docPath)}`;
+            localStorage.setItem(key, JSON.stringify(annots));
+          }
+        }
+
+        localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(data));
+
+        const toast = document.getElementById('drive-toast');
+        if (toast) {
+          toast.textContent = `¡${annotCount} anotaciones restauradas con éxito en ${docCount} documentos desde el archivo .wg!`;
+          toast.classList.add('visible');
+          setTimeout(() => toast.classList.remove('visible'), 4000);
+        }
+
+        const previewStage = document.getElementById('preview-stage');
+        const activeIframe = previewStage ? previewStage.querySelector('iframe') : null;
+        if (activeIframe && activeIframe.src) {
+          activeIframe.src = activeIframe.src;
+        }
+
+        const dd = document.getElementById('dropdown-header-actions');
+        if (dd) dd.removeAttribute('open');
+      } catch (err) {
+        console.error('Error al importar .wg:', err);
+        const toast = document.getElementById('drive-toast');
+        if (toast) {
+          toast.textContent = "Error: El archivo seleccionado no es un archivo .wg válido.";
+          toast.classList.add('visible');
+          setTimeout(() => toast.classList.remove('visible'), 4000);
+        }
+      }
+    };
+    reader.readAsText(file);
+    const input = document.getElementById('wg-vault-file-input');
+    if (input) input.value = '';
+  };
+
+  // Solo se aceptan archivos de anotaciones .wg al arrastrar y soltar
   window.addEventListener("dragover", (e) => {
     e.preventDefault();
-    if (e.dataTransfer) e.dataTransfer.dropEffect = "none";
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
   }, false);
   window.addEventListener("drop", (e) => {
     e.preventDefault();
+    const droppedFile = e.dataTransfer && e.dataTransfer.files ? e.dataTransfer.files[0] : null;
+    if (droppedFile && (droppedFile.name.endsWith('.wg') || droppedFile.name.endsWith('.json'))) {
+      window.importAnnotationsVaultFile(droppedFile);
+      return;
+    }
     const t = document.getElementById("drive-toast");
     if (t) {
-      t.textContent = "Archive scellée : consultation et téléchargement uniquement (aucun téléversement externe autorisé).";
+      t.textContent = "Archivo probatorio sellado: solo lectura y descarga (únicamente se aceptan archivos de anotaciones .wg).";
       t.classList.add("visible");
       setTimeout(() => t.classList.remove("visible"), 4000);
     }

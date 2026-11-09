@@ -332,6 +332,68 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   } catch (_) {}
 
   let saveAnnotationTimeout = null;
+  const nativeAnnotationUids = new Set();
+
+  function getVault() {
+    try {
+      const raw = localStorage.getItem('wg_annotations_vault_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.format === 'wg-annotations-v1' && typeof parsed.documents === 'object') {
+          return parsed;
+        }
+      }
+    } catch (_) {}
+    return {
+      format: 'wg-annotations-v1',
+      app: 'williamguindon.me',
+      dossier: 'SEM-26-003',
+      version: 1,
+      updatedAt: new Date().toISOString(),
+      documents: {}
+    };
+  }
+
+  function saveToVault(file, annotations) {
+    try {
+      const vault = getVault();
+      vault.updatedAt = new Date().toISOString();
+      const normPath = (file || '').normalize('NFC');
+      vault.documents[normPath] = {
+        path: normPath,
+        annotations: annotations,
+        updatedAt: Date.now()
+      };
+      localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(vault));
+      try {
+        window.dispatchEvent(new CustomEvent('wg:annotations-vault-updated', { detail: { path: normPath } }));
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'wg:annotations-vault-updated', path: normPath }, '*');
+        }
+      } catch (_) {}
+    } catch (e) {
+      console.warn('Erreur écriture coffre annotations:', e);
+    }
+  }
+
+  function removeFromVault(file) {
+    try {
+      const vault = getVault();
+      const normPath = (file || '').normalize('NFC');
+      if (vault.documents && vault.documents[normPath]) {
+        delete vault.documents[normPath];
+        vault.updatedAt = new Date().toISOString();
+        localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(vault));
+        try {
+          window.dispatchEvent(new CustomEvent('wg:annotations-vault-updated', { detail: { path: normPath } }));
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'wg:annotations-vault-updated', path: normPath }, '*');
+          }
+        } catch (_) {}
+      }
+    } catch (_) {}
+  }
+
   function debounceSaveAnnotations(annotationApi, file) {
     clearTimeout(saveAnnotationTimeout);
     saveAnnotationTimeout = setTimeout(() => {
@@ -339,8 +401,26 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         if (!annotationApi || typeof annotationApi.exportAnnotations !== 'function') return;
         annotationApi.exportAnnotations().wait((items) => {
           if (items && Array.isArray(items)) {
+            // Filtrer strictement les éléments d'origine du document probatoire
+            const userOnly = items.filter(it => {
+              const annot = it.annotation || it;
+              if (!annot) return false;
+              if (annot.id && nativeAnnotationUids.has(annot.id)) return false;
+              const type = (annot.type || '').toLowerCase();
+              if (type.includes('freetext') || type.includes('stamp') || type.includes('link') || type.includes('shape') || type.includes('form') || type.includes('redact')) return false;
+              const txt = (annot.contents || annot.custom?.text || '').toLowerCase();
+              if (txt.includes('caviardé') || txt.includes('soumetteur')) return false;
+              return true;
+            });
+
             const key = `wg_embedpdf_annotations_${encodeURIComponent(file)}`;
-            localStorage.setItem(key, JSON.stringify(items));
+            if (userOnly.length > 0) {
+              localStorage.setItem(key, JSON.stringify(userOnly));
+              saveToVault(file, userOnly);
+            } else {
+              localStorage.removeItem(key);
+              removeFromVault(file);
+            }
           }
         }, (err) => console.warn('Erreur export annotations:', err));
       } catch (e) {
@@ -430,6 +510,42 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       /* 4. Fond vert pâle derrière le document */
       :host, .embedpdf-snippet-root, [data-epdf-i="main-viewport"], .bg-bg-app {
         background-color: var(--viewer-bg, #f0fdf4) !important;
+      }
+
+      /* 5. Verrouillage probatoire strict : pas de rotation, pas de suppression, pas d'ajout d'images/liens */
+      [class*="rotation" i],
+      [class*="rotate-handle" i],
+      [data-epdf-handle="rotation"],
+      button[title*="Pivoter" i],
+      button[title*="Rotate" i],
+      svg:has(path[d*="M21 12a9 9 0 1 1-9-9"]) {
+        display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+
+      /* Empêcher la suppression d'éléments probatoires (cacher poubelle de barre contextuelle) */
+      button[title*="Supprimer" i],
+      button[aria-label*="Supprimer" i],
+      button[title*="Delete" i],
+      button[aria-label*="Delete" i],
+      button:has(svg path[d*="M19 6"]),
+      button:has(svg path[d*="19 6"]),
+      button:has(svg path[d*="m19 6"]) {
+        display: none !important;
+      }
+
+      /* Cacher les boutons de lien et de tampon / image de la barre contextuelle */
+      button[title*="Lien" i],
+      button[title*="Link" i],
+      button[title*="Tampon" i],
+      button[title*="Stamp" i],
+      button[aria-label*="Lien" i],
+      button[aria-label*="Link" i],
+      button[aria-label*="Tampon" i],
+      button[aria-label*="Stamp" i] {
+        display: none !important;
       }
     `;
 
@@ -978,7 +1094,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           'annotation-text',
           'annotation-callout',
           'annotation-insert-text',
-          'annotation-replace-text'
+          'annotation-replace-text',
+          'freetext',
+          'freeText',
+          'freeTextCallout',
+          'stamp',
+          'link',
+          'annotation-link',
+          'polygon'
         ],
         theme: {
           preference: themePref,
@@ -1013,29 +1136,116 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       });
 
-      // Configuration de la persistance des annotations
+      // Configuration de la persistance et du verrouillage probatoire strict des annotations
       if (embedViewerInstance && embedViewerInstance.registry) {
         embedViewerInstance.registry.then(registry => {
           const annotationApi = registry.getPlugin('annotation')?.provides();
           if (!annotationApi) return;
 
-          // 1. Restaurer annotations existantes pour ce document
+          // 1. Verrouiller au niveau moteur les catégories de modification structurelle du document
+          if (typeof annotationApi.setLocked === 'function') {
+            try {
+              annotationApi.setLocked({
+                type: 'include',
+                categories: ['form', 'shape', 'annotation-shape', 'freetext', 'annotation-text', 'stamp', 'link', 'redaction', 'insert']
+              });
+            } catch (_) {}
+          }
+
+          // 2. Détecter et marquer tous les éléments déjà existants dans le PDF (caviardages officiels, textes d'origine)
+          nativeAnnotationUids.clear();
+          function lockNativeElements() {
+            try {
+              const state = annotationApi.getState ? annotationApi.getState() : null;
+              if (state && state.byUid) {
+                for (const uid in state.byUid) {
+                  nativeAnnotationUids.add(uid);
+                  const it = state.byUid[uid];
+                  if (it && it.object) {
+                    if (!it.object.flags) it.object.flags = [];
+                    if (!it.object.flags.includes('readOnly')) it.object.flags.push('readOnly');
+                    if (!it.object.flags.includes('locked')) it.object.flags.push('locked');
+                  }
+                }
+              }
+            } catch (e) {
+              console.warn('Verrouillage natif:', e);
+            }
+          }
+          lockNativeElements();
+          setTimeout(lockNativeElements, 300);
+          setTimeout(lockNativeElements, 1000);
+
+          // 3. Empêcher toute suppression ou altération des éléments probatoires originaux
+          const originalDelete = annotationApi.deleteAnnotation;
+          if (typeof originalDelete === 'function') {
+            annotationApi.deleteAnnotation = function(id, docId) {
+              if (nativeAnnotationUids.has(id)) {
+                console.warn('[Sécurité probatoire] Interdiction formelle de supprimer un élément original du document.');
+                return;
+              }
+              return originalDelete.apply(this, arguments);
+            };
+          }
+          const originalDeleteMany = annotationApi.deleteAnnotations;
+          if (typeof originalDeleteMany === 'function') {
+            annotationApi.deleteAnnotations = function(ids, docId) {
+              const filtered = (ids || []).filter(id => !nativeAnnotationUids.has(id));
+              if (filtered.length !== (ids || []).length) {
+                console.warn('[Sécurité probatoire] Éléments originaux préservés de la suppression.');
+              }
+              if (filtered.length > 0) return originalDeleteMany.call(this, filtered, docId);
+            };
+          }
+
+          // 4. Restaurer uniquement les annotations utilisateur légitimes
           try {
             const key = `wg_embedpdf_annotations_${encodeURIComponent(currentTargetFile)}`;
             const saved = localStorage.getItem(key);
             if (saved) {
               const items = JSON.parse(saved);
               if (Array.isArray(items) && items.length > 0) {
-                annotationApi.importAnnotations(items);
+                // Filtrer les éventuels éléments natifs accidentellement enregistrés
+                const cleanUserItems = items.filter(it => {
+                  const annot = it.annotation || it;
+                  if (!annot) return false;
+                  const type = (annot.type || '').toLowerCase();
+                  if (type.includes('freetext') || type.includes('stamp') || type.includes('link') || type.includes('shape') || type.includes('form') || type.includes('redact')) return false;
+                  const txt = (annot.contents || annot.custom?.text || '').toLowerCase();
+                  if (txt.includes('caviardé') || txt.includes('soumetteur')) return false;
+                  return true;
+                });
+                if (cleanUserItems.length > 0) {
+                  annotationApi.importAnnotations(cleanUserItems);
+                } else {
+                  localStorage.removeItem(key);
+                }
               }
             }
           } catch (err) {
             console.warn('Erreur restauration annotations:', err);
           }
 
-          // 2. Écouter les événements d'annotation et sauvegarder
+          // 5. Désélectionner immédiatement tout élément natif pour empêcher la sélection et les poignées
+          function deselectIfNative() {
+            try {
+              const sel = annotationApi.getSelectedAnnotation ? annotationApi.getSelectedAnnotation() : null;
+              if (sel && (nativeAnnotationUids.has(sel.id) || !['highlight', 'underline', 'strikeout', 'squiggly', 'text', 'ink'].some(t => (sel.type || '').toLowerCase().includes(t)))) {
+                annotationApi.deselectAnnotation();
+              }
+            } catch (_) {}
+          }
+
+          if (typeof annotationApi.onStateChange === 'function') {
+            annotationApi.onStateChange(() => {
+              deselectIfNative();
+            });
+          }
+
+          // 6. Écouter les événements d'annotation et sauvegarder
           if (typeof annotationApi.onAnnotationEvent === 'function') {
             annotationApi.onAnnotationEvent(() => {
+              deselectIfNative();
               debounceSaveAnnotations(annotationApi, currentTargetFile);
             });
           }
