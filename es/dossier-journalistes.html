@@ -4094,10 +4094,11 @@ function getCleanDisplayName(fullPath) {
           const translateLink = document.getElementById("btn-translate-preview");
           const btnCopyLink = document.getElementById("btn-copy-doc-link");
 
-          // Mise à jour instantanée du paramètre d'URL pour le partage direct
+          // Actualización instantánea del parámetro de URL corto para compartir
           try {
-            const shortFileParam = fileObj.fullPath.replace(/^00_DOSSIER_POUR_JOURNALISTES_BIFFE\//, "");
+            const shortFileParam = typeof getShortDocCode === 'function' ? getShortDocCode(fileObj.fullPath) : fileObj.name;
             const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.delete("file");
             currentUrl.searchParams.set("doc", shortFileParam);
             window.history.replaceState({ doc: shortFileParam }, "", currentUrl.toString());
           } catch (_) {}
