@@ -5324,8 +5324,123 @@ function getCleanDisplayName(fullPath) {
     }
   });
 
-  // Système de coffre d'annotations multi-documents .wg (Sauvegarde & Restauration inter-appareils)
-  window.exportAnnotationsVaultFile = function() {
+  // Système de coffre d'annotations multi-documents .wg (Chiffrement AES-256-GCM + Base64)
+  const WG_CIPHER_PREFIX = "WG26ENC:";
+  const WG_DEFAULT_KEY_SEED = "SEM-26-003-BLAINVILLE-STABLEX-PROTECTION-VAULT-20261016";
+
+  async function encryptVaultPayload(plaintext, userPassphrase) {
+    const pass = (userPassphrase && userPassphrase.trim().length > 0) ? userPassphrase.trim() : WG_DEFAULT_KEY_SEED;
+    const enc = new TextEncoder();
+    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+
+    const keyMaterial = await window.crypto.subtle.importKey(
+      "raw",
+      enc.encode(pass),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"]
+    );
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+
+    const cipherBuffer = await window.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      enc.encode(plaintext)
+    );
+
+    const combined = new Uint8Array(salt.byteLength + iv.byteLength + cipherBuffer.byteLength);
+    combined.set(salt, 0);
+    combined.set(iv, salt.byteLength);
+    combined.set(new Uint8Array(cipherBuffer), salt.byteLength + iv.byteLength);
+
+    let binary = "";
+    const len = combined.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(combined[i]);
+    }
+    return WG_CIPHER_PREFIX + btoa(binary);
+  }
+
+  async function decryptVaultPayload(fileText, userPassphrase) {
+    const trimmed = (fileText || "").trim();
+    if (!trimmed.startsWith(WG_CIPHER_PREFIX)) {
+      try {
+        const rawJson = JSON.parse(trimmed);
+        if (rawJson && rawJson.format === "wg-annotations-v1") return rawJson;
+      } catch (_) {}
+      throw new Error("Format de fichier .wg invalide ou non chiffré");
+    }
+
+    const b64 = trimmed.slice(WG_CIPHER_PREFIX.length).trim();
+    const rawBinary = atob(b64);
+    const bytes = new Uint8Array(rawBinary.length);
+    for (let i = 0; i < rawBinary.length; i++) {
+      bytes[i] = rawBinary.charCodeAt(i);
+    }
+
+    if (bytes.length < 28) throw new Error("Données de chiffrement incomplètes");
+
+    const salt = bytes.slice(0, 16);
+    const iv = bytes.slice(16, 28);
+    const cipherData = bytes.slice(28);
+
+    const enc = new TextEncoder();
+    const tryKeys = [];
+    if (userPassphrase && userPassphrase.trim().length > 0) {
+      tryKeys.push(userPassphrase.trim());
+    }
+    tryKeys.push(WG_DEFAULT_KEY_SEED);
+
+    for (const pass of tryKeys) {
+      try {
+        const keyMaterial = await window.crypto.subtle.importKey(
+          "raw",
+          enc.encode(pass),
+          { name: "PBKDF2" },
+          false,
+          ["deriveBits", "deriveKey"]
+        );
+
+        const key = await window.crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: 100000,
+            hash: "SHA-256"
+          },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["encrypt", "decrypt"]
+        );
+
+        const decBuffer = await window.crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: iv },
+          key,
+          cipherData
+        );
+
+        const decStr = new TextDecoder().decode(decBuffer);
+        return JSON.parse(decStr);
+      } catch (_) {}
+    }
+    throw new Error("Mot de passe incorrect ou fichier .wg altéré");
+  }
+
+  window.exportAnnotationsVaultFile = async function() {
     let vault = null;
     try {
       const raw = localStorage.getItem('wg_annotations_vault_v1');
@@ -5382,23 +5497,34 @@ function getCleanDisplayName(fullPath) {
       return;
     }
 
-    const jsonStr = JSON.stringify(vault, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/octet-stream' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `annotations-dossier-sem26003-${new Date().toISOString().slice(0, 10)}.wg`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    const userPass = prompt("Définissez un mot de passe pour verrouiller ce coffre d'annotations .wg (optionnel, laissez vide pour le chiffrement standard du dossier) :", "");
+    if (userPass === null) return; // Annulé
 
-    const toast = document.getElementById('drive-toast');
-    if (toast) {
-      toast.textContent = `Fichier .wg exporté avec succès (${totalAnnots} annotations sur ${docCount} documents) !`;
-      toast.classList.add('visible');
-      setTimeout(() => toast.classList.remove('visible'), 4000);
+    try {
+      const jsonStr = JSON.stringify(vault);
+      const encryptedWgPayload = await encryptVaultPayload(jsonStr, userPass);
+
+      const blob = new Blob([encryptedWgPayload], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `annotations-dossier-sem26003-${new Date().toISOString().slice(0, 10)}.wg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      const toast = document.getElementById('drive-toast');
+      if (toast) {
+        toast.textContent = `Fichier .wg chiffré téléchargé (${totalAnnots} annotations sur ${docCount} documents) !`;
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 4000);
+      }
+    } catch (err) {
+      console.error("Erreur chiffrement .wg:", err);
+      showDriveToast("Erreur lors du chiffrement du fichier .wg", "error", 3000);
     }
+
     const dd = document.getElementById('dropdown-header-actions');
     if (dd) dd.removeAttribute('open');
   };
@@ -5406,10 +5532,19 @@ function getCleanDisplayName(fullPath) {
   window.importAnnotationsVaultFile = function(file) {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
       try {
         const text = e.target.result;
-        const data = JSON.parse(text);
+        let data = null;
+
+        try {
+          data = await decryptVaultPayload(text, null);
+        } catch (_) {
+          const pass = prompt("Ce coffre .wg est protégé par mot de passe. Entrez le mot de passe de déchiffrement :");
+          if (pass === null) return;
+          data = await decryptVaultPayload(text, pass);
+        }
+
         if (!data || data.format !== 'wg-annotations-v1' || !data.documents) {
           throw new Error('Format de fichier .wg invalide');
         }
@@ -5431,12 +5566,11 @@ function getCleanDisplayName(fullPath) {
 
         const toast = document.getElementById('drive-toast');
         if (toast) {
-          toast.textContent = `${annotCount} annotations restaurées avec succès sur ${docCount} documents depuis le fichier .wg !`;
+          toast.textContent = `${annotCount} annotations déchiffrées et restaurées sur ${docCount} documents !`;
           toast.classList.add('visible');
           setTimeout(() => toast.classList.remove('visible'), 4000);
         }
 
-        // Rafraîchir l'affichage du visualiseur actif si un document est ouvert
         const previewStage = document.getElementById('preview-stage');
         const activeIframe = previewStage ? previewStage.querySelector('iframe') : null;
         if (activeIframe && activeIframe.src) {
@@ -5449,7 +5583,7 @@ function getCleanDisplayName(fullPath) {
         console.error('Erreur import .wg:', err);
         const toast = document.getElementById('drive-toast');
         if (toast) {
-          toast.textContent = "Erreur : Le fichier sélectionné n'est pas un fichier .wg valide.";
+          toast.textContent = "Erreur : Mot de passe incorrect ou fichier .wg altéré.";
           toast.classList.add('visible');
           setTimeout(() => toast.classList.remove('visible'), 4000);
         }
