@@ -3186,7 +3186,77 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     return FOLDER_TITLES[folderName] || folderName.replace(/_/g, " ");
   }
 
-  function getCleanDisplayName(fullPath) {
+    function getShortDocCode(fullPath) {
+    const norm = String(fullPath || "").replace(/^00_DOSSIER_POUR_JOURNALISTES_BIFFE\//, "").normalize("NFC");
+    const filename = norm.split("/").pop();
+
+    let folderPrefix = "";
+    const firstFolder = norm.split("/")[0];
+    const numMatch = firstFolder.match(/^0*(\d+)/);
+    if (numMatch) {
+      folderPrefix = numMatch[1];
+    } else if (firstFolder.startsWith("A - B - C")) {
+      folderPrefix = "abc";
+    } else if (firstFolder.startsWith("H11")) {
+      folderPrefix = "h11";
+    }
+
+    if (filename.includes("18_juin_fuite_CCBC6S")) {
+      const idx = filename.match(/18_juin_fuite_CCBC6S_?(\d*)/);
+      return "h11-18juin" + (idx && idx[1] ? "-" + idx[1] : "");
+    }
+    if (filename.includes("10mars_CCBC6S")) {
+      const idx = filename.match(/10mars_CCBC6S_?(\d*)/);
+      return "h11-10mars" + (idx && idx[1] ? "-" + idx[1] : "");
+    }
+    if (filename.includes("8_oct_fuite_CCBC6S")) return "h11-8oct";
+
+    const ccbcMatch = filename.match(/^CCBC6S_(\d+)/i);
+    if (ccbcMatch) return ("h11c" + ccbcMatch[1]).toLowerCase();
+
+    const fbPhotoMatch = filename.match(/^(\d+)_\d+_\d+/);
+    if (fbPhotoMatch) return ("h11-fb" + fbPhotoMatch[1].slice(-4));
+
+    const h11CapMatch = filename.match(/Capture d’écran, le 2026-07-15 à (\d\d)\.(\d\d)\.(\d\d)/);
+    if (h11CapMatch) return ("h11-" + h11CapMatch[1] + h11CapMatch[2] + h11CapMatch[3]);
+
+    const finMatch = filename.match(/Capture d’écran, le 2026-07-14 à (\d\d)\.(\d\d)\.(\d\d)/);
+    if (finMatch) return ("fin" + finMatch[1] + finMatch[2] + finMatch[3]);
+
+    if (filename.includes("D0_Formulaire")) return "6d0-form";
+    if (filename.includes("D0_Reponse")) return "6d0-rep";
+    if (filename.startsWith("D11_") && filename.endsWith(".png")) return "6d11-png";
+    if (filename.startsWith("D14_") && filename.endsWith(".png")) return "6d14-png";
+
+    const codeMatch = filename.match(/^([A-Za-z]\d+)/);
+    if (codeMatch) return (folderPrefix + codeMatch[1]).toLowerCase();
+
+    if (filename.includes("26-3-rsub")) return "7rsub";
+    if (filename.includes("26-3-det2")) return "7det2";
+    if (filename.includes("09-l-appui")) return "7appui";
+
+    if (filename.includes("INRP_2024") && filename.includes("Tableau")) return "inrp2024-tab";
+    if (filename.includes("INRP_2024")) return "inrp2024";
+    if (filename.includes("INRP_2025")) return "inrp2025";
+    if (filename.includes("INRP_2012")) return "inrp2012";
+
+    if (filename.includes("seal16")) return "seal16";
+    if (filename.includes("pr84")) return "seal-pr84";
+    if (filename.includes("britishnewspaperarchive")) return "seal-presse1989";
+    if (filename.includes("06875001")) return "bouchard";
+
+    const base = filename.replace(/\.[^.]+$/, "")
+      .replace(/_BIFFE_AUDIT|_BIFFE|_AUDIT/g, "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    const shortBase = base.length > 14 ? base.slice(0, 14) : base;
+    return folderPrefix ? (folderPrefix + "-" + shortBase) : shortBase;
+  }
+
+function getCleanDisplayName(fullPath) {
     if (!fullPath) return "";
     let cleanPath = String(fullPath || "").normalize("NFC");
     if (cleanPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")) {
@@ -4503,9 +4573,9 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       const allItems = Array.from(treeContainer.querySelectorAll(".drive-item"));
       for (const it of allItems) {
         const fp = (it.getAttribute("data-fullpath") || "").normalize("NFC").toLowerCase();
-        if (fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
+        const shortCode = getShortDocCode(fp).toLowerCase();
+        if (shortCode === normRequested || fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
           targetItemToSelect = it;
-          // Déplier tous les dossiers parents pour rendre l'élément visible
           let parentFolder = it.parentElement;
           while (parentFolder && parentFolder !== treeContainer) {
             if (parentFolder.classList && parentFolder.classList.contains("tree-node")) {
@@ -5227,7 +5297,8 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       const items = Array.from(document.querySelectorAll('.drive-item'));
       for (const it of items) {
         const fp = (it.getAttribute('data-fullpath') || '').normalize('NFC').toLowerCase();
-        if (fp === norm || fp.endsWith('/' + norm) || fp.includes(norm)) {
+        const shortCode = getShortDocCode(fp).toLowerCase();
+        if (shortCode === norm || fp === norm || fp.endsWith('/' + norm) || fp.includes(norm)) {
           it.click();
           if (it.scrollIntoView) it.scrollIntoView({ behavior: 'smooth', block: 'center' });
           break;
