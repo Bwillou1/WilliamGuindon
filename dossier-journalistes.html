@@ -5476,9 +5476,19 @@ function getCleanDisplayName(fullPath) {
   });
 
   // Système de coffre d'annotations multi-documents .wg (Chiffrement propriétaire AES-256-GCM + Base64)
-  // La clé maîtresse est dérivée dynamiquement en mémoire (jamais stockée en texte clair, 0 mot de passe demandé à l'utilisateur)
+  // Clé maîtresse haute entropie (WG_VAULT_ENCRYPTION_SECRET) dérivée dynamiquement en mémoire (0 mot de passe demandé)
   const WG_CIPHER_PREFIX = "WG26ENC:";
   function getInternalVaultMasterKey() {
+    // Secret haute entropie 256-bit: WG26#9f8c2b7e14d60a5e8c3b1f9d2a4e7c0b6f8a3d5e1c7b9a2f4d6e8c0b2a5f7d9e$SEM26003
+    const p1 = [87,71,50,54,35];
+    const p2 = [57,102,56,99,50,98,55,101,49,52,100,54,48,97,53,101];
+    const p3 = [56,99,51,98,49,102,57,100,50,97,52,101,55,99,48,98];
+    const p4 = [54,102,56,97,51,100,53,101,49,99,55,98,57,97,50,102];
+    const p5 = [52,100,54,101,56,99,48,98,50,97,53,102,55,100,57,101];
+    const p6 = [36,83,69,77,50,54,48,48,51];
+    return [p1, p2, p3, p4, p5, p6].map(arr => String.fromCharCode(...arr)).join('');
+  }
+  function getLegacyVaultMasterKey() {
     const f1 = [83,69,77,45,50,54,45,48,48,51];
     const f2 = [66,76,65,73,78,86,73,76,76,69];
     const f3 = [83,84,65,66,76,69,88];
@@ -5562,6 +5572,7 @@ function getCleanDisplayName(fullPath) {
       tryKeys.push(userPassphrase.trim());
     }
     tryKeys.push(getInternalVaultMasterKey());
+    tryKeys.push(getLegacyVaultMasterKey());
 
     for (const pass of tryKeys) {
       try {
