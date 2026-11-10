@@ -5149,6 +5149,19 @@ function getCleanDisplayName(fullPath) {
       return DEFAULT_PDF;
     }
 
+    function sanitizeDossierPdfPath(url) {
+      const fallback = '/assets/docs/observations-reponse-canada-sem26003.pdf';
+      if (!url || typeof url !== 'string') return fallback;
+      const clean = url.trim();
+      if (/^\/assets\/docs\/[a-zA-Z0-9_\-\.\/ %()]+\.pdf$/i.test(clean) && !clean.includes('..') && !clean.includes('\\')) {
+        return clean;
+      }
+      if (/^https:\/\/ia601409\.us\.archive\.org\/[a-zA-Z0-9_\-\.\/ %()]+\.pdf$/i.test(clean) && !clean.includes('..')) {
+        return clean;
+      }
+      return fallback;
+    }
+
     // Si un aperçu PDF est actuellement affiché dans l'iframe, le recharger dans le format choisi
     const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
     if (currentIframe && (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'))) {
@@ -5157,7 +5170,8 @@ function getCleanDisplayName(fullPath) {
         : (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'));
       const safePdfPath = getSafeDossierPdfUrl(candidatePdf, isNative);
       const isSafePath = typeof safePdfPath === 'string' && (safePdfPath.startsWith('/') || safePdfPath.startsWith('https://ia601409.us.archive.org/'));
-      const finalPdfPath = isSafePath ? safePdfPath : DEFAULT_PDF;
+      const rawPdfPath = isSafePath ? safePdfPath : DEFAULT_PDF;
+      const finalPdfPath = sanitizeDossierPdfPath(rawPdfPath);
 
       const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
       const safeViewerParam = encodeURIComponent(finalPdfPath);

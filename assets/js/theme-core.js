@@ -960,7 +960,7 @@
         return false;
       }
 
-      const targetUrl = getTargetLanguageUrl(saved);
+      const targetUrl = getSafeTargetLanguageUrl(saved);
       const currentFullUrl = cleanUrlPath(window.location.pathname) + window.location.search + window.location.hash;
       if (targetUrl && targetUrl !== currentFullUrl && !window.location.pathname.startsWith(`/${saved}/`)) {
         window.location.replace(targetUrl);
@@ -973,9 +973,9 @@
   function getSafeTargetLanguageUrl(targetLang) {
     const raw = getTargetLanguageUrl(targetLang);
     if (!raw || typeof raw !== 'string') return '/';
-    const trimmed = raw.trim();
-    if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.includes('\\') && !trimmed.includes('://')) {
-      return trimmed;
+    const clean = raw.trim();
+    if (/^\/(?:en\/|es\/)?[a-zA-Z0-9_\-\.]*(?:\?[a-zA-Z0-9_=&]*)?(?:#[a-zA-Z0-9_\-]*)?$/.test(clean) && !clean.includes('..') && !clean.includes('//')) {
+      return clean;
     }
     return '/';
   }

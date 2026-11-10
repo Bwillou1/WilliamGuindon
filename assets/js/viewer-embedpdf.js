@@ -220,11 +220,24 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const DEFAULT_DOC = '/assets/docs/observations-reponse-canada-sem26003.pdf';
     const safe = getSafeDocUrl(rawUrl);
     if (!safe || typeof safe !== 'string') return DEFAULT_DOC;
-    const clean = safe.trim();
-    if (clean.startsWith('assets/')) return '/' + clean;
-    if (clean.startsWith('/assets/')) return clean;
-    if (clean.startsWith('https://ia601409.us.archive.org/1/items/')) return clean;
-    if (clean.startsWith('https://archive.org/')) return clean;
+    let clean = safe.trim();
+    try {
+      if (clean.startsWith('http://') || clean.startsWith('https://')) {
+        const parsed = new URL(clean, window.location.origin);
+        if (parsed.origin === window.location.origin) {
+          clean = parsed.pathname;
+        } else if (parsed.protocol === 'https:' && (parsed.hostname === 'ia601409.us.archive.org' || parsed.hostname === 'archive.org' || parsed.hostname.endsWith('.archive.org'))) {
+          if (/^https:\/\/ia601409\.us\.archive\.org\/[a-zA-Z0-9_\-\.\/ %()]+\.pdf$/i.test(clean) && !clean.includes('..')) {
+            return clean;
+          }
+        }
+      }
+    } catch (_) {}
+
+    if (clean.startsWith('assets/')) clean = '/' + clean;
+    if (/^\/assets\/(?:docs|media|uploads|img)\/[a-zA-Z0-9_\-\.\/ %()]+\.(?:pdf|png|jpe?g|webp|svg|gif|bmp|tiff?)$/i.test(clean) && !clean.includes('..') && !clean.includes('\\')) {
+      return clean;
+    }
     return DEFAULT_DOC;
   }
 
