@@ -2633,10 +2633,88 @@
     // Les blocages et masquages intrusifs ont été retirés pour garantir une lecture fluide et sans obstacle
   }
 
+  const OFFICIAL_TRANSLATIONS = {
+    "26-3-rsub_fr_redacted.pdf": {
+      fr: "assets/docs/26-3-rsub_fr_redacted.pdf",
+      en: "assets/docs/26-3-rsub_en.pdf",
+      es: "assets/docs/26-3-rsub_es.pdf"
+    },
+    "26-3-rsub_fr_clean.pdf": {
+      fr: "assets/docs/26-3-rsub_fr_clean.pdf",
+      en: "assets/docs/26-3-rsub_en.pdf",
+      es: "assets/docs/26-3-rsub_es.pdf"
+    },
+    "26-3-rsub_en.pdf": {
+      fr: "assets/docs/26-3-rsub_fr_redacted.pdf",
+      en: "assets/docs/26-3-rsub_en.pdf",
+      es: "assets/docs/26-3-rsub_es.pdf"
+    },
+    "26-3-rsub_es.pdf": {
+      fr: "assets/docs/26-3-rsub_fr_redacted.pdf",
+      en: "assets/docs/26-3-rsub_en.pdf",
+      es: "assets/docs/26-3-rsub_es.pdf"
+    },
+    "26-2-det2_fr.pdf": {
+      fr: "assets/docs/26-2-det2_fr.pdf",
+      en: "assets/docs/26-2-det2_en.pdf"
+    },
+    "26-2-det2_en.pdf": {
+      fr: "assets/docs/26-2-det2_fr.pdf",
+      en: "assets/docs/26-2-det2_en.pdf"
+    },
+    "72-rsp_fr.pdf": {
+      fr: "assets/docs/72-rsp_fr.pdf",
+      en: "assets/docs/72-rsp_en.pdf"
+    },
+    "72-rsp_en.pdf": {
+      fr: "assets/docs/72-rsp_fr.pdf",
+      en: "assets/docs/72-rsp_en.pdf"
+    },
+    "73-rec_fr.pdf": {
+      fr: "assets/docs/73-rec_fr.pdf",
+      en: "assets/docs/73-rec_en.pdf"
+    },
+    "73-rec_en.pdf": {
+      fr: "assets/docs/73-rec_fr.pdf",
+      en: "assets/docs/73-rec_en.pdf"
+    },
+    "request-terminate-defer-canada-sem26003-en.pdf": {
+      fr: "assets/docs/72-rsp_fr.pdf",
+      en: "assets/docs/request-terminate-defer-canada-sem26003-en.pdf"
+    },
+    "chronologie-cce-sem26003-fr.pdf": {
+      fr: "assets/docs/chronologie-cce-sem26003-fr.pdf",
+      en: "assets/docs/chronologie-cce-sem26003-en.pdf",
+      es: "assets/docs/chronologie-cce-sem26003-es.pdf"
+    },
+    "chronologie-cce-sem26003-en.pdf": {
+      fr: "assets/docs/chronologie-cce-sem26003-fr.pdf",
+      en: "assets/docs/chronologie-cce-sem26003-en.pdf",
+      es: "assets/docs/chronologie-cce-sem26003-es.pdf"
+    },
+    "chronologie-cce-sem26003-es.pdf": {
+      fr: "assets/docs/chronologie-cce-sem26003-fr.pdf",
+      en: "assets/docs/chronologie-cce-sem26003-en.pdf",
+      es: "assets/docs/chronologie-cce-sem26003-es.pdf"
+    }
+  };
+
   function toggleTranslationMode(forceState) {
     state.translationMode = (typeof forceState === 'boolean') ? forceState : !state.translationMode;
     
     const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en');
+    
+    const curBase = (state.currentFile || '').split('/').pop();
+    const officialEntry = OFFICIAL_TRANSLATIONS[curBase];
+    if (officialEntry) {
+      const targetPdf = state.translationMode ? (officialEntry[targetLang] || officialEntry['en']) : (officialEntry['fr'] || 'assets/docs/26-3-rsub_fr_redacted.pdf');
+      if (targetPdf && targetPdf !== state.currentFile) {
+        showToast(state.translationMode ? `Chargement du document officiel traduit (${targetLang.toUpperCase()})` : "Retour au document original en français");
+        loadPDF(targetPdf, state.currentPage);
+        updateTranslationVisualBanner();
+        return;
+      }
+    }
     
     if (dom.btnTranslateDoc) {
       dom.btnTranslateDoc.classList.toggle('active', state.translationMode);
@@ -3020,6 +3098,14 @@
       }
       if (dom.headerSelectLang && dom.headerSelectLang.value !== lang) {
         dom.headerSelectLang.value = lang;
+      }
+      const curBase = (state.currentFile || '').split('/').pop();
+      const officialEntry = OFFICIAL_TRANSLATIONS[curBase];
+      if (officialEntry && officialEntry[lang] && officialEntry[lang] !== state.currentFile) {
+        showToast(`Chargement de la version officielle (${lang.toUpperCase()})`);
+        loadPDF(officialEntry[lang], state.currentPage);
+        updateTranslationVisualBanner();
+        return;
       }
       translateCurrentPage(lang);
       if (state.translationMode) {
