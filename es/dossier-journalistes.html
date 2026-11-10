@@ -4219,6 +4219,14 @@ function getCleanDisplayName(fullPath) {
           e.preventDefault();
           e.stopPropagation();
 
+          // Sauvegarde immédiate et synchrone des annotations de l'iframe active avant tout changement
+          const activeIframeBeforeChange = document.querySelector('#preview-stage iframe.preview-iframe');
+          if (activeIframeBeforeChange && activeIframeBeforeChange.contentWindow) {
+            try {
+              activeIframeBeforeChange.contentWindow.postMessage({ type: 'wg:save-annotations-now' }, '*');
+            } catch (_) {}
+          }
+
           if (document.body.classList.contains('is-offline-view') && !item.classList.contains('is-cached') && !navigator.onLine) {
             showDriveToast("Cette pièce nécessite une connexion Internet active pour être chargée.", "warning");
             return;
@@ -5595,6 +5603,14 @@ function getCleanDisplayName(fullPath) {
   }
 
   window.exportAnnotationsVaultFile = async function() {
+    // Flush immédiat de l'iframe active
+    const activeIframeBeforeExport = document.querySelector('#preview-stage iframe.preview-iframe');
+    if (activeIframeBeforeExport && activeIframeBeforeExport.contentWindow) {
+      try {
+        activeIframeBeforeExport.contentWindow.postMessage({ type: 'wg:save-annotations-now' }, '*');
+      } catch (_) {}
+    }
+
     let vault = null;
     try {
       const raw = localStorage.getItem('wg_annotations_vault_v1');
@@ -5700,8 +5716,11 @@ function getCleanDisplayName(fullPath) {
           if (Array.isArray(annots) && annots.length > 0) {
             docCount++;
             annotCount += annots.length;
-            const key = `wg_embedpdf_annotations_${encodeURIComponent(docPath)}`;
+            const norm = (docPath || '').trim().replace(/^(\.\/|\/)+/, '').normalize('NFC');
+            const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+            const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
             localStorage.setItem(key, JSON.stringify(annots));
+            localStorage.setItem(keySlash, JSON.stringify(annots));
           }
         }
 

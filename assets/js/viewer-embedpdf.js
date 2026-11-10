@@ -358,6 +358,32 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   let saveAnnotationTimeout = null;
   const nativeAnnotationUids = new Set();
+  const userAnnotationUids = new Set();
+
+  function getVaultDocKey(file) {
+    if (!file || typeof file !== 'string') return '';
+    return file.trim().replace(/^(\.\/|\/)+/, '').normalize('NFC');
+  }
+
+  function isUserAnnotation(annot) {
+    if (!annot) return false;
+    const rawType = annot.type;
+    if (typeof rawType === 'number') {
+      // Énumération EmbedPDF :
+      // 1: TEXT, 4: LINE, 5: SQUARE, 6: CIRCLE, 7: POLYGON, 8: POLYLINE,
+      // 9: HIGHLIGHT, 10: UNDERLINE, 11: SQUIGGLY, 12: STRIKEOUT, 14: CARET, 15: INK, 16: POPUP
+      // Rejeter strictement les éléments structurels du document original (2: LINK, 13: STAMP, 17: FILEATTACHMENT, 20: WIDGET/FORM, 24: REDACT)
+      if ([2, 13, 17, 20, 24].includes(rawType)) return false;
+      return true;
+    }
+    const typeStr = String(rawType || '').toLowerCase();
+    if (typeStr.includes('link') || typeStr.includes('stamp') || typeStr.includes('form') || typeStr.includes('redact') || typeStr.includes('widget')) {
+      return false;
+    }
+    const txt = String(annot.contents || annot.custom?.text || '').toLowerCase();
+    if (txt.includes('caviardé') || txt.includes('soumetteur')) return false;
+    return true;
+  }
 
   function getVault() {
     try {
@@ -379,13 +405,48 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     };
   }
 
+  function getSavedAnnotationsForFile(file) {
+    const norm = getVaultDocKey(file);
+    const keys = [
+      `wg_embedpdf_annotations_${encodeURIComponent(norm)}`,
+      `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`,
+      `wg_embedpdf_annotations_${encodeURIComponent(file)}`
+    ];
+    for (const k of keys) {
+      try {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (_) {}
+    }
+    try {
+      const vault = getVault();
+      if (vault && vault.documents) {
+        if (vault.documents[norm] && Array.isArray(vault.documents[norm].annotations)) {
+          return vault.documents[norm].annotations;
+        }
+        if (vault.documents['/' + norm] && Array.isArray(vault.documents['/' + norm].annotations)) {
+          return vault.documents['/' + norm].annotations;
+        }
+      }
+    } catch (_) {}
+    return [];
+  }
+
   function saveToVault(file, annotations) {
     try {
       const vault = getVault();
       vault.updatedAt = new Date().toISOString();
-      const normPath = (file || '').normalize('NFC');
+      const normPath = getVaultDocKey(file);
       vault.documents[normPath] = {
         path: normPath,
+        annotations: annotations,
+        updatedAt: Date.now()
+      };
+      vault.documents['/' + normPath] = {
+        path: '/' + normPath,
         annotations: annotations,
         updatedAt: Date.now()
       };
@@ -404,9 +465,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   function removeFromVault(file) {
     try {
       const vault = getVault();
-      const normPath = (file || '').normalize('NFC');
+      const normPath = getVaultDocKey(file);
+      let changed = false;
       if (vault.documents && vault.documents[normPath]) {
         delete vault.documents[normPath];
+        changed = true;
+      }
+      if (vault.documents && vault.documents['/' + normPath]) {
+        delete vault.documents['/' + normPath];
+        changed = true;
+      }
+      if (changed) {
         vault.updatedAt = new Date().toISOString();
         localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(vault));
         try {
@@ -419,39 +488,71 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } catch (_) {}
   }
 
-  function debounceSaveAnnotations(annotationApi, file) {
+  function saveCurrentAnnotationsNow() {
     clearTimeout(saveAnnotationTimeout);
-    saveAnnotationTimeout = setTimeout(() => {
-      try {
-        if (!annotationApi || typeof annotationApi.exportAnnotations !== 'function') return;
-        annotationApi.exportAnnotations().wait((items) => {
-          if (items && Array.isArray(items)) {
-            // Filtrer strictement les éléments d'origine du document probatoire
-            const userOnly = items.filter(it => {
-              const annot = it.annotation || it;
-              if (!annot) return false;
-              if (annot.id && nativeAnnotationUids.has(annot.id)) return false;
-              const type = (annot.type || '').toLowerCase();
-              if (type.includes('freetext') || type.includes('stamp') || type.includes('link') || type.includes('shape') || type.includes('form') || type.includes('redact')) return false;
-              const txt = (annot.contents || annot.custom?.text || '').toLowerCase();
-              if (txt.includes('caviardé') || txt.includes('soumetteur')) return false;
-              return true;
-            });
+    try {
+      if (!embedViewerInstance) return;
+      const reg = embedViewerInstance.registry;
+      if (!reg || typeof reg.then !== 'function') return;
 
-            const key = `wg_embedpdf_annotations_${encodeURIComponent(file)}`;
-            if (userOnly.length > 0) {
-              localStorage.setItem(key, JSON.stringify(userOnly));
-              saveToVault(file, userOnly);
-            } else {
-              localStorage.removeItem(key);
-              removeFromVault(file);
+      reg.then(registry => {
+        const annotationApi = registry.getPlugin ? registry.getPlugin('annotation') : null;
+        if (!annotationApi) return;
+
+        const userAnnotations = [];
+        const state = annotationApi.getState ? annotationApi.getState() : null;
+
+        if (state && state.pages && state.byUid) {
+          for (const pageIdxStr in state.pages) {
+            const pageIndex = Number(pageIdxStr);
+            const uids = state.pages[pageIdxStr] || [];
+            for (const uid of uids) {
+              if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
+              const entry = state.byUid[uid];
+              if (!entry || entry.commitState === 'deleted') continue;
+              const annot = entry.object;
+              if (!annot || !isUserAnnotation(annot)) continue;
+
+              const copy = JSON.parse(JSON.stringify(annot));
+              copy.pageIndex = pageIndex;
+              if (copy.id) userAnnotationUids.add(copy.id);
+
+              userAnnotations.push({
+                pageIndex: pageIndex,
+                annotation: copy
+              });
             }
           }
-        }, (err) => console.warn('Erreur export annotations:', err));
-      } catch (e) {
-        console.warn('Erreur sauvegarde annotations:', e);
-      }
-    }, 400);
+        }
+
+        const norm = getVaultDocKey(currentTargetFile);
+        if (userAnnotations.length > 0) {
+          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+          const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
+          localStorage.setItem(key, JSON.stringify(userAnnotations));
+          localStorage.setItem(keySlash, JSON.stringify(userAnnotations));
+          saveToVault(norm, userAnnotations);
+        } else {
+          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+          if (state && state.byUid && Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
+            localStorage.removeItem(key);
+            localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
+            removeFromVault(norm);
+          }
+        }
+      }).catch(err => {
+        console.warn('Erreur sauvegarde synchrone annotations:', err);
+      });
+    } catch (e) {
+      console.warn('Erreur sauvegarde annotations:', e);
+    }
+  }
+
+  function debounceSaveAnnotations() {
+    clearTimeout(saveAnnotationTimeout);
+    saveAnnotationTimeout = setTimeout(() => {
+      saveCurrentAnnotationsNow();
+    }, 120);
   }
 
   function getEmbedPdfShadowRoot() {
@@ -1177,14 +1278,24 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             } catch (_) {}
           }
 
-          // 2. Détecter et marquer tous les éléments déjà existants dans le PDF (caviardages officiels, textes d'origine)
+          // 2. Détecter et marquer tous les éléments déjà existants dans le PDF original
           nativeAnnotationUids.clear();
+          userAnnotationUids.clear();
+
+          const initialState = annotationApi.getState ? annotationApi.getState() : null;
+          if (initialState && initialState.byUid) {
+            for (const uid in initialState.byUid) {
+              nativeAnnotationUids.add(uid);
+            }
+          }
+
           function lockNativeElements() {
             try {
               const state = annotationApi.getState ? annotationApi.getState() : null;
               if (state && state.byUid) {
                 for (const uid in state.byUid) {
-                  nativeAnnotationUids.add(uid);
+                  // Ne verrouiller QUE les vrais éléments natifs d'origine, JAMAIS les annotations utilisateur
+                  if (!nativeAnnotationUids.has(uid) || userAnnotationUids.has(uid)) continue;
                   const it = state.byUid[uid];
                   if (it && it.object) {
                     if (!it.object.flags) it.object.flags = [];
@@ -1198,53 +1309,59 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             }
           }
           lockNativeElements();
-          setTimeout(lockNativeElements, 300);
-          setTimeout(lockNativeElements, 1000);
 
           // 3. Empêcher toute suppression ou altération des éléments probatoires originaux
           const originalDelete = annotationApi.deleteAnnotation;
           if (typeof originalDelete === 'function') {
             annotationApi.deleteAnnotation = function(id, docId) {
-              if (nativeAnnotationUids.has(id)) {
+              if (nativeAnnotationUids.has(id) && !userAnnotationUids.has(id)) {
                 console.warn('[Sécurité probatoire] Interdiction formelle de supprimer un élément original du document.');
                 return;
               }
-              return originalDelete.apply(this, arguments);
+              const res = originalDelete.apply(this, arguments);
+              debounceSaveAnnotations();
+              return res;
             };
           }
           const originalDeleteMany = annotationApi.deleteAnnotations;
           if (typeof originalDeleteMany === 'function') {
             annotationApi.deleteAnnotations = function(ids, docId) {
-              const filtered = (ids || []).filter(id => !nativeAnnotationUids.has(id));
+              const filtered = (ids || []).filter(id => !nativeAnnotationUids.has(id) || userAnnotationUids.has(id));
               if (filtered.length !== (ids || []).length) {
                 console.warn('[Sécurité probatoire] Éléments originaux préservés de la suppression.');
               }
-              if (filtered.length > 0) return originalDeleteMany.call(this, filtered, docId);
+              if (filtered.length > 0) {
+                const res = originalDeleteMany.call(this, filtered, docId);
+                debounceSaveAnnotations();
+                return res;
+              }
             };
           }
 
-          // 4. Restaurer uniquement les annotations utilisateur légitimes
+          // 4. Restaurer les annotations utilisateur enregistrées dans le coffre
           try {
-            const key = `wg_embedpdf_annotations_${encodeURIComponent(currentTargetFile)}`;
-            const saved = localStorage.getItem(key);
-            if (saved) {
-              const items = JSON.parse(saved);
-              if (Array.isArray(items) && items.length > 0) {
-                // Filtrer les éventuels éléments natifs accidentellement enregistrés
-                const cleanUserItems = items.filter(it => {
-                  const annot = it.annotation || it;
-                  if (!annot) return false;
-                  const type = (annot.type || '').toLowerCase();
-                  if (type.includes('freetext') || type.includes('stamp') || type.includes('link') || type.includes('shape') || type.includes('form') || type.includes('redact')) return false;
-                  const txt = (annot.contents || annot.custom?.text || '').toLowerCase();
-                  if (txt.includes('caviardé') || txt.includes('soumetteur')) return false;
-                  return true;
+            const savedItems = getSavedAnnotationsForFile(currentTargetFile);
+            if (Array.isArray(savedItems) && savedItems.length > 0) {
+              const cleanUserItems = [];
+              for (const it of savedItems) {
+                const annot = it.annotation || it;
+                if (!annot || !isUserAnnotation(annot)) continue;
+                if (annot.id && nativeAnnotationUids.has(annot.id) && !userAnnotationUids.has(annot.id)) continue;
+
+                const pageIdx = (typeof it.pageIndex === 'number') ? it.pageIndex : ((typeof annot.pageIndex === 'number') ? annot.pageIndex : 0);
+                const copyAnnot = { ...annot, pageIndex: pageIdx };
+                if (copyAnnot.id) userAnnotationUids.add(copyAnnot.id);
+
+                cleanUserItems.push({
+                  pageIndex: pageIdx,
+                  annotation: copyAnnot
                 });
-                if (cleanUserItems.length > 0) {
-                  annotationApi.importAnnotations(cleanUserItems);
-                } else {
-                  localStorage.removeItem(key);
-                }
+              }
+
+              if (cleanUserItems.length > 0) {
+                annotationApi.importAnnotations(cleanUserItems);
+                // Réappliquer les drapeaux natifs après import sans toucher aux annotations utilisateur
+                setTimeout(lockNativeElements, 100);
               }
             }
           } catch (err) {
@@ -1255,7 +1372,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           function deselectIfNative() {
             try {
               const sel = annotationApi.getSelectedAnnotation ? annotationApi.getSelectedAnnotation() : null;
-              if (sel && (nativeAnnotationUids.has(sel.id) || !['highlight', 'underline', 'strikeout', 'squiggly', 'text', 'ink'].some(t => (sel.type || '').toLowerCase().includes(t)))) {
+              if (sel && nativeAnnotationUids.has(sel.id) && !userAnnotationUids.has(sel.id)) {
                 annotationApi.deselectAnnotation();
               }
             } catch (_) {}
@@ -1271,9 +1388,27 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           if (typeof annotationApi.onAnnotationEvent === 'function') {
             annotationApi.onAnnotationEvent(() => {
               deselectIfNative();
-              debounceSaveAnnotations(annotationApi, currentTargetFile);
+              debounceSaveAnnotations();
             });
           }
+
+          // 7. Écouteurs de sauvegarde synchrone immédiate (gestes de dessin, changement de page, unload)
+          if (dom.container) {
+            dom.container.addEventListener('pointerup', debounceSaveAnnotations, { passive: true });
+            dom.container.addEventListener('mouseup', debounceSaveAnnotations, { passive: true });
+            dom.container.addEventListener('touchend', debounceSaveAnnotations, { passive: true });
+          }
+
+          window.addEventListener('beforeunload', saveCurrentAnnotationsNow);
+          window.addEventListener('pagehide', saveCurrentAnnotationsNow);
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') saveCurrentAnnotationsNow();
+          });
+          window.addEventListener('message', (ev) => {
+            if (ev.data && ev.data.type === 'wg:save-annotations-now') {
+              saveCurrentAnnotationsNow();
+            }
+          });
         }).catch(err => {
           console.warn('Erreur registre EmbedPDF:', err);
         });
