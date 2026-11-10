@@ -1246,6 +1246,90 @@
       transition: color 0.25s ease;
     }
 
+    /* Bóveda de anotaciones .wg en la parte inferior de la barra lateral */
+    .sidebar-wg-vault-box {
+      background: rgba(5, 150, 105, 0.08);
+      border: 1px solid #a7f3d0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      transition: all 0.25s ease;
+    }
+    .sidebar-wg-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #064e3b;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sidebar-wg-badge {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #059669;
+      background: #ecfdf5;
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid #a7f3d0;
+    }
+    .btn-sidebar-wg-export {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-sidebar-wg-export:hover {
+      background: #047857;
+    }
+    .btn-sidebar-wg-import {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #ffffff;
+      color: #064e3b;
+      border: 1px solid #059669;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-sidebar-wg-import:hover {
+      background: #f0fdf4;
+    }
+    .archive-request-collapsible {
+      border: 1px solid #a7f3d0;
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      transition: all 0.25s ease;
+    }
+    .archive-request-summary {
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      color: #064e3b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      user-select: none;
+    }
+
     /* =========================================================
        THÈME SOMBRE GLOBAL ([data-theme="dark"])
        ========================================================= */
@@ -1445,6 +1529,41 @@
       background: rgba(37, 99, 235, 0.28) !important;
     }
     [data-theme="dark"] .archive-protection-link {
+      color: #6ee7b7 !important;
+    }
+    [data-theme="dark"] .sidebar-wg-vault-box {
+      background: #15241b !important;
+      border-color: #1e3327 !important;
+    }
+    [data-theme="dark"] .sidebar-wg-title {
+      color: #6ee7b7 !important;
+    }
+    [data-theme="dark"] .sidebar-wg-badge {
+      background: #064e3b !important;
+      color: #a7f3d0 !important;
+      border-color: #047857 !important;
+    }
+    [data-theme="dark"] .btn-sidebar-wg-export {
+      background: #059669 !important;
+      color: #ffffff !important;
+    }
+    [data-theme="dark"] .btn-sidebar-wg-export:hover {
+      background: #10b981 !important;
+    }
+    [data-theme="dark"] .btn-sidebar-wg-import {
+      background: #132219 !important;
+      color: #a7f3d0 !important;
+      border-color: #059669 !important;
+    }
+    [data-theme="dark"] .btn-sidebar-wg-import:hover {
+      background: #1b2e22 !important;
+      color: #ffffff !important;
+    }
+    [data-theme="dark"] .archive-request-collapsible {
+      background: #132219 !important;
+      border-color: #1e3327 !important;
+    }
+    [data-theme="dark"] .archive-request-summary {
       color: #6ee7b7 !important;
     }
 
@@ -2588,38 +2707,68 @@
       </div>
 
   <div class="drive-tree-footer" style="margin-top: 18px; padding: 12px 10px; border-radius: 8px;">
-    <div class="archive-request-header" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 5px; flex-wrap: wrap;">
-      <div class="archive-request-title" style="font-size: 11px; font-weight: 800;">
-        Demande d'archive intégrale (220+ pièces · SwissTransfer) :
+    <!-- Bóveda de anotaciones .wg (Acceso directo en la parte inferior de la barra) -->
+    <div class="sidebar-wg-vault-box">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+        <span class="sidebar-wg-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Mis notas y anotaciones (.wg)</span>
+        </span>
+        <span class="sidebar-wg-badge">Cifrado</span>
       </div>
-      <span class="archive-request-badge" style="font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Traitement auto 2-30 min</span>
-    </div>
-    <div class="archive-request-desc" style="font-size: 11px; line-height: 1.4; margin-bottom: 8px;">Escriba a <code class="archive-request-email" style="font-weight: 700; padding: 2px 4px; border-radius: 4px; font-size: 10.5px;">contact@williamguindon.me</code> desde su correo electrónico de redacción.</div>
-    <div class="archive-request-actions" style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
-      <a href="mailto:contact@williamguindon.me?subject=%5BACC%C3%88S-PRESSE-SEM26003%5D%20Demande%20formelle%20d%27acc%C3%A8s%20aux%20pi%C3%A8ces%20de%20recherche&amp;body=Bonjour%20William%20Guindon%2C%0A%0APar%20la%20pr%C3%A9sente%2C%20je%20sollicite%20l%27acc%C3%A8s%20au%20coffre%20documentaire%20complet%20et%20aux%20pi%C3%A8ces%20de%20recherche%20relatives%20au%20dossier%20CCE%20SEM-26-003.%0A%0AENGAGEMENT%20PROFESSIONNEL%20%3A%0A1.%20Demande%20formul%C3%A9e%20depuis%20ma%20bo%C3%AEte%20de%20r%C3%A9daction%20aux%20fins%20exclusives%20de%20recherche%20journalistique%20et%20d%27int%C3%A9r%C3%AAt%20public.%0A2.%20Engagement%20formel%20%C3%A0%20ne%20pas%20redistribuer%20ces%20documents%20bruts%20sous%20droit%20d%27auteur%20au%20grand%20public%20%28art.%2029%20de%20la%20Loi%20sur%20le%20droit%20d%27auteur%29.%0A%0ANOTE%20SUR%20L%27ACC%C3%88S%20%3A%0A%E2%80%A2%20Domaines%20m%C3%A9dias%20reconnus%20%3A%20R%C3%A9ception%20automatique%20du%20lien%20s%C3%A9curis%C3%A9%20en%202%20%C3%A0%2030%20minutes.%0A%E2%80%A2%20Adresses%20personnelles%20%28%40gmail%2C%20%40yahoo%2C%20etc.%29%20%3A%20Aucun%20envoi%20automatique%20%28traitement%20manuel%20diff%C3%A9r%C3%A9%29.%0A%0A%5BNE%20RIEN%20MODIFIER%20%E2%80%94%20CL%C3%89%20DE%20ROUTAGE%5D%0ATOKEN%3A%20VERIF-MEDIA-SEM26-AUTOPASS-20261016" 
-         class="btn-archive-mailto"
-         style="flex: 1; min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; text-decoration: none; box-shadow: 0 1px 3px rgba(5,150,105,0.2);"
-         title="Ouvrir dans votre client de messagerie">
-        ✉️ Mailto automatique ↗
-      </a>
-      <button type="button" 
-              class="btn-archive-copy"
-              onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Ley de Derechos de Autor).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Corps du message copié !';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3000);}})" 
-              style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer;"
-              title="Copier le corps exact du message prêt à être collé">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-        <span>Copier le message</span>
-      </button>
-    </div>
-    <div style="font-size: 10px; color: #047857; margin-bottom: 7px; line-height: 1.35; display: flex; align-items: center; gap: 5px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15 2a7 7 0 0 0-7 7c0 2.22 1.21 4.16 3 5.2V17a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2.8c1.79-1.04 3-2.98 3-5.2a7 7 0 0 0-3-7z"/></svg>
-      <span><em>Astuce :</em> Pas besoin de manipulation spéciale, un simple clic sélectionne le texte et <kbd style="font-family: monospace; font-size: 9.5px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">Cmd+C</kbd> (ou <kbd style="font-family: monospace; font-size: 9.5px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">Ctrl+C</kbd>) copie automatiquement le tout comme d'habitude.</span>
+      <div style="display: flex; gap: 6px;">
+        <button type="button"
+                onclick="exportAnnotationsVaultFile()"
+                class="btn-sidebar-wg-export"
+                title="Guardar y descargar todas sus anotaciones en un archivo portable .wg">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Guardar</span>
+        </button>
+        <button type="button"
+                onclick="document.getElementById('wg-vault-file-input').click()"
+                class="btn-sidebar-wg-import"
+                title="Restaurar sus anotaciones desde un archivo .wg (continuar en otro dispositivo)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Restaurar</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Prévisualisation du texte pour transparence -->
-    <details class="archive-details" style="margin-bottom: 8px; font-size: 10.5px; border-radius: 6px; padding: 6px 8px;">
-      <summary class="archive-details-summary" style="cursor: pointer; font-weight: 700;">Mostrar el texto exacto (Asunto y Cuerpo)</summary>
-      <pre class="archive-details-pre" style="margin: 6px 0 0; white-space: pre-wrap; font-family: monospace; font-size: 10px; padding: 6px; border-radius: 4px; user-select: all; line-height: 1.45;"><strong>Destinataire :</strong> contact@williamguindon.me
+    <!-- Menú desplegable para solicitud de archivo completo para evitar sobrecargar la barra -->
+    <details class="archive-request-collapsible">
+      <summary class="archive-request-summary">
+        <span style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Archivo completo (220+ documentos)</span>
+        </span>
+        <span class="archive-request-badge">SwissTransfer ▾</span>
+      </summary>
+      <div style="margin-top: 8px;">
+        <div class="archive-request-desc" style="font-size: 11px; line-height: 1.4; margin-bottom: 8px;">Escriba a <code class="archive-request-email" style="font-weight: 700; padding: 2px 4px; border-radius: 4px; font-size: 10.5px;">contact@williamguindon.me</code> desde su correo de redacción (procesamiento auto 2-30 min).</div>
+        <div class="archive-request-actions" style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+          <a href="mailto:contact@williamguindon.me?subject=%5BACC%C3%88S-PRESSE-SEM26003%5D%20Demande%20formelle%20d%27acc%C3%A8s%20aux%20pi%C3%A8ces%20de%20recherche&amp;body=Bonjour%20William%20Guindon%2C%0A%0APar%20la%20pr%C3%A9sente%2C%20je%20sollicite%20l%27acc%C3%A8s%20au%20coffre%20documentaire%20complet%20et%20aux%20pi%C3%A8ces%20de%20recherche%20relatives%20au%20dossier%20CCE%20SEM-26-003.%0A%0AENGAGEMENT%20PROFESSIONNEL%20%3A%0A1.%20Demande%20formul%C3%A9e%20depuis%20ma%20bo%C3%AEte%20de%20r%C3%A9daction%20aux%20fins%20exclusives%20de%20recherche%20journalistique%20et%20d%27int%C3%A9r%C3%AAt%20public.%0A2.%20Engagement%20formel%20%C3%A0%20ne%20pas%20redistribuer%20ces%20documents%20bruts%20sous%20droit%20d%27auteur%20au%20grand%20public%20%28art.%2029%20de%20la%20Loi%20sur%20le%20droit%20d%27auteur%29.%0A%0ANOTE%20SUR%20L%27ACC%C3%88S%20%3A%0A%E2%80%A2%20Domaines%20m%C3%A9dias%20reconnus%20%3A%20R%C3%A9ception%20automatique%20du%20lien%20s%C3%A9curis%C3%A9%20en%202%20%C3%A0%2030%20minutes.%0A%E2%80%A2%20Adresses%20personnelles%20%28%40gmail%2C%20%40yahoo%2C%20etc.%29%20%3A%20Aucun%20envoi%20automatique%20%28traitement%20manuel%20diff%C3%A9r%C3%A9%29.%0A%0A%5BNE%20RIEN%20MODIFIER%20%E2%80%94%20CL%C3%89%20DE%20ROUTAGE%5D%0ATOKEN%3A%20VERIF-MEDIA-SEM26-AUTOPASS-20261016" 
+             class="btn-archive-mailto"
+             style="flex: 1; min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; text-decoration: none; box-shadow: 0 1px 3px rgba(5,150,105,0.2);"
+             title="Abrir en su cliente de correo">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Mailto automático ↗</span>
+          </a>
+          <button type="button" 
+                  class="btn-archive-copy"
+                  onclick="navigator.clipboard.writeText(`Bonjour William Guindon,\n\nPar la présente, je sollicite l'accès au coffre documentaire complet et aux pièces de recherche relatives au dossier CCE SEM-26-003.\n\nENGAGEMENT PROFESSIONNEL :\n1. Demande formulée depuis ma boîte de rédaction aux fins exclusives de recherche journalistique et d'intérêt public.\n2. Engagement formel à ne pas redistribuer ces documents bruts sous droit d'auteur au grand public (art. 29 de la Ley de Derechos de Autor).\n\nNOTE SUR L'ACCÈS :\n• Domaines médias reconnus : Réception automatique du lien sécurisé en 2 à 30 minutes.\n• Adresses personnelles (@gmail, @yahoo, etc.) : Aucun envoi automatique (traitement manuel différé).\n\n[NE RIEN MODIFIER — CLÉ DE ROUTAGE]\nTOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016`).then(()=>{const t=document.getElementById('drive-toast');if(t){t.textContent='Corps du message copié !';t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),3000);}})" 
+                  style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer;"
+                  title="Copiar texto exacto del mensaje listo para pegar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            <span>Copiar mensaje</span>
+          </button>
+        </div>
+        <div style="font-size: 10px; color: #047857; margin-bottom: 7px; line-height: 1.35; display: flex; align-items: center; gap: 5px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15 2a7 7 0 0 0-7 7c0 2.22 1.21 4.16 3 5.2V17a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2.8c1.79-1.04 3-2.98 3-5.2a7 7 0 0 0-3-7z"/></svg>
+          <span><em>Consejo:</em> Un simple clic selecciona y <kbd style="font-family: monospace; font-size: 9.5px; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;">Cmd+C</kbd> copia.</span>
+        </div>
+        <details class="archive-details" style="margin-bottom: 4px; font-size: 10.5px; border-radius: 6px; padding: 6px 8px;">
+          <summary class="archive-details-summary" style="cursor: pointer; font-weight: 700;">Mostrar el texto exacto (Asunto y Cuerpo)</summary>
+          <pre class="archive-details-pre" style="margin: 6px 0 0; white-space: pre-wrap; font-family: monospace; font-size: 10px; padding: 6px; border-radius: 4px; user-select: all; line-height: 1.45;"><strong>Destinataire :</strong> contact@williamguindon.me
 <strong>Objet :</strong> [ACCESO-PRENSA-SEM26003] Solicitud formal de acceso a documentos de investigación
 
 Bonjour William Guindon,
@@ -2636,6 +2785,8 @@ NOTE SUR L'ACCÈS :
 
 [NE RIEN MODIFIER — CLÉ DE ROUTAGE]
 TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
+        </details>
+      </div>
     </details>
       <div class="archive-links-row" style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
         <a href="https://github.com/Bwillou1/WilliamGuindon/archive/refs/heads/main.zip"
