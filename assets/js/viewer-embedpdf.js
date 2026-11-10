@@ -216,6 +216,18 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     return DEFAULT_DOC;
   }
 
+  function getSafeLocalDocUrl(rawUrl) {
+    const DEFAULT_DOC = '/assets/docs/observations-reponse-canada-sem26003.pdf';
+    const safe = getSafeDocUrl(rawUrl);
+    if (!safe || typeof safe !== 'string') return DEFAULT_DOC;
+    const clean = safe.trim();
+    if (clean.startsWith('assets/')) return '/' + clean;
+    if (clean.startsWith('/assets/')) return clean;
+    if (clean.startsWith('https://ia601409.us.archive.org/1/items/')) return clean;
+    if (clean.startsWith('https://archive.org/')) return clean;
+    return DEFAULT_DOC;
+  }
+
   // Éléments du DOM
   const dom = {
     docSelect: document.getElementById('viewer-doc-select'),
@@ -728,7 +740,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     imgEl.id = 'viewer-image-el';
     imgEl.className = 'viewer-image-el' + (isDocDark ? ' doc-dark-inverted' : '');
     imgEl.alt = cleanLabel;
-    imgEl.src = getSafeDocUrl(fullDocUrl);
+    imgEl.src = getSafeLocalDocUrl(fullDocUrl);
     stage.appendChild(imgEl);
 
     dom.container.appendChild(wrap);
@@ -1339,7 +1351,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
               dom.container.textContent = '';
               const fallbackIframe = document.createElement('iframe');
               fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
-              fallbackIframe.src = fullDocUrl;
+              fallbackIframe.src = getSafeLocalDocUrl(fullDocUrl);
               dom.container.appendChild(fallbackIframe);
             }
           };
@@ -1377,7 +1389,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       dom.container.textContent = '';
       const fallbackIframe = document.createElement('iframe');
       fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
-      fallbackIframe.src = getSafeDocUrl(fullDocUrl);
+      fallbackIframe.src = getSafeLocalDocUrl(fullDocUrl);
       dom.container.appendChild(fallbackIframe);
     }
   }

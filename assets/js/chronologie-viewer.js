@@ -219,11 +219,16 @@
             return;
           }
           if (link) {
-            const href = link.getAttribute('href') || link.getAttribute('xlink:href') || link.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-            if (href && href !== '#' && !href.startsWith('javascript:')) {
-              e.preventDefault();
-              e.stopPropagation();
-              window.open(href, '_blank', 'noopener,noreferrer');
+            const rawHref = link.getAttribute('href') || link.getAttribute('xlink:href') || link.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            if (rawHref && rawHref !== '#' && !rawHref.startsWith('#')) {
+              try {
+                const parsed = new URL(rawHref, window.location.origin);
+                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open(parsed.href, '_blank', 'noopener,noreferrer');
+                }
+              } catch (_) {}
             }
           }
         }, { capture: true });

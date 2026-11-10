@@ -354,8 +354,16 @@
         const candidateHash = sha256Sync(cleanCode);
 
         // Barrière anti-ECCC : Si la connexion provient directement d'ECCC ou de Stablex, rejet immédiat
-        const refHostile = (document.referrer || '').toLowerCase();
-        const isHostileTarget = refHostile.includes('ec.gc.ca') || refHostile.includes('republicservices.com') || refHostile.includes('stablex.com');
+        let isHostileTarget = false;
+        try {
+          if (document.referrer) {
+            const refUrl = new URL(document.referrer);
+            const refHost = refUrl.hostname.toLowerCase();
+            isHostileTarget = refHost === 'ec.gc.ca' || refHost.endsWith('.ec.gc.ca') ||
+                              refHost === 'republicservices.com' || refHost.endsWith('.republicservices.com') ||
+                              refHost === 'stablex.com' || refHost.endsWith('.stablex.com');
+          }
+        } catch (_) {}
 
         if (PARLEMENT_HASHES.has(candidateHash) && !isHostileTarget) {
           const usageKey = 'wg_key_uses_' + candidateHash.substring(0, 12);
@@ -962,6 +970,16 @@
     return false;
   }
 
+  function getSafeTargetLanguageUrl(targetLang) {
+    const raw = getTargetLanguageUrl(targetLang);
+    if (!raw || typeof raw !== 'string') return '/';
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.includes('\\') && !trimmed.includes('://')) {
+      return trimmed;
+    }
+    return '/';
+  }
+
   function updateLangUI(lang) {
     const code = (lang === 'en' ? 'EN' : lang === 'es' ? 'ES' : 'FR');
     document.querySelectorAll('.nav-lang-dropdown .current-lang-code').forEach(el => {
@@ -970,7 +988,7 @@
     document.querySelectorAll('.nav-lang-dropdown .lang-select-btn').forEach(btn => {
       const btnLang = (btn.getAttribute('data-lang') || '').toLowerCase();
       btn.classList.toggle('active', btnLang === lang);
-      const targetUrl = getTargetLanguageUrl(btnLang);
+      const targetUrl = getSafeTargetLanguageUrl(btnLang);
       if (btn.tagName === 'A' && targetUrl) {
         btn.setAttribute('href', targetUrl);
       }
@@ -1725,15 +1743,15 @@
           </button>
           <div class="nav-dropdown-menu nav-lang-menu" role="menu">
             <span class="nav-dropdown-group-title">Langue / Language</span>
-            <a href="${getTargetLanguageUrl('fr')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'fr' ? 'active' : ''}" data-lang="fr" role="menuitem">
+            <a href="#" class="nav-dropdown-item lang-select-btn" data-lang="fr" role="menuitem">
               <span class="lang-name">Français</span>
               <span class="lang-tag">FR</span>
             </a>
-            <a href="${getTargetLanguageUrl('en')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'en' ? 'active' : ''}" data-lang="en" role="menuitem">
+            <a href="#" class="nav-dropdown-item lang-select-btn" data-lang="en" role="menuitem">
               <span class="lang-name">English</span>
               <span class="lang-tag">EN</span>
             </a>
-            <a href="${getTargetLanguageUrl('es')}" class="nav-dropdown-item lang-select-btn ${savedLang === 'es' ? 'active' : ''}" data-lang="es" role="menuitem">
+            <a href="#" class="nav-dropdown-item lang-select-btn" data-lang="es" role="menuitem">
               <span class="lang-name">Español</span>
               <span class="lang-tag">ES</span>
             </a>
@@ -1779,7 +1797,7 @@
           } catch (_) {}
           clearGoogTransCookies();
 
-          const targetUrl = getTargetLanguageUrl(targetLang);
+          const targetUrl = getSafeTargetLanguageUrl(targetLang);
           if (btn.tagName === 'A' && targetUrl) {
             btn.setAttribute('href', targetUrl);
             if (targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
@@ -1790,7 +1808,7 @@
           e.preventDefault();
           e.stopPropagation();
           if (targetUrl && targetUrl !== window.location.href && targetUrl !== window.location.pathname) {
-            window.location.href = targetUrl;
+            window.location.assign(targetUrl);
           }
         });
       });
@@ -1901,7 +1919,14 @@
               const rest = parts.slice(1).join(' & ');
               const hasArrow = rest.includes('▾') || rawText.includes('▾');
               const cleanRest = rest.replace('▾', '').trim();
-              span.innerHTML = `${mainPart}<span class="nav-label-extra"> &amp; ${cleanRest}</span>${hasArrow ? ' ▾' : ''}`;
+              span.textContent = mainPart;
+              const extraSpan = document.createElement('span');
+              extraSpan.className = 'nav-label-extra';
+              extraSpan.textContent = ' & ' + cleanRest;
+              span.appendChild(extraSpan);
+              if (hasArrow) {
+                span.appendChild(document.createTextNode(' ▾'));
+              }
             }
           }
         });

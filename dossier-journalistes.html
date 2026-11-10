@@ -5190,18 +5190,20 @@ function getCleanDisplayName(fullPath) {
         ? (currentIframe.getAttribute('data-native-pdf') || currentIframe.getAttribute('data-raw-pdf'))
         : (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'));
       const safePdfPath = getSafeDossierPdfUrl(candidatePdf, isNative);
+      const isSafePath = typeof safePdfPath === 'string' && (safePdfPath.startsWith('/') || safePdfPath.startsWith('https://ia601409.us.archive.org/'));
+      const finalPdfPath = isSafePath ? safePdfPath : DEFAULT_PDF;
 
       const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
-      const safeViewerParam = encodeURIComponent(safePdfPath);
+      const safeViewerParam = encodeURIComponent(finalPdfPath);
       const safeThemeParam = encodeURIComponent(currentTheme);
-      const targetViewerUrl = (isNative && (safePdfPath.startsWith('/') || safePdfPath.startsWith('blob:')))
-        ? safePdfPath
+      const targetViewerUrl = (isNative && finalPdfPath.startsWith('/'))
+        ? finalPdfPath
         : `viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
 
-      currentIframe.setAttribute('src', targetViewerUrl);
+      currentIframe.src = targetViewerUrl;
       const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
       if (fsViewerLink) {
-        fsViewerLink.setAttribute('href', safePdfPath);
+        fsViewerLink.href = finalPdfPath;
       }
       const translateLink = document.getElementById('btn-translate-preview');
       if (translateLink) {
