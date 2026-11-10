@@ -1,10 +1,12 @@
-const CACHE_NAME = 'wg-pwa-v250';
+const CACHE_NAME = 'wg-pwa-v251';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/offline.html',
+  '/chronologie.txt',
+  '/assets/docs/chronologie-cce-sem26003.txt',
   '/assets/docs/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent',
   '/chronologie.html',
   '/embed-chronologie.html',

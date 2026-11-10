@@ -15,6 +15,8 @@ const ROOT = path.resolve(__dirname, '..');
 
 // 1. Liste des 222 pièces probatoires (source officielle dossier-journalistes.html)
 const FALLBACK_DOCS = [
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003.txt",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003-fr.svg",
   "01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png",
   "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
   "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv",

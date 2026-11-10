@@ -2593,7 +2593,11 @@
 
   function updateTranslationVisualBanner() {
     let banner = document.getElementById('translation-active-badge-banner');
-    if (!state.translationMode) {
+    const curFile = (state.currentFile || '').toLowerCase();
+    const isOfficialEn = curFile.endsWith('_en.pdf') || curFile.includes('-en.pdf');
+    const isOfficialEs = curFile.endsWith('_es.pdf') || curFile.includes('-es.pdf');
+
+    if (!state.translationMode && !isOfficialEn && !isOfficialEs) {
       if (banner) banner.remove();
       document.body.classList.remove('is-translation-active');
       return;
@@ -2604,16 +2608,28 @@
       banner.id = 'translation-active-badge-banner';
       banner.className = 'translation-badge-banner';
       banner.style.cssText = 'position:sticky;top:0;z-index:999;background:#ecfdf5;border-bottom:2px solid #10b981;padding:7px 14px;font-size:11.5px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(16,185,129,0.15);';
+      const container = dom.viewerContainer || document.body;
+      container.insertBefore(banner, container.firstChild);
+    }
+
+    if (isOfficialEn || isOfficialEs) {
+      const langLabel = isOfficialEn ? 'ANGLAIS (EN)' : 'ESPAGNOL (ES)';
+      banner.innerHTML = `
+        <div style="display:inline-flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <strong style="color:#065f46;">Version officielle traduite ${langLabel}</strong>
+        </div>
+        <span style="font-size:11px;color:#047857;margin-left:8px;">Registre international officiel CCE (SEM-26-003) · Téléchargement et citations autorisés</span>
+      `;
+    } else {
       const targetLang = (dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en')).toUpperCase();
       banner.innerHTML = `
         <div style="display:inline-flex;align-items:center;gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          <strong style="color:#065f46;">Traduction automatique en direct (${targetLang})</strong>
+          <strong style="color:#065f46;">Traduction automatique d'assistance (${targetLang})</strong>
         </div>
         <span style="font-size:11px;color:#047857;margin-left:8px;">Assistance linguistique non officielle · Document probatoire source en français (copie de citation autorisée)</span>
       `;
-      const container = dom.viewerContainer || document.body;
-      container.insertBefore(banner, container.firstChild);
     }
   }
 
@@ -2644,6 +2660,11 @@
       en: "assets/docs/26-3-rsub_en.pdf",
       es: "assets/docs/26-3-rsub_es.pdf"
     },
+    "26-3-rsub_fr_redacted (5).pdf": {
+      fr: "assets/docs/26-3-rsub_fr_redacted.pdf",
+      en: "assets/docs/26-3-rsub_en.pdf",
+      es: "assets/docs/26-3-rsub_es.pdf"
+    },
     "26-3-rsub_en.pdf": {
       fr: "assets/docs/26-3-rsub_fr_redacted.pdf",
       en: "assets/docs/26-3-rsub_en.pdf",
@@ -2658,7 +2679,15 @@
       fr: "assets/docs/26-2-det2_fr.pdf",
       en: "assets/docs/26-2-det2_en.pdf"
     },
+    "26-3-det2_fr (2).pdf": {
+      fr: "assets/docs/26-2-det2_fr.pdf",
+      en: "assets/docs/26-2-det2_en.pdf"
+    },
     "26-2-det2_en.pdf": {
+      fr: "assets/docs/26-2-det2_fr.pdf",
+      en: "assets/docs/26-2-det2_en.pdf"
+    },
+    "26-3-det2_en.pdf": {
       fr: "assets/docs/26-2-det2_fr.pdf",
       en: "assets/docs/26-2-det2_en.pdf"
     },
@@ -2682,6 +2711,10 @@
       fr: "assets/docs/72-rsp_fr.pdf",
       en: "assets/docs/request-terminate-defer-canada-sem26003-en.pdf"
     },
+    "26-3-rsp_en_annex-terminate-defer.pdf": {
+      fr: "assets/docs/72-rsp_fr.pdf",
+      en: "assets/docs/request-terminate-defer-canada-sem26003-en.pdf"
+    },
     "chronologie-cce-sem26003-fr.pdf": {
       fr: "assets/docs/chronologie-cce-sem26003-fr.pdf",
       en: "assets/docs/chronologie-cce-sem26003-en.pdf",
@@ -2699,21 +2732,56 @@
     }
   };
 
+  function resolveOfficialTranslation(fileUrl, targetLang) {
+    if (!fileUrl || !targetLang) return null;
+    let base = fileUrl.split('/').pop().split('?')[0];
+    try { base = decodeURIComponent(base); } catch (_) {}
+    const cleaned = base.replace(/\s*\(\d+\)/g, '').trim();
+
+    for (const [k, v] of Object.entries(OFFICIAL_TRANSLATIONS)) {
+      const kClean = k.replace(/\s*\(\d+\)/g, '').trim();
+      if (base === k || cleaned === kClean || base.includes(kClean) || cleaned.includes(kClean)) {
+        if (v[targetLang]) return v[targetLang];
+        if (targetLang === 'fr' && v.fr) return v.fr;
+      }
+    }
+
+    if (base.includes('26-3-rsub') || base.includes('rsub')) {
+      if (targetLang === 'en') return 'assets/docs/26-3-rsub_en.pdf';
+      if (targetLang === 'es') return 'assets/docs/26-3-rsub_es.pdf';
+      if (targetLang === 'fr') return 'assets/docs/26-3-rsub_fr_redacted.pdf';
+    }
+    if (base.includes('det2') || base.includes('26-2-det2') || base.includes('26-3-det2')) {
+      if (targetLang === 'en') return 'assets/docs/26-2-det2_en.pdf';
+      if (targetLang === 'fr') return 'assets/docs/26-2-det2_fr.pdf';
+    }
+    if (base.includes('72-rsp') || base.includes('terminate-defer') || base.includes('reponse-canada')) {
+      if (targetLang === 'en') return 'assets/docs/request-terminate-defer-canada-sem26003-en.pdf';
+      if (targetLang === 'fr') return 'assets/docs/72-rsp_fr.pdf';
+    }
+    if (base.includes('73-rec')) {
+      if (targetLang === 'en') return 'assets/docs/73-rec_en.pdf';
+      if (targetLang === 'fr') return 'assets/docs/73-rec_fr.pdf';
+    }
+    if (base.includes('chronologie-cce-sem26003')) {
+      if (targetLang === 'en') return 'assets/docs/chronologie-cce-sem26003-en.pdf';
+      if (targetLang === 'es') return 'assets/docs/chronologie-cce-sem26003-es.pdf';
+      if (targetLang === 'fr') return 'assets/docs/chronologie-cce-sem26003-fr.pdf';
+    }
+    return null;
+  }
+
   function toggleTranslationMode(forceState) {
     state.translationMode = (typeof forceState === 'boolean') ? forceState : !state.translationMode;
     
     const targetLang = dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en');
     
-    const curBase = (state.currentFile || '').split('/').pop();
-    const officialEntry = OFFICIAL_TRANSLATIONS[curBase];
-    if (officialEntry) {
-      const targetPdf = state.translationMode ? (officialEntry[targetLang] || officialEntry['en']) : (officialEntry['fr'] || 'assets/docs/26-3-rsub_fr_redacted.pdf');
-      if (targetPdf && targetPdf !== state.currentFile) {
-        showToast(state.translationMode ? `Chargement du document officiel traduit (${targetLang.toUpperCase()})` : "Retour au document original en français");
-        loadPDF(targetPdf, state.currentPage);
-        updateTranslationVisualBanner();
-        return;
-      }
+    const targetPdf = resolveOfficialTranslation(state.currentFile, state.translationMode ? targetLang : 'fr');
+    if (targetPdf && targetPdf !== state.currentFile) {
+      showToast(state.translationMode ? `Chargement du document officiel traduit (${targetLang.toUpperCase()})` : "Retour au document original en français");
+      loadPDF(targetPdf, state.currentPage);
+      updateTranslationVisualBanner();
+      return;
     }
     
     if (dom.btnTranslateDoc) {
@@ -2727,26 +2795,6 @@
       dom.btnToggleDocTranslationText.textContent = state.translationMode 
         ? "Revenir à l'original (FR)" 
         : "Traduire le document sur la page";
-    }
-
-    if (dom.btnDownload) {
-      if (state.translationMode) {
-        dom.btnDownload.title = "Téléchargement désactivé en mode traduction (disponible sur l'original FR)";
-        dom.btnDownload.classList.add('translation-active');
-      } else {
-        dom.btnDownload.title = "Télécharger le document PDF";
-        dom.btnDownload.classList.remove('translation-active');
-      }
-    }
-
-    if (dom.btnPrint) {
-      if (state.translationMode) {
-        dom.btnPrint.title = "Impression désactivée en mode traduction (disponible sur l'original FR)";
-        dom.btnPrint.classList.add('translation-active');
-      } else {
-        dom.btnPrint.title = "Imprimer le document";
-        dom.btnPrint.classList.remove('translation-active');
-      }
     }
 
     if (window.parent && window.parent !== window) {
@@ -3099,11 +3147,11 @@
       if (dom.headerSelectLang && dom.headerSelectLang.value !== lang) {
         dom.headerSelectLang.value = lang;
       }
-      const curBase = (state.currentFile || '').split('/').pop();
-      const officialEntry = OFFICIAL_TRANSLATIONS[curBase];
-      if (officialEntry && officialEntry[lang] && officialEntry[lang] !== state.currentFile) {
+      const officialPdf = resolveOfficialTranslation(state.currentFile, lang);
+      if (officialPdf && officialPdf !== state.currentFile) {
         showToast(`Chargement de la version officielle (${lang.toUpperCase()})`);
-        loadPDF(officialEntry[lang], state.currentPage);
+        state.translationMode = false;
+        loadPDF(officialPdf, state.currentPage);
         updateTranslationVisualBanner();
         return;
       }
