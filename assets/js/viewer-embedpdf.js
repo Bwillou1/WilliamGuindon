@@ -354,6 +354,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   let currentTargetFile = 'assets/docs/observations-reponse-canada-sem26003.pdf';
   let embedViewerInstance = null;
+  let activeEmbedRegistry = null;
   let isDocDark = false;
   try {
     // Purge de l'ancienne clé corrompue qui forçait automatiquement le mode nuit
@@ -493,58 +494,72 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } catch (_) {}
   }
 
+  function performSaveAnnotations(registry) {
+    if (!registry) return;
+    try {
+      const annotationApi = registry.getPlugin ? registry.getPlugin('annotation') : null;
+      if (!annotationApi) return;
+
+      const userAnnotations = [];
+      const state = annotationApi.getState ? annotationApi.getState() : null;
+
+      if (state && state.pages && state.byUid) {
+        for (const pageIdxStr in state.pages) {
+          const pageIndex = Number(pageIdxStr);
+          const uids = state.pages[pageIdxStr] || [];
+          for (const uid of uids) {
+            if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
+            const entry = state.byUid[uid];
+            if (!entry || entry.commitState === 'deleted') continue;
+            const annot = entry.object;
+            if (!annot || !isUserAnnotation(annot)) continue;
+
+            const copy = JSON.parse(JSON.stringify(annot));
+            copy.pageIndex = pageIndex;
+            if (copy.id) userAnnotationUids.add(copy.id);
+
+            userAnnotations.push({
+              pageIndex: pageIndex,
+              annotation: copy
+            });
+          }
+        }
+      }
+
+      const norm = getVaultDocKey(currentTargetFile);
+      if (userAnnotations.length > 0) {
+        const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+        const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
+        localStorage.setItem(key, JSON.stringify(userAnnotations));
+        localStorage.setItem(keySlash, JSON.stringify(userAnnotations));
+        saveToVault(norm, userAnnotations);
+      } else {
+        const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+        if (state && state.byUid && Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
+          localStorage.removeItem(key);
+          localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
+          removeFromVault(norm);
+        }
+      }
+    } catch (err) {
+      console.warn('Erreur exécution sauvegarde annotations:', err);
+    }
+  }
+
   function saveCurrentAnnotationsNow() {
     clearTimeout(saveAnnotationTimeout);
     try {
+      if (activeEmbedRegistry) {
+        performSaveAnnotations(activeEmbedRegistry);
+        return;
+      }
       if (!embedViewerInstance) return;
       const reg = embedViewerInstance.registry;
       if (!reg || typeof reg.then !== 'function') return;
 
       reg.then(registry => {
-        const annotationApi = registry.getPlugin ? registry.getPlugin('annotation') : null;
-        if (!annotationApi) return;
-
-        const userAnnotations = [];
-        const state = annotationApi.getState ? annotationApi.getState() : null;
-
-        if (state && state.pages && state.byUid) {
-          for (const pageIdxStr in state.pages) {
-            const pageIndex = Number(pageIdxStr);
-            const uids = state.pages[pageIdxStr] || [];
-            for (const uid of uids) {
-              if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
-              const entry = state.byUid[uid];
-              if (!entry || entry.commitState === 'deleted') continue;
-              const annot = entry.object;
-              if (!annot || !isUserAnnotation(annot)) continue;
-
-              const copy = JSON.parse(JSON.stringify(annot));
-              copy.pageIndex = pageIndex;
-              if (copy.id) userAnnotationUids.add(copy.id);
-
-              userAnnotations.push({
-                pageIndex: pageIndex,
-                annotation: copy
-              });
-            }
-          }
-        }
-
-        const norm = getVaultDocKey(currentTargetFile);
-        if (userAnnotations.length > 0) {
-          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-          const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
-          localStorage.setItem(key, JSON.stringify(userAnnotations));
-          localStorage.setItem(keySlash, JSON.stringify(userAnnotations));
-          saveToVault(norm, userAnnotations);
-        } else {
-          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-          if (state && state.byUid && Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
-            localStorage.removeItem(key);
-            localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
-            removeFromVault(norm);
-          }
-        }
+        activeEmbedRegistry = registry;
+        performSaveAnnotations(registry);
       }).catch(err => {
         console.warn('Erreur sauvegarde synchrone annotations:', err);
       });
@@ -557,7 +572,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     clearTimeout(saveAnnotationTimeout);
     saveAnnotationTimeout = setTimeout(() => {
       saveCurrentAnnotationsNow();
-    }, 120);
+    }, 80);
   }
 
   function getEmbedPdfShadowRoot() {
@@ -1270,6 +1285,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       // Configuration de la persistance et du verrouillage probatoire strict des annotations
       if (embedViewerInstance && embedViewerInstance.registry) {
         embedViewerInstance.registry.then(registry => {
+          activeEmbedRegistry = registry;
           const annotationApi = registry.getPlugin('annotation')?.provides();
           if (!annotationApi) return;
 
@@ -1399,9 +1415,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
           // 7. Écouteurs de sauvegarde synchrone immédiate (gestes de dessin, changement de page, unload)
           if (dom.container) {
-            dom.container.addEventListener('pointerup', debounceSaveAnnotations, { passive: true });
-            dom.container.addEventListener('mouseup', debounceSaveAnnotations, { passive: true });
-            dom.container.addEventListener('touchend', debounceSaveAnnotations, { passive: true });
+            dom.container.addEventListener('pointerup', saveCurrentAnnotationsNow, { passive: true });
+            dom.container.addEventListener('mouseup', saveCurrentAnnotationsNow, { passive: true });
+            dom.container.addEventListener('touchend', saveCurrentAnnotationsNow, { passive: true });
           }
 
           window.addEventListener('beforeunload', saveCurrentAnnotationsNow);

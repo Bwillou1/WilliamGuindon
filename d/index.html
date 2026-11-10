@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Redirection documentaire · Registre SEM-26-003</title>
 <script>
@@ -9,6 +10,17 @@
   var path = window.location.pathname || "";
   var search = window.location.search || "";
   var hash = window.location.hash || "";
+
+  // Protection absolue contre l'imbrication récursive dans une iframe
+  if (window.self !== window.top) {
+    var rawDoc = path.replace(/^\/(?:(?:en|es)\/)?d\/?/i, "").replace(/\/+$/, "");
+    if (rawDoc.endsWith(".html") || rawDoc.endsWith(".js") || rawDoc.endsWith(".css") || rawDoc.endsWith(".pdf") || rawDoc.endsWith(".png") || rawDoc.endsWith(".jpg") || rawDoc.endsWith(".svg")) {
+      window.location.replace("/" + rawDoc + search + hash);
+      return;
+    }
+    window.location.replace("/viewer.html" + search + hash);
+    return;
+  }
 
   var match = path.match(/\/(?:(en|es)\/)?d(?:\/([^/?#]+))?/i);
   var lang = (match && match[1]) ? match[1].toLowerCase() : "";
@@ -18,6 +30,12 @@
     var sp = new URLSearchParams(search);
     doc = sp.get("doc") || sp.get("file") || "";
     if (sp.get("lang")) lang = sp.get("lang").toLowerCase();
+  }
+
+  // Si doc est un fichier direct (ex: viewer.html ou lecteur.html)
+  if (doc && (doc.endsWith(".html") || doc.endsWith(".js") || doc.endsWith(".css") || doc.endsWith(".pdf") || doc.endsWith(".png") || doc.endsWith(".jpg") || doc.endsWith(".svg"))) {
+    window.location.replace("/" + doc + search + hash);
+    return;
   }
 
   var targetBase = lang ? ("/" + lang + "/dossier-journalistes.html") : "/dossier-journalistes.html";

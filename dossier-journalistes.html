@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.ytimg.com https://i.ytimg.com https://*.facebook.com https://*.fbcdn.net; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.facebook.com https://www.facebook.com https://facebook.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com https://*.facebook.com https://connect.facebook.net; object-src 'none';">
   <title>Dossier Journalistes · Archive SEM-26-003 — William Guindon</title>
@@ -3559,11 +3560,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   // Protection absolue contre l'auto-imbrication récursive (iframe dans iframe)
   if (window.self !== window.top) {
     try {
-      if (window.parent && window.parent.document && window.parent.document.querySelector('.drive-container')) {
-        document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif;color:#064e3b;"><p>Document affiché dans le visualiseur officiel.</p></div>';
-        return;
-      }
+      window.top.location.replace(window.location.href);
     } catch (_) {}
+    document.documentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui,sans-serif;color:#064e3b;"><p>Document affiché dans le visualiseur officiel.</p></div>';
+    return;
   }
 
   function getCleanFolderName(folderName) {
@@ -5288,40 +5288,46 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         if (savedL === "en" || savedL === "es") autoTranslateLang = savedL;
       } catch (_) {}
     }
-    if (requestedDoc) {
-      const normRequested = decodeURIComponent(requestedDoc).normalize("NFC").toLowerCase();
-      const allItems = Array.from(treeContainer.querySelectorAll(".drive-item"));
-      for (const it of allItems) {
-        const fp = (it.getAttribute("data-fullpath") || "").normalize("NFC").toLowerCase();
-        let shortCode = "";
-        try { shortCode = String(getShortDocCode(fp) || "").toLowerCase(); } catch (_) {}
-        if ((shortCode && shortCode === normRequested) || fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
-          targetItemToSelect = it;
-          let parentFolder = it.parentElement;
-          while (parentFolder && parentFolder !== treeContainer) {
-            if (parentFolder.classList && parentFolder.classList.contains("tree-node")) {
-              parentFolder.classList.add("open");
-              parentFolder.style.display = "";
+    try {
+      if (requestedDoc) {
+        const normRequested = decodeURIComponent(requestedDoc).normalize("NFC").toLowerCase();
+        const allItems = Array.from(treeContainer.querySelectorAll(".drive-item"));
+        for (const it of allItems) {
+          const fp = (it.getAttribute("data-fullpath") || "").normalize("NFC").toLowerCase();
+          let shortCode = "";
+          try { shortCode = String(getShortDocCode(fp) || "").toLowerCase(); } catch (_) {}
+          if ((shortCode && shortCode === normRequested) || fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
+            targetItemToSelect = it;
+            let parentFolder = it.parentElement;
+            while (parentFolder && parentFolder !== treeContainer) {
+              if (parentFolder.classList && parentFolder.classList.contains("tree-node")) {
+                parentFolder.classList.add("open");
+                parentFolder.style.display = "";
+              }
+              parentFolder = parentFolder.parentElement;
             }
-            parentFolder = parentFolder.parentElement;
+            break;
           }
-          break;
         }
       }
-    }
 
-    const defaultItem = targetItemToSelect || firstPdfItem;
-    if (defaultItem) {
-      setTimeout(() => {
-        defaultItem.click();
-        if (defaultItem.scrollIntoView) {
-          defaultItem.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 100);
+      const defaultItem = targetItemToSelect || firstPdfItem;
+      if (defaultItem) {
+        setTimeout(() => {
+          try {
+            defaultItem.click();
+            if (defaultItem.scrollIntoView) {
+              defaultItem.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          } catch (_) {}
+        }, 80);
+      }
+    } catch (selErr) {
+      console.warn("Échec sélection automatique document:", selErr);
     }
   } catch (err) {
     console.error("Erreur d'affichage des pièces:", err);
-    if (treeContainer) {
+    if (treeContainer && treeContainer.querySelectorAll('.drive-item').length === 0) {
       treeContainer.innerHTML = `
         <div style="padding: 24px 16px; text-align: center; color: #064e3b;">
           <p style="font-weight: 700; margin-bottom: 8px;">Arborescence temporairement indisponible</p>
@@ -5659,7 +5665,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       if (isTranslatedMode) {
         // Retour vers l'original français (EmbedPDF / viewer.html)
         const frDoc = (officialTrans ? getOfficialTranslation(docName, 'fr') : null) || rawPdf;
-        iframe.src = `viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Traduire';
         translatePreviewLink.classList.remove('active');
@@ -5668,9 +5674,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         // Bascule vers le document traduit (PDF officiel si existant, sinon lecteur de traduction)
         if (officialTrans) {
           const targetPdf = '/' + officialTrans.replace(/^\/+/, '');
-          iframe.src = `viewer.html?file=${encodeURIComponent(targetPdf)}&theme=${encodeURIComponent(currentTheme)}&preview=1&official_lang=${targetLang}`;
+          iframe.src = `/viewer.html?file=${encodeURIComponent(targetPdf)}&theme=${encodeURIComponent(currentTheme)}&preview=1&official_lang=${targetLang}`;
         } else {
-          iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+          iframe.src = `/lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         }
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Original (FR)';
@@ -5747,7 +5753,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     actionPdfLinks.forEach(({ id, file }) => {
       const el = document.getElementById(id);
       if (el) {
-        el.href = isNative ? ('/' + file.replace(/^\/+/, '')) : `viewer.html?file=${encodeURIComponent(file)}`;
+        el.href = isNative ? ('/' + file.replace(/^\/+/, '')) : `/viewer.html?file=${encodeURIComponent(file)}`;
       }
     });
 
@@ -5825,7 +5831,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const safeThemeParam = encodeURIComponent(currentTheme);
       const targetViewerUrl = (isNative && finalPdfPath.startsWith('/'))
         ? finalPdfPath
-        : `viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
+        : `/viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
 
       currentIframe.src = targetViewerUrl;
       const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
