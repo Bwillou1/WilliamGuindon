@@ -851,12 +851,70 @@
       display: block;
     }
     .preview-image {
-      max-width: 95%;
-      max-height: 95%;
+      max-width: 96%;
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      min-width: min(580px, 92%);
       object-fit: contain;
       border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(6, 78, 59, 0.15);
+      box-shadow: 0 4px 20px rgba(6, 78, 59, 0.2);
       background: #ffffff;
+      cursor: zoom-in;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .preview-image.is-zoomed {
+      transform: scale(1.65);
+      cursor: zoom-out;
+    }
+    .text-doc-viewer-pane {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      min-height: 650px;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(6, 78, 59, 0.08);
+      border: 1px solid #cbd5e1;
+    }
+    .text-doc-viewer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      background: #f0fdf4;
+      border-bottom: 1.5px solid #a7f3d0;
+      font-size: 11.5px;
+      color: #064e3b;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .text-doc-viewer-content {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 20px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #fafaf9;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    [data-theme="dark"] .text-doc-viewer-pane {
+      background: #0f1712;
+      border-color: #1e3327;
+    }
+    [data-theme="dark"] .text-doc-viewer-header {
+      background: #15241b;
+      border-color: #1e3327;
+      color: #a7f3d0;
+    }
+    [data-theme="dark"] .text-doc-viewer-content {
+      background: #0d1410;
+      color: #e2e8f0;
     }
     .preview-video {
       max-width: 95%;
@@ -2915,10 +2973,10 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             <span>Plein écran</span>
           </a>
-          <a id="btn-translate-preview" href="https://translate.google.com/translate?sl=auto&tl=en&u=" target="_blank" rel="noopener noreferrer" class="btn-preview-action" style="display: none;" title="Traduire automatiquement ce document avec Google Traduction">
+          <button type="button" id="btn-translate-preview" class="btn-preview-action" style="display: none;" title="Traduire ce document en direct dans le visualiseur">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             <span>Traduire</span>
-          </a>
+          </button>
           <a id="direct-file-link" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Télécharger le fichier original">
             <svg id="direct-file-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span id="direct-file-label">Télécharger original</span>
@@ -4408,13 +4466,14 @@ function getCleanDisplayName(fullPath) {
           const translateLink = document.getElementById("btn-translate-preview");
           const btnCopyLink = document.getElementById("btn-copy-doc-link");
 
-          // Mise à jour instantanée du paramètre d'URL court pour le partage direct
+          // Mise à jour instantanée de l'URL courte (/d/<shortcode>) sans pollution de query string
+          const shortFileParam = typeof getShortDocCode === 'function' ? getShortDocCode(fileObj.fullPath) : fileObj.name;
+          const isEnPath = window.location.pathname.startsWith("/en/");
+          const isEsPath = window.location.pathname.startsWith("/es/");
+          const shortPrefix = isEnPath ? "/en/d/" : (isEsPath ? "/es/d/" : "/d/");
+          const miniDocPath = shortPrefix + shortFileParam;
           try {
-            const shortFileParam = typeof getShortDocCode === 'function' ? getShortDocCode(fileObj.fullPath) : fileObj.name;
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.delete("file");
-            currentUrl.searchParams.set("doc", shortFileParam);
-            window.history.replaceState({ doc: shortFileParam }, "", currentUrl.toString());
+            window.history.replaceState({ doc: shortFileParam }, "", miniDocPath);
           } catch (_) {}
 
           if (btnCopyLink) {
@@ -4422,7 +4481,10 @@ function getCleanDisplayName(fullPath) {
             btnCopyLink.onclick = (ev) => {
               ev.preventDefault();
               ev.stopPropagation();
-              const shareUrl = window.location.href;
+              const isEnP = window.location.pathname.startsWith("/en/");
+              const isEsP = window.location.pathname.startsWith("/es/");
+              const shortPref = isEnP ? "/en/d/" : (isEsP ? "/es/d/" : "/d/");
+              const shareUrl = window.location.origin + shortPref + shortFileParam;
               const copyLabel = document.getElementById("btn-copy-doc-link-label");
               if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(shareUrl).then(() => {
@@ -4497,6 +4559,14 @@ function getCleanDisplayName(fullPath) {
                   imgLink.href = res.corsUrl;
                 }
               };
+              img.addEventListener("click", (e) => {
+                e.preventDefault();
+                img.classList.toggle("is-zoomed");
+                const zoomSpan = zoomBtn ? zoomBtn.querySelector("span") : null;
+                if (zoomSpan) {
+                  zoomSpan.textContent = img.classList.contains("is-zoomed") ? "Réduire zoom" : "Agrandir / Zoom";
+                }
+              });
               imgLink.appendChild(img);
               stage.appendChild(imgLink);
 
@@ -4506,7 +4576,11 @@ function getCleanDisplayName(fullPath) {
               if (zoomBtn) {
                 zoomBtn.onclick = (e) => {
                   e.preventDefault();
-                  img.click();
+                  img.classList.toggle("is-zoomed");
+                  const zoomSpan = zoomBtn.querySelector("span");
+                  if (zoomSpan) {
+                    zoomSpan.textContent = img.classList.contains("is-zoomed") ? "Réduire zoom" : "Agrandir / Zoom";
+                  }
                 };
               }
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
@@ -4531,18 +4605,24 @@ function getCleanDisplayName(fullPath) {
               const nativePdfUrl = res.isSiteAsset ? ('/' + res.rawUrl.replace(/^\/+/, '')) : res.directStorageUrl;
               const isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
               const canUseNativeIframe = isNative && (res.isSiteAsset || (res.isLocal && res.blobUrl));
-              const viewerUrl = canUseNativeIframe ? nativePdfUrl : ("viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
+              
+              const shouldAutoTranslate = (typeof autoTranslateLang !== 'undefined' && !!autoTranslateLang);
+              const activeTranslateLang = shouldAutoTranslate ? autoTranslateLang : ((window.location.pathname.startsWith('/es/') || (localStorage.getItem('wg_lang') === 'es')) ? 'es' : 'en');
+              
+              const baseViewerUrl = canUseNativeIframe ? nativePdfUrl : ("viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
+              const translatedViewerUrl = "lecteur.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&lang=" + activeTranslateLang + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
+              
+              const viewerUrl = shouldAutoTranslate ? translatedViewerUrl : baseViewerUrl;
+
               if (fsViewerLink) {
                 fsViewerLink.href = isNative ? nativePdfUrl : viewerUrl;
                 fsViewerLink.style.display = "inline-flex";
               }
               if (translateLink) {
-                const translateViewerUrl = "lecteur.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
-                translateLink.href = translateViewerUrl;
-                translateLink.title = "Traduire ce document en direct (anglais)";
-                translateLink.classList.remove("active");
+                translateLink.title = shouldAutoTranslate ? "Revenir au document original (FR)" : (`Traduire ce document en direct (${activeTranslateLang.toUpperCase()})`);
+                translateLink.classList.toggle("active", shouldAutoTranslate);
                 const span = translateLink.querySelector("span");
-                if (span) span.textContent = "Traduire";
+                if (span) span.textContent = shouldAutoTranslate ? "Original (FR)" : "Traduire";
                 translateLink.style.display = isNative ? "none" : "inline-flex";
               }
               const iframe = document.createElement("iframe");
@@ -4616,6 +4696,31 @@ function getCleanDisplayName(fullPath) {
                     `;
                   });
               }
+            } else if (lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".json") || lower.endsWith(".geojson") || lower.endsWith(".kml")) {
+              if (fsViewerLink) fsViewerLink.style.display = "none";
+              if (translateLink) translateLink.style.display = "none";
+              stage.classList.remove("is-media");
+              stage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:10px;font-size:13px;"><div class="csv-spinner" style="width:24px;height:24px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span>Chargement du document texte...</span></div>';
+
+              (async () => {
+                let text = "";
+                try {
+                  if (res.isLocal && res.blob) {
+                    text = await res.blob.text();
+                  } else {
+                    const resp = await fetch(res.effectiveUrl);
+                    if (resp.ok) {
+                      text = await resp.text();
+                    } else {
+                      throw new Error("HTTP " + resp.status);
+                    }
+                  }
+                  renderTextDocViewer(text, fileObj, res.effectiveUrl, stage);
+                } catch (err) {
+                  stage.classList.add("is-media");
+                  stage.innerHTML = `<div class="no-preview"><span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span><h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le texte</h4><p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier (${err.message}) est accessible en téléchargement direct.</p><a href="${res.effectiveUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier original</a></div>`;
+                }
+              })();
             } else {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               stage.classList.add("is-media");
@@ -4642,7 +4747,53 @@ function getCleanDisplayName(fullPath) {
       });
     }
 
-    function renderCsvViewer(results, fileObj, fileUrl, stage) {
+      function renderTextDocViewer(text, fileObj, fileUrl, stage) {
+    stage.innerHTML = "";
+    const lines = text.split("\n").length;
+    const chars = text.length;
+    const pane = document.createElement("div");
+    pane.className = "text-doc-viewer-pane";
+
+    const header = document.createElement("div");
+    header.className = "text-doc-viewer-header";
+    header.innerHTML = `
+      <div style="display:inline-flex;align-items:center;gap:6px;font-weight:700;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>Mode lecture seule certifié · Document fixe (non modifiable)</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:10px;">
+        <span style="font-size:10.5px;color:#047857;background:#ecfdf5;padding:2px 6px;border-radius:4px;border:1px solid #a7f3d0;">${lines.toLocaleString("fr-CA")} lignes · ${chars.toLocaleString("fr-CA")} caract.</span>
+        <button type="button" id="btn-copy-raw-text" style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:5px;border:1px solid #10b981;background:#ffffff;color:#064e3b;font-size:11px;font-weight:700;cursor:pointer;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          <span>Copier texte brut</span>
+        </button>
+      </div>
+    `;
+
+    const contentArea = document.createElement("div");
+    contentArea.className = "text-doc-viewer-content";
+    const pre = document.createElement("pre");
+    pre.style.cssText = "margin:0;white-space:pre-wrap;word-break:break-word;font-family:inherit;";
+    pre.textContent = text;
+    contentArea.appendChild(pre);
+
+    pane.appendChild(header);
+    pane.appendChild(contentArea);
+    stage.appendChild(pane);
+
+    const btnCopy = header.querySelector("#btn-copy-raw-text");
+    if (btnCopy) {
+      btnCopy.addEventListener("click", () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showDriveToast("Texte brut copié dans le presse-papier !", "success", 2500);
+          });
+        }
+      });
+    }
+  }
+
+function renderCsvViewer(results, fileObj, fileUrl, stage) {
       stage.innerHTML = "";
       const allRows = results.data || [];
       const fields = results.meta && results.meta.fields && results.meta.fields.length > 0
@@ -4841,9 +4992,33 @@ function getCleanDisplayName(fullPath) {
       window.applyTreeSearchFilter();
     }
 
-    // Détection prioritaire du document spécifié dans l'URL (?doc= ou ?file= ou #hash)
+    // Détection prioritaire du document spécifié dans l'URL (/d/<doc>, ?doc= ou ?file= ou #hash)
     const urlParamsOnLoad = new URLSearchParams(window.location.search);
-    const requestedDoc = (urlParamsOnLoad.get("doc") || urlParamsOnLoad.get("file") || window.location.hash.replace(/^#/, "")).trim();
+    let requestedDoc = (urlParamsOnLoad.get("doc") || urlParamsOnLoad.get("file") || window.location.hash.replace(/^#/, "")).trim();
+    if (!requestedDoc) {
+      const pathMatch = window.location.pathname.match(/\/(?:(en|es)\/)?d\/([^/?#]+)/i);
+      if (pathMatch && pathMatch[2]) {
+        requestedDoc = pathMatch[2].trim();
+      }
+    }
+
+    let autoTranslateLang = null;
+    if (requestedDoc.startsWith("en-")) {
+      autoTranslateLang = "en";
+      requestedDoc = requestedDoc.slice(3);
+    } else if (requestedDoc.startsWith("es-")) {
+      autoTranslateLang = "es";
+      requestedDoc = requestedDoc.slice(3);
+    } else if (urlParamsOnLoad.get("lang") === "en" || window.location.pathname.startsWith("/en/")) {
+      autoTranslateLang = "en";
+    } else if (urlParamsOnLoad.get("lang") === "es" || window.location.pathname.startsWith("/es/")) {
+      autoTranslateLang = "es";
+    } else {
+      try {
+        const savedL = localStorage.getItem("wg_lang") || localStorage.getItem("site_lang");
+        if (savedL === "en" || savedL === "es") autoTranslateLang = savedL;
+      } catch (_) {}
+    }
     if (requestedDoc) {
       const normRequested = decodeURIComponent(requestedDoc).normalize("NFC").toLowerCase();
       const allItems = Array.from(treeContainer.querySelectorAll(".drive-item"));
@@ -5191,18 +5366,36 @@ function getCleanDisplayName(fullPath) {
   const translatePreviewLink = document.getElementById('btn-translate-preview');
   if (translatePreviewLink) {
     translatePreviewLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const iframe = stage ? stage.querySelector('.preview-iframe') : null;
-      if (iframe) {
-        e.preventDefault();
-        const currentSrc = iframe.getAttribute('src') || '';
-        const rawPdf = iframe.getAttribute('data-raw-pdf') || '';
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        if (currentSrc.includes('viewer.html')) {
-          // Bascule instantanée de la prévisualisation vers lecteur.html avec traduction active
-          iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&theme=${encodeURIComponent(currentTheme)}&preview=1`;
-        } else if (iframe.contentWindow) {
-          iframe.contentWindow.postMessage({ type: 'wg_toggle_translation' }, '*');
-        }
+      if (!iframe) return;
+
+      const currentSrc = iframe.getAttribute('src') || iframe.src || '';
+      const rawPdf = iframe.getAttribute('data-raw-pdf') || '';
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const isEn = window.location.pathname.startsWith('/en/');
+      const isEs = window.location.pathname.startsWith('/es/');
+      let targetLang = 'en';
+      try {
+        const savedL = localStorage.getItem('wg_lang') || localStorage.getItem('site_lang');
+        if (savedL === 'es' || isEs) targetLang = 'es';
+      } catch (_) {}
+
+      if (currentSrc.includes('lecteur.html')) {
+        // Retour vers l'original français (EmbedPDF / viewer.html)
+        iframe.src = `viewer.html?file=${encodeURIComponent(rawPdf)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        const span = translatePreviewLink.querySelector('span');
+        if (span) span.textContent = 'Traduire';
+        translatePreviewLink.classList.remove('active');
+        translatePreviewLink.title = `Traduire ce document en direct (${targetLang.toUpperCase()})`;
+      } else {
+        // Bascule vers le lecteur traduit directement dans l'iFrame (sans ouvrir de nouvel onglet)
+        iframe.src = `lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        const span = translatePreviewLink.querySelector('span');
+        if (span) span.textContent = 'Original (FR)';
+        translatePreviewLink.classList.add('active');
+        translatePreviewLink.title = 'Revenir au document original en français';
       }
     });
   }

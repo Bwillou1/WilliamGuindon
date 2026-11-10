@@ -1010,12 +1010,11 @@ body.is-embedded .pdf-app {
   user-select: text !important;
 }
 
-/* Floutage et protection Anti-Capture (Même style que l'assistant IA) */
-.translation-layer.anticapture-blurred {
-  filter: blur(28px) !important;
-  opacity: 0.04 !important;
-  pointer-events: none !important;
-  transition: filter 0.08s ease-in-out, opacity 0.08s ease-in-out !important;
+/* Cadre vert distinct du mode traduction */
+body.is-translation-active .page,
+body.is-translation-active .translation-layer {
+  box-shadow: 0 0 0 2.5px #10b981, 0 8px 24px rgba(16, 185, 129, 0.22) !important;
+  border-radius: 4px;
 }
 
 #translation-shield-overlay {

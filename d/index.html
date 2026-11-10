@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirection documentaire · Registre SEM-26-003</title>
+<script>
+(function() {
+  var path = window.location.pathname || "";
+  var search = window.location.search || "";
+  var hash = window.location.hash || "";
+
+  var match = path.match(/\/(?:(en|es)\/)?d(?:\/([^/?#]+))?/i);
+  var lang = (match && match[1]) ? match[1].toLowerCase() : "";
+  var doc = (match && match[2]) ? match[2] : "";
+
+  if (!doc && search) {
+    var sp = new URLSearchParams(search);
+    doc = sp.get("doc") || sp.get("file") || "";
+    if (sp.get("lang")) lang = sp.get("lang").toLowerCase();
+  }
+
+  var targetBase = lang ? ("/" + lang + "/dossier-journalistes.html") : "/dossier-journalistes.html";
+  var targetUrl = targetBase + (doc ? ("?doc=" + encodeURIComponent(doc)) : "") + hash;
+  window.location.replace(targetUrl);
+})();
+</script>
+<noscript>
+  <meta http-equiv="refresh" content="0;url=/dossier-journalistes.html">
+</noscript>
+</head>
+<body style="font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0fdf4; color: #064e3b;">
+  <p>Chargement du document officiel SEM-26-003...</p>
+</body>
+</html>

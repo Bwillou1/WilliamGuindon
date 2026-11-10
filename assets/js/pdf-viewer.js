@@ -2587,200 +2587,50 @@
   }
 
   // =========================================================================
-  // BOUCLIER DE CONFIDENTIALITÉ & ANTI-CAPTURE (MODE TRADUCTION UNIQUEMENT)
-  // Même style de floutage et bouclier de sécurité que l'assistant Chat IA
+  // =========================================================================
+  // INDICATION VISUELLE & CADRE VERT DU MODE TRADUCTION
   // =========================================================================
 
-  let translationAnticaptureTimer = null;
-
-  function triggerTranslationAnticapture(reason) {
-    if (!state.translationMode) return;
-
-    // 1. Appliquer le floutage haute intensité sur toutes les couches de traduction
-    const translationLayers = document.querySelectorAll('.translation-layer');
-    translationLayers.forEach(layer => {
-      layer.classList.add('anticapture-blurred');
-    });
-
-    // 2. Vider le presse-papiers si capture ou devtools tenté
-    if ((reason === 'screenshot' || reason === 'devtools') && navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        navigator.clipboard.writeText('');
-      } catch (_) {}
+  function updateTranslationVisualBanner() {
+    let banner = document.getElementById('translation-active-badge-banner');
+    if (!state.translationMode) {
+      if (banner) banner.remove();
+      document.body.classList.remove('is-translation-active');
+      return;
     }
-
-    // 3. Afficher la carte bouclier anticapture au centre du visualiseur
-    let shield = document.getElementById('translation-shield-overlay');
-    if (!shield) {
-      shield = document.createElement('div');
-      shield.id = 'translation-shield-overlay';
-      shield.className = 'anticapture-shield-card';
-
-      const badge = document.createElement('div');
-      badge.className = 'anticapture-shield-badge';
-      badge.textContent = 'Protection active contre la capture';
-
-      const title = document.createElement('div');
-      title.className = 'anticapture-shield-title';
-      title.textContent = 'Traduction documentaire masquée temporairement';
-
-      const p = document.createElement('p');
-      p.className = 'anticapture-shield-text';
-      p.textContent = "La traduction automatique en direct est un outil d'assistance non officiel. Pour préserver l'authenticité probatoire du dossier SEM-26-003, les captures d'écran, l'inspection F12 et le téléchargement des traductions sont restreints.";
-
-      const hint = document.createElement('div');
-      hint.className = 'anticapture-shield-hint';
-      hint.textContent = 'Cliquez ou revenez sur la page pour réafficher la traduction';
-
-      shield.appendChild(badge);
-      shield.appendChild(title);
-      shield.appendChild(p);
-      shield.appendChild(hint);
-
-      shield.addEventListener('click', () => {
-        clearTranslationAnticapture();
-      });
-      document.body.appendChild(shield);
-    }
-    shield.style.display = 'block';
-
-    // 4. Toast informatif
-    if (reason === 'screenshot') {
-      showToast("Protection anti-capture : capture d'écran interdite sur la traduction", true);
-    } else if (reason === 'devtools') {
-      showToast("Inspection (F12) désactivée sur la traduction documentaire", true);
-    }
-
-    if (translationAnticaptureTimer) {
-      clearTimeout(translationAnticaptureTimer);
-      translationAnticaptureTimer = null;
-    }
-
-    // Réactivation automatique après 3s pour un événement ponctuel (raccourci)
-    if (reason === 'screenshot' || reason === 'devtools') {
-      translationAnticaptureTimer = setTimeout(() => {
-        clearTranslationAnticapture();
-      }, 3000);
+    document.body.classList.add('is-translation-active');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'translation-active-badge-banner';
+      banner.className = 'translation-badge-banner';
+      banner.style.cssText = 'position:sticky;top:0;z-index:999;background:#ecfdf5;border-bottom:2px solid #10b981;padding:7px 14px;font-size:11.5px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(16,185,129,0.15);';
+      const targetLang = (dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en')).toUpperCase();
+      banner.innerHTML = `
+        <div style="display:inline-flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <strong style="color:#065f46;">Traduction automatique en direct (${targetLang})</strong>
+        </div>
+        <span style="font-size:11px;color:#047857;margin-left:8px;">Assistance linguistique non officielle · Document probatoire source en français (copie de citation autorisée)</span>
+      `;
+      const container = dom.viewerContainer || document.body;
+      container.insertBefore(banner, container.firstChild);
     }
   }
 
-  function clearTranslationAnticapture() {
-    if (translationAnticaptureTimer) {
-      clearTimeout(translationAnticaptureTimer);
-      translationAnticaptureTimer = null;
-    }
-    const shield = document.getElementById('translation-shield-overlay');
-    if (shield) shield.style.display = 'none';
+  function triggerTranslationAnticapture(reason) {
+    // Désactivé : lecture fluide et copie de citation directe autorisées
+  }
 
+  function clearTranslationAnticapture() {
+    const shield = document.getElementById('translation-shield-overlay');
+    if (shield) shield.remove();
     document.querySelectorAll('.translation-layer').forEach(layer => {
       layer.classList.remove('anticapture-blurred');
     });
   }
 
   function setupTranslationAnticaptureListeners() {
-    // 1. Interception de la perte de focus de la fenêtre (uniquement en mode traduction)
-    window.addEventListener('blur', () => {
-      if (state.translationMode) {
-        triggerTranslationAnticapture('blur');
-      }
-    });
-
-    window.addEventListener('focus', () => {
-      if (state.translationMode) {
-        clearTranslationAnticapture();
-      }
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (state.translationMode) {
-        if (document.hidden) {
-          triggerTranslationAnticapture('blur');
-        } else {
-          clearTranslationAnticapture();
-        }
-      }
-    });
-
-    // 2. Blocage des raccourcis F12, DevTools et Capture d'écran (uniquement en mode traduction)
-    window.addEventListener('keydown', (e) => {
-      if (!state.translationMode) return; // En français : libre et sans restriction
-
-      // F12
-      if (e.key === 'F12' || e.keyCode === 123) {
-        e.preventDefault();
-        e.stopPropagation();
-        triggerTranslationAnticapture('devtools');
-        return;
-      }
-
-      // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Cmd+Option+I, Cmd+Option+J, Cmd+Option+C
-      const isCmdOrCtrl = e.ctrlKey || e.metaKey;
-      const isInspectKey = ['i', 'I', 'j', 'J', 'c', 'C'].includes(e.key);
-      if (isCmdOrCtrl && (e.shiftKey || e.altKey) && isInspectKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        triggerTranslationAnticapture('devtools');
-        return;
-      }
-
-      // Ctrl+U (code source)
-      if (isCmdOrCtrl && (e.key === 'u' || e.key === 'U')) {
-        e.preventDefault();
-        e.stopPropagation();
-        triggerTranslationAnticapture('devtools');
-        return;
-      }
-
-      // PrintScreen
-      if (e.key === 'PrintScreen') {
-        e.preventDefault();
-        e.stopPropagation();
-        triggerTranslationAnticapture('screenshot');
-        return;
-      }
-
-      // Raccourcis capture d'écran macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5) et Windows (Win+Shift+S)
-      if (isCmdOrCtrl && e.shiftKey && ['3', '4', '5', 's', 'S'].includes(e.key)) {
-        e.preventDefault();
-        e.stopPropagation();
-        triggerTranslationAnticapture('screenshot');
-        return;
-      }
-    }, true);
-
-    // 3. Gestion du copier-coller :
-    // - Pas de copier-coller pour la traduction imbriquée (overlay)
-    // - Texte suivi (fluid) OK
-    // - Document original français OK
-    document.addEventListener('copy', (e) => {
-      if (!state.translationMode) return; // Document français : copie autorisée
-
-      if (state.translationLayout === 'overlay') {
-        e.preventDefault();
-        if (e.clipboardData) {
-          e.clipboardData.setData('text/plain', '');
-        }
-        showToast("Copie interdite sur la traduction superposée · Basculez en mode texte continu pour copier");
-      }
-    });
-
-    document.addEventListener('cut', (e) => {
-      if (!state.translationMode) return;
-      if (state.translationLayout === 'overlay') {
-        e.preventDefault();
-      }
-    });
-
-    document.addEventListener('contextmenu', (e) => {
-      if (!state.translationMode) return;
-      if (state.translationLayout === 'overlay') {
-        const target = e.target;
-        if (target && target.closest('.translation-layer.layout-overlay')) {
-          e.preventDefault();
-          showToast("Menu contextuel restreint sur la traduction superposée");
-        }
-      }
-    });
+    // Les blocages et masquages intrusifs ont été retirés pour garantir une lecture fluide et sans obstacle
   }
 
   function toggleTranslationMode(forceState) {
@@ -2827,6 +2677,7 @@
       } catch (_) {}
     }
 
+    updateTranslationVisualBanner();
 
     if (state.translationMode) {
       showToast("Traduction activée : document affiché en direct");

@@ -6,6 +6,13 @@
 <script>
   (function(){
     var p = window.location.pathname;
+    var matchD = p.match(/^\/(?:(en|es)\/)?d(?:\/([^/?#]+))?/i);
+    if (matchD && matchD[2]) {
+      var lang = matchD[1] ? ('/' + matchD[1].toLowerCase()) : '';
+      var doc = matchD[2];
+      window.location.replace(lang + '/dossier-journalistes.html?doc=' + encodeURIComponent(doc) + window.location.search.replace(/^\?/, '&') + window.location.hash);
+      return;
+    }
     if (/^\/(index(\.html|\/.*)?|fr(\/.*)?|en(\/.*)?|es(\/.*)?)$/i.test(p)) {
       window.location.replace('/' + window.location.search + window.location.hash);
     }
