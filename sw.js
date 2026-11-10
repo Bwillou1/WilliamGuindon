@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v248';
+const CACHE_NAME = 'wg-pwa-v249';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -52,6 +52,11 @@ const ASSETS_TO_CACHE = [
   '/assets/docs/26-3-det_fr.pdf',
   '/assets/docs/26-3-rsub_fr_redacted.pdf',
   '/assets/docs/declaration-appui-manfred-liebel-e7834.pdf',
+  '/assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf',
+  '/assets/docs/chronologie-cce-sem26003-fr.pdf',
+  '/assets/docs/chronologie-cce-sem26003-en.pdf',
+  '/assets/docs/chronologie-cce-sem26003-es.pdf',
+  '/assets/docs/chronologie-cce-sem26003-trilingue-fr-en-es.pdf',
   '/assets/vendor/embedpdf/embedpdf.js',
   '/assets/vendor/embedpdf/embedpdf-cl9qiF45.js',
   '/assets/vendor/embedpdf/worker-engine-BCCrxWYm.js',

@@ -642,6 +642,10 @@
 
     // 3. Écouteur automatique de reconnexion du navigateur : redirection directe vers l'accueil
     function triggerOnlineRedirect() {
+      if (window.self !== window.top) {
+        // En mode iFrame, ne pas rediriger la fenêtre parente vers l'accueil
+        return;
+      }
       var statusPill = document.getElementById('status-pill');
       var statusText = document.getElementById('status-text');
       if (statusPill && statusText) {
@@ -652,6 +656,20 @@
         window.location.replace('/');
       }, 350);
     }
+
+    // Gestion du paramètre ?doc= et ?missing=1 lorsqu'une pièce non mise en cache est cliquée hors ligne
+    try {
+      var urlParams = new URLSearchParams(window.location.search);
+      var missingDoc = urlParams.get('doc');
+      if (missingDoc || urlParams.get('missing') === '1') {
+        var h1El = document.querySelector('h1');
+        var subtitleEl = document.getElementById('subtitle-msg');
+        if (h1El) h1El.textContent = "Pièce non disponible hors-ligne";
+        if (subtitleEl && missingDoc) {
+          subtitleEl.innerHTML = "La pièce <strong>" + missingDoc.replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</strong> n'a pas encore été mise en cache local sur cet appareil.<br>Activez le <strong>Mode Local Blindé</strong> pour la consulter sans connexion. Les pièces déjà archivées restent consultables ci-dessous.";
+        }
+      }
+    } catch (_) {}
 
     window.addEventListener('online', function() {
       triggerOnlineRedirect();
