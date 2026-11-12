@@ -571,7 +571,7 @@
     .social-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px;
+      gap: 11px;
     }
     .social-link {
       display: flex;
@@ -579,14 +579,17 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 10px 7px;
+      padding: 12px 10px;
       border: 1px solid var(--line);
       border-radius: 16px;
       background: var(--panel);
       color: var(--ink);
-      font-size: .79rem;
+      font-size: .84rem;
       font-weight: 750;
       transition: background .18s ease, transform .18s ease, border-color .18s ease;
+    }
+    .social-link.email {
+      grid-column: 1 / -1;
     }
     .social-link:hover {
       transform: translateY(-1px);
@@ -596,7 +599,8 @@
     .social-link svg { width: 19px; height: 19px; flex: 0 0 19px; }
     .social-link.facebook svg { color: #1877f2; }
     .social-link.messenger svg { color: #0084ff; }
-    .social-link.phone svg { color: #10b981; }
+    .social-link.phone svg,
+    .social-link.email svg { color: #10b981; }
     .social-link.youtube svg { color: #ff2638; }
     .social-link.linkedin svg { color: #0a66c2; }
     .social-link.github svg { color: var(--ink); }
@@ -755,35 +759,42 @@
 
     <section class="feature" aria-labelledby="feature-title">
       <div class="feature-meta">
-        <span class="feature-label"><span class="dot" aria-hidden="true"></span> Thank you for attending</span>
-        <span class="feature-date">After the talk</span>
+        <span class="feature-label"><span class="dot" aria-hidden="true"></span> MAIN FILE · CEC / CUSMA</span>
       </div>
       <div class="feature-content">
         <span class="feature-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5c2.8-.9 5.5-.5 8 1.2v12c-2.5-1.7-5.2-2.1-8-1.2v-12ZM20 5.5c-2.8-.9-5.5-.5-8 1.2v12c2.5-1.7 5.2-2.1 8-1.2v-12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         </span>
         <div>
-          <h2 id="feature-title">Understand, Follow &amp; Recommend</h2>
-          <p>Everything you need to understand the Great Peat Bog of Blainville case, follow upcoming updates, and share the talk with your network.</p>
+          <h2 id="feature-title">Citizen Submission SEM-26-003</h2>
+          <p>The citizen submission presented today before the Commission for Environmental Cooperation (CEC) regarding the enforcement of environmental laws in Blainville.</p>
         </div>
       </div>
       <a class="primary-link" href="/en/apercu">
-        Understand the case in 2 minutes
+        Read my submission SEM-26-003 (clear summary)
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <a class="feature-secondary" href="/en/agir">How to take action and raise awareness</a>
-      <a class="feature-secondary" href="/en/apparitions-publiques" style="margin-top: 6px; color: #a7f3d0; text-decoration-color: rgba(167, 243, 208, 0.5);">See other conferences &amp; media appearances ↗</a>
+      <a class="feature-secondary" href="/en/agir">Take action after the conference</a>
+      <a class="feature-secondary" href="/en/" style="margin-top: 8px;">Visit full website (williamguindon.me) →</a>
     </section>
 
     <section class="section" aria-labelledby="social-title">
       <div class="section-heading">
-        <h2 id="social-title">Follow William on social media</h2>
-        <span>Stay connected</span>
+        <h2 id="social-title">Networks &amp; Contact</h2>
+        <span>Write or follow</span>
       </div>
       <div class="social-grid">
-        <a class="social-link facebook" href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="noopener noreferrer" aria-label="Official Facebook of William Guindon (1.8k followers)">
+        <!--email_off--><a class="social-link email" href="mailto:contact@williamguindon.me" aria-label="Official email of William Guindon"><!--/email_off-->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 5.5L19.5 7"/></svg>
+          <span><!--email_off-->contact@williamguindon.me<!--/email_off--></span>
+        </a>
+        <a class="social-link phone" href="tel:+15145651108" aria-label="Phone number of William Guindon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>+1 514-565-1108</span>
+        </a>
+        <a class="social-link facebook" href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="noopener noreferrer" aria-label="Official Facebook of William Guindon">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.7 21v-8.2h2.8l.42-3.2H13.7V7.56c0-.93.26-1.57 1.61-1.57h1.72V3.13c-.3-.04-1.3-.13-2.47-.13-2.44 0-4.11 1.49-4.11 4.22V9.6H7.7v3.2h2.75V21h3.25Z"/></svg>
-          <span>Facebook (1.8k)</span>
+          <span>Facebook</span>
         </a>
         <a class="social-link youtube" href="https://www.youtube.com/@william-guindon" target="_blank" rel="noopener noreferrer" aria-label="Official YouTube channel of William Guindon">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 8.2a2.7 2.7 0 0 0-1.9-1.9C17.4 5.8 12 5.8 12 5.8s-5.4 0-7.1.5A2.7 2.7 0 0 0 3 8.2a28 28 0 0 0-.5 3.8 28 28 0 0 0 .5 3.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.1.5 7.1.5s5.4 0 7.1-.5a2.7 2.7 0 0 0 1.9-1.9 28 28 0 0 0 .5-3.8 28 28 0 0 0-.5-3.8Z" fill="currentColor"/><path d="m10 15.2 5-3.2-5-3.2v6.4Z" fill="var(--panel-solid)"/></svg>
@@ -792,71 +803,6 @@
         <a class="social-link linkedin" href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile of William Guindon">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75c.97 0 1.76.78 1.76 1.75s-.79 1.76-1.76 1.76m1.39 9.74v-8.37H5.07v8.37h2.78Z"/></svg>
           <span>LinkedIn</span>
-        </a>
-        <a class="social-link phone" href="tel:+15145651108" aria-label="Phone number of William Guindon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>+1 514-565-1108</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="links-title">
-      <div class="section-heading">
-        <h2 id="links-title">Recommend &amp; invite William</h2>
-        <span>Schools, health &amp; community groups</span>
-      </div>
-      <div class="link-list">
-        <!--email_off--><a class="resource-card" href="mailto:contact@williamguindon.me?subject=Conference%20Invitation%20%2F%20Recommendation" style="border-color: rgba(16, 185, 129, 0.45); background: linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, var(--panel) 100%);"><!--/email_off-->
-          <span class="resource-icon" aria-hidden="true" style="background: rgba(16, 185, 129, 0.18); color: #059669;"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="m4.5 7 7.5 5.5L19.5 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span class="resource-copy"><span class="resource-title" style="color: #059669; font-weight: 800;">Invite or recommend William for a talk</span><span class="resource-desc">Schools, colleges, universities, healthcare &amp; community groups · <!--email_off-->contact@williamguindon.me<!--/email_off--></span></span>
-          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="resource-card" href="/en/apparitions-publiques">
-          <span class="resource-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" stroke="currentColor" stroke-width="1.6"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span class="resource-copy"><span class="resource-title">Conferences &amp; media appearances</span><span class="resource-desc">Public talks, radio, television interviews, and podcasts</span></span>
-          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="resource-card" href="/en/agir">
-          <span class="resource-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M20 4c-7.2 0-12.6 2.6-13.9 7.3-.7 2.5.5 4.8 2.9 5.4 3 .8 5.2-1.2 6.1-4.2.6-2.1.9-4.4 4.9-8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20c2.4-5.6 6.2-8.6 11-10.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-          <span class="resource-copy"><span class="resource-title">How to act &amp; share</span><span class="resource-desc">Practical ways to stay informed and raise awareness around you</span></span>
-          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="explore-title">
-      <div class="section-heading">
-        <h2 id="explore-title">Understand the case at a glance</h2>
-        <span>Visual &amp; accessible</span>
-      </div>
-      <div class="explore-grid">
-        <a class="explore-card" href="/en/satellite">
-          <span class="explore-card-top">
-            <span class="explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m3.5 6 5-2 7 2 5-2v14l-5 2-7-2-5 2V6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 4v14M15.5 6v14" stroke="currentColor" stroke-width="1.5"/><path d="M12 9.2a2 2 0 0 1 2 2c0 1.7-2 3.8-2 3.8s-2-2.1-2-3.8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.3"/></svg></span>
-            <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="explore-copy"><span class="explore-title">Satellite map</span><span class="explore-desc">See the Great Peat Bog of Blainville and its surroundings.</span></span>
-        </a>
-        <a class="explore-card" href="/en/photos">
-          <span class="explore-card-top">
-            <span class="explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><path d="m5 17 4.5-4.5 3 3 2.5-2.5 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="explore-copy"><span class="explore-title">Photo gallery</span><span class="explore-desc">Images of the territory and natural habitat.</span></span>
-        </a>
-        <a class="explore-card" href="/en/chronologie">
-          <span class="explore-card-top">
-            <span class="explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="explore-copy"><span class="explore-title">Interactive timeline</span><span class="explore-desc">Key milestones of the case (1983–2040).</span></span>
-        </a>
-        <a class="explore-card" href="https://www.cec.org/submissions/sem-26-003-landfilling-of-hazardous-materials-in-blainville/" target="_blank" rel="noopener noreferrer">
-          <span class="explore-card-top">
-            <span class="explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5h14v15H5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 8h8M8 11.5h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-            <svg class="explore-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10h10M10 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="explore-copy"><span class="explore-title">Official CEC Registry ↗</span><span class="explore-desc">International citizen submission SEM-26-003 page.</span></span>
         </a>
       </div>
     </section>
@@ -868,7 +814,6 @@
 
     <footer>
       <span>© 2026 William Guindon</span><span aria-hidden="true">·</span>
-      <a href="/en/liens">All links</a><span aria-hidden="true">·</span>
       <a href="/en/">williamguindon.me</a>
     </footer>
   </main>
