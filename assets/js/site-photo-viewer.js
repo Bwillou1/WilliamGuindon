@@ -26,10 +26,14 @@
 
   // 1. Injection du CSS de Viewer.js si absent
   function ensureViewerCSS() {
-    if (document.querySelector('link[href*="viewer.min.css"], link[href*="viewer.css"]')) {
+    if (
+      document.getElementById('wg-viewerjs-css') ||
+      document.querySelector('link[href*="viewerjs/viewer.min.css"], link[href*="viewerjs/viewer.css"], link[href$="/viewer.min.css"], link[href="viewer.min.css"]')
+    ) {
       return;
     }
     const link = document.createElement('link');
+    link.id = 'wg-viewerjs-css';
     link.rel = 'stylesheet';
     link.href = VIEWER_CSS_PATH;
     document.head.appendChild(link);
@@ -224,19 +228,22 @@
       return getHighResUrl(image);
     },
     show() {
-      currentActiveViewer = this;
+      const instance = (this && this.viewer && typeof this.viewer.hide === 'function') ? this.viewer : this;
+      currentActiveViewer = instance;
       document.body.classList.add('wg-viewer-open');
     },
     shown() {
-      currentActiveViewer = this;
-      bindCloseHandlers(this);
+      const instance = (this && this.viewer && typeof this.viewer.hide === 'function') ? this.viewer : this;
+      currentActiveViewer = instance;
+      bindCloseHandlers(instance);
     },
     hide() {
       document.body.classList.remove('wg-viewer-open');
     },
     hidden() {
+      const instance = (this && this.viewer && typeof this.viewer.hide === 'function') ? this.viewer : this;
       document.body.classList.remove('wg-viewer-open');
-      if (currentActiveViewer === this) {
+      if (currentActiveViewer === instance) {
         currentActiveViewer = null;
       }
     }
@@ -285,8 +292,11 @@
   }
 
   function bindCloseHandlers(viewerInstance) {
-    if (!viewerInstance || !viewerInstance.viewer) return;
-    const container = viewerInstance.viewer;
+    if (!viewerInstance) return;
+    const container = (viewerInstance.viewer && typeof viewerInstance.viewer.querySelector === 'function')
+      ? viewerInstance.viewer
+      : (typeof viewerInstance.querySelector === 'function' ? viewerInstance : null);
+    if (!container) return;
 
     // A. Bouton X
     const closeBtn = container.querySelector('.viewer-button, .viewer-close, [data-viewer-action="mix"]');
