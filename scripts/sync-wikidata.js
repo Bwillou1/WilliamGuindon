@@ -255,6 +255,22 @@ async function run() {
       await removeClaim(csrfToken, c.id);
     }
 
+    // Suppression des QIDs erronés : Q846235 (tronc/frustum) dans P921/P101 et Q1337424 (Perry Groves) dans P1343
+    for (const prop of ['P921', 'P101']) {
+      for (const c of (currentClaims[prop] || [])) {
+        const v = c.mainsnak?.datavalue?.value;
+        if (v?.['numeric-id'] === 846235 || v?.id === 'Q846235') {
+          await removeClaim(csrfToken, c.id);
+        }
+      }
+    }
+    for (const c of (currentClaims['P1343'] || [])) {
+      const v = c.mainsnak?.datavalue?.value;
+      if (v?.['numeric-id'] === 1337424 || v?.id === 'Q1337424') {
+        await removeClaim(csrfToken, c.id);
+      }
+    }
+
     // Recharger après suppression
     currentClaims = await fetchCurrentClaims();
 
