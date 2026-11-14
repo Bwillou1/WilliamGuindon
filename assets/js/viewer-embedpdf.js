@@ -498,16 +498,39 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     } catch (_) {}
   }
 
+  function getAnnotationPluginApi(registry) {
+    if (!registry || typeof registry.getPlugin !== 'function') return null;
+    const plugin = registry.getPlugin('annotation');
+    if (!plugin) return null;
+    return (typeof plugin.provides === 'function') ? plugin.provides() : plugin;
+  }
+
+  function extractAnnotationDocState(annotationApi) {
+    if (!annotationApi || typeof annotationApi.getState !== 'function') return null;
+    const rawState = annotationApi.getState();
+    if (!rawState || typeof rawState !== 'object') return null;
+    if (rawState.pages && rawState.byUid) return rawState;
+    if (rawState.documents && typeof rawState.documents === 'object') {
+      if (rawState.activeDocumentId && rawState.documents[rawState.activeDocumentId]) {
+        return rawState.documents[rawState.activeDocumentId];
+      }
+      const firstDoc = Object.values(rawState.documents)[0];
+      if (firstDoc && typeof firstDoc === 'object') return firstDoc;
+    }
+    return rawState;
+  }
+
   function performSaveAnnotations(registry) {
     if (!registry || !hasLoadedAnnotations) return Promise.resolve(false);
     try {
-      const annotationApi = registry.getPlugin ? registry.getPlugin('annotation') : null;
+      const annotationApi = getAnnotationPluginApi(registry);
       if (!annotationApi) return Promise.resolve(false);
 
       const userAnnotations = [];
-      const state = annotationApi.getState ? annotationApi.getState() : null;
+      const state = extractAnnotationDocState(annotationApi);
+      if (!state || !state.byUid) return Promise.resolve(false);
 
-      if (state && state.pages && state.byUid) {
+      if (state.pages && state.byUid) {
         for (const pageIdxStr in state.pages) {
           const pageIndex = Number(pageIdxStr);
           const uids = state.pages[pageIdxStr] || [];
@@ -545,7 +568,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         saveToVault(norm, userAnnotations);
       } else {
         const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-        if (state && state.byUid && Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
+        if (Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
           localStorage.removeItem(key);
           localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
           removeFromVault(norm);
@@ -1359,11 +1382,28 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             } catch (_) {}
           }
 
-          // 2. Détecter et marquer tous les éléments déjà existants dans le PDF original
+          // 2. Attendre que le document PDF soit effectivement chargé avant de verrouiller/restaurer
+          await new Promise((resolve) => {
+            const start = Date.now();
+            const checkReady = () => {
+              const st = extractAnnotationDocState(annotationApi);
+              const sr = getEmbedPdfShadowRoot();
+              const hasCanvas = !!(sr && sr.querySelector('canvas'));
+              const hasPages = !!(st && st.pages && Object.keys(st.pages).length > 0);
+              if (hasCanvas || hasPages || (Date.now() - start) > 20000) {
+                resolve();
+                return;
+              }
+              setTimeout(checkReady, 150);
+            };
+            checkReady();
+          });
+
+          // Détecter et marquer tous les éléments déjà existants dans le PDF original
           nativeAnnotationUids.clear();
           userAnnotationUids.clear();
 
-          const initialState = annotationApi.getState ? annotationApi.getState() : null;
+          const initialState = extractAnnotationDocState(annotationApi);
           if (initialState && initialState.byUid) {
             for (const uid in initialState.byUid) {
               nativeAnnotationUids.add(uid);
@@ -1372,7 +1412,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
           function lockNativeElements() {
             try {
-              const state = annotationApi.getState ? annotationApi.getState() : null;
+              const state = extractAnnotationDocState(annotationApi);
               if (state && state.byUid) {
                 for (const uid in state.byUid) {
                   // Ne verrouiller QUE les vrais éléments natifs d'origine, JAMAIS les annotations utilisateur
