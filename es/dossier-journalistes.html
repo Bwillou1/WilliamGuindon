@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.ytimg.com https://i.ytimg.com https://*.facebook.com https://*.fbcdn.net; media-src 'self' blob: data: https://archive.org https://*.archive.org; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.facebook.com https://www.facebook.com https://facebook.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com https://*.facebook.com https://connect.facebook.net; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.ytimg.com https://i.ytimg.com https://*.facebook.com https://*.fbcdn.net; media-src 'self' blob: data: https://archive.org https://*.archive.org https://github.com https://release-assets.githubusercontent.com; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.facebook.com https://www.facebook.com https://facebook.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com https://*.facebook.com https://connect.facebook.net; object-src 'none';">
   <title>Archivo de Periodistas · Archivo SEM-26-003 — William Guindon</title>
   <meta name="description" content="Explorador documental para periodistas: documentos probatorios, análisis científicos y trámites jurídicos del expediente ciudadano CCE SEM-26-003.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -1221,15 +1221,15 @@
     }
 
     @media (max-width: 768px) {
-      body { margin: 6px; }
-      .drive-container { height: auto; min-height: 94vh; border-radius: 8px; }
-      .drive-header { padding: 8px 10px; gap: 8px; flex-wrap: wrap; }
+      body { margin: 6px; overflow-y: auto !important; }
+      .drive-container { height: auto; min-height: 94vh; border-radius: 8px; overflow: visible !important; }
+      .drive-header { position: sticky; top: 0; z-index: 40; padding: 8px 10px; gap: 8px; flex-wrap: wrap; border-radius: 8px 8px 0 0; }
       .drive-header-left { gap: 6px; width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .drive-title { font-size: 13.5px; }
       .btn-toggle-tree { display: none !important; }
       .drive-btn-download { padding: 5px 9px; font-size: 11.5px; gap: 4px; }
-      .mobile-tab-nav { display: flex; }
-      .drive-body { flex-direction: column; height: auto; min-height: 75vh; }
+      .mobile-tab-nav { display: flex; position: sticky; top: 48px; z-index: 39; background: #ffffff; }
+      .drive-body { flex-direction: column; height: auto; min-height: 75vh; overflow: visible !important; }
       .drive-splitter { display: none !important; }
 
       /* Vue 1: Arborescence pleine page */
@@ -1243,7 +1243,9 @@
         border-right: none !important;
         padding: 10px 8px !important;
         visibility: visible !important;
-        overflow-y: auto !important;
+        overflow-y: visible !important;
+        overscroll-behavior: auto !important;
+        contain: none !important;
       }
       .drive-container[data-mobile-view="tree"] .drive-preview-pane {
         display: none !important;
@@ -2171,6 +2173,10 @@
 
   <div class="drive-body">
     <div id="drive-tree" class="drive-tree-pane">
+      <div style="margin: 8px 10px 4px; padding: 8px 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); font-size: 11.5px; line-height: 1.4;">
+        <strong style="color: #047857; display: block; margin-bottom: 2px;">Petición 0546 — Respuestas federales y observaciones complementarias</strong>
+        <a href="/es/bgv.html" style="color: #065f46; font-weight: 700; text-decoration: underline;">Leer las 24 respuestas de ECCC y del MPO pregunta por pregunta en /es/bgv.html ↗</a>
+      </div>
       <!-- Barre de recherche rapide de pièces probatoires -->
       <div class="tree-search-bar" id="tree-search-bar" role="search" aria-label="Recherche rapide dans les pièces probatoires">
         <div class="tree-search-input-wrap">
@@ -2187,6 +2193,64 @@
 
       <div id="tree-nodes-container" class="tree-nodes-container">
 <!--PRERENDER:pieces:START-->
+<div class="tree-node open">
+  <div class="tree-folder-header">
+    <span class="folder-chevron">▶</span>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+    <span class="folder-name" title="00_Petition_0546_Reponses_Federales">Petición 0546 — Respuestas federales y observaciones complementarias</span>
+    <span class="folder-count">12</span>
+  </div>
+  <div class="tree-children">
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/observations-complementaires-sem-26-003-10nov2026.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/observations-complementaires-sem-26-003-10nov2026.pdf" class="drive-item-name" title="observations-complementaires-sem-26-003-10nov2026.pdf" target="_blank" rel="noopener">Observaciones complementarias y Anexos 1–3 — SEM-26-003 (10 nov. 2026, censurado) — 35 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/dossier-atip-sem-26-003-can-int.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/dossier-atip-sem-26-003-can-int.pdf" class="drive-item-name" title="dossier-atip-sem-26-003-can-int.pdf" target="_blank" rel="noopener">Anexo 3 — Expediente ATIP, registro de cabildeo y extractos CCE (10 nov. 2026) — 7 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/index-detaille-petition-0546-sem-26-003.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/index-detaille-petition-0546-sem-26-003.pdf" class="drive-item-name" title="index-detaille-petition-0546-sem-26-003.pdf" target="_blank" rel="noopener">Índice detallado y síntesis de concordancia — Petición 0546 (10 nov. 2026) — 3 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/reponse-eccc-petition-0546-min-334658.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/reponse-eccc-petition-0546-min-334658.pdf" class="drive-item-name" title="reponse-eccc-petition-0546-min-334658.pdf" target="_blank" rel="noopener">Respuesta detallada de ECCC a la petición 0546 (Preguntas 1–10 y 21–24, 10 nov. 2026) — 6 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/lettre-reponse-signee-eccc-min-334658.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/lettre-reponse-signee-eccc-min-334658.pdf" class="drive-item-name" title="lettre-reponse-signee-eccc-min-334658.pdf" target="_blank" rel="noopener">Carta firmada de la ministra de ECCC (Julie Dabrusin) — Petición 0546 (10 nov. 2026) — 2 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/reponse-mpo-petition-0546-10nov2026.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/reponse-mpo-petition-0546-10nov2026.pdf" class="drive-item-name" title="reponse-mpo-petition-0546-10nov2026.pdf" target="_blank" rel="noopener">Carta firmada y respuesta completa de MPO / DFO a la petición 0546 (10 nov. 2026) — 10 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/accuse-reception-eccc-min-334658.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/accuse-reception-eccc-min-334658.pdf" class="drive-item-name" title="accuse-reception-eccc-min-334658.pdf" target="_blank" rel="noopener">Acuse de recibo oficial firmado de ECCC (20 jul. 2026) — 1 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546/accuse-reception-mpo-2026-001-02117.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546/accuse-reception-mpo-2026-001-02117.pdf" class="drive-item-name" title="accuse-reception-mpo-2026-001-02117.pdf" target="_blank" rel="noopener">Acuse de recibo oficial firmado de MPO (22 jul. 2026) — 1 p.</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/petition-546-cedd-bvg.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/petition-546-cedd-bvg.pdf" class="drive-item-name" title="petition-546-cedd-bvg.pdf" target="_blank" rel="noopener">Petición ambiental n.° 0546 (CEDD / BVG) — Texto completo de las 24 preguntas</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/observations-reponse-canada-sem26003.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/observations-reponse-canada-sem26003.pdf" class="drive-item-name" title="observations-reponse-canada-sem26003.pdf" target="_blank" rel="noopener">Observaciones ciudadanas sobre la respuesta de Canadá (SEM-26-003, 17 oct. 2026)</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/72-rsp_fr.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/72-rsp_fr.pdf" class="drive-item-name" title="72-rsp_fr.pdf" target="_blank" rel="noopener">Respuesta oficial de Canadá a la CCA invocando la petición 0546 (72-RSP, 16 oct. 2026) · FR</a>
+  </div>
+  <div class="drive-item is-cached" data-fullpath="00_Petition_0546_Reponses_Federales/72-rsp_en.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/72-rsp_en.pdf" class="drive-item-name" title="72-rsp_en.pdf" target="_blank" rel="noopener">Response of Canada to the CEC invoking Petition 0546 (72-RSP, 16 Oct 2026) · EN</a>
+  </div>
+  </div>
+</div>
 <div class="tree-node open">
   <div class="tree-folder-header">
     <span class="folder-chevron">▶</span>
@@ -3087,39 +3151,13 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
           <p style="font-size: 0.84rem; line-height: 1.45; color: #52796f; margin: 0 0 14px; max-width: 480px;">Mire la declaración en video a continuación o haga clic en un archivo en el árbol para ver su contenido probatorio.</p>
 
           <div class="journalist-reels-row" style="display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; margin: 0 auto 14px;">
-            <!-- Reel 1 : Déclaration officielle (Protection 2-clics anti-cookies) -->
-            <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 220px;">
-              <div style="font-size: 10.5px; font-weight: 700; color: #1877f2; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em;">
-                Point de situation CCE
-              </div>
-              <div id="journo-reel-1" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-1', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1616302680276370%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la déclaration vidéo Reel 1" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-1', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1616302680276370%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/tourbiere-hero-3d.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(24, 119, 242, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
-                <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.85) 100%); pointer-events: none;"></div>
-                <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">
-                  <span style="width: 6px; height: 6px; background: #1877f2; border-radius: 50%; box-shadow: 0 0 5px #1877f2;"></span>
-                  <span style="font-size: 10.5px; margin: 0;">Point CCE</span>
-                </div>
-                <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                  <div style="width: 48px; height: 48px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(24, 119, 242, 0.5), 0 0 0 3px rgba(255, 255, 255, 0.25); transition: transform 0.2s ease;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff" style="margin-left: 2px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  </div>
-                  <span style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; padding: 4px 10px; border-radius: 9999px; font-size: 10.5px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.25); margin: 0;">
-                    Visionner la vidéo
-                  </span>
-                </div>
-                <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #cbd5e1; font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  <span style="font-size: 9.5px; margin: 0;">1 clic · Zéro traceur</span>
-                </div>
-              </div>
-              <a href="https://www.facebook.com/reel/1616302680276370/" target="_blank" rel="noopener noreferrer" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; background: #1877f2; color: #ffffff; text-decoration: none; font-size: 10.5px; font-weight: 700;">Abrir Reel 1 en Facebook ↗</a>
-            </div>
 
             <!-- Reel 2 : Réponse vidéo de William Guindon (Protection 2-clics anti-cookies) -->
             <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 220px;">
               <div style="font-size: 10.5px; font-weight: 700; color: #e11d48; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em;">
                 Réponse vidéo · SEM-26-003
               </div>
-              <div id="journo-reel-2" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-2', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la réponse vidéo Reel 2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-2', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/grande-tourbiere-couverture.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(225, 29, 72, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
+              <div id="journo-reel-2" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-2', 'https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la réponse vidéo Reel 2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-2', 'https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/grande-tourbiere-couverture.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(225, 29, 72, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
                 <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.85) 100%); pointer-events: none;"></div>
                 <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">SEM-26-003</div>
                 <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -3290,7 +3328,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     c.removeAttribute('aria-label');
     c.removeAttribute('onclick');
     c.removeAttribute('onkeydown');
-    c.innerHTML = '<iframe src="' + url + '" width="267" height="476" style="border:none;overflow:hidden;width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="eager" title="' + title + '"></iframe>';
+    c.innerHTML = (url && url.endsWith('.mp4')) ? '<video controls autoplay playsinline style="width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;object-fit:contain;"><source src="' + url + '" type="video/mp4"></video>' : '<iframe src="' + url + '" width="267" height="476" style="border:none;overflow:hidden;width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="eager" title="' + title + '"></iframe>';
   };
 
   const identifier = "dossier-journalistes-tourbiere-blainville-stablex";
@@ -3298,6 +3336,39 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 
   // Répertoire des pièces probatoires publiques référencées
   const fallbackList = [
+  "00_Petition_0546_Reponses_Federales/petition-546/observations-complementaires-sem-26-003-10nov2026.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/dossier-atip-sem-26-003-can-int.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/index-detaille-petition-0546-sem-26-003.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/reponse-eccc-petition-0546-min-334658.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/lettre-reponse-signee-eccc-min-334658.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/reponse-mpo-petition-0546-10nov2026.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/accuse-reception-eccc-min-334658.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546/accuse-reception-mpo-2026-001-02117.pdf",
+  "00_Petition_0546_Reponses_Federales/petition-546-cedd-bvg.pdf",
+  "00_Petition_0546_Reponses_Federales/observations-reponse-canada-sem26003.pdf",
+  "00_Petition_0546_Reponses_Federales/72-rsp_fr.pdf",
+  "00_Petition_0546_Reponses_Federales/72-rsp_en.pdf",
+  "00_Pieces_Officielles_Site_Natif/petition-546-cedd-bvg.pdf",
+  "00_Pieces_Officielles_Site_Natif/declaration-appui-manfred-liebel-e7834.pdf",
+  "00_Pieces_Officielles_Site_Natif/observations-reponse-canada-sem26003.pdf",
+  "00_Pieces_Officielles_Site_Natif/72-rsp_fr.pdf",
+  "00_Pieces_Officielles_Site_Natif/72-rsp_en.pdf",
+  "00_Pieces_Officielles_Site_Natif/73-rec_fr.pdf",
+  "00_Pieces_Officielles_Site_Natif/73-rec_en.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-formal-deposition-and-urgent-appeal.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_fr_redacted.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_fr_clean.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_en.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_es.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-3-det_fr.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-2-det2_fr.pdf",
+  "00_Pieces_Officielles_Site_Natif/26-2-det2_en.pdf",
+  "00_Pieces_Officielles_Site_Natif/request-terminate-defer-canada-sem26003-en.pdf",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003-fr.pdf",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003-en.pdf",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003-es.pdf",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003-trilingue-fr-en-es.pdf",
+  "00_Pieces_Officielles_Site_Natif/chronologie-cce-sem26003.txt",
   "01_Especes_Menacees_Biodiversite/G01_Couleuvre_tachetee_BIFFE_AUDIT.png",
   "01_Especes_Menacees_Biodiversite/G02_Grebe_esclavon_BIFFE_AUDIT.csv",
   "01_Especes_Menacees_Biodiversite/G03_Monarque_BIFFE_AUDIT.csv",
@@ -3519,6 +3590,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
 };
 
   const FOLDER_TITLES = {
+  "00_Petition_0546_Reponses_Federales": "Petición 0546 — Respuestas federales y observaciones complementarias",
   "00_Pieces_Officielles_Site_Natif": "00 · Documentos Fundamentales y Recursos Oficiales (Petición, CEDD, Liebel)",
   "01_Especes_Menacees_Biodiversite": "01 · Espèces menacées & Biodiversité",
   "04_Preuves_Citoyennes_Tests_Eau_Rapports": "04 · Preuves citoyennes & Tests d'eau",
@@ -3933,8 +4005,8 @@ function getCleanDisplayName(fullPath) {
     let cleanRel;
     if (norm.startsWith("assets/docs/")) {
       cleanRel = norm;
-    } else if (norm.startsWith("00_Pieces_Officielles_Site_Natif/")) {
-      cleanRel = "assets/docs/" + norm.replace(/^00_Pieces_Officielles_Site_Natif\//, "");
+    } else if (norm.startsWith("00_Pieces_Officielles_Site_Natif/") || norm.startsWith("00_Petition_0546_Reponses_Federales/")) {
+      cleanRel = "assets/docs/" + norm.replace(/^00_(?:Pieces_Officielles_Site_Natif|Petition_0546_Reponses_Federales)\//, "");
     } else {
       cleanRel = "assets/docs/" + (norm.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? norm : ("00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + norm));
     }
@@ -4291,8 +4363,8 @@ function getCleanDisplayName(fullPath) {
     let gitLocalPath;
     if (fullPath.startsWith("assets/docs/")) {
       gitLocalPath = fullPath;
-    } else if (fullPath.startsWith("00_Pieces_Officielles_Site_Natif/")) {
-      gitLocalPath = "assets/docs/" + fullPath.replace(/^00_Pieces_Officielles_Site_Natif\//, "");
+    } else if (fullPath.startsWith("00_Pieces_Officielles_Site_Natif/") || fullPath.startsWith("00_Petition_0546_Reponses_Federales/")) {
+      gitLocalPath = "assets/docs/" + fullPath.replace(/^00_(?:Pieces_Officielles_Site_Natif|Petition_0546_Reponses_Federales)\//, "");
     } else {
       gitLocalPath = "assets/docs/" + (fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? fullPath : ("00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath));
     }
@@ -4458,7 +4530,7 @@ function getCleanDisplayName(fullPath) {
         name: fileName,
         fullPath: fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/")
           ? fullPath
-          : (fullPath.startsWith("00_Pieces_Officielles_Site_Natif/") ? fullPath : "00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath)
+          : ((fullPath.startsWith("00_Pieces_Officielles_Site_Natif/") || fullPath.startsWith("00_Petition_0546_Reponses_Federales/")) ? fullPath : "00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fullPath)
       };
 
       current.files.push(fileItemObj);
@@ -4539,8 +4611,8 @@ function getCleanDisplayName(fullPath) {
 
         const cleanDisplayName = getCleanDisplayName(fileObj.fullPath);
         let itemHref;
-        if (fileObj.fullPath.startsWith("00_Pieces_Officielles_Site_Natif/")) {
-          itemHref = "/" + encodeLocalDocPath("assets/docs/" + fileObj.fullPath.replace(/^00_Pieces_Officielles_Site_Natif\//, ""));
+        if (fileObj.fullPath.startsWith("00_Pieces_Officielles_Site_Natif/") || fileObj.fullPath.startsWith("00_Petition_0546_Reponses_Federales/")) {
+          itemHref = "/" + encodeLocalDocPath("assets/docs/" + fileObj.fullPath.replace(/^00_(?:Pieces_Officielles_Site_Natif|Petition_0546_Reponses_Federales)\//, ""));
         } else {
           itemHref = "/" + encodeLocalDocPath("assets/docs/" + (fileObj.fullPath.startsWith("00_DOSSIER_POUR_JOURNALISTES_BIFFE/") ? fileObj.fullPath : ("00_DOSSIER_POUR_JOURNALISTES_BIFFE/" + fileObj.fullPath)));
         }
@@ -5430,39 +5502,13 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           <p style="font-size: 0.84rem; line-height: 1.45; color: #52796f; margin: 0 0 14px; max-width: 480px;">Mire la declaración en video a continuación o haga clic en un archivo en el árbol para ver su contenido probatorio.</p>
 
           <div class="journalist-reels-row" style="display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; margin: 0 auto 14px;">
-            <!-- Reel 1 : Déclaration officielle (Protection 2-clics anti-cookies) -->
-            <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 220px;">
-              <div style="font-size: 10.5px; font-weight: 700; color: #1877f2; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em;">
-                Point de situation CCE
-              </div>
-              <div id="journo-reel-1" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-1', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1616302680276370%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la déclaration vidéo Reel 1" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-1', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1616302680276370%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Déclaration officielle de William Guindon pour les journalistes (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/tourbiere-hero-3d.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(24, 119, 242, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
-                <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.85) 100%); pointer-events: none;"></div>
-                <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">
-                  <span style="width: 6px; height: 6px; background: #1877f2; border-radius: 50%; box-shadow: 0 0 5px #1877f2;"></span>
-                  <span style="font-size: 10.5px; margin: 0;">Point CCE</span>
-                </div>
-                <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                  <div style="width: 48px; height: 48px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(24, 119, 242, 0.5), 0 0 0 3px rgba(255, 255, 255, 0.25); transition: transform 0.2s ease;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff" style="margin-left: 2px;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  </div>
-                  <span style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; padding: 4px 10px; border-radius: 9999px; font-size: 10.5px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.25); margin: 0;">
-                    Visionner la vidéo
-                  </span>
-                </div>
-                <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #cbd5e1; font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  <span style="font-size: 9.5px; margin: 0;">1 clic · Zéro traceur</span>
-                </div>
-              </div>
-              <a href="https://www.facebook.com/reel/1616302680276370/" target="_blank" rel="noopener noreferrer" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; background: #1877f2; color: #ffffff; text-decoration: none; font-size: 10.5px; font-weight: 700;">Abrir Reel 1 en Facebook ↗</a>
-            </div>
 
             <!-- Reel 2 : Réponse vidéo de William Guindon (Protection 2-clics anti-cookies) -->
             <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 220px;">
               <div style="font-size: 10.5px; font-weight: 700; color: #e11d48; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em;">
                 Réponse vidéo · SEM-26-003
               </div>
-              <div id="journo-reel-2" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-2', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la réponse vidéo Reel 2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-2', 'https://www.facebook.com/plugins/video.php?height=476&amp;href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1796254438299162%2F&amp;show_text=false&amp;width=267&amp;t=0', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/grande-tourbiere-couverture.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(225, 29, 72, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
+              <div id="journo-reel-2" onclick="window.loadJournoReel &amp;&amp; window.loadJournoReel('journo-reel-2', 'https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)')" role="button" tabindex="0" aria-label="Lancer la réponse vidéo Reel 2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.loadJournoReel&amp;&amp;window.loadJournoReel('journo-reel-2', 'https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4', 'Réponse vidéo de William Guindon à la notification du Canada (Facebook Reel)');}" style="position: relative; width: 100%; max-width: 216px; height: 384px; border-radius: 12px; overflow: hidden; background: #0b0f19 url('/assets/media/grande-tourbiere-couverture.webp') center/cover no-repeat; box-shadow: 0 6px 20px rgba(0,0,0,0.3); border: 1.5px solid rgba(225, 29, 72, 0.45); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 12px; box-sizing: border-box; cursor: pointer;">
                 <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.85) 100%); pointer-events: none;"></div>
                 <div style="position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25);">SEM-26-003</div>
                 <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -6397,5 +6443,27 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 })();
 </script>
 
+<button type="button" id="dossier-scroll-top-btn" aria-label="Volver arriba" style="display:none;position:fixed;bottom:18px;right:18px;z-index:999;background:#0a3622;color:#ffffff;border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,0.22);cursor:pointer;align-items:center;gap:6px;">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  <span>Arriba</span>
+</button>
+<script>
+(function() {
+  var btn = document.getElementById('dossier-scroll-top-btn');
+  var tree = document.querySelector('.drive-tree-pane');
+  if (!btn) return;
+  function updateBtn() {
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    var ty = tree ? tree.scrollTop : 0;
+    btn.style.display = (y > 160 || ty > 160) ? 'inline-flex' : 'none';
+  }
+  window.addEventListener('scroll', updateBtn, { passive: true });
+  if (tree) tree.addEventListener('scroll', updateBtn, { passive: true });
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (tree) tree.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
 </body>
 </html>
