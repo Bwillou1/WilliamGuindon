@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v254';
+const CACHE_NAME = 'wg-pwa-v255';
 const MAX_CACHE_ENTRIES = 256;
 
 const ASSETS_TO_CACHE = [
@@ -386,6 +386,34 @@ self.addEventListener('fetch', (event) => {
             }
           );
         })
+    );
+    return;
+  }
+
+  // 3. Pour les ressources lourdes et immuables (moteur PDF/WASM, pièces PDF, médias) : Cache-First ultra-rapide
+  const isHeavyStaticAsset =
+    url.pathname.startsWith('/assets/vendor/') ||
+    url.pathname.startsWith('/assets/docs/') ||
+    url.pathname.startsWith('/assets/media/') ||
+    url.pathname.startsWith('/assets/img/');
+
+  if (isHeavyStaticAsset && event.request.method === 'GET' && !event.request.headers.has('range')) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request).then((networkResponse) => {
+          if (isCacheable(event.request, networkResponse)) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(async (cache) => {
+              await cache.put(event.request, responseClone);
+              await trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
+            });
+          }
+          return networkResponse;
+        });
+      })
     );
     return;
   }

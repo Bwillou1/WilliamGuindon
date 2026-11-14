@@ -4374,22 +4374,26 @@ function getCleanDisplayName(fullPath) {
     const rootUrl = "/" + encodeLocalDocPath(gitLocalPath);
     const localUrl = getLocalGitUrl(fullPath);
 
-    // 1. Essai prioritaire depuis CacheStorage / IndexedDB (pour le mode hors-ligne et le parseur CSV local)
+    // 1. Essai prioritaire depuis CacheStorage / IndexedDB uniquement si hors-ligne ou pour parseurs JS (CSV/texte)
+    const lowerFullPath = fullPath.toLowerCase();
+    const needsJsBlobInOnlineMode = /\.(?:csv|txt|md|json|geojson|kml)$/i.test(lowerFullPath);
     let cachedBlob = null;
-    if ('caches' in window) {
-      try {
-        const cache = await caches.open(LOCAL_CACHE_NAME);
-        const match = await cache.match(localUrl);
-        if (match) cachedBlob = await match.blob();
-      } catch (err) {
-        console.warn("Erreur lecture ressource depuis cache:", err);
+    if (!navigator.onLine || needsJsBlobInOnlineMode) {
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open(LOCAL_CACHE_NAME);
+          const match = await cache.match(localUrl);
+          if (match) cachedBlob = await match.blob();
+        } catch (err) {
+          console.warn("Erreur lecture ressource depuis cache:", err);
+        }
       }
-    }
-    if (!cachedBlob) {
-      try {
-        cachedBlob = await getDocFromVault(localUrl);
-      } catch (err) {
-        console.warn("Erreur lecture depuis coffre-fort IndexedDB:", err);
+      if (!cachedBlob) {
+        try {
+          cachedBlob = await getDocFromVault(localUrl);
+        } catch (err) {
+          console.warn("Erreur lecture depuis coffre-fort IndexedDB:", err);
+        }
       }
     }
 
