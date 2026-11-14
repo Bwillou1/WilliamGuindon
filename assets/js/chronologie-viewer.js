@@ -300,6 +300,20 @@
               panZoomInstance.center();
             }
           });
+
+          // Ajustement si le visualiseur est placé dans un accordéon <details> fermé par défaut
+          const parentDetails = container.closest('details');
+          if (parentDetails) {
+            parentDetails.addEventListener('toggle', () => {
+              if (parentDetails.open && panZoomInstance) {
+                requestAnimationFrame(() => {
+                  panZoomInstance.resize();
+                  panZoomInstance.fit();
+                  panZoomInstance.center();
+                });
+              }
+            });
+          }
         });
       })
       .catch(err => {
