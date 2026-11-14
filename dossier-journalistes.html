@@ -1999,6 +1999,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <!-- BRANDKIT:END -->
+<script src="/assets/js/annotations-idb.js?v=20261114"></script>
 </head>
 <body>
 <div id="drive-toast" class="drive-toast" role="status" aria-live="polite"></div>
@@ -4623,17 +4624,44 @@ function getCleanDisplayName(fullPath) {
           <a href="${itemHref}" class="drive-item-name" title="${fileObj.name}" target="_blank" rel="noopener">${cleanDisplayName}</a>
         `;
 
+        async function flushActiveIframeAnnotations(timeoutMs = 800) {
+          const activeIframe = document.querySelector('#preview-stage iframe.preview-iframe');
+          if (!activeIframe || !activeIframe.contentWindow) return;
+          const src = activeIframe.getAttribute('src') || '';
+          if (!src.includes('viewer.html') && !src.includes('lecteur.html')) return;
+
+          await new Promise((resolve) => {
+            const reqId = 'wg_save_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+            let done = false;
+            const finish = () => {
+              if (done) return;
+              done = true;
+              window.removeEventListener('message', onMsg);
+              clearTimeout(timer);
+              resolve();
+            };
+            const onMsg = (ev) => {
+              if (ev.data && ev.data.type === 'wg:annotations-saved' && ev.data.requestId === reqId) {
+                finish();
+              }
+            };
+            const timer = setTimeout(finish, timeoutMs);
+            window.addEventListener('message', onMsg);
+            try {
+              activeIframe.contentWindow.postMessage({ type: 'wg:save-annotations-now', requestId: reqId }, '*');
+            } catch (_) {
+              finish();
+            }
+          });
+        }
+        window.flushActiveIframeAnnotations = flushActiveIframeAnnotations;
+
         item.addEventListener("click", async (e) => {
           e.preventDefault();
           e.stopPropagation();
 
-          // Sauvegarde immédiate et synchrone des annotations de l'iframe active avant tout changement
-          const activeIframeBeforeChange = document.querySelector('#preview-stage iframe.preview-iframe');
-          if (activeIframeBeforeChange && activeIframeBeforeChange.contentWindow) {
-            try {
-              activeIframeBeforeChange.contentWindow.postMessage({ type: 'wg:save-annotations-now' }, '*');
-            } catch (_) {}
-          }
+          // Sauvegarde immédiate et attendue des annotations de l'iframe active avant tout changement
+          await flushActiveIframeAnnotations(800);
 
           if ((document.body.classList.contains('is-offline-view') || !navigator.onLine) && !item.classList.contains('is-cached')) {
             document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
@@ -5641,7 +5669,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
   const translatePreviewLink = document.getElementById('btn-translate-preview');
   if (translatePreviewLink) {
-    translatePreviewLink.addEventListener('click', (e) => {
+    translatePreviewLink.addEventListener('click', async (e) => {
       e.preventDefault();
       e.stopPropagation();
       const stageEl = document.getElementById('preview-stage');
@@ -5670,6 +5698,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const isTranslatedMode = translatePreviewLink.classList.contains('active') || currentSrc.includes('lecteur.html') || (officialTrans && currentSrc.includes(encodeURIComponent(officialTrans)));
 
       if (isTranslatedMode) {
+        if (typeof window.flushActiveIframeAnnotations === 'function') {
+          await window.flushActiveIframeAnnotations(800);
+        }
         // Retour vers l'original français (EmbedPDF / viewer.html)
         const frDoc = (officialTrans ? getOfficialTranslation(docName, 'fr') : null) || rawPdf;
         iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
@@ -5678,6 +5709,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         translatePreviewLink.classList.remove('active');
         translatePreviewLink.title = `Traduire ce document (${targetLang.toUpperCase()})`;
       } else {
+        if (typeof window.flushActiveIframeAnnotations === 'function') {
+          await window.flushActiveIframeAnnotations(800);
+        }
         // Bascule vers le lecteur spécial de traduction (lecteur.html avec contour vert et mode traduction)
         const targetPdf = officialTrans ? ('/' + officialTrans.replace(/^\/+/, '')) : rawPdf;
         iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
@@ -5836,7 +5870,13 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         ? finalPdfPath
         : `/viewer.html?file=${safeViewerParam}&theme=${safeThemeParam}&preview=1`;
 
-      currentIframe.src = targetViewerUrl;
+      if (typeof window.flushActiveIframeAnnotations === 'function') {
+        window.flushActiveIframeAnnotations(600).finally(() => {
+          currentIframe.src = targetViewerUrl;
+        });
+      } else {
+        currentIframe.src = targetViewerUrl;
+      }
       const fsViewerLink = document.getElementById('btn-fullscreen-viewer');
       if (fsViewerLink) {
         fsViewerLink.href = finalPdfPath;
@@ -6250,50 +6290,19 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   window.exportAnnotationsVaultFile = async function() {
-    // Flush immédiat de l'iframe active
-    const activeIframeBeforeExport = document.querySelector('#preview-stage iframe.preview-iframe');
-    if (activeIframeBeforeExport && activeIframeBeforeExport.contentWindow) {
-      try {
-        activeIframeBeforeExport.contentWindow.postMessage({ type: 'wg:save-annotations-now' }, '*');
-      } catch (_) {}
+    // Flush immédiat et attendu de l'iframe active avant exportation
+    if (typeof window.flushActiveIframeAnnotations === 'function') {
+      await window.flushActiveIframeAnnotations(1500);
     }
 
     let vault = null;
-    try {
-      const raw = localStorage.getItem('wg_annotations_vault_v1');
-      if (raw) vault = JSON.parse(raw);
-    } catch (_) {}
-
-    if (!vault || !vault.documents || Object.keys(vault.documents).length === 0) {
-      const docs = {};
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith('wg_embedpdf_annotations_')) {
-          const docKey = decodeURIComponent(k.replace('wg_embedpdf_annotations_', ''));
-          try {
-            const items = JSON.parse(localStorage.getItem(k));
-            if (Array.isArray(items) && items.length > 0) {
-              docs[docKey] = {
-                path: docKey,
-                shortCode: typeof getShortDocCode === 'function' ? getShortDocCode(docKey) : '',
-                annotations: items,
-                updatedAt: Date.now()
-              };
-            }
-          } catch (_) {}
-        }
-      }
-      if (Object.keys(docs).length > 0) {
-        vault = {
-          format: 'wg-annotations-v1',
-          app: 'williamguindon.me',
-          dossier: 'SEM-26-003',
-          version: 1,
-          updatedAt: new Date().toISOString(),
-          documents: docs
-        };
-        localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(vault));
-      }
+    if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.exportAllDocuments === 'function') {
+      vault = await window.WGAnnotationsIDB.exportAllDocuments();
+    } else {
+      try {
+        const raw = localStorage.getItem('wg_annotations_vault_v1');
+        if (raw) vault = JSON.parse(raw);
+      } catch (_) {}
     }
 
     const docCount = vault && vault.documents ? Object.keys(vault.documents).length : 0;
@@ -6357,21 +6366,30 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
         let docCount = 0;
         let annotCount = 0;
-        for (const docPath in data.documents) {
-          const docEntry = data.documents[docPath];
-          const annots = docEntry.annotations || [];
-          if (Array.isArray(annots) && annots.length > 0) {
-            docCount++;
+        if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.importAllDocuments === 'function') {
+          docCount = await window.WGAnnotationsIDB.importAllDocuments(data);
+          const merged = await window.WGAnnotationsIDB.exportAllDocuments();
+          for (const docPath in (merged.documents || {})) {
+            const annots = merged.documents[docPath].annotations || [];
             annotCount += annots.length;
-            const norm = (docPath || '').trim().replace(/^(\.\/|\/)+/, '').normalize('NFC');
-            const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-            const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
-            localStorage.setItem(key, JSON.stringify(annots));
-            localStorage.setItem(keySlash, JSON.stringify(annots));
           }
+        } else {
+          for (const docPath in data.documents) {
+            const docEntry = data.documents[docPath];
+            const annots = docEntry.annotations || [];
+            if (Array.isArray(annots) && annots.length > 0) {
+              docCount++;
+              annotCount += annots.length;
+              const norm = (docPath || '').trim().replace(/^(\.\/|\/)+/, '').normalize('NFC');
+              try {
+                localStorage.setItem(`wg_embedpdf_annotations_${encodeURIComponent(norm)}`, JSON.stringify(annots));
+              } catch (_) {}
+            }
+          }
+          try {
+            localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(data));
+          } catch (_) {}
         }
-
-        localStorage.setItem('wg_annotations_vault_v1', JSON.stringify(data));
 
         const toast = document.getElementById('drive-toast');
         if (toast) {

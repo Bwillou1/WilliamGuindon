@@ -71,6 +71,7 @@ const ASSETS_TO_CACHE = [
   '/assets/vendor/embedpdf/browser-BKLM0ThC-BCLQGPD6.js',
   '/assets/vendor/embedpdf/pdfium.wasm',
   '/assets/vendor/embedpdf/LICENSE',
+  '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
   '/assets/js/pdf-viewer.js',
   '/assets/css/pdf-viewer.css',
