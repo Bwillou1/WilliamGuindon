@@ -1999,7 +1999,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <!-- BRANDKIT:END -->
-<script src="/assets/js/annotations-idb.js?v=20261114-v2"></script>
+<script src="/assets/js/annotations-idb.js?v=20261114-v3"></script>
 </head>
 <body>
 <div id="drive-toast" class="drive-toast" role="status" aria-live="polite"></div>
@@ -3832,15 +3832,6 @@ function getCleanDisplayName(fullPath) {
   const VAULT_DB_VERSION = 1;
   const VAULT_STORE = "documents";
 
-  // Verrouillage persistant anti-éviction (StorageManager API)
-  if (navigator.storage && navigator.storage.persist) {
-    navigator.storage.persist().then(granted => {
-      if (granted) {
-        console.log("[Storage] Persistance blindée accordée par le navigateur.");
-      }
-    }).catch(() => {});
-  }
-
   function openVaultDB() {
     return new Promise((resolve) => {
       if (!('indexedDB' in window)) return resolve(null);
@@ -4124,64 +4115,22 @@ function getCleanDisplayName(fullPath) {
   window.notifyZipMaintenance = notifyZipMaintenance;
 
   async function updateCacheTracking() {
-    if (navigator.storage && navigator.storage.persist) {
-      try { await navigator.storage.persist(); } catch (_) {}
-    }
-
-    let cache = null;
     let cacheKeys = [];
     if ('caches' in window) {
       try {
-        cache = await caches.open(LOCAL_CACHE_NAME);
-        const keys = await cache.keys();
-        cacheKeys = keys.map(k => k.url);
+        const hasCache = await caches.has(LOCAL_CACHE_NAME);
+        if (hasCache) {
+          const cache = await caches.open(LOCAL_CACHE_NAME);
+          const keys = await cache.keys();
+          cacheKeys = keys.map(k => k.url);
+        }
       } catch (e) {
         console.warn("Erreur lecture cache local:", e);
       }
     }
 
     const vaultKeys = await getAllVaultKeys();
-    const cacheKeysSet = new Set(cacheKeys);
-    const vaultKeysSet = new Set(vaultKeys);
-
-    // Auto-guérison croisée (Cross-Healing) :
-    // 1. Si présent dans IndexedDB mais absent de CacheStorage (ex: après un deep refresh ou purge cache HTTP)
-    if (cache && vaultKeys.length > 0) {
-      for (const vk of vaultKeys) {
-        if (!cacheKeysSet.has(vk)) {
-          try {
-            const blob = await getDocFromVault(vk);
-            if (blob) {
-              await cache.put(vk, new Response(blob, {
-                headers: {
-                  'Content-Type': 'application/pdf',
-                  'Content-Length': String(blob.size)
-                }
-              }));
-              cacheKeysSet.add(vk);
-            }
-          } catch (_) {}
-        }
-      }
-    }
-
-    // 2. Si présent dans CacheStorage mais absent d'IndexedDB
-    if (cache && cacheKeys.length > 0) {
-      for (const ck of cacheKeys) {
-        if (!vaultKeysSet.has(ck)) {
-          try {
-            const res = await cache.match(ck);
-            if (res) {
-              const blob = await res.blob();
-              await saveDocToVault(ck, blob, ck.split('/').pop());
-              vaultKeysSet.add(ck);
-            }
-          } catch (_) {}
-        }
-      }
-    }
-
-    cachedUrlsSet = new Set([...cacheKeysSet, ...vaultKeysSet]);
+    cachedUrlsSet = new Set([...cacheKeys, ...vaultKeys]);
     updateLocalModeUI();
   }
 
@@ -5857,14 +5806,18 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     }
 
     // Si un aperçu PDF est actuellement affiché dans l'iframe, le recharger dans le format choisi
+    const DEFAULT_PDF_FALLBACK = '/assets/docs/observations-reponse-canada-sem26003.pdf';
     const currentIframe = document.querySelector('#preview-stage iframe.preview-iframe');
     if (currentIframe && (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'))) {
       const candidatePdf = isNative
         ? (currentIframe.getAttribute('data-native-pdf') || currentIframe.getAttribute('data-raw-pdf'))
         : (currentIframe.getAttribute('data-raw-pdf') || currentIframe.getAttribute('data-native-pdf'));
       const safePdfPath = getSafeDossierPdfUrl(candidatePdf, isNative);
-      const isSafePath = typeof safePdfPath === 'string' && (safePdfPath.startsWith('/') || safePdfPath.startsWith('https://ia601409.us.archive.org/'));
-      const rawPdfPath = isSafePath ? safePdfPath : DEFAULT_PDF;
+      const normalizedPdfPath = (typeof safePdfPath === 'string' && safePdfPath.startsWith('assets/docs/'))
+        ? ('/' + safePdfPath)
+        : safePdfPath;
+      const isSafePath = typeof normalizedPdfPath === 'string' && (normalizedPdfPath.startsWith('/') || normalizedPdfPath.startsWith('https://ia601409.us.archive.org/'));
+      const rawPdfPath = isSafePath ? normalizedPdfPath : DEFAULT_PDF_FALLBACK;
       const finalPdfPath = sanitizeDossierPdfPath(rawPdfPath);
 
       const currentTheme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';

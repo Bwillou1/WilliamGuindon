@@ -1150,68 +1150,10 @@
   // ACCÉLÉRATEUR DE NAVIGATION LOCALE ET FLUIDITÉ (PREFETCHING LOCAL INTELLIGENT)
   // =========================================================================
   function initLocalNavigationAccelerator() {
-    // Si l'utilisateur est en mode économie de données, ne pas précharger
-    if (navigator.connection && (navigator.connection.saveData || (navigator.connection.effectiveType && navigator.connection.effectiveType.includes('2g')))) {
-      return;
-    }
-
-    const prefetchedUrls = new Set();
-    const currentOrigin = window.location.origin;
-
-    function prefetchUrl(url) {
-      if (!url || prefetchedUrls.has(url)) return;
-      try {
-        const parsed = new URL(url, window.location.href);
-        // Seulement les pages internes du même domaine
-        if (parsed.origin !== currentOrigin) return;
-        // Ignorer les fichiers non-HTML (pdf, images, etc.) et les interfaces d'administration/sensibles
-        const path = parsed.pathname.toLowerCase();
-        if (path.endsWith('.pdf') || path.endsWith('.zip') || path.includes('admin') || path.includes('editeur') || path.includes('reload')) {
-          return;
-        }
-        // Ignorer si c'est la même page avec juste un hash différent
-        if (parsed.pathname === window.location.pathname) return;
-
-        prefetchedUrls.add(url);
-
-        // <link rel="prefetch"> natif pour mise en cache navigateur immédiate
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = parsed.href;
-        link.as = 'document';
-        document.head.appendChild(link);
-      } catch (_) {}
-    }
-
-    // Préchargement instantané au survol de la souris ou au touch
-    function onPointerOver(e) {
-      if (!e.target) return;
-      const anchor = e.target.closest ? e.target.closest('a') : null;
-      if (!anchor) return;
-      const href = anchor.getAttribute('href');
-      if (!href || href.startsWith('#')) return;
-      try {
-        const parsed = new URL(href, window.location.href);
-        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return;
-        prefetchUrl(parsed.href);
-      } catch (_) {}
-    }
-
-    document.addEventListener('pointerover', onPointerOver, { passive: true });
-    document.addEventListener('touchstart', onPointerOver, { passive: true });
-
-    // Préchargement échelonné des pages de navigation principales au repos
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => {
-        const navLinks = document.querySelectorAll('header.site nav a[href$=".html"]');
-        navLinks.forEach((a, index) => {
-          setTimeout(() => {
-            const h = a.getAttribute('href');
-            if (h) prefetchUrl(h);
-          }, index * 200);
-        });
-      }, { timeout: 3000 });
-    }
+    // Désactivé : le préchargement massif de 25+ pages .html au chargement et au survol
+    // provoquait une saturation (HTTP 503 Service Unavailable) sur GitHub Pages / Cloudflare
+    // ainsi que des erreurs de FetchEvent sur les routes virtuelles /d/*.
+    return;
   }
 
   /**

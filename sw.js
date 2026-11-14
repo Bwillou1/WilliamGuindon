@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v257';
+const CACHE_NAME = 'wg-pwa-v258';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -139,18 +139,53 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Ne jamais intercepter les requêtes partielles (Range requests : streaming vidéo, audio, lecture PDF par morceaux)
-  // afin de laisser le navigateur et le serveur traiter directement les codes HTTP 206
-  if (event.request.headers.has('range')) {
+  // Ne jamais intercepter les requêtes partielles (Range requests) ni les requêtes de préchargement (prefetch)
+  if (
+    event.request.headers.has('range') ||
+    event.request.headers.get('Purpose') === 'prefetch' ||
+    event.request.headers.get('Sec-Purpose') === 'prefetch'
+  ) {
     return;
   }
 
-  // 1. Accélération locale maximale pour les images, styles, polices, scripts et données JSON (Cache-First + synchronisation silencieuse)
+  // 0. Pièces documentaires (/assets/docs/ et fichiers PDF) : ne JAMAIS les enregistrer automatiquement sur l'appareil via le SW.
+  // En ligne, le navigateur les charge directement depuis GitHub/Cloudflare sans clonage ni écriture disque.
+  // Hors-ligne uniquement, on vérifie si l'utilisateur a explicitement activé le "Mode Local".
+  if (url.pathname.startsWith('/assets/docs/') || url.pathname.toLowerCase().endsWith('.pdf')) {
+    if (self.navigator && self.navigator.onLine !== false) {
+      return;
+    }
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(event.request);
+      })
+    );
+    return;
+  }
+
+  // 1. Moteur de rendu embarqué (/assets/vendor/) : Cache-First pur sans re-téléchargement redondant
+  if (url.pathname.startsWith('/assets/vendor/')) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(event.request).then((networkResponse) => {
+          if (isCacheable(event.request, networkResponse)) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
+  // 1b. Accélération locale pour les images, styles, polices, scripts et données JSON (hors /assets/docs/)
   const isAcceleratedLocalAsset = event.request.destination === 'image' || 
                                   event.request.destination === 'style' || 
                                   event.request.destination === 'script' || 
                                   event.request.destination === 'font' ||
-                                  url.pathname.startsWith('/assets/') ||
                                   url.pathname.endsWith('.json') ||
                                   url.pathname.endsWith('.svg') ||
                                   /\.(webp|jpg|jpeg|png|svg|ico|gif|css|js|woff2?|ttf|eot|json)$/i.test(url.pathname);
@@ -293,7 +328,7 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse;
         }
 
-        return Promise.reject(new Error('Ressource hors-ligne indisponible'));
+        return new Response('', { status: 504, statusText: 'Offline' });
       })
   );
 });

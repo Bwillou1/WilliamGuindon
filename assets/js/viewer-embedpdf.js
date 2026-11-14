@@ -1406,36 +1406,48 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           }
 
           // 2. Empêcher toute suppression ou altération des éléments probatoires originaux
-          const originalDelete = annotationApi.deleteAnnotation;
-          if (typeof originalDelete === 'function') {
-            annotationApi.deleteAnnotation = function(pageIndex, id, docId) {
-              const targetId = (typeof id === 'string') ? id : pageIndex;
-              if (nativeAnnotationUids.has(targetId) && !userAnnotationUids.has(targetId)) {
-                console.warn('[Sécurité probatoire] Interdiction formelle de supprimer un élément original du document.');
-                return;
-              }
-              const res = originalDelete.apply(this, arguments);
-              debounceSaveAnnotations();
-              return res;
-            };
-          }
-          const originalDeleteMany = annotationApi.deleteAnnotations;
-          if (typeof originalDeleteMany === 'function') {
-            annotationApi.deleteAnnotations = function(items, docId) {
-              const filtered = (items || []).filter(it => {
-                const uid = (it && typeof it === 'object') ? it.id : it;
-                return !nativeAnnotationUids.has(uid) || userAnnotationUids.has(uid);
-              });
-              if (filtered.length !== (items || []).length) {
-                console.warn('[Sécurité probatoire] Éléments originaux préservés de la suppression.');
-              }
-              if (filtered.length > 0) {
-                const res = originalDeleteMany.call(this, filtered, docId);
+          // Note : annotationApi est un objet gelé (Object.freeze) en mode strict ; on intervient sur l'instance du plugin sous try/catch
+          try {
+            if (annotationPlugin && typeof annotationPlugin.deleteAnnotation === 'function') {
+              const originalDelete = annotationPlugin.deleteAnnotation.bind(annotationPlugin);
+              annotationPlugin.deleteAnnotation = function(pageIndex, id, docId) {
+                const targetId = (typeof id === 'string') ? id : pageIndex;
+                if (nativeAnnotationUids.has(targetId) && !userAnnotationUids.has(targetId)) {
+                  console.warn('[Sécurité probatoire] Interdiction formelle de supprimer un élément original du document.');
+                  return;
+                }
+                const res = originalDelete(pageIndex, id, docId);
                 debounceSaveAnnotations();
                 return res;
+              };
+            }
+            if (annotationPlugin && typeof annotationPlugin.deleteAnnotationsMethod === 'function') {
+              const originalDeleteMany = annotationPlugin.deleteAnnotationsMethod.bind(annotationPlugin);
+              annotationPlugin.deleteAnnotationsMethod = function(items, docId) {
+                const filtered = (items || []).filter(it => {
+                  const uid = (it && typeof it === 'object') ? it.id : it;
+                  return !nativeAnnotationUids.has(uid) || userAnnotationUids.has(uid);
+                });
+                if (filtered.length > 0) {
+                  const res = originalDeleteMany(filtered, docId);
+                  debounceSaveAnnotations();
+                  return res;
+                }
+              };
+            }
+          } catch (_) {}
+
+          // Accélérer le délai de validation (commitDelay) du dessin à main levée (120 ms au lieu de 800 ms)
+          try {
+            const tools = (typeof annotationApi.getTools === 'function') ? annotationApi.getTools() : (annotationPlugin && annotationPlugin.state ? annotationPlugin.state.tools : null);
+            if (Array.isArray(tools)) {
+              for (const t of tools) {
+                if (t && t.behavior && typeof t.behavior.commitDelay === 'number') {
+                  t.behavior.commitDelay = 120;
+                }
               }
-            };
-          }
+            }
+          } catch (_) {}
 
           // 3. Désélectionner immédiatement tout élément natif pour empêcher la sélection et les poignées
           function deselectIfNative() {
@@ -1564,9 +1576,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           if (!hasRegisteredLifecycleListeners) {
             hasRegisteredLifecycleListeners = true;
             if (dom.container) {
-              dom.container.addEventListener('pointerup', saveCurrentAnnotationsNow, { passive: true });
-              dom.container.addEventListener('mouseup', saveCurrentAnnotationsNow, { passive: true });
-              dom.container.addEventListener('touchend', saveCurrentAnnotationsNow, { passive: true });
+              const onPointerFinish = () => {
+                saveCurrentAnnotationsNow();
+                setTimeout(saveCurrentAnnotationsNow, 200);
+                setTimeout(saveCurrentAnnotationsNow, 900);
+              };
+              dom.container.addEventListener('pointerup', onPointerFinish, { passive: true });
+              dom.container.addEventListener('mouseup', onPointerFinish, { passive: true });
+              dom.container.addEventListener('touchend', onPointerFinish, { passive: true });
             }
 
             window.addEventListener('beforeunload', saveCurrentAnnotationsNow);
