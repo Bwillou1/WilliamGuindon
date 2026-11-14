@@ -1572,6 +1572,9 @@
             });
             updatedBadge = ' · ' + 'Template 1 email link updated for: ' + fedMp.name + ' (' + mpEmail + ')';
           }
+          if (typeof window.wgApplyOpenNorthContext === 'function') {
+            window.wgApplyOpenNorthContext(data.city || '', fedMp ? (fedMp.district_name || '') : '', fedMp ? (fedMp.name || '') : '');
+          }
           statusEl.textContent = (data.city ? data.city + ' (' + (data.province || '') + ') — ' : '') + 'Federal MP only (House of Commons).' + updatedBadge;
           resultsEl.innerHTML = unique.map(function(r) {
             var email = r.email ? String(r.email).trim() : '';
@@ -1613,6 +1616,154 @@
           setTimeout(function() { btn.textContent = 'Copy email'; }, 1800);
         }
       });
+    })();
+    </script>
+
+    <!-- Automatic letter personalization (100% local in browser memory) -->
+    <div id="citizen-letter-customizer" style="background: var(--surface, #f8fafc); border: 1px solid var(--line, #cbd5e1); border-left: 4px solid #0a3622; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+        <h3 style="margin: 0; font-size: 1.05rem; color: var(--text-color);">Auto-personalize the templates below</h3>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">100% local in your browser · nothing is transmitted</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px;">
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          First name
+          <input id="cust-first-name" type="text" placeholder="e.g., Camille" autocomplete="given-name" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          Last name
+          <input id="cust-last-name" type="text" placeholder="e.g., Tremblay" autocomplete="family-name" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          City
+          <input id="cust-city" type="text" placeholder="e.g., Blainville" autocomplete="address-level2" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          Riding
+          <input id="cust-riding" type="text" placeholder="e.g., Thérèse-De Blainville" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          Pronoun / Agreement
+          <select id="cust-pronoun" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+            <option value="neutral">Prefer not to say (inclusive ·)</option>
+            <option value="il">He / Il (masculine)</option>
+            <option value="elle">She / Elle (feminine)</option>
+            <option value="iel">They / Iel (inclusive ·)</option>
+          </select>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          Language
+          <select id="cust-lang" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+            <option value="/agir.html">Français</option>
+            <option value="/en/agir.html" selected>English</option>
+            <option value="/es/agir.html">Español</option>
+          </select>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; font-weight: 700; color: var(--text-color);">
+          Email (optional)
+          <input id="cust-email" type="email" placeholder="e.g., name@example.ca" autocomplete="email" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.9rem; font-weight: 500;">
+        </label>
+      </div>
+    </div>
+    <script>
+    (function() {
+      var fnEl = document.getElementById('cust-first-name');
+      var lnEl = document.getElementById('cust-last-name');
+      var cityEl = document.getElementById('cust-city');
+      var ridingEl = document.getElementById('cust-riding');
+      var pronEl = document.getElementById('cust-pronoun');
+      var langEl = document.getElementById('cust-lang');
+      var emailEl = document.getElementById('cust-email');
+      if (!fnEl || !lnEl || !cityEl || !ridingEl || !pronEl) return;
+
+      var previews = Array.prototype.slice.call(document.querySelectorAll('#lettres .letter-preview-box'));
+      var mailtos = Array.prototype.slice.call(document.querySelectorAll('#lettres a[href^="mailto:"]'));
+      previews.forEach(function(el) { el.dataset.origText = el.textContent; });
+      mailtos.forEach(function(a) { a.dataset.origHref = a.getAttribute('href') || ''; });
+
+      var autoMpName = '';
+
+      function personalizeText(txt) {
+        var first = fnEl.value.trim();
+        var last = lnEl.value.trim();
+        var fullName = [first, last].filter(Boolean).join(' ');
+        var city = cityEl.value.trim();
+        var riding = ridingEl.value.trim();
+        var email = emailEl ? emailEl.value.trim() : '';
+        var pron = pronEl.value;
+
+        var out = txt;
+        if (autoMpName) {
+          out = out.replace(/Madame\/Monsieur \[Nom\]/g, 'Madame/Monsieur ' + autoMpName);
+        }
+        if (fullName) {
+          out = out.replace(/\[prénom nom\]/g, fullName).replace(/\[Prénom Nom\]/g, fullName);
+        }
+        if (riding) {
+          out = out.replace(/\[circonscription\]/g, riding).replace(/\[Circonscription\]/g, riding);
+        }
+        if (city) {
+          out = out.replace(/\[ville\]/g, city).replace(/\[Ville\]/g, city);
+        }
+        if (email) {
+          out = out.replace(/\[courriel\]/g, email).replace(/\[Courriel\]/g, email);
+        }
+        if (pron === 'il') {
+          out = out
+            .replace(/électeur·rice/g, 'électeur')
+            .replace(/citoyen·ne/g, 'citoyen')
+            .replace(/présent·e/g, 'présent')
+            .replace(/voisin·e/g, 'voisin');
+        } else if (pron === 'elle') {
+          out = out
+            .replace(/électeur·rice/g, 'électrice')
+            .replace(/citoyen·ne/g, 'citoyenne')
+            .replace(/présent·e/g, 'présente')
+            .replace(/voisin·e/g, 'voisine');
+        }
+        return out;
+      }
+
+      function applyAll() {
+        previews.forEach(function(el) {
+          el.textContent = personalizeText(el.dataset.origText || '');
+        });
+        mailtos.forEach(function(a) {
+          var currentHref = a.getAttribute('href') || '';
+          var curQ = currentHref.indexOf('?');
+          var currentRecipient = curQ !== -1 ? currentHref.slice(0, curQ) : currentHref;
+          var orig = a.dataset.origHref || '';
+          var origQ = orig.indexOf('?');
+          if (origQ === -1) return;
+          var params = new URLSearchParams(orig.slice(origQ + 1));
+          var body = params.get('body');
+          if (body !== null) {
+            params.set('body', personalizeText(body));
+            a.setAttribute('href', currentRecipient + '?' + params.toString().replace(/\+/g, '%20'));
+          }
+        });
+      }
+
+      window.wgApplyOpenNorthContext = function(city, riding, mpName) {
+        if (city && !cityEl.dataset.userEdited) cityEl.value = city;
+        if (riding && !ridingEl.dataset.userEdited) ridingEl.value = riding;
+        autoMpName = mpName || '';
+        applyAll();
+      };
+
+      cityEl.addEventListener('input', function() { cityEl.dataset.userEdited = cityEl.value.trim() ? '1' : ''; });
+      ridingEl.addEventListener('input', function() { ridingEl.dataset.userEdited = ridingEl.value.trim() ? '1' : ''; });
+      [fnEl, lnEl, cityEl, ridingEl, emailEl].forEach(function(el) {
+        if (el) el.addEventListener('input', applyAll);
+      });
+      pronEl.addEventListener('change', applyAll);
+      if (langEl) {
+        langEl.addEventListener('change', function() {
+          if (langEl.value && window.location.pathname !== langEl.value) {
+            window.location.href = langEl.value + '#lettres';
+          }
+        });
+      }
     })();
     </script>
 
