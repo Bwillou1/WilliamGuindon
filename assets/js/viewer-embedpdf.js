@@ -366,6 +366,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   let autoSaveIntervalId = null;
   let loadingWatchdogTimer = null;
   let hasLoadedAnnotations = false;
+  let hasUserDeletedAnnotations = false;
+  let skipUnloadSave = false;
   let hasRegisteredLifecycleListeners = false;
   const nativeAnnotationUids = new Set();
   const userAnnotationUids = new Set();
@@ -373,6 +375,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   function getVaultDocKey(file) {
     if (!file || typeof file !== 'string') return '';
     return file.trim().replace(/^(\.\/|\/)+/, '').normalize('NFC');
+  }
+
+  function getCanonicalDocStem(pathStr) {
+    const norm = getVaultDocKey(pathStr);
+    if (!norm) return '';
+    const base = norm.split('/').pop() || '';
+    return base
+      .toLowerCase()
+      .replace(/\s*\(\d+\)(?=\.[^.]+$)/, '')
+      .replace(/^26-3-det2_fr/, '26-2-det2_fr')
+      .trim();
   }
 
   function isUserAnnotation(annot) {
@@ -439,6 +452,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
         if (vault.documents['/' + norm] && Array.isArray(vault.documents['/' + norm].annotations)) {
           return vault.documents['/' + norm].annotations;
+        }
+        const targetStem = getCanonicalDocStem(norm);
+        if (targetStem) {
+          for (const docKey in vault.documents) {
+            if (getCanonicalDocStem(docKey) === targetStem && Array.isArray(vault.documents[docKey].annotations) && vault.documents[docKey].annotations.length > 0) {
+              return vault.documents[docKey].annotations;
+            }
+          }
         }
       }
     } catch (_) {}
@@ -536,7 +557,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   function performSaveAnnotations(registry) {
-    if (!registry || !hasLoadedAnnotations) return Promise.resolve(false);
+    if (!registry || !hasLoadedAnnotations || skipUnloadSave) return Promise.resolve(false);
     try {
       const annotationApi = getAnnotationPluginApi(registry);
       if (!annotationApi) return Promise.resolve(false);
@@ -602,7 +623,10 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           localStorage.setItem(key, JSON.stringify(userAnnotations));
           saveToVault(norm, userAnnotations);
         } catch (_) {}
-      } else {
+        if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.setDocumentAnnotations === 'function') {
+          return window.WGAnnotationsIDB.setDocumentAnnotations(norm, userAnnotations);
+        }
+      } else if (hasUserDeletedAnnotations) {
         try {
           const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
           if (localStorage.getItem(key)) {
@@ -611,10 +635,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             removeFromVault(norm);
           }
         } catch (_) {}
-      }
-
-      if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.setDocumentAnnotations === 'function') {
-        return window.WGAnnotationsIDB.setDocumentAnnotations(norm, userAnnotations);
+        if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.setDocumentAnnotations === 'function') {
+          return window.WGAnnotationsIDB.setDocumentAnnotations(norm, []);
+        }
       }
       return Promise.resolve(true);
     } catch (err) {
@@ -1103,6 +1126,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     clearTimeout(loadingWatchdogTimer);
     loadingWatchdogTimer = null;
     hasLoadedAnnotations = false;
+    hasUserDeletedAnnotations = false;
+    skipUnloadSave = false;
     activeEmbedRegistry = null;
 
     currentTargetFile = getSafeDocUrl(fileUrl);
@@ -1548,6 +1573,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
                 restoreAnnotationsForActiveDoc();
                 return;
               }
+              if (ev && ev.type === 'delete') {
+                hasUserDeletedAnnotations = true;
+              }
               deselectIfNative();
               if (hasLoadedAnnotations) {
                 debounceSaveAnnotations();
@@ -1592,6 +1620,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
               if (document.visibilityState === 'hidden') saveCurrentAnnotationsNow();
             });
             window.addEventListener('message', (ev) => {
+              if (ev.data && ev.data.type === 'wg:reload-annotations-from-storage') {
+                skipUnloadSave = true;
+                hasLoadedAnnotations = false;
+                restoreAnnotationsForActiveDoc().finally(() => {
+                  skipUnloadSave = false;
+                });
+                return;
+              }
               if (ev.data && ev.data.type === 'wg:save-annotations-now') {
                 const reqId = ev.data.requestId;
                 Promise.resolve(saveCurrentAnnotationsNow()).finally(() => {

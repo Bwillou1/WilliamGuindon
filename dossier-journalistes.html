@@ -6358,7 +6358,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         const previewStage = document.getElementById('preview-stage');
         const activeIframe = previewStage ? previewStage.querySelector('iframe') : null;
         if (activeIframe && activeIframe.src) {
-          activeIframe.src = activeIframe.src;
+          try {
+            if (activeIframe.contentWindow) {
+              activeIframe.contentWindow.postMessage({ type: 'wg:reload-annotations-from-storage' }, '*');
+            }
+          } catch (_) {}
+          setTimeout(() => {
+            try { activeIframe.src = activeIframe.src; } catch (_) {}
+          }, 120);
         }
 
         const dd = document.getElementById('dropdown-header-actions');
