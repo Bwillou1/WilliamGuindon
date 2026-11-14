@@ -151,15 +151,15 @@
 </head>
 <body>
   <main class="card">
-    <div class="badge"><span class="dot" aria-hidden="true"></span> Intervention technique en cours</div>
-    <h1>Site temporairement en construction</h1>
+    <div class="badge"><span class="dot" aria-hidden="true"></span> Publication vidéo imminente · 19 h 30</div>
+    <h1>Dans moins de <span id="countdown-inline" style="color:#4ade80;">--:--:--</span>, vous allez savoir la vérité.</h1>
     <p class="lead">
-      <strong>williamguindon.me</strong> fait actuellement l'objet d'une mise à jour importante et peut être momentanément indisponible.
-      Les annonces et suivis en direct sont publiés sur Facebook en attendant le retour complet du site.
+      <strong>williamguindon.me</strong> est temporairement redirigé pendant la mise en ligne d'une publication vidéo majeure.
+      Suivez la sortie en direct sur Facebook à <strong>19 h 30</strong>.
     </p>
 
     <div class="countdown-box" role="timer" aria-live="polite">
-      <div class="countdown-label">Compte à rebours — Rendez-vous à 19 h 30 (HE)</div>
+      <div class="countdown-label">Compte à rebours officiel — 19 h 30 (HE)</div>
       <div class="countdown-timer" id="countdown-1930">--:--:--</div>
       <div class="countdown-sub" id="countdown-status">Samedi 14 novembre 2026 à 19 h 30 (heure de l'Est)</div>
     </div>
@@ -167,7 +167,7 @@
     <div class="actions">
       <a class="btn-fb" href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
-        Suivre sur Facebook (William Guindon) ↗
+        Voir la publication vidéo sur Facebook ↗
       </a>
       <button type="button" class="btn-refresh" id="btn-reload">Actualiser la page</button>
     </div>
@@ -182,6 +182,7 @@
     (function() {
       var targetMs = Date.parse('2026-11-14T19:30:00-05:00');
       var timerEl = document.getElementById('countdown-1930');
+      var inlineEl = document.getElementById('countdown-inline');
       var statusEl = document.getElementById('countdown-status');
       var reloadBtn = document.getElementById('btn-reload');
 
@@ -191,14 +192,17 @@
         var diff = targetMs - Date.now();
         if (diff <= 0) {
           timerEl.textContent = '00:00:00';
-          statusEl.textContent = 'Mise à jour en cours — consultez la page Facebook ou actualisez dans quelques instants.';
+          if (inlineEl) inlineEl.textContent = 'quelques instants';
+          statusEl.innerHTML = 'Publication en cours — <a href="/" style="color:#4ade80;">accéder au site</a> ou consulter Facebook.';
           return;
         }
         var totalSec = Math.floor(diff / 1000);
         var h = Math.floor(totalSec / 3600);
         var m = Math.floor((totalSec % 3600) / 60);
         var s = totalSec % 60;
-        timerEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+        var fmt = pad(h) + ':' + pad(m) + ':' + pad(s);
+        timerEl.textContent = fmt;
+        if (inlineEl) inlineEl.textContent = (h > 0 ? h + ' h ' : '') + pad(m) + ' min ' + pad(s) + ' s';
       }
 
       tick();
