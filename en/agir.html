@@ -1500,7 +1500,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <h3 style="margin: 0; font-size: 1.12rem; color: var(--text-color);">Find your elected representatives and emails by postal code</h3>
       </div>
-      <p style="margin: 0 0 14px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.5;">Enter your Canadian postal code (6 characters, e.g., J7C 1A1) to instantly retrieve contact details for your federal, provincial, and municipal representatives via OpenNorth's public API.</p>
+      <p style="margin: 0 0 14px; font-size: 0.92rem; color: var(--text-muted); line-height: 1.5;">Enter your Canadian postal code (6 characters, e.g., J7C 1A1) to find your <strong>federal Member of Parliament (MP)</strong> and automatically update the email link in the template below. <em>Privacy: your postal code stays in your browser and is never sent to or stored on williamguindon.me (direct browser request to OpenNorth's public API; federal level only).</em></p>
       <form id="opennorth-form" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
         <input id="opennorth-postcode" type="text" maxlength="7" placeholder="E.g.: J7C 1A1" autocomplete="postal-code" style="flex: 1 1 180px; max-width: 220px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line, #cbd5e1); background: var(--bg, #ffffff); color: var(--text-color); font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">
         <button type="submit" style="padding: 10px 18px; border-radius: 8px; border: none; background: #0284c7; color: #ffffff; font-weight: 700; font-size: 0.92rem; cursor: pointer;">Find my representatives</button>
@@ -1547,14 +1547,32 @@
           var seen = Object.create(null);
           var unique = [];
           list.forEach(function(r) {
-            var k = (r.name || '') + '|' + (r.elected_office || '');
+            var office = String(r.elected_office || '').toUpperCase();
+            var setName = String(r.representative_set_name || '').toLowerCase();
+            var isFed = (office === 'MP' || office === 'DÉPUTÉ' || office === 'DÉPUTÉE' || setName.indexOf('house of commons') !== -1 || setName.indexOf('chambre des communes') !== -1);
+            if (!isFed) return;
+            var k = (r.name || '') + '|' + office;
             if (!seen[k]) { seen[k] = true; unique.push(r); }
           });
           if (!unique.length) {
             statusEl.textContent = 'No representatives found for this postal code.';
             return;
           }
-          statusEl.textContent = (data.city ? data.city + ' (' + (data.province || '') + ') — ' : '') + unique.length + ' résultat(s)';
+          var fedMp = unique.find(function(r) { return r.email && String(r.email).trim(); });
+          var updatedBadge = '';
+          if (fedMp) {
+            var mpEmail = String(fedMp.email).trim();
+            document.querySelectorAll('#modele-depute a[href^="mailto:"]').forEach(function(a) {
+              var h = a.getAttribute('href') || '';
+              if (h.indexOf('madeleine.chenette@parl.gc.ca') !== -1 || h.indexOf('parl.gc.ca') !== -1 || h.indexOf('mailto:?') === 0) {
+                var qIdx = h.indexOf('?');
+                var qs = qIdx !== -1 ? h.slice(qIdx) : '';
+                a.setAttribute('href', 'mailto:' + mpEmail + qs);
+              }
+            });
+            updatedBadge = ' · ' + 'Template 1 email link updated for: ' + fedMp.name + ' (' + mpEmail + ')';
+          }
+          statusEl.textContent = (data.city ? data.city + ' (' + (data.province || '') + ') — ' : '') + 'Federal MP only (House of Commons).' + updatedBadge;
           resultsEl.innerHTML = unique.map(function(r) {
             var email = r.email ? String(r.email).trim() : '';
             var mailto = email ? 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent('CEC File SEM-26-003 & Petition 0546 — Grande Tourbière de Blainville') : '';
