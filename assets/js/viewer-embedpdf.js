@@ -505,19 +505,34 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     return (typeof plugin.provides === 'function') ? plugin.provides() : plugin;
   }
 
-  function extractAnnotationDocState(annotationApi) {
-    if (!annotationApi || typeof annotationApi.getState !== 'function') return null;
-    const rawState = annotationApi.getState();
-    if (!rawState || typeof rawState !== 'object') return null;
-    if (rawState.pages && rawState.byUid) return rawState;
-    if (rawState.documents && typeof rawState.documents === 'object') {
-      if (rawState.activeDocumentId && rawState.documents[rawState.activeDocumentId]) {
-        return rawState.documents[rawState.activeDocumentId];
+  function extractAnnotationDocState(annotationApi, registry) {
+    try {
+      const reg = registry || activeEmbedRegistry;
+      if (reg && typeof reg.getPlugin === 'function') {
+        const plugin = reg.getPlugin('annotation');
+        if (plugin && typeof plugin.getActiveDocumentIdOrNull === 'function') {
+          const docId = plugin.getActiveDocumentIdOrNull();
+          if (!docId) return null;
+          if (plugin.state && plugin.state.documents && plugin.state.documents[docId]) {
+            return plugin.state.documents[docId];
+          }
+        }
       }
-      const firstDoc = Object.values(rawState.documents)[0];
-      if (firstDoc && typeof firstDoc === 'object') return firstDoc;
+      if (!annotationApi || typeof annotationApi.getState !== 'function') return null;
+      const rawState = annotationApi.getState();
+      if (!rawState || typeof rawState !== 'object') return null;
+      if (rawState.pages && rawState.byUid) return rawState;
+      if (rawState.documents && typeof rawState.documents === 'object') {
+        if (rawState.activeDocumentId && rawState.documents[rawState.activeDocumentId]) {
+          return rawState.documents[rawState.activeDocumentId];
+        }
+        const firstDoc = Object.values(rawState.documents)[0];
+        if (firstDoc && typeof firstDoc === 'object') return firstDoc;
+      }
+      return rawState;
+    } catch (_) {
+      return null;
     }
-    return rawState;
   }
 
   function performSaveAnnotations(registry) {
@@ -527,7 +542,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       if (!annotationApi) return Promise.resolve(false);
 
       const userAnnotations = [];
-      const state = extractAnnotationDocState(annotationApi);
+      const seenUids = new Set();
+      const state = extractAnnotationDocState(annotationApi, registry);
       if (!state || !state.byUid) return Promise.resolve(false);
 
       if (state.pages && state.byUid) {
@@ -535,12 +551,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           const pageIndex = Number(pageIdxStr);
           const uids = state.pages[pageIdxStr] || [];
           for (const uid of uids) {
+            if (seenUids.has(uid)) continue;
             if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
             const entry = state.byUid[uid];
             if (!entry || entry.commitState === 'deleted') continue;
             const annot = entry.object;
             if (!annot || !isUserAnnotation(annot)) continue;
 
+            seenUids.add(uid);
             const copy = JSON.parse(JSON.stringify(annot));
             copy.pageIndex = pageIndex;
             if (copy.id) userAnnotationUids.add(copy.id);
@@ -553,26 +571,50 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       }
 
-      const norm = getVaultDocKey(currentTargetFile);
-      if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.setDocumentAnnotations === 'function') {
-        return window.WGAnnotationsIDB.setDocumentAnnotations(norm, userAnnotations);
+      for (const uid in state.byUid) {
+        if (seenUids.has(uid)) continue;
+        if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
+        const entry = state.byUid[uid];
+        if (!entry || entry.commitState === 'deleted') continue;
+        const annot = entry.object;
+        if (!annot || !isUserAnnotation(annot)) continue;
+
+        seenUids.add(uid);
+        const pageIndex = typeof annot.pageIndex === 'number' ? annot.pageIndex : 0;
+        const copy = JSON.parse(JSON.stringify(annot));
+        copy.pageIndex = pageIndex;
+        if (copy.id) userAnnotationUids.add(copy.id);
+
+        userAnnotations.push({
+          pageIndex: pageIndex,
+          annotation: copy
+        });
       }
 
+      if (state.hasPendingChanges && typeof annotationApi.commit === 'function') {
+        try { annotationApi.commit(); } catch (_) {}
+      }
+
+      const norm = getVaultDocKey(currentTargetFile);
       if (userAnnotations.length > 0) {
-        const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-        const keySlash = `wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`;
         try {
+          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
           localStorage.setItem(key, JSON.stringify(userAnnotations));
-          localStorage.setItem(keySlash, JSON.stringify(userAnnotations));
+          saveToVault(norm, userAnnotations);
         } catch (_) {}
-        saveToVault(norm, userAnnotations);
       } else {
-        const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
-        if (Object.keys(state.byUid).length > 0 && localStorage.getItem(key)) {
-          localStorage.removeItem(key);
-          localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
-          removeFromVault(norm);
-        }
+        try {
+          const key = `wg_embedpdf_annotations_${encodeURIComponent(norm)}`;
+          if (localStorage.getItem(key)) {
+            localStorage.removeItem(key);
+            localStorage.removeItem(`wg_embedpdf_annotations_${encodeURIComponent('/' + norm)}`);
+            removeFromVault(norm);
+          }
+        } catch (_) {}
+      }
+
+      if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.setDocumentAnnotations === 'function') {
+        return window.WGAnnotationsIDB.setDocumentAnnotations(norm, userAnnotations);
       }
       return Promise.resolve(true);
     } catch (err) {
@@ -1327,49 +1369,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       });
 
-      // Chien de garde contre un chargement infini (ex. worker bloqué ou blob URL)
-      loadingWatchdogTimer = setTimeout(() => {
-        try {
-          const sr = getEmbedPdfShadowRoot();
-          const hasRenderedCanvas = sr && sr.querySelector('canvas');
-          if (hasRenderedCanvas) return;
-
-          if (useWorker) {
-            console.warn('[EmbedPDF] Chargement trop long avec worker, bascule vers le moteur direct.');
-            initEmbedPDF(fileUrl, true);
-            return;
-          }
-
-          if (dom.container && !dom.container.querySelector('.wg-loading-fallback-bar')) {
-            const bar = document.createElement('div');
-            bar.className = 'wg-loading-fallback-bar';
-            bar.style.cssText = 'position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:9999;background:#0f172a;color:#f8fafc;padding:10px 16px;border-radius:10px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,0.25);font-size:13px;';
-            bar.innerHTML = '<span>Le chargement du lecteur prend plus de temps que prévu.</span>';
-            const btnRetry = document.createElement('button');
-            btnRetry.type = 'button';
-            btnRetry.textContent = 'Recharger';
-            btnRetry.style.cssText = 'background:#10b981;color:#052e16;border:none;border-radius:6px;padding:6px 12px;font-weight:700;cursor:pointer;';
-            btnRetry.onclick = () => initEmbedPDF(fileUrl, true);
-            const linkNative = document.createElement('a');
-            linkNative.href = fullDocUrl;
-            linkNative.target = '_blank';
-            linkNative.rel = 'noopener';
-            linkNative.textContent = 'Ouvrir le PDF natif ↗';
-            linkNative.style.cssText = 'color:#6ee7b7;font-weight:600;text-decoration:underline;';
-            bar.appendChild(btnRetry);
-            bar.appendChild(linkNative);
-            dom.container.style.position = 'relative';
-            dom.container.appendChild(bar);
-          }
-        } catch (_) {}
-      }, 14000);
-
       // Configuration de la persistance et du verrouillage probatoire strict des annotations
       if (embedViewerInstance && embedViewerInstance.registry) {
-        embedViewerInstance.registry.then(async registry => {
+        embedViewerInstance.registry.then(registry => {
           clearTimeout(loadingWatchdogTimer);
           activeEmbedRegistry = registry;
-          const annotationApi = registry.getPlugin('annotation')?.provides();
+          const annotationPlugin = registry.getPlugin ? registry.getPlugin('annotation') : null;
+          const annotationApi = getAnnotationPluginApi(registry);
           if (!annotationApi) return;
 
           // 1. Verrouiller au niveau moteur les catégories de modification structurelle du document
@@ -1382,40 +1388,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             } catch (_) {}
           }
 
-          // 2. Attendre que le document PDF soit effectivement chargé avant de verrouiller/restaurer
-          await new Promise((resolve) => {
-            const start = Date.now();
-            const checkReady = () => {
-              const st = extractAnnotationDocState(annotationApi);
-              const sr = getEmbedPdfShadowRoot();
-              const hasCanvas = !!(sr && sr.querySelector('canvas'));
-              const hasPages = !!(st && st.pages && Object.keys(st.pages).length > 0);
-              if (hasCanvas || hasPages || (Date.now() - start) > 20000) {
-                resolve();
-                return;
-              }
-              setTimeout(checkReady, 150);
-            };
-            checkReady();
-          });
-
-          // Détecter et marquer tous les éléments déjà existants dans le PDF original
-          nativeAnnotationUids.clear();
-          userAnnotationUids.clear();
-
-          const initialState = extractAnnotationDocState(annotationApi);
-          if (initialState && initialState.byUid) {
-            for (const uid in initialState.byUid) {
-              nativeAnnotationUids.add(uid);
-            }
-          }
-
           function lockNativeElements() {
             try {
-              const state = extractAnnotationDocState(annotationApi);
+              const state = extractAnnotationDocState(annotationApi, registry);
               if (state && state.byUid) {
                 for (const uid in state.byUid) {
-                  // Ne verrouiller QUE les vrais éléments natifs d'origine, JAMAIS les annotations utilisateur
                   if (!nativeAnnotationUids.has(uid) || userAnnotationUids.has(uid)) continue;
                   const it = state.byUid[uid];
                   if (it && it.object) {
@@ -1425,17 +1402,15 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
                   }
                 }
               }
-            } catch (e) {
-              console.warn('Verrouillage natif:', e);
-            }
+            } catch (_) {}
           }
-          lockNativeElements();
 
-          // 3. Empêcher toute suppression ou altération des éléments probatoires originaux
+          // 2. Empêcher toute suppression ou altération des éléments probatoires originaux
           const originalDelete = annotationApi.deleteAnnotation;
           if (typeof originalDelete === 'function') {
-            annotationApi.deleteAnnotation = function(id, docId) {
-              if (nativeAnnotationUids.has(id) && !userAnnotationUids.has(id)) {
+            annotationApi.deleteAnnotation = function(pageIndex, id, docId) {
+              const targetId = (typeof id === 'string') ? id : pageIndex;
+              if (nativeAnnotationUids.has(targetId) && !userAnnotationUids.has(targetId)) {
                 console.warn('[Sécurité probatoire] Interdiction formelle de supprimer un élément original du document.');
                 return;
               }
@@ -1446,9 +1421,12 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           }
           const originalDeleteMany = annotationApi.deleteAnnotations;
           if (typeof originalDeleteMany === 'function') {
-            annotationApi.deleteAnnotations = function(ids, docId) {
-              const filtered = (ids || []).filter(id => !nativeAnnotationUids.has(id) || userAnnotationUids.has(id));
-              if (filtered.length !== (ids || []).length) {
+            annotationApi.deleteAnnotations = function(items, docId) {
+              const filtered = (items || []).filter(it => {
+                const uid = (it && typeof it === 'object') ? it.id : it;
+                return !nativeAnnotationUids.has(uid) || userAnnotationUids.has(uid);
+              });
+              if (filtered.length !== (items || []).length) {
                 console.warn('[Sécurité probatoire] Éléments originaux préservés de la suppression.');
               }
               if (filtered.length > 0) {
@@ -1459,71 +1437,130 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             };
           }
 
-          // 4. Restaurer les annotations utilisateur enregistrées dans le coffre (IndexedDB prioritaire)
-          try {
-            const savedItems = (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.getDocumentAnnotations === 'function')
-              ? await window.WGAnnotationsIDB.getDocumentAnnotations(currentTargetFile)
-              : getSavedAnnotationsForFile(currentTargetFile);
-            if (Array.isArray(savedItems) && savedItems.length > 0) {
-              const cleanUserItems = [];
-              for (const it of savedItems) {
-                const annot = it.annotation || it;
-                if (!annot || !isUserAnnotation(annot)) continue;
-                if (annot.id && nativeAnnotationUids.has(annot.id) && !userAnnotationUids.has(annot.id)) continue;
-
-                const pageIdx = (typeof it.pageIndex === 'number') ? it.pageIndex : ((typeof annot.pageIndex === 'number') ? annot.pageIndex : 0);
-                const copyAnnot = { ...annot, pageIndex: pageIdx };
-                if (copyAnnot.id) userAnnotationUids.add(copyAnnot.id);
-
-                cleanUserItems.push({
-                  pageIndex: pageIdx,
-                  annotation: copyAnnot
-                });
-              }
-
-              if (cleanUserItems.length > 0) {
-                annotationApi.importAnnotations(cleanUserItems);
-                // Réappliquer les drapeaux natifs après import sans toucher aux annotations utilisateur
-                setTimeout(lockNativeElements, 100);
-              }
-            }
-          } catch (err) {
-            console.warn('Erreur restauration annotations:', err);
-          } finally {
-            hasLoadedAnnotations = true;
-          }
-
-          // 5. Désélectionner immédiatement tout élément natif pour empêcher la sélection et les poignées
+          // 3. Désélectionner immédiatement tout élément natif pour empêcher la sélection et les poignées
           function deselectIfNative() {
             try {
               const sel = annotationApi.getSelectedAnnotation ? annotationApi.getSelectedAnnotation() : null;
-              if (sel && nativeAnnotationUids.has(sel.id) && !userAnnotationUids.has(sel.id)) {
+              const selId = sel && (sel.object ? sel.object.id : sel.id);
+              if (selId && nativeAnnotationUids.has(selId) && !userAnnotationUids.has(selId)) {
                 annotationApi.deselectAnnotation();
               }
             } catch (_) {}
           }
 
+          // 4. Restauration des annotations utilisateur dès que le document PDF a chargé ses éléments natifs
+          let restoreInProgress = false;
+          async function restoreAnnotationsForActiveDoc() {
+            if (hasLoadedAnnotations || restoreInProgress) return;
+            const state = extractAnnotationDocState(annotationApi, registry);
+            if (!state || !state.byUid) return;
+            if (annotationPlugin && typeof annotationPlugin.getActiveDocumentIdOrNull === 'function') {
+              const docId = annotationPlugin.getActiveDocumentIdOrNull();
+              if (!docId || (annotationPlugin.isInitialLoadComplete && !annotationPlugin.isInitialLoadComplete.get(docId))) {
+                return;
+              }
+            }
+
+            restoreInProgress = true;
+            try {
+              nativeAnnotationUids.clear();
+              userAnnotationUids.clear();
+
+              const initialState = extractAnnotationDocState(annotationApi, registry);
+              if (initialState && initialState.byUid) {
+                for (const uid in initialState.byUid) {
+                  nativeAnnotationUids.add(uid);
+                }
+              }
+              lockNativeElements();
+
+              let savedItems = [];
+              if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.getDocumentAnnotations === 'function') {
+                savedItems = await window.WGAnnotationsIDB.getDocumentAnnotations(currentTargetFile);
+              }
+              if (!Array.isArray(savedItems) || savedItems.length === 0) {
+                savedItems = getSavedAnnotationsForFile(currentTargetFile);
+              }
+
+              if (Array.isArray(savedItems) && savedItems.length > 0) {
+                const cleanUserItems = [];
+                for (const it of savedItems) {
+                  const annot = it.annotation || it;
+                  if (!annot || !isUserAnnotation(annot)) continue;
+                  if (annot.id && nativeAnnotationUids.has(annot.id) && !userAnnotationUids.has(annot.id)) continue;
+
+                  const pageIdx = (typeof it.pageIndex === 'number') ? it.pageIndex : ((typeof annot.pageIndex === 'number') ? annot.pageIndex : 0);
+                  const copyAnnot = {
+                    ...annot,
+                    id: annot.id || ('wg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
+                    pageIndex: pageIdx
+                  };
+                  userAnnotationUids.add(copyAnnot.id);
+
+                  cleanUserItems.push({
+                    pageIndex: pageIdx,
+                    annotation: copyAnnot
+                  });
+                }
+
+                if (cleanUserItems.length > 0) {
+                  annotationApi.importAnnotations(cleanUserItems);
+                  if (typeof annotationApi.commit === 'function') {
+                    try { annotationApi.commit(); } catch (_) {}
+                  }
+                  setTimeout(lockNativeElements, 120);
+                }
+              }
+              hasLoadedAnnotations = true;
+            } catch (err) {
+              console.warn('Erreur restauration annotations:', err);
+              hasLoadedAnnotations = true;
+            } finally {
+              restoreInProgress = false;
+            }
+          }
+
           if (typeof annotationApi.onStateChange === 'function') {
             annotationApi.onStateChange(() => {
               deselectIfNative();
+              if (!hasLoadedAnnotations) {
+                restoreAnnotationsForActiveDoc();
+              }
             });
           }
 
-          // 6. Écouter les événements d'annotation et sauvegarder
+          // 5. Écouter les événements d'annotation (événement 'loaded' + modifications utilisateur)
           if (typeof annotationApi.onAnnotationEvent === 'function') {
-            annotationApi.onAnnotationEvent(() => {
+            annotationApi.onAnnotationEvent((ev) => {
+              if (ev && ev.type === 'loaded') {
+                restoreAnnotationsForActiveDoc();
+                return;
+              }
               deselectIfNative();
-              debounceSaveAnnotations();
+              if (hasLoadedAnnotations) {
+                debounceSaveAnnotations();
+              }
             });
           }
 
-          // 7. Sauvegarde automatique périodique toutes les 30 secondes (30 000 ms)
+          // Vérification immédiate et périodique légère au cas où l'événement 'loaded' a déjà eu lieu
+          let pollCount = 0;
+          const readyPoll = setInterval(() => {
+            pollCount++;
+            if (hasLoadedAnnotations || pollCount > 150) {
+              clearInterval(readyPoll);
+              return;
+            }
+            restoreAnnotationsForActiveDoc();
+          }, 150);
+
+          // 6. Sauvegarde automatique périodique toutes les 30 secondes (30 000 ms)
           clearInterval(autoSaveIntervalId);
           autoSaveIntervalId = setInterval(() => {
             saveCurrentAnnotationsNow();
           }, 30000);
 
-          // 8. Écouteurs de sauvegarde immédiate (gestes de dessin, changement de page, unload, postMessage)
+          // 7. Écouteurs de sauvegarde immédiate (gestes de dessin, changement de page, unload, postMessage)
           if (!hasRegisteredLifecycleListeners) {
             hasRegisteredLifecycleListeners = true;
             if (dom.container) {

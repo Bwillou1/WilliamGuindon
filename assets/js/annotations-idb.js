@@ -147,8 +147,17 @@
     } catch (_) {}
   }
 
+  function getCanonicalDocStem(pathStr) {
+    const base = String(pathStr || '').split('/').pop() || '';
+    return base
+      .toLowerCase()
+      .replace(/\s*\(\d+\)(?=\.[^.]+$)/, '')
+      .replace(/^26-3-det2_fr/, '26-2-det2_fr')
+      .trim();
+  }
+
   /**
-   * Récupère les annotations d'un document depuis IndexedDB (avec migration auto depuis localStorage).
+   * Récupère les annotations d'un document depuis IndexedDB (avec migration auto depuis localStorage et résolution d'alias).
    * @param {string} file
    * @returns {Promise<Array>}
    */
@@ -164,15 +173,27 @@
           const store = tx.objectStore(STORE_NAME);
           const req = store.get(norm);
           req.onsuccess = () => {
-            if (req.result && Array.isArray(req.result.annotations)) {
+            if (req.result && Array.isArray(req.result.annotations) && req.result.annotations.length > 0) {
               resolve(req.result.annotations);
               return;
             }
-            const reqSlash = store.get('/' + norm);
-            reqSlash.onsuccess = () => {
-              resolve(reqSlash.result && Array.isArray(reqSlash.result.annotations) ? reqSlash.result.annotations : null);
+            const reqAll = store.getAll();
+            reqAll.onsuccess = () => {
+              const all = Array.isArray(reqAll.result) ? reqAll.result : [];
+              const targetStem = getCanonicalDocStem(norm);
+              let best = null;
+              for (const item of all) {
+                if (!item || !Array.isArray(item.annotations) || item.annotations.length === 0) continue;
+                const itemNorm = normalizeDocPath(item.path);
+                if (itemNorm === norm || (targetStem && getCanonicalDocStem(itemNorm) === targetStem)) {
+                  if (!best || (item.updatedAt || 0) >= (best.updatedAt || 0)) {
+                    best = item;
+                  }
+                }
+              }
+              resolve(best ? best.annotations : null);
             };
-            reqSlash.onerror = () => resolve(null);
+            reqAll.onerror = () => resolve(null);
           };
           req.onerror = () => resolve(null);
         } catch (_) {
