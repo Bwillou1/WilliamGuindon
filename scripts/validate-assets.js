@@ -410,6 +410,7 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'noel.html',
   'state.html',
   '404.html',
+  'en-construction.html',
   'reciprocite.html',
   'transmission-sem26003.html',
   'dossier-confidentiel-non-biffe-sem26003.html',
