@@ -1606,7 +1606,7 @@
           statusEl.textContent = (data.city ? data.city + ' (' + (data.province || '') + ') — ' : '') + 'Député(e) fédéral(e) uniquement (Chambre des communes).' + updatedBadge;
           resultsEl.innerHTML = unique.map(function(r) {
             var email = r.email ? String(r.email).trim() : '';
-            var mailto = email ? 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent('Dossier CCE SEM-26-003 et Pétition 0546 — Grande Tourbière de Blainville') : '';
+            var mailto = email ? 'mailto:' + encodeURIComponent(email) + '?cc=' + encodeURIComponent('contact@williamguindon.me') + '&subject=' + encodeURIComponent('Dossier CCE SEM-26-003 et Pétition 0546 — Grande Tourbière de Blainville') : '';
             return '<div style="padding:12px 14px;border-radius:10px;border:1px solid var(--line,#cbd5e1);background:var(--bg,#ffffff);display:flex;flex-direction:column;gap:6px;">' +
               '<div style="font-size:0.78rem;font-weight:800;color:#0284c7;text-transform:uppercase;">' + esc(r.elected_office || '') + (r.party_name ? ' · ' + esc(r.party_name) : '') + '</div>' +
               '<div style="font-size:1rem;font-weight:800;color:var(--text-color);">' + esc(r.name) + '</div>' +
@@ -1706,10 +1706,46 @@
 
       var previews = Array.prototype.slice.call(document.querySelectorAll('#lettres .letter-preview-box'));
       var mailtos = Array.prototype.slice.call(document.querySelectorAll('#lettres a[href^="mailto:"]'));
-      previews.forEach(function(el) { el.dataset.origText = el.textContent; });
+      previews.forEach(function(el) {
+        el.dataset.origText = el.textContent;
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'true');
+        el.style.cursor = 'text';
+        var hint = document.createElement('div');
+        hint.style.cssText = 'font-size:0.78rem;color:var(--text-muted);margin:0 0 6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;';
+        hint.innerHTML = '<span>✏️ Texte modifiable directement ci-dessous</span><span class="js-char-count">' + el.textContent.length + ' car. (max 1 200 pour mailto)</span>';
+        if (el.parentNode) el.parentNode.insertBefore(hint, el);
+        el._charCountEl = hint.querySelector('.js-char-count');
+      });
       mailtos.forEach(function(a) { a.dataset.origHref = a.getAttribute('href') || ''; });
 
       var autoMpName = '';
+      var CC_REQUIRED = 'contact@williamguindon.me';
+      var MAX_MAILTO_BODY = 1200;
+
+      function capMailtoBody(txt) {
+        if (!txt || txt.length <= MAX_MAILTO_BODY) return txt;
+        var cut = txt.slice(0, MAX_MAILTO_BODY - 5);
+        var lastBrk = Math.max(cut.lastIndexOf('\n'), cut.lastIndexOf(' '));
+        if (lastBrk > MAX_MAILTO_BODY * 0.7) cut = cut.slice(0, lastBrk);
+        return cut.replace(/\s+$/, '') + '\n[…]';
+      }
+
+      function ensureCc(params) {
+        var cc = params.get('cc') || '';
+        var list = cc ? cc.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [];
+        if (list.map(function(s) { return s.toLowerCase(); }).indexOf(CC_REQUIRED) === -1) {
+          list.unshift(CC_REQUIRED);
+        }
+        params.set('cc', list.join(','));
+      }
+
+      function updateCharCount(el) {
+        if (!el || !el._charCountEl) return;
+        var len = (el.innerText || el.textContent || '').length;
+        el._charCountEl.textContent = len + ' car.' + (len > MAX_MAILTO_BODY ? ' (tronqué à 1 200 dans mailto — utilisez Copier pour tout garder)' : ' (max 1 200 pour mailto)');
+        el._charCountEl.style.color = len > MAX_MAILTO_BODY ? '#b45309' : 'var(--text-muted)';
+      }
 
       function personalizeText(txt) {
         var first = fnEl.value.trim();
@@ -1752,9 +1788,26 @@
         return out;
       }
 
+      function syncBoxToAccordionMailto(boxEl) {
+        var acc = boxEl.closest('.action-accordion');
+        if (!acc) return;
+        var primaryMailto = acc.querySelector('a.btn-action-primary[href^="mailto:"]');
+        if (!primaryMailto) return;
+        var currentHref = primaryMailto.getAttribute('href') || '';
+        var curQ = currentHref.indexOf('?');
+        var currentRecipient = curQ !== -1 ? currentHref.slice(0, curQ) : currentHref;
+        var params = new URLSearchParams(curQ !== -1 ? currentHref.slice(curQ + 1) : '');
+        ensureCc(params);
+        params.set('body', capMailtoBody(boxEl.innerText || boxEl.textContent || ''));
+        primaryMailto.setAttribute('href', currentRecipient + '?' + params.toString().replace(/\+/g, '%20'));
+      }
+
       function applyAll() {
         previews.forEach(function(el) {
-          el.textContent = personalizeText(el.dataset.origText || '');
+          if (!el.dataset.userEditedLetter) {
+            el.textContent = personalizeText(el.dataset.origText || '');
+          }
+          updateCharCount(el);
         });
         mailtos.forEach(function(a) {
           var currentHref = a.getAttribute('href') || '';
@@ -1764,13 +1817,27 @@
           var origQ = orig.indexOf('?');
           if (origQ === -1) return;
           var params = new URLSearchParams(orig.slice(origQ + 1));
+          ensureCc(params);
           var body = params.get('body');
           if (body !== null) {
-            params.set('body', personalizeText(body));
+            params.set('body', capMailtoBody(personalizeText(body)));
             a.setAttribute('href', currentRecipient + '?' + params.toString().replace(/\+/g, '%20'));
           }
         });
+        previews.forEach(function(el) {
+          if (el.dataset.userEditedLetter) syncBoxToAccordionMailto(el);
+        });
       }
+
+      previews.forEach(function(el) {
+        el.addEventListener('input', function() {
+          el.dataset.userEditedLetter = '1';
+          updateCharCount(el);
+          syncBoxToAccordionMailto(el);
+        });
+      });
+
+      applyAll();
 
       window.wgApplyOpenNorthContext = function(city, riding, mpName) {
         if (city && !cityEl.dataset.userEdited) cityEl.value = city;
