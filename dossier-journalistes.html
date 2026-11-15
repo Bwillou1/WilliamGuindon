@@ -3137,6 +3137,11 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             <span>Traduire</span>
           </button>
+          <select id="select-translate-lang" class="btn-preview-action" style="display: none; cursor: pointer;" aria-label="Choisir la langue de traduction (Français, English, Español)" title="Choisir la langue : Français (Original), English ou Español">
+            <option value="fr">FR · Original</option>
+            <option value="en">EN · English</option>
+            <option value="es">ES · Español</option>
+          </select>
           <a id="direct-file-link" href="#" target="_blank" rel="noopener" class="btn-preview-action" style="display: none;" title="Télécharger le fichier original">
             <svg id="direct-file-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             <span id="direct-file-label">Télécharger original</span>
@@ -4806,6 +4811,7 @@ function getCleanDisplayName(fullPath) {
             if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp") || lower.endsWith(".gif") || lower.endsWith(".svg")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
+              const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
               const btnCopyLink = document.getElementById("btn-copy-doc-link");
               if (btnCopyLink) btnCopyLink.style.display = "none";
               if (zoomBtn) zoomBtn.style.display = "none";
@@ -4909,6 +4915,7 @@ function getCleanDisplayName(fullPath) {
             } else if (lower.endsWith(".mp4") || lower.endsWith(".mov")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
+              const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
               stage.classList.add("is-media");
               const video = document.createElement("video");
               video.src = res.effectiveUrl;
@@ -4955,6 +4962,7 @@ function getCleanDisplayName(fullPath) {
                 const span = translateLink.querySelector("span");
                 if (span) span.textContent = shouldAutoTranslate ? "Original (FR)" : "Traduire";
                 translateLink.style.display = isNative ? "none" : "inline-flex";
+                const _stlShow = document.getElementById("select-translate-lang"); if (_stlShow) { _stlShow.style.display = isNative ? "none" : "inline-flex"; _stlShow.value = shouldAutoTranslate ? activeTranslateLang : "fr"; }
               }
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
@@ -4976,6 +4984,7 @@ function getCleanDisplayName(fullPath) {
             } else if (lower.endsWith(".csv")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
+              const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
               stage.classList.remove("is-media");
 
               if (res.isLocal && res.blob) {
@@ -5031,6 +5040,7 @@ function getCleanDisplayName(fullPath) {
             } else if (lower.endsWith(".txt") || lower.endsWith(".md") || lower.endsWith(".json") || lower.endsWith(".geojson") || lower.endsWith(".kml")) {
               if (fsViewerLink) fsViewerLink.style.display = "none";
               if (translateLink) translateLink.style.display = "none";
+              const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
               stage.classList.remove("is-media");
               stage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:10px;font-size:13px;"><div class="csv-spinner" style="width:24px;height:24px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span>Chargement du document texte...</span></div>';
 
@@ -5543,6 +5553,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (actions) actions.style.display = "inline-flex";
     if (fsViewerLink) fsViewerLink.style.display = "none";
     if (translateLink) translateLink.style.display = "none";
+              const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
     if (zoomBtn) zoomBtn.style.display = "none";
     if (directLink) {
       directLink.href = "https://www.facebook.com/reel/1796254438299162/";
@@ -5675,6 +5686,48 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   const translatePreviewLink = document.getElementById('btn-translate-preview');
+  const selectTranslateLangEl = document.getElementById('select-translate-lang');
+  async function switchPreviewLanguage(lang) {
+    const iframe = previewStage ? previewStage.querySelector('iframe.preview-iframe') : null;
+    if (!iframe) return;
+    let rawPdf = iframe.getAttribute('data-raw-pdf') || '';
+    const currentSrc = iframe.getAttribute('src') || '';
+    if (!rawPdf && currentSrc) {
+      try { rawPdf = new URL(currentSrc, window.location.origin).searchParams.get('file') || ''; } catch (_) {}
+    }
+    const docName = iframe.getAttribute('data-doc-name') || '';
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    if (typeof window.flushActiveIframeAnnotations === 'function') {
+      await window.flushActiveIframeAnnotations(800);
+    }
+    const span = translatePreviewLink ? translatePreviewLink.querySelector('span') : null;
+    if (lang === 'fr') {
+      const frDoc = getOfficialTranslation(docName, 'fr') || rawPdf;
+      iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+      if (span) span.textContent = 'Traduire';
+      if (translatePreviewLink) {
+        translatePreviewLink.classList.remove('active');
+        translatePreviewLink.title = 'Traduire ce document (EN / ES)';
+      }
+      if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
+    } else {
+      const targetLang = (lang === 'es') ? 'es' : 'en';
+      const officialTrans = getOfficialTranslation(docName, targetLang);
+      const targetPdf = officialTrans ? ('/' + officialTrans.replace(/^\/+/, '')) : rawPdf;
+      iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+      if (span) span.textContent = 'Original (FR)';
+      if (translatePreviewLink) {
+        translatePreviewLink.classList.add('active');
+        translatePreviewLink.title = 'Revenir au document original en français';
+      }
+      if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
+    }
+  }
+  if (selectTranslateLangEl) {
+    selectTranslateLangEl.addEventListener('change', () => {
+      switchPreviewLanguage(selectTranslateLangEl.value || 'fr');
+    });
+  }
   if (translatePreviewLink) {
     translatePreviewLink.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -5713,6 +5766,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Traduire';
+        if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
         translatePreviewLink.classList.remove('active');
         translatePreviewLink.title = `Traduire ce document (${targetLang.toUpperCase()})`;
       } else {
@@ -5724,6 +5778,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Original (FR)';
+        if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
         translatePreviewLink.classList.add('active');
         translatePreviewLink.title = 'Revenir au document original en français';
       }
@@ -5895,6 +5950,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const translateLink = document.getElementById('btn-translate-preview');
       if (translateLink) {
         translateLink.style.display = isNative ? 'none' : 'inline-flex';
+        const _stlMode = document.getElementById('select-translate-lang'); if (_stlMode) _stlMode.style.display = isNative ? 'none' : 'inline-flex';
       }
     }
 
