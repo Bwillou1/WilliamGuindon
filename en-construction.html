@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'none';">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <noscript><meta http-equiv="refresh" content="0;url=/en-construction.html"></noscript>
+  <noscript><meta http-equiv="refresh" content="0;url=/en-construction"></noscript>
   <style>
     :root {
       --bg: #07100c;
@@ -186,6 +186,9 @@
 
   <script>
     (function() {
+      if (window.history && window.history.replaceState && /\.html$/i.test(window.location.pathname)) {
+        window.history.replaceState(null, '', window.location.pathname.replace(/\.html$/i, '') + window.location.search + window.location.hash);
+      }
       var targetMs = Date.parse('2026-11-14T19:30:00-05:00');
       var timerEl = document.getElementById('countdown-1930');
       var inlineEl = document.getElementById('countdown-inline');
