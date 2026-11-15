@@ -61,6 +61,110 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       license: "Document officiel déposé en vertu de l'art. 22 de la Loi sur le vérificateur général",
       isOriginalWork: true
     },
+    'lettre-reponse-signee-eccc-0546': {
+      title: "Lettre signée de la ministre d'ECCC (Julie Dabrusin) — Pétition 0546 (10 nov. 2026)",
+      file: "assets/docs/petition-546/lettre-reponse-signee-eccc-min-334658.pdf",
+      badge: "Pétition 0546 · Lettre ministérielle ECCC (MIN-334658)",
+      date: "10 novembre 2026",
+      pages: 2,
+      type: "Lettre officielle signée (art. 22 LVG)",
+      sha256: "b861b65127e1410e5252c232aba08685b98979209fca4a1e1380375038b5b369",
+      author: "L'honorable Julie Dabrusin, C.P., députée (Ministre d'ECCC)",
+      citation: "Environnement et Changement climatique Canada (ECCC). (2026). Lettre de transmission signée en réponse à la pétition environnementale no 0546 (Réf. MIN-334658, 10 novembre 2026). Ottawa.",
+      license: "Document public officiel fédéral (Loi sur le vérificateur général, art. 22)",
+      isOriginalWork: false
+    },
+    'reponse-eccc-petition-0546': {
+      title: "Réponse détaillée d'ECCC à la pétition no 0546 (Questions 1–10 et 21–24)",
+      file: "assets/docs/petition-546/reponse-eccc-petition-0546-min-334658.pdf",
+      badge: "Pétition 0546 · Réponses ECCC (10 nov. 2026)",
+      date: "10 novembre 2026",
+      pages: 6,
+      type: "Réponse ministérielle statutaire (art. 22 LVG)",
+      sha256: "d1144562b27f7e9701bf799650c8f6cf70fb8a8dfe9f55bb48a86a892ff7b6e6",
+      author: "Environnement et Changement climatique Canada (ECCC)",
+      citation: "Environnement et Changement climatique Canada (ECCC). (2026). Réponse ministérielle aux questions 1 à 10 et 21 à 24 de la pétition environnementale no 0546 concernant Stablex et la Grande Tourbière de Blainville (10 novembre 2026). Ottawa.",
+      license: "Document public officiel fédéral (Loi sur le vérificateur général, art. 22)",
+      isOriginalWork: false
+    },
+    'reponse-mpo-petition-0546': {
+      title: "Lettre signée & Réponse complète du MPO à la pétition no 0546 (FR/EN)",
+      file: "assets/docs/petition-546/reponse-mpo-petition-0546-10nov2026.pdf",
+      badge: "Pétition 0546 · Réponses MPO / DFO (10 nov. 2026)",
+      date: "10 novembre 2026",
+      pages: 10,
+      type: "Réponse ministérielle statutaire bilingue (art. 22 LVG)",
+      sha256: "3c7f3b326b6430d3ffae23d999347be063ff65813422cf641577fd1ca93c8e8f",
+      author: "L'honorable Joanne Thompson, C.P., députée (Ministre des Pêches / MPO)",
+      citation: "Pêches et Océans Canada (MPO / DFO). (2026). Lettre signée et réponse ministérielle aux questions de la pétition environnementale no 0546 concernant Stablex et la Loi sur les pêches (10 novembre 2026). Ottawa.",
+      license: "Document public officiel fédéral (Loi sur le vérificateur général, art. 22)",
+      isOriginalWork: false
+    },
+    'accuse-reception-eccc-0546': {
+      title: "Accusé de réception officiel d'ECCC — Pétition 0546 (20 juillet 2026)",
+      file: "assets/docs/petition-546/accuse-reception-eccc-min-334658.pdf",
+      badge: "Pétition 0546 · Accusé ECCC (MIN-334658)",
+      date: "20 juillet 2026",
+      pages: 1,
+      type: "Accusé de réception ministériel",
+      sha256: "5c882f1ff0ec4e1cb0f2d45c6697204a1544ce1fbf100f481fe7f35c0432d599",
+      author: "Lisa St-Amour (Correspondance de la direction, ECCC)",
+      citation: "Environnement et Changement climatique Canada (ECCC). (2026). Accusé de réception de la pétition environnementale no 0546 (MIN-334658, 20 juillet 2026). Ottawa.",
+      license: "Document public officiel fédéral",
+      isOriginalWork: false
+    },
+    'accuse-reception-mpo-0546': {
+      title: "Accusé de réception officiel du MPO — Pétition 0546 (22 juillet 2026)",
+      file: "assets/docs/petition-546/accuse-reception-mpo-2026-001-02117.pdf",
+      badge: "Pétition 0546 · Accusé MPO (2026-001-02117)",
+      date: "22 juillet 2026",
+      pages: 1,
+      type: "Accusé de réception ministériel signé",
+      sha256: "661838d6a3e99448ad378f93f880a76506af67a7376dbf1f5d3212ed74b88c71",
+      author: "L'honorable Joanne Thompson, C.P., députée (Ministre des Pêches / MPO)",
+      citation: "Pêches et Océans Canada (MPO). (2026). Accusé de réception de la pétition environnementale no 0546 (Réf. 2026-001-02117, 22 juillet 2026). Ottawa.",
+      license: "Document public officiel fédéral",
+      isOriginalWork: false
+    },
+    'observations-complementaires-10-nov-2026': {
+      title: "Observations complémentaires de l'auteur & Annexes 1 à 3 — SEM-26-003 (10 nov. 2026)",
+      file: "assets/docs/petition-546/observations-complementaires-sem-26-003-10nov2026.pdf",
+      badge: "SEM-26-003 · Observations & Annexes 1–3 (35 p.)",
+      date: "10 novembre 2026",
+      pages: 35,
+      type: "Mémoire complémentaire art. 24.28(1) ACEUM & Annexes",
+      sha256: "60fd8d85ccc9d916f87e9584ecfaacbe8c5dbdfbf5dd92e9200215becb56c091",
+      author: "William Guindon",
+      citation: "Guindon, W. (2026). Observations complémentaires de l'auteur à la suite des réponses à la pétition environnementale no 0546 et annexes 1 à 3 (Communication SEM-26-003, 10 novembre 2026). Montréal : CCE.",
+      license: "Creative Commons CC BY-NC-ND 4.0 International",
+      isOriginalWork: true
+    },
+    'dossier-atip-sem-26-003': {
+      title: "Annexe 3 — Dossier de preuves ATIP, lobbying et extraits CCE (SEM-26-003)",
+      file: "assets/docs/petition-546/dossier-atip-sem-26-003-can-int.pdf",
+      badge: "SEM-26-003 · Annexe 3 · Dossier ATIP (7 p.)",
+      date: "10 novembre 2026",
+      pages: 7,
+      type: "Pièces internes ECCC (ATIP), Registre de lobbying & CCE",
+      sha256: "c36cb2c5a141edaae6e13ad258a8094fe68a196cbb349b58cf502ba5e14ee251",
+      author: "ECCC (ATIP) / Commissariat au lobbying / Secrétariat CCE (compilé par W. Guindon)",
+      citation: "Guindon, W. (comp.). (2026). Dossier de preuves — Annexe 3 : Documents internes d'ECCC obtenus par accès à l'information, registre de lobbying et extraits CCE (SEM-26-003, 10 novembre 2026).",
+      license: "Documents publics officiels / Compilation CC BY-NC-ND 4.0",
+      isOriginalWork: true
+    },
+    'index-detaille-petition-0546': {
+      title: "Index détaillé et synthèse de concordance — Pétition 0546 & SEM-26-003",
+      file: "assets/docs/petition-546/index-detaille-petition-0546-sem-26-003.pdf",
+      badge: "Pétition 0546 · Index de concordance (3 p.)",
+      date: "10 novembre 2026",
+      pages: 3,
+      type: "Index documentaire et synthèse question par question",
+      sha256: "616024317e35793e7e2ead1de1f17a2d29cbf8402d650ef4c62d47b440ba8a4b",
+      author: "William Guindon",
+      citation: "Guindon, W. (2026). Index détaillé et synthèse de concordance : Réponses fédérales à la pétition environnementale no 0546 et communication SEM-26-003 (10 novembre 2026).",
+      license: "Creative Commons CC BY-NC-ND 4.0 International",
+      isOriginalWork: true
+    },
     'decision-17-aout-2026': {
       title: "Détermination positive du Secrétariat CCE (17 août 2026)",
       file: "assets/docs/26-2-det2_fr.pdf",
@@ -123,6 +227,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     'assets/docs/73-rec_fr.pdf',
     'assets/docs/73-rec_en.pdf',
     'assets/docs/petition-546-cedd-bvg.pdf',
+    'assets/docs/petition-546/lettre-reponse-signee-eccc-min-334658.pdf',
+    'assets/docs/petition-546/reponse-eccc-petition-0546-min-334658.pdf',
+    'assets/docs/petition-546/reponse-mpo-petition-0546-10nov2026.pdf',
+    'assets/docs/petition-546/accuse-reception-eccc-min-334658.pdf',
+    'assets/docs/petition-546/accuse-reception-mpo-2026-001-02117.pdf',
+    'assets/docs/petition-546/observations-complementaires-sem-26-003-10nov2026.pdf',
+    'assets/docs/petition-546/dossier-atip-sem-26-003-can-int.pdf',
+    'assets/docs/petition-546/index-detaille-petition-0546-sem-26-003.pdf',
     'assets/docs/26-2-det2_fr.pdf',
     'assets/docs/26-2-det2_en.pdf',
     'assets/docs/26-3-det_fr.pdf',
@@ -168,7 +280,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     if (!isDossierSubfile && clean.includes('formal-deposition')) {
       return 'assets/docs/26-3-formal-deposition-and-urgent-appeal.pdf';
     }
-    if (!isDossierSubfile && (clean.includes('petition-546') || clean.includes('Lettre_CEDD_au_petitionnaire'))) {
+    if (!isDossierSubfile && !clean.includes('petition-546/') && (clean.includes('petition-546-cedd-bvg') || clean.includes('Lettre_CEDD_au_petitionnaire'))) {
       return 'assets/docs/petition-546-cedd-bvg.pdf';
     }
     if (!isDossierSubfile && clean.includes('declaration-appui-manfred-liebel')) {

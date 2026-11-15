@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v261';
+const CACHE_NAME = 'wg-pwa-v262';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -6,6 +6,8 @@ const MAX_CACHE_ENTRIES = 256;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/bgv.html',
+  '/liens.html',
   '/offline.html',
   '/dossier-journalistes.html',
   '/viewer.html',
@@ -66,6 +68,8 @@ function isCacheable(request, response) {
   if (contentType.includes('text/html')) {
     const isOfflineAllowedHtml = url.pathname === '/' || url.pathname === '' ||
                                  url.pathname === '/index.html' || url.pathname === '/index' ||
+                                 url.pathname === '/bgv.html' || url.pathname === '/bgv' ||
+                                 url.pathname === '/liens.html' || url.pathname === '/liens' ||
                                  url.pathname === '/apercu.html' || url.pathname === '/apercu' ||
                                  url.pathname === '/dossier-journalistes.html' || url.pathname === '/dossier-journalistes' ||
                                  url.pathname === '/viewer.html' || url.pathname === '/viewer' ||

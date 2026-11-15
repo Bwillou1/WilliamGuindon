@@ -13,6 +13,12 @@
       window.location.replace(lang + '/dossier-journalistes.html?doc=' + encodeURIComponent(doc) + window.location.search.replace(/^\?/, '&') + window.location.hash);
       return;
     }
+    var matchBgv = p.match(/^\/(?:(en|es)\/)?(?:bgv|bvg)\/?$/i);
+    if (matchBgv) {
+      var langBgv = matchBgv[1] ? ('/' + matchBgv[1].toLowerCase()) : '';
+      window.location.replace(langBgv + '/bgv.html' + window.location.search + window.location.hash);
+      return;
+    }
     if (/^\/(index(\.html|\/.*)?|fr(\/.*)?|en(\/.*)?|es(\/.*)?)$/i.test(p)) {
       window.location.replace('/' + window.location.search + window.location.hash);
     }

@@ -43,6 +43,7 @@ const CORE_FILES = [
   'dependances-licences.html',
   'licence-et-charte.html',
   'liens.html',
+  'bgv.html',
   'offline.html',
   'dev.html',
   'portrait.html',
