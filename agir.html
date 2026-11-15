@@ -1854,9 +1854,11 @@
       });
       pronEl.addEventListener('change', applyAll);
       if (langEl) {
+        var LANG_ROUTES = { '/agir.html': '/agir.html', '/en/agir.html': '/en/agir.html', '/es/agir.html': '/es/agir.html' };
         langEl.addEventListener('change', function() {
-          if (langEl.value && window.location.pathname !== langEl.value) {
-            window.location.href = langEl.value + '#lettres';
+          var nextPath = LANG_ROUTES[langEl.value];
+          if (nextPath && window.location.pathname !== nextPath) {
+            window.location.href = nextPath + '#lettres';
           }
         });
       }

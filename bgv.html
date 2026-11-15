@@ -2035,13 +2035,16 @@
       tab.classList.add('active');
       tab.setAttribute('aria-selected', 'true');
 
+      var SAFE_ASSET_RE = /^assets\/docs\/[A-Za-z0-9_.\-\/]+\.(pdf|ots)$/;
+      var safeFile = (file && SAFE_ASSET_RE.test(file) && file.indexOf('..') === -1) ? file : '';
+      var safeOts = (ots && SAFE_ASSET_RE.test(ots) && ots.indexOf('..') === -1) ? ots : '';
       if (activeTitle && title) activeTitle.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-0.18em;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' + title.replace(/</g,'&lt;');
-      if (iframe && file) iframe.src = 'viewer.html?file=' + encodeURIComponent(file) + '&preview=1';
-      if (btnOpenViewer && file) btnOpenViewer.href = 'dossier-journalistes.html?file=' + encodeURIComponent(file);
-      if (btnDownloadPdf && file) btnDownloadPdf.href = file;
+      if (iframe && safeFile) iframe.src = 'viewer.html?file=' + encodeURIComponent(safeFile) + '&preview=1';
+      if (btnOpenViewer && safeFile) btnOpenViewer.href = 'dossier-journalistes.html?file=' + encodeURIComponent(safeFile);
+      if (btnDownloadPdf && safeFile) btnDownloadPdf.setAttribute('href', safeFile);
       if (btnDownloadOts) {
-        if (ots) {
-          btnDownloadOts.href = ots;
+        if (safeOts) {
+          btnDownloadOts.setAttribute('href', safeOts);
           btnDownloadOts.style.display = 'inline-flex';
         } else {
           btnDownloadOts.style.display = 'none';

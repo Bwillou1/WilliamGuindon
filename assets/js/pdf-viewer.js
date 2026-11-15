@@ -2734,14 +2734,17 @@
         <span style="font-size:11px;color:#047857;margin-left:8px;">Registre international officiel CCE (SEM-26-003) · Téléchargement et citations autorisés</span>
       `;
     } else {
-      const targetLang = (dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en')).toUpperCase();
+      const rawLang = (dom.selectTranslateLang ? dom.selectTranslateLang.value : (dom.headerSelectLang ? dom.headerSelectLang.value : 'en'));
+      const targetLang = /^[a-zA-Z]{2,5}$/.test(String(rawLang || '').trim()) ? String(rawLang).trim().toUpperCase() : 'EN';
       banner.innerHTML = `
         <div style="display:inline-flex;align-items:center;gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-          <strong style="color:#065f46;">Traduction automatique d'assistance (${targetLang})</strong>
+          <strong class="js-translate-banner-title" style="color:#065f46;"></strong>
         </div>
         <span style="font-size:11px;color:#047857;margin-left:8px;">Assistance linguistique non officielle · Document probatoire source en français (copie de citation autorisée)</span>
       `;
+      const strongEl = banner.querySelector('.js-translate-banner-title');
+      if (strongEl) strongEl.textContent = 'Traduction automatique d\'assistance (' + targetLang + ')';
     }
   }
 

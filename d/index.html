@@ -32,14 +32,18 @@
     if (sp.get("lang")) lang = sp.get("lang").toLowerCase();
   }
 
+  var safeLang = (lang === "en" || lang === "es") ? lang : "";
+  var safeDoc = (doc && /^[A-Za-z0-9._-]+$/.test(doc) && doc.indexOf("..") === -1) ? doc : "";
+
   // Si doc est un fichier direct (ex: viewer.html ou lecteur.html)
-  if (doc && (doc.endsWith(".html") || doc.endsWith(".js") || doc.endsWith(".css") || doc.endsWith(".pdf") || doc.endsWith(".png") || doc.endsWith(".jpg") || doc.endsWith(".svg"))) {
-    window.location.replace("/" + doc + search + hash);
+  if (safeDoc && (safeDoc.endsWith(".html") || safeDoc.endsWith(".js") || safeDoc.endsWith(".css") || safeDoc.endsWith(".pdf") || safeDoc.endsWith(".png") || safeDoc.endsWith(".jpg") || safeDoc.endsWith(".svg"))) {
+    window.location.replace("/" + encodeURIComponent(safeDoc) + hash);
     return;
   }
 
-  var targetBase = lang ? ("/" + lang + "/dossier-journalistes.html") : "/dossier-journalistes.html";
-  var targetUrl = targetBase + (doc ? ("?doc=" + encodeURIComponent(doc)) : "") + hash;
+  var LANG_TARGETS = { "": "/dossier-journalistes.html", "en": "/en/dossier-journalistes.html", "es": "/es/dossier-journalistes.html" };
+  var targetBase = LANG_TARGETS[safeLang];
+  var targetUrl = targetBase + (safeDoc ? ("?doc=" + encodeURIComponent(safeDoc)) : "") + hash;
   window.location.replace(targetUrl);
 })();
 </script>
