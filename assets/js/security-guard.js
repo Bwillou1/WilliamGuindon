@@ -825,16 +825,6 @@
 
   // --- MODE BLACKOUT / MAINTENANCE (CALQUE RÉVERSIBLE) ---
   function renderMaintenanceScreen(untilTimestamp) {
-    if (
-      window.location.hostname !== 'localhost' &&
-      window.location.hostname !== '127.0.0.1' &&
-      !window.location.pathname.includes('en-construction') &&
-      !window.location.pathname.includes('console-admin.html') &&
-      !window.location.pathname.includes('admin.html')
-    ) {
-      window.location.replace('/en-construction');
-      return;
-    }
     lockInspectorAndDevTools();
 
     const safeEmail = "contact@williamguindon.me";
