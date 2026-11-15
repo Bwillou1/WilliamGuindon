@@ -259,13 +259,42 @@
     display: block !important;
     margin-top: 0 !important;
   }
+  .vc-merci-box {
+    display: none !important;
+    margin-top: 28px;
+    background: var(--card);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  html.vc-merci-mode #ai-chat,
+  html.vc-merci-mode .floating-ai-btn,
+  html.vc-merci-mode #js-floating-ai-btn,
+  html.vc-merci-mode .ai-modal-overlay,
+  html.vc-merci-mode #embed-original-banner,
+  html.vc-merci-mode .embed-original-banner,
+  html.is-embedded-widget.vc-merci-mode .embed-original-banner,
+  html.is-embedded-widget.vc-merci-mode header.site,
+  html.is-embedded-widget.vc-merci-mode site-nav,
+  html.is-embedded-widget.vc-merci-mode footer,
+  html.vc-merci-mode main.vc-wrap > *:not(#merci) {
+    display: none !important;
+  }
+  html.vc-merci-mode #merci.vc-merci-box {
+    display: block !important;
+    margin-top: 0 !important;
+  }
 </style>
 <script>
 (function(){try{
   var p=new URLSearchParams(window.location.search);
   var f=false;try{f=window.self!==window.top;}catch(e){f=true;}
+  var isMerci=(p.get("merci")==="1"||p.get("done")==="1"||p.get("thanks")==="1"||p.get("gracias")==="1"||p.get("mode")==="merci");
   var isDepot=(p.get("depot")==="1"||p.get("upload")==="1"||p.get("mode")==="depot");
-  if(f&&isDepot){
+  if(isMerci){
+    document.documentElement.classList.add("vc-merci-mode");
+  }else if(f&&isDepot){
     document.documentElement.classList.add("vc-depot-mode");
   }else if(f||p.get("phrases")==="1"||p.get("mode")==="phrases"||p.get("only")==="phrases"){
     document.documentElement.classList.add("vc-embed-mode");
@@ -379,6 +408,22 @@
     <p style="max-width:660px; margin:16px auto 0; font-size:0.84rem; color:var(--muted); line-height:1.55; text-align:left;">
       <strong>En envoyant votre vidéo, vous déclarez :</strong> « Je certifie avoir 18 ans ou plus et j'accorde gratuitement à William Guindon l'autorisation permanente de reproduire, monter, adapter et diffuser publiquement ma vidéo, mon image, ma voix, mon prénom et ma ville dans le cadre du projet citoyen SEM-26-003 (incluant l'envoi aux ministres concernés, à la Commission de coopération environnementale, aux médias, ainsi que la publication et l'archivage en ligne sur le site williamguindon.me et les réseaux sociaux). Je comprends que mes fichiers bruts et coordonnées sont conservés à des fins de preuve et d'archivage du dossier, et que je peux demander le retrait de mon extrait avant le montage final en écrivant à contact@williamguindon.me. »
     </p>
+  </section>
+
+  <section id="merci" class="vc-merci-box" aria-labelledby="vc-merci-title">
+    <div class="vc-badge">Merci pour votre voix · SEM-26-003</div>
+    <h2 id="vc-merci-title" style="margin-top:0;">Merci ! Votre participation est bien enregistrée</h2>
+    <p style="max-width:640px; margin:0 auto 14px; color:var(--muted); line-height:1.65;">
+      Merci d'avoir pris le temps d'enregistrer votre phrase pour la vidéo collective citoyenne (90 secondes) en appui au dossier <strong>SEM-26-003</strong> sur la Grande Tourbière de Blainville.
+    </p>
+    <p style="max-width:640px; margin:0 auto 22px; color:var(--muted); line-height:1.65; font-size:0.95rem;">
+      <strong>Prochaines étapes :</strong> la vidéo montée est prévue pour être diffusée autour du <strong>8 au 16 décembre 2026</strong>, avant la décision attendue du Secrétariat de la CCE autour du 15 décembre 2026. Pour toute question ou demande de retrait avant le montage final, écrivez à <a href="mailto:contact@williamguindon.me">contact@williamguindon.me</a>.
+    </p>
+    <div class="vc-cta-row" style="justify-content:center;">
+      <a href="video-collective.html" class="vc-btn-primary">Retour à la page Vidéo collective</a>
+      <a href="./" class="vc-btn-secondary">Voir le dossier officiel</a>
+      <a href="agir.html" class="vc-btn-secondary">Autres moyens d'agir</a>
+    </div>
   </section>
 </main>
 
