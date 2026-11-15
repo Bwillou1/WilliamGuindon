@@ -112,6 +112,12 @@ a:hover {
   text-decoration-color: #86efac;
 }
 
+/* Standard CSS Scrollbars (Firefox 156+ et navigateurs conformes) */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) var(--bg);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -4236,6 +4242,10 @@ body.dark-theme .nav-notif-header h4 {
   gap: 14px;
 }
 
+.nav-notif-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
 .nav-notif-body::-webkit-scrollbar {
   width: 6px;
 }
@@ -14676,6 +14686,13 @@ input[type="radio"],
 @supports (color: contrast-color(red)) {
   .wg-auto-contrast {
     color: contrast-color(var(--wg-surface-bg, #10b981));
+  }
+}
+
+/* Edge 155+ / CSS Text 4 : saut des espaces sous les liens soulignés */
+@supports (text-decoration-skip-spaces: all) {
+  a {
+    text-decoration-skip-spaces: all;
   }
 }
 

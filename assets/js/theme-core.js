@@ -4787,6 +4787,16 @@
     document.documentElement.setAttribute('data-gpc', '1');
   }
   window.wgSupportsInstallElement = typeof window.HTMLInstallElement === 'function';
+  if (typeof window.wgInstallPWA !== 'function') {
+    window.wgInstallPWA = async function wgInstallPWA() {
+      if (typeof navigator.install === 'function') {
+        try {
+          return await navigator.install();
+        } catch (_) {}
+      }
+      return null;
+    };
+  }
 
   function loadVideoJsEnhancementsIfNeeded() {
     if (document.querySelector('script[src*="videojs-enhancements.js"]')) return;
