@@ -101,41 +101,63 @@ async function main() {
   const lookup = buildLookup(dashboardRows);
 
   const labelMap = {
-    'Jours de procédure écoulés au bilan': 'Jours de procédure écoulés au bilan',
-    'Étapes terminées': 'Étapes terminées',
-    'Avancement du processus': 'Avancement du processus',
-    'Dépôt → détermination positive': 'Dépôt → détermination positive',
-    'Temps de réponse du Canada': 'Temps de réponse du Canada (délai)',
-    'Temps de la réplique citoyenne': 'Temps de la réplique citoyenne',
-    'Jours restants avant détermination 24.28': 'Jours restants avant la détermination 24.28',
-    'Milieux humides visés (m²)': 'Milieux humides visés (m²)',
-    'Milieux humides (hectares)': 'Milieux humides (hectares)',
-    'Équivalent terrains de soccer FIFA': 'Équivalent terrains de soccer FIFA',
-    'Part de tourbières': 'Part de tourbières',
-    'Mesures compilées': 'Mesures compilées',
-    'Dépassements de seuils': 'Dépassements de seuils',
-    'Ratio maximal relevé (× le seuil)': 'Ratio maximal relevé (× le seuil)',
-    "Publications au fil d'actualités (2026)": "Publications au fil d'actualités (2026)",
-    'Pages du corpus (dernier relevé)': 'Pages du corpus (dernier relevé)',
-    'Mots publiés (dernier relevé)': 'Mots publiés (dernier relevé)',
-    'Documents indexés (dernier relevé)': 'Documents indexés (dernier relevé)',
-    'Retombées médias en 2026': 'Retombées médias en 2026',
-    'Événements « Fait » en 2026': 'Événements « Fait » en 2026',
-    'Documents au registre': 'Documents au registre',
-    'Heures consacrées (journal)': 'Heures consacrées (journal)',
-    'Vues Zenodo (cumul)': 'Vues Zenodo — cumul (dernier relevé)',
-    'Téléchargements Zenodo (cumul)': 'Téléchargements Zenodo — cumul',
-    'Étoiles GitHub (total dépôts)': 'Étoiles GitHub (total des dépôts saisis)',
-    'Fourches GitHub (total)': 'Fourches GitHub (total)'
+    'Jours de procédure écoulés': (m) => {
+      const v = lookup.get('Jours de procédure écoulés au bilan');
+      if (v) m.value = `${v} j`;
+    },
+    'Avancement CCE': (m) => {
+      const steps = lookup.get('Étapes terminées');
+      const pct = lookup.get('Avancement du processus');
+      if (steps && pct) m.value = `${steps} (${pct})`;
+    },
+    'Jours restants avant décision 24.28': (m) => {
+      const v = lookup.get('Jours restants avant la détermination 24.28');
+      if (v) m.value = `${v} j`;
+    },
+    'Milieux humides visés': (m) => {
+      const v = lookup.get('Milieux humides visés (m²)');
+      const ha = lookup.get('Milieux humides (hectares)');
+      if (v) m.value = `${v} m²`;
+      if (ha) {
+        m.note_fr = `${ha} hectares`;
+        m.note_en = `${ha.replace(',', '.')} hectares`;
+      }
+    },
+    'Part de tourbières': (m) => {
+      const v = lookup.get('Part de tourbières');
+      if (v) m.value = v;
+    },
+    'Ratio maximal relevé': (m) => {
+      const v = lookup.get('Ratio maximal relevé (× le seuil)');
+      if (v) m.value = `${v}×`;
+    },
+    'Publications 2026': (m) => {
+      const v = lookup.get("Publications au fil d'actualités (2026)");
+      if (v) m.value = v;
+    },
+    'Mots publiés en accès libre': (m) => {
+      const v = lookup.get('Mots publiés (dernier relevé)');
+      if (v) m.value = v;
+    },
+    'Retombées médias': (m) => {
+      const v = lookup.get('Retombées médias en 2026');
+      if (v) m.value = v;
+    },
+    'Vues Zenodo (science ouverte)': (m) => {
+      const v = lookup.get('Vues Zenodo — cumul (dernier relevé)');
+      const dl = lookup.get('Téléchargements Zenodo — cumul');
+      if (v) m.value = v;
+      if (dl) {
+        m.note_fr = `${dl} téléchargements`;
+        m.note_en = `${dl} downloads`;
+      }
+    }
   };
 
   for (const sec of current.sections) {
     for (const metric of sec.metrics) {
-      const sheetKey = labelMap[metric.label_fr];
-      if (sheetKey && lookup.has(sheetKey)) {
-        const nextVal = lookup.get(sheetKey);
-        if (nextVal) metric.value = nextVal;
-      }
+      const updater = labelMap[metric.label_fr];
+      if (updater) updater(metric);
     }
   }
 
