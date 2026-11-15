@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v265';
+const CACHE_NAME = 'wg-pwa-v266';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -21,6 +21,12 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
+  '/assets/vendor/embedpdf/embedpdf.js',
+  '/assets/vendor/embedpdf/embedpdf-cl9qiF45.js',
+  '/assets/vendor/embedpdf/worker-engine-BCCrxWYm.js',
+  '/assets/vendor/embedpdf/direct-engine-DVLMOJWp.js',
+  '/assets/vendor/embedpdf/browser-BKLM0ThC-BCLQGPD6.js',
+  '/assets/vendor/embedpdf/pdfium.wasm',
   '/assets/vendor/videojs/videojs-player.min.js',
   '/assets/vendor/videojs/videojs-skin.css',
   '/manifest.json',
@@ -162,7 +168,7 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
+      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
         return fetch(event.request);
       })
@@ -173,7 +179,7 @@ self.addEventListener('fetch', (event) => {
   // 1. Moteur de rendu embarqué (/assets/vendor/) : Cache-First pur sans re-téléchargement redondant
   if (url.pathname.startsWith('/assets/vendor/')) {
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
+      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
         return fetch(event.request).then((networkResponse) => {
           if (isCacheable(event.request, networkResponse)) {
@@ -202,7 +208,7 @@ self.addEventListener('fetch', (event) => {
 
   if (isAcceleratedLocalAsset) {
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
+      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
         if (cachedResponse) {
           event.waitUntil(
             fetch(event.request).then((networkResponse) => {
