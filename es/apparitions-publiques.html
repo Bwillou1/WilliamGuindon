@@ -643,6 +643,23 @@
 <!-- BRANDKIT:END -->
 <link rel="stylesheet" href="/assets/vendor/videojs/videojs-skin.css">
 <script src="/assets/vendor/videojs/videojs-player.min.js" defer></script>
+<style>
+.wg-video-trigger{position:relative;display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid rgba(16,185,129,.28);background:#0b1320;padding:0;cursor:pointer;text-align:left}
+.wg-video-trigger img{width:100%;height:100%;object-fit:cover;display:block;opacity:.78;transition:transform .25s ease,opacity .25s ease}
+.wg-video-trigger:hover img,.wg-video-trigger:focus-visible img{transform:scale(1.03);opacity:.92}
+.wg-video-play-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(16,185,129,.94);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.45);transition:transform .2s ease,background .2s ease}
+.wg-video-trigger:hover .wg-video-play-badge{transform:translate(-50%,-50%) scale(1.08);background:#059669}
+.wg-video-trigger-label{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;background:linear-gradient(transparent,rgba(2,6,23,.88));color:#f8fafc;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+media-dialog-backdrop[data-scope="document"]{position:fixed;inset:0;z-index:9998;background:rgba(2,6,23,.82);backdrop-filter:blur(4px);transition:opacity .2s ease}
+media-dialog-popup[data-scope="document"]{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;transition:opacity .2s ease}
+media-dialog-backdrop:not([data-open]),media-dialog-popup:not([data-open]){display:none}
+media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-style],media-dialog-popup[data-starting-style],media-dialog-popup[data-ending-style]{opacity:0}
+.wg-dialog-box{pointer-events:auto;width:min(100%,960px);background:#0f172a;color:#f8fafc;border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:16px;box-shadow:0 25px 60px rgba(0,0,0,.6)}
+.wg-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.wg-dialog-title{margin:0;font-size:1rem;font-weight:700;color:#f8fafc}
+.wg-dialog-close{appearance:none;border:1px solid rgba(148,163,184,.3);background:rgba(255,255,255,.08);color:#f8fafc;border-radius:8px;padding:6px 12px;font-size:.85rem;font-weight:700;cursor:pointer}
+.wg-dialog-close:hover{background:rgba(255,255,255,.16)}
+</style>
 </head>
 <body id="accueil">
 <a href="#main-content" class="skip-link">Passer au contenu principal</a>
@@ -1318,7 +1335,25 @@
         <div class="press-card-body">
           <h2 class="press-headline"><a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer">Entrevista TVBL — Preservación ambiental y archivo Stablex</a></h2>
           <p class="press-excerpt">Amplia entrevista televisiva de estudio de 12 minutos concedida a Télévision des Basses-Laurentides (TVBL). <strong>William Guindon</strong> dissects the legal foundations of the CCE <strong>SEM-26-003</strong> submission, the risks of cadmium and the mobilization for the Grande Tourbière.</p>
-          <div style="margin-top:12px;"><video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;max-height:240px;border-radius:8px;overflow:hidden;"><video preload="metadata" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Entrevue_TVBL_William_Guindon_juillet.mp4" type="video/mp4"></video></video-skin></video-player></div>
+          <div style="margin-top:12px;">
+            <button type="button" class="wg-video-trigger" commandfor="dialog-tvbl" data-video-dialog="dialog-tvbl" aria-label="Ver entrevista TVBL en pantalla grande">
+              <img src="/assets/media/william-guindon.webp" alt="Entrevista TVBL — William Guindon" loading="lazy">
+              <span class="wg-video-play-badge" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></span>
+              <span class="wg-video-trigger-label"><span>Ver entrevista (12 min)</span><span>Pantalla grande ⤢</span></span>
+            </button>
+            <media-dialog id="dialog-tvbl">
+              <media-dialog-backdrop></media-dialog-backdrop>
+              <media-dialog-popup>
+                <div class="wg-dialog-box">
+                  <div class="wg-dialog-header">
+                    <media-dialog-title class="wg-dialog-title">Entrevista TVBL — Preservación ambiental y archivo Stablex</media-dialog-title>
+                    <media-dialog-close class="wg-dialog-close" aria-label="Cerrar reproductor">Cerrar ✕</media-dialog-close>
+                  </div>
+                  <video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;"><video preload="none" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Entrevue_TVBL_William_Guindon_juillet.mp4" type="video/mp4"></video></video-skin></video-player>
+                </div>
+              </media-dialog-popup>
+            </media-dialog>
+          </div>
         </div>
         <div class="press-card-footer">
           <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" class="press-read-link">Visionner l'entrevue TVBL (12 min) ↗</a>
@@ -1346,7 +1381,25 @@
         <div class="press-card-body">
           <h2 class="press-headline"><a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer">Cara a cara en el Consejo Municipal: Mortalidad en el lago Fauvel y ética pública</a></h2>
           <p class="press-excerpt">Intervención ciudadana oficial de <strong>William Guindon</strong> interrogando a la alcaldesa Liza Poulin sobre la ausencia de análisis científicos que justifiquen la posición municipal respecto al expediente Stablex. Transcripción certificada completa disponible.</p>
-          <div style="margin-top:12px;"><video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;max-height:240px;border-radius:8px;overflow:hidden;"><video preload="metadata" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Intervention_Blainville_lac_Fauvel.mp4" type="video/mp4"></video></video-skin></video-player></div>
+          <div style="margin-top:12px;">
+            <button type="button" class="wg-video-trigger" commandfor="dialog-blainville" data-video-dialog="dialog-blainville" aria-label="Ver intervención en el Concejo de Blainville en pantalla grande">
+              <img src="/assets/media/grande-tourbiere-couverture.webp" alt="Intervención en el Concejo Municipal de Blainville" loading="lazy">
+              <span class="wg-video-play-badge" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></span>
+              <span class="wg-video-trigger-label"><span>Ver intervención</span><span>Pantalla grande ⤢</span></span>
+            </button>
+            <media-dialog id="dialog-blainville">
+              <media-dialog-backdrop></media-dialog-backdrop>
+              <media-dialog-popup>
+                <div class="wg-dialog-box">
+                  <div class="wg-dialog-header">
+                    <media-dialog-title class="wg-dialog-title">Cara a cara en el Consejo Municipal: Mortalidad en el lago Fauvel y ética pública</media-dialog-title>
+                    <media-dialog-close class="wg-dialog-close" aria-label="Cerrar reproductor">Cerrar ✕</media-dialog-close>
+                  </div>
+                  <video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;"><video preload="none" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Intervention_Blainville_lac_Fauvel.mp4" type="video/mp4"></video></video-skin></video-player>
+                </div>
+              </media-dialog-popup>
+            </media-dialog>
+          </div>
         </div>
         <div class="press-card-footer">
           <a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer" class="press-read-link">Ver video en YouTube ↗</a>
@@ -1640,17 +1693,29 @@
             Encuentro y movilización de Réseau ACTES en Mauricie. Intervención de William Guindon el 13 de noviembre de 2026 sobre el compromiso juvenil, la defensa ciudadana del medio ambiente y el expediente de la Grande Tourbière de Blainville.
           </p>
           <div class="actes-video-wrap" style="margin-top:12px;">
-            <video-player>
-              <video-skin style="display:block;width:100%;aspect-ratio:16/9;max-height:240px;border-radius:8px;overflow:hidden;">
-                <video preload="metadata" playsinline style="width:100%;height:100%;background:#000;" onerror="var w=this.closest('.actes-video-wrap');if(w){var v=w.querySelector('video-player');var fb=w.querySelector('.actes-video-fallback');if(v)v.style.display='none';if(fb)fb.style.display='flex';}">
-                  <source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Montage_ACTES_HD.mp4" type="video/mp4">
-                </video>
-              </video-skin>
-            </video-player>
-            <div class="actes-video-fallback" style="display:none;flex-direction:column;gap:8px;padding:12px 14px;border-radius:8px;background:#f4f8f5;border:1px solid #cce0d4;color:#1b4332;font-size:0.86rem;">
-              <span>Video temporalmente no disponible (archivo MP4 pendiente en GitHub Releases).</span>
-              <a href="https://web.archive.org/web/20261114130611/https://csq.zohobackstage.ca/reseau_actes_2026#/speakers?lang=fr" target="_blank" rel="noopener noreferrer" style="color:#0a3622;font-weight:700;text-decoration:underline;">Consultar programa archivado del coloquio ACTES ↗</a>
-            </div>
+            <button type="button" class="wg-video-trigger" commandfor="dialog-actes" data-video-dialog="dialog-actes" aria-label="Ver video del Coloquio ACTES en pantalla grande">
+              <img src="/assets/media/grande-tourbiere-lever-soleil.webp" alt="Coloquio de Réseau ACTES (CSQ)" loading="lazy">
+              <span class="wg-video-play-badge" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></span>
+              <span class="wg-video-trigger-label"><span>Ver cápsula ACTES</span><span>Pantalla grande ⤢</span></span>
+            </button>
+            <media-dialog id="dialog-actes">
+              <media-dialog-backdrop></media-dialog-backdrop>
+              <media-dialog-popup>
+                <div class="wg-dialog-box">
+                  <div class="wg-dialog-header">
+                    <media-dialog-title class="wg-dialog-title">Coloquio de Réseau ACTES (CSQ) — Movilización juvenil y defensa ambiental</media-dialog-title>
+                    <media-dialog-close class="wg-dialog-close" aria-label="Cerrar reproductor">Cerrar ✕</media-dialog-close>
+                  </div>
+                  <video-player>
+                    <video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;">
+                      <video preload="none" playsinline style="width:100%;height:100%;background:#000;">
+                        <source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Montage_ACTES_HD.mp4" type="video/mp4">
+                      </video>
+                    </video-skin>
+                  </video-player>
+                </div>
+              </media-dialog-popup>
+            </media-dialog>
           </div>
         </div>
         <div class="press-card-footer">
@@ -1975,5 +2040,28 @@
 </script>
 
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+<script>
+(function(){
+  'use strict';
+  document.querySelectorAll('[data-video-dialog]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var dlg=document.getElementById(btn.getAttribute('data-video-dialog'));
+      if(!dlg)return;
+      setTimeout(function(){if(!dlg.open)dlg.open=true;},0);
+    });
+  });
+  document.querySelectorAll('media-dialog').forEach(function(dlg){
+    var bd=dlg.querySelector('media-dialog-backdrop');
+    if(bd)bd.addEventListener('click',function(){dlg.open=false;});
+    dlg.addEventListener('open-change',function(e){
+      var v=dlg.querySelector('video');
+      if(!v)return;
+      var isOpen=(e&&e.detail&&typeof e.detail.open==='boolean')?e.detail.open:dlg.open;
+      if(isOpen){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+      else{v.pause();}
+    });
+  });
+})();
+</script>
 </body>
 </html>
