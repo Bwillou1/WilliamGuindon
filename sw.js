@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v264';
+const CACHE_NAME = 'wg-pwa-v265';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -251,10 +251,11 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(async () => {
-          // 1. Recherche directe dans le cache local
-          let cachedResponse = await caches.match(event.request);
-          if (!cachedResponse && !url.pathname.endsWith('.html')) {
-            cachedResponse = await caches.match(url.pathname + '.html');
+          // 1. Recherche directe dans le cache local (en ignorant ?offline=1 ou autres paramètres)
+          let cachedResponse = await caches.match(event.request, { ignoreSearch: true });
+          if (!cachedResponse) {
+            cachedResponse = await caches.match(url.pathname) ||
+              (!url.pathname.endsWith('.html') ? await caches.match(url.pathname + '.html', { ignoreSearch: true }) : null);
           }
           if (cachedResponse) {
             return cachedResponse;
@@ -329,10 +330,10 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(async () => {
-        // Recherche dans le cache local
-        let cachedResponse = await caches.match(event.request);
+        // Recherche dans le cache local (en ignorant les paramètres de requête)
+        let cachedResponse = await caches.match(event.request, { ignoreSearch: true });
         if (!cachedResponse && !url.pathname.endsWith('.html')) {
-          cachedResponse = await caches.match(url.pathname + '.html');
+          cachedResponse = await caches.match(url.pathname + '.html', { ignoreSearch: true });
         }
         if (cachedResponse) {
           return cachedResponse;
