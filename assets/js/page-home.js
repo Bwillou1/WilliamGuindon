@@ -132,6 +132,7 @@
           if (currentIndex > 0) {
             updateSlider(currentIndex - 1);
           }
+          startAutoPlay();
         });
       }
 
@@ -144,6 +145,7 @@
           } else {
             updateSlider(0);
           }
+          startAutoPlay();
         });
       }
 
@@ -157,12 +159,14 @@
           if (currentIndex < maxIdx) updateSlider(currentIndex + 1);
           else updateSlider(0);
         }
+        startAutoPlay();
       };
 
       dots.forEach((dot, idx) => {
         dot.addEventListener('click', (e) => {
           e.preventDefault();
           updateSlider(idx);
+          startAutoPlay();
         });
       });
 
@@ -205,16 +209,28 @@
         setTimeout(startAutoPlay, 3500);
       }, { passive: true });
 
+      const isMediaPlayingInCarousel = () => {
+        if (!carouselWrapper) return false;
+        if (isTouching) return true;
+        if (carouselWrapper.querySelector('spotify-audio')) return true;
+        const medias = carouselWrapper.querySelectorAll('video, audio');
+        for (let i = 0; i < medias.length; i++) {
+          if (!medias[i].paused && !medias[i].ended) return true;
+        }
+        return false;
+      };
+
       const startAutoPlay = () => {
         stopAutoPlay();
         autoPlayTimer = setInterval(() => {
+          if (isMediaPlayingInCarousel()) return;
           const maxIdx = getMaxIndex();
           if (currentIndex >= maxIdx) {
             updateSlider(0);
           } else {
             updateSlider(currentIndex + 1);
           }
-        }, 5000);
+        }, 3000);
       };
 
       const stopAutoPlay = () => {
@@ -223,13 +239,6 @@
           autoPlayTimer = null;
         }
       };
-
-      if (carouselWrapper) {
-        carouselWrapper.addEventListener('mouseenter', stopAutoPlay);
-        carouselWrapper.addEventListener('mouseleave', startAutoPlay);
-        carouselWrapper.addEventListener('focusin', stopAutoPlay);
-        carouselWrapper.addEventListener('focusout', startAutoPlay);
-      }
 
       window.addEventListener('resize', () => {
         updateSlider(currentIndex, false);
