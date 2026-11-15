@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v263';
+const CACHE_NAME = 'wg-pwa-v264';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -57,8 +57,8 @@ function isCacheable(request, response) {
     return false;
   }
 
-  // 2. Exclure les requêtes dynamiques d'API, images satellites et les pages privées protégées par Zero Trust
-  if (url.pathname.startsWith('/blainville_') || url.pathname === '/meta.json' || url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
+  // 2. Exclure les requêtes dynamiques d'API, l'état de sécurité en temps réel, images satellites et les pages privées protégées par Zero Trust
+  if (url.pathname.startsWith('/blainville_') || url.pathname === '/meta.json' || url.pathname === '/data/site-state.json' || url.pathname === '/assets/js/security-guard.js' || url.pathname.startsWith('/api/') || url.pathname.includes('admin.html') || url.pathname.includes('console-admin.html') || url.pathname.includes('editeur.html')) {
     return false;
   }
 
@@ -185,7 +185,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 1b. Accélération locale pour les images, styles, polices, scripts et données JSON (hors /assets/docs/)
+  // 1b. Accélération locale pour les images, styles, polices, scripts et données JSON (hors /assets/docs/ et sentinelle temps réel)
+  const isRealtimeSecurityFile = url.pathname === '/data/site-state.json' || url.pathname === '/assets/js/security-guard.js';
+  if (isRealtimeSecurityFile) {
+    return;
+  }
   const isAcceleratedLocalAsset = event.request.destination === 'image' || 
                                   event.request.destination === 'style' || 
                                   event.request.destination === 'script' || 
