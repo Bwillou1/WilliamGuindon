@@ -98,19 +98,29 @@
     pointer-events: none;
   }
   html.vc-embed-mode header.site,
+  html.vc-embed-mode site-nav,
   html.vc-embed-mode footer,
-  html.vc-embed-mode .vc-hero,
-  html.vc-embed-mode section[aria-labelledby="vc-why-title"],
-  html.vc-embed-mode section[aria-labelledby="vc-cal-title"],
-  html.vc-embed-mode .vc-tips,
-  html.vc-embed-mode .vc-tally-box {
+  html.vc-embed-mode #ai-chat,
+  html.vc-embed-mode .floating-ai-btn,
+  html.vc-embed-mode #js-floating-ai-btn,
+  html.vc-embed-mode .ai-modal-overlay,
+  html.vc-embed-mode #embed-original-banner,
+  html.vc-embed-mode .embed-original-banner,
+  html.vc-embed-mode main.vc-wrap > *:not(#sentences) {
     display: none !important;
   }
+  html.vc-embed-mode body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
   html.vc-embed-mode .vc-wrap {
-    padding: 12px 10px 24px !important;
+    padding: 10px 10px 20px !important;
     max-width: 100% !important;
   }
 </style>
+<script>
+(function(){try{var p=new URLSearchParams(window.location.search);var f=false;try{f=window.self!==window.top;}catch(e){f=true;}if(f||p.get("embed")==="1"||p.get("iframe")==="1"||p.get("phrases")==="1"){document.documentElement.classList.add("vc-embed-mode");}}catch(e){}})();
+</script>
 </head>
 <body>
 <main id="main-content" class="vc-wrap">
