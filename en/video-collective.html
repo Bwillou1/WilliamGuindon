@@ -113,13 +113,42 @@
     margin: 0 !important;
     padding: 0 !important;
   }
-  html.vc-embed-mode .vc-wrap {
+  html.vc-embed-mode .vc-wrap,
+  html.vc-depot-mode .vc-wrap {
     padding: 10px 10px 20px !important;
     max-width: 100% !important;
   }
+  .vc-tally-box {
+    display: none !important;
+  }
+  html.vc-depot-mode header.site,
+  html.vc-depot-mode site-nav,
+  html.vc-depot-mode footer,
+  html.vc-depot-mode #ai-chat,
+  html.vc-depot-mode .floating-ai-btn,
+  html.vc-depot-mode #js-floating-ai-btn,
+  html.vc-depot-mode .ai-modal-overlay,
+  html.vc-depot-mode #embed-original-banner,
+  html.vc-depot-mode .embed-original-banner,
+  html.vc-depot-mode main.vc-wrap > *:not(#participate) {
+    display: none !important;
+  }
+  html.vc-depot-mode #participate.vc-tally-box {
+    display: block !important;
+    margin-top: 0 !important;
+  }
 </style>
 <script>
-(function(){try{var p=new URLSearchParams(window.location.search);if(p.get("phrases")==="1"||p.get("mode")==="phrases"||p.get("only")==="phrases"){document.documentElement.classList.add("vc-embed-mode");}}catch(e){}})();
+(function(){try{
+  var p=new URLSearchParams(window.location.search);
+  var f=false;try{f=window.self!==window.top;}catch(e){f=true;}
+  if(p.get("phrases")==="1"||p.get("mode")==="phrases"||p.get("only")==="phrases"){
+    document.documentElement.classList.add("vc-embed-mode");
+  }
+  if(f&&(p.get("depot")==="1"||p.get("upload")==="1"||p.get("mode")==="depot")){
+    document.documentElement.classList.add("vc-depot-mode");
+  }
+}catch(e){}})();
 </script>
 </head>
 <body>
