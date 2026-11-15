@@ -6765,6 +6765,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 <div id="wg-tour-card" role="dialog" aria-modal="true" aria-labelledby="wg-tour-title">
   <h4 id="wg-tour-title"></h4>
   <p id="wg-tour-body"></p>
+  <div id="wg-tour-demo" style="display:none;margin:0 0 12px;padding:10px;border-radius:10px;background:#f8fafc;border:1px solid #cbd5e1;font-size:12px;"></div>
   <div class="wg-tour-footer">
     <span id="wg-tour-step" class="wg-tour-step"></span>
     <div class="wg-tour-actions">
@@ -6782,11 +6783,79 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   var card = document.getElementById('wg-tour-card');
   var titleEl = document.getElementById('wg-tour-title');
   var bodyEl = document.getElementById('wg-tour-body');
+  var demoEl = document.getElementById('wg-tour-demo');
   var stepEl = document.getElementById('wg-tour-step');
   var btnSkip = document.getElementById('wg-tour-skip');
   var btnPrev = document.getElementById('wg-tour-prev');
   var btnNext = document.getElementById('wg-tour-next');
   if (!backdrop || !spotlight || !card) return;
+
+  var demoTimer = null;
+  function clearDemoTimer() {
+    if (demoTimer) { clearTimeout(demoTimer); demoTimer = null; }
+  }
+
+  function renderAnnotateDemo(container) {
+    container.style.display = 'block';
+    container.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;flex-wrap:wrap;">' +
+        '<span style="font-weight:700;color:#064e3b;font-size:11px;text-transform:uppercase;">Démo interactive · Surlignage</span>' +
+        '<button type="button" id="tour-demo-auto" class="wg-tour-btn" style="padding:3px 8px;font-size:11px;">▶ Démo auto</button>' +
+      '</div>' +
+      '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;padding:8px;margin-bottom:8px;line-height:1.45;color:#1e293b;">' +
+        'Extrait : <span id="tour-demo-text" style="padding:1px 3px;border-radius:3px;transition:background 0.2s;">La Grande Tourbière de Blainville fait l’objet du dossier CCE SEM-26-003.</span>' +
+        '<div id="tour-demo-comment" style="display:none;margin-top:6px;padding:5px 8px;background:#ecfdf5;border-left:3px solid #10b981;border-radius:4px;font-size:11.5px;color:#065f46;">💬 Note : À recouper avec le rapport BAPE 371</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">' +
+        '<button type="button" id="tour-demo-hl" class="wg-tour-btn primary" style="padding:4px 8px;font-size:11px;">Surligner</button>' +
+        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#fef08a" title="Jaune" style="padding:4px 7px;background:#fef08a;border-color:#eab308;">&nbsp;</button>' +
+        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#bbf7d0" title="Vert" style="padding:4px 7px;background:#bbf7d0;border-color:#22c55e;">&nbsp;</button>' +
+        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#bfdbfe" title="Bleu" style="padding:4px 7px;background:#bfdbfe;border-color:#3b82f6;">&nbsp;</button>' +
+        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#fbcfe8" title="Rose" style="padding:4px 7px;background:#fbcfe8;border-color:#ec4899;">&nbsp;</button>' +
+        '<button type="button" id="tour-demo-cmt" class="wg-tour-btn" style="padding:4px 8px;font-size:11px;">Commenter</button>' +
+        '<button type="button" id="tour-demo-del" class="wg-tour-btn" style="padding:4px 8px;font-size:11px;color:#b91c1c;">Supprimer</button>' +
+      '</div>';
+
+    var textEl = document.getElementById('tour-demo-text');
+    var cmtEl = document.getElementById('tour-demo-comment');
+    var activeColor = '#fef08a';
+    var highlighted = false;
+
+    function applyHl(color) {
+      if (color) activeColor = color;
+      highlighted = true;
+      textEl.style.background = activeColor;
+    }
+    function resetDemo() {
+      highlighted = false;
+      textEl.style.background = 'transparent';
+      cmtEl.style.display = 'none';
+    }
+
+    document.getElementById('tour-demo-hl').onclick = function() { applyHl(activeColor); };
+    container.querySelectorAll('.tour-demo-color').forEach(function(b) {
+      b.onclick = function() { applyHl(b.getAttribute('data-c')); };
+    });
+    document.getElementById('tour-demo-cmt').onclick = function() {
+      if (!highlighted) applyHl(activeColor);
+      cmtEl.style.display = 'block';
+    };
+    document.getElementById('tour-demo-del').onclick = resetDemo;
+    document.getElementById('tour-demo-auto').onclick = function() {
+      clearDemoTimer();
+      resetDemo();
+      demoTimer = setTimeout(function() {
+        applyHl('#fef08a');
+        demoTimer = setTimeout(function() {
+          applyHl('#bfdbfe');
+          demoTimer = setTimeout(function() {
+            cmtEl.style.display = 'block';
+            demoTimer = setTimeout(resetDemo, 1400);
+          }, 800);
+        }, 700);
+      }, 250);
+    };
+  }
 
   var steps = [
     {
@@ -6796,8 +6865,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     },
     {
       selector: '#preview-stage',
-      title: '2 · Lire, Surligner & Annoter',
-      body: 'Chaque PDF s’ouvre en mode « Lire ». Dans la barre du lecteur PDF, cliquez sur « Surligner / Annoter » pour tracer des surlignages, écrire des notes ou commenter un passage : tout est sauvegardé localement.'
+      title: '2 · Surligner, Changer de couleur, Commenter, Supprimer',
+      body: 'Dans le lecteur PDF, cliquez sur « Surligner / Annoter » pour surligner un passage, changer sa couleur, ajouter un commentaire ou le supprimer. Essayez ci-dessous :',
+      setupDemo: renderAnnotateDemo
     },
     {
       selector: '.preview-header',
@@ -6806,24 +6876,42 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     },
     {
       selector: '#btn-theme-toggle-dj',
-      title: '4 · Mode clair / Mode sombre',
-      body: 'Cliquez sur cette icône lune/soleil pour basculer entre le thème clair et le thème sombre (le lecteur PDF s’adapte automatiquement).'
+      title: '4 · Mode nuit / Mode clair',
+      body: 'Cliquez sur cette icône lune/soleil pour basculer entre le thème clair et le thème sombre (le lecteur PDF s’adapte automatiquement).',
+      setupDemo: function(container) {
+        container.style.display = 'block';
+        container.innerHTML = '<button type="button" id="tour-demo-theme" class="wg-tour-btn primary" style="width:100%;padding:7px 10px;">🌙 Tester le mode nuit / jour maintenant</button>';
+        document.getElementById('tour-demo-theme').onclick = function() {
+          var tBtn = document.getElementById('btn-theme-toggle-dj');
+          if (tBtn) tBtn.click();
+        };
+      }
     },
     {
       selector: '#dropdown-tech-tools',
-      title: '5 · Mode hors-ligne & Moteur PDF',
-      body: 'Dans « Options ▾ », activez le mode hors-ligne (télécharge les 158 pièces sur votre appareil, avec bouton corbeille pour purger), changez de moteur PDF (Intégré ou Navigateur) et accédez à « Revoir le tutoriel » à tout moment.'
+      title: '5 · Options : Hors-ligne, Moteur PDF & Tutoriel',
+      body: 'Le menu « Options ▾ » regroupe : le mode hors-ligne (télécharger les 158 pièces ou purger), le choix du moteur PDF (Intégré / Navigateur), et « Revoir le tutoriel ».',
+      onEnter: function() {
+        var dd = document.getElementById('dropdown-tech-tools');
+        if (dd) dd.setAttribute('open', '');
+      },
+      onLeave: function() {
+        var dd = document.getElementById('dropdown-tech-tools');
+        if (dd) dd.removeAttribute('open');
+      }
     },
     {
       selector: '.sidebar-wg-vault-box',
       title: '6 · Exporter ou importer vos notes (.wg)',
-      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos surlignages et commentaires dans un fichier chiffré .wg, ou « Importer (.wg) » pour les recharger sur un autre appareil. Pour revoir ce guide plus tard : Options ▾ → Revoir le tutoriel.'
+      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos surlignages et commentaires dans un fichier chiffré .wg, ou « Importer (.wg) » pour les recharger ailleurs. Pour revoir ce guide : Options ▾ → Revoir le tutoriel.'
     }
   ];
 
   var idx = 0;
 
   function endTour() {
+    clearDemoTimer();
+    if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
     try { localStorage.setItem(TOUR_KEY, '1'); } catch (_) {}
     backdrop.style.display = 'none';
     spotlight.style.display = 'none';
@@ -6831,7 +6919,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   function renderStep() {
+    clearDemoTimer();
     var st = steps[idx];
+    if (st.onEnter) st.onEnter();
     var target = document.querySelector(st.selector);
     if (!target || target.offsetParent === null) {
       target = document.body;
@@ -6850,13 +6940,18 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
     titleEl.textContent = st.title;
     bodyEl.textContent = st.body;
+    if (demoEl) {
+      demoEl.innerHTML = '';
+      demoEl.style.display = 'none';
+      if (st.setupDemo) st.setupDemo(demoEl);
+    }
     stepEl.textContent = (idx + 1) + ' / ' + steps.length;
     btnPrev.style.display = idx === 0 ? 'none' : 'inline-block';
     btnNext.textContent = idx === steps.length - 1 ? 'Terminer' : 'Suivant';
 
     card.style.display = 'block';
     var cw = card.offsetWidth || 340;
-    var ch = card.offsetHeight || 170;
+    var ch = card.offsetHeight || 200;
     var cardTop = rect.bottom + 14;
     if (cardTop + ch > window.innerHeight - 12) {
       cardTop = Math.max(12, rect.top - ch - 14);
@@ -6884,9 +6979,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   btnSkip.addEventListener('click', endTour);
   backdrop.addEventListener('click', endTour);
   btnPrev.addEventListener('click', function() {
-    if (idx > 0) { idx--; renderStep(); }
+    if (idx > 0) {
+      if (steps[idx].onLeave) steps[idx].onLeave();
+      idx--;
+      renderStep();
+    }
   });
   btnNext.addEventListener('click', function() {
+    if (steps[idx].onLeave) steps[idx].onLeave();
     if (idx < steps.length - 1) { idx++; renderStep(); }
     else endTour();
   });
