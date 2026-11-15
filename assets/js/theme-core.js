@@ -4740,6 +4740,34 @@
     });
   }
 
+  // Helpers modernes : INP (scheduler.yield), Sanitizer API & détection <install>
+  if (typeof window.wgYieldToMain !== 'function') {
+    window.wgYieldToMain = function wgYieldToMain() {
+      if (window.scheduler && typeof window.scheduler.yield === 'function') {
+        return window.scheduler.yield();
+      }
+      return new Promise((resolve) => setTimeout(resolve, 0));
+    };
+  }
+  if (typeof window.wgSanitizeHTML !== 'function') {
+    window.wgSanitizeHTML = function wgSanitizeHTML(el, html) {
+      if (!el) return;
+      const str = String(html || '');
+      if (typeof el.setHTML === 'function') {
+        try {
+          if (typeof window.Sanitizer === 'function') {
+            el.setHTML(str, { sanitizer: new window.Sanitizer() });
+          } else {
+            el.setHTML(str);
+          }
+          return;
+        } catch (_) {}
+      }
+      el.innerHTML = str;
+    };
+  }
+  window.wgSupportsInstallElement = typeof window.HTMLInstallElement === 'function';
+
   function loadVideoJsEnhancementsIfNeeded() {
     if (document.querySelector('script[src*="videojs-enhancements.js"]')) return;
     if (!document.querySelector('script[src*="videojs-player.min.js"], video-player, audio-player')) return;

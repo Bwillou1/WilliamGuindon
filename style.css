@@ -14624,6 +14624,43 @@ body.mode-simple .hero-version-quick-switch .btn-text-simple-switch:hover {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ==========================================================================
+   Optimisations INP, Media Pseudo-classes (Interop 2026) & Safari 27+
+   ========================================================================== */
+
+/* Suppression du délai tactile 300 ms sur mobile (améliore l'INP) */
+a,
+button,
+summary,
+select,
+input[type="checkbox"],
+input[type="radio"],
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* États natifs <video>/<audio> (Interop 2026) hors skin Video.js */
+@supports selector(:playing) {
+  video:not(video-skin video):is(:buffering, :stalled),
+  audio:not(audio-skin audio):is(:buffering, :stalled) {
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* Amélioration progressive Customizable Select (Safari 27 / Chrome moderne) */
+@supports (appearance: base-select) {
+  select.wg-modern-select,
+  select.wg-modern-select::picker(select) {
+    appearance: base-select;
+  }
+  select.wg-modern-select::picker(select) {
+    border-radius: 10px;
+    border: 1px solid var(--border, #cbd5e1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+  }
+}
+
 
 
 

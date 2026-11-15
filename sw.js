@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v274';
+const CACHE_NAME = 'wg-pwa-v275';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -97,6 +97,16 @@ function isCacheable(request, response) {
 }
 
 self.addEventListener('install', (event) => {
+  // ServiceWorker Static Routing API : contourner le SW pour la sentinelle temps réel
+  if (typeof event.addRoutes === 'function') {
+    try {
+      event.addRoutes([
+        { condition: { urlPattern: { pathname: '/data/site-state.json' } }, source: 'network' },
+        { condition: { urlPattern: { pathname: '/assets/js/security-guard.js' } }, source: 'network' }
+      ]);
+    } catch (_) {}
+  }
+
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
       try {
@@ -113,13 +123,18 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
-          .map((key) => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+    Promise.all([
+      caches.keys().then((keys) => {
+        return Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME && !key.startsWith('wg-sem26003-docs') && !key.startsWith('wg-docs'))
+            .map((key) => caches.delete(key))
+        );
+      }),
+      self.registration && self.registration.navigationPreload
+        ? self.registration.navigationPreload.enable().catch(() => {})
+        : Promise.resolve()
+    ]).then(() => self.clients.claim())
   );
 });
 
@@ -248,7 +263,8 @@ self.addEventListener('fetch', (event) => {
   // Ne met en cache que les pièces autorisées afin de préserver les traductions en direct
   if (isNavigation) {
     event.respondWith(
-      fetch(event.request)
+      Promise.resolve(event.preloadResponse)
+        .then((preloaded) => preloaded || fetch(event.request))
         .then((networkResponse) => {
           if (isCacheable(event.request, networkResponse)) {
             const responseClone = networkResponse.clone();
