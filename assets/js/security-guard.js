@@ -19,8 +19,7 @@
                              currentPath.includes('lecteur') ||
                              currentPath.includes('live') ||
                              currentPath.includes('satellite') ||
-                             currentPath.includes('chronologie') ||
-                             currentPath.includes('video-collective');
+                             currentPath.includes('chronologie');
 
   function isEmbedRequested() {
     try {
