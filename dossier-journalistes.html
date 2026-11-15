@@ -295,18 +295,6 @@
     .btn-local-icon:active {
       transform: translateY(0);
     }
-    .drive-item.is-cached .drive-item-name::after {
-      content: "✔ prêt hors-ligne";
-      font-size: 9.5px;
-      font-weight: 700;
-      color: #047857;
-      background: #d1fae5;
-      padding: 1px 6px;
-      border-radius: 4px;
-      margin-left: 6px;
-      display: inline-block;
-      vertical-align: middle;
-    }
     body.is-offline-view .drive-item:not(.is-cached) {
       opacity: 0.38;
       filter: grayscale(1);
@@ -2050,48 +2038,52 @@
     </div>
     
     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-      <!-- Contrôle du Mode Local / Hors-ligne -->
-      <div id="local-mode-container" class="local-mode-container">
-        <!-- Bouton d'activation initial -->
-        <button type="button" id="btn-enable-local" class="drive-btn-download" style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600;" title="Mettre en cache local les pièces publiques pour consultation directe 100% hors-ligne (sans cloud)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span id="btn-enable-local-text"><span class="btn-label-full">Mode Local (Hors-ligne)</span><span class="btn-label-short">Hors-ligne</span></span>
-        </button>
+      <!-- Menu discret regroupant les réglages techniques (Mode Local & Format du lecteur) -->
+      <details class="drive-actions-dropdown" id="dropdown-tech-tools">
+        <summary class="drive-actions-summary" title="Options hors-ligne et format du lecteur PDF">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Options ▾</span>
+        </summary>
+        <div class="drive-actions-menu" role="menu" style="min-width: 270px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #52796f;">Stockage hors-ligne</div>
+          <div id="local-mode-container" class="local-mode-container" style="display: flex; flex-direction: column; gap: 6px;">
+            <button type="button" id="btn-enable-local" class="drive-btn-download" style="width: 100%; justify-content: center; background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600;" title="Mettre en cache local les pièces publiques pour consultation directe 100% hors-ligne (sans cloud)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span id="btn-enable-local-text"><span class="btn-label-full">Activer le mode hors-ligne</span><span class="btn-label-short">Hors-ligne</span></span>
+            </button>
 
-        <!-- Barre de progression de téléchargement -->
-        <div id="local-progress-wrap" style="display: none; align-items: center; gap: 8px; background: #eaf5ee; border: 1px solid #c8e4d0; padding: 5px 12px; border-radius: 6px; font-size: 12px; color: #064e3b;">
-          <div style="width: 14px; height: 14px; border: 2px solid #cbd7cf; border-top-color: #0d652d; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-          <span id="local-progress-text" style="font-weight: 600;">Mise en cache des pièces publiques...</span>
-          <button type="button" id="btn-cancel-local" style="background: none; border: none; color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 4px;" title="Arrêter la mise en cache">✕</button>
-        </div>
+            <div id="local-progress-wrap" style="display: none; align-items: center; gap: 8px; background: #eaf5ee; border: 1px solid #c8e4d0; padding: 5px 10px; border-radius: 6px; font-size: 12px; color: #064e3b;">
+              <div style="width: 14px; height: 14px; border: 2px solid #cbd7cf; border-top-color: #0d652d; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+              <span id="local-progress-text" style="font-weight: 600; flex: 1;">Mise en cache des pièces...</span>
+              <button type="button" id="btn-cancel-local" style="background: none; border: none; color: #b91c1c; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 4px;" title="Arrêter la mise en cache">✕</button>
+            </div>
 
-        <!-- Groupe actif : Indicateur Local + Corbeille + Synchronisation Cloud -->
-        <div id="local-active-group" style="display: none; align-items: center; gap: 6px;">
-          <div id="local-status-badge" style="display: inline-flex; align-items: center; gap: 6px; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 6px 12px; border-radius: 6px; font-size: 12.5px; font-weight: 700;" title="Pièces stockées en mémoire locale de votre navigateur. Consultation instantanée sans connexion cloud.">
-            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
-            <span id="local-status-text"><span class="btn-label-full">Mode Local Actif</span><span class="btn-label-short">Local</span></span>
+            <div id="local-active-group" style="display: none; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <div id="local-status-badge" style="flex: 1; display: inline-flex; align-items: center; gap: 6px; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;" title="Pièces stockées en mémoire locale de votre navigateur.">
+                <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+                <span id="local-status-text"><span class="btn-label-full">Mode Local Actif</span><span class="btn-label-short">Local</span></span>
+              </div>
+              <button type="button" id="btn-purge-local" class="btn-local-icon" title="Purger le stockage local et repasser au mode cloud" aria-label="Purger le cache local">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </button>
+              <button type="button" id="btn-sync-local" class="btn-local-icon" title="Synchroniser les nouvelles pièces depuis le cloud" aria-label="Rechercher des mises à jour sur le cloud">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              </button>
+            </div>
           </div>
 
-          <!-- Bouton 1 : Corbeille (Purge locale) -->
-          <button type="button" id="btn-purge-local" class="btn-local-icon" title="Purger le stockage local et repasser au mode cloud" aria-label="Purger le cache local">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-          </button>
-
-          <!-- Bouton 2 : Recherche / Synchronisation Cloud -->
-          <button type="button" id="btn-sync-local" class="btn-local-icon" title="Vérifier le cloud pour synchroniser d'éventuelles nouvelles versions ou pièces manquantes" aria-label="Rechercher des mises à jour sur le cloud">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          </button>
+          <div style="border-top: 1px solid rgba(6, 78, 59, 0.12); padding-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #52796f;">Moteur du lecteur PDF</div>
+            <div class="reader-mode-slide-container">
+              <button type="button" id="btn-reader-mode-slide" class="reader-mode-slide-btn" role="switch" aria-checked="false" aria-label="Format du lecteur : Intégré ou Navigateur">
+                <span class="slide-indicator"></span>
+                <span class="slide-label slide-label-custom" title="Lecteur intégré (surlignage &amp; notes, adapté mobile)">Intégré</span>
+                <span class="slide-label slide-label-native" title="Moteur natif du navigateur (recherche Cmd+F rapide)">Navigateur</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <!-- Bouton slide commutateur de format : Intégré vs Navigateur -->
-      <div class="reader-mode-slide-container">
-        <button type="button" id="btn-reader-mode-slide" class="reader-mode-slide-btn" role="switch" aria-checked="false" aria-label="Format du lecteur : Intégré ou Navigateur">
-          <span class="slide-indicator"></span>
-          <span class="slide-label slide-label-custom" title="Lecteur intégré (affichage adapté au thème, compatible mobile)">Intégré</span>
-          <span class="slide-label slide-label-native" title="Moteur du navigateur (recommandé sur grand écran, recherche Cmd+F instantanée)">Navigateur</span>
-        </button>
-      </div>
+      </details>
 
       <!-- Menu déroulant Actions rapides (essentielles) -->
       <details class="drive-actions-dropdown" id="dropdown-header-actions">
@@ -2200,7 +2192,7 @@
   <div class="tree-folder-header">
     <span class="folder-chevron">▶</span>
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-    <span class="folder-name" title="00_Petition_0546_Reponses_Federales">Pétition 0546 — Réponses fédérales et observations complémentaires</span>
+    <span class="folder-name" title="00_Petition_0546_Reponses_Federales">01 · Pétition 0546 — Réponses fédérales</span>
     <span class="folder-count">12</span>
   </div>
   <div class="tree-children">
@@ -3010,16 +3002,16 @@
         <button type="button"
                 onclick="exportAnnotationsVaultFile()"
                 class="btn-sidebar-wg-export"
-                title="Sauvegarder et télécharger toutes vos annotations dans un fichier portable .wg">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span>Sauvegarder</span>
+                title="Exporter vos surlignages et notes dans un fichier .wg">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Exporter notes</span>
         </button>
         <button type="button"
                 onclick="document.getElementById('wg-vault-file-input').click()"
                 class="btn-sidebar-wg-import"
-                title="Restaurer vos annotations depuis un fichier .wg (continuer sur un autre appareil)">
+                title="Importer des annotations depuis un fichier .wg (reprendre sur un autre appareil)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span>Restaurer</span>
+          <span>Importer (.wg)</span>
         </button>
       </div>
     </div>
@@ -3160,6 +3152,14 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             Visionnez la déclaration vidéo ci-dessous, ou cliquez sur un fichier dans l'arborescence pour afficher son contenu probatoire.
           </p>
 
+          <div style="width: 100%; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; text-align: left;">
+            <div style="font-size: 11px; font-weight: 800; color: #064e3b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;">Comment utiliser cet espace ?</div>
+            <ol style="margin: 0; padding-left: 18px; font-size: 0.78rem; line-height: 1.5; color: #334155;">
+              <li><strong>Parcourir &amp; Lire :</strong> sélectionnez une pièce à gauche pour l'ouvrir en mode <strong>Lire</strong>.</li>
+              <li><strong>Surligner / Annoter :</strong> passez en mode <strong>Surligner / Annoter</strong> dans le lecteur pour ajouter vos notes.</li>
+              <li><strong>Télécharger ou Exporter :</strong> cliquez sur <strong>Télécharger original</strong> en haut du document, ou <strong>Exporter notes (.wg)</strong> en bas à gauche.</li>
+            </ol>
+          </div>
           <div class="journalist-reels-row" style="display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; margin: 0 auto 14px;">
 
             <!-- Reel 2 : Réponse vidéo de William Guindon (Protection 2-clics anti-cookies) -->
@@ -3623,12 +3623,72 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   "A - B - C/Rejets polluants/rejet.pdf": "Données de caractérisation des rejets liquides et atmosphériques",
   "A - B - C/Rejets polluants/Plan Bouchard/Site 06875001 - Camp Bouchard, ancien dépôt de munitions.pdf": "Fiche fédérale · Site 06875001 - Camp Bouchard (Ancien dépôt de munitions)",
   "A - B - C/Sealosafe/pr84.pdf": "Rapport technique d'évaluation du procédé Sealosafe (PR84)",
-  "A - B - C/Sealosafe/rapport371.pdf": "BAPE 371 · Rapport d'enquête et d'audience publique sur Stablex"
+  "A - B - C/Sealosafe/rapport371.pdf": "BAPE 371 · Rapport d'enquête et d'audience publique sur Stablex",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_fr_clean.pdf": "Communication révisée SEM-26-003 · Version haute lisibilité · FR",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_en.pdf": "Communication citoyenne révisée SEM-26-003 · Version anglaise (EN)",
+  "00_Pieces_Officielles_Site_Natif/26-3-rsub_es.pdf": "Communication citoyenne révisée SEM-26-003 · Version espagnole (ES)",
+  "00_Pieces_Officielles_Site_Natif/26-2-det2_en.pdf": "Détermination de recevabilité CCE art. 24.27(2)-(3) · Version anglaise (EN)",
+  "00_Pieces_Officielles_Site_Natif/request-terminate-defer-canada-sem26003-en.pdf": "Demande de clôture ou de report du Canada (Annexe SEM-26-003, EN)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.50.png": "Renseignements financiers annuels — Extrait #1 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.37.57.png": "Renseignements financiers annuels — Extrait #2 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.04.png": "Renseignements financiers annuels — Extrait #3 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.12.png": "Renseignements financiers annuels — Extrait #4 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.18.png": "Renseignements financiers annuels — Extrait #5 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.25.png": "Renseignements financiers annuels — Extrait #6 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.32.png": "Renseignements financiers annuels — Extrait #7 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.38.png": "Renseignements financiers annuels — Extrait #8 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.45.png": "Renseignements financiers annuels — Extrait #9 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.38.53.png": "Renseignements financiers annuels — Extrait #10 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.04.png": "Renseignements financiers annuels — Extrait #11 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.22.png": "Renseignements financiers annuels — Extrait #12 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.29.png": "Renseignements financiers annuels — Extrait #13 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.35.png": "Renseignements financiers annuels — Extrait #14 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.42.png": "Renseignements financiers annuels — Extrait #15 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.48.png": "Renseignements financiers annuels — Extrait #16 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.53.png": "Renseignements financiers annuels — Extrait #17 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.39.59.png": "Renseignements financiers annuels — Extrait #18 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.05.png": "Renseignements financiers annuels — Extrait #19 (14 juil. 2026)",
+  "A - B - C/Rejets polluants/Plan Bouchard/Renseignements financiers-annuels/Capture d’écran, le 2026-07-14 à 10.40.12.png": "Renseignements financiers annuels — Extrait #20 (14 juil. 2026)",
+  "A - B - C/Sealosafe/https_www.britishnewspaperarchive.co.uk_search_results_1989-06-20_NewspaperTitle=Birmingham_2BNews&IssueId=BL_2F0003661_2F19890620_2F&County=Warwickshire_2C_20England.png": "Archive presse britannique (Birmingham News, 20 juin 1989) — Sealosafe",
+  "A - B - C/Sealosafe/seal16.png": "Planche technique Sealosafe — Schéma #16",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/8_oct_fuite_CCBC6S.jpg": "Preuve visuelle terrain — 8 oct. (CCBC6S)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S_2.jpg": "Preuve visuelle terrain — 10 mars (Cliché #2)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/10mars_CCBC6S.jpg": "Preuve visuelle terrain — 10 mars (Cliché #1)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_2.jpg": "Preuve visuelle terrain — 18 juin (Cliché #2)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_3.jpg": "Preuve visuelle terrain — 18 juin (Cliché #3)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S_4.jpg": "Preuve visuelle terrain — 18 juin (Cliché #4)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/18_juin_fuite_CCBC6S.jpg": "Preuve visuelle terrain — 18 juin (Cliché #1)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/471362605_557192947288793_7552720520798828378_n.jpg": "Archive photographique terrain — Cliché #1 (Stablex)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/486693577_628236726851081_4669035421769396090_n.jpg": "Archive photographique terrain — Cliché #2 (Stablex)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488581095_634855336189220_7127364322750908112_n.jpg": "Archive photographique terrain — Cliché #3 (Stablex)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/488595555_635345709473516_6276673584910527341_n.jpg": "Archive photographique terrain — Cliché #4 (Stablex)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/498641043_668527152822038_5242990835995525266_n.jpg": "Archive photographique terrain — Cliché #5 (Stablex)",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.14.png": "Capture probatoire (15 juil. 2026) — Relevé #1",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.25.png": "Capture probatoire (15 juil. 2026) — Relevé #2",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.32.png": "Capture probatoire (15 juil. 2026) — Relevé #3",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.22.40.png": "Capture probatoire (15 juil. 2026) — Relevé #4",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/Capture d’écran, le 2026-07-15 à 14.58.55.png": "Capture probatoire (15 juil. 2026) — Relevé #5",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_6.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #6",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_7.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #7",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_9.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #9",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_10.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #10",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_11.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #11",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_12.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #12",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_13.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #13",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_14.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #14",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_15.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #15",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_16.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #16",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_17.jpg": "Photographie probatoire de terrain — Échantillon CCBC6S #17",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_18.JPG": "Photographie probatoire de terrain — Échantillon CCBC6S #18",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_19.JPG": "Photographie probatoire de terrain — Échantillon CCBC6S #19",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_20.JPG": "Photographie probatoire de terrain — Échantillon CCBC6S #20",
+  "H11_Recueil_Preuves_Visuelles_Fuites_Terrain (png)/CCBC6S_21.JPG.png": "Photographie probatoire de terrain — Échantillon CCBC6S #21"
 };
 
   const FOLDER_TITLES = {
-  "00_Petition_0546_Reponses_Federales": "Pétition 0546 — Réponses fédérales et observations complémentaires",
-  "00_Pieces_Officielles_Site_Natif": "00 · Pièces maîtresses & Recours officiels CCE (Pétition, CEDD, Liebel)",
+  "00_Petition_0546_Reponses_Federales": "01 · Pétition 0546 — Réponses fédérales",
+  "petition-546": "Pièces & réponses ministérielles (10 nov. 2026)",
+  "00_Pieces_Officielles_Site_Natif": "02 · Recours officiels CCE & Pièces maîtresses",
   "01_Especes_Menacees_Biodiversite": "01 · Espèces menacées & Biodiversité",
   "04_Preuves_Citoyennes_Tests_Eau_Rapports": "04 · Preuves citoyennes & Tests d'eau",
   "05_Images_Satellites_Sentinel2_NDVI": "05 · Données satellites Sentinel-2 & NDVI",
@@ -5622,6 +5682,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
             Visionnez la déclaration vidéo ci-dessous, ou cliquez sur un fichier dans l'arborescence pour afficher son contenu probatoire.
           </p>
 
+          <div style="width: 100%; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; text-align: left;">
+            <div style="font-size: 11px; font-weight: 800; color: #064e3b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;">Comment utiliser cet espace ?</div>
+            <ol style="margin: 0; padding-left: 18px; font-size: 0.78rem; line-height: 1.5; color: #334155;">
+              <li><strong>Parcourir &amp; Lire :</strong> sélectionnez une pièce à gauche pour l'ouvrir en mode <strong>Lire</strong>.</li>
+              <li><strong>Surligner / Annoter :</strong> passez en mode <strong>Surligner / Annoter</strong> dans le lecteur pour ajouter vos notes.</li>
+              <li><strong>Télécharger ou Exporter :</strong> cliquez sur <strong>Télécharger original</strong> en haut du document, ou <strong>Exporter notes (.wg)</strong> en bas à gauche.</li>
+            </ol>
+          </div>
           <div class="journalist-reels-row" style="display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; margin: 0 auto 14px;">
 
             <!-- Reel 2 : Réponse vidéo de William Guindon (Protection 2-clics anti-cookies) -->

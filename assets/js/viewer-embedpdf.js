@@ -1402,11 +1402,11 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
                 "menu.zoomControls": "Contrôles du zoom",
 
                 mode: {
-                  view: "Mode lecture",
-                  annotate: "Mode annotation"
+                  view: "Lire",
+                  annotate: "Surligner / Annoter"
                 },
-                "mode.view": "Mode lecture",
-                "mode.annotate": "Mode annotation",
+                "mode.view": "Lire",
+                "mode.annotate": "Surligner / Annoter",
 
                 panel: {
                   sidebar: "Volet latéral",
