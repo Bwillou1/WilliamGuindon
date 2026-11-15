@@ -11,17 +11,6 @@
   var search = window.location.search || "";
   var hash = window.location.hash || "";
 
-  // Protection absolue contre l'imbrication récursive dans une iframe
-  if (window.self !== window.top) {
-    var rawDoc = path.replace(/^\/(?:(?:en|es)\/)?d\/?/i, "").replace(/\/+$/, "");
-    if (rawDoc.endsWith(".html") || rawDoc.endsWith(".js") || rawDoc.endsWith(".css") || rawDoc.endsWith(".pdf") || rawDoc.endsWith(".png") || rawDoc.endsWith(".jpg") || rawDoc.endsWith(".svg")) {
-      window.location.replace("/" + rawDoc + search + hash);
-      return;
-    }
-    window.location.replace("/viewer.html" + search + hash);
-    return;
-  }
-
   var match = path.match(/\/(?:(en|es)\/)?d(?:\/([^/?#]+))?/i);
   var lang = (match && match[1]) ? match[1].toLowerCase() : "";
   var doc = (match && match[2]) ? match[2] : "";
