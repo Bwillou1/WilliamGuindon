@@ -5353,7 +5353,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     }
     try {
       if (requestedDoc) {
-        const normRequested = decodeURIComponent(requestedDoc).normalize("NFC").toLowerCase();
+        const normRequested = decodeURIComponent(requestedDoc).normalize("NFC").toLowerCase().replace(/^\/?assets\/docs\//, "");
         const allItems = Array.from(treeContainer.querySelectorAll(".drive-item"));
         for (const it of allItems) {
           const fp = (it.getAttribute("data-fullpath") || "").normalize("NFC").toLowerCase();
@@ -6118,7 +6118,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     const p = new URLSearchParams(window.location.search);
     const d = p.get('doc') || p.get('file');
     if (d) {
-      const norm = decodeURIComponent(d).normalize('NFC').toLowerCase();
+      const norm = decodeURIComponent(d).normalize('NFC').toLowerCase().replace(/^\/?assets\/docs\//, '');
       const items = Array.from(document.querySelectorAll('.drive-item'));
       for (const it of items) {
         const fp = (it.getAttribute('data-fullpath') || '').normalize('NFC').toLowerCase();
