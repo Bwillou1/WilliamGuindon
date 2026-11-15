@@ -1752,6 +1752,42 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
                 });
               }
             });
+
+            document.addEventListener('keydown', (e) => {
+              if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+              const targetEl = (typeof e.composedPath === 'function' && e.composedPath()[0]) || e.target;
+              if (targetEl && (targetEl.tagName === 'INPUT' || targetEl.tagName === 'TEXTAREA' || targetEl.isContentEditable)) {
+                return;
+              }
+              const annotationApi = getAnnotationPluginApi(registry);
+              if (!annotationApi || typeof annotationApi.getSelectedAnnotation !== 'function') return;
+              const selected = annotationApi.getSelectedAnnotation();
+              if (!selected) return;
+              const obj = selected.object || selected;
+              const selId = obj && (obj.id || obj.uid);
+              const pageIndex = typeof obj?.pageIndex === 'number'
+                ? obj.pageIndex
+                : (typeof selected.pageIndex === 'number' ? selected.pageIndex : undefined);
+              if (!selId || (nativeAnnotationUids.has(selId) && !userAnnotationUids.has(selId))) return;
+              if (pageIndex === undefined) return;
+              e.preventDefault();
+              if (typeof annotationApi.deleteAnnotation === 'function') {
+                annotationApi.deleteAnnotation(pageIndex, selId);
+              } else if (typeof annotationApi.deleteAnnotations === 'function') {
+                annotationApi.deleteAnnotations([{ pageIndex, id: selId }]);
+              } else {
+                return;
+              }
+              userAnnotationUids.delete(selId);
+              hasUserDeletedAnnotations = true;
+              if (typeof annotationApi.deselectAnnotation === 'function') {
+                annotationApi.deselectAnnotation();
+              }
+              if (typeof annotationApi.commit === 'function') {
+                annotationApi.commit();
+              }
+              saveCurrentAnnotationsNow();
+            });
           }
         }).catch(err => {
           clearTimeout(loadingWatchdogTimer);
