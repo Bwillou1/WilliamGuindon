@@ -2024,21 +2024,17 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
         <span id="btn-toggle-tree-text">Réduire barre</span>
       </button>
-      <button type="button" id="btn-force-refresh" class="btn-toggle-tree" onclick="forceActualiserDossier()" title="Actualisation profonde : vider les caches et forcer la dernière version" aria-label="Actualisation profonde">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Actualiser</span>
-      </button>
-      <button type="button" id="btn-theme-toggle-dj" class="btn-toggle-tree" title="Basculer thème Clair/Sombre" aria-label="Basculer thème Clair/Sombre">
-        <svg id="theme-toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        <span id="btn-theme-toggle-text">Thème</span>
-      </button>
       <div class="drive-title">
         <h1 id="title-count" style="font-size:inherit;font-weight:inherit;margin:0;display:inline;line-height:inherit;">Dossier pour Journalistes · Archive SEM-26-003</h1>
       </div>
     </div>
     
     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-      <!-- Menu discret regroupant les réglages techniques (Mode Local & Format du lecteur) -->
+      <button type="button" id="btn-theme-toggle-dj" class="btn-toggle-tree" title="Basculer thème Clair/Sombre" aria-label="Basculer thème Clair/Sombre" style="padding: 6px 8px;">
+        <svg id="theme-toggle-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <span id="btn-theme-toggle-text" style="display: none;">Thème</span>
+      </button>
+      <!-- Menu discret regroupant les réglages techniques (Mode Local, Actualisation & Format du lecteur) -->
       <details class="drive-actions-dropdown" id="dropdown-tech-tools">
         <summary class="drive-actions-summary" title="Options hors-ligne et format du lecteur PDF">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -2081,6 +2077,13 @@
                 <span class="slide-label slide-label-native" title="Moteur natif du navigateur (recherche Cmd+F rapide)">Navigateur</span>
               </button>
             </div>
+          </div>
+
+          <div style="border-top: 1px solid rgba(6, 78, 59, 0.12); padding-top: 8px;">
+            <button type="button" id="btn-force-refresh" class="drive-actions-item" onclick="forceActualiserDossier()" title="Actualisation profonde : vider les caches et forcer la dernière version" style="width: 100%; justify-content: flex-start;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Actualiser &amp; vider le cache</span>
+            </button>
           </div>
         </div>
       </details>
@@ -3127,7 +3130,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
             <span>Plein écran</span>
           </a>
-          <select id="select-translate-lang" class="btn-preview-action" style="display: none; cursor: pointer;" aria-label="Choisir la langue de traduction (Français, English, Español)" title="Choisir la langue : Français (Original), English ou Español">
+          <select id="select-translate-lang" class="btn-preview-action" style="display: none; cursor: pointer; padding: 6px 12px;" aria-label="Choisir la langue de traduction (Français, English, Español)" title="Choisir la langue : Français (Original), English ou Español">
             <option value="fr">FR · Original</option>
             <option value="en">EN · English</option>
             <option value="es">ES · Español</option>
