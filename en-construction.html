@@ -7,7 +7,37 @@
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'none';">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <noscript><meta http-equiv="refresh" content="0;url=/en-construction"></noscript>
+  <noscript><meta http-equiv="refresh" content="0;url=/"></noscript>
+  <script>
+    (function() {
+      var targetMs = Date.parse('2026-11-14T19:45:00-05:00');
+      if (Date.now() < targetMs) return;
+      var go = function() {
+        window.location.replace('/?_v=' + Date.now());
+      };
+      try { sessionStorage.clear(); } catch (e) {}
+      var tasks = [];
+      try {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
+          tasks.push(navigator.serviceWorker.getRegistrations().then(function(regs) {
+            return Promise.all(regs.map(function(r) { return r.unregister(); }));
+          }));
+        }
+      } catch (e) {}
+      try {
+        if ('caches' in window && caches.keys) {
+          tasks.push(caches.keys().then(function(keys) {
+            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+          }));
+        }
+      } catch (e) {}
+      if (tasks.length) {
+        Promise.race([Promise.all(tasks), new Promise(function(res) { setTimeout(res, 600); })]).then(go, go);
+      } else {
+        go();
+      }
+    })();
+  </script>
   <style>
     :root {
       --bg: #07100c;
@@ -222,7 +252,7 @@
 
       if (reloadBtn) {
         reloadBtn.addEventListener('click', function() {
-          window.location.reload();
+          window.location.replace('/?_v=' + Date.now());
         });
       }
 
