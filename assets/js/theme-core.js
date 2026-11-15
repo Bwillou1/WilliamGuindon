@@ -4740,15 +4740,26 @@
     });
   }
 
+  function loadVideoJsEnhancementsIfNeeded() {
+    if (document.querySelector('script[src*="videojs-enhancements.js"]')) return;
+    if (!document.querySelector('script[src*="videojs-player.min.js"], video-player, audio-player')) return;
+    const s = document.createElement('script');
+    s.src = '/assets/js/videojs-enhancements.js';
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
       initGlobalSimpleMode();
       setTimeout(initLegalGlossaryTooltips, 300);
+      loadVideoJsEnhancementsIfNeeded();
     });
   } else {
     initApp();
     initGlobalSimpleMode();
     setTimeout(initLegalGlossaryTooltips, 300);
+    loadVideoJsEnhancementsIfNeeded();
   }
 })();

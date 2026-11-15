@@ -39,7 +39,7 @@ limitations under the License.
 - **Auteurs :** Copyright © 2025-present Video.js contributors
 - **Licence :** Apache License 2.0
 - **URL :** https://videojs.org / https://github.com/videojs/vjs
-- **Composants distribués localement :** `assets/vendor/videojs/videojs-player.min.js`, `assets/vendor/videojs/videojs-skin.css`, `assets/vendor/videojs/LICENSE` (`<video-player>`, `<video-skin>`, `<audio-player>`, `<audio-skin>`)
+- **Composants distribués localement :** `assets/vendor/videojs/videojs-player.min.js`, `assets/vendor/videojs/videojs-skin.css`, `assets/vendor/videojs/LICENSE` (`<video-player>`, `<video-skin>`, `<audio-player>`, `<audio-skin>`, `<live-video-player>`, `<live-video-skin>`, `<media-dialog>`, `<media-icon>`, `<google-cast>` via `@videojs/google-cast` v10.4.0, `<youtube-video>` via `@videojs/youtube-video` v10.4.0)
 - **Avis de marque :** “Video.js” is a registered trademark of Brightcove Inc. The project is maintained independently by the open-source community, governed by the Video.js Technical Steering Committee.
 
 ```text

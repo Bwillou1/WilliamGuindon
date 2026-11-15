@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v273';
+const CACHE_NAME = 'wg-pwa-v274';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -29,6 +29,7 @@ const ASSETS_TO_CACHE = [
   '/assets/vendor/embedpdf/pdfium.wasm',
   '/assets/vendor/videojs/videojs-player.min.js',
   '/assets/vendor/videojs/videojs-skin.css',
+  '/assets/js/videojs-enhancements.js',
   '/manifest.json',
   '/favicon.svg',
   '/status.json'
