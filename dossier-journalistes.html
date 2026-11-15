@@ -2085,9 +2085,9 @@
                     onclick="const dd=document.getElementById('dropdown-tech-tools');if(dd)dd.removeAttribute('open');window.startDossierTour&&window.startDossierTour(true);"
                     class="drive-actions-item"
                     role="menuitem"
-                    title="Afficher le guide interactif de prise en main">
+                    title="Revoir le tutoriel de prise en main à tout moment">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-              <span>Guide interactif (Tutoriel)</span>
+              <span>Revoir le tutoriel</span>
             </button>
             <button id="btn-show-video"
                     type="button"
@@ -6791,28 +6791,33 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   var steps = [
     {
       selector: '#drive-tree',
-      title: '1 · Parcourir & filtrer les pièces',
-      body: 'Ouvrez les dossiers thématiques ou tapez un mot-clé (ex. cadmium, BAPE) pour trouver rapidement une pièce probatoire.'
+      title: '1 · Explorer & filtrer les pièces',
+      body: 'Cliquez sur un dossier (ex. 01 · Pétition 0546, 02 · Recours officiels CCE) pour l’ouvrir, ou tapez un mot-clé dans « Filtrer les pièces » (ex. cadmium, BAPE). Cliquez sur une pièce pour l’afficher à droite.'
     },
     {
       selector: '#preview-stage',
       title: '2 · Lire, Surligner & Annoter',
-      body: 'Chaque document s’ouvre en mode « Lire ». Dans le lecteur PDF, passez sur « Surligner / Annoter » pour ajouter vos surlignages et commentaires.'
+      body: 'Chaque PDF s’ouvre en mode « Lire ». Dans la barre du lecteur PDF, cliquez sur « Surligner / Annoter » pour tracer des surlignages, écrire des notes ou commenter un passage : tout est sauvegardé localement.'
     },
     {
       selector: '.preview-header',
-      title: '3 · Traduction, Partage & Téléchargement',
-      body: 'Lorsqu’une pièce est ouverte, changez la langue (FR · Original, EN, ES), copiez son lien direct ou cliquez sur « Télécharger original ».'
+      title: '3 · Traduire, Partager & Télécharger',
+      body: 'Quand un document est ouvert, utilisez « FR · Original ▾ » pour passer en EN ou ES, « Lien de partage » pour copier l’URL directe, « Plein écran » pour agrandir, ou « Télécharger original » pour récupérer le PDF.'
     },
     {
       selector: '#btn-theme-toggle-dj',
-      title: '4 · Mode sombre',
-      body: 'Cliquez sur cette icône pour basculer à tout moment entre le thème clair et le thème sombre.'
+      title: '4 · Mode clair / Mode sombre',
+      body: 'Cliquez sur cette icône lune/soleil pour basculer entre le thème clair et le thème sombre (le lecteur PDF s’adapte automatiquement).'
     },
     {
       selector: '#dropdown-tech-tools',
-      title: '5 · Mode hors-ligne & Sauvegarde (.wg)',
-      body: 'Ouvrez « Options ▾ » pour activer le mode hors-ligne (sans internet) ou changer de moteur PDF. En bas à gauche, « Exporter notes » sauvegarde vos annotations en fichier .wg.'
+      title: '5 · Mode hors-ligne & Moteur PDF',
+      body: 'Dans « Options ▾ », activez le mode hors-ligne (télécharge les 158 pièces sur votre appareil, avec bouton corbeille pour purger), changez de moteur PDF (Intégré ou Navigateur) et accédez à « Revoir le tutoriel » à tout moment.'
+    },
+    {
+      selector: '.sidebar-wg-vault-box',
+      title: '6 · Exporter ou importer vos notes (.wg)',
+      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos surlignages et commentaires dans un fichier chiffré .wg, ou « Importer (.wg) » pour les recharger sur un autre appareil. Pour revoir ce guide plus tard : Options ▾ → Revoir le tutoriel.'
     }
   ];
 
