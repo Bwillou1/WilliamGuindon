@@ -5706,7 +5706,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   const translatePreviewLink = document.getElementById('btn-translate-preview');
   const selectTranslateLangEl = document.getElementById('select-translate-lang');
   async function switchPreviewLanguage(lang) {
-    const iframe = previewStage ? previewStage.querySelector('iframe.preview-iframe') : null;
+    const stageEl = document.getElementById('preview-stage');
+    const iframe = stageEl ? stageEl.querySelector('iframe.preview-iframe, iframe') : null;
     if (!iframe) return;
     let rawPdf = iframe.getAttribute('data-raw-pdf') || '';
     const currentSrc = iframe.getAttribute('src') || '';
@@ -5729,6 +5730,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         translatePreviewLink.classList.remove('active');
         translatePreviewLink.title = 'Traduire ce document (EN / ES)';
       }
+      const _fsFr = document.getElementById('btn-fullscreen-viewer'); if (_fsFr) _fsFr.href = iframe.src;
       if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
     } else {
       const targetLang = (lang === 'es') ? 'es' : 'en';
@@ -5742,6 +5744,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         translatePreviewLink.classList.add('active');
         translatePreviewLink.title = 'Revenir au document original en français';
       }
+      const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = iframe.src;
       if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
     }
   }
@@ -5790,7 +5793,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Traduire';
-        if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
+        const _fsFr = document.getElementById('btn-fullscreen-viewer'); if (_fsFr) _fsFr.href = iframe.src;
+      if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
         translatePreviewLink.classList.remove('active');
         translatePreviewLink.title = `Traduire ce document (${targetLang.toUpperCase()})`;
       } else {
@@ -5804,7 +5808,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Original (FR)';
-        if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
+        const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = iframe.src;
+      if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
         translatePreviewLink.classList.add('active');
         translatePreviewLink.title = 'Revenir au document original en français';
       }
