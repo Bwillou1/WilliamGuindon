@@ -4780,6 +4780,12 @@
     aiMeta.content = 'none';
     document.head.appendChild(aiMeta);
   }
+  window.wgHasGPC = function wgHasGPC() {
+    return navigator.globalPrivacyControl === true;
+  };
+  if (window.wgHasGPC() && document.documentElement) {
+    document.documentElement.setAttribute('data-gpc', '1');
+  }
   window.wgSupportsInstallElement = typeof window.HTMLInstallElement === 'function';
 
   function loadVideoJsEnhancementsIfNeeded() {
