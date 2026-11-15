@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v266';
+const CACHE_NAME = 'wg-pwa-v267';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -168,9 +168,11 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
+      caches.open('wg-sem26003-docs-v1').then((docCache) =>
+        docCache.match(event.request, { ignoreSearch: true })
+      ).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
-        return fetch(event.request);
+        return fetch(event.request, { cache: 'no-store' });
       })
     );
     return;

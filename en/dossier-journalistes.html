@@ -4349,11 +4349,26 @@ function getCleanDisplayName(fullPath) {
         currentActiveBlobUrl = null;
       }
       if ('caches' in window) {
-        await caches.delete(LOCAL_CACHE_NAME);
+        const cacheKeys = await caches.keys();
+        await Promise.all(
+          cacheKeys
+            .filter((k) => k === LOCAL_CACHE_NAME || k.startsWith('wg-sem26003-docs') || k.startsWith('wg-docs'))
+            .map((k) => caches.delete(k))
+        );
       }
       await clearVaultDB();
       cachedUrlsSet.clear();
       updateLocalModeUI();
+      if (!navigator.onLine) {
+        const previewStageEl = document.getElementById("preview-stage");
+        if (previewStageEl) {
+          previewStageEl.innerHTML = `<div class="no-preview" style="padding:36px 20px;text-align:center;"><p style="font-weight:700;color:#064e3b;margin-bottom:8px;">Local storage purged</p><p style="font-size:0.9rem;color:#52796f;">Offline mode active: local documents have been removed from this device. Reconnect to view documents.</p></div>`;
+        }
+        const fsBtn = document.getElementById("btn-fullscreen-viewer");
+        if (fsBtn) fsBtn.style.display = "none";
+        const stlEl = document.getElementById("select-translate-lang");
+        if (stlEl) stlEl.style.display = "none";
+      }
       showDriveToast("Stockage local et coffre-fort vidés avec succès. Retour au mode cloud.", "success");
     } catch (e) {
       console.error("Erreur vidage cache :", e);
@@ -4885,6 +4900,12 @@ function getCleanDisplayName(fullPath) {
               stage.appendChild(aPlayer);
             } else if (lower.endsWith(".pdf")) {
               stage.classList.remove("is-media");
+              if (!navigator.onLine && !res.blob) {
+                if (fsViewerLink) fsViewerLink.style.display = "none";
+                const _stlOff = document.getElementById("select-translate-lang"); if (_stlOff) _stlOff.style.display = "none";
+                stage.innerHTML = `<div class="no-preview" style="padding:36px 20px;text-align:center;"><p style="font-weight:700;color:#064e3b;margin-bottom:8px;">Document unavailable offline</p><p style="font-size:0.9rem;color:#52796f;">This file is not stored locally (purged or not synced). Enable local mode while online to view it offline.</p></div>`;
+                return;
+              }
               const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
               const embeddedPdfUrl = res.isLocal ? res.blobUrl : (res.isSiteAsset ? res.rawUrl : res.corsUrl);
               const nativePdfUrl = res.isSiteAsset ? ('/' + res.rawUrl.replace(/^\/+/, '')) : res.directStorageUrl;
