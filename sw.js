@@ -21,6 +21,8 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
+  '/assets/vendor/videojs/videojs-player.min.js',
+  '/assets/vendor/videojs/videojs-skin.css',
   '/manifest.json',
   '/favicon.svg',
   '/status.json'

@@ -521,8 +521,19 @@
 
       async function startOrToggleAudio() {
         if (!audio) {
-          audio = new Audio('assets/Audio/biographie-complete.mp3');
+          audio = document.createElement('audio');
+          audio.src = 'assets/Audio/biographie-complete.mp3';
+          audio.preload = 'metadata';
           createFloatingPlayer();
+          if (floatingPlayer) {
+            const aPlayer = document.createElement('audio-player');
+            aPlayer.style.cssText = 'display:block;width:100%;margin-top:6px;';
+            const aSkin = document.createElement('audio-skin');
+            aSkin.style.cssText = 'display:block;width:100%;border-radius:10px;';
+            aSkin.appendChild(audio);
+            aPlayer.appendChild(aSkin);
+            (floatingPlayer.querySelector('.bio-floating-player-content') || floatingPlayer).appendChild(aPlayer);
+          }
 
           try {
             const res = await fetch('/data/biographie-audio-cues.json');
@@ -671,7 +682,7 @@
       container.removeAttribute('onclick');
       container.removeAttribute('onkeydown');
       container.innerHTML = `
-        <video controls autoplay playsinline style="width:100%;height:100%;max-width:100%;border-radius:12px;display:block;background:#000000;object-fit:contain;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4" type="video/mp4"></video>`;
+        <video-player><video-skin style="display:block;width:100%;height:100%;border-radius:12px;overflow:hidden;"><video autoplay playsinline style="width:100%;height:100%;max-width:100%;display:block;background:#000000;object-fit:contain;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/FB_17_oct_repcan.mp4" type="video/mp4"></video></video-skin></video-player>`;
     }
     window.loadHeroReel = loadHeroReel;
 

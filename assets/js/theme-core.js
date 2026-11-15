@@ -2627,6 +2627,12 @@
     function initBioAudio() {
       if (bioAudio) return bioAudio;
 
+      const fp = ensureFloatingPlayer();
+      const aPlayer = document.createElement('audio-player');
+      aPlayer.style.cssText = 'display:block;width:100%;margin-top:6px;';
+      const aSkin = document.createElement('audio-skin');
+      aSkin.style.cssText = 'display:block;width:100%;border-radius:10px;';
+
       bioAudio = document.createElement('audio');
       bioAudio.preload = 'none';
 
@@ -2639,6 +2645,11 @@
       sourceMp3.src = 'assets/Audio/biographie-complete.mp3';
       sourceMp3.type = 'audio/mpeg';
       bioAudio.appendChild(sourceMp3);
+
+      aSkin.appendChild(bioAudio);
+      aPlayer.appendChild(aSkin);
+      const fpContent = fp.querySelector('.bio-floating-player-content') || fp;
+      fpContent.appendChild(aPlayer);
 
       bioAudio.addEventListener('loadedmetadata', () => {
         const timeEl = document.getElementById('bio-player-time');
