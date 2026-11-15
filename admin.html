@@ -1566,21 +1566,22 @@
     return v ? decodeURIComponent(v[2]) : null;
   }
 
-  function setCookie(name, value, days) {
-    const d = new Date();
-    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
-    document.cookie = name + "=" + encodeURIComponent(value) + ";path=/;expires=" + d.toGMTString() + ";SameSite=Strict;Secure";
+  function purgeLegacyAuthCookie() {
+    document.cookie = "wg_admin_auth=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT;SameSite=Strict;Secure";
   }
 
+  // Purge immédiate de tout ancien témoin persistant (wg_admin_auth) dès le chargement
+  purgeLegacyAuthCookie();
+
   function getToken() {
-    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || localStorage.getItem("wg_github_pat") || getCookie("wg_admin_auth");
+    return currentAuthToken || sessionStorage.getItem("wg_github_pat") || "";
   }
 
   function clearToken() {
     currentAuthToken = "";
     sessionStorage.removeItem("wg_github_pat");
     localStorage.removeItem("wg_github_pat");
-    document.cookie = "wg_admin_auth=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT;SameSite=Strict;Secure";
+    purgeLegacyAuthCookie();
     updateAuthUI(false);
   }
 
@@ -2965,7 +2966,7 @@
         const rawId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
         localStorage.setItem("wg_passkey_cred_id", rawId);
         localStorage.setItem("wg_passkey_enabled", "true");
-        setCookie("wg_admin_auth", currentAuthToken, 30);
+        purgeLegacyAuthCookie();
         showStatus("Touch ID / Face ID configuré avec succès sur cet appareil !", "success");
         const setupBanner = document.getElementById("passkey-setup-banner");
         if (setupBanner) setupBanner.style.display = "none";
@@ -2997,10 +2998,9 @@
       });
 
       if (assertion) {
-        const savedToken = localStorage.getItem("wg_github_pat") || getCookie("wg_admin_auth");
+        const savedToken = sessionStorage.getItem("wg_github_pat");
         if (savedToken) {
           currentAuthToken = savedToken;
-          sessionStorage.setItem("wg_github_pat", savedToken);
           updateAuthUI(true);
           showStatus("Authentifié avec succès par biométrie Apple !", "success");
         } else {

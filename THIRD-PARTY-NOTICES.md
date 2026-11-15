@@ -240,33 +240,12 @@ SOFTWARE.
 
 ### Add to Calendar Button (v2)
 - **Auteurs :** Copyright (c) 2021-2026 Jens Kuerschner (jekuer) et contributeurs
-- **Licence :** MIT License
+- **Licence :** Elastic License 2.0 (ELv2) — *logiciel à code source disponible (source-available, non open source OSI)*
 - **URL :** https://github.com/jekuer/add-to-calendar-button / https://add-to-calendar-button.com
+- **Texte officiel de la licence :** https://github.com/jekuer/add-to-calendar-button/blob/main/LICENSE
 - **Description :** Composant Web universel et accessible permettant d'ajouter facilement les événements et rappels officiels (notamment l'échéance CCE du 16 octobre 2026) dans Apple Calendar, Google Calendar, Office 365, Outlook.com, Microsoft Teams, Yahoo et iCal (.ics) sans pistage ni collecte de données personnelles.
 
-```text
-MIT License
-
-Copyright (c) 2021-2026 Jens Kuerschner
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+> **Note de conformité :** Depuis sa version 2, `add-to-calendar-button` est distribué sous **Elastic License 2.0 (ELv2)** et non sous licence MIT. L'utilisation sur ce site documentaire respecte les conditions d'ELv2 (aucune revente en tant que service géré et aucune suppression des avis de licence).
 
 ---
 

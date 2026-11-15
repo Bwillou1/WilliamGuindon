@@ -265,7 +265,27 @@
     if (!host) return true;
     const lower = host.toLowerCase().split(':')[0]; // Retirer le port éventuel
     if (ALLOWED_HOSTS.includes(lower)) return true;
-    if (lower.endsWith('.williamguindon.me') || lower.endsWith('.github.io') || lower.endsWith('.pages.dev') || lower.endsWith('.netlify.app') || lower.endsWith('.vercel.app') || lower.endsWith('.cloudflareaccess.com') || lower.endsWith('.local') || lower.endsWith('.ngrok.io') || lower.endsWith('.loca.lt') || lower === 'archive.org' || lower.endsWith('.archive.org') || /^192\.168\./.test(lower) || /^10\./.test(lower) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(lower)) return true;
+    if (
+      lower.endsWith('.williamguindon.me') ||
+      lower.endsWith('.github.io') ||
+      lower.endsWith('.pages.dev') ||
+      lower.endsWith('.netlify.app') ||
+      lower.endsWith('.vercel.app') ||
+      lower.endsWith('.cloudflareaccess.com') ||
+      lower === 'dweb.link' ||
+      lower.endsWith('.ipfs.dweb.link') ||
+      lower === 'ipfs.io' ||
+      lower.endsWith('.ipfs.inbrowser.link') ||
+      lower.endsWith('.eth.limo') ||
+      lower.endsWith('.local') ||
+      lower.endsWith('.ngrok.io') ||
+      lower.endsWith('.loca.lt') ||
+      lower === 'archive.org' ||
+      lower.endsWith('.archive.org') ||
+      /^192\.168\./.test(lower) ||
+      /^10\./.test(lower) ||
+      /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(lower)
+    ) return true;
     return false;
   }
 
