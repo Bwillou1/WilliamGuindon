@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="/assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Annual Report — Verified Statistics &amp; CEC SEM-26-003 | William Guindon</title>
+<meta name="description" content="2026 public dashboard for William Guindon and CEC submission SEM-26-003: procedural progress, environmental data, publications, media reach, and open science.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://williamguindon.me/en/bilan.html">
+<link rel="alternate" hreflang="fr" href="https://williamguindon.me/bilan.html">
+<link rel="alternate" hreflang="en" href="https://williamguindon.me/en/bilan.html">
+<link rel="alternate" hreflang="es" href="https://williamguindon.me/es/bilan.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/bilan.html">
+<link rel="stylesheet" href="/style.css?v=20261018-v87">
+<script src="/assets/js/theme-core.js?v=20261107-v145" defer></script>
+<script src="/assets/js/navbar-loader.js" defer></script>
+<style>
+.bilan-hero{padding:52px 0 34px;border-bottom:1px solid var(--line,rgba(148,163,184,.2));background:radial-gradient(circle at 80% 20%,rgba(16,185,129,.14),transparent 50%)}
+.bilan-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(16,185,129,.14);color:#047857;border:1px solid rgba(16,185,129,.35);margin-bottom:14px}
+[data-theme="dark"] .bilan-badge{color:#6ee7b7}
+.bilan-hero h1{font-size:clamp(2rem,4.2vw,3rem);line-height:1.12;margin:0 0 12px;color:var(--text)}
+.bilan-lead{font-size:1.05rem;line-height:1.65;color:var(--text-muted);max-width:780px;margin:0 0 18px}
+.bilan-synth{padding:16px 20px;border-radius:14px;border:1px solid rgba(16,185,129,.32);background:var(--panel,rgba(255,255,255,.82));color:var(--text);font-weight:600;line-height:1.6}
+.bilan-meta-bar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:14px;font-size:.84rem;color:var(--text-muted)}
+.bilan-section{padding:28px 0 0}
+.bilan-section-title{font-size:1.25rem;font-weight:800;margin:0 0 14px;color:var(--text)}
+.bilan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.bilan-stat{background:var(--panel,#fff);border:1px solid var(--line,rgba(148,163,184,.24));border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(2,6,23,.05)}
+.bilan-stat-val{font-size:1.6rem;font-weight:900;color:var(--accent,#059669);line-height:1.15;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.bilan-stat-label{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.bilan-stat-note{font-size:.78rem;color:var(--text-muted)}
+.bilan-footer-note{margin:34px 0 56px;padding:18px 22px;border-radius:14px;border:1px solid var(--line,rgba(148,163,184,.24));background:var(--panel,#fff);font-size:.88rem;color:var(--text-muted);line-height:1.65}
+</style>
+</head>
+<body>
+<main id="main-content">
+  <section class="bilan-hero">
+    <div class="wrap">
+      <span class="bilan-badge">📊 2026 Report · Synced</span>
+      <h1>2026 Annual Report — From Blainville to International Review</h1>
+      <p class="bilan-lead">Public dashboard synced from William Guindon's verified tracking workbook (CEC submission <strong>SEM-26-003</strong>).</p>
+      <div class="bilan-synth" id="bilan-synthesis">Loading summary…</div>
+      <div class="bilan-meta-bar">
+        <span>Last synced: <strong id="bilan-updated">--</strong></span>
+        <span>·</span>
+        <span>Art. 24.28 Status: <strong id="bilan-verdict">--</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div id="bilan-sections"></div>
+    <div class="bilan-footer-note">
+      <strong>Methodology &amp; Traceability:</strong>
+      <span id="bilan-method">Figures drawn exclusively from dated entries in the 2026 tracking workbook.</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="padding:28px 0;border-top:1px solid var(--line,rgba(148,163,184,.2));display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--text-muted);">
+    <span>© 2026 William Guindon — CC BY-NC-ND 4.0</span>
+    <div><a href="/en/">Home</a> · <a href="/en/registre-cce-sem26003.html">CEC Registry</a> · <a href="#main-content">Top ↑</a></div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  fetch('/data/bilan-2026.json', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var syn = document.getElementById('bilan-synthesis');
+      var upd = document.getElementById('bilan-updated');
+      var ver = document.getElementById('bilan-verdict');
+      var met = document.getElementById('bilan-method');
+      var root = document.getElementById('bilan-sections');
+      if (syn) syn.textContent = d.synthesis_en || d.synthesis_fr || '';
+      if (upd) upd.textContent = d.updated_at ? new Date(d.updated_at).toLocaleString('en-CA') : '--';
+      if (ver) ver.textContent = d.verdict_en || d.verdict_fr || '--';
+      if (met) met.textContent = d.method_en || d.method_fr || '';
+      if (!root || !Array.isArray(d.sections)) return;
+      root.innerHTML = '';
+      d.sections.forEach(function (sec) {
+        var wrap = document.createElement('div');
+        wrap.className = 'bilan-section';
+        var h2 = document.createElement('h2');
+        h2.className = 'bilan-section-title';
+        h2.textContent = sec.title_en || sec.title_fr;
+        wrap.appendChild(h2);
+        var grid = document.createElement('div');
+        grid.className = 'bilan-grid';
+        (sec.metrics || []).forEach(function (m) {
+          var card = document.createElement('article');
+          card.className = 'bilan-stat';
+          card.innerHTML =
+            '<div class="bilan-stat-val"></div>' +
+            '<div class="bilan-stat-label"></div>' +
+            '<div class="bilan-stat-note"></div>';
+          card.querySelector('.bilan-stat-val').textContent = m.value;
+          card.querySelector('.bilan-stat-label').textContent = m.label_en || m.label_fr;
+          card.querySelector('.bilan-stat-note').textContent = m.note_en || m.note_fr || '';
+          grid.appendChild(card);
+        });
+        wrap.appendChild(grid);
+        root.appendChild(wrap);
+      });
+    })
+    .catch(function () {
+      var syn = document.getElementById('bilan-synthesis');
+      if (syn) syn.textContent = 'Unable to load data/bilan-2026.json right now.';
+    });
+})();
+</script>
+</body>
+</html>
