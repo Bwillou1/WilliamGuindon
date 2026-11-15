@@ -4750,6 +4750,14 @@
     };
   }
   if (typeof window.wgSanitizeHTML !== 'function') {
+    let wgTrustedPolicy = null;
+    if (window.trustedTypes && typeof window.trustedTypes.createPolicy === 'function') {
+      try {
+        wgTrustedPolicy = window.trustedTypes.createPolicy('wg-safe-html', {
+          createHTML: (s) => String(s || '')
+        });
+      } catch (_) {}
+    }
     window.wgSanitizeHTML = function wgSanitizeHTML(el, html) {
       if (!el) return;
       const str = String(html || '');
@@ -4763,8 +4771,14 @@
           return;
         } catch (_) {}
       }
-      el.innerHTML = str;
+      el.innerHTML = wgTrustedPolicy ? wgTrustedPolicy.createHTML(str) : str;
     };
+  }
+  if (document.head && !document.querySelector('meta[name="ai-disclosure"]')) {
+    const aiMeta = document.createElement('meta');
+    aiMeta.name = 'ai-disclosure';
+    aiMeta.content = 'none';
+    document.head.appendChild(aiMeta);
   }
   window.wgSupportsInstallElement = typeof window.HTMLInstallElement === 'function';
 

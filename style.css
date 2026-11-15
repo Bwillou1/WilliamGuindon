@@ -14661,6 +14661,24 @@ input[type="radio"],
   }
 }
 
+/* Baseline 2026 : View Transitions MPA + :active-view-transition */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  :active-view-transition::view-transition-old(root),
+  :active-view-transition::view-transition-new(root) {
+    animation-duration: 180ms;
+  }
+}
+
+/* Baseline 2026 : contraste automatique sur les pastilles dynamiques */
+@supports (color: contrast-color(red)) {
+  .wg-auto-contrast {
+    color: contrast-color(var(--wg-surface-bg, #10b981));
+  }
+}
+
 
 
 
