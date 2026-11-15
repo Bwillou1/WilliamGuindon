@@ -1266,6 +1266,16 @@
     if (el) el.remove();
   }
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // --- MODE RIPOSTE MISE EN DEMEURE, DÉPÔT NOTARIÉ & GÉNÉRATEUR D'AFFICHE RÉSEAUX SOCIAUX ---
   function renderLegalNoticeStrikeScreen(state) {
     let el = document.getElementById('legal-notice-strike-wrapper');
@@ -1278,15 +1288,6 @@
 
     const title = state.legalNoticeTitle || 'DÉNONCIATION PUBLIQUE : TENTATIVE DE BÂILLONNEMENT JURIDIQUE';
     const details = state.legalNoticeDetails || 'Notification d\'intimidation reçue. L\'intégralité des preuves et soumissions environnementales est versée au domaine public et au dossier CCE SEM-26-003.';
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
 
     const safeTitle = escapeHtml(title);
     const safeDetails = escapeHtml(details);
