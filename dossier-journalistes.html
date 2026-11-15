@@ -6759,9 +6759,55 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     border-color: #064e3b;
     color: #ffffff;
   }
+  #wg-tour-cursor {
+    position: fixed;
+    z-index: 10002;
+    width: 28px;
+    height: 28px;
+    pointer-events: none;
+    display: none;
+    transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1), top 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.14s ease;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+  }
+  #wg-tour-cursor.clicking {
+    transform: scale(0.82);
+  }
+  #wg-tour-click-ring {
+    position: fixed;
+    z-index: 10001;
+    width: 30px;
+    height: 30px;
+    margin-left: -15px;
+    margin-top: -15px;
+    border-radius: 999px;
+    border: 2.5px solid #10b981;
+    background: rgba(16, 185, 129, 0.22);
+    pointer-events: none;
+    display: none;
+    transform: scale(0.4);
+    opacity: 0;
+    transition: transform 0.38s ease-out, opacity 0.38s ease-out;
+  }
+  #wg-tour-click-ring.pulse {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  #wg-tour-draw-svg {
+    position: fixed;
+    z-index: 10000;
+    pointer-events: none;
+    display: none;
+  }
 </style>
 <div id="wg-tour-backdrop"></div>
 <div id="wg-tour-spotlight" aria-hidden="true"></div>
+<svg id="wg-tour-draw-svg" aria-hidden="true"></svg>
+<div id="wg-tour-click-ring" aria-hidden="true"></div>
+<div id="wg-tour-cursor" aria-hidden="true">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+    <path d="M4 2L20 11.5L12.5 13.5L9.5 21L4 2Z" fill="#ffffff" stroke="#064e3b" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+</div>
 <div id="wg-tour-card" role="dialog" aria-modal="true" aria-labelledby="wg-tour-title">
   <h4 id="wg-tour-title"></h4>
   <p id="wg-tour-body"></p>
@@ -6788,113 +6834,286 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   var btnSkip = document.getElementById('wg-tour-skip');
   var btnPrev = document.getElementById('wg-tour-prev');
   var btnNext = document.getElementById('wg-tour-next');
+  var cursorEl = document.getElementById('wg-tour-cursor');
+  var ringEl = document.getElementById('wg-tour-click-ring');
+  var drawSvg = document.getElementById('wg-tour-draw-svg');
   if (!backdrop || !spotlight || !card) return;
 
-  var demoTimer = null;
-  function clearDemoTimer() {
-    if (demoTimer) { clearTimeout(demoTimer); demoTimer = null; }
+  var tourRunId = 0;
+  function sleep(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
   }
 
-  function renderAnnotateDemo(container) {
-    container.style.display = 'block';
-    container.innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;flex-wrap:wrap;">' +
-        '<span style="font-weight:700;color:#064e3b;font-size:11px;text-transform:uppercase;">Démo interactive · Surlignage</span>' +
-        '<button type="button" id="tour-demo-auto" class="wg-tour-btn" style="padding:3px 8px;font-size:11px;">▶ Démo auto</button>' +
-      '</div>' +
-      '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;padding:8px;margin-bottom:8px;line-height:1.45;color:#1e293b;">' +
-        'Extrait : <span id="tour-demo-text" style="padding:1px 3px;border-radius:3px;transition:background 0.2s;">La Grande Tourbière de Blainville fait l’objet du dossier CCE SEM-26-003.</span>' +
-        '<div id="tour-demo-comment" style="display:none;margin-top:6px;padding:5px 8px;background:#ecfdf5;border-left:3px solid #10b981;border-radius:4px;font-size:11.5px;color:#065f46;">💬 Note : À recouper avec le rapport BAPE 371</div>' +
-      '</div>' +
-      '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">' +
-        '<button type="button" id="tour-demo-hl" class="wg-tour-btn primary" style="padding:4px 8px;font-size:11px;">Surligner</button>' +
-        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#fef08a" title="Jaune" style="padding:4px 7px;background:#fef08a;border-color:#eab308;">&nbsp;</button>' +
-        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#bbf7d0" title="Vert" style="padding:4px 7px;background:#bbf7d0;border-color:#22c55e;">&nbsp;</button>' +
-        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#bfdbfe" title="Bleu" style="padding:4px 7px;background:#bfdbfe;border-color:#3b82f6;">&nbsp;</button>' +
-        '<button type="button" class="tour-demo-color wg-tour-btn" data-c="#fbcfe8" title="Rose" style="padding:4px 7px;background:#fbcfe8;border-color:#ec4899;">&nbsp;</button>' +
-        '<button type="button" id="tour-demo-cmt" class="wg-tour-btn" style="padding:4px 8px;font-size:11px;">Commenter</button>' +
-        '<button type="button" id="tour-demo-del" class="wg-tour-btn" style="padding:4px 8px;font-size:11px;color:#b91c1c;">Supprimer</button>' +
-      '</div>';
-
-    var textEl = document.getElementById('tour-demo-text');
-    var cmtEl = document.getElementById('tour-demo-comment');
-    var activeColor = '#fef08a';
-    var highlighted = false;
-
-    function applyHl(color) {
-      if (color) activeColor = color;
-      highlighted = true;
-      textEl.style.background = activeColor;
+  function findInDocDeep(root, predicate) {
+    if (!root) return null;
+    var els = root.querySelectorAll ? root.querySelectorAll('button, [role="button"], [role="tab"]') : [];
+    for (var i = 0; i < els.length; i++) {
+      if (predicate(els[i])) return els[i];
     }
-    function resetDemo() {
-      highlighted = false;
-      textEl.style.background = 'transparent';
-      cmtEl.style.display = 'none';
+    var all = root.querySelectorAll ? root.querySelectorAll('*') : [];
+    for (var j = 0; j < all.length; j++) {
+      if (all[j].shadowRoot) {
+        var found = findInDocDeep(all[j].shadowRoot, predicate);
+        if (found) return found;
+      }
     }
+    return null;
+  }
 
-    document.getElementById('tour-demo-hl').onclick = function() { applyHl(activeColor); };
-    container.querySelectorAll('.tour-demo-color').forEach(function(b) {
-      b.onclick = function() { applyHl(b.getAttribute('data-c')); };
-    });
-    document.getElementById('tour-demo-cmt').onclick = function() {
-      if (!highlighted) applyHl(activeColor);
-      cmtEl.style.display = 'block';
-    };
-    document.getElementById('tour-demo-del').onclick = resetDemo;
-    document.getElementById('tour-demo-auto').onclick = function() {
-      clearDemoTimer();
-      resetDemo();
-      demoTimer = setTimeout(function() {
-        applyHl('#fef08a');
-        demoTimer = setTimeout(function() {
-          applyHl('#bfdbfe');
-          demoTimer = setTimeout(function() {
-            cmtEl.style.display = 'block';
-            demoTimer = setTimeout(resetDemo, 1400);
-          }, 800);
-        }, 700);
-      }, 250);
-    };
+  function getRectInViewport(el, frameEl) {
+    if (!el) return null;
+    var r = el.getBoundingClientRect();
+    if (frameEl) {
+      var fr = frameEl.getBoundingClientRect();
+      return {
+        left: fr.left + r.left,
+        top: fr.top + r.top,
+        width: r.width,
+        height: r.height,
+        right: fr.left + r.right,
+        bottom: fr.top + r.bottom
+      };
+    }
+    return r;
+  }
+
+  async function moveCursorTo(x, y, runId) {
+    if (runId !== tourRunId || !cursorEl) return;
+    cursorEl.style.display = 'block';
+    cursorEl.style.left = Math.round(x) + 'px';
+    cursorEl.style.top = Math.round(y) + 'px';
+    await sleep(580);
+  }
+
+  async function clickPulseAt(x, y, runId) {
+    if (runId !== tourRunId || !cursorEl) return;
+    cursorEl.classList.add('clicking');
+    if (ringEl) {
+      ringEl.style.left = Math.round(x) + 'px';
+      ringEl.style.top = Math.round(y) + 'px';
+      ringEl.style.display = 'block';
+      ringEl.style.opacity = '1';
+      ringEl.classList.remove('pulse');
+      void ringEl.offsetWidth;
+      ringEl.classList.add('pulse');
+    }
+    await sleep(220);
+    cursorEl.classList.remove('clicking');
+    await sleep(220);
+    if (ringEl) ringEl.style.display = 'none';
+  }
+
+  async function moveAndClickEl(el, frameEl, runId) {
+    if (runId !== tourRunId || !el) return false;
+    var r = getRectInViewport(el, frameEl);
+    if (!r || r.width === 0 || r.height === 0) return false;
+    var x = r.left + r.width / 2;
+    var y = r.top + r.height / 2;
+    await moveCursorTo(x, y, runId);
+    if (runId !== tourRunId) return false;
+    await clickPulseAt(x, y, runId);
+    if (runId !== tourRunId) return false;
+    try { el.click(); } catch (_) {}
+    return true;
+  }
+
+  function clearDrawOverlay() {
+    if (drawSvg) {
+      drawSvg.style.display = 'none';
+      drawSvg.innerHTML = '';
+    }
+  }
+
+  async function runStep1Demo(runId) {
+    var firstFolder = document.querySelector('#tree-nodes-container > .tree-node');
+    if (!firstFolder) return;
+    var header = firstFolder.querySelector('.tree-folder-header');
+    if (header && !firstFolder.classList.contains('open')) {
+      await moveAndClickEl(header, null, runId);
+      await sleep(350);
+    }
+    if (runId !== tourRunId) return;
+    var firstFile = firstFolder.querySelector('.drive-item');
+    if (firstFile) {
+      await moveAndClickEl(firstFile, null, runId);
+    }
+  }
+
+  async function runStep2Demo(runId) {
+    var stage = document.getElementById('preview-stage');
+    if (!stage) return;
+    var iframe = stage.querySelector('iframe.preview-iframe');
+    if (!iframe) {
+      var firstFile = document.querySelector('#tree-nodes-container .drive-item');
+      if (firstFile) {
+        firstFile.click();
+        await sleep(900);
+        iframe = stage.querySelector('iframe.preview-iframe');
+      }
+    }
+    if (runId !== tourRunId || !iframe) return;
+    await sleep(700);
+    if (runId !== tourRunId) return;
+
+    var doc = null;
+    try { doc = iframe.contentDocument || iframe.contentWindow.document; } catch (_) {}
+    if (doc) {
+      var annotateBtn = findInDocDeep(doc, function(el) {
+        var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+        return txt.includes('Surligner / Annoter') || txt.includes('Mode annotation');
+      });
+      if (annotateBtn) {
+        await moveAndClickEl(annotateBtn, iframe, runId);
+        await sleep(500);
+      }
+      if (runId !== tourRunId) return;
+      var hlToolBtn = findInDocDeep(doc, function(el) {
+        var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+        return txt === 'Surligner' || txt.includes('Feutre surligneur') || txt.includes('Dessin à main levée');
+      });
+      if (hlToolBtn) {
+        await moveAndClickEl(hlToolBtn, iframe, runId);
+        await sleep(350);
+      }
+    }
+    if (runId !== tourRunId) return;
+
+    // Dessin en direct sur le PDF : un surlignage + un sourire ☺, puis effacement
+    var sr = stage.getBoundingClientRect();
+    var cx = sr.left + sr.width * 0.5;
+    var cy = sr.top + Math.min(sr.height * 0.5, 240);
+    if (drawSvg) {
+      drawSvg.style.left = '0px';
+      drawSvg.style.top = '0px';
+      drawSvg.setAttribute('width', window.innerWidth);
+      drawSvg.setAttribute('height', window.innerHeight);
+      drawSvg.style.width = window.innerWidth + 'px';
+      drawSvg.style.height = window.innerHeight + 'px';
+      drawSvg.style.display = 'block';
+      drawSvg.innerHTML = '';
+
+      // 1. Trait de surlignage jaune
+      await moveCursorTo(cx - 80, cy - 45, runId);
+      if (runId !== tourRunId) return;
+      var hlLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      hlLine.setAttribute('x1', cx - 80);
+      hlLine.setAttribute('y1', cy - 45);
+      hlLine.setAttribute('x2', cx + 80);
+      hlLine.setAttribute('y2', cy - 45);
+      hlLine.setAttribute('stroke', 'rgba(250, 204, 21, 0.55)');
+      hlLine.setAttribute('stroke-width', '14');
+      hlLine.setAttribute('stroke-linecap', 'round');
+      drawSvg.appendChild(hlLine);
+      await moveCursorTo(cx + 80, cy - 45, runId);
+      await sleep(250);
+
+      // 2. Sourire ☺ (deux yeux + sourire vert émeraude)
+      if (runId !== tourRunId) return;
+      var eye1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      eye1.setAttribute('cx', cx - 22); eye1.setAttribute('cy', cy + 10); eye1.setAttribute('r', '4');
+      eye1.setAttribute('fill', '#10b981');
+      await moveCursorTo(cx - 22, cy + 10, runId);
+      drawSvg.appendChild(eye1);
+
+      if (runId !== tourRunId) return;
+      var eye2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      eye2.setAttribute('cx', cx + 22); eye2.setAttribute('cy', cy + 10); eye2.setAttribute('r', '4');
+      eye2.setAttribute('fill', '#10b981');
+      await moveCursorTo(cx + 22, cy + 10, runId);
+      drawSvg.appendChild(eye2);
+
+      if (runId !== tourRunId) return;
+      await moveCursorTo(cx - 28, cy + 28, runId);
+      var smile = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      smile.setAttribute('d', 'M ' + (cx - 28) + ' ' + (cy + 28) + ' Q ' + cx + ' ' + (cy + 58) + ' ' + (cx + 28) + ' ' + (cy + 28));
+      smile.setAttribute('fill', 'none');
+      smile.setAttribute('stroke', '#10b981');
+      smile.setAttribute('stroke-width', '5');
+      smile.setAttribute('stroke-linecap', 'round');
+      drawSvg.appendChild(smile);
+      await moveCursorTo(cx + 28, cy + 28, runId);
+      await sleep(950);
+
+      // 3. Effacer + revenir au mode Lire
+      if (runId !== tourRunId) return;
+      clearDrawOverlay();
+      if (doc) {
+        var readBtn = findInDocDeep(doc, function(el) {
+          var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+          return txt === 'Lire' || txt.includes('Mode lecture');
+        });
+        if (readBtn) await moveAndClickEl(readBtn, iframe, runId);
+      }
+    }
+  }
+
+  async function runStep3Demo(runId) {
+    var sel = document.getElementById('select-translate-lang');
+    if (!sel || sel.style.display === 'none') return;
+    var r = sel.getBoundingClientRect();
+    await moveCursorTo(r.left + r.width / 2, r.top + r.height / 2, runId);
+    if (runId !== tourRunId) return;
+    await clickPulseAt(r.left + r.width / 2, r.top + r.height / 2, runId);
+    if (runId !== tourRunId) return;
+    sel.value = 'en';
+    sel.dispatchEvent(new Event('change'));
+    await sleep(1400);
+    if (runId !== tourRunId) return;
+    sel.value = 'fr';
+    sel.dispatchEvent(new Event('change'));
+  }
+
+  async function runStep4Demo(runId) {
+    var tBtn = document.getElementById('btn-theme-toggle-dj');
+    if (!tBtn) return;
+    await moveAndClickEl(tBtn, null, runId);
+    await sleep(1200);
+    if (runId !== tourRunId) return;
+    await moveAndClickEl(tBtn, null, runId);
+  }
+
+  async function runStep5Demo(runId) {
+    var dd = document.getElementById('dropdown-tech-tools');
+    if (!dd) return;
+    var sum = dd.querySelector('summary');
+    if (sum && !dd.hasAttribute('open')) {
+      await moveCursorTo(sum.getBoundingClientRect().left + 30, sum.getBoundingClientRect().top + 15, runId);
+      if (runId !== tourRunId) return;
+      await clickPulseAt(sum.getBoundingClientRect().left + 30, sum.getBoundingClientRect().top + 15, runId);
+      dd.setAttribute('open', '');
+    }
   }
 
   var steps = [
     {
       selector: '#drive-tree',
-      title: '1 · Explorer & filtrer les pièces',
-      body: 'Cliquez sur un dossier (ex. 01 · Pétition 0546, 02 · Recours officiels CCE) pour l’ouvrir, ou tapez un mot-clé dans « Filtrer les pièces » (ex. cadmium, BAPE). Cliquez sur une pièce pour l’afficher à droite.'
+      title: '1 · Explorer & ouvrir une pièce',
+      body: 'La souris ouvre le dossier 01 · Pétition 0546 et sélectionne une pièce pour l’afficher à droite.',
+      runAction: runStep1Demo
     },
     {
       selector: '#preview-stage',
-      title: '2 · Surligner, Changer de couleur, Commenter, Supprimer',
-      body: 'Dans le lecteur PDF, cliquez sur « Surligner / Annoter » pour surligner un passage, changer sa couleur, ajouter un commentaire ou le supprimer. Essayez ci-dessous :',
-      setupDemo: renderAnnotateDemo
+      title: '2 · Surligner, dessiner ☺ & effacer dans le PDF',
+      body: 'Elle clique sur « Surligner / Annoter » dans le lecteur PDF, trace un surlignage et un sourire, puis efface et repasse en mode « Lire ».',
+      runAction: runStep2Demo
     },
     {
       selector: '.preview-header',
       title: '3 · Traduire, Partager & Télécharger',
-      body: 'Quand un document est ouvert, utilisez « FR · Original ▾ » pour passer en EN ou ES, « Lien de partage » pour copier l’URL directe, « Plein écran » pour agrandir, ou « Télécharger original » pour récupérer le PDF.'
+      body: 'Elle bascule le document vers « EN · English » puis revient sur « FR · Original ». Vous pouvez aussi copier le lien ou télécharger le PDF.',
+      runAction: runStep3Demo
     },
     {
       selector: '#btn-theme-toggle-dj',
-      title: '4 · Mode nuit / Mode clair',
-      body: 'Cliquez sur cette icône lune/soleil pour basculer entre le thème clair et le thème sombre (le lecteur PDF s’adapte automatiquement).',
-      setupDemo: function(container) {
-        container.style.display = 'block';
-        container.innerHTML = '<button type="button" id="tour-demo-theme" class="wg-tour-btn primary" style="width:100%;padding:7px 10px;">🌙 Tester le mode nuit / jour maintenant</button>';
-        document.getElementById('tour-demo-theme').onclick = function() {
-          var tBtn = document.getElementById('btn-theme-toggle-dj');
-          if (tBtn) tBtn.click();
-        };
-      }
+      title: '4 · Mode nuit → Mode clair',
+      body: 'Elle clique sur l’icône lune pour passer en mode sombre, puis reclique pour revenir en mode clair.',
+      runAction: runStep4Demo
     },
     {
       selector: '#dropdown-tech-tools',
       title: '5 · Options : Hors-ligne, Moteur PDF & Tutoriel',
-      body: 'Le menu « Options ▾ » regroupe : le mode hors-ligne (télécharger les 158 pièces ou purger), le choix du moteur PDF (Intégré / Navigateur), et « Revoir le tutoriel ».',
-      onEnter: function() {
-        var dd = document.getElementById('dropdown-tech-tools');
-        if (dd) dd.setAttribute('open', '');
-      },
+      body: 'Elle ouvre « Options ▾ » pour montrer le mode hors-ligne (téléchargement / purge), le choix du lecteur PDF et « Revoir le tutoriel ».',
+      runAction: runStep5Demo,
       onLeave: function() {
         var dd = document.getElementById('dropdown-tech-tools');
         if (dd) dd.removeAttribute('open');
@@ -6903,14 +7122,17 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     {
       selector: '.sidebar-wg-vault-box',
       title: '6 · Exporter ou importer vos notes (.wg)',
-      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos surlignages et commentaires dans un fichier chiffré .wg, ou « Importer (.wg) » pour les recharger ailleurs. Pour revoir ce guide : Options ▾ → Revoir le tutoriel.'
+      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos annotations dans un fichier chiffré .wg, ou « Importer (.wg) » ailleurs. Pour revoir cette démo : Options ▾ → Revoir le tutoriel.'
     }
   ];
 
   var idx = 0;
 
   function endTour() {
-    clearDemoTimer();
+    tourRunId++;
+    clearDrawOverlay();
+    if (cursorEl) cursorEl.style.display = 'none';
+    if (ringEl) ringEl.style.display = 'none';
     if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
     try { localStorage.setItem(TOUR_KEY, '1'); } catch (_) {}
     backdrop.style.display = 'none';
@@ -6919,9 +7141,10 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   function renderStep() {
-    clearDemoTimer();
+    tourRunId++;
+    var myRunId = tourRunId;
+    clearDrawOverlay();
     var st = steps[idx];
-    if (st.onEnter) st.onEnter();
     var target = document.querySelector(st.selector);
     if (!target || target.offsetParent === null) {
       target = document.body;
@@ -6943,7 +7166,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (demoEl) {
       demoEl.innerHTML = '';
       demoEl.style.display = 'none';
-      if (st.setupDemo) st.setupDemo(demoEl);
+      if (st.runAction) {
+        demoEl.style.display = 'block';
+        demoEl.innerHTML = '<button type="button" id="tour-replay-action" class="wg-tour-btn primary" style="width:100%;padding:6px 10px;">▶ Rejouer la démonstration en direct</button>';
+        document.getElementById('tour-replay-action').onclick = function() {
+          tourRunId++;
+          st.runAction(tourRunId);
+        };
+      }
     }
     stepEl.textContent = (idx + 1) + ' / ' + steps.length;
     btnPrev.style.display = idx === 0 ? 'none' : 'inline-block';
@@ -6962,6 +7192,10 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     var cardLeft = Math.min(Math.max(12, rect.left), window.innerWidth - cw - 12);
     card.style.top = cardTop + 'px';
     card.style.left = cardLeft + 'px';
+
+    if (st.runAction) {
+      st.runAction(myRunId);
+    }
   }
 
   window.startDossierTour = function(force) {
