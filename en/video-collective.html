@@ -73,6 +73,43 @@
   .vc-copy-btn { flex-shrink: 0; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
   .vc-tally-box { margin-top: 34px; padding: 24px; border-radius: 14px; background: var(--surface); border: 1.5px solid var(--line); text-align: center; }
   @media (max-width: 640px) { .vc-phrase-card { flex-direction: column; } .vc-copy-btn { align-self: flex-end; } }
+
+  .vc-phrase-card.is-taken,
+  .vc-phrase-card.is-reserved { opacity: 0.62; }
+  .vc-phrase-card.is-taken .vc-phrase-text,
+  .vc-phrase-card.is-reserved .vc-phrase-text { text-decoration: line-through; }
+  .vc-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(100, 116, 139, 0.16);
+    color: var(--muted);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .vc-phrase-card.is-taken .vc-copy-btn,
+  .vc-phrase-card.is-reserved .vc-copy-btn {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  html.vc-embed-mode header.site,
+  html.vc-embed-mode footer,
+  html.vc-embed-mode .vc-hero,
+  html.vc-embed-mode section[aria-labelledby="vc-why-title"],
+  html.vc-embed-mode section[aria-labelledby="vc-cal-title"],
+  html.vc-embed-mode .vc-tips,
+  html.vc-embed-mode .vc-tally-box {
+    display: none !important;
+  }
+  html.vc-embed-mode .vc-wrap {
+    padding: 12px 10px 24px !important;
+    max-width: 100% !important;
+  }
 </style>
 </head>
 <body>
@@ -136,10 +173,10 @@
 
   <section id="sentences" aria-labelledby="vc-phrases-title">
     <h2 id="vc-phrases-title">4. The 27 sentences of the collective script (90 seconds)</h2>
-    <p style="color: var(--muted); margin-top: 6px;">Pick any sentence from <strong>1 to 26</strong> (sentence <strong>27</strong> is reserved for William Guindon's closing). Click <em>Copy</em> to keep it handy while recording.</p>
+    <p style="color: var(--muted); margin-top: 6px;">Pick any available sentence from <strong>2 to 26</strong> (sentences <strong>1 and 27</strong> are reserved for William Guindon’s opening and closing). Taken sentences are crossed out below. Click <em>Copy</em> to keep it handy while recording.</p>
 
     <div class="vc-script-list">
-      <div class="vc-phrase-card"><span class="vc-phrase-num">1</span><p class="vc-phrase-text">Six thousand years ago—long before the pyramids, before writing, before the word “border”—an ombrotrophic peatland was born on Canadian soil.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">1</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> Six thousand years ago—long before the pyramids, before writing, before the word “border”—an ombrotrophic peatland was born on Canadian soil.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">2</span><p class="vc-phrase-text">Since then, layer after layer, it has silently stored sixty centuries of carbon.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">3</span><p class="vc-phrase-text">Every spring, after migrating from Mexico across the United States, thousands of birds return to nest in its mosses.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">4</span><p class="vc-phrase-text">Your three countries, gathered around the USMCA table, are already linked by the flight of these birds.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
@@ -165,7 +202,7 @@
       <div class="vc-phrase-card"><span class="vc-phrase-num">24</span><p class="vc-phrase-text">One day, your own children and grandchildren will ask you: “On the day you were asked to open your eyes, how did you vote?”</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">25</span><p class="vc-phrase-text">Write an answer you will be proud of.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">26</span><p class="vc-phrase-text">Each for one place. All for the same Earth.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
-      <div class="vc-phrase-card is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> The Great Peat Bog has waited six thousand years. It can wait for your vote.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> The Great Peat Bog has waited six thousand years. It can wait for your vote.</p><button type="button" class="vc-copy-btn" data-copy>Copy</button></div>
     </div>
   </section>
 

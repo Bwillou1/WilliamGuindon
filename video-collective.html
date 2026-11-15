@@ -193,6 +193,43 @@
     .vc-phrase-card { flex-direction: column; }
     .vc-copy-btn { align-self: flex-end; }
   }
+
+  .vc-phrase-card.is-taken,
+  .vc-phrase-card.is-reserved { opacity: 0.62; }
+  .vc-phrase-card.is-taken .vc-phrase-text,
+  .vc-phrase-card.is-reserved .vc-phrase-text { text-decoration: line-through; }
+  .vc-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(100, 116, 139, 0.16);
+    color: var(--muted);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .vc-phrase-card.is-taken .vc-copy-btn,
+  .vc-phrase-card.is-reserved .vc-copy-btn {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  html.vc-embed-mode header.site,
+  html.vc-embed-mode footer,
+  html.vc-embed-mode .vc-hero,
+  html.vc-embed-mode section[aria-labelledby="vc-why-title"],
+  html.vc-embed-mode section[aria-labelledby="vc-cal-title"],
+  html.vc-embed-mode .vc-tips,
+  html.vc-embed-mode .vc-tally-box {
+    display: none !important;
+  }
+  html.vc-embed-mode .vc-wrap {
+    padding: 12px 10px 24px !important;
+    max-width: 100% !important;
+  }
 </style>
 </head>
 <body>
@@ -256,10 +293,10 @@
 
   <section id="phrases" aria-labelledby="vc-phrases-title">
     <h2 id="vc-phrases-title">4. Les 27 phrases du scénario collectif (90 secondes)</h2>
-    <p style="color: var(--muted); margin-top: 6px;">Choisissez une phrase entre <strong>1 et 26</strong> (la phrase <strong>27</strong> est réservée pour la conclusion par William Guindon). Cliquez sur <em>Copier</em> pour la garder sous les yeux pendant l'enregistrement.</p>
+    <p style="color: var(--muted); margin-top: 6px;">Choisissez une phrase disponible entre <strong>2 et 26</strong> (les phrases <strong>1 et 27</strong> sont réservées pour l’ouverture et la conclusion par William Guindon). Les phrases déjà prises sont barrées ci-dessous. Cliquez sur <em>Copier</em> pour la garder sous les yeux pendant l'enregistrement.</p>
 
     <div class="vc-script-list">
-      <div class="vc-phrase-card"><span class="vc-phrase-num">1</span><p class="vc-phrase-text">Il y a six mille ans — bien avant les pyramides, avant l'écriture, avant le mot « frontière » — une tourbière naissait en terre canadienne.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">1</span><p class="vc-phrase-text"><strong>(William Guindon) :</strong> Il y a six mille ans — bien avant les pyramides, avant l'écriture, avant le mot « frontière » — une tourbière naissait en terre canadienne.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">2</span><p class="vc-phrase-text">Depuis, couche après couche, elle garde en silence le carbone de soixante siècles.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">3</span><p class="vc-phrase-text">Chaque printemps, après un voyage parti du Mexique à travers les États-Unis, des milliers d'oiseaux reviennent nicher dans ses mousses.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">4</span><p class="vc-phrase-text">Vos trois pays, réunis autour de la table de l'ACEUM, sont déjà reliés par le vol de ces oiseaux.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
@@ -285,7 +322,7 @@
       <div class="vc-phrase-card"><span class="vc-phrase-num">24</span><p class="vc-phrase-text">Un jour, vos propres enfants et petits-enfants vous demanderont : « Ce jour-là, quand on t'a demandé d'ouvrir les yeux, tu as voté comment ? »</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">25</span><p class="vc-phrase-text">Écrivez une réponse dont vous serez fiers.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">26</span><p class="vc-phrase-text">Chacun pour un endroit. Tous pour la même Terre.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
-      <div class="vc-phrase-card is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon) :</strong> La Grande Tourbière attend depuis six mille ans. Elle attendra bien votre vote.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon) :</strong> La Grande Tourbière attend depuis six mille ans. Elle attendra bien votre vote.</p><button type="button" class="vc-copy-btn" data-copy>Copier</button></div>
     </div>
   </section>
 

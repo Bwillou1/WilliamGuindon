@@ -73,6 +73,43 @@
   .vc-copy-btn { flex-shrink: 0; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
   .vc-tally-box { margin-top: 34px; padding: 24px; border-radius: 14px; background: var(--surface); border: 1.5px solid var(--line); text-align: center; }
   @media (max-width: 640px) { .vc-phrase-card { flex-direction: column; } .vc-copy-btn { align-self: flex-end; } }
+
+  .vc-phrase-card.is-taken,
+  .vc-phrase-card.is-reserved { opacity: 0.62; }
+  .vc-phrase-card.is-taken .vc-phrase-text,
+  .vc-phrase-card.is-reserved .vc-phrase-text { text-decoration: line-through; }
+  .vc-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(100, 116, 139, 0.16);
+    color: var(--muted);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .vc-phrase-card.is-taken .vc-copy-btn,
+  .vc-phrase-card.is-reserved .vc-copy-btn {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  html.vc-embed-mode header.site,
+  html.vc-embed-mode footer,
+  html.vc-embed-mode .vc-hero,
+  html.vc-embed-mode section[aria-labelledby="vc-why-title"],
+  html.vc-embed-mode section[aria-labelledby="vc-cal-title"],
+  html.vc-embed-mode .vc-tips,
+  html.vc-embed-mode .vc-tally-box {
+    display: none !important;
+  }
+  html.vc-embed-mode .vc-wrap {
+    padding: 12px 10px 24px !important;
+    max-width: 100% !important;
+  }
 </style>
 </head>
 <body>
@@ -136,10 +173,10 @@
 
   <section id="frases" aria-labelledby="vc-phrases-title">
     <h2 id="vc-phrases-title">4. Las 27 frases del guion colectivo (90 segundos)</h2>
-    <p style="color: var(--muted); margin-top: 6px;">Elige una frase entre la <strong>1 y la 26</strong> (la frase <strong>27</strong> está reservada para el cierre de William Guindon). Pulsa <em>Copiar</em> para tenerla a la vista al grabar.</p>
+    <p style="color: var(--muted); margin-top: 6px;">Elige una frase disponible entre la <strong>2 y la 26</strong> (las frases <strong>1 y 27</strong> están reservadas para la apertura y el cierre de William Guindon). Las frases ya tomadas aparecen tachadas abajo. Pulsa <em>Copiar</em> para tenerla a la vista al grabar.</p>
 
     <div class="vc-script-list">
-      <div class="vc-phrase-card"><span class="vc-phrase-num">1</span><p class="vc-phrase-text">Hace seis mil años —mucho antes de las pirámides, antes de la escritura, antes de la palabra «frontera»— nacía una turbera ombrotrófica en tierra canadiense.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">1</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> Hace seis mil años —mucho antes de las pirámides, antes de la escritura, antes de la palabra «frontera»— nacía una turbera ombrotrófica en tierra canadiense.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">2</span><p class="vc-phrase-text">Desde entonces, capa tras capa, guarda en silencio el carbono de sesenta siglos.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">3</span><p class="vc-phrase-text">Cada primavera, tras un viaje desde México a través de Estados Unidos, miles de aves regresan a anidar en sus musgos.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">4</span><p class="vc-phrase-text">Sus tres países, reunidos en torno a la mesa del T-MEC, ya están unidos por el vuelo de estas aves.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
@@ -165,7 +202,7 @@
       <div class="vc-phrase-card"><span class="vc-phrase-num">24</span><p class="vc-phrase-text">Un día, sus propios hijos y nietos les preguntarán: «Aquel día, cuando te pidieron abrir los ojos, ¿cómo votaste?»</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">25</span><p class="vc-phrase-text">Escriban una respuesta de la que puedan sentirse orgullosos.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
       <div class="vc-phrase-card"><span class="vc-phrase-num">26</span><p class="vc-phrase-text">Cada uno por un lugar. Todos por la misma Tierra.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
-      <div class="vc-phrase-card is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> La Gran Turbera espera desde hace seis mil años. Sabrá esperar su voto.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
+      <div class="vc-phrase-card is-reserved is-closing"><span class="vc-phrase-num">27</span><p class="vc-phrase-text"><strong>(William Guindon):</strong> La Gran Turbera espera desde hace seis mil años. Sabrá esperar su voto.</p><button type="button" class="vc-copy-btn" data-copy>Copiar</button></div>
     </div>
   </section>
 
