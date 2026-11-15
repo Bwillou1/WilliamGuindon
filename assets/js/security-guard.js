@@ -489,7 +489,10 @@
 
     // 0.1 Évacuation Numérique Immédiate (Redirection 0.1s vers miroir de secours)
     if (state.evacuateActive && state.evacuateUrl) {
-      if (!window.location.href.startsWith(state.evacuateUrl)) {
+      if (String(state.evacuateUrl).includes('en-construction')) {
+        state.evacuateActive = false;
+        try { localStorage.removeItem(STORAGE_KEY); sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
+      } else if (!window.location.href.startsWith(state.evacuateUrl)) {
         window.location.replace(state.evacuateUrl);
         return;
       }

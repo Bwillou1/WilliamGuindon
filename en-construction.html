@@ -15,6 +15,7 @@
       var go = function() {
         window.location.replace('/?_v=' + Date.now());
       };
+      try { localStorage.removeItem('wg_sec_state_cache'); } catch (e) {}
       try { sessionStorage.clear(); } catch (e) {}
       var tasks = [];
       try {
