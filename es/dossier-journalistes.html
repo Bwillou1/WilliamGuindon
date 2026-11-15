@@ -867,10 +867,10 @@
       image-rendering: pixelated;
       image-rendering: -moz-crisp-edges;
       image-rendering: crisp-edges;
-      height: 480px;
-      min-height: 380px;
+      height: min(480px, 72vh);
       width: auto;
-      max-width: 90vw;
+      max-width: 90%;
+      object-fit: contain;
     }
     .preview-image.is-zoomed {
       cursor: zoom-out;
@@ -4759,7 +4759,7 @@ function getCleanDisplayName(fullPath) {
               toolbar.className = "media-zoom-toolbar";
               toolbar.innerHTML = `
                 <button type="button" class="media-zoom-btn zoom-out-btn" title="Reducir">−</button>
-                <span class="media-zoom-label">${isSentinel ? "350%" : "100%"}</span>
+                <span class="media-zoom-label">100%</span>
                 <button type="button" class="media-zoom-btn zoom-in-btn" title="Ampliar">+</button>
                 <button type="button" class="media-zoom-btn zoom-reset-btn" title="Tamaño real (100%)">100%</button>
                 <button type="button" class="media-zoom-btn zoom-fit-btn" title="Ajustar vista">Ajustar</button>
@@ -4788,7 +4788,7 @@ function getCleanDisplayName(fullPath) {
                 }
               };
 
-              let currentZoom = isSentinel ? 3.5 : 1.0;
+              let currentZoom = 1.0;
               const updateZoomDisplay = () => {
                 img.style.transform = `scale(${currentZoom})`;
                 img.style.transformOrigin = "center center";
@@ -4822,23 +4822,19 @@ function getCleanDisplayName(fullPath) {
               toolbar.querySelector(".zoom-fit-btn").onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                currentZoom = isSentinel ? 3.5 : 1.0;
+                currentZoom = 1.0;
                 updateZoomDisplay();
               };
 
               img.addEventListener("click", (e) => {
                 e.preventDefault();
-                if (currentZoom > 1.5) {
+                if (currentZoom > 1.2) {
                   currentZoom = 1.0;
                 } else {
-                  currentZoom = isSentinel ? 4.5 : 2.0;
+                  currentZoom = 2.0;
                 }
                 updateZoomDisplay();
               });
-
-              if (isSentinel) {
-                updateZoomDisplay();
-              }
 
               imgLink.appendChild(img);
               imgContainer.appendChild(imgLink);
