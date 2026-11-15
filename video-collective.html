@@ -262,11 +262,11 @@
 (function(){try{
   var p=new URLSearchParams(window.location.search);
   var f=false;try{f=window.self!==window.top;}catch(e){f=true;}
-  if(p.get("phrases")==="1"||p.get("mode")==="phrases"||p.get("only")==="phrases"){
-    document.documentElement.classList.add("vc-embed-mode");
-  }
-  if(f&&(p.get("depot")==="1"||p.get("upload")==="1"||p.get("mode")==="depot")){
+  var isDepot=(p.get("depot")==="1"||p.get("upload")==="1"||p.get("mode")==="depot");
+  if(f&&isDepot){
     document.documentElement.classList.add("vc-depot-mode");
+  }else if(f||p.get("phrases")==="1"||p.get("mode")==="phrases"||p.get("only")==="phrases"){
+    document.documentElement.classList.add("vc-embed-mode");
   }
 }catch(e){}})();
 </script>
