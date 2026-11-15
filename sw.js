@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v260';
+const CACHE_NAME = 'wg-pwa-v261';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
