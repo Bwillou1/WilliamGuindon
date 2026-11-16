@@ -4854,17 +4854,46 @@
     document.head.appendChild(s);
   }
 
+  window.wgLoadWasmEngine = function wgLoadWasmEngine() {
+    if (window.wgWasm) return Promise.resolve(window.wgWasm);
+    return new Promise((resolve, reject) => {
+      if (document.querySelector('script[src*="wg-wasm.js"]')) {
+        const wait = setInterval(() => {
+          if (window.wgWasm) { clearInterval(wait); resolve(window.wgWasm); }
+        }, 20);
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = '/assets/js/wg-wasm.js';
+      s.defer = true;
+      s.onload = () => resolve(window.wgWasm);
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  };
+
+  function loadGpuShaderIfNeeded() {
+    if (document.querySelector('script[src*="wg-gpu-shader.js"]')) return;
+    if (!document.querySelector('[data-wg-gpu-canvas]')) return;
+    const s = document.createElement('script');
+    s.src = '/assets/js/wg-gpu-shader.js';
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
       initGlobalSimpleMode();
       setTimeout(initLegalGlossaryTooltips, 300);
       loadVideoJsEnhancementsIfNeeded();
+      loadGpuShaderIfNeeded();
     });
   } else {
     initApp();
     initGlobalSimpleMode();
     setTimeout(initLegalGlossaryTooltips, 300);
     loadVideoJsEnhancementsIfNeeded();
+    loadGpuShaderIfNeeded();
   }
 })();
