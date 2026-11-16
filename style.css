@@ -14764,6 +14764,50 @@ p, blockquote, li {
   opacity: 0.45;
 }
 
+/* Adaptation Apple HIG — Safari iPhone Duo (pliable), iPadOS, macOS & visionOS */
+.card,
+.press-card,
+.blog-card {
+  container-type: inline-size;
+}
+
+@container (max-width: 360px) {
+  .card,
+  .press-card,
+  .blog-card {
+    padding: 14px;
+  }
+}
+
+@media (horizontal-viewport-segments: 2) {
+  .wrap {
+    max-width: none;
+    padding-inline: max(16px, env(safe-area-inset-left, 16px)) max(16px, env(safe-area-inset-right, 16px));
+  }
+
+  .grid-2,
+  .press-grid,
+  .blog-grid {
+    display: grid;
+    grid-template-columns: env(viewport-segment-width 0 0) env(viewport-segment-width 1 0);
+    column-gap: max(24px, calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)));
+  }
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .wg-dialog-close,
+  summary {
+    min-height: 44px;
+  }
+}
+
+@supports (height: 100dvh) {
+  .hero-immersive {
+    min-height: min(82dvh, 760px);
+  }
+}
+
 
 
 
