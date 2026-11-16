@@ -1,0 +1,26 @@
+name: Vérification SHA-256 des pièces PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/docs/**'
+      - 'data/docs-sha256.txt'
+      - 'scripts/verify-docs-sha256.sh'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/docs/**'
+      - 'data/docs-sha256.txt'
+      - 'scripts/verify-docs-sha256.sh'
+  workflow_dispatch:
+
+jobs:
+  verify-docs-sha256:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: Vérifier l'intégrité SHA-256 des PDF (assets/docs)
+        run: bash scripts/verify-docs-sha256.sh --check
