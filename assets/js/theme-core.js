@@ -4798,6 +4798,31 @@
     };
   }
 
+  // Enregistrement WebMCP progressif (Chrome / Edge Origin Trial) aligné sur /.well-known/webmcp/tools.json
+  try {
+    const mc = document.modelContext || navigator.modelContext;
+    if (mc && typeof mc.registerTool === 'function') {
+      mc.registerTool({
+        name: 'get_case_status',
+        description: 'Returns current legal status and environmental indicators for SEM-26-003',
+        inputSchema: { type: 'object', properties: {} },
+        execute: async () => {
+          const res = await fetch('/status.json');
+          return await res.text();
+        }
+      });
+      mc.registerTool({
+        name: 'get_llms_txt',
+        description: 'Returns full llms.txt guide for AI agents',
+        inputSchema: { type: 'object', properties: {} },
+        execute: async () => {
+          const res = await fetch('/llms.txt');
+          return await res.text();
+        }
+      });
+    }
+  } catch (_) {}
+
   function loadVideoJsEnhancementsIfNeeded() {
     if (document.querySelector('script[src*="videojs-enhancements.js"]')) return;
     if (!document.querySelector('script[src*="videojs-player.min.js"], video-player, audio-player')) return;
