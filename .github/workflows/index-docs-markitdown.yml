@@ -1,0 +1,35 @@
+name: Indexation PDF MarkItDown → SQLite FTS5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/docs/**'
+      - 'scripts/index-docs-markitdown.py'
+
+permissions:
+  contents: write
+
+jobs:
+  index-docs-markitdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Indexer les PDF dans data/corpus.sqlite avec MarkItDown
+        run: uv run --with markitdown python3 scripts/index-docs-markitdown.py
+
+      - name: Commiter data/corpus.sqlite si modifié
+        run: |
+          if ! git diff --quiet data/corpus.sqlite; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/corpus.sqlite
+            git commit -m "chore(index): mettre à jour corpus.sqlite via MarkItDown [skip ci]"
+            git push
+          fi
