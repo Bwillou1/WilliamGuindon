@@ -4780,6 +4780,28 @@
     aiMeta.content = 'none';
     document.head.appendChild(aiMeta);
   }
+  if (document.head && !document.querySelector('meta[name="text-scale"]')) {
+    const tsMeta = document.createElement('meta');
+    tsMeta.name = 'text-scale';
+    tsMeta.content = 'scale';
+    document.head.appendChild(tsMeta);
+  }
+  if (typeof window.wgTranslateLocal !== 'function') {
+    window.wgTranslateLocal = async function wgTranslateLocal(text, sourceLang, targetLang) {
+      if (typeof window.Translator !== 'function' || !text || !targetLang) return null;
+      const src = sourceLang || 'fr';
+      try {
+        if (typeof window.Translator.availability === 'function') {
+          const status = await window.Translator.availability({ sourceLanguage: src, targetLanguage: targetLang });
+          if (status === 'unavailable') return null;
+        }
+        const translator = await window.Translator.create({ sourceLanguage: src, targetLanguage: targetLang });
+        return await translator.translate(String(text));
+      } catch (_) {
+        return null;
+      }
+    };
+  }
   window.wgHasGPC = function wgHasGPC() {
     return navigator.globalPrivacyControl === true;
   };

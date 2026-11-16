@@ -236,9 +236,26 @@
     }
   }
 
+  function syncReducedMotion(prefersReducedMotion) {
+    if (!prefersReducedMotion) return;
+    const videos = document.querySelectorAll('video[autoplay]');
+    for (let i = 0; i < videos.length; i++) {
+      videos[i].removeAttribute('autoplay');
+      if (typeof videos[i].pause === 'function') videos[i].pause();
+    }
+  }
+
   function init() {
     injectCueStyles();
     scanAndEnhance();
+
+    if (typeof window.matchMedia === 'function') {
+      const rmQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      syncReducedMotion(rmQuery.matches);
+      if (typeof rmQuery.addEventListener === 'function') {
+        rmQuery.addEventListener('change', (ev) => syncReducedMotion(ev.matches));
+      }
+    }
 
     if (typeof MutationObserver === 'function' && document.body) {
       const observer = new MutationObserver((mutations) => {
