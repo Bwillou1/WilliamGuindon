@@ -14794,6 +14794,19 @@ p, blockquote, li {
   }
 }
 
+@media (vertical-viewport-segments: 2) {
+  .hero-immersive {
+    min-height: env(viewport-segment-height 0 0);
+    padding-bottom: max(16px, calc(env(viewport-segment-top 0 1) - env(viewport-segment-bottom 0 0)));
+  }
+}
+
+@media (device-posture: folded) {
+  .wrap {
+    padding-inline: max(18px, env(safe-area-inset-left, 18px)) max(18px, env(safe-area-inset-right, 18px));
+  }
+}
+
 @media (pointer: coarse) {
   .btn,
   .wg-dialog-close,
