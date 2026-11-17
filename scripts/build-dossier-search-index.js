@@ -8,17 +8,18 @@ const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const DOSSIER_HTML = path.join(ROOT, 'dossier-journalistes.html');
 const OUT_FILE = path.join(ROOT, 'data', 'dossier-search-index.json');
-const MAX_CHARS_PER_DOC = 12000;
+const MAX_CHARS_PER_DOC = 45000;
 
 function extractTreeItems(html) {
   const items = new Map();
-  const re = /<div class="drive-item[^"]*"\s+data-fullpath="([^"]+)"[^>]*>[\s\S]*?<a[^>]*class="drive-item-name"[^>]*>([\s\S]*?)<\/a>/g;
+  const re = /<div class="drive-item[^"]*"\s+data-fullpath="([^"]+)"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*class="drive-item-name"[^>]*>([\s\S]*?)<\/a>/g;
   let m;
   while ((m = re.exec(html)) !== null) {
     const fullPath = m[1].trim();
-    const title = m[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    const href = m[2].trim();
+    const title = m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
     if (!items.has(fullPath)) {
-      items.set(fullPath, title);
+      items.set(fullPath, { title, href });
     }
   }
   return items;
@@ -57,15 +58,21 @@ function main() {
   const items = extractTreeItems(html);
   const docs = [];
 
-  for (const [fullPath, title] of items.entries()) {
-    const absPath = path.join(ROOT, 'assets', 'docs', fullPath);
+  for (const [fullPath, info] of items.entries()) {
+    let absPath = path.join(ROOT, 'assets', 'docs', fullPath);
+    if (!fs.existsSync(absPath) && info.href && info.href.startsWith('/assets/docs/')) {
+      try {
+        const rel = decodeURIComponent(info.href.replace(/^\/+/, ''));
+        absPath = path.join(ROOT, rel);
+      } catch (_) {}
+    }
     if (!fs.existsSync(absPath)) continue;
     const raw = extractTextFromFile(absPath);
     const clean = String(raw || '').replace(/\s+/g, ' ').trim();
     if (!clean) continue;
     docs.push({
       p: fullPath,
-      t: title,
+      t: info.title,
       c: clean.slice(0, MAX_CHARS_PER_DOC)
     });
   }

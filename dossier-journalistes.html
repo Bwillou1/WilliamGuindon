@@ -6479,6 +6479,10 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       if (_stlMode) _stlMode.style.display = isNative ? 'none' : 'inline-flex';
     }
 
+    if (window.__wgSplitViewActive && window.__wgRightFullPath && typeof window.wgLoadSplitRightItem === 'function') {
+      window.wgLoadSplitRightItem(window.__wgRightFullPath, window.__wgRightDisplayName || '');
+    }
+
     if (showToast) {
       const toast = document.getElementById('drive-toast');
       if (toast) {
@@ -6517,7 +6521,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
     let _searchIndexMap = null;
     let _searchIndexRaw = null;
-    let _searchIndexLoading = false;
+    let _searchIndexPromise = null;
 
     function normalizeStr(str) {
       return (str || "")
@@ -6529,28 +6533,30 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
     async function ensureSearchIndex() {
       if (_searchIndexMap) return _searchIndexMap;
-      if (_searchIndexLoading) return null;
-      _searchIndexLoading = true;
-      try {
-        const resp = await fetch("/data/dossier-search-index.json");
-        if (!resp.ok) throw new Error("HTTP " + resp.status);
-        const data = await resp.json();
-        const map = new Map();
-        const list = [];
-        for (const doc of (data && data.docs) || []) {
-          const norm = normalizeStr(doc.c || "");
-          map.set(doc.p, { raw: doc.c || "", norm, title: doc.t || doc.p });
-          list.push({ p: doc.p, t: doc.t || doc.p, raw: doc.c || "", norm });
+      if (_searchIndexPromise) return _searchIndexPromise;
+      _searchIndexPromise = (async () => {
+        try {
+          const resp = await fetch("/data/dossier-search-index.json");
+          if (!resp.ok) throw new Error("HTTP " + resp.status);
+          const data = await resp.json();
+          const map = new Map();
+          const list = [];
+          for (const doc of (data && data.docs) || []) {
+            const norm = normalizeStr(doc.c || "");
+            map.set(doc.p, { raw: doc.c || "", norm, title: doc.t || doc.p });
+            list.push({ p: doc.p, t: doc.t || doc.p, raw: doc.c || "", norm });
+          }
+          _searchIndexMap = map;
+          _searchIndexRaw = list;
+          return map;
+        } catch (_) {
+          _searchIndexPromise = null;
+          return null;
         }
-        _searchIndexMap = map;
-        _searchIndexRaw = list;
-        return map;
-      } catch (_) {
-        return null;
-      } finally {
-        _searchIndexLoading = false;
-      }
+      })();
+      return _searchIndexPromise;
     }
+    searchInput.addEventListener("focus", () => { ensureSearchIndex(); }, { once: true });
 
     function buildSnippet(raw, terms) {
       const norm = normalizeStr(raw);
@@ -8190,11 +8196,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   async function loadRightDoc(fullPath, displayName) {
     if (!fullPath || !splitStage) return;
     if (docSelect) docSelect.value = fullPath;
+    window.__wgRightFullPath = fullPath;
+    window.__wgRightDisplayName = displayName || '';
     window.__wgRightShortCode = typeof getShortDocCode === 'function' ? getShortDocCode(fullPath) : fullPath.split('/').pop();
     syncSplitUrl();
     var url = resolveSplitDocUrl(fullPath);
     var lower = fullPath.toLowerCase();
     var theme = document.documentElement.getAttribute('data-theme') || 'light';
+    var isNative = (typeof getPdfReaderPref === 'function' ? getPdfReaderPref() : localStorage.getItem('wg_pdf_reader_pref')) === 'native';
     var safeTitle = (displayName || fullPath).replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     if (!navigator.onLine) {
@@ -8222,7 +8231,10 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           }
         } catch (_) {}
       }
-      splitStage.innerHTML = '<iframe class="preview-iframe" src="/viewer.html?file=' + encodeURIComponent(url) + '&theme=' + encodeURIComponent(theme) + '&preview=1" title="' + (displayName || 'Comparaison PDF').replace(/"/g, '&quot;') + '" style="width:100%;height:100%;border:none;"></iframe>';
+      var rightViewerSrc = (isNative && url.startsWith('/'))
+        ? url
+        : ('/viewer.html?file=' + encodeURIComponent(url) + '&theme=' + encodeURIComponent(theme) + '&preview=1');
+      splitStage.innerHTML = '<iframe class="preview-iframe" src="' + rightViewerSrc + '" title="' + (displayName || 'Comparaison PDF').replace(/"/g, '&quot;') + '" style="width:100%;height:100%;border:none;"></iframe>';
     } else if (/\.(png|jpe?g|webp|gif|svg)$/i.test(lower)) {
       splitStage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:12px;"><img src="' + url + '" alt="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;"></div>';
     } else {
