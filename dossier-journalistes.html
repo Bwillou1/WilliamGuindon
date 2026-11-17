@@ -8068,18 +8068,44 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     return '/assets/docs/' + fullPath.split('/').map(encodeURIComponent).join('/');
   }
 
-  function loadRightDoc(fullPath, displayName) {
+  async function loadRightDoc(fullPath, displayName) {
     if (!fullPath || !splitStage) return;
     if (docSelect) docSelect.value = fullPath;
     var url = resolveSplitDocUrl(fullPath);
     var lower = fullPath.toLowerCase();
     var theme = document.documentElement.getAttribute('data-theme') || 'light';
+    var safeTitle = (displayName || fullPath).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    if (!navigator.onLine) {
+      var hasOfflineCopy = false;
+      try {
+        if ('caches' in window) {
+          var m = await caches.match(url);
+          if (m) hasOfflineCopy = true;
+        }
+      } catch (_) {}
+      if (!hasOfflineCopy) {
+        splitStage.innerHTML = '<div style="padding:36px 20px;text-align:center;"><p style="font-weight:700;color:#064e3b;margin-bottom:8px;">Document non disponible hors-ligne</p><p style="font-size:12.5px;color:#52796f;">« ' + safeTitle + ' » n\'est pas en cache local pour la consultation hors connexion.</p></div>';
+        return;
+      }
+    }
+
     if (lower.endsWith('.pdf')) {
+      if (url.startsWith('/')) {
+        try {
+          var headRes = await fetch(url, { method: 'HEAD' });
+          var ct = (headRes.headers.get('content-type') || '').toLowerCase();
+          if (!headRes.ok || ct.includes('text/html')) {
+            splitStage.innerHTML = '<div style="padding:36px 20px;text-align:center;"><p style="font-weight:700;color:#b91c1c;margin-bottom:8px;">Impossible de charger ce document</p><p style="font-size:12.5px;color:#52796f;margin-bottom:12px;">Le fichier PDF est introuvable à cette adresse (' + headRes.status + ').</p><a href="' + url + '" target="_blank" rel="noopener" class="btn-preview-action">Télécharger / Ouvrir ↗</a></div>';
+            return;
+          }
+        } catch (_) {}
+      }
       splitStage.innerHTML = '<iframe class="preview-iframe" src="/viewer.html?file=' + encodeURIComponent(url) + '&theme=' + encodeURIComponent(theme) + '&preview=1" title="' + (displayName || 'Comparaison PDF').replace(/"/g, '&quot;') + '" style="width:100%;height:100%;border:none;"></iframe>';
     } else if (/\.(png|jpe?g|webp|gif|svg)$/i.test(lower)) {
       splitStage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:12px;"><img src="' + url + '" alt="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;"></div>';
     } else {
-      splitStage.innerHTML = '<div style="padding:28px;text-align:center;font-size:13px;color:#064e3b;"><p style="font-weight:700;margin-bottom:10px;">' + (displayName || fullPath).replace(/</g, '&lt;') + '</p><a href="' + url + '" target="_blank" rel="noopener" class="btn-preview-action">Ouvrir / Télécharger ↗</a></div>';
+      splitStage.innerHTML = '<div style="padding:28px;text-align:center;font-size:13px;color:#064e3b;"><p style="font-weight:700;margin-bottom:10px;">' + safeTitle + '</p><a href="' + url + '" target="_blank" rel="noopener" class="btn-preview-action">Ouvrir / Télécharger ↗</a></div>';
     }
   }
   window.wgLoadSplitRightItem = loadRightDoc;
