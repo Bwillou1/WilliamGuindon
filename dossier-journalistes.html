@@ -3897,16 +3897,65 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     }
   };
 
-  function getOfficialTranslation(fileNameOrPath, lang) {
-    if (!fileNameOrPath || !lang) return null;
+  function getOfficialTranslationEntry(fileNameOrPath) {
+    if (!fileNameOrPath) return null;
     let baseName = String(fileNameOrPath).trim();
     if (baseName.includes("/")) baseName = baseName.split("/").pop();
     try { baseName = decodeURIComponent(baseName); } catch (_) {}
-    const entry = OFFICIAL_TRANSLATIONS[baseName];
+    return OFFICIAL_TRANSLATIONS[baseName] || null;
+  }
+
+  function getOfficialTranslation(fileNameOrPath, lang) {
+    if (!fileNameOrPath || !lang) return null;
+    const entry = getOfficialTranslationEntry(fileNameOrPath);
     if (entry && entry[lang]) {
       return entry[lang];
     }
     return null;
+  }
+
+  function syncTranslateSelectOptions(fileNameOrPath) {
+    const sel = document.getElementById("select-translate-lang");
+    if (!sel) return;
+    const entry = getOfficialTranslationEntry(fileNameOrPath);
+    Array.from(sel.options).forEach((opt) => {
+      if (opt.value === "fr") {
+        opt.disabled = false;
+        opt.textContent = "FR · Original";
+        return;
+      }
+      if (entry) {
+        const hasLang = !!entry[opt.value];
+        opt.disabled = !hasLang;
+        if (opt.value === "en") opt.textContent = hasLang ? "EN · English (Officiel)" : "EN · Non fourni";
+        if (opt.value === "es") opt.textContent = hasLang ? "ES · Español (Officiel)" : "ES · Non fourni";
+      } else {
+        opt.disabled = false;
+        if (opt.value === "en") opt.textContent = "EN · English (Non officiel)";
+        if (opt.value === "es") opt.textContent = "ES · Español (Non officiel)";
+      }
+    });
+  }
+
+  function setUnofficialTranslationBanner(stageEl, visible, lang) {
+    if (!stageEl) return;
+    const existing = document.getElementById("wg-unofficial-trans-banner");
+    if (!visible) {
+      if (existing) existing.remove();
+      return;
+    }
+    const label = lang === "es"
+      ? "⚠️ Traducción no oficial (automática) — Solo la versión original da fe."
+      : "⚠️ Traduction non officielle (automatique) — Seule la version originale fait foi.";
+    if (existing) {
+      existing.textContent = label;
+      return;
+    }
+    const banner = document.createElement("div");
+    banner.id = "wg-unofficial-trans-banner";
+    banner.style.cssText = "position:absolute;top:0;left:0;right:0;z-index:30;background:#fef3c7;color:#92400e;border-bottom:1px solid #f59e0b;padding:5px 12px;font-size:11.5px;font-weight:700;text-align:center;";
+    banner.textContent = label;
+    stageEl.appendChild(banner);
   }
 
   function getShortDocCode(fullPath) {
@@ -5148,18 +5197,23 @@ function getCleanDisplayName(fullPath) {
               const shouldAutoTranslate = !!_stickyLang;
               const activeTranslateLang = shouldAutoTranslate ? _stickyLang : ((window.location.pathname.startsWith('/es/') || (localStorage.getItem('wg_lang') === 'es')) ? 'es' : 'en');
               
+              const officialEntry = getOfficialTranslationEntry(fileObj.name);
               const officialTrans = getOfficialTranslation(fileObj.name, activeTranslateLang);
               const baseViewerUrl = canUseNativeIframe ? nativePdfUrl : ("/viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
               
               let translatedViewerUrl = "";
+              let isUnofficialTransActive = false;
               if (officialTrans) {
                 const officialPdfPath = '/' + officialTrans.replace(/^\/+/, '');
-                translatedViewerUrl = canUseNativeIframe ? officialPdfPath : ("/lecteur.html?file=" + encodeURIComponent(officialPdfPath) + "&tab=translation&lang=" + activeTranslateLang + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
-              } else {
+                translatedViewerUrl = canUseNativeIframe ? officialPdfPath : ("/viewer.html?file=" + encodeURIComponent(officialPdfPath) + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1");
+              } else if (officialEntry && shouldAutoTranslate) {
+                translatedViewerUrl = baseViewerUrl;
+              } else if (shouldAutoTranslate) {
+                isUnofficialTransActive = true;
                 translatedViewerUrl = "/lecteur.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&lang=" + activeTranslateLang + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
               }
               
-              const viewerUrl = shouldAutoTranslate ? translatedViewerUrl : baseViewerUrl;
+              const viewerUrl = (shouldAutoTranslate && translatedViewerUrl) ? translatedViewerUrl : baseViewerUrl;
 
               if (fsViewerLink) {
                 fsViewerLink.href = isNative ? nativePdfUrl : viewerUrl;
@@ -5168,8 +5222,10 @@ function getCleanDisplayName(fullPath) {
               const _stlShow = document.getElementById("select-translate-lang");
               if (_stlShow) {
                 _stlShow.style.display = isNative ? "none" : "inline-flex";
-                _stlShow.value = shouldAutoTranslate ? activeTranslateLang : "fr";
+                syncTranslateSelectOptions(fileObj.name);
+                _stlShow.value = (shouldAutoTranslate && (!officialEntry || officialTrans)) ? activeTranslateLang : "fr";
               }
+              setUnofficialTranslationBanner(stage, isUnofficialTransActive && !isNative, activeTranslateLang);
               const iframe = document.createElement("iframe");
               iframe.className = "preview-iframe";
               iframe.title = fileObj.name;
@@ -6126,6 +6182,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       try { autoTranslateLang = null; } catch (_) {}
       const frDoc = getOfficialTranslation(docName, 'fr') || rawPdf;
       iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+      setUnofficialTranslationBanner(stageEl, false, 'fr');
       if (span) span.textContent = 'Traduire';
       if (translatePreviewLink) {
         translatePreviewLink.classList.remove('active');
@@ -6135,11 +6192,25 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
     } else {
       const targetLang = (lang === 'es') ? 'es' : 'en';
+      const officialEntry = getOfficialTranslationEntry(docName);
+      const officialTrans = getOfficialTranslation(docName, targetLang);
+      if (officialEntry && !officialTrans) {
+        if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
+        if (typeof showDriveToast === 'function') {
+          showDriveToast('Traduction bloquée : aucune traduction officielle n\'a été fournie dans cette langue pour cette pièce CCE / SEM-26-003.', 'warning', 4000);
+        }
+        return;
+      }
       window._wgStickyTranslateLang = targetLang;
       try { autoTranslateLang = targetLang; } catch (_) {}
-      const officialTrans = getOfficialTranslation(docName, targetLang);
-      const targetPdf = officialTrans ? ('/' + officialTrans.replace(/^\/+/, '')) : rawPdf;
-      iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+      if (officialTrans) {
+        const officialPdf = '/' + officialTrans.replace(/^\/+/, '');
+        iframe.src = `/viewer.html?file=${encodeURIComponent(officialPdf)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        setUnofficialTranslationBanner(stageEl, false, targetLang);
+      } else {
+        iframe.src = `/lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        setUnofficialTranslationBanner(stageEl, true, targetLang);
+      }
       if (span) span.textContent = 'Original (FR)';
       if (translatePreviewLink) {
         translatePreviewLink.classList.add('active');
