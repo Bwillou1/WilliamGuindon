@@ -324,8 +324,13 @@
     let storage = null;
     try {
       if (navigator.storage && navigator.storage.estimate) {
-        const est = await navigator.storage.estimate();
-        storage = { usageMB: Number(((est.usage || 0) / 1048576).toFixed(2)), quotaMB: Number(((est.quota || 0) / 1048576).toFixed(1)) };
+        const est = await Promise.race([
+          navigator.storage.estimate(),
+          new Promise((r) => setTimeout(() => r(null), 400))
+        ]);
+        if (est) {
+          storage = { usageMB: Number(((est.usage || 0) / 1048576).toFixed(2)), quotaMB: Number(((est.quota || 0) / 1048576).toFixed(1)) };
+        }
       }
     } catch (_) {}
 

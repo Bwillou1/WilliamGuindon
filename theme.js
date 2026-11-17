@@ -18,7 +18,7 @@
   loadScript('/assets/js/theme-core.js?v=20261108-v148');
   loadScript('/assets/js/chat-ai.js?v=20261022-v6');
   loadScript('/assets/js/anticapture.js?v=20260925-v5');
-  loadScript('/assets/js/wg-blackbox.js?v=20261117-v1');
+  loadScript('/assets/js/wg-blackbox.js?v=20261117-v2');
 
   const path = window.location.pathname;
   const isHome = path === '/' || path === '' || path === '/en/' || path === '/en' || path === '/es/' || path === '/es' || path.endsWith('/index.html') || path.endsWith('index.html');

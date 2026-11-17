@@ -8403,7 +8403,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   });
 })();
 </script>
-<script src="/assets/js/wg-blackbox.js?v=20261117-v1"></script>
+<script src="/assets/js/wg-blackbox.js?v=20261117-v2"></script>
 <script>
 (function() {
   var liveTimer = null;
@@ -8504,11 +8504,23 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
     async function refreshLive() {
       if (activeMode !== 'live' || !document.body.contains(pre)) { stopLive(); return; }
-      if (!window.WGBlackbox) return;
+      if (!window.WGBlackbox || typeof window.WGBlackbox.collectSnapshot !== 'function') {
+        statusSpan.textContent = 'En direct (mode secours local)';
+        pre.textContent = [
+          '=== WG BLACKBOX DIAGNOSTIC LOG (FALLBACK) ===',
+          'URL      : ' + location.href,
+          'Écran    : ' + screen.width + 'x' + screen.height + ' | Fenêtre: ' + window.innerWidth + 'x' + window.innerHeight,
+          'En ligne : ' + navigator.onLine,
+          'UA       : ' + navigator.userAgent
+        ].join('\n');
+        return;
+      }
       try {
         var snap = await window.WGBlackbox.collectSnapshot();
         renderBox(snap, 'Session en direct');
-      } catch (_) {}
+      } catch (err) {
+        statusSpan.textContent = 'Erreur lecture diagnostic : ' + (err && err.message ? err.message : err);
+      }
     }
 
     function startLiveMode() {
