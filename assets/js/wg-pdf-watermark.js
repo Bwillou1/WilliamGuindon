@@ -1,11 +1,8 @@
 (function () {
   'use strict';
 
-  const PDFLIB_URL = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+  const PDFLIB_URL = '/assets/vendor/pdf-lib/pdf-lib.min.js';
   let pdfLibPromise = null;
-
-  // Chemin vectoriel simplifié du monogramme WG (issu de favicon.svg) en noir pur
-  const WG_SVG_PATH = 'M 229 349 L 352 676 L 362 676 L 449 463 L 505 595 L 520 600 L 543 571 L 450 347 L 359 569 L 274 348 Z M 657 404 L 631 408 L 532 659 L 553 676 L 655 412 Z M 784 398 C 720 335 585 335 510 429 L 505 441 L 534 511 C 540 430 620 385 688 392 L 755 430 Z M 794 490 L 689 490 L 663 533 L 751 534 L 751 601 C 710 638 640 640 592 616 L 577 657 C 640 688 740 676 794 622 Z';
 
   function loadPdfLib() {
     if (window.PDFLib) return Promise.resolve(window.PDFLib);
@@ -39,9 +36,28 @@
     if (isBlob) setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
+  function drawMiniWgLogo(page, x, y, size, black) {
+    // Mini monogramme vectoriel WG en noir pur (dimensions ~ size x size)
+    const s = size / 12;
+    const t = Math.max(0.85, s * 1.35);
+    // Lettre W
+    page.drawLine({ start: { x: x + 0.5 * s, y: y + 10 * s }, end: { x: x + 2.2 * s, y: y + 2 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 2.2 * s, y: y + 2 * s }, end: { x: x + 3.8 * s, y: y + 7.2 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 3.8 * s, y: y + 7.2 * s }, end: { x: x + 5.4 * s, y: y + 2 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 5.4 * s, y: y + 2 * s }, end: { x: x + 7.1 * s, y: y + 10 * s }, thickness: t, color: black });
+    // Lettre G
+    page.drawLine({ start: { x: x + 11.4 * s, y: y + 9.2 * s }, end: { x: x + 8.6 * s, y: y + 9.8 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 8.6 * s, y: y + 9.8 * s }, end: { x: x + 7.6 * s, y: y + 6 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 7.6 * s, y: y + 6 * s }, end: { x: x + 8.6 * s, y: y + 2.2 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 8.6 * s, y: y + 2.2 * s }, end: { x: x + 11.4 * s, y: y + 2.8 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 11.4 * s, y: y + 2.8 * s }, end: { x: x + 11.4 * s, y: y + 5.6 * s }, thickness: t, color: black });
+    page.drawLine({ start: { x: x + 11.4 * s, y: y + 5.6 * s }, end: { x: x + 9.7 * s, y: y + 5.6 * s }, thickness: t, color: black });
+  }
+
   async function downloadWatermarkedPdf(pdfUrl, filename, originPageUrl) {
     const cleanName = filename || String(pdfUrl).split('/').pop().split('?')[0] || 'document.pdf';
-    const originText = originPageUrl || 'https://williamguindon.me';
+    const rawOrigin = originPageUrl || window.location.href || 'https://williamguindon.me';
+    const originText = rawOrigin.length > 78 ? rawOrigin.slice(0, 75) + '...' : rawOrigin;
     try {
       const targetUrl = new URL(pdfUrl, window.location.origin);
       if (targetUrl.origin !== window.location.origin) {
@@ -58,62 +74,52 @@
       const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
       const black = PDFLib.rgb(0.05, 0.05, 0.05);
-      const muted = PDFLib.rgb(0.25, 0.25, 0.25);
+      const muted = PDFLib.rgb(0.22, 0.22, 0.22);
       const stamp = formatTimestamp();
       const pages = pdfDoc.getPages();
 
       for (const page of pages) {
         const { width } = page.getSize();
         const marginX = 24;
-        const barY = 18;
+        const barY = 16;
 
         page.drawLine({
-          start: { x: marginX, y: barY + 12 },
-          end: { x: Math.max(marginX + 40, width - marginX), y: barY + 12 },
+          start: { x: marginX, y: barY + 13 },
+          end: { x: Math.max(marginX + 40, width - marginX), y: barY + 13 },
           thickness: 0.45,
           color: black,
-          opacity: 0.22
+          opacity: 0.25
         });
 
-        // Mini logo WG en noir (vecteur)
-        if (typeof page.drawSvgPath === 'function') {
-          try {
-            page.drawSvgPath(WG_SVG_PATH, {
-              x: marginX - 3,
-              y: barY + 11,
-              scale: 0.017,
-              color: black,
-              opacity: 0.92
-            });
-          } catch (_) {}
-        }
+        drawMiniWgLogo(page, marginX, barY + 0.5, 10, black);
 
         page.drawText('William Guindon', {
           x: marginX + 14,
-          y: barY + 1.5,
+          y: barY + 2.5,
           size: 7.5,
           font: fontBold,
           color: black,
-          opacity: 0.88
+          opacity: 0.92
         });
 
-        const metaText = `Source : ${originText}  ·  Imprimé / Téléchargé le ${stamp}`;
-        const textWidth = font.widthOfTextAtSize(metaText, 6.5);
+        const metaText = `Source : ${originText}  ·  Imprimé le ${stamp}`;
+        const textWidth = font.widthOfTextAtSize(metaText, 6.2);
         const rightX = Math.max(marginX + 95, width - marginX - textWidth);
         page.drawText(metaText, {
           x: rightX,
-          y: barY + 1.8,
-          size: 6.5,
+          y: barY + 2.8,
+          size: 6.2,
           font,
           color: muted,
-          opacity: 0.85
+          opacity: 0.88
         });
       }
 
       const outBytes = await pdfDoc.save();
       triggerBlobDownload(new Blob([outBytes], { type: 'application/pdf' }), cleanName);
       return true;
-    } catch (_) {
+    } catch (err) {
+      console.warn('[WG PDF Watermark] repli direct:', err);
       triggerBlobDownload(pdfUrl, cleanName);
       return false;
     }

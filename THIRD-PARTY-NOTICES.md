@@ -90,6 +90,14 @@ SOFTWARE.
 
 ---
 
+### pdf-lib (v1.17.1)
+- **Auteur :** Andrew Dillon (https://github.com/Hopding/pdf-lib)
+- **Licence :** MIT License
+- **URL :** https://github.com/Hopding/pdf-lib
+- **Composants :** `assets/vendor/pdf-lib/pdf-lib.min.js`
+
+---
+
 ### Nostr Tools (v2.25.2)
 - **Auteur :** fiatjaf et contributeurs
 - **Licence :** Unlicense (Domaine Public)
