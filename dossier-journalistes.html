@@ -2578,7 +2578,7 @@
   </div>
   </div>
 </div>
-<div class="tree-node">
+<div class="tree-node open">
   <div class="tree-folder-header">
     <span class="folder-chevron">▶</span>
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
@@ -3080,11 +3080,6 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       <div class="preview-header">
         <span id="current-filename" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">Sélectionnez un document</span>
         <div class="preview-header-actions" id="preview-header-actions" style="display: none;">
-          <button type="button" id="btn-copy-doc-link" class="btn-preview-action" style="display: none;" title="Copier le lien direct de partage vers ce document">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            <span id="btn-copy-doc-link-label">Lien de partage</span>
-          </button>
-
           <button type="button" id="btn-zoom-image" class="btn-preview-action" style="display: none;" title="Agrandir et inspecter en haute résolution avec Viewer.js">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
             <span>Agrandir / Zoom</span>
@@ -6363,9 +6358,11 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           }
         });
 
-        folders.forEach((folder, idx) => {
+        folders.forEach((folder) => {
           folder.style.display = "";
-          if (idx === 0) {
+          const fName = folder.querySelector(".folder-name");
+          const isSem = fName && (fName.getAttribute("title") === "07_Lettres_Appui_Communications_CCE" || (fName.textContent || "").includes("SEM-26-003"));
+          if (isSem) {
             folder.classList.add("open");
           } else {
             folder.classList.remove("open");
