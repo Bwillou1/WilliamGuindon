@@ -481,6 +481,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   let hasUserDeletedAnnotations = false;
   let skipUnloadSave = false;
   let hasRegisteredLifecycleListeners = false;
+  let wgDeleteSelectedFn = null;
+  let wgClearAllFn = null;
   const nativeAnnotationUids = new Set();
   const userAnnotationUids = new Set();
 
@@ -1892,22 +1894,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
               return toDelete.length;
             }
 
-            // Menu rapide d'annotation (Poubelle + Efface) dans le lecteur
-            if (!document.getElementById('wg-annot-quickbar')) {
-              const qbar = document.createElement('div');
-              qbar.id = 'wg-annot-quickbar';
-              qbar.setAttribute('role', 'toolbar');
-              qbar.setAttribute('aria-label', 'Suppression et effacement des annotations');
-              qbar.style.cssText = 'position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9990;display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;background:rgba(15,23,42,0.88);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.16);box-shadow:0 8px 24px rgba(0,0,0,0.32);font-family:system-ui,-apple-system,sans-serif;';
-              qbar.innerHTML = ''
-                + '<button type="button" id="wg-btn-annot-trash" title="Supprimer l\'annotation sélectionnée (Poubelle)" aria-label="Supprimer l\'annotation sélectionnée" style="display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:1px solid rgba(248,113,113,0.45);background:rgba(239,68,68,0.16);color:#fecaca;font-size:12px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>'
-                + '<button type="button" id="wg-btn-annot-clear" title="Effacer toutes vos annotations sur ce document" aria-label="Tout effacer" style="display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:1px solid rgba(251,191,36,0.45);background:rgba(245,158,11,0.16);color:#fde68a;font-size:12px;font-weight:600;cursor:pointer;">🧹 Tout effacer</button>';
-              document.body.appendChild(qbar);
-              const trashBtn = document.getElementById('wg-btn-annot-trash');
-              const clearBtn = document.getElementById('wg-btn-annot-clear');
-              if (trashBtn) trashBtn.addEventListener('click', () => { deleteSelectedUserAnnotation(); });
-              if (clearBtn) clearBtn.addEventListener('click', () => { clearAllUserAnnotations(); });
-            }
+            wgDeleteSelectedFn = deleteSelectedUserAnnotation;
+            wgClearAllFn = clearAllUserAnnotations;
 
             document.addEventListener('keydown', (e) => {
               if (e.key !== 'Delete' && e.key !== 'Backspace') return;
@@ -1995,6 +1983,55 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       }
     });
+
+    // Injection des vrais boutons Corbeille (Supprimer) & Efface (Tout effacer) dans la barre d'outils d'annotation
+    if (!s.getElementById('wg-shadow-annot-trash')) {
+      let anchorBtn = null;
+      s.querySelectorAll('button').forEach((b) => {
+        const lbl = (b.getAttribute('title') || b.getAttribute('aria-label') || '').trim();
+        if (lbl === 'Rétablir' || lbl === 'Redo' || lbl === 'Note / Commentaire' || lbl === 'Comment') {
+          anchorBtn = b;
+        }
+      });
+      if (anchorBtn && anchorBtn.parentElement) {
+        const bar = anchorBtn.parentElement;
+        const sep = document.createElement('span');
+        sep.setAttribute('aria-hidden', 'true');
+        sep.style.cssText = 'display:inline-block;width:1px;height:20px;background:rgba(148,163,184,0.45);margin:0 4px;vertical-align:middle;';
+
+        const makeIconBtn = (id, title, svgMarkup, hoverColor) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.id = id;
+          btn.title = title;
+          btn.setAttribute('aria-label', title);
+          btn.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:6px;background:transparent;color:currentColor;cursor:pointer;padding:0;transition:background 0.15s ease,color 0.15s ease;';
+          btn.innerHTML = svgMarkup;
+          btn.addEventListener('mouseenter', () => { btn.style.background = hoverColor; });
+          btn.addEventListener('mouseleave', () => { btn.style.background = 'transparent'; });
+          return btn;
+        };
+
+        const trashIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+        const eraserIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>';
+
+        const trashBtn = makeIconBtn('wg-shadow-annot-trash', 'Supprimer la sélection (Corbeille)', trashIcon, 'rgba(220,38,38,0.12)');
+        const clearBtn = makeIconBtn('wg-shadow-annot-clear', 'Tout effacer (Gomme)', eraserIcon, 'rgba(217,119,6,0.12)');
+
+        trashBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (typeof wgDeleteSelectedFn === 'function') wgDeleteSelectedFn();
+        });
+        clearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (typeof wgClearAllFn === 'function') wgClearAllFn();
+        });
+
+        bar.appendChild(sep);
+        bar.appendChild(trashBtn);
+        bar.appendChild(clearBtn);
+      }
+    }
 
     // Filet de sécurité anti-blocage : si une modale d'erreur technique apparaît dans le ShadowRoot,
     // offrir une bascule instantanée vers le moteur natif sans laisser l'utilisateur bloqué
