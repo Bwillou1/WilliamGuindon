@@ -1753,40 +1753,87 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
               }
             });
 
+            function deleteSelectedUserAnnotation() {
+              const annotationApi = getAnnotationPluginApi(registry);
+              if (!annotationApi || typeof annotationApi.getSelectedAnnotation !== 'function') return false;
+              const selected = annotationApi.getSelectedAnnotation();
+              if (!selected) return false;
+              const obj = selected.object || selected;
+              const selId = obj && (obj.id || obj.uid);
+              const pageIndex = typeof obj?.pageIndex === 'number'
+                ? obj.pageIndex
+                : (typeof selected.pageIndex === 'number' ? selected.pageIndex : undefined);
+              if (!selId || (nativeAnnotationUids.has(selId) && !userAnnotationUids.has(selId))) return false;
+              if (pageIndex === undefined) return false;
+              if (typeof annotationApi.deleteAnnotation === 'function') {
+                annotationApi.deleteAnnotation(pageIndex, selId);
+              } else if (typeof annotationApi.deleteAnnotations === 'function') {
+                annotationApi.deleteAnnotations([{ pageIndex, id: selId }]);
+              } else {
+                return false;
+              }
+              userAnnotationUids.delete(selId);
+              hasUserDeletedAnnotations = true;
+              if (typeof annotationApi.deselectAnnotation === 'function') annotationApi.deselectAnnotation();
+              if (typeof annotationApi.commit === 'function') annotationApi.commit();
+              saveCurrentAnnotationsNow();
+              return true;
+            }
+
+            function clearAllUserAnnotations() {
+              const annotationApi = getAnnotationPluginApi(registry);
+              if (!annotationApi) return 0;
+              const state = extractAnnotationDocState(annotationApi, registry);
+              if (!state || !state.byUid) return 0;
+              const toDelete = [];
+              for (const uid of Object.keys(state.byUid)) {
+                const entry = state.byUid[uid];
+                const obj = entry && entry.object;
+                if (!obj || entry.commitState === 'deleted') continue;
+                if (nativeAnnotationUids.has(uid) && !userAnnotationUids.has(uid)) continue;
+                if (!isUserAnnotation(obj)) continue;
+                toDelete.push({ uid, pageIndex: typeof obj.pageIndex === 'number' ? obj.pageIndex : 0 });
+              }
+              if (!toDelete.length) return 0;
+              if (typeof annotationApi.deleteAnnotations === 'function') {
+                annotationApi.deleteAnnotations(toDelete.map((x) => ({ pageIndex: x.pageIndex, id: x.uid })));
+              } else if (typeof annotationApi.deleteAnnotation === 'function') {
+                toDelete.forEach((x) => annotationApi.deleteAnnotation(x.pageIndex, x.uid));
+              }
+              toDelete.forEach((x) => userAnnotationUids.delete(x.uid));
+              hasUserDeletedAnnotations = true;
+              if (typeof annotationApi.deselectAnnotation === 'function') annotationApi.deselectAnnotation();
+              if (typeof annotationApi.commit === 'function') annotationApi.commit();
+              saveCurrentAnnotationsNow();
+              return toDelete.length;
+            }
+
+            // Menu rapide d'annotation (Poubelle + Efface) dans le lecteur
+            if (!document.getElementById('wg-annot-quickbar')) {
+              const qbar = document.createElement('div');
+              qbar.id = 'wg-annot-quickbar';
+              qbar.setAttribute('role', 'toolbar');
+              qbar.setAttribute('aria-label', 'Suppression et effacement des annotations');
+              qbar.style.cssText = 'position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9990;display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;background:rgba(15,23,42,0.88);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.16);box-shadow:0 8px 24px rgba(0,0,0,0.32);font-family:system-ui,-apple-system,sans-serif;';
+              qbar.innerHTML = ''
+                + '<button type="button" id="wg-btn-annot-trash" title="Supprimer l\'annotation sélectionnée (Poubelle)" aria-label="Supprimer l\'annotation sélectionnée" style="display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:1px solid rgba(248,113,113,0.45);background:rgba(239,68,68,0.16);color:#fecaca;font-size:12px;font-weight:600;cursor:pointer;">🗑️ Supprimer</button>'
+                + '<button type="button" id="wg-btn-annot-clear" title="Effacer toutes vos annotations sur ce document" aria-label="Tout effacer" style="display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:1px solid rgba(251,191,36,0.45);background:rgba(245,158,11,0.16);color:#fde68a;font-size:12px;font-weight:600;cursor:pointer;">🧹 Tout effacer</button>';
+              document.body.appendChild(qbar);
+              const trashBtn = document.getElementById('wg-btn-annot-trash');
+              const clearBtn = document.getElementById('wg-btn-annot-clear');
+              if (trashBtn) trashBtn.addEventListener('click', () => { deleteSelectedUserAnnotation(); });
+              if (clearBtn) clearBtn.addEventListener('click', () => { clearAllUserAnnotations(); });
+            }
+
             document.addEventListener('keydown', (e) => {
               if (e.key !== 'Delete' && e.key !== 'Backspace') return;
               const targetEl = (typeof e.composedPath === 'function' && e.composedPath()[0]) || e.target;
               if (targetEl && (targetEl.tagName === 'INPUT' || targetEl.tagName === 'TEXTAREA' || targetEl.isContentEditable)) {
                 return;
               }
-              const annotationApi = getAnnotationPluginApi(registry);
-              if (!annotationApi || typeof annotationApi.getSelectedAnnotation !== 'function') return;
-              const selected = annotationApi.getSelectedAnnotation();
-              if (!selected) return;
-              const obj = selected.object || selected;
-              const selId = obj && (obj.id || obj.uid);
-              const pageIndex = typeof obj?.pageIndex === 'number'
-                ? obj.pageIndex
-                : (typeof selected.pageIndex === 'number' ? selected.pageIndex : undefined);
-              if (!selId || (nativeAnnotationUids.has(selId) && !userAnnotationUids.has(selId))) return;
-              if (pageIndex === undefined) return;
-              e.preventDefault();
-              if (typeof annotationApi.deleteAnnotation === 'function') {
-                annotationApi.deleteAnnotation(pageIndex, selId);
-              } else if (typeof annotationApi.deleteAnnotations === 'function') {
-                annotationApi.deleteAnnotations([{ pageIndex, id: selId }]);
-              } else {
-                return;
+              if (deleteSelectedUserAnnotation()) {
+                e.preventDefault();
               }
-              userAnnotationUids.delete(selId);
-              hasUserDeletedAnnotations = true;
-              if (typeof annotationApi.deselectAnnotation === 'function') {
-                annotationApi.deselectAnnotation();
-              }
-              if (typeof annotationApi.commit === 'function') {
-                annotationApi.commit();
-              }
-              saveCurrentAnnotationsNow();
             });
           }
         }).catch(err => {

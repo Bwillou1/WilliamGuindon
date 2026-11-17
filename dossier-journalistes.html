@@ -7110,8 +7110,54 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       await moveCursorTo(cx + 28, cy + 28, runId);
       await sleep(950);
 
-      // 3. Effacer + revenir au mode Lire
+      // 3. Démonstration Commentaire (clic Note / Commentaire + aperçu bulle)
       if (runId !== tourRunId) return;
+      if (doc) {
+        var commentToolBtn = findInDocDeep(doc, function(el) {
+          var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+          return txt.includes('Note / Commentaire') || txt === 'Commentaire' || txt === 'Commentaires';
+        });
+        if (commentToolBtn) {
+          await moveAndClickEl(commentToolBtn, iframe, runId);
+          await sleep(400);
+        }
+      }
+      if (runId !== tourRunId) return;
+      await moveCursorTo(cx + 95, cy - 35, runId);
+      var noteBubble = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      var noteRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      noteRect.setAttribute('x', cx + 82); noteRect.setAttribute('y', cy - 62);
+      noteRect.setAttribute('width', '156'); noteRect.setAttribute('height', '44');
+      noteRect.setAttribute('rx', '8');
+      noteRect.setAttribute('fill', '#0f172a');
+      noteRect.setAttribute('stroke', '#10b981');
+      noteRect.setAttribute('stroke-width', '2');
+      var noteTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      noteTxt.setAttribute('x', cx + 92); noteTxt.setAttribute('y', cy - 35);
+      noteTxt.setAttribute('fill', '#ecfdf5');
+      noteTxt.setAttribute('font-size', '12');
+      noteTxt.setAttribute('font-family', 'system-ui, sans-serif');
+      noteTxt.textContent = '💬 Note : Passage clé';
+      noteBubble.appendChild(noteRect);
+      noteBubble.appendChild(noteTxt);
+      drawSvg.appendChild(noteBubble);
+      await sleep(900);
+
+      // 4. Supprimer (Poubelle) & Tout effacer (Efface) puis revenir au mode Lire
+      if (runId !== tourRunId) return;
+      if (doc) {
+        var trashBtn = doc.getElementById('wg-btn-annot-trash');
+        if (trashBtn) {
+          await moveAndClickEl(trashBtn, iframe, runId);
+          await sleep(350);
+        }
+        if (runId !== tourRunId) return;
+        var clearBtn = doc.getElementById('wg-btn-annot-clear');
+        if (clearBtn) {
+          await moveAndClickEl(clearBtn, iframe, runId);
+          await sleep(350);
+        }
+      }
       clearDrawOverlay();
       if (doc) {
         var readBtn = findInDocDeep(doc, function(el) {
@@ -7169,8 +7215,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     },
     {
       selector: '#preview-stage',
-      title: '2 · Surligner, dessiner ☺ & effacer dans le PDF',
-      body: 'Elle clique sur « Surligner / Annoter » dans le lecteur PDF, trace un surlignage et un sourire, puis efface et repasse en mode « Lire ».',
+      title: '2 · Surligner, commenter & supprimer (poubelle / efface)',
+      body: 'Elle clique sur « Surligner / Annoter », trace un surlignage, ajoute un commentaire (« Note / Commentaire »), puis montre la poubelle (« Supprimer ») et l’efface (« Tout effacer ») avant de repasser en mode « Lire ».',
       runAction: runStep2Demo
     },
     {
