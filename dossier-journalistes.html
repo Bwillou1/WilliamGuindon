@@ -7083,165 +7083,223 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
   var steps = [
     {
-      title: '1 · Ouvrez une pièce du dossier',
-      body: 'Cliquez sur le fichier entouré par le cercle vert scintillant dans l’arborescence pour charger le document.',
-      findTarget: function() {
-        var fileEl = document.querySelector('#tree-nodes-container .drive-item');
-        if (fileEl && fileEl.offsetParent !== null) return { el: fileEl, frame: null };
-        var folderEl = document.querySelector('#tree-nodes-container .tree-folder-header');
-        return { el: folderEl || document.getElementById('drive-tree'), frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        var initialSrc = '';
-        var cur = document.querySelector('#preview-stage iframe.preview-iframe');
-        if (cur) initialSrc = cur.getAttribute('src') || '';
-        var tree = document.getElementById('tree-nodes-container');
-        var clickedItem = false;
-        if (tree) {
-          tree.addEventListener('click', function onTreeClick(e) {
-            if (e.target && e.target.closest && e.target.closest('.drive-item')) {
-              clickedItem = true;
-              tree.removeEventListener('click', onTreeClick, true);
-              onSuccess();
-            }
-          }, true);
+      selector: '#drive-tree',
+      title: '1 · Explorer & ouvrir une pièce',
+      body: 'La souris ouvre le dossier et sélectionne une pièce pour l’afficher à droite.',
+      runAction: async function(runId) {
+        var firstFolder = document.querySelector('#tree-nodes-container > .tree-node');
+        if (!firstFolder) return;
+        var header = firstFolder.querySelector('.tree-folder-header');
+        if (header && !firstFolder.classList.contains('open')) {
+          await moveAndClickEl(header, null, runId);
+          await sleep(450);
         }
-        return function check() {
-          if (clickedItem) return true;
-          var nf = document.querySelector('#preview-stage iframe.preview-iframe');
-          if (!nf) return false;
-          var newSrc = nf.getAttribute('src') || '';
-          if (newSrc && newSrc !== initialSrc) { onSuccess(); return true; }
-          if (!cur && nf) { onSuccess(); return true; }
-          return false;
-        };
+        if (runId !== tourRunId) return;
+        var firstFile = firstFolder.querySelector('.drive-item');
+        if (firstFile) await moveAndClickEl(firstFile, null, runId);
       }
     },
     {
-      title: '2 · Activez « Surligner / Annoter »',
-      body: 'Cliquez sur « Surligner / Annoter » dans le lecteur PDF (cercle vert scintillant) pour ouvrir les outils.',
-      findTarget: function() {
+      selector: '#preview-stage',
+      title: '2 · Surligner, commenter, supprimer (corbeille / gomme)',
+      body: 'La souris active « Surligner / Annoter », trace un surlignage et un sourire ☺, ajoute un commentaire, puis utilise la Corbeille et la Gomme avant de repasser en mode « Lire ».',
+      runAction: async function(runId) {
+        var stage = document.getElementById('preview-stage');
+        if (!stage) return;
         var p = getPreviewIframeDoc();
-        if (!p.doc) return { el: document.getElementById('preview-stage'), frame: null };
-        var btn = findInDocDeep(p.doc, function(el) {
-          var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
-          return txt.includes('Surligner / Annoter') || txt.includes('Mode annotation');
-        });
-        return btn ? { el: btn, frame: p.iframe } : { el: document.getElementById('preview-stage'), frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        var hooked = new WeakSet();
-        return function check() {
-          var p = getPreviewIframeDoc();
-          if (!p.doc) return false;
-          var annotBtn = findInDocDeep(p.doc, function(el) {
+        if (!p.iframe) {
+          var firstFile = document.querySelector('#tree-nodes-container .drive-item');
+          if (firstFile) {
+            firstFile.click();
+            await sleep(1000);
+            p = getPreviewIframeDoc();
+          }
+        }
+        if (runId !== tourRunId || !p.iframe) return;
+        await sleep(750);
+        p = getPreviewIframeDoc();
+        var doc = p.doc;
+        if (doc) {
+          var annotateBtn = findInDocDeep(doc, function(el) {
             var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
             return txt.includes('Surligner / Annoter') || txt.includes('Mode annotation');
           });
-          if (annotBtn && !hooked.has(annotBtn)) {
-            hooked.add(annotBtn);
-            annotBtn.addEventListener('click', function() { onSuccess(); }, { once: true });
+          if (annotateBtn) {
+            await moveAndClickEl(annotateBtn, p.iframe, runId);
+            await sleep(650);
           }
-          var trashOrComment = findInDocDeep(p.doc, function(el) {
-            if (el.id === 'wg-shadow-annot-trash') return true;
+          if (runId !== tourRunId) return;
+          var hlToolBtn = findInDocDeep(doc, function(el) {
             var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
-            return txt.includes('Note / Commentaire');
+            return txt === 'Surligner' || txt.includes('Feutre surligneur') || txt.includes('Dessin à main levée');
           });
-          if (trashOrComment) { onSuccess(); return true; }
-          return false;
-        };
-      }
-    },
-    {
-      title: '3 · Choisissez « Note / Commentaire » ou « Surligner »',
-      body: 'Cliquez sur « Note / Commentaire » (ou sur l’outil Surligner) dans la barre d’annotation entourée en vert.',
-      findTarget: function() {
-        var p = getPreviewIframeDoc();
-        if (!p.doc) return { el: document.getElementById('preview-stage'), frame: null };
-        var btn = findInDocDeep(p.doc, function(el) {
-          var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
-          return txt.includes('Note / Commentaire') || txt === 'Commentaire';
-        });
-        return btn ? { el: btn, frame: p.iframe } : { el: document.getElementById('preview-stage'), frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        var hooked = new WeakSet();
-        return function check() {
-          var p = getPreviewIframeDoc();
-          if (!p.doc) return false;
-          var targets = [];
-          findInDocDeep(p.doc, function(el) {
-            var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
-            if (txt.includes('Note / Commentaire') || txt === 'Commentaire' || txt === 'Surligner') {
-              targets.push(el);
+          if (hlToolBtn) {
+            await moveAndClickEl(hlToolBtn, p.iframe, runId);
+            await sleep(450);
+          }
+        }
+        if (runId !== tourRunId) return;
+        var sr = stage.getBoundingClientRect();
+        var cx = sr.left + sr.width * 0.5;
+        var cy = sr.top + Math.min(sr.height * 0.5, 240);
+        if (drawSvg) {
+          drawSvg.style.left = '0px';
+          drawSvg.style.top = '0px';
+          drawSvg.setAttribute('width', window.innerWidth);
+          drawSvg.setAttribute('height', window.innerHeight);
+          drawSvg.style.width = window.innerWidth + 'px';
+          drawSvg.style.height = window.innerHeight + 'px';
+          drawSvg.style.display = 'block';
+          drawSvg.innerHTML = '';
+
+          await moveCursorTo(cx - 80, cy - 45, runId);
+          if (runId !== tourRunId) return;
+          var hlLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          hlLine.setAttribute('x1', cx - 80); hlLine.setAttribute('y1', cy - 45);
+          hlLine.setAttribute('x2', cx + 80); hlLine.setAttribute('y2', cy - 45);
+          hlLine.setAttribute('stroke', 'rgba(250, 204, 21, 0.55)');
+          hlLine.setAttribute('stroke-width', '14'); hlLine.setAttribute('stroke-linecap', 'round');
+          drawSvg.appendChild(hlLine);
+          await moveCursorTo(cx + 80, cy - 45, runId);
+          await sleep(400);
+
+          if (runId !== tourRunId) return;
+          var eye1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          eye1.setAttribute('cx', cx - 22); eye1.setAttribute('cy', cy + 10); eye1.setAttribute('r', '4');
+          eye1.setAttribute('fill', '#10b981');
+          await moveCursorTo(cx - 22, cy + 10, runId);
+          drawSvg.appendChild(eye1);
+
+          if (runId !== tourRunId) return;
+          var eye2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          eye2.setAttribute('cx', cx + 22); eye2.setAttribute('cy', cy + 10); eye2.setAttribute('r', '4');
+          eye2.setAttribute('fill', '#10b981');
+          await moveCursorTo(cx + 22, cy + 10, runId);
+          drawSvg.appendChild(eye2);
+
+          if (runId !== tourRunId) return;
+          await moveCursorTo(cx - 28, cy + 28, runId);
+          var smile = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          smile.setAttribute('d', 'M ' + (cx - 28) + ' ' + (cy + 28) + ' Q ' + cx + ' ' + (cy + 58) + ' ' + (cx + 28) + ' ' + (cy + 28));
+          smile.setAttribute('fill', 'none'); smile.setAttribute('stroke', '#10b981');
+          smile.setAttribute('stroke-width', '5'); smile.setAttribute('stroke-linecap', 'round');
+          drawSvg.appendChild(smile);
+          await moveCursorTo(cx + 28, cy + 28, runId);
+          await sleep(1000);
+
+          if (runId !== tourRunId) return;
+          if (doc) {
+            var commentToolBtn = findInDocDeep(doc, function(el) {
+              var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+              return txt.includes('Note / Commentaire') || txt === 'Commentaire';
+            });
+            if (commentToolBtn) {
+              await moveAndClickEl(commentToolBtn, p.iframe, runId);
+              await sleep(750);
             }
-            return false;
-          });
-          targets.forEach(function(el) {
-            if (!hooked.has(el)) {
-              hooked.add(el);
-              el.addEventListener('click', function() { onSuccess(); }, { once: true });
+          }
+          if (runId !== tourRunId) return;
+          await moveCursorTo(cx + 95, cy - 35, runId);
+          var noteBubble = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          var noteRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          noteRect.setAttribute('x', cx + 82); noteRect.setAttribute('y', cy - 62);
+          noteRect.setAttribute('width', '156'); noteRect.setAttribute('height', '44');
+          noteRect.setAttribute('rx', '8'); noteRect.setAttribute('fill', '#0f172a');
+          noteRect.setAttribute('stroke', '#10b981'); noteRect.setAttribute('stroke-width', '2');
+          var noteTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          noteTxt.setAttribute('x', cx + 92); noteTxt.setAttribute('y', cy - 35);
+          noteTxt.setAttribute('fill', '#ecfdf5'); noteTxt.setAttribute('font-size', '12');
+          noteTxt.setAttribute('font-family', 'system-ui, sans-serif');
+          noteTxt.textContent = '💬 Note : Passage clé';
+          noteBubble.appendChild(noteRect);
+          noteBubble.appendChild(noteTxt);
+          drawSvg.appendChild(noteBubble);
+          await sleep(1650);
+
+          if (runId !== tourRunId) return;
+          if (doc) {
+            var trashBtn = findInDocDeep(doc, function(el) { return el.id === 'wg-shadow-annot-trash'; });
+            if (trashBtn) {
+              await moveAndClickEl(trashBtn, p.iframe, runId);
+              await sleep(850);
             }
-          });
-          return false;
-        };
-      }
-    },
-    {
-      title: '4 · Supprimer (Corbeille) ou Gomme sélective',
-      body: 'Cliquez sur la Corbeille (rouge) pour supprimer la sélection, ou activez la Gomme (orange) pour effacer uniquement les traits touchés.',
-      findTarget: function() {
-        var p = getPreviewIframeDoc();
-        if (!p.doc) return { el: document.getElementById('preview-stage'), frame: null };
-        var trash = findInDocDeep(p.doc, function(el) { return el.id === 'wg-shadow-annot-trash'; });
-        return trash ? { el: trash, frame: p.iframe } : { el: document.getElementById('preview-stage'), frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        var hooked = new WeakSet();
-        return function check() {
-          var p = getPreviewIframeDoc();
-          if (!p.doc) return false;
-          ['wg-shadow-annot-trash', 'wg-shadow-annot-clear'].forEach(function(id) {
-            var btn = findInDocDeep(p.doc, function(el) { return el.id === id; });
-            if (btn && !hooked.has(btn)) {
-              hooked.add(btn);
-              btn.addEventListener('click', function() { onSuccess(); }, { once: true });
+            if (runId !== tourRunId) return;
+            var clearBtn = findInDocDeep(doc, function(el) { return el.id === 'wg-shadow-annot-clear'; });
+            if (clearBtn) {
+              await moveAndClickEl(clearBtn, p.iframe, runId);
+              await sleep(850);
             }
-          });
-          return false;
-        };
+          }
+          drawSvg.style.display = 'none';
+          drawSvg.innerHTML = '';
+          await sleep(450);
+          if (doc) {
+            var readBtn = findInDocDeep(doc, function(el) {
+              var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+              return txt === 'Lire' || txt.includes('Mode lecture');
+            });
+            if (readBtn) await moveAndClickEl(readBtn, p.iframe, runId);
+          }
+        }
       }
     },
     {
-      title: '5 · Essayez le Mode nuit / clair',
-      body: 'Cliquez sur l’icône lune/soleil entourée en vert pour changer le thème du lecteur.',
-      findTarget: function() {
-        return { el: document.getElementById('btn-theme-toggle-dj'), frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        var btn = document.getElementById('btn-theme-toggle-dj');
-        if (btn) btn.addEventListener('click', function() { onSuccess(); }, { once: true });
-        return function() { return false; };
+      selector: '.preview-header',
+      title: '3 · Traduire, Partager & Télécharger',
+      body: 'Elle bascule le document vers « EN · English » puis revient sur « FR · Original ». Vous pouvez aussi copier le lien.',
+      runAction: async function(runId) {
+        var sel = document.getElementById('select-translate-lang');
+        if (!sel || sel.style.display === 'none') return;
+        var r = sel.getBoundingClientRect();
+        await moveCursorTo(r.left + r.width / 2, r.top + r.height / 2, runId);
+        if (runId !== tourRunId) return;
+        await clickPulseAt(r.left + r.width / 2, r.top + r.height / 2, runId);
+        if (runId !== tourRunId) return;
+        sel.value = 'en';
+        sel.dispatchEvent(new Event('change'));
+        await sleep(1500);
+        if (runId !== tourRunId) return;
+        sel.value = 'fr';
+        sel.dispatchEvent(new Event('change'));
       }
     },
     {
-      title: '6 · Ouvrez « Options ▾ » pour finir',
-      body: 'Cliquez sur « Options ▾ » pour découvrir le mode hors-ligne, le choix du moteur PDF et « Revoir le tutoriel ».',
-      findTarget: function() {
+      selector: '#btn-theme-toggle-dj',
+      title: '4 · Mode nuit → Mode clair',
+      body: 'Elle clique sur l’icône lune pour passer en mode sombre, puis reclique pour revenir en mode clair.',
+      runAction: async function(runId) {
+        var tBtn = document.getElementById('btn-theme-toggle-dj');
+        if (!tBtn) return;
+        await moveAndClickEl(tBtn, null, runId);
+        await sleep(1300);
+        if (runId !== tourRunId) return;
+        await moveAndClickEl(tBtn, null, runId);
+      }
+    },
+    {
+      selector: '#dropdown-tech-tools',
+      title: '5 · Options : Hors-ligne, Moteur PDF & Tutoriel',
+      body: 'Elle ouvre « Options ▾ » pour montrer le mode hors-ligne, le choix du lecteur PDF et « Revoir le tutoriel ».',
+      runAction: async function(runId) {
         var dd = document.getElementById('dropdown-tech-tools');
-        return { el: (dd && dd.querySelector('summary')) || dd, frame: null };
-      },
-      bindSuccess: function(onSuccess) {
-        return function check() {
-          var dd = document.getElementById('dropdown-tech-tools');
-          if (dd && dd.hasAttribute('open')) { onSuccess(); return true; }
-          return false;
-        };
+        if (!dd) return;
+        var sum = dd.querySelector('summary');
+        if (sum && !dd.hasAttribute('open')) {
+          await moveCursorTo(sum.getBoundingClientRect().left + 30, sum.getBoundingClientRect().top + 15, runId);
+          if (runId !== tourRunId) return;
+          await clickPulseAt(sum.getBoundingClientRect().left + 30, sum.getBoundingClientRect().top + 15, runId);
+          dd.setAttribute('open', '');
+        }
       },
       onLeave: function() {
         var dd = document.getElementById('dropdown-tech-tools');
         if (dd) dd.removeAttribute('open');
       }
+    },
+    {
+      selector: '.sidebar-wg-vault-box',
+      title: '6 · Exporter ou importer vos notes (.wg)',
+      body: 'Cliquez sur « Exporter notes » pour sauvegarder vos annotations dans un fichier chiffré .wg, ou « Importer (.wg) » ailleurs.'
     }
   ];
 
@@ -7300,64 +7358,42 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   function renderStep() {
     tourRunId++;
     clearStepWatchers();
-    stepCompleted = false;
+    if (sparkleRing) sparkleRing.style.display = 'none';
+    if (drawSvg) { drawSvg.style.display = 'none'; drawSvg.innerHTML = ''; }
     var myRunId = tourRunId;
     var st = steps[idx];
+    var target = document.querySelector(st.selector) || document.body;
+    if (target.offsetParent === null) target = document.body;
 
-    if (cursorEl) cursorEl.style.display = 'none';
-    if (ringEl) ringEl.style.display = 'none';
+    var rect = positionHighlightOn(target, null);
+    if (sparkleRing) sparkleRing.style.display = 'none';
+    placeCardNear(rect);
 
     titleEl.textContent = st.title;
     bodyEl.textContent = st.body;
     if (demoEl) {
-      demoEl.style.display = 'block';
-      demoEl.innerHTML = '<span style="color:#047857;font-weight:700;">● Cercle vert scintillant :</span> effectuez l’action demandée pour passer à l’étape suivante.';
+      demoEl.innerHTML = '';
+      demoEl.style.display = 'none';
+      if (st.runAction) {
+        demoEl.style.display = 'block';
+        demoEl.innerHTML = '<button type="button" id="tour-replay-action" class="wg-tour-btn primary" style="width:100%;padding:6px 10px;">▶ Rejouer la démonstration en direct</button>';
+        document.getElementById('tour-replay-action').onclick = function() {
+          tourRunId++;
+          st.runAction(tourRunId);
+        };
+      }
     }
 
     stepEl.textContent = (idx + 1) + ' / ' + steps.length;
     btnPrev.style.display = idx === 0 ? 'none' : 'inline-block';
-    btnNext.disabled = true;
-    btnNext.style.opacity = '0.5';
-    btnNext.style.cursor = 'not-allowed';
-    btnNext.textContent = 'En attente…';
+    btnNext.disabled = false;
+    btnNext.style.opacity = '1';
+    btnNext.style.cursor = 'pointer';
+    btnNext.textContent = idx === steps.length - 1 ? 'Terminer' : 'Suivant';
 
-    function updatePosition() {
-      if (myRunId !== tourRunId) return;
-      var t = st.findTarget();
-      var rect = positionHighlightOn((t && t.el) || document.body, t ? t.frame : null);
-      placeCardNear(rect);
+    if (st.runAction) {
+      st.runAction(myRunId);
     }
-
-    function markSuccess() {
-      if (stepCompleted || myRunId !== tourRunId) return;
-      stepCompleted = true;
-      clearStepWatchers();
-      btnNext.disabled = false;
-      btnNext.style.opacity = '1';
-      btnNext.style.cursor = 'pointer';
-      btnNext.textContent = idx === steps.length - 1 ? '✅ Terminer' : '✅ Réussi !';
-      if (demoEl) {
-        demoEl.innerHTML = '<span style="color:#059669;font-weight:800;">✅ Action réussie !</span> Passage à l’étape suivante…';
-      }
-      stepAdvanceTimer = setTimeout(function() {
-        if (myRunId !== tourRunId) return;
-        if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
-        if (idx < steps.length - 1) {
-          idx++;
-          renderStep();
-        } else {
-          endTour();
-        }
-      }, 750);
-    }
-
-    updatePosition();
-    var checker = st.bindSuccess(markSuccess);
-    stepWatchTimer = setInterval(function() {
-      if (myRunId !== tourRunId || stepCompleted) return;
-      updatePosition();
-      if (checker) checker();
-    }, 180);
   }
 
   window.startDossierTour = function(force) {

@@ -2036,6 +2036,8 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       });
       if (anchorBtn && anchorBtn.parentElement) {
         const bar = anchorBtn.parentElement;
+        bar.style.flexWrap = 'nowrap';
+        bar.style.alignItems = 'center';
         const sep = document.createElement('span');
         sep.setAttribute('aria-hidden', 'true');
         sep.style.cssText = 'display:inline-block;width:1px;height:20px;background:rgba(148,163,184,0.45);margin:0 4px;vertical-align:middle;';
