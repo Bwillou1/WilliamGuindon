@@ -98,6 +98,14 @@ SOFTWARE.
 
 ---
 
+### Leaflet (v1.9.4)
+- **Auteur :** Volodymyr Agafonkin et contributeurs Leaflet
+- **Licence :** BSD-2-Clause License
+- **URL :** https://leafletjs.com/ · https://github.com/Leaflet/Leaflet
+- **Usage :** Rendu cartographique côté client des fichiers `.kml` / `.geojson` sur fonds OpenStreetMap (chargé dynamiquement depuis `unpkg.com` avec vérification SRI).
+
+---
+
 ### Nostr Tools (v2.25.2)
 - **Auteur :** fiatjaf et contributeurs
 - **Licence :** Unlicense (Domaine Public)
@@ -693,6 +701,7 @@ SOFTWARE.
 - **Short.io (Short.cm Inc. / wg.s.gy) :** Service de redirection et domaine court officiel de William Guindon (`https://wg.s.gy/`) utilisé pour simplifier et sécuriser la diffusion et le partage des pièces documentaires officielles ([short.io](https://short.io)).
 - **uMap / OpenStreetMap Suisse (umap.osm.ch) :** Service libre de cartographie vectorielle et interactive basé sur les données ouvertes OpenStreetMap.
 - **OpenStreetMap :** © Les contributeurs d'OpenStreetMap (données sous licence Open Database License - ODbL).
+- **Open Web Calendar (quelltext.eu) :** Service externe optionnel sous licence **GNU GPL-2.0-only** ([github.com/niccokunzmann/open-web-calendar](https://github.com/niccokunzmann/open-web-calendar)), cité uniquement comme lien de consultation externe pour le flux `.ics` public ; aucun code GPL n'est copié ou hébergé dans ce dépôt (le calendrier affiché sur `williamguindon.me` utilise un rendu JavaScript natif local à partir de `data/calendar.json`).
 
 ---
 

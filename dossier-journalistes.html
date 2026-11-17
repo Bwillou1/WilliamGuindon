@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.ytimg.com https://i.ytimg.com https://*.facebook.com https://*.fbcdn.net https://*.tile.openstreetmap.org https://unpkg.com; media-src 'self' blob: data: https://archive.org https://*.archive.org https://github.com https://release-assets.githubusercontent.com; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.facebook.com https://www.facebook.com https://facebook.com https://open-web-calendar.quelltext.eu; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com https://*.facebook.com https://connect.facebook.net https://*.tile.openstreetmap.org https://unpkg.com; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://archive.org https://*.archive.org https://*.ytimg.com https://i.ytimg.com https://*.facebook.com https://*.fbcdn.net https://*.tile.openstreetmap.org https://unpkg.com; media-src 'self' blob: data: https://archive.org https://*.archive.org https://github.com https://release-assets.githubusercontent.com; frame-src 'self' blob: data: https://archive.org https://*.archive.org https://*.youtube.com https://www.youtube.com https://*.youtube-nocookie.com https://www.youtube-nocookie.com https://*.facebook.com https://www.facebook.com https://facebook.com; connect-src 'self' blob: data: https://archive.org https://*.archive.org https://cloudflareinsights.com https://*.facebook.com https://connect.facebook.net https://*.tile.openstreetmap.org https://unpkg.com; object-src 'none';">
   <title>Dossier Journalistes · Archive SEM-26-003 — William Guindon</title>
   <meta name="description" content="Explorateur documentaire pour journalistes : pièces probatoires, analyses scientifiques et démarches juridiques du dossier citoyen CCE SEM-26-003.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -3189,28 +3189,138 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
             </div>
           </div>
 
-          <!-- Agenda & Échéances publiques (Open Web Calendar + flux .ics) -->
-          <div style="width: 100%; max-width: 660px; margin: 14px auto; padding: 14px 16px; border-radius: 12px; background: rgba(16, 185, 129, 0.06); border: 1.5px solid rgba(16, 185, 129, 0.28); text-align: left; box-sizing: border-box;">
+          <!-- Agenda & Échéances publiques (rendu 100 % local depuis data/calendar.json + flux .ics / Open Web Calendar) -->
+          <div id="wg-local-calendar" style="width: 100%; max-width: 660px; margin: 14px auto; padding: 14px 16px; border-radius: 12px; background: rgba(16, 185, 129, 0.06); border: 1.5px solid rgba(16, 185, 129, 0.28); text-align: left; box-sizing: border-box;">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
               <div style="font-size: 12px; font-weight: 800; color: #064e3b; text-transform: uppercase; letter-spacing: 0.04em;">
-                📅 Agenda &amp; échéances du dossier (Open Web Calendar)
+                📅 Agenda &amp; échéances du dossier
               </div>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
                 <a href="https://open-web-calendar.quelltext.eu/calendar.html?url=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fafe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com%2Fpublic%2Fbasic.ics&amp;language=fr&amp;tab=month" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 6px; background: #064e3b; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700;">
-                  Ouvrir ↗
+                  Open Web Calendar ↗
                 </a>
                 <a href="https://calendar.google.com/calendar/ical/afe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14@group.calendar.google.com/public/basic.ics" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 6px; background: #ffffff; color: #064e3b; border: 1px solid #a7f3d0; text-decoration: none; font-size: 11px; font-weight: 700;">
                   Flux .ics ↗
                 </a>
               </div>
             </div>
-            <iframe
-              src="https://open-web-calendar.quelltext.eu/calendar.html?url=https%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fical%2Fafe03776594facb455ca9d2eaeac2535f596aaa1bf30af55bf1f3976b11cad14%40group.calendar.google.com%2Fpublic%2Fbasic.ics&amp;language=fr&amp;tab=month"
-              title="Agenda public du dossier William Guindon via Open Web Calendar"
-              loading="lazy"
-              style="width: 100%; height: 420px; border: 1px solid #cbd5e1; border-radius: 8px; background: #ffffff;"
-            ></iframe>
+            <div id="wg-cal-nav" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
+              <button type="button" id="wg-cal-prev" class="btn-preview-action" style="padding: 4px 9px; font-size: 11px;">◀</button>
+              <strong id="wg-cal-month-label" style="font-size: 13px; color: #064e3b; text-transform: capitalize;">Chargement de l'agenda...</strong>
+              <div style="display: flex; gap: 4px;">
+                <button type="button" id="wg-cal-today" class="btn-preview-action" style="padding: 4px 8px; font-size: 11px;">Aujourd'hui</button>
+                <button type="button" id="wg-cal-next" class="btn-preview-action" style="padding: 4px 9px; font-size: 11px;">▶</button>
+              </div>
+            </div>
+            <div id="wg-cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; font-size: 11px; margin-bottom: 10px;"></div>
+            <div id="wg-cal-events" style="display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto;"></div>
           </div>
+          <script>
+          (function() {
+            var gridEl = document.getElementById('wg-cal-grid');
+            var eventsEl = document.getElementById('wg-cal-events');
+            var labelEl = document.getElementById('wg-cal-month-label');
+            var prevBtn = document.getElementById('wg-cal-prev');
+            var nextBtn = document.getElementById('wg-cal-next');
+            var todayBtn = document.getElementById('wg-cal-today');
+            if (!gridEl || !eventsEl || !labelEl) return;
+
+            var allEvents = [];
+            var now = new Date();
+            var curYear = now.getFullYear();
+            var curMonth = now.getMonth();
+            var monthNames = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            var dayNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+
+            function esc(s) {
+              return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            }
+
+            function renderCalendar() {
+              labelEl.textContent = monthNames[curMonth] + ' ' + curYear;
+              gridEl.innerHTML = '';
+              dayNames.forEach(function(d) {
+                var h = document.createElement('div');
+                h.style.cssText = 'text-align:center;font-weight:700;color:#52796f;padding:3px 0;';
+                h.textContent = d;
+                gridEl.appendChild(h);
+              });
+
+              var firstDay = new Date(curYear, curMonth, 1);
+              var startOffset = (firstDay.getDay() + 6) % 7;
+              var daysInMonth = new Date(curYear, curMonth + 1, 0).getDate();
+              var monthPrefix = curYear + '-' + String(curMonth + 1).padStart(2, '0');
+              var monthEvents = allEvents.filter(function(ev) {
+                return String(ev.start || '').slice(0, 7) === monthPrefix;
+              });
+              var eventDays = new Set(monthEvents.map(function(ev) {
+                return parseInt(String(ev.start).slice(8, 10), 10);
+              }));
+
+              for (var i = 0; i < startOffset; i++) {
+                gridEl.appendChild(document.createElement('div'));
+              }
+              for (var day = 1; day <= daysInMonth; day++) {
+                var cell = document.createElement('div');
+                var hasEv = eventDays.has(day);
+                var isToday = (curYear === now.getFullYear() && curMonth === now.getMonth() && day === now.getDate());
+                cell.style.cssText = 'text-align:center;padding:5px 2px;border-radius:6px;font-weight:' + (hasEv || isToday ? '800' : '500') + ';' +
+                  'background:' + (hasEv ? '#10b981' : (isToday ? '#d1fae5' : '#ffffff')) + ';' +
+                  'color:' + (hasEv ? '#ffffff' : '#0f172a') + ';' +
+                  'border:1px solid ' + (hasEv ? '#059669' : '#e2e8f0') + ';';
+                cell.textContent = String(day);
+                gridEl.appendChild(cell);
+              }
+
+              var listToShow = monthEvents.length ? monthEvents : allEvents;
+              eventsEl.innerHTML = '';
+              if (!listToShow.length) {
+                eventsEl.innerHTML = '<div style="font-size:11.5px;color:#52796f;">Aucun événement chargé.</div>';
+                return;
+              }
+              var hdr = document.createElement('div');
+              hdr.style.cssText = 'font-size:11px;font-weight:800;color:#064e3b;margin-top:2px;';
+              hdr.textContent = monthEvents.length
+                ? ('Événements du mois (' + monthEvents.length + ') :')
+                : ('Aucun événement ce mois-ci — ' + allEvents.length + ' jalon(s) au dossier :');
+              eventsEl.appendChild(hdr);
+
+              listToShow.forEach(function(ev) {
+                var item = document.createElement('details');
+                item.style.cssText = 'background:#ffffff;border:1px solid #d1fae5;border-radius:8px;padding:6px 10px;font-size:11.5px;';
+                var sum = document.createElement('summary');
+                sum.style.cssText = 'cursor:pointer;font-weight:700;color:#065f46;list-style:none;';
+                sum.innerHTML = '<span style="display:inline-block;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:4px;padding:1px 6px;margin-right:6px;font-size:10.5px;">' + esc(String(ev.start || '').slice(0, 10)) + '</span>' + esc(ev.summary || 'Événement');
+                var body = document.createElement('div');
+                body.style.cssText = 'margin-top:6px;color:#334155;font-size:11px;line-height:1.45;white-space:pre-line;';
+                body.textContent = (ev.location ? 'Lieu : ' + ev.location + '\n\n' : '') + (ev.description || '');
+                item.appendChild(sum);
+                item.appendChild(body);
+                eventsEl.appendChild(item);
+              });
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', function() {
+              curMonth--; if (curMonth < 0) { curMonth = 11; curYear--; } renderCalendar();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', function() {
+              curMonth++; if (curMonth > 11) { curMonth = 0; curYear++; } renderCalendar();
+            });
+            if (todayBtn) todayBtn.addEventListener('click', function() {
+              curYear = now.getFullYear(); curMonth = now.getMonth(); renderCalendar();
+            });
+
+            fetch('/data/calendar.json')
+              .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+              .then(function(data) {
+                allEvents = (data && Array.isArray(data.events)) ? data.events : [];
+                renderCalendar();
+              })
+              .catch(function() {
+                labelEl.textContent = 'Agenda indisponible hors-ligne';
+              });
+          })();
+          </script>
 
           <!-- Encart d'accès officiel à l'enquête intégrale pour les rédactions (SwissTransfer) -->
           <div class="encart-swisstransfer-presse" style="margin: 16px auto; padding: 18px 20px; border-radius: 12px; background: #ecfdf5; border: 1.5px solid #10b981; text-align: left; max-width: 660px; box-shadow: 0 4px 14px rgba(16,185,129,0.1);">
