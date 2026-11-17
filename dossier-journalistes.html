@@ -8001,6 +8001,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   [data-theme="dark"] #split-compare-pane { background: #0f1a14; }
   [data-theme="dark"] .split-compare-bar { background: #132219 !important; border-color: #213d2e !important; color: #e2e8f0 !important; }
   [data-theme="dark"] #split-doc-select { background: #0b140f !important; color: #e2e8f0 !important; border-color: #213d2e !important; }
+  .drive-item[draggable="true"] { cursor: grab; }
+  .drive-item[draggable="true"]:active { cursor: grabbing; }
+  .wg-dragging-doc iframe.preview-iframe { pointer-events: none !important; }
+  .wg-drop-hover {
+    outline: 2.5px dashed #10b981 !important;
+    outline-offset: -4px;
+    background: rgba(16, 185, 129, 0.08) !important;
+  }
 </style>
 <script>
 (function() {
@@ -8070,7 +8078,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (active) {
       populateSelect();
       if (!splitStage.hasChildNodes()) {
-        splitStage.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:#52796f;font-size:13px;"><strong style="color:#064e3b;margin-bottom:6px;">Mode comparaison côte à côte</strong><span>Choisissez une pièce dans le menu ci-dessus ou cliquez sur n\'importe quelle pièce de l\'arborescence à gauche.</span></div>';
+        splitStage.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:#52796f;font-size:13px;"><strong style="color:#064e3b;margin-bottom:6px;">Mode comparaison côte à côte</strong><span>Glissez-déposez une pièce depuis l\'arborescence à gauche ici, cliquez dessus ou utilisez le menu ci-dessus.</span></div>';
       }
     }
   }
@@ -8086,6 +8094,77 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       var opt = docSelect.options[docSelect.selectedIndex];
       loadRightDoc(docSelect.value, opt ? opt.textContent : docSelect.value);
     }
+  });
+
+  // Glisser-déposer (Drag & Drop) depuis l'arborescence vers les panneaux
+  function markTreeDraggable() {
+    document.querySelectorAll('.drive-item[data-fullpath]').forEach(function(el) {
+      el.setAttribute('draggable', 'true');
+    });
+  }
+  markTreeDraggable();
+  var treeRoot = document.getElementById('tree-nodes-container') || document.getElementById('drive-tree');
+  if (treeRoot) {
+    new MutationObserver(markTreeDraggable).observe(treeRoot, { childList: true, subtree: true });
+    treeRoot.addEventListener('dragstart', function(e) {
+      var item = e.target && e.target.closest ? e.target.closest('.drive-item[data-fullpath]') : null;
+      if (!item) return;
+      var fp = item.getAttribute('data-fullpath');
+      var nameEl = item.querySelector('.drive-item-name');
+      var dn = nameEl ? nameEl.textContent.trim() : fp;
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', fp);
+      e.dataTransfer.setData('application/x-wg-doc', JSON.stringify({ fullPath: fp, displayName: dn }));
+      document.documentElement.classList.add('wg-dragging-doc');
+    });
+    document.addEventListener('dragend', function() {
+      document.documentElement.classList.remove('wg-dragging-doc');
+      stage.classList.remove('wg-drop-hover');
+      pane.classList.remove('wg-drop-hover');
+    });
+  }
+
+  function extractDropDoc(e) {
+    try {
+      var raw = e.dataTransfer.getData('application/x-wg-doc');
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    var fp = e.dataTransfer.getData('text/plain');
+    return fp ? { fullPath: fp, displayName: fp } : null;
+  }
+
+  function wireDropZone(el, onDropDoc) {
+    el.addEventListener('dragover', function(e) {
+      if (!document.documentElement.classList.contains('wg-dragging-doc')) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      el.classList.add('wg-drop-hover');
+    });
+    el.addEventListener('dragleave', function(e) {
+      if (e.relatedTarget && el.contains(e.relatedTarget)) return;
+      el.classList.remove('wg-drop-hover');
+    });
+    el.addEventListener('drop', function(e) {
+      e.preventDefault();
+      el.classList.remove('wg-drop-hover');
+      document.documentElement.classList.remove('wg-dragging-doc');
+      var doc = extractDropDoc(e);
+      if (doc && doc.fullPath) onDropDoc(doc);
+    });
+  }
+
+  wireDropZone(pane, function(doc) {
+    if (!window.__wgSplitViewActive) setSplitActive(true);
+    loadRightDoc(doc.fullPath, doc.displayName);
+  });
+
+  wireDropZone(stage, function(doc) {
+    var target = document.querySelector('.drive-item[data-fullpath="' + CSS.escape(doc.fullPath) + '"]');
+    if (!target) return;
+    var prevTarget = window.__wgSplitTarget;
+    window.__wgSplitTarget = 'left';
+    target.click();
+    window.__wgSplitTarget = prevTarget;
   });
 })();
 </script>
