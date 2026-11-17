@@ -11,9 +11,8 @@
   const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'bwillou1.github.io', 'localhost', '127.0.0.1'];
   if (host && !ALLOWED_HOSTS.includes(host)) return;
 
-  // Télémétrie 100 % locale (IndexedDB + localStorage + sessionStorage + Cookie + multi-onglets) — exportée uniquement si l'utilisateur coche l'option dans .wg
+  // Télémétrie 100 % locale (IndexedDB + localStorage + sessionStorage + multi-onglets, sans cookie) — exportée uniquement si l'utilisateur coche l'option
   const STORAGE_KEY = 'wg_blackbox_ring_v1';
-  const COOKIE_KEY = 'wg_bb_meta';
   const IDB_NAME = 'wg_blackbox_db';
   const IDB_STORE = 'sessions';
   const MAX_EVENTS = 2500;
@@ -26,25 +25,6 @@
     vitals: { lcpMs: null, cls: 0, inpMs: 0, longTasks: 0 },
     events: []
   };
-
-  function readCookieMeta() {
-    try {
-      const m = document.cookie.match(new RegExp('(?:^|; )' + COOKIE_KEY + '=([^;]*)'));
-      return m ? JSON.parse(decodeURIComponent(m[1])) : null;
-    } catch (_) { return null; }
-  }
-
-  function writeCookieMeta() {
-    try {
-      const meta = {
-        sid: state.sessionId,
-        st: state.startedAt,
-        n: state.events.length,
-        p: state.pages.slice(-8)
-      };
-      document.cookie = COOKIE_KEY + '=' + encodeURIComponent(JSON.stringify(meta)) + '; path=/; max-age=2592000; SameSite=Lax';
-    } catch (_) {}
-  }
 
   function openBlackboxIdb() {
     return new Promise((resolve) => {
@@ -104,18 +84,15 @@
     if (rawLs) mergeLoadedState(JSON.parse(rawLs));
     const rawSs = sessionStorage.getItem(STORAGE_KEY);
     if (rawSs) mergeLoadedState(JSON.parse(rawSs));
-    const cm = readCookieMeta();
-    if (cm && cm.sid && state.events.length === 0) state.sessionId = cm.sid;
   } catch (_) {}
 
   loadFromIdb().then((idbData) => {
     if (idbData) {
       mergeLoadedState(idbData);
-      if (!readCookieMeta()) writeCookieMeta();
     }
   });
 
-  // Auto-réparation du cookie s'il a été supprimé + synchronisation multi-onglets
+  // Synchronisation multi-onglets
   const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('wg_blackbox_sync') : null;
   if (bc) {
     bc.onmessage = (ev) => {
@@ -135,9 +112,6 @@
       try { mergeLoadedState(JSON.parse(e.newValue)); } catch (_) {}
     }
   });
-  setInterval(() => {
-    if (!readCookieMeta()) writeCookieMeta();
-  }, 4000);
 
   let flushTimer = null;
   function schedulePersist() {
@@ -154,7 +128,6 @@
       const jsonCompact = JSON.stringify(compact);
       try { sessionStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
       try { localStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
-      writeCookieMeta();
       saveToIdb({
         sessionId: state.sessionId,
         startedAt: state.startedAt,
@@ -363,18 +336,8 @@
     record('csp_violation', { dir: e.violatedDirective, blocked: e.blockedURI });
   });
 
-  // 5. Contexte matériel & réseau anonyme (0 IP)
+  // 5. Contexte environnemental anonyme (0 IP, sans empreinte GPU)
   async function collectSnapshot() {
-    let gpu = '';
-    try {
-      const c = document.createElement('canvas');
-      const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
-      if (gl) {
-        const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-        if (dbg) gpu = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '';
-      }
-    } catch (_) {}
-
     let storage = null;
     try {
       if (navigator.storage && navigator.storage.estimate) {
@@ -415,7 +378,6 @@
         dpr: window.devicePixelRatio || 1,
         cores: navigator.hardwareConcurrency || null,
         ramGB: navigator.deviceMemory || null,
-        gpu,
         darkSystem: !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches),
         reducedMotion: !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
         ua: navigator.userAgent
@@ -454,7 +416,7 @@
     lines.push('--- 2. MATÉRIEL & RÉSEAU (0 IP) ---');
     if (d.hw) {
       lines.push(`Écran: ${d.hw.screen} | Fenêtre: ${d.hw.viewport} | DPR: ${d.hw.dpr} | Cœurs: ${d.hw.cores} | RAM: ${d.hw.ramGB} Go`);
-      lines.push(`GPU: ${d.hw.gpu || 'n/a'} | Thème sombre OS: ${d.hw.darkSystem} | ReducedMotion: ${d.hw.reducedMotion}`);
+      lines.push(`Thème sombre OS: ${d.hw.darkSystem} | ReducedMotion: ${d.hw.reducedMotion}`);
       lines.push(`UA: ${d.hw.ua}`);
     }
     if (d.net) {
