@@ -2015,21 +2015,58 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         const trashIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
         const eraserIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>';
 
+        let wgEraserMode = false;
         const trashBtn = makeIconBtn('wg-shadow-annot-trash', 'Supprimer la sélection (Corbeille)', trashIcon, 'rgba(220,38,38,0.12)');
-        const clearBtn = makeIconBtn('wg-shadow-annot-clear', 'Tout effacer (Gomme)', eraserIcon, 'rgba(217,119,6,0.12)');
+        const eraserBtn = makeIconBtn('wg-shadow-annot-clear', 'Gomme (effacer uniquement ce que vous touchez)', eraserIcon, 'rgba(217,119,6,0.14)');
+
+        function setEraserMode(on) {
+          wgEraserMode = !!on;
+          eraserBtn.setAttribute('aria-pressed', wgEraserMode ? 'true' : 'false');
+          eraserBtn.style.background = wgEraserMode ? 'rgba(245,158,11,0.22)' : 'transparent';
+          eraserBtn.style.outline = wgEraserMode ? '2px solid #d97706' : 'none';
+          if (dom.container) dom.container.style.cursor = wgEraserMode ? 'crosshair' : '';
+          if (wgEraserMode) {
+            const selBtn = Array.from(s.querySelectorAll('button')).find((b) => {
+              const t = (b.getAttribute('title') || b.getAttribute('aria-label') || '').trim();
+              return t.includes('Sélectionner') || t.includes('Select');
+            });
+            if (selBtn) selBtn.click();
+          }
+        }
 
         trashBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          setEraserMode(false);
           if (typeof wgDeleteSelectedFn === 'function') wgDeleteSelectedFn();
         });
-        clearBtn.addEventListener('click', (e) => {
+        eraserBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (typeof wgClearAllFn === 'function') wgClearAllFn();
+          setEraserMode(!wgEraserMode);
         });
+
+        let eraserPointerDown = false;
+        const eraseTouchedAt = () => {
+          if (!wgEraserMode || typeof wgDeleteSelectedFn !== 'function') return;
+          setTimeout(() => { wgDeleteSelectedFn(); }, 25);
+        };
+        s.addEventListener('pointerdown', (e) => {
+          if (!wgEraserMode) return;
+          if (e.target && e.target.closest && e.target.closest('#wg-shadow-annot-clear, #wg-shadow-annot-trash')) return;
+          eraserPointerDown = true;
+          eraseTouchedAt();
+        }, true);
+        s.addEventListener('pointermove', () => {
+          if (wgEraserMode && eraserPointerDown) eraseTouchedAt();
+        }, true);
+        s.addEventListener('pointerup', () => { eraserPointerDown = false; }, true);
+        s.addEventListener('click', (e) => {
+          const btn = e.target && e.target.closest ? e.target.closest('button') : null;
+          if (btn && btn !== eraserBtn && wgEraserMode) setEraserMode(false);
+        }, true);
 
         bar.appendChild(sep);
         bar.appendChild(trashBtn);
-        bar.appendChild(clearBtn);
+        bar.appendChild(eraserBtn);
       }
     }
 

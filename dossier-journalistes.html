@@ -6837,6 +6837,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   <div class="wg-tour-footer">
     <span id="wg-tour-step" class="wg-tour-step"></span>
     <div class="wg-tour-actions">
+      <button type="button" id="wg-tour-quit" class="wg-tour-btn" title="Quitter le guide">Quitter</button>
       <button type="button" id="wg-tour-skip" class="wg-tour-btn">Passer</button>
       <button type="button" id="wg-tour-prev" class="wg-tour-btn">Préc.</button>
       <button type="button" id="wg-tour-next" class="wg-tour-btn primary">Suivant</button>
@@ -7094,7 +7095,19 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         var initialSrc = '';
         var cur = document.querySelector('#preview-stage iframe.preview-iframe');
         if (cur) initialSrc = cur.getAttribute('src') || '';
+        var tree = document.getElementById('tree-nodes-container');
+        var clickedItem = false;
+        if (tree) {
+          tree.addEventListener('click', function onTreeClick(e) {
+            if (e.target && e.target.closest && e.target.closest('.drive-item')) {
+              clickedItem = true;
+              tree.removeEventListener('click', onTreeClick, true);
+              onSuccess();
+            }
+          }, true);
+        }
         return function check() {
+          if (clickedItem) return true;
           var nf = document.querySelector('#preview-stage iframe.preview-iframe');
           if (!nf) return false;
           var newSrc = nf.getAttribute('src') || '';
@@ -7117,9 +7130,18 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         return btn ? { el: btn, frame: p.iframe } : { el: document.getElementById('preview-stage'), frame: null };
       },
       bindSuccess: function(onSuccess) {
+        var hooked = new WeakSet();
         return function check() {
           var p = getPreviewIframeDoc();
           if (!p.doc) return false;
+          var annotBtn = findInDocDeep(p.doc, function(el) {
+            var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+            return txt.includes('Surligner / Annoter') || txt.includes('Mode annotation');
+          });
+          if (annotBtn && !hooked.has(annotBtn)) {
+            hooked.add(annotBtn);
+            annotBtn.addEventListener('click', function() { onSuccess(); }, { once: true });
+          }
           var trashOrComment = findInDocDeep(p.doc, function(el) {
             if (el.id === 'wg-shadow-annot-trash') return true;
             var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
@@ -7166,8 +7188,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       }
     },
     {
-      title: '4 · Supprimer (Corbeille) ou Tout effacer',
-      body: 'Cliquez sur l’icône Corbeille (rouge) pour supprimer la sélection ou sur la Gomme (orange) pour tout effacer.',
+      title: '4 · Supprimer (Corbeille) ou Gomme sélective',
+      body: 'Cliquez sur la Corbeille (rouge) pour supprimer la sélection, ou activez la Gomme (orange) pour effacer uniquement les traits touchés.',
       findTarget: function() {
         var p = getPreviewIframeDoc();
         if (!p.doc) return { el: document.getElementById('preview-stage'), frame: null };
@@ -7359,7 +7381,17 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     });
   };
 
-  btnSkip.addEventListener('click', endTour);
+  var btnQuit = document.getElementById('wg-tour-quit');
+  if (btnQuit) btnQuit.addEventListener('click', endTour);
+  btnSkip.addEventListener('click', function() {
+    if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
+    if (idx < steps.length - 1) {
+      idx++;
+      renderStep();
+    } else {
+      endTour();
+    }
+  });
   backdrop.addEventListener('click', endTour);
   btnPrev.addEventListener('click', function() {
     if (idx > 0) {
