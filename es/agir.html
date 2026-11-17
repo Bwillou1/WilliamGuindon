@@ -1682,7 +1682,10 @@
       var emailEl = document.getElementById('cust-email');
       if (!fnEl || !lnEl || !cityEl || !ridingEl || !pronEl) return;
 
-      var previews = Array.prototype.slice.call(document.querySelectorAll('#lettres .letter-preview-box'));
+      var previews = Array.prototype.slice.call(document.querySelectorAll('#lettres .letter-preview-box')).filter(function(el) {
+        var acc = el.closest('.action-accordion');
+        return !!(acc && acc.querySelector('a[href^="mailto:"]'));
+      });
       var mailtos = Array.prototype.slice.call(document.querySelectorAll('#lettres a[href^="mailto:"]'));
       previews.forEach(function(el) {
         el.dataset.origText = el.textContent;
@@ -1769,15 +1772,17 @@
       function syncBoxToAccordionMailto(boxEl) {
         var acc = boxEl.closest('.action-accordion');
         if (!acc) return;
-        var primaryMailto = acc.querySelector('a.btn-action-primary[href^="mailto:"]');
-        if (!primaryMailto) return;
-        var currentHref = primaryMailto.getAttribute('href') || '';
-        var curQ = currentHref.indexOf('?');
-        var currentRecipient = curQ !== -1 ? currentHref.slice(0, curQ) : currentHref;
-        var params = new URLSearchParams(curQ !== -1 ? currentHref.slice(curQ + 1) : '');
-        ensureCc(params);
-        params.set('body', capMailtoBody(boxEl.innerText || boxEl.textContent || ''));
-        primaryMailto.setAttribute('href', currentRecipient + '?' + params.toString().replace(/\+/g, '%20'));
+        var boxBody = capMailtoBody(boxEl.innerText || boxEl.textContent || '');
+        var accMailtos = acc.querySelectorAll('a[href^="mailto:"]');
+        Array.prototype.forEach.call(accMailtos, function(mailtoEl) {
+          var currentHref = mailtoEl.getAttribute('href') || '';
+          var curQ = currentHref.indexOf('?');
+          var currentRecipient = curQ !== -1 ? currentHref.slice(0, curQ) : currentHref;
+          var params = new URLSearchParams(curQ !== -1 ? currentHref.slice(curQ + 1) : '');
+          ensureCc(params);
+          params.set('body', boxBody);
+          mailtoEl.setAttribute('href', currentRecipient + '?' + params.toString().replace(/\+/g, '%20'));
+        });
       }
 
       function applyAll() {
