@@ -1808,6 +1808,106 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
             saveCurrentAnnotationsNow();
           }, 30000);
 
+          // 7. Mode annotation combiné en vue côte à côte (synchronisation barre + outil actif)
+          try {
+            let hostWin = window;
+            try {
+              if (window.top && window.top.location && window.top.location.origin === window.location.origin) {
+                hostWin = window.top;
+              }
+            } catch (_) {}
+            if (!hostWin.__wgSplitToolSync) {
+              hostWin.__wgSplitToolSync = {
+                listeners: new Map(),
+                lastToolbar: null,
+                lastToolId: undefined
+              };
+            }
+            const syncBus = hostWin.__wgSplitToolSync;
+            const syncId = 'epdf_' + Math.random().toString(36).slice(2, 10);
+            const uiPlugin = registry.getPlugin ? registry.getPlugin('ui') : null;
+            const uiApi = uiPlugin && typeof uiPlugin.provides === 'function' ? uiPlugin.provides() : uiPlugin;
+            let applyingRemoteSync = false;
+
+            const broadcastSync = (msg) => {
+              for (const [id, entry] of Array.from(syncBus.listeners.entries())) {
+                if (id === syncId) continue;
+                if (!entry || (entry.isAlive && !entry.isAlive())) {
+                  syncBus.listeners.delete(id);
+                  continue;
+                }
+                try { entry.apply(msg); } catch (_) {}
+              }
+            };
+
+            const applyRemoteSync = (msg) => {
+              if (!msg) return;
+              applyingRemoteSync = true;
+              try {
+                if (msg.kind === 'toolbar' && uiApi && typeof uiApi.setActiveToolbar === 'function') {
+                  const docId = annotationPlugin && typeof annotationPlugin.getActiveDocumentIdOrNull === 'function'
+                    ? annotationPlugin.getActiveDocumentIdOrNull()
+                    : undefined;
+                  uiApi.setActiveToolbar(msg.placement || 'top', msg.slot || 'secondary', msg.toolbarId, docId);
+                } else if (msg.kind === 'tool' && typeof annotationApi.setActiveTool === 'function') {
+                  annotationApi.setActiveTool(msg.toolId);
+                }
+              } catch (_) {} finally {
+                setTimeout(() => { applyingRemoteSync = false; }, 0);
+              }
+            };
+
+            syncBus.listeners.set(syncId, {
+              apply: applyRemoteSync,
+              isAlive: () => !!(dom.container && dom.container.isConnected)
+            });
+
+            window.addEventListener('pagehide', () => {
+              syncBus.listeners.delete(syncId);
+            }, { once: true });
+
+            if (uiApi && typeof uiApi.onToolbarChanged === 'function') {
+              uiApi.onToolbarChanged((ev) => {
+                if (applyingRemoteSync || !ev) return;
+                const toolbarId = ev.toolbarId !== undefined ? ev.toolbarId : (ev.id !== undefined ? ev.id : null);
+                const placement = ev.placement || 'top';
+                const slot = ev.slot || 'secondary';
+                if (placement !== 'top' || slot !== 'secondary') return;
+                const msg = { kind: 'toolbar', placement, slot, toolbarId };
+                syncBus.lastToolbar = msg;
+                broadcastSync(msg);
+              });
+            }
+
+            if (typeof annotationApi.onActiveToolChange === 'function') {
+              annotationApi.onActiveToolChange((ev) => {
+                if (applyingRemoteSync) return;
+                let toolId = null;
+                if (typeof ev === 'string') toolId = ev;
+                else if (ev && typeof ev === 'object') {
+                  if (ev.tool && typeof ev.tool === 'object') toolId = ev.tool.id || null;
+                  else if (typeof ev.tool === 'string') toolId = ev.tool;
+                  else if (ev.activeToolId !== undefined) toolId = ev.activeToolId;
+                  else if (ev.id !== undefined) toolId = ev.id;
+                }
+                const msg = { kind: 'tool', toolId };
+                syncBus.lastToolId = toolId;
+                broadcastSync(msg);
+              });
+            }
+
+            if (syncBus.listeners.size > 1) {
+              setTimeout(() => {
+                if (syncBus.lastToolbar && syncBus.lastToolbar.toolbarId) {
+                  applyRemoteSync(syncBus.lastToolbar);
+                }
+                if (syncBus.lastToolId !== undefined && syncBus.lastToolId !== null) {
+                  applyRemoteSync({ kind: 'tool', toolId: syncBus.lastToolId });
+                }
+              }, 350);
+            }
+          } catch (_) {}
+
           // 7. Écouteurs de sauvegarde immédiate (gestes de dessin, changement de page, unload, postMessage)
           if (!hasRegisteredLifecycleListeners) {
             hasRegisteredLifecycleListeners = true;
