@@ -7107,6 +7107,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           if (data.blackbox) sessionStorage.setItem('wg_imported_blackbox_v1', JSON.stringify(data.blackbox));
           else sessionStorage.removeItem('wg_imported_blackbox_v1');
         } catch (_) {}
+        if (data.blackbox && !data.blackbox.ek && window.WGBlackbox && typeof window.WGBlackbox.importAndContinue === 'function') {
+          window.WGBlackbox.importAndContinue(data.blackbox, file.name);
+        }
 
         let docCount = 0;
         let annotCount = 0;
@@ -8407,7 +8410,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   });
 })();
 </script>
-<script src="/assets/js/wg-blackbox.js?v=20261117-v4"></script>
+<script src="/assets/js/wg-blackbox.js?v=20261117-v5"></script>
 <script>
 (function() {
   var liveTimer = null;

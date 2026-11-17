@@ -114,28 +114,58 @@
   });
 
   let flushTimer = null;
+  function persistNow() {
+    const compact = {
+      sessionId: state.sessionId,
+      startedAt: state.startedAt,
+      pages: state.pages,
+      vitals: state.vitals,
+      events: state.events.slice(-1200)
+    };
+    const jsonCompact = JSON.stringify(compact);
+    try { sessionStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
+    try { localStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
+    saveToIdb({
+      sessionId: state.sessionId,
+      startedAt: state.startedAt,
+      pages: state.pages,
+      vitals: state.vitals,
+      events: state.events
+    });
+  }
+
   function schedulePersist() {
     if (flushTimer) return;
     flushTimer = setTimeout(() => {
       flushTimer = null;
-      const compact = {
-        sessionId: state.sessionId,
-        startedAt: state.startedAt,
-        pages: state.pages,
-        vitals: state.vitals,
-        events: state.events.slice(-1200)
-      };
-      const jsonCompact = JSON.stringify(compact);
-      try { sessionStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
-      try { localStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
-      saveToIdb({
-        sessionId: state.sessionId,
-        startedAt: state.startedAt,
-        pages: state.pages,
-        vitals: state.vitals,
-        events: state.events
-      });
+      persistNow();
     }, 600);
+  }
+
+  function importAndContinue(importedBox, sourceName) {
+    if (!importedBox || !Array.isArray(importedBox.events)) return false;
+    const marker = {
+      t: Date.now() - sessionStart,
+      ts: new Date().toISOString(),
+      p: location.pathname,
+      type: 'wg_continuation',
+      d: {
+        file: sourceName || null,
+        prevSessionId: importedBox.sessionId || null,
+        prevEvents: importedBox.events.length
+      }
+    };
+    const importedKeys = new Set(importedBox.events.map((x) => `${x.ts}|${x.type}|${x.p}`));
+    const tail = state.events.filter((x) => !importedKeys.has(`${x.ts}|${x.type}|${x.p}`));
+    state.events = importedBox.events.concat([marker], tail).slice(-MAX_EVENTS);
+    if (Array.isArray(importedBox.pages)) {
+      for (const pg of importedBox.pages) {
+        if (!state.pages.includes(pg)) state.pages.unshift(pg);
+      }
+      state.pages = state.pages.slice(-30);
+    }
+    persistNow();
+    return true;
   }
 
   function record(type, data) {
@@ -430,6 +460,11 @@
     lines.push('');
     lines.push(`--- 4. JOURNAL D'ÉVÉNEMENTS (${(d.events || []).length}) ---`);
     for (const ev of (d.events || [])) {
+      if (ev.type === 'wg_continuation') {
+        const meta = [ev.d && ev.d.file ? `fichier: ${ev.d.file}` : '', ev.d && ev.d.prevSessionId ? `session: ${ev.d.prevSessionId}` : ''].filter(Boolean).join(' | ');
+        lines.push(`=== SUITE DE L'ENREGISTREMENT (${ev.ts || new Date().toISOString()}${meta ? ' · ' + meta : ''}) ===`);
+        continue;
+      }
       lines.push(`+${ev.t}ms [${ev.p}] ${ev.type} ${JSON.stringify(ev.d)}`);
     }
     return lines.join('\n');
@@ -439,6 +474,7 @@
     record,
     collectSnapshot,
     exportPayload,
-    formatAsTxt
+    formatAsTxt,
+    importAndContinue
   };
 })();
