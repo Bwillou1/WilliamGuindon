@@ -864,34 +864,35 @@
       cursor: zoom-out;
     }
     .media-zoom-toolbar {
-      position: sticky;
-      top: 10px;
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 25;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.96);
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
-      border: 1.5px solid #10b981;
+      border: 1px solid #10b981;
       border-radius: 9999px;
-      padding: 5px 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 14px rgba(6, 78, 59, 0.15);
+      padding: 3px 8px;
+      box-shadow: 0 3px 10px rgba(6, 78, 59, 0.14);
     }
     .media-zoom-btn {
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
       color: #065f46;
       border-radius: 6px;
-      padding: 3px 8px;
-      font-size: 11.5px;
+      padding: 2px 6px;
+      font-size: 10.5px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       transition: all 0.15s ease;
-      line-height: 1;
+      line-height: 1.1;
     }
     .media-zoom-btn:hover {
       background: #059669;
@@ -7778,34 +7779,50 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   .wg-hide-top .preview-header { display: none !important; }
   .wg-hide-top .drive-workspace { height: 100dvh !important; }
   .wg-hide-top #dossier-scroll-top-btn { bottom: 58px !important; }
-  #btn-restore-top-bars {
+  #wg-hide-top-dock {
     display: none;
     position: fixed;
-    bottom: 16px;
+    bottom: 14px;
     right: 18px;
     z-index: 9995;
-    padding: 6px 12px;
+    gap: 6px;
+    align-items: center;
+  }
+  .wg-hide-top #wg-hide-top-dock { display: inline-flex; }
+  #btn-restore-top-bars,
+  #btn-restore-toggle-tree {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
     border-radius: 999px;
     border: 1px solid rgba(16,185,129,0.5);
     background: rgba(6,78,59,0.92);
     color: #ecfdf5;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(0,0,0,0.28);
   }
-  .wg-hide-top #btn-restore-top-bars { display: inline-flex; align-items: center; gap: 5px; }
 </style>
-<button type="button" id="btn-restore-top-bars" title="Réafficher les barres du haut">▴ Afficher le haut</button>
+<div id="wg-hide-top-dock">
+  <button type="button" id="btn-restore-toggle-tree" title="Afficher ou masquer la barre latérale">◧ Barre</button>
+  <button type="button" id="btn-restore-top-bars" title="Réafficher les barres du haut">▴ Afficher le haut</button>
+</div>
 <script>
 (function() {
   var hideBtn = document.getElementById('btn-toggle-top-bars');
   var showBtn = document.getElementById('btn-restore-top-bars');
+  var dockTreeBtn = document.getElementById('btn-restore-toggle-tree');
+  var headerTreeBtn = document.getElementById('btn-toggle-tree');
   function setTopHidden(hidden) {
     document.documentElement.classList.toggle('wg-hide-top', !!hidden);
   }
   if (hideBtn) hideBtn.addEventListener('click', function() { setTopHidden(true); });
   if (showBtn) showBtn.addEventListener('click', function() { setTopHidden(false); });
+  if (dockTreeBtn && headerTreeBtn) {
+    dockTreeBtn.addEventListener('click', function() { headerTreeBtn.click(); });
+  }
 })();
 </script>
 <style>
