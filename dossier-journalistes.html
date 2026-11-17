@@ -6562,7 +6562,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     }
     searchInput.addEventListener("focus", () => { ensureSearchIndex(); }, { once: true });
     searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && (searchInput.value || "").trim().toLowerCase() === "/blackbox") {
+      const q = (searchInput.value || "").trim().toLowerCase();
+      if (e.key === "Enter" && (q === "/blackbox" || q === "blackbox")) {
         e.preventDefault();
         searchInput.value = "";
         applyFilter();
@@ -8415,25 +8416,53 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   var statusEl = document.getElementById('wg-bb-status');
   var outputEl = document.getElementById('wg-bb-output');
   var lastTxt = '';
+  var liveTimer = null;
+  var activeMode = 'live';
 
   function renderBlackboxObj(box, label) {
     if (!window.WGBlackbox || !box) return;
     lastTxt = window.WGBlackbox.formatAsTxt(box);
-    if (outputEl) { outputEl.textContent = lastTxt; outputEl.style.display = 'block'; }
+    if (outputEl) {
+      var atBottom = (outputEl.scrollTop + outputEl.clientHeight >= outputEl.scrollHeight - 24);
+      outputEl.textContent = lastTxt;
+      outputEl.style.display = 'block';
+      if (atBottom) outputEl.scrollTop = outputEl.scrollHeight;
+    }
     if (downloadBtn) downloadBtn.style.display = 'inline-flex';
     if (statusEl) statusEl.textContent = label + ' (' + ((box.events && box.events.length) || 0) + ' événements).';
+  }
+
+  async function refreshLive() {
+    if (!window.WGBlackbox || activeMode !== 'live') return;
+    try {
+      var snap = await window.WGBlackbox.collectSnapshot();
+      renderBlackboxObj(snap, 'En direct (session en cours)');
+    } catch (_) {}
+  }
+
+  function stopLive() {
+    if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+  }
+
+  function startLive() {
+    activeMode = 'live';
+    stopLive();
+    refreshLive();
+    liveTimer = setInterval(refreshLive, 1500);
   }
 
   window.wgOpenBlackboxModal = function() {
     if (!modal) return;
     modal.style.display = 'flex';
     if (window.__wgImportedBlackbox && !window.__wgImportedBlackbox.ek) {
-      renderBlackboxObj(window.__wgImportedBlackbox, 'Fichier .wg importé affiché');
-    } else if (statusEl) {
-      statusEl.textContent = 'Importez un .wg contenant des logs ou cliquez sur « Lire la session en cours ».';
+      activeMode = 'imported';
+      stopLive();
+      renderBlackboxObj(window.__wgImportedBlackbox, 'Fichier .wg importé');
+    } else {
+      startLive();
     }
   };
-  if (closeBtn) closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
+  if (closeBtn) closeBtn.addEventListener('click', function() { stopLive(); modal.style.display = 'none'; });
 
   if (fileInput) {
     fileInput.addEventListener('change', function() {
@@ -8444,10 +8473,12 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         try {
           var dec = await decryptVaultPayload(ev.target.result);
           if (!dec || !dec.blackbox || dec.blackbox.ek) {
-            throw new Error('Aucun log de diagnostic en clair dans ce fichier .wg.');
+            throw new Error('Aucun log de diagnostic inclus dans ce fichier .wg.');
           }
           window.__wgImportedBlackbox = dec.blackbox;
-          renderBlackboxObj(dec.blackbox, f.name + ' déchiffré');
+          activeMode = 'imported';
+          stopLive();
+          renderBlackboxObj(dec.blackbox, f.name + ' importé');
         } catch (err) {
           if (statusEl) statusEl.textContent = 'Erreur : ' + err.message;
         }
@@ -8457,14 +8488,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   if (sessionBtn) {
-    sessionBtn.addEventListener('click', async function() {
-      try {
-        if (!window.WGBlackbox) throw new Error('Module blackbox indisponible.');
-        var snap = await window.WGBlackbox.collectSnapshot();
-        renderBlackboxObj(snap, 'Session en cours');
-      } catch (err) {
-        if (statusEl) statusEl.textContent = 'Échec : ' + err.message;
-      }
+    sessionBtn.textContent = 'En direct (session en cours)';
+    sessionBtn.addEventListener('click', function() {
+      startLive();
     });
   }
 
