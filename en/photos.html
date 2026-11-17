@@ -1090,6 +1090,7 @@
     <button type="button" class="category-pill" data-cat="Parcours">Parcours</button>
     <button type="button" class="category-pill" data-cat="Cartographie">Cartographie</button>
     <button type="button" class="category-pill" data-cat="Événements">Événements</button>
+    <button type="button" id="photos-gallery-toggle" class="category-pill photos-gallery-toggle" aria-pressed="false">Gallery Mode (No text)</button>
   </div>
 
   <noscript>
@@ -1542,6 +1543,23 @@
       }
     });
   });
+
+  const galleryToggleBtn = document.getElementById("photos-gallery-toggle");
+  const photosGridEl = document.getElementById("photos-grid");
+  function setGalleryOnlyMode(active) {
+    if (!photosGridEl || !galleryToggleBtn) return;
+    photosGridEl.classList.toggle("gallery-only", active);
+    galleryToggleBtn.setAttribute("aria-pressed", active ? "true" : "false");
+    try { localStorage.setItem("wg_photos_gallery_only", active ? "1" : "0"); } catch (_) {}
+  }
+  if (galleryToggleBtn && photosGridEl) {
+    try {
+      if (localStorage.getItem("wg_photos_gallery_only") === "1") setGalleryOnlyMode(true);
+    } catch (_) {}
+    galleryToggleBtn.addEventListener("click", () => {
+      setGalleryOnlyMode(!photosGridEl.classList.contains("gallery-only"));
+    });
+  }
 
   loadPhotos();
 </script>
