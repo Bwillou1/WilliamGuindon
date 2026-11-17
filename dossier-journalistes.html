@@ -7142,17 +7142,15 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           setTimeout(() => toast.classList.remove('visible'), 4000);
         }
 
-        const previewStage = document.getElementById('preview-stage');
-        const activeIframe = previewStage ? previewStage.querySelector('iframe') : null;
-        if (activeIframe && activeIframe.src) {
-          try {
-            if (activeIframe.contentWindow) {
-              activeIframe.contentWindow.postMessage({ type: 'wg:reload-annotations-from-storage' }, '*');
-            }
-          } catch (_) {}
-          setTimeout(() => {
-            try { activeIframe.src = activeIframe.src; } catch (_) {}
-          }, 120);
+        const previewPaneEl = document.querySelector('.drive-preview-pane');
+        if (previewPaneEl) {
+          previewPaneEl.querySelectorAll('iframe').forEach((ifr) => {
+            try {
+              if (ifr.contentWindow) {
+                ifr.contentWindow.postMessage({ type: 'wg:reload-annotations-from-storage' }, '*');
+              }
+            } catch (_) {}
+          });
         }
 
         const dd = document.getElementById('dropdown-header-actions');
@@ -8489,9 +8487,21 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     btnDownload.className = 'btn-preview-action';
     btnDownload.textContent = '⬇ Télécharger (.txt)';
 
+    var btnLoadWg = document.createElement('button');
+    btnLoadWg.type = 'button';
+    btnLoadWg.className = 'btn-preview-action';
+    btnLoadWg.textContent = '⬆ Charger un .wg reçu';
+
+    var wgInput = document.createElement('input');
+    wgInput.type = 'file';
+    wgInput.accept = '.wg,application/json';
+    wgInput.style.display = 'none';
+
     btns.appendChild(btnLive);
     btns.appendChild(btnImported);
+    btns.appendChild(btnLoadWg);
     btns.appendChild(btnDownload);
+    btns.appendChild(wgInput);
     bar.appendChild(statusSpan);
     bar.appendChild(btns);
 
@@ -8555,6 +8565,29 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
     btnLive.addEventListener('click', startLiveMode);
     btnImported.addEventListener('click', showImportedMode);
+    btnLoadWg.addEventListener('click', function() { wgInput.click(); });
+    wgInput.addEventListener('change', function() {
+      var f = wgInput.files && wgInput.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = async function(ev) {
+        try {
+          var dec = await decryptVaultPayload(ev.target.result);
+          if (!dec || !dec.blackbox || dec.blackbox.ek) {
+            statusSpan.textContent = 'Ce fichier .wg ne contient pas de logs de diagnostic.';
+            return;
+          }
+          window.__wgImportedBlackbox = dec.blackbox;
+          try { sessionStorage.setItem('wg_imported_blackbox_v1', JSON.stringify(dec.blackbox)); } catch (_) {}
+          btnImported.style.display = 'inline-flex';
+          showImportedMode();
+        } catch (err) {
+          statusSpan.textContent = 'Erreur lecture .wg : ' + (err && err.message ? err.message : err);
+        }
+      };
+      reader.readAsText(f);
+      wgInput.value = '';
+    });
     btnDownload.addEventListener('click', function() {
       if (!lastTxt) return;
       var blob = new Blob([lastTxt], { type: 'text/plain;charset=utf-8' });
