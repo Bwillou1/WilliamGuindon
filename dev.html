@@ -1447,6 +1447,34 @@ RÈGLES STRICTES DE RÉPONSE :
         </div>
       </div>
     </section>
+
+    <section class="dev-section" id="blackbox">
+      <div class="dev-section-head">
+        <h2>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>6. Diagnostic Technique Local (Blackbox &amp; .wg)</span>
+        </h2>
+        <p>Inspectez les métriques locales de votre session en direct (Web Vitals, erreurs JS/CSP, mémoire, réseau) ou téléversez un fichier <code>.wg</code> / <code>.txt</code> pour l'analyser et l'envoyer par courriel.</p>
+      </div>
+
+      <div style="padding: 16px 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; font-weight: 600; color: var(--text); cursor: pointer;">
+            <input type="checkbox" id="dev-bb-include-chk" checked style="accent-color: #10b981; cursor: pointer;">
+            <span>Inclure les logs de diagnostic technique</span>
+          </label>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+            <button type="button" id="dev-bb-live-btn" class="btn btn-outline btn-sm" style="font-size: 12px;">● Session en direct</button>
+            <button type="button" id="dev-bb-upload-btn" class="btn btn-outline btn-sm" style="font-size: 12px;">⬆ Téléverser (.wg / .txt)</button>
+            <button type="button" id="dev-bb-download-btn" class="btn btn-outline btn-sm" style="font-size: 12px;">⬇ Télécharger (.txt)</button>
+            <button type="button" id="dev-bb-mailto-btn" class="btn btn-primary btn-sm" style="font-size: 12px;">📧 Télécharger &amp; ouvrir courriel</button>
+            <input type="file" id="dev-bb-file-input" accept=".wg,.txt,application/json,text/plain" style="display: none;">
+          </div>
+        </div>
+        <div id="dev-bb-status" style="font-size: 12px; font-weight: 700; color: #10b981; margin-bottom: 8px;">Chargement du journal local...</div>
+        <pre id="dev-bb-output" style="margin: 0; padding: 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; line-height: 1.5; max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-word;"></pre>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -1605,6 +1633,135 @@ function showCopiedState(btn) {
     btn.style.color = '';
   }, 2000);
 }
+</script>
+<script src="/assets/js/wg-blackbox.js?v=20261117-v3"></script>
+<script>
+(function() {
+  var includeChk = document.getElementById('dev-bb-include-chk');
+  var liveBtn = document.getElementById('dev-bb-live-btn');
+  var uploadBtn = document.getElementById('dev-bb-upload-btn');
+  var downloadBtn = document.getElementById('dev-bb-download-btn');
+  var mailtoBtn = document.getElementById('dev-bb-mailto-btn');
+  var fileInput = document.getElementById('dev-bb-file-input');
+  var statusEl = document.getElementById('dev-bb-status');
+  var outputEl = document.getElementById('dev-bb-output');
+  var lastTxt = '';
+
+  function getVaultMasterKey() {
+    var p1 = [119,103,45,118,97,117,108,116,45,50,48,50,54];
+    var p2 = [87,105,108,108,105,97,109,71,117,105,110,100,111,110];
+    var p3 = [71,114,97,110,100,101,84,111,117,114,98,105,101,114,101];
+    var p4 = [66,108,97,105,110,118,105,108,108,101,45,50,55,56,48,48,48];
+    var p5 = [83,116,97,98,108,101,120,45,67,97,100,109,105,117,109,45,51,50,48,120];
+    var p6 = [36,83,69,77,50,54,48,48,51];
+    return [p1, p2, p3, p4, p5, p6].map(function(a) { return String.fromCharCode.apply(null, a); }).join('');
+  }
+
+  async function decryptWgText(rawText) {
+    var trimmed = String(rawText || '').trim();
+    if (!trimmed.startsWith('WG-VAULT-V1:')) {
+      return JSON.parse(trimmed);
+    }
+    var bin = atob(trimmed.slice(12));
+    var combined = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) combined[i] = bin.charCodeAt(i);
+    var salt = combined.slice(0, 16);
+    var iv = combined.slice(16, 28);
+    var ct = combined.slice(28);
+    var km = await crypto.subtle.importKey('raw', new TextEncoder().encode(getVaultMasterKey()), { name: 'PBKDF2' }, false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    var dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(dec));
+  }
+
+  async function loadLive() {
+    if (!includeChk || !includeChk.checked) {
+      lastTxt = 'Logs de diagnostic technique non inclus (cochez la case ci-dessus pour les afficher).';
+      if (outputEl) outputEl.textContent = lastTxt;
+      if (statusEl) statusEl.textContent = 'Option désactivée';
+      return;
+    }
+    if (!window.WGBlackbox || typeof window.WGBlackbox.collectSnapshot !== 'function') {
+      lastTxt = 'Module WGBlackbox indisponible.';
+      if (outputEl) outputEl.textContent = lastTxt;
+      if (statusEl) statusEl.textContent = 'Indisponible';
+      return;
+    }
+    try {
+      var snap = await window.WGBlackbox.collectSnapshot();
+      lastTxt = window.WGBlackbox.formatAsTxt(snap);
+      if (outputEl) outputEl.textContent = lastTxt;
+      if (statusEl) statusEl.textContent = 'Session en direct · ' + ((snap.events && snap.events.length) || 0) + ' événements';
+    } catch (err) {
+      if (statusEl) statusEl.textContent = 'Erreur : ' + err.message;
+    }
+  }
+
+  function triggerDownloadTxt() {
+    if (!lastTxt) return false;
+    var blob = new Blob([lastTxt], { type: 'text/plain;charset=utf-8' });
+    var u = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = u;
+    a.download = 'wg-diagnostic-' + new Date().toISOString().slice(0, 10) + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(u); }, 1000);
+    return true;
+  }
+
+  if (includeChk) includeChk.addEventListener('change', loadLive);
+  if (liveBtn) liveBtn.addEventListener('click', loadLive);
+  if (uploadBtn && fileInput) uploadBtn.addEventListener('click', function() { fileInput.click(); });
+  if (downloadBtn) downloadBtn.addEventListener('click', triggerDownloadTxt);
+
+  if (mailtoBtn) {
+    mailtoBtn.addEventListener('click', async function() {
+      await loadLive();
+      if (includeChk && includeChk.checked) triggerDownloadTxt();
+      var subj = encodeURIComponent('Rapport technique williamguindon.me');
+      var body = encodeURIComponent(
+        'Bonjour William,\n\nVoici mon rapport technique pour williamguindon.me.\n' +
+        (includeChk && includeChk.checked
+          ? '(Le fichier wg-diagnostic.txt vient d\'être téléchargé sur mon appareil : je le joins à ce courriel.)\n'
+          : '(Logs de diagnostic non inclus.)\n')
+      );
+      window.location.href = 'mailto:contact@williamguindon.me?subject=' + subj + '&body=' + body;
+    });
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      var f = fileInput.files && fileInput.files[0];
+      if (!f) return;
+      var r = new FileReader();
+      r.onload = async function(ev) {
+        try {
+          if (f.name.toLowerCase().endsWith('.txt')) {
+            lastTxt = String(ev.target.result || '');
+            if (outputEl) outputEl.textContent = lastTxt;
+            if (statusEl) statusEl.textContent = f.name + ' chargé';
+            return;
+          }
+          var dec = await decryptWgText(ev.target.result);
+          if (!dec || !dec.blackbox || dec.blackbox.ek) {
+            throw new Error('Aucun log de diagnostic dans ce fichier .wg.');
+          }
+          lastTxt = window.WGBlackbox.formatAsTxt(dec.blackbox);
+          if (outputEl) outputEl.textContent = lastTxt;
+          if (statusEl) statusEl.textContent = f.name + ' déchiffré (' + ((dec.blackbox.events && dec.blackbox.events.length) || 0) + ' événements)';
+        } catch (err) {
+          if (statusEl) statusEl.textContent = 'Erreur : ' + err.message;
+        }
+      };
+      r.readAsText(f);
+      fileInput.value = '';
+    });
+  }
+
+  loadLive();
+})();
 </script>
 </body>
 </html>
