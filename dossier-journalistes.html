@@ -1210,16 +1210,25 @@
     }
 
     @media (max-width: 768px) {
-      body { margin: 6px; overflow-y: auto !important; }
-      .drive-container { height: auto; min-height: 94vh; border-radius: 8px; overflow: visible !important; }
-      .drive-header { position: sticky; top: 0; z-index: 40; padding: 8px 10px; gap: 8px; flex-wrap: wrap; border-radius: 8px 8px 0 0; }
-      .drive-header-left { gap: 6px; width: 100%; justify-content: space-between; flex-wrap: wrap; }
-      .drive-title { font-size: 13.5px; }
-      .btn-toggle-tree { display: none !important; }
-      .drive-btn-download { padding: 5px 9px; font-size: 11.5px; gap: 4px; }
+      body { margin: 0; overflow-y: auto !important; -webkit-tap-highlight-color: transparent; }
+      .drive-container { height: auto; min-height: 100dvh; border-radius: 0; border-left: none; border-right: none; overflow: visible !important; }
+      .drive-header { position: sticky; top: 0; z-index: 40; padding: 8px 10px; gap: 6px; flex-wrap: wrap; border-radius: 0; }
+      .drive-header-left { gap: 6px; width: 100%; justify-content: space-between; flex-wrap: nowrap; }
+      .drive-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .btn-toggle-tree,
+      #btn-toggle-top-bars,
+      #btn-split-view,
+      #split-compare-pane,
+      #wg-hide-top-dock { display: none !important; }
+      .drive-btn-download { padding: 6px 10px; font-size: 12px; gap: 4px; min-height: 36px; }
       .mobile-tab-nav { display: flex; position: sticky; top: 48px; z-index: 39; background: #ffffff; }
-      .drive-body { flex-direction: column; height: auto; min-height: 75vh; overflow: visible !important; }
+      .drive-body { flex-direction: column; height: auto; min-height: 75dvh; overflow: visible !important; }
       .drive-splitter { display: none !important; }
+
+      /* Éléments tactiles confortables (44px min) dans l'arborescence */
+      .tree-folder-header { min-height: 44px; padding: 8px 10px !important; font-size: 13px !important; }
+      .drive-item { min-height: 44px; padding: 8px 10px !important; font-size: 13px !important; }
+      .tree-search-input { min-height: 40px; font-size: 15px !important; }
 
       /* Vue 1: Arborescence pleine page */
       .drive-container[data-mobile-view="tree"] .drive-tree-pane {
@@ -1230,7 +1239,7 @@
         height: auto !important;
         max-height: none !important;
         border-right: none !important;
-        padding: 10px 8px !important;
+        padding: 10px 10px 24px !important;
         visibility: visible !important;
         overflow-y: visible !important;
         overscroll-behavior: auto !important;
@@ -1247,15 +1256,31 @@
       .drive-container[data-mobile-view="preview"] .drive-preview-pane {
         display: flex !important;
         width: 100% !important;
-        min-height: 80vh !important;
+        min-height: 82dvh !important;
         height: auto !important;
       }
       .drive-container[data-mobile-view="preview"] .mobile-back-to-tree {
         display: inline-flex;
+        position: sticky;
+        top: 0;
+        z-index: 35;
+        min-height: 42px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .drive-container[data-mobile-view="preview"] .preview-stage {
+        min-height: 74dvh;
       }
 
-      .preview-header { padding: 8px 10px; font-size: 12px; gap: 6px; }
-      .btn-preview-action { padding: 4px 8px; font-size: 11px; }
+      .preview-header { flex-direction: column; align-items: flex-start !important; padding: 10px 12px; font-size: 12.5px; gap: 8px; }
+      #current-filename { max-width: 100% !important; width: 100%; font-size: 13px; }
+      .preview-header-actions { width: 100%; flex-wrap: wrap; gap: 6px; }
+      .btn-preview-action { padding: 6px 10px; font-size: 12px; min-height: 36px; }
+      .media-zoom-toolbar { bottom: 10px; padding: 4px 10px; gap: 5px; }
+      .media-zoom-btn { padding: 4px 8px; font-size: 11.5px; min-height: 30px; }
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .drive-item[draggable="true"] { cursor: pointer !important; }
     }
 
     /* Styles de base du pied de page arborescence (demande d'archive) */
@@ -8248,10 +8273,15 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     }
   });
 
-  // Glisser-déposer (Drag & Drop) depuis l'arborescence vers les panneaux
+  // Glisser-déposer (Drag & Drop) depuis l'arborescence vers les panneaux (desktop uniquement)
   function markTreeDraggable() {
+    var isTouchSmall = window.innerWidth <= 768 || (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
     document.querySelectorAll('.drive-item[data-fullpath]').forEach(function(el) {
-      el.setAttribute('draggable', 'true');
+      if (isTouchSmall) {
+        el.removeAttribute('draggable');
+      } else {
+        el.setAttribute('draggable', 'true');
+      }
     });
   }
   markTreeDraggable();
