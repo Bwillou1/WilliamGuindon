@@ -6878,8 +6878,15 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   function readTourIdb(cb) {
+    var settled = false;
+    function finish(val) {
+      if (settled) return;
+      settled = true;
+      cb(!!val);
+    }
+    setTimeout(function() { finish(false); }, 400);
     try {
-      if (!window.indexedDB) return cb(false);
+      if (!window.indexedDB) return finish(false);
       var req = indexedDB.open(IDB_NAME, 1);
       req.onupgradeneeded = function(e) {
         var db = e.target.result;
@@ -6893,13 +6900,14 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           getReq.onsuccess = function() {
             var seen = getReq.result === '1';
             db.close();
-            cb(seen);
+            finish(seen);
           };
-          getReq.onerror = function() { db.close(); cb(false); };
-        } catch (_) { cb(false); }
+          getReq.onerror = function() { db.close(); finish(false); };
+        } catch (_) { finish(false); }
       };
-      req.onerror = function() { cb(false); };
-    } catch (_) { cb(false); }
+      req.onerror = function() { finish(false); };
+      req.onblocked = function() { finish(false); };
+    } catch (_) { finish(false); }
   }
 
   function markTourSeenEverywhere() {
@@ -7445,10 +7453,33 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (card.style.display === 'block') renderStep();
   });
 
+  // Filigrane pied de page automatique lors du téléchargement PDF depuis « Télécharger original »
+  var directLinkEl = document.getElementById('direct-file-link');
+  if (directLinkEl) {
+    directLinkEl.addEventListener('click', function(e) {
+      var href = directLinkEl.getAttribute('href') || '';
+      if (!href || href === '#' || !href.toLowerCase().includes('.pdf')) return;
+      e.preventDefault();
+      var fname = href.split('/').pop().split('?')[0] || 'document.pdf';
+      var originSource = window.location.href;
+      if (typeof window.wgDownloadWatermarkedPdf === 'function') {
+        window.wgDownloadWatermarkedPdf(href, fname, originSource);
+      } else {
+        var s = document.createElement('script');
+        s.src = '/assets/js/wg-pdf-watermark.js';
+        s.onload = function() {
+          if (typeof window.wgDownloadWatermarkedPdf === 'function') {
+            window.wgDownloadWatermarkedPdf(href, fname, originSource);
+          }
+        };
+        document.head.appendChild(s);
+      }
+    });
+  }
+
   setTimeout(function() {
-    if (/^\/d\//.test(window.location.pathname) || /[?&](doc|file)=/.test(window.location.search)) return;
     window.startDossierTour(false);
-  }, 600);
+  }, 1000);
 })();
 </script>
 </body>

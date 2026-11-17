@@ -2267,21 +2267,39 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   if (dom.btnConfirmDownload) {
     dom.btnConfirmDownload.addEventListener('click', () => {
-      const a = document.createElement('a');
       const safeTarget = getSafeDocUrl(currentTargetFile);
       const safeDownloadUrl = new URL(safeTarget, window.location.origin);
       const host = safeDownloadUrl.hostname.toLowerCase();
       const isAllowedArchive = host === 'archive.org' || host === 'web.archive.org' || host.endsWith('.archive.org');
-      if (safeDownloadUrl.origin === window.location.origin || isAllowedArchive) {
-        a.href = safeDownloadUrl.href;
-      } else {
-        a.href = '/' + 'assets/docs/observations-reponse-canada-sem26003.pdf';
+      const finalHref = (safeDownloadUrl.origin === window.location.origin || isAllowedArchive)
+        ? safeDownloadUrl.href
+        : (window.location.origin + '/assets/docs/observations-reponse-canada-sem26003.pdf');
+      const filename = safeTarget.split('/').pop().split('?')[0];
+      if (dom.licenseDialog) dom.licenseDialog.close();
+
+      if (finalHref.toLowerCase().endsWith('.pdf') && safeDownloadUrl.origin === window.location.origin) {
+        const originSource = `https://williamguindon.me${window.location.pathname}${window.location.search || ''}`;
+        if (typeof window.wgDownloadWatermarkedPdf === 'function') {
+          window.wgDownloadWatermarkedPdf(finalHref, filename, originSource);
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = '/assets/js/wg-pdf-watermark.js';
+        s.onload = () => {
+          if (typeof window.wgDownloadWatermarkedPdf === 'function') {
+            window.wgDownloadWatermarkedPdf(finalHref, filename, originSource);
+          }
+        };
+        document.head.appendChild(s);
+        return;
       }
-      a.download = safeTarget.split('/').pop().split('?')[0];
+
+      const a = document.createElement('a');
+      a.href = finalHref;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      if (dom.licenseDialog) dom.licenseDialog.close();
     });
   }
 
