@@ -1972,10 +1972,41 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       'document.print': 'Imprimer',
       'spread mode': 'Disposition des pages',
       'scroll layout': 'Sens de défilement',
-      'page rotation': 'Rotation des pages'
+      'page rotation': 'Rotation des pages',
+      'annotation.styles': 'Styles d’annotation',
+      'annotation.style': 'Style',
+      'annotation.defaults': 'Valeurs par défaut',
+      'annotation.strokecolor': 'Couleur du trait',
+      'annotation.fillcolor': 'Couleur de remplissage',
+      'annotation.fontcolor': 'Couleur du texte',
+      'annotation.fontfamily': 'Police',
+      'annotation.fontsize': 'Taille du texte',
+      'annotation.strokewidth': 'Épaisseur du trait',
+      'annotation.opacity': 'Opacité',
+      'annotation.blendmode': 'Mode de fusion',
+      'annotation.borderstyle': 'Style de bordure',
+      'annotation.textalign': 'Alignement du texte',
+      'annotation.verticalalign': 'Alignement vertical',
+      'annotation.rotation': 'Rotation',
+      'blendmode.normal': 'Normal',
+      'blendmode.multiply': 'Produit',
+      'blendmode.screen': 'Superposition',
+      'blendmode.overlay': 'Incrustation',
+      'blendmode.darken': 'Obscurcir',
+      'blendmode.lighten': 'Éclaircir',
+      'blendmode.colordodge': 'Densité couleur -',
+      'blendmode.colorburn': 'Densité couleur +',
+      'blendmode.hardlight': 'Lumière crue',
+      'blendmode.softlight': 'Lumière tamisée',
+      'blendmode.difference': 'Différence',
+      'blendmode.exclusion': 'Exclusion',
+      'blendmode.hue': 'Teinte',
+      'blendmode.saturation': 'Saturation',
+      'blendmode.color': 'Couleur',
+      'blendmode.luminosity': 'Luminosité'
     };
 
-    s.querySelectorAll('*').forEach(el => {
+    s.querySelectorAll('*, option').forEach(el => {
       if (el.children.length === 0 && el.textContent) {
         const raw = el.textContent.trim().toLowerCase();
         if (TEXT_MAP[raw]) {
@@ -1984,12 +2015,12 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       }
     });
 
-    // Injection des vrais boutons Corbeille (Supprimer) & Efface (Tout effacer) dans la barre d'outils d'annotation
+    // Injection des vrais boutons Corbeille & Gomme uniquement dans la barre principale d'annotation (à côté de Rétablir)
     if (!s.getElementById('wg-shadow-annot-trash')) {
       let anchorBtn = null;
       s.querySelectorAll('button').forEach((b) => {
         const lbl = (b.getAttribute('title') || b.getAttribute('aria-label') || '').trim();
-        if (lbl === 'Rétablir' || lbl === 'Redo' || lbl === 'Note / Commentaire' || lbl === 'Comment') {
+        if (lbl === 'Rétablir' || lbl === 'Redo') {
           anchorBtn = b;
         }
       });
