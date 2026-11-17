@@ -1,8 +1,7 @@
 (function () {
   'use strict';
 
-  // Clé publique RSA-OAEP-2048 (SPKI Base64) : chiffrement uniquement, jamais de clé privée dans le dépôt.
-  const PUBLIC_SPKI_B64 = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7LNvNOesith4tXJTuK2o3NWOKaPEI9HYb0xwBjf5iXa6JiWB/6vEV/hHT8/WEVeJH5zYUkaNXiKjQN0acTGY2/7V0qI3myGIoqgdfwcWV4g59nR+guE7syNq8ngFLxFmGDiABBSydcLEMb+ciewbaOUPz+ammgUkqthkAivjuTJvaB+Ls8h4TWmETMSwgDxuB96EQQPSESPoOJCWqgFtwdlL98QO3oF13UGgu/NpWuejRxdTRne4cOuFbKTMAQV1pmCYxxQYIM097Yr0W8p/8hBl0ocCWEL6Rejedp/OTaLp9jq+bB3DS2dNdY/TNhKVT1sR3jIgRJJ3cn1JEKY1iQIDAQAB';
+  // Télémétrie 100 % locale (sessionStorage) — exportée uniquement si l'utilisateur coche l'option dans .wg
   const STORAGE_KEY = 'wg_blackbox_ring_v1';
   const MAX_EVENTS = 1200;
   const sessionStart = Date.now();
@@ -278,59 +277,8 @@
     };
   }
 
-  function b64ToBytes(b64) {
-    const clean = String(b64).replace(/-----[^-]+-----/g, '').replace(/\s+/g, '');
-    const bin = atob(clean);
-    const out = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-    return out;
-  }
-
-  function bytesToB64(buf) {
-    const bytes = new Uint8Array(buf);
-    let bin = '';
-    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-    return btoa(bin);
-  }
-
-  async function encryptExportPayload() {
-    const snap = await collectSnapshot();
-    const raw = new TextEncoder().encode(JSON.stringify(snap));
-    const aesKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt']);
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, raw);
-    const rawAes = await crypto.subtle.exportKey('raw', aesKey);
-    const pubKey = await crypto.subtle.importKey(
-      'spki',
-      b64ToBytes(PUBLIC_SPKI_B64),
-      { name: 'RSA-OAEP', hash: 'SHA-256' },
-      false,
-      ['encrypt']
-    );
-    const ek = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pubKey, rawAes);
-    return {
-      v: 'wg-blackbox-rsa-v1',
-      ek: bytesToB64(ek),
-      iv: bytesToB64(iv),
-      ct: bytesToB64(ct)
-    };
-  }
-
-  async function decryptPayloadWithPrivateKey(box, privateKeyB64OrPem) {
-    if (!box || box.v !== 'wg-blackbox-rsa-v1' || !box.ek || !box.iv || !box.ct) {
-      throw new Error('Bloc blackbox absent ou format invalide.');
-    }
-    const privKey = await crypto.subtle.importKey(
-      'pkcs8',
-      b64ToBytes(privateKeyB64OrPem),
-      { name: 'RSA-OAEP', hash: 'SHA-256' },
-      false,
-      ['decrypt']
-    );
-    const rawAes = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privKey, b64ToBytes(box.ek));
-    const aesKey = await crypto.subtle.importKey('raw', rawAes, { name: 'AES-GCM' }, false, ['decrypt']);
-    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(box.iv) }, aesKey, b64ToBytes(box.ct));
-    return JSON.parse(new TextDecoder().decode(plain));
+  async function exportPayload() {
+    return await collectSnapshot();
   }
 
   function formatAsTxt(d) {
@@ -370,8 +318,8 @@
 
   window.WGBlackbox = {
     record,
-    encryptExportPayload,
-    decryptPayloadWithPrivateKey,
+    collectSnapshot,
+    exportPayload,
     formatAsTxt
   };
 })();

@@ -7039,9 +7039,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const exportVault = vault && typeof vault === 'object' ? Object.assign({}, vault) : { format: 'wg-annotations-v1', documents: {} };
       if (!exportVault.format) exportVault.format = 'wg-annotations-v1';
       if (!exportVault.documents) exportVault.documents = {};
-      if (includeBlackbox && window.WGBlackbox && typeof window.WGBlackbox.encryptExportPayload === 'function') {
+      if (includeBlackbox && window.WGBlackbox && typeof window.WGBlackbox.exportPayload === 'function') {
         try {
-          exportVault.blackbox = await window.WGBlackbox.encryptExportPayload();
+          exportVault.blackbox = await window.WGBlackbox.exportPayload();
         } catch (_) {}
       }
       const jsonStr = JSON.stringify(exportVault);
@@ -8390,20 +8390,19 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 <div id="wg-blackbox-modal" style="display:none;position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,0.68);align-items:center;justify-content:center;padding:16px;">
   <div style="width:min(760px,100%);max-height:90dvh;display:flex;flex-direction:column;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:14px;padding:18px;gap:10px;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-      <strong style="font-size:14px;color:#34d399;">WG Blackbox · Déchiffrement privé (.wg → .txt)</strong>
+      <strong style="font-size:14px;color:#34d399;">WG Blackbox · Lecteur de diagnostic transparent (.wg → .txt)</strong>
       <button type="button" id="wg-bb-close" style="background:#1e293b;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:4px 10px;cursor:pointer;">✕</button>
     </div>
-    <div style="font-size:12px;color:#94a3b8;">Importez un fichier <code>.wg</code> (ou utilisez celui déjà importé), collez votre clé privée PKCS#8, puis cliquez sur Déchiffrer.</div>
+    <div style="font-size:12px;color:#94a3b8;">Inspectez le journal technique d'un fichier <code>.wg</code> importé, ou consultez directement les métriques locales de la session en cours.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
       <input type="file" id="wg-bb-file" accept=".wg,application/json" style="font-size:12px;color:#cbd5e1;">
       <span id="wg-bb-status" style="font-size:11.5px;color:#34d399;"></span>
     </div>
-    <textarea id="wg-bb-privkey" rows="3" placeholder="Collez votre clé privée RSA-OAEP (PKCS#8 Base64 ou PEM)..." style="width:100%;box-sizing:border-box;background:#020617;color:#f8fafc;border:1px solid #334155;border-radius:8px;padding:8px;font-family:monospace;font-size:11.5px;"></textarea>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button type="button" id="wg-bb-decrypt" style="background:#10b981;color:#022c22;border:none;border-radius:8px;padding:7px 14px;font-weight:800;font-size:12px;cursor:pointer;">Déchiffrer localement</button>
+      <button type="button" id="wg-bb-session" style="background:#10b981;color:#022c22;border:none;border-radius:8px;padding:7px 14px;font-weight:800;font-size:12px;cursor:pointer;">Lire la session en cours</button>
       <button type="button" id="wg-bb-download" style="display:none;background:#1e293b;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">⬇ Télécharger log (.txt)</button>
     </div>
-    <pre id="wg-bb-output" style="display:none;flex:1;min-height:220px;max-height:45dvh;overflow:auto;background:#020617;color:#cbd5e1;border:1px solid #1e293b;border-radius:8px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;margin:0;"></pre>
+    <pre id="wg-bb-output" style="display:none;flex:1;min-height:240px;max-height:52dvh;overflow:auto;background:#020617;color:#cbd5e1;border:1px solid #1e293b;border-radius:8px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;margin:0;"></pre>
   </div>
 </div>
 <script>
@@ -8411,18 +8410,27 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   var modal = document.getElementById('wg-blackbox-modal');
   var closeBtn = document.getElementById('wg-bb-close');
   var fileInput = document.getElementById('wg-bb-file');
-  var privInput = document.getElementById('wg-bb-privkey');
-  var decryptBtn = document.getElementById('wg-bb-decrypt');
+  var sessionBtn = document.getElementById('wg-bb-session');
   var downloadBtn = document.getElementById('wg-bb-download');
   var statusEl = document.getElementById('wg-bb-status');
   var outputEl = document.getElementById('wg-bb-output');
   var lastTxt = '';
 
+  function renderBlackboxObj(box, label) {
+    if (!window.WGBlackbox || !box) return;
+    lastTxt = window.WGBlackbox.formatAsTxt(box);
+    if (outputEl) { outputEl.textContent = lastTxt; outputEl.style.display = 'block'; }
+    if (downloadBtn) downloadBtn.style.display = 'inline-flex';
+    if (statusEl) statusEl.textContent = label + ' (' + ((box.events && box.events.length) || 0) + ' événements).';
+  }
+
   window.wgOpenBlackboxModal = function() {
     if (!modal) return;
     modal.style.display = 'flex';
-    if (statusEl) {
-      statusEl.textContent = window.__wgImportedBlackbox ? 'Fichier .wg importé prêt en mémoire.' : 'Sélectionnez un fichier .wg ou importez-le.';
+    if (window.__wgImportedBlackbox && !window.__wgImportedBlackbox.ek) {
+      renderBlackboxObj(window.__wgImportedBlackbox, 'Fichier .wg importé affiché');
+    } else if (statusEl) {
+      statusEl.textContent = 'Importez un .wg contenant des logs ou cliquez sur « Lire la session en cours ».';
     }
   };
   if (closeBtn) closeBtn.addEventListener('click', function() { modal.style.display = 'none'; });
@@ -8435,28 +8443,25 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       r.onload = async function(ev) {
         try {
           var dec = await decryptVaultPayload(ev.target.result);
-          window.__wgImportedBlackbox = dec && dec.blackbox ? dec.blackbox : null;
-          if (statusEl) statusEl.textContent = window.__wgImportedBlackbox ? 'Bloc blackbox détecté dans ' + f.name : 'Aucun bloc blackbox dans ce fichier.';
+          if (!dec || !dec.blackbox || dec.blackbox.ek) {
+            throw new Error('Aucun log de diagnostic en clair dans ce fichier .wg.');
+          }
+          window.__wgImportedBlackbox = dec.blackbox;
+          renderBlackboxObj(dec.blackbox, f.name + ' déchiffré');
         } catch (err) {
-          if (statusEl) statusEl.textContent = 'Erreur lecture .wg: ' + err.message;
+          if (statusEl) statusEl.textContent = 'Erreur : ' + err.message;
         }
       };
       r.readAsText(f);
     });
   }
 
-  if (decryptBtn) {
-    decryptBtn.addEventListener('click', async function() {
+  if (sessionBtn) {
+    sessionBtn.addEventListener('click', async function() {
       try {
         if (!window.WGBlackbox) throw new Error('Module blackbox indisponible.');
-        if (!window.__wgImportedBlackbox) throw new Error('Aucun bloc blackbox chargé.');
-        var pk = (privInput && privInput.value || '').trim();
-        if (!pk) throw new Error('Clé privée requise.');
-        var decrypted = await window.WGBlackbox.decryptPayloadWithPrivateKey(window.__wgImportedBlackbox, pk);
-        lastTxt = window.WGBlackbox.formatAsTxt(decrypted);
-        if (outputEl) { outputEl.textContent = lastTxt; outputEl.style.display = 'block'; }
-        if (downloadBtn) downloadBtn.style.display = 'inline-flex';
-        if (statusEl) statusEl.textContent = 'Déchiffré avec succès (' + (decrypted.events || []).length + ' événements).';
+        var snap = await window.WGBlackbox.collectSnapshot();
+        renderBlackboxObj(snap, 'Session en cours');
       } catch (err) {
         if (statusEl) statusEl.textContent = 'Échec : ' + err.message;
       }
