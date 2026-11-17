@@ -6824,6 +6824,82 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 <script>
 (function() {
   var TOUR_KEY = 'wg_dossier_tour_done';
+  var IDB_NAME = 'wg_prefs_v1';
+  var IDB_STORE = 'flags';
+
+  function readTourCookie() {
+    try {
+      return document.cookie.split(';').some(function(c) {
+        return c.trim() === TOUR_KEY + '=1';
+      });
+    } catch (_) { return false; }
+  }
+
+  function writeTourIdb() {
+    try {
+      if (!window.indexedDB) return;
+      var req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = function(e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = function(e) {
+        try {
+          var db = e.target.result;
+          var tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put('1', TOUR_KEY);
+          tx.oncomplete = function() { db.close(); };
+        } catch (_) {}
+      };
+    } catch (_) {}
+  }
+
+  function readTourIdb(cb) {
+    try {
+      if (!window.indexedDB) return cb(false);
+      var req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = function(e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = function(e) {
+        try {
+          var db = e.target.result;
+          var tx = db.transaction(IDB_STORE, 'readonly');
+          var getReq = tx.objectStore(IDB_STORE).get(TOUR_KEY);
+          getReq.onsuccess = function() {
+            var seen = getReq.result === '1';
+            db.close();
+            cb(seen);
+          };
+          getReq.onerror = function() { db.close(); cb(false); };
+        } catch (_) { cb(false); }
+      };
+      req.onerror = function() { cb(false); };
+    } catch (_) { cb(false); }
+  }
+
+  function markTourSeenEverywhere() {
+    try { localStorage.setItem(TOUR_KEY, '1'); } catch (_) {}
+    try { sessionStorage.setItem(TOUR_KEY, '1'); } catch (_) {}
+    try { document.cookie = TOUR_KEY + '=1; max-age=315360000; path=/; SameSite=Lax'; } catch (_) {}
+    writeTourIdb();
+  }
+
+  function checkTourSeenEverywhere(cb) {
+    var syncSeen = false;
+    try { if (localStorage.getItem(TOUR_KEY) === '1') syncSeen = true; } catch (_) {}
+    try { if (sessionStorage.getItem(TOUR_KEY) === '1') syncSeen = true; } catch (_) {}
+    if (readTourCookie()) syncSeen = true;
+    if (syncSeen) {
+      markTourSeenEverywhere();
+      return cb(true);
+    }
+    readTourIdb(function(idbSeen) {
+      if (idbSeen) markTourSeenEverywhere();
+      cb(idbSeen);
+    });
+  }
   var backdrop = document.getElementById('wg-tour-backdrop');
   var spotlight = document.getElementById('wg-tour-spotlight');
   var card = document.getElementById('wg-tour-card');
@@ -7134,7 +7210,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (cursorEl) cursorEl.style.display = 'none';
     if (ringEl) ringEl.style.display = 'none';
     if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
-    try { localStorage.setItem(TOUR_KEY, '1'); } catch (_) {}
+    markTourSeenEverywhere();
     backdrop.style.display = 'none';
     spotlight.style.display = 'none';
     card.style.display = 'none';
@@ -7199,15 +7275,21 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   window.startDossierTour = function(force) {
-    if (!force) {
-      try {
-        if (localStorage.getItem(TOUR_KEY) === '1') return;
-      } catch (_) {}
+    function launch() {
+      markTourSeenEverywhere();
+      idx = 0;
+      backdrop.style.display = 'block';
+      spotlight.style.display = 'block';
+      renderStep();
     }
-    idx = 0;
-    backdrop.style.display = 'block';
-    spotlight.style.display = 'block';
-    renderStep();
+    if (force) {
+      launch();
+      return;
+    }
+    checkTourSeenEverywhere(function(seen) {
+      if (seen) return;
+      launch();
+    });
   };
 
   btnSkip.addEventListener('click', endTour);
