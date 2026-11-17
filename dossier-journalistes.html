@@ -6567,8 +6567,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         e.preventDefault();
         searchInput.value = "";
         applyFilter();
-        if (typeof window.wgOpenBlackboxModal === "function") {
-          window.wgOpenBlackboxModal();
+        if (typeof window.wgOpenBlackboxDoc === "function") {
+          window.wgOpenBlackboxDoc();
         }
       }
     });
@@ -8387,115 +8387,127 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   });
 })();
 </script>
-<script src="/assets/js/wg-blackbox.js?v=20261117-v1" defer></script>
-<div id="wg-blackbox-modal" style="display:none;position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,0.68);align-items:center;justify-content:center;padding:16px;">
-  <div style="width:min(760px,100%);max-height:90dvh;display:flex;flex-direction:column;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:14px;padding:18px;gap:10px;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-      <strong style="font-size:14px;color:#34d399;">WG Blackbox · Lecteur de diagnostic transparent (.wg → .txt)</strong>
-      <button type="button" id="wg-bb-close" style="background:#1e293b;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:4px 10px;cursor:pointer;">✕</button>
-    </div>
-    <div style="font-size:12px;color:#94a3b8;">Inspectez le journal technique d'un fichier <code>.wg</code> importé, ou consultez directement les métriques locales de la session en cours.</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-      <input type="file" id="wg-bb-file" accept=".wg,application/json" style="font-size:12px;color:#cbd5e1;">
-      <span id="wg-bb-status" style="font-size:11.5px;color:#34d399;"></span>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button type="button" id="wg-bb-session" style="background:#10b981;color:#022c22;border:none;border-radius:8px;padding:7px 14px;font-weight:800;font-size:12px;cursor:pointer;">Lire la session en cours</button>
-      <button type="button" id="wg-bb-download" style="display:none;background:#1e293b;color:#ecfdf5;border:1px solid #10b981;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer;">⬇ Télécharger log (.txt)</button>
-    </div>
-    <pre id="wg-bb-output" style="display:none;flex:1;min-height:240px;max-height:52dvh;overflow:auto;background:#020617;color:#cbd5e1;border:1px solid #1e293b;border-radius:8px;padding:10px;font-size:11px;line-height:1.45;white-space:pre-wrap;margin:0;"></pre>
-  </div>
-</div>
+<script src="/assets/js/wg-blackbox.js?v=20261117-v1"></script>
 <script>
 (function() {
-  var modal = document.getElementById('wg-blackbox-modal');
-  var closeBtn = document.getElementById('wg-bb-close');
-  var fileInput = document.getElementById('wg-bb-file');
-  var sessionBtn = document.getElementById('wg-bb-session');
-  var downloadBtn = document.getElementById('wg-bb-download');
-  var statusEl = document.getElementById('wg-bb-status');
-  var outputEl = document.getElementById('wg-bb-output');
-  var lastTxt = '';
   var liveTimer = null;
   var activeMode = 'live';
-
-  function renderBlackboxObj(box, label) {
-    if (!window.WGBlackbox || !box) return;
-    lastTxt = window.WGBlackbox.formatAsTxt(box);
-    if (outputEl) {
-      var atBottom = (outputEl.scrollTop + outputEl.clientHeight >= outputEl.scrollHeight - 24);
-      outputEl.textContent = lastTxt;
-      outputEl.style.display = 'block';
-      if (atBottom) outputEl.scrollTop = outputEl.scrollHeight;
-    }
-    if (downloadBtn) downloadBtn.style.display = 'inline-flex';
-    if (statusEl) statusEl.textContent = label + ' (' + ((box.events && box.events.length) || 0) + ' événements).';
-  }
-
-  async function refreshLive() {
-    if (!window.WGBlackbox || activeMode !== 'live') return;
-    try {
-      var snap = await window.WGBlackbox.collectSnapshot();
-      renderBlackboxObj(snap, 'En direct (session en cours)');
-    } catch (_) {}
-  }
+  var lastTxt = '';
 
   function stopLive() {
     if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
   }
 
-  function startLive() {
-    activeMode = 'live';
+  window.wgOpenBlackboxDoc = function() {
+    var stage = document.getElementById('preview-stage');
+    if (!stage) return;
     stopLive();
-    refreshLive();
-    liveTimer = setInterval(refreshLive, 1500);
-  }
+    if (window.__wgSplitViewActive) {
+      var previewPane = document.querySelector('.drive-preview-pane');
+      if (previewPane) previewPane.classList.remove('is-split-mode');
+      window.__wgSplitViewActive = false;
+    }
 
-  window.wgOpenBlackboxModal = function() {
-    if (!modal) return;
-    modal.style.display = 'flex';
-    if (window.__wgImportedBlackbox && !window.__wgImportedBlackbox.ek) {
+    var curFile = document.getElementById('current-filename');
+    if (curFile) {
+      curFile.textContent = 'Blackbox · Journal de diagnostic technique';
+      curFile.title = 'wg-blackbox.txt';
+    }
+    var headerActions = document.getElementById('preview-header-actions');
+    if (headerActions) headerActions.style.display = 'flex';
+    var fsLink = document.getElementById('btn-fullscreen-viewer');
+    if (fsLink) fsLink.style.display = 'none';
+    var stl = document.getElementById('select-translate-lang');
+    if (stl) stl.style.display = 'none';
+    var dlLink = document.getElementById('direct-file-link');
+    if (dlLink) dlLink.style.display = 'none';
+
+    stage.classList.remove('is-media');
+    stage.innerHTML = '';
+
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;width:100%;height:100%;background:var(--bg,#ffffff);color:var(--text,#0f172a);';
+
+    var bar = document.createElement('div');
+    bar.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px;border-bottom:1px solid #dce5df;background:#f8fafc;font-size:12px;';
+
+    var statusSpan = document.createElement('span');
+    statusSpan.style.cssText = 'font-weight:700;color:#064e3b;';
+
+    var btns = document.createElement('div');
+    btns.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;';
+
+    var btnLive = document.createElement('button');
+    btnLive.type = 'button';
+    btnLive.className = 'btn-preview-action';
+    btnLive.textContent = '● En direct';
+
+    var btnImported = document.createElement('button');
+    btnImported.type = 'button';
+    btnImported.className = 'btn-preview-action';
+    btnImported.textContent = '📄 .wg importé';
+    btnImported.style.display = (window.__wgImportedBlackbox && !window.__wgImportedBlackbox.ek) ? 'inline-flex' : 'none';
+
+    var btnDownload = document.createElement('button');
+    btnDownload.type = 'button';
+    btnDownload.className = 'btn-preview-action';
+    btnDownload.textContent = '⬇ Télécharger (.txt)';
+
+    btns.appendChild(btnLive);
+    btns.appendChild(btnImported);
+    btns.appendChild(btnDownload);
+    bar.appendChild(statusSpan);
+    bar.appendChild(btns);
+
+    var pre = document.createElement('pre');
+    pre.style.cssText = 'flex:1;margin:0;padding:16px 20px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:#ffffff;color:#0f172a;';
+
+    wrap.appendChild(bar);
+    wrap.appendChild(pre);
+    stage.appendChild(wrap);
+
+    function renderBox(box, label) {
+      if (!document.body.contains(pre)) { stopLive(); return; }
+      if (!window.WGBlackbox || !box) {
+        statusSpan.textContent = 'Module de diagnostic indisponible.';
+        return;
+      }
+      lastTxt = window.WGBlackbox.formatAsTxt(box);
+      var atBottom = (pre.scrollTop + pre.clientHeight >= pre.scrollHeight - 24);
+      pre.textContent = lastTxt;
+      if (atBottom) pre.scrollTop = pre.scrollHeight;
+      statusSpan.textContent = label + ' · ' + ((box.events && box.events.length) || 0) + ' événements';
+    }
+
+    async function refreshLive() {
+      if (activeMode !== 'live' || !document.body.contains(pre)) { stopLive(); return; }
+      if (!window.WGBlackbox) return;
+      try {
+        var snap = await window.WGBlackbox.collectSnapshot();
+        renderBox(snap, 'Session en direct');
+      } catch (_) {}
+    }
+
+    function startLiveMode() {
+      activeMode = 'live';
+      btnLive.style.background = 'rgba(16,185,129,0.18)';
+      btnImported.style.background = '';
+      stopLive();
+      refreshLive();
+      liveTimer = setInterval(refreshLive, 1500);
+    }
+
+    function showImportedMode() {
       activeMode = 'imported';
       stopLive();
-      renderBlackboxObj(window.__wgImportedBlackbox, 'Fichier .wg importé');
-    } else {
-      startLive();
+      btnLive.style.background = '';
+      btnImported.style.background = 'rgba(16,185,129,0.18)';
+      renderBox(window.__wgImportedBlackbox, 'Fichier .wg importé');
     }
-  };
-  if (closeBtn) closeBtn.addEventListener('click', function() { stopLive(); modal.style.display = 'none'; });
 
-  if (fileInput) {
-    fileInput.addEventListener('change', function() {
-      var f = fileInput.files && fileInput.files[0];
-      if (!f) return;
-      var r = new FileReader();
-      r.onload = async function(ev) {
-        try {
-          var dec = await decryptVaultPayload(ev.target.result);
-          if (!dec || !dec.blackbox || dec.blackbox.ek) {
-            throw new Error('Aucun log de diagnostic inclus dans ce fichier .wg.');
-          }
-          window.__wgImportedBlackbox = dec.blackbox;
-          activeMode = 'imported';
-          stopLive();
-          renderBlackboxObj(dec.blackbox, f.name + ' importé');
-        } catch (err) {
-          if (statusEl) statusEl.textContent = 'Erreur : ' + err.message;
-        }
-      };
-      r.readAsText(f);
-    });
-  }
-
-  if (sessionBtn) {
-    sessionBtn.textContent = 'En direct (session en cours)';
-    sessionBtn.addEventListener('click', function() {
-      startLive();
-    });
-  }
-
-  if (downloadBtn) {
-    downloadBtn.addEventListener('click', function() {
+    btnLive.addEventListener('click', startLiveMode);
+    btnImported.addEventListener('click', showImportedMode);
+    btnDownload.addEventListener('click', function() {
       if (!lastTxt) return;
       var blob = new Blob([lastTxt], { type: 'text/plain;charset=utf-8' });
       var u = URL.createObjectURL(blob);
@@ -8507,7 +8519,13 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       document.body.removeChild(a);
       setTimeout(function() { URL.revokeObjectURL(u); }, 1000);
     });
-  }
+
+    if (window.__wgImportedBlackbox && !window.__wgImportedBlackbox.ek) {
+      showImportedMode();
+    } else {
+      startLiveMode();
+    }
+  };
 })();
 </script>
 </body>
