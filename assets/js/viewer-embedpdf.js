@@ -2035,12 +2035,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       });
       if (anchorBtn && anchorBtn.parentElement) {
-        const bar = anchorBtn.parentElement;
+        const subBar = anchorBtn.parentElement;
+        const bar = (subBar.parentElement && subBar.parentElement.children.length >= 2) ? subBar.parentElement : subBar;
         bar.style.flexWrap = 'nowrap';
         bar.style.alignItems = 'center';
         const sep = document.createElement('span');
         sep.setAttribute('aria-hidden', 'true');
-        sep.style.cssText = 'display:inline-block;width:1px;height:20px;background:rgba(148,163,184,0.45);margin:0 4px;vertical-align:middle;';
+        sep.style.cssText = 'display:inline-block;width:1px;height:20px;background:rgba(148,163,184,0.45);margin:0 4px;vertical-align:middle;flex-shrink:0;';
 
         const makeIconBtn = (id, title, svgMarkup, hoverColor) => {
           const btn = document.createElement('button');
@@ -2048,10 +2049,10 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           btn.id = id;
           btn.title = title;
           btn.setAttribute('aria-label', title);
-          btn.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:6px;background:transparent;color:currentColor;cursor:pointer;padding:0;transition:background 0.15s ease,color 0.15s ease;';
+          btn.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:6px;background:transparent;color:currentColor;cursor:pointer;padding:0;flex-shrink:0;transition:background 0.15s ease,color 0.15s ease;';
           btn.innerHTML = svgMarkup;
           btn.addEventListener('mouseenter', () => { btn.style.background = hoverColor; });
-          btn.addEventListener('mouseleave', () => { btn.style.background = 'transparent'; });
+          btn.addEventListener('mouseleave', () => { if (!btn.getAttribute('aria-pressed') || btn.getAttribute('aria-pressed') !== 'true') btn.style.background = 'transparent'; });
           return btn;
         };
 
@@ -2060,7 +2061,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
         let wgEraserMode = false;
         const trashBtn = makeIconBtn('wg-shadow-annot-trash', 'Supprimer la sélection (Corbeille)', trashIcon, 'rgba(220,38,38,0.12)');
-        const eraserBtn = makeIconBtn('wg-shadow-annot-clear', 'Gomme (effacer uniquement ce que vous touchez)', eraserIcon, 'rgba(217,119,6,0.14)');
+        const eraserBtn = makeIconBtn('wg-shadow-annot-clear', 'Gomme (cliquez sur une annotation pour la supprimer)', eraserIcon, 'rgba(217,119,6,0.14)');
 
         function setEraserMode(on) {
           wgEraserMode = !!on;
@@ -2069,11 +2070,16 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
           eraserBtn.style.outline = wgEraserMode ? '2px solid #d97706' : 'none';
           if (dom.container) dom.container.style.cursor = wgEraserMode ? 'crosshair' : '';
           if (wgEraserMode) {
-            const selBtn = Array.from(s.querySelectorAll('button')).find((b) => {
-              const t = (b.getAttribute('title') || b.getAttribute('aria-label') || '').trim();
-              return t.includes('Sélectionner') || t.includes('Select');
+            try {
+              const api = activeEmbedRegistry ? getAnnotationPluginApi(activeEmbedRegistry) : null;
+              if (api && typeof api.setActiveTool === 'function') api.setActiveTool(null);
+            } catch (_) {}
+            // Désactiver un éventuel outil de dessin actif dans la barre
+            s.querySelectorAll('button[aria-pressed="true"], button[data-active="true"]').forEach((b) => {
+              if (b !== eraserBtn && b !== trashBtn) {
+                try { b.click(); } catch (_) {}
+              }
             });
-            if (selBtn) selBtn.click();
           }
         }
 
@@ -2090,8 +2096,14 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         let eraserPointerDown = false;
         const eraseTouchedAt = () => {
           if (!wgEraserMode || typeof wgDeleteSelectedFn !== 'function') return;
-          setTimeout(() => { wgDeleteSelectedFn(); }, 25);
+          setTimeout(() => { wgDeleteSelectedFn(); }, 60);
         };
+        s.addEventListener('pointerup', (e) => {
+          if (!wgEraserMode) return;
+          if (e.target && e.target.closest && e.target.closest('#wg-shadow-annot-clear, #wg-shadow-annot-trash')) return;
+          eraserPointerDown = false;
+          eraseTouchedAt();
+        }, true);
         s.addEventListener('pointerdown', (e) => {
           if (!wgEraserMode) return;
           if (e.target && e.target.closest && e.target.closest('#wg-shadow-annot-clear, #wg-shadow-annot-trash')) return;
@@ -2101,10 +2113,13 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         s.addEventListener('pointermove', () => {
           if (wgEraserMode && eraserPointerDown) eraseTouchedAt();
         }, true);
-        s.addEventListener('pointerup', () => { eraserPointerDown = false; }, true);
         s.addEventListener('click', (e) => {
           const btn = e.target && e.target.closest ? e.target.closest('button') : null;
-          if (btn && btn !== eraserBtn && wgEraserMode) setEraserMode(false);
+          if (!btn || btn === eraserBtn || btn === trashBtn || !wgEraserMode) return;
+          const lbl = (btn.getAttribute('title') || btn.getAttribute('aria-label') || btn.textContent || '').trim();
+          if (/Surligner|Souligner|Biffer|Onduler|Dessin|Feutre|Note|Commentaire|Lire/i.test(lbl)) {
+            setEraserMode(false);
+          }
         }, true);
 
         bar.appendChild(sep);
