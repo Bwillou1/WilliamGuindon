@@ -7119,7 +7119,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         });
         if (commentToolBtn) {
           await moveAndClickEl(commentToolBtn, iframe, runId);
-          await sleep(400);
+          await sleep(750);
         }
       }
       if (runId !== tourRunId) return;
@@ -7141,7 +7141,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       noteBubble.appendChild(noteRect);
       noteBubble.appendChild(noteTxt);
       drawSvg.appendChild(noteBubble);
-      await sleep(900);
+      await sleep(1650);
 
       // 4. Supprimer (Poubelle) & Tout effacer (Efface) puis revenir au mode Lire
       if (runId !== tourRunId) return;
@@ -7149,16 +7149,17 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         var trashBtn = doc.getElementById('wg-btn-annot-trash');
         if (trashBtn) {
           await moveAndClickEl(trashBtn, iframe, runId);
-          await sleep(350);
+          await sleep(850);
         }
         if (runId !== tourRunId) return;
         var clearBtn = doc.getElementById('wg-btn-annot-clear');
         if (clearBtn) {
           await moveAndClickEl(clearBtn, iframe, runId);
-          await sleep(350);
+          await sleep(850);
         }
       }
       clearDrawOverlay();
+      await sleep(500);
       if (doc) {
         var readBtn = findInDocDeep(doc, function(el) {
           var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
