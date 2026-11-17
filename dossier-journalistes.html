@@ -5106,7 +5106,7 @@ function getCleanDisplayName(fullPath) {
               if (translateLink) translateLink.style.display = "none";
               const _stl = document.getElementById("select-translate-lang"); if (_stl) _stl.style.display = "none";
               stage.classList.remove("is-media");
-              stage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:10px;font-size:13px;"><div class="csv-spinner" style="width:24px;height:24px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span>Chargement du document texte...</span></div>';
+              stage.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#064e3b;gap:10px;font-size:13px;"><div class="csv-spinner" style="width:24px;height:24px;border:3px solid #dce5df;border-top-color:#0d652d;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span>' + (lower.endsWith(".kml") || lower.endsWith(".geojson") ? "Calcul local de la carte OpenStreetMap..." : "Chargement du document texte...") + '</span></div>';
 
               (async () => {
                 let text = "";
@@ -5121,10 +5121,14 @@ function getCleanDisplayName(fullPath) {
                       throw new Error("HTTP " + resp.status);
                     }
                   }
-                  renderTextDocViewer(text, fileObj, res.effectiveUrl, stage);
+                  if (lower.endsWith(".kml") || lower.endsWith(".geojson")) {
+                    await renderGeoMapViewer(text, fileObj, res.effectiveUrl, stage, lower);
+                  } else {
+                    renderTextDocViewer(text, fileObj, res.effectiveUrl, stage);
+                  }
                 } catch (err) {
                   stage.classList.add("is-media");
-                  stage.innerHTML = `<div class="no-preview"><span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span><h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le texte</h4><p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier (${err.message}) est accessible en téléchargement direct.</p><a href="${res.effectiveUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier original</a></div>`;
+                  stage.innerHTML = `<div class="no-preview"><span style="display:inline-flex;margin-bottom:8px;">${svgIcon}</span><h4 style="margin: 0 0 8px 0; color: #b91c1c;">Impossible de charger le fichier</h4><p style="font-size:12px;color:#52796f;max-width:420px;margin:0 0 14px 0;">Le fichier (${err.message}) est accessible en téléchargement direct.</p><a href="${res.effectiveUrl}" class="btn-download-single" target="_blank" rel="noopener">Télécharger le fichier original</a></div>`;
                 }
               })();
             } else {
@@ -5152,6 +5156,182 @@ function getCleanDisplayName(fullPath) {
         }
       });
     }
+
+      let _leafletPromise = null;
+      function ensureLeafletLoaded() {
+        if (window.L && typeof window.L.map === "function") return Promise.resolve(window.L);
+        if (_leafletPromise) return _leafletPromise;
+        _leafletPromise = new Promise((resolve, reject) => {
+          if (!document.querySelector('link[href*="leaflet@1.9.4"]')) {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+            link.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+            link.crossOrigin = "";
+            document.head.appendChild(link);
+          }
+          const script = document.createElement("script");
+          script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+          script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+          script.crossOrigin = "";
+          script.async = true;
+          script.onload = () => (window.L ? resolve(window.L) : reject(new Error("Leaflet indisponible")));
+          script.onerror = () => reject(new Error("Échec chargement Leaflet"));
+          document.head.appendChild(script);
+        });
+        return _leafletPromise;
+      }
+
+      function sanitizeKmlPopupHtml(raw) {
+        if (!raw) return "";
+        const doc = new DOMParser().parseFromString(String(raw), "text/html");
+        doc.querySelectorAll("script,style,iframe,object,embed,link,meta,img").forEach((el) => el.remove());
+        doc.querySelectorAll("*").forEach((el) => {
+          for (const attr of Array.from(el.attributes)) {
+            if (attr.name.toLowerCase().startsWith("on") || /^javascript:/i.test(attr.value || "")) {
+              el.removeAttribute(attr.name);
+            }
+          }
+        });
+        return doc.body ? doc.body.innerHTML.replace(/\n/g, "<br>") : "";
+      }
+
+      function parseKmlCoordPairs(coordText) {
+        return String(coordText || "")
+          .trim()
+          .split(/\s+/)
+          .map((token) => {
+            const parts = token.split(",");
+            const lng = parseFloat(parts[0]);
+            const lat = parseFloat(parts[1]);
+            return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
+          })
+          .filter(Boolean);
+      }
+
+      async function renderGeoMapViewer(text, fileObj, fileUrl, stage, lower) {
+        const L = await ensureLeafletLoaded();
+        stage.innerHTML = "";
+        const wrap = document.createElement("div");
+        wrap.style.cssText = "display:flex;flex-direction:column;width:100%;height:100%;min-height:460px;background:#f8fafc;";
+
+        const bar = document.createElement("div");
+        bar.style.cssText = "display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:#ffffff;border-bottom:1px solid #dce5df;font-size:12px;";
+
+        const info = document.createElement("div");
+        info.style.cssText = "display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#064e3b;font-weight:700;";
+
+        const actions = document.createElement("div");
+        actions.style.cssText = "display:flex;align-items:center;gap:8px;flex-wrap:wrap;";
+
+        const toggleBtn = document.createElement("button");
+        toggleBtn.type = "button";
+        toggleBtn.className = "btn-preview-action";
+        toggleBtn.textContent = "📄 Voir source brute";
+
+        const dlLink = document.createElement("a");
+        dlLink.href = fileUrl;
+        dlLink.download = fileObj.name || (lower.endsWith(".kml") ? "donnees.kml" : "donnees.geojson");
+        dlLink.className = "btn-preview-action";
+        dlLink.textContent = "⬇ Télécharger original";
+
+        actions.appendChild(toggleBtn);
+        actions.appendChild(dlLink);
+        bar.appendChild(info);
+        bar.appendChild(actions);
+
+        const mapEl = document.createElement("div");
+        mapEl.style.cssText = "flex:1;min-height:400px;width:100%;z-index:1;";
+
+        const srcEl = document.createElement("div");
+        srcEl.style.cssText = "display:none;flex:1;overflow:auto;";
+
+        wrap.appendChild(bar);
+        wrap.appendChild(mapEl);
+        wrap.appendChild(srcEl);
+        stage.appendChild(wrap);
+
+        const map = L.map(mapEl, { zoomControl: true }).setView([45.676, -73.858], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors",
+          maxZoom: 19
+        }).addTo(map);
+
+        const group = L.featureGroup().addTo(map);
+        let featureCount = 0;
+
+        if (lower.endsWith(".geojson")) {
+          const gj = JSON.parse(text);
+          const layer = L.geoJSON(gj, {
+            style: { color: "#059669", fillColor: "#10b981", fillOpacity: 0.25, weight: 2.5 },
+            pointToLayer: (feat, latlng) => L.circleMarker(latlng, { radius: 7, color: "#064e3b", fillColor: "#10b981", fillOpacity: 0.85, weight: 2 }),
+            onEachFeature: (feat, lyr) => {
+              featureCount++;
+              const props = feat && feat.properties ? feat.properties : {};
+              const rows = Object.entries(props).slice(0, 10).map(([k, v]) => `<div><b>${String(k).replace(/</g, "&lt;")}</b>: ${String(v).replace(/</g, "&lt;")}</div>`).join("");
+              if (rows) lyr.bindPopup(`<div style="max-height:240px;overflow-y:auto;font-size:12px;">${rows}</div>`);
+            }
+          });
+          layer.addTo(group);
+        } else {
+          const xml = new DOMParser().parseFromString(text, "application/xml");
+          const placemarks = Array.from(xml.getElementsByTagName("Placemark"));
+          for (const pm of placemarks) {
+            const nameEl = pm.getElementsByTagName("name")[0];
+            const descEl = pm.getElementsByTagName("description")[0];
+            const title = nameEl ? nameEl.textContent.trim() : "Repère KML";
+            const descHtml = descEl ? sanitizeKmlPopupHtml(descEl.textContent) : "";
+            const popupHtml = `<div style="max-width:300px;max-height:240px;overflow-y:auto;font-size:12px;line-height:1.4;"><strong style="color:#064e3b;display:block;margin-bottom:4px;">${title.replace(/</g, "&lt;")}</strong>${descHtml}</div>`;
+
+            for (const pt of Array.from(pm.getElementsByTagName("Point"))) {
+              const coordEl = pt.getElementsByTagName("coordinates")[0];
+              const pairs = parseKmlCoordPairs(coordEl ? coordEl.textContent : "");
+              for (const ll of pairs) {
+                featureCount++;
+                L.circleMarker(ll, { radius: 8, color: "#064e3b", fillColor: "#10b981", fillOpacity: 0.85, weight: 2 }).bindPopup(popupHtml).addTo(group);
+              }
+            }
+            for (const ls of Array.from(pm.getElementsByTagName("LineString"))) {
+              const coordEl = ls.getElementsByTagName("coordinates")[0];
+              const pairs = parseKmlCoordPairs(coordEl ? coordEl.textContent : "");
+              if (pairs.length >= 2) {
+                featureCount++;
+                L.polyline(pairs, { color: "#059669", weight: 3 }).bindPopup(popupHtml).addTo(group);
+              }
+            }
+            for (const pg of Array.from(pm.getElementsByTagName("Polygon"))) {
+              const coordEl = pg.getElementsByTagName("coordinates")[0];
+              const pairs = parseKmlCoordPairs(coordEl ? coordEl.textContent : "");
+              if (pairs.length >= 3) {
+                featureCount++;
+                L.polygon(pairs, { color: "#059669", fillColor: "#10b981", fillOpacity: 0.25, weight: 2 }).bindPopup(popupHtml).addTo(group);
+              }
+            }
+          }
+        }
+
+        info.innerHTML = `<span>🗺️ Carte OpenStreetMap (calcul local navigateur)</span><span style="background:rgba(16,185,129,0.14);padding:2px 8px;border-radius:999px;font-size:11px;">${featureCount} entité${featureCount > 1 ? "s" : ""}</span>`;
+        if (featureCount > 0 && group.getBounds().isValid()) {
+          map.fitBounds(group.getBounds(), { padding: [36, 36], maxZoom: 16 });
+        }
+        setTimeout(() => map.invalidateSize(), 150);
+
+        let showingSource = false;
+        toggleBtn.addEventListener("click", () => {
+          showingSource = !showingSource;
+          if (showingSource) {
+            mapEl.style.display = "none";
+            srcEl.style.display = "block";
+            if (!srcEl.hasChildNodes()) renderTextDocViewer(text, fileObj, fileUrl, srcEl);
+            toggleBtn.textContent = "🗺️ Afficher la carte";
+          } else {
+            srcEl.style.display = "none";
+            mapEl.style.display = "block";
+            toggleBtn.textContent = "📄 Voir source brute";
+            setTimeout(() => map.invalidateSize(), 60);
+          }
+        });
+      }
 
       function renderTextDocViewer(text, fileObj, fileUrl, stage) {
     stage.innerHTML = "";
