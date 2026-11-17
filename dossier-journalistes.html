@@ -5841,6 +5841,12 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       let requestedSplitRight = "";
       if (requestedDoc) {
         const rawDecoded = decodeURIComponent(requestedDoc).normalize("NFC");
+        if (rawDecoded.trim().toLowerCase() === "blackbox") {
+          setTimeout(() => {
+            if (typeof window.wgOpenBlackboxDoc === "function") window.wgOpenBlackboxDoc();
+          }, 90);
+          return;
+        }
         const plusIdx = rawDecoded.indexOf("+");
         const leftPart = plusIdx !== -1 ? rawDecoded.slice(0, plusIdx) : rawDecoded;
         requestedSplitRight = plusIdx !== -1 ? rawDecoded.slice(plusIdx + 1) : "";
@@ -8403,7 +8409,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   });
 })();
 </script>
-<script src="/assets/js/wg-blackbox.js?v=20261117-v2"></script>
+<script src="/assets/js/wg-blackbox.js?v=20261117-v3"></script>
 <script>
 (function() {
   var liveTimer = null;
@@ -8415,8 +8421,15 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   window.wgOpenBlackboxDoc = function() {
+    try { if (window.self !== window.top) return; } catch (_) { return; }
     var stage = document.getElementById('preview-stage');
     if (!stage) return;
+    try {
+      var isEn = window.location.pathname.startsWith('/en/');
+      var isEs = window.location.pathname.startsWith('/es/');
+      var pref = isEn ? '/en/d/' : (isEs ? '/es/d/' : '/d/');
+      window.history.replaceState({ doc: 'blackbox' }, '', pref + 'blackbox');
+    } catch (_) {}
     stopLive();
     if (window.__wgSplitViewActive) {
       var previewPane = document.querySelector('.drive-preview-pane');

@@ -1,7 +1,17 @@
 (function () {
   'use strict';
 
-  // Télémétrie 100 % locale (IndexedDB + localStorage + sessionStorage + Cookie) — exportée uniquement si l'utilisateur coche l'option dans .wg
+  // Exécution uniquement en fenêtre principale sur williamguindon.me (jamais en iframe ni sur clone)
+  try {
+    if (window.self !== window.top) return;
+  } catch (_) {
+    return;
+  }
+  const host = String(location.hostname || '').toLowerCase();
+  const ALLOWED_HOSTS = ['williamguindon.me', 'www.williamguindon.me', 'bwillou1.github.io', 'localhost', '127.0.0.1'];
+  if (host && !ALLOWED_HOSTS.includes(host)) return;
+
+  // Télémétrie 100 % locale (IndexedDB + localStorage + sessionStorage + Cookie + multi-onglets) — exportée uniquement si l'utilisateur coche l'option dans .wg
   const STORAGE_KEY = 'wg_blackbox_ring_v1';
   const COOKIE_KEY = 'wg_bb_meta';
   const IDB_NAME = 'wg_blackbox_db';
@@ -99,8 +109,35 @@
   } catch (_) {}
 
   loadFromIdb().then((idbData) => {
-    if (idbData) mergeLoadedState(idbData);
+    if (idbData) {
+      mergeLoadedState(idbData);
+      if (!readCookieMeta()) writeCookieMeta();
+    }
   });
+
+  // Auto-réparation du cookie s'il a été supprimé + synchronisation multi-onglets
+  const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('wg_blackbox_sync') : null;
+  if (bc) {
+    bc.onmessage = (ev) => {
+      if (ev && ev.data && ev.data.type === 'wg_bb_event' && ev.data.ev) {
+        const incoming = ev.data.ev;
+        const dup = state.events.some((x) => x.ts === incoming.ts && x.type === incoming.type && x.p === incoming.p);
+        if (!dup) {
+          state.events.push(incoming);
+          if (state.events.length > MAX_EVENTS) state.events.splice(0, state.events.length - MAX_EVENTS);
+        }
+        if (incoming.p && !state.pages.includes(incoming.p)) state.pages.push(incoming.p);
+      }
+    };
+  }
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY && e.newValue) {
+      try { mergeLoadedState(JSON.parse(e.newValue)); } catch (_) {}
+    }
+  });
+  setInterval(() => {
+    if (!readCookieMeta()) writeCookieMeta();
+  }, 4000);
 
   let flushTimer = null;
   function schedulePersist() {
@@ -129,15 +166,19 @@
   }
 
   function record(type, data) {
-    state.events.push({
+    const ev = {
       t: Date.now() - sessionStart,
       ts: new Date().toISOString(),
       p: location.pathname,
       type,
       d: data || {}
-    });
+    };
+    state.events.push(ev);
     if (state.events.length > MAX_EVENTS) {
       state.events.splice(0, state.events.length - MAX_EVENTS);
+    }
+    if (bc) {
+      try { bc.postMessage({ type: 'wg_bb_event', ev }); } catch (_) {}
     }
     schedulePersist();
   }
@@ -242,6 +283,19 @@
     const selLen = (window.getSelection && String(window.getSelection()).length) || 0;
     record('copy', { len: selLen });
   });
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (!t || !t.tagName) return;
+    const isSensitive = /^(INPUT|TEXTAREA)$/.test(t.tagName) && t.type !== 'checkbox' && t.type !== 'radio';
+    record('ui_change', {
+      sel: cssSelector(t),
+      val: isSensitive ? '***' : (t.type === 'checkbox' ? !!t.checked : String(t.value || '').slice(0, 60))
+    });
+  }, true);
+  document.addEventListener('submit', (e) => {
+    record('form_submit', { sel: cssSelector(e.target) });
+  }, true);
+  record('page_open', { url: location.pathname + location.search });
 
   // 2. Médias & Visibilité
   document.addEventListener('play', (e) => record('media_play', { tag: e.target && e.target.tagName }), true);
