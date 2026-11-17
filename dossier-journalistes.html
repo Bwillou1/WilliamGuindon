@@ -8055,10 +8055,23 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     });
   }
 
+  function resolveSplitDocUrl(fullPath) {
+    var itemEl = document.querySelector('.drive-item[data-fullpath="' + CSS.escape(fullPath) + '"]');
+    var linkEl = itemEl ? itemEl.querySelector('a.drive-item-name') : null;
+    var href = linkEl ? linkEl.getAttribute('href') : '';
+    if (href && href !== '#') {
+      if (href.indexOf('archive.org/download/') !== -1) {
+        return href.replace('archive.org/download/', 'archive.org/cors/');
+      }
+      return href;
+    }
+    return '/assets/docs/' + fullPath.split('/').map(encodeURIComponent).join('/');
+  }
+
   function loadRightDoc(fullPath, displayName) {
     if (!fullPath || !splitStage) return;
     if (docSelect) docSelect.value = fullPath;
-    var url = '/assets/docs/' + fullPath.split('/').map(encodeURIComponent).join('/');
+    var url = resolveSplitDocUrl(fullPath);
     var lower = fullPath.toLowerCase();
     var theme = document.documentElement.getAttribute('data-theme') || 'light';
     if (lower.endsWith('.pdf')) {
