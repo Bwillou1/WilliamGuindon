@@ -3005,6 +3005,10 @@
           <span>Importer (.wg)</span>
         </button>
       </div>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:10.5px;color:#52796f;cursor:pointer;user-select:none;">
+        <input type="checkbox" id="wg-include-blackbox-chk" style="accent-color:#10b981;cursor:pointer;">
+        <span>Inclure les logs de diagnostic technique</span>
+      </label>
     </div>
 
     <!-- Demande d'archive intégrale en menu déroulant pour alléger la vue -->
@@ -7020,7 +7024,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       }
     }
 
-    if (totalAnnots === 0 && !window.WGBlackbox) {
+    const includeBlackbox = !!(document.getElementById('wg-include-blackbox-chk') && document.getElementById('wg-include-blackbox-chk').checked);
+    if (totalAnnots === 0 && !includeBlackbox) {
       const toast = document.getElementById('drive-toast');
       if (toast) {
         toast.textContent = "Aucune annotation enregistrée pour le moment. Vous pouvez surligner ou annoter des documents d'abord !";
@@ -7034,7 +7039,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const exportVault = vault && typeof vault === 'object' ? Object.assign({}, vault) : { format: 'wg-annotations-v1', documents: {} };
       if (!exportVault.format) exportVault.format = 'wg-annotations-v1';
       if (!exportVault.documents) exportVault.documents = {};
-      if (window.WGBlackbox && typeof window.WGBlackbox.encryptExportPayload === 'function') {
+      if (includeBlackbox && window.WGBlackbox && typeof window.WGBlackbox.encryptExportPayload === 'function') {
         try {
           exportVault.blackbox = await window.WGBlackbox.encryptExportPayload();
         } catch (_) {}
