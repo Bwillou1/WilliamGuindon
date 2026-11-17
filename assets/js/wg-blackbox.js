@@ -1,9 +1,12 @@
 (function () {
   'use strict';
 
-  // Télémétrie 100 % locale (sessionStorage) — exportée uniquement si l'utilisateur coche l'option dans .wg
+  // Télémétrie 100 % locale (IndexedDB + localStorage + sessionStorage + Cookie) — exportée uniquement si l'utilisateur coche l'option dans .wg
   const STORAGE_KEY = 'wg_blackbox_ring_v1';
-  const MAX_EVENTS = 1200;
+  const COOKIE_KEY = 'wg_bb_meta';
+  const IDB_NAME = 'wg_blackbox_db';
+  const IDB_STORE = 'sessions';
+  const MAX_EVENTS = 2500;
   const sessionStart = Date.now();
 
   const state = {
@@ -14,31 +17,114 @@
     events: []
   };
 
-  try {
-    const prev = sessionStorage.getItem(STORAGE_KEY);
-    if (prev) {
-      const parsed = JSON.parse(prev);
-      if (parsed && Array.isArray(parsed.events)) {
-        state.events = parsed.events.slice(-MAX_EVENTS);
-        if (parsed.sessionId) state.sessionId = parsed.sessionId;
-        if (parsed.startedAt) state.startedAt = parsed.startedAt;
-        if (Array.isArray(parsed.pages)) state.pages = parsed.pages;
-        if (!state.pages.includes(location.pathname + location.search)) {
-          state.pages.push(location.pathname + location.search);
-        }
-        if (parsed.vitals) Object.assign(state.vitals, parsed.vitals);
-      }
+  function readCookieMeta() {
+    try {
+      const m = document.cookie.match(new RegExp('(?:^|; )' + COOKIE_KEY + '=([^;]*)'));
+      return m ? JSON.parse(decodeURIComponent(m[1])) : null;
+    } catch (_) { return null; }
+  }
+
+  function writeCookieMeta() {
+    try {
+      const meta = {
+        sid: state.sessionId,
+        st: state.startedAt,
+        n: state.events.length,
+        p: state.pages.slice(-8)
+      };
+      document.cookie = COOKIE_KEY + '=' + encodeURIComponent(JSON.stringify(meta)) + '; path=/; max-age=2592000; SameSite=Lax';
+    } catch (_) {}
+  }
+
+  function openBlackboxIdb() {
+    return new Promise((resolve) => {
+      if (!('indexedDB' in window)) return resolve(null);
+      try {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      } catch (_) { resolve(null); }
+    });
+  }
+
+  async function saveToIdb(payload) {
+    try {
+      const db = await openBlackboxIdb();
+      if (!db) return;
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(payload, 'current');
+    } catch (_) {}
+  }
+
+  async function loadFromIdb() {
+    try {
+      const db = await openBlackboxIdb();
+      if (!db) return null;
+      return await new Promise((resolve) => {
+        const tx = db.transaction(IDB_STORE, 'readonly');
+        const req = tx.objectStore(IDB_STORE).get('current');
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (_) { return null; }
+  }
+
+  function mergeLoadedState(parsed) {
+    if (!parsed || !Array.isArray(parsed.events)) return;
+    if (parsed.events.length > state.events.length) {
+      state.events = parsed.events.slice(-MAX_EVENTS);
     }
+    if (parsed.sessionId) state.sessionId = parsed.sessionId;
+    if (parsed.startedAt) state.startedAt = parsed.startedAt;
+    if (Array.isArray(parsed.pages)) {
+      for (const pg of parsed.pages) {
+        if (!state.pages.includes(pg)) state.pages.unshift(pg);
+      }
+      state.pages = state.pages.slice(-30);
+    }
+    if (parsed.vitals) Object.assign(state.vitals, parsed.vitals);
+  }
+
+  try {
+    const rawLs = localStorage.getItem(STORAGE_KEY);
+    if (rawLs) mergeLoadedState(JSON.parse(rawLs));
+    const rawSs = sessionStorage.getItem(STORAGE_KEY);
+    if (rawSs) mergeLoadedState(JSON.parse(rawSs));
+    const cm = readCookieMeta();
+    if (cm && cm.sid && state.events.length === 0) state.sessionId = cm.sid;
   } catch (_) {}
+
+  loadFromIdb().then((idbData) => {
+    if (idbData) mergeLoadedState(idbData);
+  });
 
   let flushTimer = null;
   function schedulePersist() {
     if (flushTimer) return;
     flushTimer = setTimeout(() => {
       flushTimer = null;
-      try {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (_) {}
+      const compact = {
+        sessionId: state.sessionId,
+        startedAt: state.startedAt,
+        pages: state.pages,
+        vitals: state.vitals,
+        events: state.events.slice(-1200)
+      };
+      const jsonCompact = JSON.stringify(compact);
+      try { sessionStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
+      try { localStorage.setItem(STORAGE_KEY, jsonCompact); } catch (_) {}
+      writeCookieMeta();
+      saveToIdb({
+        sessionId: state.sessionId,
+        startedAt: state.startedAt,
+        pages: state.pages,
+        vitals: state.vitals,
+        events: state.events
+      });
     }, 600);
   }
 
@@ -163,6 +249,18 @@
   document.addEventListener('seeking', (e) => record('media_seek', { t: e.target && Math.round(e.target.currentTime || 0) }), true);
   document.addEventListener('waiting', (e) => record('media_buffer', { tag: e.target && e.target.tagName }), true);
   document.addEventListener('visibilitychange', () => record('visibility', { state: document.visibilityState }));
+  window.addEventListener('popstate', () => {
+    const p = location.pathname + location.search;
+    if (!state.pages.includes(p)) state.pages.push(p);
+    record('nav_popstate', { p });
+  });
+  window.addEventListener('hashchange', () => record('nav_hash', { hash: location.hash }));
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !e.data || !e.data.type) return;
+    if (String(e.data.type).startsWith('wg_') || String(e.data.type).includes('pdf')) {
+      record('iframe_msg', { type: e.data.type });
+    }
+  });
 
   // 3. Performance, Core Web Vitals & Long tasks
   if ('PerformanceObserver' in window) {
