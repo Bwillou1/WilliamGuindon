@@ -7224,6 +7224,42 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   ];
 
   var idx = 0;
+  var initialTheme = null;
+  var initialLang = null;
+
+  function restoreInitialState() {
+    // 1. Fermer le menu Options s'il est resté ouvert
+    var dd = document.getElementById('dropdown-tech-tools');
+    if (dd) dd.removeAttribute('open');
+
+    // 2. Revenir au mode « Lire » dans le lecteur PDF (ferme les outils d'annotation)
+    try {
+      var p = getPreviewIframeDoc();
+      if (p.doc) {
+        var readBtn = findInDocDeep(p.doc, function(el) {
+          var txt = (el.textContent || el.getAttribute('aria-label') || el.title || '').trim();
+          return txt === 'Lire' || txt.includes('Mode lecture');
+        });
+        if (readBtn) readBtn.click();
+      }
+    } catch (_) {}
+
+    // 3. Restaurer la langue d'affichage initiale (pas de traduction résiduelle)
+    var sel = document.getElementById('select-translate-lang');
+    if (sel && initialLang && sel.value !== initialLang) {
+      sel.value = initialLang;
+      sel.dispatchEvent(new Event('change'));
+    }
+
+    // 4. Restaurer le thème initial s'il a été basculé pendant l'étape 5
+    if (initialTheme) {
+      var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      if (currentTheme !== initialTheme) {
+        var tBtn = document.getElementById('btn-theme-toggle-dj');
+        if (tBtn) tBtn.click();
+      }
+    }
+  }
 
   function endTour() {
     tourRunId++;
@@ -7232,6 +7268,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (ringEl) ringEl.style.display = 'none';
     if (sparkleRing) sparkleRing.style.display = 'none';
     if (steps[idx] && steps[idx].onLeave) steps[idx].onLeave();
+    restoreInitialState();
     markTourSeenEverywhere();
     backdrop.style.display = 'none';
     spotlight.style.display = 'none';
@@ -7303,6 +7340,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
   window.startDossierTour = function(force) {
     function launch() {
+      initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      var sel = document.getElementById('select-translate-lang');
+      initialLang = sel ? sel.value : 'fr';
       markTourSeenEverywhere();
       idx = 0;
       backdrop.style.display = 'block';
