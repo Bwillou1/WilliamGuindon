@@ -7409,7 +7409,10 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     if (card.style.display === 'block') renderStep();
   });
 
-  setTimeout(function() { window.startDossierTour(false); }, 600);
+  setTimeout(function() {
+    if (/^\/d\//.test(window.location.pathname) || /[?&](doc|file)=/.test(window.location.search)) return;
+    window.startDossierTour(false);
+  }, 600);
 })();
 </script>
 </body>

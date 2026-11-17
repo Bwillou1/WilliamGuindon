@@ -1592,6 +1592,16 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
         }
       });
 
+      // Chien de garde (9 s) : si WebAssembly/Worker bloque en navigation privée, bascule sur le lecteur natif
+      loadingWatchdogTimer = setTimeout(() => {
+        if (activeEmbedRegistry || !dom.container) return;
+        dom.container.textContent = '';
+        const fallbackIframe = document.createElement('iframe');
+        fallbackIframe.style.cssText = 'width:100%;height:100%;border:none;';
+        fallbackIframe.src = getSafeLocalDocUrl(fullDocUrl);
+        dom.container.appendChild(fallbackIframe);
+      }, 9000);
+
       // Configuration de la persistance et du verrouillage probatoire strict des annotations
       if (embedViewerInstance && embedViewerInstance.registry) {
         embedViewerInstance.registry.then(registry => {
