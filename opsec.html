@@ -821,7 +821,27 @@
     var EXIT_URL = 'https://meteo.gc.ca/?zoom=7&center=46.23130720,-72.69489997';
 
     function triggerQuickExit() {
-      // 1. Remplacement de l'historique direct pour empêcher le bouton "Précédent"
+      // 1. Destruction immédiate de la Blackbox (mémoire, localStorage, sessionStorage, IndexedDB et autres onglets)
+      try {
+        if (window.WGBlackbox && typeof window.WGBlackbox.destroy === 'function') {
+          window.WGBlackbox.destroy();
+        }
+      } catch (_) {}
+      try { localStorage.removeItem('wg_blackbox_ring_v1'); } catch (_) {}
+      try { sessionStorage.removeItem('wg_blackbox_ring_v1'); } catch (_) {}
+      try { sessionStorage.removeItem('wg_imported_blackbox_v1'); } catch (_) {}
+      try {
+        if ('indexedDB' in window) indexedDB.deleteDatabase('wg_blackbox_db');
+      } catch (_) {}
+      try {
+        if ('BroadcastChannel' in window) {
+          var ch = new BroadcastChannel('wg_blackbox_sync');
+          ch.postMessage({ type: 'wg_bb_destroy' });
+          ch.close();
+        }
+      } catch (_) {}
+
+      // 2. Remplacement de l'historique direct pour empêcher le bouton "Précédent"
       try {
         window.location.replace(EXIT_URL);
       } catch (_) {

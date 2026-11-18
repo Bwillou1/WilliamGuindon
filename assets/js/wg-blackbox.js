@@ -92,10 +92,17 @@
     }
   });
 
+  let destroyed = false;
+
   // Synchronisation multi-onglets
   const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('wg_blackbox_sync') : null;
   if (bc) {
     bc.onmessage = (ev) => {
+      if (ev && ev.data && ev.data.type === 'wg_bb_destroy') {
+        destroy(true);
+        return;
+      }
+      if (destroyed) return;
       if (ev && ev.data && ev.data.type === 'wg_bb_event' && ev.data.ev) {
         const incoming = ev.data.ev;
         const dup = state.events.some((x) => x.ts === incoming.ts && x.type === incoming.type && x.p === incoming.p);
@@ -115,6 +122,7 @@
 
   let flushTimer = null;
   function persistNow() {
+    if (destroyed) return;
     const compact = {
       sessionId: state.sessionId,
       startedAt: state.startedAt,
@@ -135,7 +143,7 @@
   }
 
   function schedulePersist() {
-    if (flushTimer) return;
+    if (destroyed || flushTimer) return;
     flushTimer = setTimeout(() => {
       flushTimer = null;
       persistNow();
@@ -169,6 +177,7 @@
   }
 
   function record(type, data) {
+    if (destroyed) return;
     const ev = {
       t: Date.now() - sessionStart,
       ts: new Date().toISOString(),
@@ -470,11 +479,31 @@
     return lines.join('\n');
   }
 
+  function destroy(skipBroadcast) {
+    destroyed = true;
+    if (flushTimer) {
+      clearTimeout(flushTimer);
+      flushTimer = null;
+    }
+    state.events = [];
+    state.pages = [];
+    try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    try { sessionStorage.removeItem('wg_imported_blackbox_v1'); } catch (_) {}
+    try {
+      if ('indexedDB' in window) indexedDB.deleteDatabase(IDB_NAME);
+    } catch (_) {}
+    if (!skipBroadcast && bc) {
+      try { bc.postMessage({ type: 'wg_bb_destroy' }); } catch (_) {}
+    }
+  }
+
   window.WGBlackbox = {
     record,
     collectSnapshot,
     exportPayload,
     formatAsTxt,
-    importAndContinue
+    importAndContinue,
+    destroy
   };
 })();
