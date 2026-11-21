@@ -249,6 +249,24 @@ async function run() {
       }
     }
 
+    // Correction du Google Knowledge Graph ID (P2671) : supprimer /g/11f0_2fm1h
+    const p2671Claims = currentClaims["P2671"] || [];
+    for (const c of p2671Claims) {
+      const v = c.mainsnak?.datavalue?.value;
+      if (v !== "/g/11ntpnwc2z") {
+        await removeClaim(csrfToken, c.id);
+      }
+    }
+
+    // Suppression de l'occupation non sourcée P106 = Q1476215 (écologiste généraliste)
+    const p106Claims = currentClaims["P106"] || [];
+    for (const c of p106Claims) {
+      const v = c.mainsnak?.datavalue?.value;
+      if (v?.["numeric-id"] === 1476215 || v?.id === "Q1476215") {
+        await removeClaim(csrfToken, c.id);
+      }
+    }
+
     // Suppression de l'identifiant BAnQ (P4901) erroné
     const p4901Claims = currentClaims['P4901'] || [];
     for (const c of p4901Claims) {
@@ -284,6 +302,7 @@ async function run() {
     await setClaimIfMissing(csrfToken, currentClaims, 'P1477', 'value', { 'text': 'William Tristan Logan Théo Guindon', 'language': 'fr' }, 'Nom de naissance complet');
 
     // 3. Identifiants plateformes & Graphes
+    await setClaimIfMissing(csrfToken, currentClaims, 'P2671', 'value', '/g/11ntpnwc2z', 'Google Knowledge Graph: /g/11ntpnwc2z');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1960', 'value', 'K3af0voAAAAJ', 'Google Scholar: K3af0voAAAAJ');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
