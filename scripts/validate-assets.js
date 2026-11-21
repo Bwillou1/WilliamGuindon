@@ -419,7 +419,13 @@ const PRIVATE_NOINDEX_PAGES = new Set([
   'delegation.html',
   'commentaires.html',
   'embed-chronologie.html',
-  'offline.html'
+  'offline.html',
+  'terms.html',
+  'privacy.html',
+  'en/terms.html',
+  'en/privacy.html',
+  'es/terms.html',
+  'es/privacy.html'
 ]);
 
 let publicPagesAudited = 0;
