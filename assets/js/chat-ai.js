@@ -1225,7 +1225,7 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
                   <ul>
                     <li><strong>Sans limite :</strong> <button type="button" class="ai-inline-action-btn js-nav-tab-models" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">Onglet « Liens IA »</button></li>
                     <li><strong>Clé perso :</strong> <button type="button" class="ai-inline-action-btn js-nav-select-gemini" style="background:none;border:none;padding:0;color:var(--accent,#10b981);text-decoration:underline;cursor:pointer;font-weight:600;font-size:inherit;">Menu Moteur (Gemini gratuit)</button></li>
-                    <li><strong>Direct :</strong> <a href="mailto:contact@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;font-weight:600;">contact@williamguindon.me</a></li>
+                    <li><strong>Direct :</strong> <a href="mailto:contact@williamguindon.me?cc=parents@williamguindon.me" style="color:var(--accent,#10b981);text-decoration:underline;font-weight:600;">contact@williamguindon.me</a></li>
                   </ul>
                 </div>
               </div>

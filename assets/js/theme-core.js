@@ -3617,7 +3617,7 @@
     document.querySelectorAll('.js-secure-mail').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = 'mailto:contact@williamguindon.me';
+        window.location.href = 'mailto:contact@williamguindon.me?cc=parents@williamguindon.me';
       });
     });
 
