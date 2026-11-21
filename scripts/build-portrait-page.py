@@ -59,7 +59,7 @@ html_content = """<!DOCTYPE html>
       "alternateName": "William Tristan Logan Théo Guindon",
       "birthDate": "2011-08-03",
       "birthPlace": "Sainte-Marthe-sur-le-Lac, Québec, Canada",
-      "jobTitle": "Militant écologiste, juriste citoyen et auteur de la communication SEM-26-003",
+      "jobTitle": "Militant écologiste",
       "url": "https://williamguindon.me/",
       "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
       "sameAs": [
@@ -67,7 +67,6 @@ html_content = """<!DOCTYPE html>
         "https://www.wikidata.org/wiki/Q141439370",
         "https://orcid.org/0009-0009-8845-4456",
         "https://isni.org/isni/0000000531719103",
-        "https://g.dev/williamguindondev",
         "https://github.com/Bwillou1"
       ]
     },
