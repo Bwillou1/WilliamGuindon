@@ -76,7 +76,11 @@ async function syncDossierStatus() {
     reseaux_sociaux: {
       linkedin: "https://www.linkedin.com/in/william-guindon/",
       facebook: "https://www.facebook.com/williamguindon.officiel",
-      youtube: "https://www.youtube.com/@william-guindon"
+      youtube: "https://www.youtube.com/@william-guindon",
+      github: "https://github.com/Bwillou1",
+      orcid: "https://orcid.org/0009-0009-8845-4456",
+      wikidata: "https://www.wikidata.org/wiki/Q141439370",
+      podchaser: "https://www.podchaser.com/creators/-108CiDwM5b"
     },
     timestamp_sync: new Date().toISOString()
   };
