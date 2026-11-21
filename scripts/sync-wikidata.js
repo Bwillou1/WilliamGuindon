@@ -304,6 +304,7 @@ async function run() {
     // 3. Identifiants plateformes & Graphes
     await setClaimIfMissing(csrfToken, currentClaims, 'P2671', 'value', '/g/11ntpnwc2z', 'Google Knowledge Graph: /g/11ntpnwc2z');
     await setClaimIfMissing(csrfToken, currentClaims, 'P1960', 'value', 'K3af0voAAAAJ', 'Google Scholar: K3af0voAAAAJ');
+    await setClaimIfMissing(csrfToken, currentClaims, 'P10283', 'value', 'A5141063521', 'OpenAlex: A5141063521');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2037', 'value', 'Bwillou1', 'GitHub: Bwillou1');
     await setClaimIfMissing(csrfToken, currentClaims, 'P2013', 'value', 'williamguindon.officiel', 'Facebook: williamguindon.officiel');
     await setClaimIfMissing(csrfToken, currentClaims, 'P12045', 'value', 'Bwillou1', 'Codeberg: Bwillou1');
