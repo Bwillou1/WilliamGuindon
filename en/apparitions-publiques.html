@@ -650,14 +650,15 @@
 .wg-video-play-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(16,185,129,.94);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.45);transition:transform .2s ease,background .2s ease}
 .wg-video-trigger:hover .wg-video-play-badge{transform:translate(-50%,-50%) scale(1.08);background:#059669}
 .wg-video-trigger-label{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;background:linear-gradient(transparent,rgba(2,6,23,.88));color:#f8fafc;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:space-between}
-media-dialog-backdrop[data-scope="document"]{position:fixed;inset:0;z-index:9998;background:rgba(2,6,23,.82);backdrop-filter:blur(4px);transition:opacity .2s ease}
-media-dialog-popup[data-scope="document"]{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;transition:opacity .2s ease}
-media-dialog-backdrop:not([data-open]),media-dialog-popup:not([data-open]){display:none}
+media-dialog-backdrop{position:fixed!important;inset:0!important;z-index:9998!important;background:rgba(2,6,23,.85)!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;transition:opacity .2s ease}
+media-dialog-popup{position:fixed!important;inset:0!important;z-index:9999!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:20px!important;pointer-events:none!important;background:transparent!important;border:none!important;width:auto!important;max-width:none!important;box-shadow:none!important;transition:opacity .2s ease}
+media-dialog-popup:before,media-dialog-popup:after{display:none!important}
+media-dialog-backdrop:not([data-open]),media-dialog-popup:not([data-open]){display:none!important}
 media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-style],media-dialog-popup[data-starting-style],media-dialog-popup[data-ending-style]{opacity:0}
-.wg-dialog-box{pointer-events:auto;width:min(100%,960px);background:#0f172a;color:#f8fafc;border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:16px;box-shadow:0 25px 60px rgba(0,0,0,.6)}
+.wg-dialog-box{pointer-events:auto!important;width:min(100%,960px)!important;background:#0f172a!important;color:#f8fafc!important;border:1px solid rgba(148,163,184,.3)!important;border-radius:14px!important;padding:16px!important;box-shadow:0 25px 60px rgba(0,0,0,.75)!important}
 .wg-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .wg-dialog-title{margin:0;font-size:1rem;font-weight:700;color:#f8fafc}
-.wg-dialog-close{appearance:none;border:1px solid rgba(148,163,184,.3);background:rgba(255,255,255,.08);color:#f8fafc;border-radius:8px;padding:6px 12px;font-size:.85rem;font-weight:700;cursor:pointer}
+.wg-dialog-close{appearance:none;border:1px solid rgba(148,163,184,.3);background:rgba(255,255,255,.08);color:#f8fafc;border-radius:8px;padding:6px 12px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .wg-dialog-close:hover{background:rgba(255,255,255,.16)}
 </style>
 </head>
@@ -1349,7 +1350,9 @@ media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-sty
                     <media-dialog-title class="wg-dialog-title">TVBL interview — Environmental preservation and Stablex file</media-dialog-title>
                     <media-dialog-close class="wg-dialog-close" aria-label="Close player">Close ✕</media-dialog-close>
                   </div>
-                  <video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;"><video controls preload="none" loading="lazy" width="1280" height="720" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Entrevue_TVBL_William_Guindon_juillet.mp4" type="video/mp4"></video></video-skin></video-player>
+                  <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
+                    <iframe data-src="https://www.youtube-nocookie.com/embed/lC7uBOXQsQs?start=30&amp;autoplay=1" src="" title="TVBL interview — Environmental preservation and Stablex file" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                  </div>
                 </div>
               </media-dialog-popup>
             </media-dialog>
@@ -1395,7 +1398,9 @@ media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-sty
                     <media-dialog-title class="wg-dialog-title">Face to face at the Municipal Council: Mortality at Lake Fauvel &amp; Public Ethics</media-dialog-title>
                     <media-dialog-close class="wg-dialog-close" aria-label="Close player">Close ✕</media-dialog-close>
                   </div>
-                  <video-player><video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;"><video controls preload="none" loading="lazy" width="1280" height="720" playsinline style="width:100%;height:100%;background:#000;"><source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Intervention_Blainville_lac_Fauvel.mp4" type="video/mp4"></video></video-skin></video-player>
+                  <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
+                    <iframe data-src="https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?start=6&amp;autoplay=1" src="" title="Face to face at the Municipal Council: Mortality at Lake Fauvel &amp; Public Ethics" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                  </div>
                 </div>
               </media-dialog-popup>
             </media-dialog>
@@ -1704,13 +1709,13 @@ media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-sty
                     <media-dialog-title class="wg-dialog-title">Réseau ACTES (CSQ) Symposium — Youth mobilization &amp; engagement in Mauricie</media-dialog-title>
                     <media-dialog-close class="wg-dialog-close" aria-label="Close player">Close ✕</media-dialog-close>
                   </div>
-                  <video-player>
-                    <video-skin style="display:block;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;">
-                      <video controls preload="none" loading="lazy" width="1280" height="720" playsinline style="width:100%;height:100%;background:#000;">
-                        <source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Montage_ACTES_HD.mp4" type="video/mp4">
-                      </video>
-                    </video-skin>
-                  </video-player>
+                  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:36px 20px;border-radius:10px;background:#0b1320;border:1px solid rgba(148,163,184,0.2);text-align:center;">
+                    <p style="margin:0;font-size:1rem;color:#e2e8f0;">The ACTES Symposium video clip is currently being finalized.</p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+                      <a href="https://web.archive.org/web/20261114130611/https://csq.zohobackstage.ca/reseau_actes_2026#/speakers?lang=fr" target="_blank" rel="noopener noreferrer" style="color:#10b981;border:1px solid #10b981;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600;">View archived program ↗</a>
+                      <a href="https://actes.lacsq.org/" target="_blank" rel="noopener noreferrer" style="color:#cbd5e1;border:1px solid rgba(148,163,184,0.3);padding:8px 14px;border-radius:8px;text-decoration:none;font-size:0.9rem;">Official ACTES website ↗</a>
+                    </div>
+                  </div>
                 </div>
               </media-dialog-popup>
             </media-dialog>
@@ -2045,18 +2050,35 @@ media-dialog-backdrop[data-starting-style],media-dialog-backdrop[data-ending-sty
     btn.addEventListener('click',function(){
       var dlg=document.getElementById(btn.getAttribute('data-video-dialog'));
       if(!dlg)return;
+      var iframe=dlg.querySelector('iframe[data-src]');
+      if(iframe && !iframe.getAttribute('src')){
+        iframe.setAttribute('src', iframe.getAttribute('data-src'));
+      }
       setTimeout(function(){if(!dlg.open)dlg.open=true;},0);
     });
   });
   document.querySelectorAll('media-dialog').forEach(function(dlg){
     var bd=dlg.querySelector('media-dialog-backdrop');
     if(bd)bd.addEventListener('click',function(){dlg.open=false;});
+    var closeBtn=dlg.querySelector('.wg-dialog-close, media-dialog-close');
+    if(closeBtn)closeBtn.addEventListener('click',function(){dlg.open=false;});
     dlg.addEventListener('open-change',function(e){
-      var v=dlg.querySelector('video');
-      if(!v)return;
       var isOpen=(e&&e.detail&&typeof e.detail.open==='boolean')?e.detail.open:dlg.open;
-      if(isOpen){var p=v.play();if(p&&p.catch)p.catch(function(){});}
-      else{v.pause();}
+      var iframe=dlg.querySelector('iframe[data-src]');
+      if(iframe){
+        if(isOpen){
+          if(!iframe.getAttribute('src')){
+            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+          }
+        }else{
+          iframe.setAttribute('src','');
+        }
+      }
+      var v=dlg.querySelector('video');
+      if(v){
+        if(isOpen){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+        else{v.pause();}
+      }
     });
   });
 })();
