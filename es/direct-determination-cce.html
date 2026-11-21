@@ -137,16 +137,31 @@
     </section>
 
     <section style="margin-bottom:28px;">
-      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:16px;border:1px solid rgba(148,163,184,0.28);background:#000;box-shadow:0 18px 40px rgba(0,0,0,0.35);">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/VjIX6yPM2Ag"
-          title="Cita de video · Determinación CCA (SEM-26-003) — William Guindon"
-          style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen>
-        </iframe>
+      <div id="yt-consent-facade" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:16px;border:1px solid rgba(148,163,184,0.28);background:#0f172a;box-shadow:0 18px 40px rgba(0,0,0,0.35);">
+        <img src="/assets/img/og-image-1200x630.png" alt="Cita de video · Determinación CCA (SEM-26-003) — William Guindon" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.28;filter:blur(2px);">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:radial-gradient(circle,rgba(15,23,42,0.55) 0%,rgba(15,23,42,0.88) 100%);">
+          <button type="button" id="btn-load-yt-broadcast" style="display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:9999px;border:1px solid rgba(16,185,129,0.6);background:#047857;color:#ffffff;font-size:0.98rem;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(4,120,87,0.4);font-family:inherit;">
+            ▶ Cargar el reproductor de YouTube
+          </button>
+          <p style="max-width:520px;margin:14px 0 8px;font-size:0.82rem;line-height:1.5;color:#cbd5e1;">
+            De acuerdo con nuestra política de privacidad (cero cookies de terceros sin consentimiento), no se establece conexión con YouTube hasta que active el reproductor.
+          </p>
+          <a href="https://www.youtube.com/watch?v=VjIX6yPM2Ag" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;font-weight:700;color:#34d399;text-decoration:none;">
+            Ver directamente en YouTube ↗
+          </a>
+        </div>
       </div>
+      <script>
+        (function(){
+          var b = document.getElementById('btn-load-yt-broadcast');
+          if(!b) return;
+          b.addEventListener('click', function(){
+            var box = document.getElementById('yt-consent-facade');
+            if(!box) return;
+            box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/VjIX6yPM2Ag?rel=0&autoplay=1" title="Cita de video · Determinación CCA (SEM-26-003) — William Guindon" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+          });
+        })();
+      </script>
     </section>
 
     <section style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:36px;">
