@@ -218,6 +218,13 @@
     if (!player || player.getAttribute(ENHANCED_ATTR) === '1') return;
     player.setAttribute(ENHANCED_ATTR, '1');
 
+    // Retirer les contrôles natifs (utilisés en repli sans JavaScript) dès que Video.js 10 prend le relais
+    const nativeMedia = player.querySelector('video[controls], audio[controls]');
+    if (nativeMedia) {
+      nativeMedia.controls = false;
+      nativeMedia.removeAttribute('controls');
+    }
+
     ensureGoogleCast(player);
 
     const api = window.VideoJS10;

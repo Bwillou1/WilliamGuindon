@@ -614,6 +614,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
 <!-- BRANDKIT:END -->
+<link rel="stylesheet" href="/assets/vendor/videojs/videojs-skin.css">
+<script src="/assets/vendor/videojs/videojs-player.min.js" defer></script>
 </head>
 <body><a href="#main-content" class="skip-link">Ir al contenido principal</a>
 
@@ -1365,10 +1367,13 @@
               </div>
               <p itemprop="description">Rencontre et mobilisation du Réseau ACTES en Mauricie. Présence et intervention de William Guindon le <strong>13 de noviembre de 2026</strong> sobre el compromiso juvenil y la defensa ciudadana del medio ambiente.</p>
               <div class="actes-video-wrap" style="margin-top: 12px;">
-                <video controls preload="metadata" playsinline style="width: 100%; max-height: 360px; border-radius: 8px; background: #000; display: block;">
-                  <source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Montage_ACTES_HD.mp4" type="video/mp4" onerror="var w=this.closest('.actes-video-wrap');if(w){var v=w.querySelector('video');var fb=w.querySelector('.actes-video-fallback');if(v)v.style.display='none';if(fb)fb.style.display='flex';}">
-                  Su navegador no admite la reproducción de video HTML5.
-                </video>
+                <video-player>
+                  <video controls-skin style="display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 360px; border-radius: 8px; overflow: hidden;">
+                    <video preload="metadata" playsinline style="width: 100%; height: 100%; background: #000;" onerror="var w=this.closest(\'.actes-video-wrap\');if(w){var v=w.querySelector(\'video-player\');var fb=w.querySelector(\'.actes-video-fallback\');if(v)v.style.display=\'none\';if(fb)fb.style.display=\'flex\';}">
+                      <source src="https://github.com/Bwillou1/WilliamGuindon/releases/download/videos/Montage_ACTES_HD.mp4" type="video/mp4">
+                    </video>
+                  </video-skin>
+                </video-player>
                 <div class="actes-video-fallback" style="display:none;flex-direction:column;gap:8px;padding:14px 16px;border-radius:8px;background:#f4f8f5;border:1px solid #cce0d4;color:#1b4332;font-size:0.9rem;">
                   <span>Video temporalmente no disponible (archivo MP4 pendiente de publicación en GitHub Releases).</span>
                   <a href="https://web.archive.org/web/20261114130611/https://csq.zohobackstage.ca/reseau_actes_2026#/speakers?lang=fr" target="_blank" rel="noopener noreferrer" style="color:#0a3622;font-weight:700;text-decoration:underline;">Consultar el programa archivado del coloquio ACTES ↗</a>
