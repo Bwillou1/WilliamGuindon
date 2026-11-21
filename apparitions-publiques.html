@@ -1377,7 +1377,13 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
                   <button type="button" class="wg-dialog-close" aria-label="Fermer le lecteur">Fermer ✕</button>
                 </div>
                 <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
-                  <iframe data-src="https://www.youtube-nocookie.com/embed/lC7uBOXQsQs?start=30&amp;autoplay=1" src="" title="Entrevue TVBL — Préservation de l'environnement et dossier Stablex" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                  <iframe data-src="https://www.youtube.com/embed/lC7uBOXQsQs?start=30&amp;rel=0" src="" title="Entrevue TVBL — Préservation de l'environnement et dossier Stablex" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
+                  <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" style="color:#10b981;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                    Visionner directement sur YouTube ↗
+                  </a>
+                  <span style="color:#94a3b8;font-size:0.78rem;">Entrevue TVBL (12 min)</span>
                 </div>
               </div>
             </dialog>
@@ -1428,7 +1434,13 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
                   <button type="button" class="wg-dialog-close" aria-label="Fermer le lecteur">Fermer ✕</button>
                 </div>
                 <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
-                  <iframe data-src="https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?start=6&amp;autoplay=1" src="" title="Face-à-face au Conseil municipal : Mortalité au lac Fauvel &amp; Éthique publique" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                  <iframe data-src="https://www.youtube.com/embed/jegYlVFOW2Y?start=6&amp;rel=0" src="" title="Face-à-face au Conseil municipal : Mortalité au lac Fauvel &amp; Éthique publique" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
+                  <a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer" style="color:#10b981;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                    Visionner directement sur YouTube ↗
+                  </a>
+                  <span style="color:#94a3b8;font-size:0.78rem;">Conseil municipal de Blainville</span>
                 </div>
               </div>
             </dialog>
@@ -2169,17 +2181,17 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
       var id = btn.getAttribute('data-video-dialog');
       var dlg = document.getElementById(id);
       if (!dlg) return;
+      if (typeof dlg.showModal === 'function') {
+        if (!dlg.open) dlg.showModal();
+      } else {
+        dlg.setAttribute('open', '');
+      }
       var iframe = dlg.querySelector('iframe[data-src]');
       if (iframe) {
         var dSrc = iframe.getAttribute('data-src');
         if (dSrc && iframe.getAttribute('src') !== dSrc) {
           iframe.setAttribute('src', dSrc);
         }
-      }
-      if (typeof dlg.showModal === 'function') {
-        dlg.showModal();
-      } else {
-        dlg.setAttribute('open', '');
       }
     });
   });
