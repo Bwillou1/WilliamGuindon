@@ -653,9 +653,12 @@
           const p = new URLSearchParams(window.location.search);
           if (!p.has('portail')) p.set('portail', 'cce-sem26003');
           if (!p.has('sig')) p.set('sig', '72rsp');
-          return '/transmission-sem26003.html?' + p.toString() + window.location.hash;
+          const isEn = window.location.pathname.startsWith('/en/');
+          const isEs = window.location.pathname.startsWith('/es/');
+          const targetPath = isEn ? '/en/reciprocite.html' : (isEs ? '/es/reciprocite.html' : '/reciprocite.html');
+          return targetPath + '?' + p.toString() + window.location.hash;
         } catch (_) {
-          return '/transmission-sem26003.html?portail=cce-sem26003&transmission=officielle&sig=72rsp';
+          return '/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp';
         }
       }
 
@@ -724,7 +727,12 @@
               if (mainWrap) {
                 const bar = document.createElement('div');
                 bar.className = 'legal-isolated-return-bar';
-                bar.innerHTML = '<span>⚖️ <strong>Consultation légale isolée</strong> (Régime de réciprocité SEM-26-003 actif)</span><a href="/reciprocite.html?portail=cce-sem26003&transmission=officielle&sig=72rsp">← Retourner au portail</a>';
+                const isEn = window.location.pathname.startsWith('/en/');
+                const isEs = window.location.pathname.startsWith('/es/');
+                const retUrl = isEn ? '/en/reciprocite.html' : (isEs ? '/es/reciprocite.html' : '/reciprocite.html');
+                const label = isEn ? 'Isolated Legal Consultation' : (isEs ? 'Consulta legal aislada' : 'Consultation légale isolée');
+                const retText = isEn ? '← Return to Portal' : (isEs ? '← Volver al portal' : '← Retourner au portail');
+                bar.innerHTML = '<span>⚖️ <strong>' + label + '</strong> (SEM-26-003)</span><a href="' + retUrl + '?portail=cce-sem26003&transmission=officielle&sig=72rsp">' + retText + '</a>';
                 mainWrap.insertBefore(bar, mainWrap.firstChild);
               }
             });
