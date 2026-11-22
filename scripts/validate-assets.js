@@ -47,6 +47,7 @@ const CORE_FILES = [
   'offline.html',
   'dev.html',
   'portrait.html',
+  'contact.html',
   'diplomatie.html',
   'THIRD-PARTY-NOTICES.md',
   'sitemap.xml',

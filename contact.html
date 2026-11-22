@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){try{if(!window.history||!window.history.replaceState)return;var s=window.location.search,h=window.location.hash;if(!s&&(!h||h.indexOf('?')===-1))return;var u=new URL(window.location.href);var t=new Set(['fbclid','fbadid','gclid','gbraid','wbraid','_ga','_gl','igshid','twclid','ttclid','msclkid','mc_cid','mc_eid','yclid','dclid','ref_src','gad_source','gclsrc']);var isT=function(k){var l=(k||'').toLowerCase();return l.indexOf('utm_')===0||l.indexOf('fb_')===0||l.indexOf('_aem')===0||t.has(l);};var c=false;if(s){var r=[];u.searchParams.forEach(function(_,k){if(isT(k))r.push(k);});if(r.length){for(var i=0;i<r.length;i++)u.searchParams.delete(r[i]);c=true;}}if(h&&h.indexOf('?')!==-1){var p=u.hash.split('?'),b=p[0],hp=new URLSearchParams(p.slice(1).join('?')),hr=[];hp.forEach(function(_,k){if(isT(k))hr.push(k);});if(hr.length){for(var j=0;j<hr.length;j++)hp.delete(hr[j]);var q=hp.toString();u.hash=b+(q?'?'+q:'');c=true;}}if(c){var ns=u.searchParams.toString();window.history.replaceState(null,'',u.pathname+(ns?'?'+ns:'')+u.hash);}}catch(_){}})();</script>
+  <script src="assets/js/security-guard.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.facebook.com https://*.fbcdn.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+  <title>Contact officiel, Réseaux &amp; Accès aux 222 Documents — William Guindon</title>
+  <meta name="description" content="Coordonnées officielles de William Guindon (militant écologiste, dossier CCE SEM-26-003) : courriels, réseaux sociaux certifiés, vCard et accès intégral aux 222 pièces probatoires.">
+  <meta name="author" content="William Guindon">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical" href="https://williamguindon.me/contact.html">
+  <link rel="me" href="https://gravatar.com/williamguindonme">
+  <link rel="alternate" hreflang="fr" href="https://williamguindon.me/contact.html">
+  <link rel="alternate" hreflang="en" href="https://williamguindon.me/en/contact.html">
+  <link rel="alternate" hreflang="es" href="https://williamguindon.me/es/contact.html">
+  <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/contact.html">
+  <link rel="alternate" type="application/rss+xml" title="William Guindon — Actualités" href="https://williamguindon.me/feed.xml">
+
+  <!-- OpenGraph & Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="William Guindon — Site officiel">
+  <meta property="og:title" content="Contact officiel, Réseaux &amp; Accès aux 222 Documents — William Guindon">
+  <meta property="og:description" content="Coordonnées directes, réseaux sociaux vérifiés et l'ensemble des méthodes pour consulter les 222 pièces officielles du dossier CCE SEM-26-003.">
+  <meta property="og:url" content="https://williamguindon.me/contact.html">
+  <meta property="og:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
+  <meta property="og:locale" content="fr_CA">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contact officiel, Réseaux &amp; Accès aux 222 Documents — William Guindon">
+  <meta name="twitter:description" content="Coordonnées officielles, canaux de presse et accès complet aux 222 pièces du dossier SEM-26-003.">
+  <meta name="twitter:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
+
+  <link rel="stylesheet" href="style.css?v=20261018-v87">
+  <script src="assets/js/theme-core.js?v=20261107-v145" defer></script>
+  <script src="assets/js/navbar-loader.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "url": "https://williamguindon.me/",
+      "email": "mailto:contact@williamguindon.me",
+      "telephone": "+1-514-565-1108",
+      "image": "https://williamguindon.me/assets/media/william-guindon.jpg",
+      "sameAs": [
+        "https://www.facebook.com/williamguindon.officiel",
+        "https://www.youtube.com/@william-guindon",
+        "https://www.linkedin.com/in/william-guindon/",
+        "https://github.com/Bwillou1",
+        "https://codeberg.org/Bwillou1",
+        "https://orcid.org/0009-0009-8845-4456",
+        "https://www.wikidata.org/wiki/Q141439370",
+        "https://isni.org/isni/0000000531719103",
+        "https://scholar.google.com/citations?user=K3af0voAAAAJ",
+        "https://openalex.org/A5141063521",
+        "https://gravatar.com/williamguindonme"
+      ]
+    },
+    {
+      "@type": "ContactPage",
+      "@id": "https://williamguindon.me/contact.html#webpage",
+      "url": "https://williamguindon.me/contact.html",
+      "name": "Contact officiel, Réseaux & Accès aux 222 Documents — William Guindon",
+      "description": "Page officielle de contact et registre des canaux d'accès aux 222 documents probatoires du dossier CCE SEM-26-003.",
+      "inLanguage": "fr-CA",
+      "mainEntity": {
+        "@id": "https://williamguindon.me/#person"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/contact.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": "https://williamguindon.me/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Contact & Accès Documentaire",
+          "item": "https://williamguindon.me/contact.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+  <style>
+    .contact-hub-hero {
+      padding: 48px 0 32px;
+      text-align: center;
+    }
+    .contact-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      margin-bottom: 20px;
+    }
+    .contact-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin: 28px 0;
+    }
+    .contact-card-box {
+      background: var(--surface, rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+      border-radius: 14px;
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .contact-card-box:hover {
+      transform: translateY(-2px);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    .contact-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .contact-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 0;
+      color: var(--text);
+    }
+    .contact-card-desc {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--muted);
+      margin: 0 0 18px 0;
+    }
+    .contact-card-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .contact-docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 16px;
+      margin: 24px 0 36px 0;
+    }
+    .contact-doc-card {
+      background: var(--surface, rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--line, rgba(255, 255, 255, 0.08));
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    .contact-doc-card:hover {
+      background: var(--surface-hover, rgba(255, 255, 255, 0.06));
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .social-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .social-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--surface, rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--line, rgba(255, 255, 255, 0.12));
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .social-pill-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      border-color: var(--accent);
+    }
+    .btn-copy-mini {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn-copy-mini:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: var(--text);
+    }
+    .disclaimer-banner {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-left: 4px solid #10b981;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation injectée automatiquement par navbar-loader.js -->
+  <div id="navbar-placeholder"></div>
+
+  <main id="main-content" style="padding-bottom: 70px;">
+    
+    <!-- Hero / En-tête -->
+    <header class="contact-hub-hero">
+      <div class="wrap" style="max-width: 980px; margin: 0 auto; padding: 0 20px;">
+        <div class="contact-badge-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Canaux officiels vérifiés &amp; Registre CCE SEM-26-003</span>
+        </div>
+        <h1 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 850; line-height: 1.2; letter-spacing: -0.02em; color: var(--text); margin: 0 0 16px;">
+          Contact officiel, Réseaux &amp; Accès aux 222 Documents
+        </h1>
+        <p style="font-size: 1.12rem; line-height: 1.6; color: var(--muted); max-width: 780px; margin: 0 auto;">
+          Registre centralisé des coordonnées directes de William Guindon, canaux certifiés pour les médias et la communauté citoyenne, et ensemble des passerelles officielles pour consulter les <strong>222 documents probatoires</strong> de la procédure internationale auprès de la Commission de coopération environnementale (CCE / ACEUM).
+        </p>
+
+        <!-- Avertissement légal et encadrement du statut de mineur -->
+        <div class="disclaimer-banner" style="text-align: left; margin-top: 28px;">
+          <strong style="color: var(--text); display: block; margin-bottom: 4px;">⚖️ Statut légal &amp; Déontologie de contact (Loi 25 du Québec) :</strong>
+          William Guindon étant âgé de 15 ans, toute correspondance officielle ou sollicitation médiatique est traitée en conformité stricte avec le statut des militants mineurs et la protection de la vie privée. Une copie conforme automatique est assurée avec la ligne parentale dédiée (<a href="mailto:parents@williamguindon.me" style="color:#10b981;font-weight:700;">parents@williamguindon.me</a>).
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap" style="max-width: 980px; margin: 0 auto; padding: 0 20px;">
+      
+      <!-- SECTION 1 : COORDONNÉES DIRECTES & LIGNES D'URGENCE -->
+      <section style="margin-bottom: 50px;">
+        <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          1. Coordonnées directes &amp; Lignes de contact
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--muted); margin: 0 0 20px;">
+          Pour les demandes d'entrevues journalistiques, déclarations citoyennes, signalements environnementaux ou vérifications de faits :
+        </p>
+
+        <div class="contact-hub-grid">
+          
+          <!-- Carte 1 : Courriel officiel -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Courriel officiel</h3>
+                  <span style="font-size: 0.82rem; color: #10b981; font-weight: 700;">Canal principal vérifié</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Adresse directe pour toute correspondance relative au dossier SEM-26-003, invitations publiques et demandes de documents. Délai de réponse habituel : 24 à 48 heures.
+              </p>
+              <div style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 16px; word-break: break-all;">
+                contact@williamguindon.me
+                <button type="button" class="btn-copy-mini" onclick="navigator.clipboard.writeText('contact@williamguindon.me'); this.textContent='Copié !'; setTimeout(() => this.textContent='Copier', 2000);">Copier</button>
+              </div>
+            </div>
+            <a href="mailto:contact@williamguindon.me?cc=parents@williamguindon.me" class="contact-card-action" style="background: #10b981; color: #ffffff;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Envoyer un courriel officiel
+            </a>
+          </div>
+
+          <!-- Carte 2 : Parents & Tuteurs légaux -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Parents / Tuteurs légaux</h3>
+                  <span style="font-size: 0.82rem; color: #3b82f6; font-weight: 700;">Consentement &amp; Représentation</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Canal obligatoire pour toute formalité administrative, autorisation de tournage, déplacement média ou consentement légal lié au statut de mineur.
+              </p>
+              <div style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 16px; word-break: break-all;">
+                parents@williamguindon.me
+                <button type="button" class="btn-copy-mini" onclick="navigator.clipboard.writeText('parents@williamguindon.me'); this.textContent='Copié !'; setTimeout(() => this.textContent='Copier', 2000);">Copier</button>
+              </div>
+            </div>
+            <a href="mailto:parents@williamguindon.me" class="contact-card-action" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: #60a5fa;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Écrire aux parents
+            </a>
+          </div>
+
+          <!-- Carte 3 : Téléphone & Ligne médias -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(234, 179, 8, 0.15); color: #eab308;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Téléphone / SMS</h3>
+                  <span style="font-size: 0.82rem; color: #eab308; font-weight: 700;">Urgences presse &amp; validation</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Ligne téléphonique directe pour le bouclage journalistique d'urgence, la confirmation de déclarations et les entrevues en direct (Canada / International).
+              </p>
+              <div style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 16px;">
+                +1 514-565-1108
+              </div>
+            </div>
+            <a href="tel:+15145651108" class="contact-card-action" style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.35); color: #facc15;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Appeler le +1 514-565-1108
+            </a>
+          </div>
+
+          <!-- Carte 4 : Fiche Contact vCard -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="18" r="1"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Fiche Contact vCard (.vcf)</h3>
+                  <span style="font-size: 0.82rem; color: #a855f7; font-weight: 700;">Ajout en 1 clic iOS / Android</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Téléchargez la carte de visite électronique officielle contenant les adresses certifiées, numéros et liens vers le registre pour votre carnet d'adresses.
+              </p>
+            </div>
+            <a href="/william-guindon.vcf" download="william-guindon.vcf" class="contact-card-action" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.35); color: #c084fc;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger la fiche (.vcf)
+            </a>
+          </div>
+
+          <!-- Carte 5 : Messagerie P2P Nostr -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Messagerie chiffrée Nostr</h3>
+                  <span style="font-size: 0.82rem; color: #ec4899; font-weight: 700;">Décentralisée &amp; Sans censure</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Échangez de manière chiffrée de bout en bout sans passer par des serveurs centralisés, des régies publicitaires ou des intermédiaires d'État.
+              </p>
+            </div>
+            <a href="messagerie.html" class="contact-card-action" style="background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.35); color: #f472b6;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ouvrir la messagerie Nostr ↗
+            </a>
+          </div>
+
+          <!-- Carte 6 : Ligne signalement d'erreurs -->
+          <div class="contact-card-box">
+            <div>
+              <div class="contact-card-header">
+                <div class="contact-icon-wrapper" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div>
+                  <h3 class="contact-card-title">Signalement &amp; État technique</h3>
+                  <span style="font-size: 0.82rem; color: #ef4444; font-weight: 700;">Bug, lien brisé ou accès</span>
+                </div>
+              </div>
+              <p class="contact-card-desc">
+                Un document inaccessible, un dysfonctionnement d'affichage ou une erreur d'attribution ? Consultez le moniteur d'incident ou ouvrez un rapport.
+              </p>
+            </div>
+            <a href="statut.html" class="contact-card-action" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171;">
+              ● Moniteur de statut &amp; incidents ↗
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 2 : TOUS LES TRUCS POUR AVOIR LES 222 DOCUMENTS DU DOSSIER SEM-26-003 -->
+      <section style="margin-bottom: 50px; padding: 28px; background: rgba(15, 23, 42, 0.6); border: 1.5px solid rgba(56, 189, 248, 0.3); border-radius: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+          <h2 style="font-size: 1.55rem; font-weight: 800; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 10px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            2. Tous les moyens pour obtenir les 222 documents officiels
+          </h2>
+          <span style="font-size: 0.8rem; font-weight: 800; padding: 4px 12px; border-radius: 999px; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; text-transform: uppercase;">
+            222 Pièces · Enquête SEM-26-003
+          </span>
+        </div>
+        <p style="font-size: 0.95rem; color: #94a3b8; line-height: 1.6; margin: 0 0 22px;">
+          L'intégralité du dossier d'instruction juridique déposé contre l'expansion de Stablex et pour la protection de la Grande Tourbière de Blainville est public, inaltérable et accessible à tous selon différents modes de consultation :
+        </p>
+
+        <div class="contact-docs-grid">
+          
+          <!-- Méthode 1 : Explorateur Documentaire (Dossier Journalistes) -->
+          <a href="dossier-journalistes.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">📂</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                1. Explorateur documentaire complet
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Arborescence complète classée par phase de procédure : soumission citoyenne initiale (1er mai 2026), détermination CCE (17 août 2026), réponse officielle du Canada (16 oct. 2026), 7 moyens de droit en réplique, avis scientifiques BAPE 371 sur le cadmium.
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Ouvrir l'explorateur classé ↗
+            </span>
+          </a>
+
+          <!-- Méthode 2 : Lecteur PDF interactif EmbedPDF -->
+          <a href="viewer.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">📑</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                2. Lecteur PDF haute fidélité (EmbedPDF)
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Consultez n'importe quelle pièce directement en plein écran sans télécharger de logiciel tiers : recherche plein texte instantanée, table des matières interactive, mode sombre et prise de notes / surlignages locaux sécurisés.
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Lancer le lecteur de documents ↗
+            </span>
+          </a>
+
+          <!-- Méthode 3 : Registre interactif CCE & cec.org -->
+          <a href="registre.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">🏛️</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                3. Registre officiel de la CCE (Direct)
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Synthèse chronologique de la communication SEM-26-003 avec liens miroirs vers le registre officiel du Secrétariat international de la CCE (<a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:underline;">cec.org</a>).
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Consulter le registre CCE ↗
+            </span>
+          </a>
+
+          <!-- Méthode 4 : Miroirs décentralisés IPFS & Tor -->
+          <a href="miroirs.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">🌐</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                4. Miroirs IPFS, Tor &amp; Wayback Machine
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Accès pérenne et résilient aux 222 pièces probatoires via le réseau pair-à-pair IPFS, les passerelles décentralisées, le réseau d'anonymisation Tor (.onion) et l'archivage perpétuel Internet Archive.
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Accéder aux miroirs décentralisés ↗
+            </span>
+          </a>
+
+          <!-- Méthode 5 : Mode hors-ligne PWA & Téléchargement unitaire -->
+          <a href="offline.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">💾</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                5. Mode hors-ligne &amp; Téléchargement unitaire
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Enregistrez le portail documentaire dans la mémoire de votre appareil (ordinateur ou smartphone) pour consulter l'ensemble des pièces juridiques sur le terrain en forêt sans aucune connexion réseau.
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Consulter le mode hors-ligne ↗
+            </span>
+          </a>
+
+          <!-- Méthode 6 : API JSON & Données ouvertes pour chercheurs -->
+          <a href="api/index.html" class="contact-doc-card">
+            <div>
+              <div style="font-size: 1.25rem; margin-bottom: 6px;">⚡</div>
+              <h3 style="font-size: 1.08rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px;">
+                6. API JSON &amp; Données ouvertes (Open Data)
+              </h3>
+              <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 14px;">
+                Endpoint machine-readable pour journalistes de données, chercheurs universitaires et développeurs : catalogue complet des métadonnées, dates, tailles et empreintes SHA-256 via <code style="color:#38bdf8;">/api/v1/documents.json</code>.
+              </p>
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: inline-flex; align-items: center; gap: 4px;">
+              Explorer l'API JSON &amp; Corpus ↗
+            </span>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- SECTION 3 : RÉSEAUX SOCIAUX & PLATEFORMES PUBLIQUES -->
+      <section style="margin-bottom: 50px;">
+        <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          3. Réseaux sociaux vérifiés &amp; Espaces publics
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--muted); margin: 0 0 20px;">
+          Suivez les prises de parole, les analyses de terrain et les mobilisations citoyennes en direct sur les plateformes officielles :
+        </p>
+
+        <div class="social-pills-row">
+          
+          <!-- Facebook -->
+          <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #1877f2;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <span>Facebook Officiel (+2k abonnés) ↗</span>
+          </a>
+
+          <!-- YouTube -->
+          <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #ef4444;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#ef4444"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span>Chaîne YouTube Officielle ↗</span>
+          </a>
+
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #0a66c2;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a66c2"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75c.97 0 1.76.78 1.76 1.75s-.79 1.76-1.76 1.76m1.39 9.74v-8.37H5.07v8.37h2.78Z"/></svg>
+            <span>LinkedIn (Droit &amp; Analyses) ↗</span>
+          </a>
+
+          <!-- Pétition Change.org -->
+          <a href="https://www.change.org/p/environnement-canada-levez-le-blocage-contre-un-jeune-de-15-ans?lang=fr-FR" target="_blank" rel="noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #dc2626;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Pétition Change.org (Action citoyenne) ↗</span>
+          </a>
+
+          <!-- Mur Citoyen -->
+          <a href="commentaires.html" class="social-pill-btn" style="border-left: 4px solid #10b981;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Mur Citoyen (490+ témoignages) ↗</span>
+          </a>
+
+          <!-- GitHub -->
+          <a href="https://github.com/Bwillou1" target="_blank" rel="me noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #6e5494;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>GitHub (Registre Open Source) ↗</span>
+          </a>
+
+          <!-- Codeberg -->
+          <a href="https://codeberg.org/Bwillou1" target="_blank" rel="me noopener noreferrer" class="social-pill-btn" style="border-left: 4px solid #2185d0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#2185d0"><path d="M11.996 0A12 12 0 0 0 0 12a12 12 0 0 0 .723 4.102c.074.225.176.44.298.643l.012.02.008.012a11.97 11.97 0 0 0 4.12 4.417c.18.118.368.225.56.326l.014.007.012.006a11.94 11.94 0 0 0 6.249 1.467 12 12 0 0 0 12-12 12 12 0 0 0-12-12z"/></svg>
+            <span>Codeberg (Miroir Libre) ↗</span>
+          </a>
+
+          <!-- Flux RSS -->
+          <a href="feed.xml" class="social-pill-btn" style="border-left: 4px solid #f97316;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            <span>Flux RSS Certifié (/feed.xml) ↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- SECTION 4 : REGISTRES ACADÉMIQUES & NOTORIÉTÉ PUBLIQUE -->
+      <section style="margin-bottom: 50px;">
+        <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text); margin: 0 0 8px; display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          4. Identifiants académiques &amp; Registres de notoriété
+        </h2>
+        <p style="font-size: 0.95rem; color: var(--muted); margin: 0 0 20px;">
+          Identifiants d'autorité internationale confirmant l'attribution des travaux, mémoires et données scientifiques :
+        </p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.88rem; font-weight: 600;">
+          <a href="https://www.google.com/search?kgmid=/g/11ntpnwc2z" target="_blank" rel="me noopener" class="social-pill-btn">Google Knowledge Graph (/g/11ntpnwc2z) ↗</a>
+          <a href="https://www.wikidata.org/wiki/Q141439370" target="_blank" rel="me noopener" class="social-pill-btn">Wikidata (Q141439370) ↗</a>
+          <a href="https://isni.org/isni/0000000531719103" target="_blank" rel="me noopener" class="social-pill-btn">ISNI (0000 0005 3171 9103) ↗</a>
+          <a href="https://orcid.org/0009-0009-8845-4456" target="_blank" rel="me noopener" class="social-pill-btn">ORCID (0009-0009-8845-4456) ↗</a>
+          <a href="https://scholar.google.com/citations?user=K3af0voAAAAJ" target="_blank" rel="me noopener" class="social-pill-btn">Google Scholar ↗</a>
+          <a href="https://openalex.org/A5141063521" target="_blank" rel="me noopener" class="social-pill-btn">OpenAlex (A5141063521) ↗</a>
+          <a href="https://openlibrary.org/authors/OL16784258A" target="_blank" rel="me noopener" class="social-pill-btn">Open Library (OL16784258A) ↗</a>
+          <a href="https://gravatar.com/williamguindonme" target="_blank" rel="me noopener" class="social-pill-btn">Gravatar Certifié ↗</a>
+          <a href="https://independent.academia.edu/GuindonWilliam" target="_blank" rel="me noopener" class="social-pill-btn">Academia.edu ↗</a>
+        </div>
+      </section>
+
+      <!-- SECTION 5 : SÉCURITÉ, EMBARGO & DÉONTOLOGIE DE TRANSMISSION -->
+      <section style="margin-bottom: 40px; padding: 24px; border-radius: 14px; background: var(--surface, rgba(255,255,255,0.03)); border: 1px solid var(--line, rgba(255,255,255,0.08));">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text); margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          5. Protocoles de sécurité, d'embargo &amp; Intégrité des données
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px;">
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 750; color: var(--text); margin: 0 0 4px;">📰 Embargo &amp; Relations presse</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.5;">
+              Pour consulter les règles déontologiques applicables aux journalistes lors des dépôts d'actes sous embargo : <a href="embargo.html" style="color:var(--accent);text-decoration:underline;">consulter la politique d'embargo ↗</a>.
+            </p>
+          </div>
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 750; color: var(--text); margin: 0 0 4px;">🛡️ Protection Anti-SLAPP</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.5;">
+              La participation citoyenne au dossier SEM-26-003 est protégée par les articles 51 et suivants du Code de procédure civile du Québec : <a href="anti-slapp.html" style="color:var(--accent);text-decoration:underline;">cadre de protection anti-bâillon ↗</a>.
+            </p>
+          </div>
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 750; color: var(--text); margin: 0 0 4px;">🔐 Intégrité &amp; Traçabilité SHA-256</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.5;">
+              Toutes les pièces déposées sont scellées cryptographiquement pour garantir qu'aucune altération rétroactive n'est possible : <a href="tracabilite.html" style="color:var(--accent);text-decoration:underline;">registre de traçabilité ↗</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="footer-copy">© 2026 William Guindon — Blainville, Québec, Canada · <span lang="fr">Registre documentaire public</span></p>
+      <p class="footer-licence-box">
+        Contenu original mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>. Actes et pièces du dossier CCE relevant du domaine public probatoire.
+      </p>
+
+      <div class="footer-social-row">
+        <a href="https://www.google.com/search?kgmid=/g/11ntpnwc2z" target="_blank" rel="me noopener" class="footer-social-link">Google Knowledge Graph ↗</a>
+        <a href="https://www.wikidata.org/wiki/Q141439370" target="_blank" rel="me noopener" class="footer-social-link">Wikidata ↗</a>
+        <a href="https://isni.org/isni/0000000531719103" target="_blank" rel="me noopener" class="footer-social-link">ISNI ↗</a>
+        <a href="https://orcid.org/0009-0009-8845-4456" target="_blank" rel="me noopener" class="footer-social-link">ORCID ↗</a>
+        <a href="https://scholar.google.com/citations?user=K3af0voAAAAJ" target="_blank" rel="me noopener" class="footer-social-link">Google Scholar ↗</a>
+        <a href="https://openalex.org/A5141063521" target="_blank" rel="me noopener" class="footer-social-link">OpenAlex ↗</a>
+        <a href="https://gravatar.com/williamguindonme" target="_blank" rel="me noopener" class="footer-social-link">Gravatar ↗</a>
+        <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener" class="footer-social-link">LinkedIn ↗</a>
+        <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener" class="footer-social-link">YouTube ↗</a>
+        <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener" class="footer-social-link">Facebook (2k) ↗</a>
+        <a href="https://github.com/Bwillou1" target="_blank" rel="me noopener" class="footer-social-link">GitHub ↗</a>
+        <a href="https://codeberg.org/Bwillou1" target="_blank" rel="me noopener" class="footer-social-link">Codeberg ↗</a>
+        <a href="statut.html" class="footer-social-link" style="font-weight: 700; color: #22c55e;">● État des systèmes &amp; Bogues ↗</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
