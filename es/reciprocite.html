@@ -208,16 +208,37 @@ html, body {
   letter-spacing: -0.01em;
 }
 
+/* Animation multicolore clignotante ("sa flash dans toute les couleur") */
+@keyframes rainbowStrobe {
+  0%   { border-color: #ef4444; box-shadow: 0 0 35px rgba(239, 68, 68, 0.75), inset 0 0 15px rgba(239, 68, 68, 0.25); }
+  16%  { border-color: #f97316; box-shadow: 0 0 35px rgba(249, 115, 22, 0.75), inset 0 0 15px rgba(249, 115, 22, 0.25); }
+  33%  { border-color: #eab308; box-shadow: 0 0 35px rgba(234, 179, 8, 0.75), inset 0 0 15px rgba(234, 179, 8, 0.25); }
+  50%  { border-color: #10b981; box-shadow: 0 0 35px rgba(16, 185, 129, 0.75), inset 0 0 15px rgba(16, 185, 129, 0.25); }
+  66%  { border-color: #06b6d4; box-shadow: 0 0 35px rgba(6, 182, 212, 0.75), inset 0 0 15px rgba(6, 182, 212, 0.25); }
+  83%  { border-color: #8b5cf6; box-shadow: 0 0 35px rgba(139, 92, 246, 0.75), inset 0 0 15px rgba(139, 92, 246, 0.25); }
+  100% { border-color: #ec4899; box-shadow: 0 0 35px rgba(236, 72, 153, 0.75), inset 0 0 15px rgba(236, 72, 153, 0.25); }
+}
+
+@keyframes badgeStrobe {
+  0%   { background: rgba(239, 68, 68, 0.35); border-color: #ef4444; color: #fecaca; }
+  20%  { background: rgba(249, 115, 22, 0.35); border-color: #f97316; color: #fed7aa; }
+  40%  { background: rgba(234, 179, 8, 0.35); border-color: #eab308; color: #fef08a; }
+  60%  { background: rgba(16, 185, 129, 0.35); border-color: #10b981; color: #a7f3d0; }
+  80%  { background: rgba(139, 92, 246, 0.35); border-color: #8b5cf6; color: #ddd6fe; }
+  100% { background: rgba(239, 68, 68, 0.35); border-color: #ef4444; color: #fecaca; }
+}
+
 .reciprocite-card {
   max-width: 780px;
   width: 100%;
   background: #0f172a !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border: 2px solid #ef4444 !important;
   border-radius: 18px;
   padding: 40px 36px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(16, 185, 129, 0.06);
   position: relative;
   box-sizing: border-box;
+  animation: rainbowStrobe 3s infinite linear !important;
 }
 
 @media (max-width: 640px) {
@@ -233,6 +254,44 @@ html, body {
   padding: 6px 14px;
   background: rgba(239, 68, 68, 0.18) !important;
   color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: badgeStrobe 2.5s infinite linear !important;
+}
+
+.reciprocity-file-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #cbd5e1;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.reciprocity-file-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.reciprocity-file-btn.active {
+  background: rgba(56, 189, 248, 0.22) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+.reciprocity-file-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
   border: 1px solid rgba(239, 68, 68, 0.45) !important;
   border-radius: 20px;
   font-size: 12.5px;
@@ -792,11 +851,16 @@ html, body {
 
 <main id="main-content">
   <section class="reciprocite-section">
-    <div class="reciprocite-header-brand">
-      <a href="/es/?portail=cce-sem26003&transmission=officielle&sig=72rsp" aria-label="William Guindon">
+    <div class="reciprocite-header-brand" style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 780px; margin: 0 auto 18px;">
+      <a href="/es/reciprocite.html" aria-label="William Guindon" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
         <img src="/assets/img/wg-monogram.svg" alt="" width="32" height="20" style="vertical-align: middle;">
-        <span>William Guindon</span></span>
+        <span style="font-size: 1.1rem; font-weight: 800; color: #ffffff;">William <span style="color: #22c55e;">Guindon</span></span>
       </a>
+      <div class="reciprocity-lang-switch" style="display: flex; gap: 6px; align-items: center; font-size: 12.5px; font-weight: 700;">
+        <a href="/reciprocite.html" class="lang-pill" id="lang-btn-fr" style="padding: 4px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); text-decoration: none;">FR</a>
+        <a href="/en/reciprocite.html" class="lang-pill" id="lang-btn-en" style="padding: 4px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); text-decoration: none;">EN</a>
+        <a href="/es/reciprocite.html" class="lang-pill active" id="lang-btn-es" style="padding: 4px 10px; border-radius: 6px; background: rgba(34, 197, 94, 0.25); color: #4ade80; border: 1px solid #22c55e; text-decoration: none;">ES</a>
+      </div>
     </div>
 
     <div class="reciprocite-card">
@@ -805,9 +869,16 @@ html, body {
       <!-- Bruit optique haute-fréquence anti-OCR -->
       <div class="anti-ocr-noise-layer" aria-hidden="true"></div>
 
+      <!-- Bandeau clignotant multicolore ("sa flash dans toute les couleur") -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 7px 12px; margin-bottom: 16px; border-radius: 8px; font-weight: 800; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; animation: badgeStrobe 1.8s infinite linear;">
+        <span aria-hidden="true">⚠️</span>
+        <span>Alerta de Protocolo de Reciprocidad Activa · SEM-26-003 · Acceso Restringido</span>
+        <span aria-hidden="true">⚠️</span>
+      </div>
+
       <div class="reciprocite-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        Avis de réciprocité procédurale · SEM-26-003
+        Aviso de reciprocidad procesal · SEM-26-003
       </div>
       
       <h1 class="reciprocite-title">Acceso restringido a representantes institucionales y corporativos</h1>
@@ -836,14 +907,121 @@ html, body {
       </ul>
 
       <div class="reciprocite-actions">
-        <a href="https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/" id="btn-cce-registry-slow" class="btn-reciprocite btn-reciprocite-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          Consultar Registro Oficial CCA ↗
+        <!-- 1. Pétition citoyenne officielle sur Change.org -->
+        <a href="https://www.change.org/p/environnement-canada-levez-le-blocage-contre-un-jeune-de-15-ans?lang=fr-FR" target="_blank" rel="noopener noreferrer" class="btn-reciprocite btn-reciprocite-petition" style="background: #dc2626 !important; border: 1px solid #b91c1c !important; color: #ffffff !important; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.45); font-weight: 800;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Firmar la Petición en Change.org ↗
         </a>
-        <button type="button" class="btn-reciprocite btn-reciprocite-ghost" id="btn-author-observations-locked" style="cursor:not-allowed; opacity:0.65;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Observations de l'auteur (Accès restreint)
-        </button>
+
+        <!-- 2. Consulter les 490 commentaires citoyens -->
+        <a href="/commentaires.html" class="btn-reciprocite btn-reciprocite-comments" style="background: rgba(16, 185, 129, 0.18) !important; border: 1.5px solid #10b981 !important; color: #34d399 !important; font-weight: 700;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Consultar los 490 testimonios ciudadanos ↗
+        </a>
+
+        <!-- 3. Accès au registre externe CCE (temporisé 10s) -->
+        <a href="https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/" id="btn-cce-registry-slow" class="btn-reciprocite btn-reciprocite-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          Registro oficial CCA (Demora 10s) ↗
+        </a>
+
+        <!-- 4. Accès direct au dossier restreint -->
+        <a href="#dossier-documentaire-reciprocite" class="btn-reciprocite btn-reciprocite-ghost" id="btn-scroll-docs" style="background: rgba(59, 130, 246, 0.15) !important; border: 1px solid rgba(59, 130, 246, 0.4) !important; color: #93c5fd !important;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          Expediente documental restringido ↓
+        </a>
+      </div>
+
+      <!-- SECTION DOSSIER DOCUMENTAIRE RESTREINT SOUS RÉCIPROCITÉ -->
+      <div class="reciprocite-docs-container" id="dossier-documentaire-reciprocite" style="margin-top: 30px; padding: 22px 20px; background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: 14px; text-align: left;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="font-size: 1.18rem; font-weight: 800; color: #f8fafc; margin: 0 0 6px; display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Expediente documental restringido (4 piezas esenciales)
+            </h3>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0; line-height: 1.5;">
+              Selección primaria mínima puesta a disposición de los representantes institucionales. Cada cambio de documento activa una demora obligatoria de 10 segundos (en espejo de los plazos administrativos).
+            </p>
+          </div>
+          <span style="font-size: 11.5px; padding: 4px 10px; border-radius: 6px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-weight: 800; white-space: nowrap;">
+            Demora: 10 seg / archivo
+          </span>
+        </div>
+
+        <!-- Encadré des interdictions strictes : Pas de torrent, pas de hors-ligne, pas de navigation sur le site -->
+        <div style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;">
+          <div style="font-size: 12px; font-weight: 700; color: #f87171; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            Restricciones formales de seguridad y reciprocidad procesal:
+          </div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: #94a3b8;">
+            <span>🚫 Descarga Torrent / P2P: <strong style="color:#ef4444;">Desactivada</strong></span>
+            <span>🚫 Archivo ZIP sin conexión: <strong style="color:#ef4444;">Desactivado</strong></span>
+            <span>🚫 Navegación al sitio público: <strong style="color:#ef4444;">Bloqueada</strong></span>
+          </div>
+        </div>
+
+        <!-- Boutons de sélection des 4 documents primaires minimaux -->
+        <div class="reciprocity-file-tabs" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+          <button type="button" class="reciprocity-file-btn active" data-file="assets/docs/observations-reponse-canada-sem26003.pdf" data-title="Observaciones del autor (7 fundamentos de derecho — 17 de octubre de 2026)">
+            📄 1. Observaciones del autor (17 oct. 2026)
+          </button>
+          <button type="button" class="reciprocity-file-btn" data-file="assets/docs/72-rsp_fr.pdf" data-title="Respuesta oficial del Gobierno de Canadá (16 de octubre de 2026)">
+            📄 2. Respuesta de Canadá (16 oct. 2026)
+          </button>
+          <button type="button" class="reciprocity-file-btn" data-file="assets/docs/26-2-det2_fr.pdf" data-title="Determinación positiva CCA bajo art. 24.27(2)(3) (17 de agosto de 2026)">
+            📄 3. Determinación positiva CCA (17 ago. 2026)
+          </button>
+          <button type="button" class="reciprocity-file-btn" data-file="assets/docs/26-1-sub_fr.pdf" data-title="Petición ciudadana inicial SEM-26-003 (1 de mayo de 2026)">
+            📄 4. Petición ciudadana inicial (1 mayo 2026)
+          </button>
+        </div>
+
+        <!-- Zone du visualiseur avec overlay 10 secondes -->
+        <div style="position: relative; width: 100%; height: 530px; border-radius: 8px; overflow: hidden; background: #020617; border: 1px solid rgba(255, 255, 255, 0.18);">
+          
+          <!-- Overlay de temporisation 10s -->
+          <div id="doc-cooldown-overlay" style="display: none; position: absolute; inset: 0; background: rgba(2, 6, 23, 0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center;">
+            <div class="cec-spinner" style="margin-bottom: 16px;"></div>
+            <div style="font-size: 15px; font-weight: 800; color: #f8fafc; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+              Demora procesal de reciprocidad activa
+            </div>
+            <div style="font-size: 13px; color: #94a3b8; max-width: 460px; line-height: 1.55; margin-bottom: 16px;">
+              En aplicación de la reciprocidad democrática (haciendo eco al plazo de 120 días opuesto a los ciudadanos), el acceso a este documento requiere una verificación obligatoria de 10 segundos.
+            </div>
+            <div style="width: 100%; max-width: 320px; height: 8px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+              <div id="doc-cooldown-fill" style="width: 0%; height: 100%; background: #38bdf8; transition: width 0.9s linear;"></div>
+            </div>
+            <div id="doc-cooldown-timer" style="font-size: 13.5px; font-weight: 700; color: #38bdf8;">
+              Demora de reciprocidad: 10 segundos restantes...
+            </div>
+          </div>
+
+          <!-- Document visualisé -->
+          <object id="reciprocity-doc-object" data="assets/docs/observations-reponse-canada-sem26003.pdf#toolbar=0" type="application/pdf" style="width: 100%; height: 100%; display: block;">
+            <div style="padding: 30px; text-align: center; color: #94a3b8;">
+              <p>Su navegador no admite la previsualización directa de PDF.</p>
+              <a href="assets/docs/observations-reponse-canada-sem26003.pdf" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; font-weight: 700;">Descargar documento unitario (PDF) ↗</a>
+            </div>
+          </object>
+        </div>
+
+        <!-- Pied de page du visualiseur -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: #64748b; flex-wrap: wrap; gap: 8px;">
+          <span id="current-doc-label" style="color: #cbd5e1; font-weight: 600;">
+            Documento activo: Observaciones del autor (7 fundamentos de derecho — 17 de octubre de 2026)
+          </span>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <button type="button" id="btn-fake-torrent" style="background: none; border: none; color: #ef4444; font-size: 11.5px; text-decoration: line-through; cursor: not-allowed; padding: 0;">
+              ⚡ Descarga Torrent (Desactivada)
+            </button>
+            <button type="button" id="btn-fake-zip" style="background: none; border: none; color: #ef4444; font-size: 11.5px; text-decoration: line-through; cursor: not-allowed; padding: 0;">
+              📦 Archivo ZIP sin conexión (Desactivado)
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="reciprocite-error-help" style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed rgba(255, 255, 255, 0.16); font-size: 13.5px; color: #94a3b8; text-align: center;">
@@ -1469,9 +1647,92 @@ html, body {
     const obsBtn = document.getElementById('btn-author-observations-locked');
     if (obsBtn) {
       obsBtn.addEventListener('click', function() {
-        alert("RÉCIPROCITÉ PROCÉDURALE ACTIVE : La consultation directe des mémoires et observations de l'auteur est temporairement suspendue pour les adresses identifiées comme institutionnelles, en miroir de la non-réponse de 120 jours opposée aux citoyens.");
+        alert("RECIPROCIDAD PROCESAL ACTIVA: La consulta directa de los escritos y observaciones del autor está temporalmente suspendida para direcciones institucionales, en reflejo del silencio de 120 días opuesto a los ciudadanos.");
       });
     }
+  } catch (_) {}
+
+  // 13. Gestor de visor documental restringido con demora administrativa de 10 segundos
+  try {
+    const fileBtns = document.querySelectorAll('.reciprocity-file-btn');
+    const docObj = document.getElementById('reciprocity-doc-object');
+    const overlay = document.getElementById('doc-cooldown-overlay');
+    const fill = document.getElementById('doc-cooldown-fill');
+    const timer = document.getElementById('doc-cooldown-timer');
+    const docLabel = document.getElementById('current-doc-label');
+    let isDocSwitching = false;
+
+    fileBtns.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isDocSwitching || btn.classList.contains('active')) return;
+
+        const targetFile = btn.getAttribute('data-file');
+        const targetTitle = btn.getAttribute('data-title');
+
+        isDocSwitching = true;
+        fileBtns.forEach(function(b) { b.disabled = true; });
+
+        if (overlay) overlay.style.display = 'flex';
+        if (fill) fill.style.width = '0%';
+        let sec = 10;
+        if (timer) timer.textContent = 'Demora de reciprocidad: ' + sec + ' segundos restantes...';
+
+        const timerInterval = setInterval(function() {
+          sec--;
+          const pct = Math.round(((10 - sec) / 10) * 100);
+          if (fill) fill.style.width = pct + '%';
+          if (timer) timer.textContent = 'Demora de reciprocidad: ' + sec + ' segundos restantes...';
+
+          if (sec <= 0) {
+            clearInterval(timerInterval);
+            if (docObj) {
+              docObj.data = targetFile + '#toolbar=0';
+            }
+            fileBtns.forEach(function(b) {
+              b.classList.remove('active');
+              b.disabled = false;
+            });
+            btn.classList.add('active');
+            if (docLabel) docLabel.textContent = 'Documento activo: ' + targetTitle;
+
+            setTimeout(function() {
+              if (overlay) overlay.style.display = 'none';
+              if (fill) fill.style.width = '0%';
+              isDocSwitching = false;
+            }, 400);
+          }
+        }, 1000);
+      });
+    });
+
+    // Alertas de restricciones de Torrent y archivo ZIP bajo reciprocidad
+    const fakeTorrent = document.getElementById('btn-fake-torrent');
+    if (fakeTorrent) {
+      fakeTorrent.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert("RESTRICCIÓN DE RECIPROCIDAD: El protocolo P2P / Torrent y las descargas automatizadas están desactivados para redes institucionales y corporativas.");
+      });
+    }
+
+    const fakeZip = document.getElementById('btn-fake-zip');
+    if (fakeZip) {
+      fakeZip.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert("RESTRICCIÓN DE RECIPROCIDAD: El archivo ZIP completo y el modo fuera de línea están reservados para periodistas y ciudadanos independientes.");
+      });
+    }
+
+    // Selector de idioma con preservación de parámetros URL
+    const langLinks = document.querySelectorAll('.reciprocity-lang-switch a');
+    langLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const baseHref = link.getAttribute('href');
+        const curSearch = window.location.search || '';
+        window.location.href = baseHref + curSearch;
+      });
+    });
   } catch (_) {}
 })();
 </script>

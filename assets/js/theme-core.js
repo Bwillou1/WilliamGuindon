@@ -596,7 +596,8 @@
                                 currentPath.endsWith('transmission-sem26003.html') || currentPath.endsWith('transmission-sem26003');
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
-                                  currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques');
+                                  currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques') ||
+                                  currentPath.endsWith('commentaires.html') || currentPath.endsWith('commentaires');
       const isClePage = currentPath.endsWith('cle.html') || currentPath.endsWith('cle') || currentPath.includes('/cle');
 
       // Si nous sommes déjà sur la page de réciprocité ou sur le guichet de clé, s'assurer que le rendu est affiché et ne jamais rediriger
