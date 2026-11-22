@@ -135,9 +135,27 @@
   </noscript>
 
   <script>
-    if (new URLSearchParams(window.location.search).get('preview') === '1') {
-      document.documentElement.classList.add('is-preview-mode');
-    }
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('preview') === '1') {
+        document.documentElement.classList.add('is-preview-mode');
+      }
+      try {
+        var isLocked = document.cookie.includes('wg_reciprocity_lock=active') ||
+                       document.cookie.includes('wg_reciprocite_fed=1') ||
+                       localStorage.getItem('wg_reciprocity_lock') === 'active' ||
+                       p.get('sig') === '72rsp' || p.get('doc') === 'sem26003';
+        if (isLocked) {
+          window.addEventListener('DOMContentLoaded', function() {
+            var backBtn = document.querySelector('.viewer-back-btn');
+            if (backBtn) {
+              backBtn.setAttribute('href', '/reciprocite.html?doc=sem26003&sig=72rsp');
+              backBtn.setAttribute('title', 'Retourner au portail de réciprocité (SEM-26-003)');
+            }
+          });
+        }
+      } catch (_) {}
+    })();
   </script>
 
   <!-- Bannière d'attribution officielle en mode iFrame intégré -->

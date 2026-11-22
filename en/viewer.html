@@ -140,6 +140,21 @@
         p.delete('engine');
         window.location.replace('lecteur.html?' + p.toString());
       }
+      try {
+        var isLocked = document.cookie.includes('wg_reciprocity_lock=active') ||
+                       document.cookie.includes('wg_reciprocite_fed=1') ||
+                       localStorage.getItem('wg_reciprocity_lock') === 'active' ||
+                       p.get('sig') === '72rsp' || p.get('doc') === 'sem26003';
+        if (isLocked) {
+          window.addEventListener('DOMContentLoaded', function() {
+            var backBtn = document.querySelector('.viewer-back-btn');
+            if (backBtn) {
+              backBtn.setAttribute('href', '/en/reciprocite.html?doc=sem26003&sig=72rsp');
+              backBtn.setAttribute('title', 'Return to reciprocity portal (SEM-26-003)');
+            }
+          });
+        }
+      } catch (_) {}
       if (p.get('preview') === '1') {
         document.documentElement.classList.add('is-preview-mode');
       }

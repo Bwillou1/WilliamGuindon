@@ -597,7 +597,18 @@
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
                                   currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques') ||
-                                  currentPath.endsWith('commentaires.html') || currentPath.endsWith('commentaires');
+                                  currentPath.endsWith('commentaires.html') || currentPath.endsWith('commentaires') ||
+                                  currentPath.endsWith('deontologie.html') || currentPath.endsWith('deontologie') ||
+                                  currentPath.endsWith('independance.html') || currentPath.endsWith('independance') ||
+                                  currentPath.endsWith('ia-ethique.html') || currentPath.endsWith('ia-ethique') ||
+                                  currentPath.endsWith('anti-slapp.html') || currentPath.endsWith('anti-slapp') ||
+                                  currentPath.endsWith('embargo.html') || currentPath.endsWith('embargo') ||
+                                  currentPath.endsWith('statut-mineur.html') || currentPath.endsWith('statut-mineur') ||
+                                  currentPath.endsWith('vie-privee-parents.html') || currentPath.endsWith('vie-privee-parents') ||
+                                  currentPath.endsWith('netiquette.html') || currentPath.endsWith('netiquette') ||
+                                  currentPath.endsWith('dependances-licences.html') || currentPath.endsWith('dependances-licences') ||
+                                  currentPath.endsWith('viewer.html') || currentPath.endsWith('viewer') ||
+                                  currentPath.endsWith('lecteur.html') || currentPath.endsWith('lecteur');
       const isClePage = currentPath.endsWith('cle.html') || currentPath.endsWith('cle') || currentPath.includes('/cle');
 
       // Si nous sommes déjà sur la page de réciprocité ou sur le guichet de clé, s'assurer que le rendu est affiché et ne jamais rediriger
@@ -688,7 +699,9 @@
             const styleIsolation = document.createElement('style');
             styleIsolation.textContent = `
               header.site, footer, #ai-chat, .floating-ai-btn, #js-floating-ai-btn, .ai-modal-overlay,
-              .scroll-progress-bar, .bg-blob-container, .skip-link, nav {
+              .scroll-progress-bar, .bg-blob-container, .skip-link, nav, .site-header, .site-nav,
+              .mobile-menu-drawer, #site-header, .nav-container, .global-nav, .nav-dropdown,
+              .nav-menu, .navigation, #navbar, #navbar-container, .navbar, .mobile-nav {
                 display: none !important;
                 visibility: hidden !important;
                 height: 0 !important;
@@ -723,7 +736,7 @@
             document.head.appendChild(styleIsolation);
 
             window.addEventListener('DOMContentLoaded', function() {
-              const mainWrap = document.querySelector('main .wrap') || document.body;
+              const mainWrap = document.querySelector('main .wrap') || document.querySelector('main') || document.body;
               if (mainWrap) {
                 const bar = document.createElement('div');
                 bar.className = 'legal-isolated-return-bar';
@@ -735,6 +748,32 @@
                 bar.innerHTML = '<span>⚖️ <strong>' + label + '</strong> (SEM-26-003)</span><a href="' + retUrl + '?portail=cce-sem26003&transmission=officielle&sig=72rsp">' + retText + '</a>';
                 mainWrap.insertBefore(bar, mainWrap.firstChild);
               }
+
+              // Interception de navigation : tout lien vers le reste du site renvoie vers le portail restreint
+              document.addEventListener('click', function(e) {
+                const targetLink = e.target.closest('a');
+                if (!targetLink) return;
+                const href = targetLink.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return;
+                try {
+                  const linkUrl = new URL(targetLink.href, window.location.origin);
+                  if (linkUrl.origin === window.location.origin) {
+                    const targetP = linkUrl.pathname.toLowerCase();
+                    const isTargetLegal = targetP.includes('reciprocite') || targetP.includes('commentaires') ||
+                                          targetP.includes('politiques') || targetP.includes('privacy') ||
+                                          targetP.includes('terms') || targetP.includes('deontologie') ||
+                                          targetP.includes('independance') || targetP.includes('ia-ethique') ||
+                                          targetP.includes('anti-slapp') || targetP.includes('embargo') ||
+                                          targetP.includes('statut-mineur') || targetP.includes('vie-privee-parents') ||
+                                          targetP.includes('netiquette') || targetP.includes('dependances-licences') ||
+                                          targetP.includes('viewer') || targetP.includes('lecteur');
+                    if (!isTargetLegal) {
+                      e.preventDefault();
+                      window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
+                    }
+                  }
+                } catch (_) {}
+              }, true);
             });
           } catch (_) {}
         }
