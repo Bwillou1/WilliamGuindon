@@ -65,11 +65,11 @@
       var TRACKING_KEYS = new Set([
         'fbclid', 'fbadid', 'gclid', 'gbraid', 'wbraid', '_ga', '_gl',
         'igshid', 'twclid', 'ttclid', 'msclkid', 'mc_cid', 'mc_eid',
-        'yclid', 'dclid', 'ref_src'
+        'yclid', 'dclid', 'ref_src', 'gad_source', 'gclsrc'
       ]);
       var isTrackingKey = function (k) {
         var lower = (k || '').toLowerCase();
-        return lower.indexOf('utm_') === 0 || lower.indexOf('fb_') === 0 || TRACKING_KEYS.has(lower);
+        return lower.indexOf('utm_') === 0 || lower.indexOf('fb_') === 0 || lower.indexOf('_aem') === 0 || TRACKING_KEYS.has(lower);
       };
 
       var changed = false;
