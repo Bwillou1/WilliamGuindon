@@ -5,7 +5,7 @@
   <script src="/assets/js/security-guard.js" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Two direct citizen actions to protect the Grande Tourbière de Blainville peatland: the interactive on-site Actionbound investigation and the official petition on Change.org.">
+  <meta name="description" content="Two direct citizen actions to protect the Grande Tourbière de Blainville peatland: the official Change.org petition and the winter investigation game for kids and parents at Lacs Fauvel with Actionbound.">
   <meta name="author" content="William Guindon">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -29,16 +29,16 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_CA">
   <meta property="og:site_name" content="William Guindon">
-  <meta property="og:title" content="Act Now: Actionbound Field Investigation &amp; Petition — William Guindon">
-  <meta property="og:description" content="Two concrete citizen actions: download Actionbound for the field investigation and sign the petition for Environment Canada's transparency.">
+  <meta property="og:title" content="Act Now: Change.org Petition &amp; Actionbound Investigation — William Guindon">
+  <meta property="og:description" content="Sign the official citizen petition and discover the winter family field game at Lacs Fauvel with Actionbound.">
   <meta property="og:url" content="https://williamguindon.me/en/actions.html">
   <meta property="og:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Act Now: Actionbound Field Investigation &amp; Petition — William Guindon">
-  <meta name="twitter:description" content="Two direct actions: Actionbound field game and Change.org official petition for the Blainville peatland.">
+  <meta name="twitter:title" content="Act Now: Change.org Petition &amp; Actionbound Investigation — William Guindon">
+  <meta name="twitter:description" content="Official Change.org petition and winter trail for kids and parents at Lacs Fauvel (Actionbound).">
   <meta name="twitter:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
 
-  <title>Act Now: Field Investigation &amp; Petition — William Guindon</title>
+  <title>Act Now: Citizen Petition &amp; Winter Investigation — William Guindon</title>
 
   <script type="application/ld+json">
 {
@@ -48,8 +48,8 @@
       "@type": "WebPage",
       "@id": "https://williamguindon.me/en/actions.html#webpage",
       "url": "https://williamguindon.me/en/actions.html",
-      "name": "Act Now: Actionbound Field Investigation & Petition — William Guindon",
-      "description": "Two concrete citizen actions to protect the Grande Tourbière de Blainville peatland and support international submission SEM-26-003.",
+      "name": "Act Now: Citizen Petition & Winter Investigation — William Guindon",
+      "description": "Two direct citizen actions to protect the Grande Tourbière de Blainville peatland and support international submission SEM-26-003.",
       "inLanguage": "en-CA",
       "isPartOf": {
         "@type": "WebSite",
@@ -66,14 +66,14 @@
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "Actionbound Interactive Field Investigation (Stablex & Peatland)",
-          "url": "https://en.actionbound.com/bound/enquete-stablex-tourbiere"
+          "name": "Official Change.org Citizen Petition against Environment Canada blocking",
+          "url": "https://www.change.org/williamguindon"
         },
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Official Change.org Citizen Petition against Environment Canada blocking",
-          "url": "https://www.change.org/williamguindon"
+          "name": "Actionbound Interactive Winter Field Investigation (Kids, parents and families at Lacs Fauvel)",
+          "url": "https://en.actionbound.com/bound/enquete-stablex-tourbiere"
         }
       ]
     }
@@ -96,6 +96,9 @@
       --accent-red: #dc2626;
       --accent-red-bg: rgba(220, 38, 38, 0.08);
       --accent-red-border: rgba(220, 38, 38, 0.32);
+      --accent-blue: #0284c7;
+      --accent-blue-bg: rgba(2, 132, 199, 0.08);
+      --accent-blue-border: rgba(2, 132, 199, 0.32);
       --shadow: 0 12px 36px rgba(18, 48, 32, 0.08);
       --focus: #10b981;
     }
@@ -114,6 +117,9 @@
         --accent-red: #f87171;
         --accent-red-bg: rgba(248, 113, 113, 0.10);
         --accent-red-border: rgba(248, 113, 113, 0.38);
+        --accent-blue: #38bdf8;
+        --accent-blue-bg: rgba(56, 189, 248, 0.12);
+        --accent-blue-border: rgba(56, 189, 248, 0.38);
         --shadow: 0 16px 44px rgba(0, 0, 0, 0.36);
         --focus: #34d399;
       }
@@ -132,6 +138,9 @@
       --accent-red: #f87171;
       --accent-red-bg: rgba(248, 113, 113, 0.10);
       --accent-red-border: rgba(248, 113, 113, 0.38);
+      --accent-blue: #38bdf8;
+      --accent-blue-bg: rgba(56, 189, 248, 0.12);
+      --accent-blue-border: rgba(56, 189, 248, 0.38);
       --shadow: 0 16px 44px rgba(0, 0, 0, 0.36);
       --focus: #34d399;
     }
@@ -162,27 +171,38 @@
       padding: 16px 0 20px;
       border-bottom: 1px solid var(--line);
     }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     .brand-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 800;
       font-size: 0.88rem;
       color: var(--ink);
       text-decoration: none;
       letter-spacing: -0.01em;
     }
-    .brand-link:hover { text-decoration: underline; }
-    .brand-badge {
+    .exit-btn {
       display: inline-flex;
       align-items: center;
-      padding: 2px 7px;
+      gap: 5px;
+      padding: 5px 11px;
       border-radius: 9999px;
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-      font-size: 0.70rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.74rem;
       font-weight: 750;
-      border: 1px solid var(--accent-green-border);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .exit-btn:hover {
+      background: var(--panel-hover);
+      border-color: var(--accent-green);
     }
     .top-actions {
       display: flex;
@@ -215,7 +235,7 @@
 
     .hero {
       text-align: center;
-      padding: 32px 0 24px;
+      padding: 30px 0 22px;
     }
     .hero-tag {
       display: inline-flex;
@@ -223,13 +243,13 @@
       gap: 6px;
       padding: 4px 12px;
       border-radius: 9999px;
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
+      background: var(--accent-red-bg);
+      color: var(--accent-red);
       font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      border: 1px solid var(--accent-green-border);
+      border: 1px solid var(--accent-red-border);
       margin-bottom: 12px;
     }
     .hero h1 {
@@ -267,11 +287,11 @@
     .card:hover {
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
     }
-    .card-actionbound {
-      border-top: 4px solid var(--accent-green);
-    }
     .card-petition {
-      border-top: 4px solid var(--accent-red);
+      border-top: 5px solid #dc2626;
+    }
+    .card-actionbound {
+      border-top: 5px solid var(--accent-green);
     }
 
     .card-header {
@@ -293,15 +313,15 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .pill-green {
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green-border);
-    }
     .pill-red {
       background: var(--accent-red-bg);
       color: var(--accent-red);
       border: 1px solid var(--accent-red-border);
+    }
+    .pill-green {
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green-border);
     }
     .card-status {
       font-size: 0.75rem;
@@ -367,6 +387,7 @@
       color: var(--ink);
       line-height: 1.45;
     }
+    .step-content strong { color: var(--ink); }
 
     .app-stores-grid {
       display: grid;
@@ -416,51 +437,126 @@
       opacity: 0.95;
       transform: translateY(-1px);
     }
-    .btn-green {
-      background: var(--accent-green);
-      color: #ffffff !important;
-      box-shadow: 0 6px 18px rgba(13, 130, 88, 0.28);
-    }
     .btn-red {
       background: #dc2626;
       color: #ffffff !important;
       box-shadow: 0 6px 18px rgba(220, 38, 38, 0.28);
     }
+    .btn-green {
+      background: var(--accent-green);
+      color: #ffffff !important;
+      box-shadow: 0 6px 18px rgba(13, 130, 88, 0.28);
+    }
 
-    .bottom-links {
-      margin-top: 36px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      text-align: center;
+    .contact-card {
+      margin-top: 28px;
+      background: var(--panel);
+      border: 1px solid var(--accent-blue-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
     }
-    .bottom-links p {
-      margin: 0 0 14px;
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-    .btn-secondary {
+    .contact-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 18px;
+      padding: 3px 10px;
       border-radius: 9999px;
-      background: var(--panel);
-      border: 1px solid var(--line);
+      background: var(--accent-blue-bg);
+      color: var(--accent-blue);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .contact-title {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+      font-weight: 800;
       color: var(--ink);
-      font-size: 0.85rem;
-      font-weight: 750;
-      text-decoration: none;
-      transition: all 0.15s ease;
     }
-    .btn-secondary:hover {
-      background: var(--panel-hover);
-      border-color: var(--accent-green);
-    }
-    .footer-credits {
-      margin-top: 24px;
-      font-size: 0.76rem;
+    .contact-desc {
+      margin: 0 0 14px;
+      font-size: 0.88rem;
       color: var(--muted);
       line-height: 1.5;
+    }
+    .btn-email-cc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 10px;
+      background: var(--accent-blue);
+      color: #ffffff !important;
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+    .btn-email-cc:hover { opacity: 0.92; }
+    .email-details {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .email-details strong { color: var(--ink); }
+
+    .no-donations-box {
+      margin-top: 20px;
+      background: rgba(220, 38, 38, 0.05);
+      border: 1px dashed rgba(220, 38, 38, 0.35);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.82rem;
+      color: var(--ink);
+      line-height: 1.5;
+      text-align: left;
+    }
+    .no-donations-box strong {
+      color: #dc2626;
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 800;
+    }
+
+    .exit-site-block {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .btn-exit-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      background: var(--panel);
+      border: 2px solid var(--line);
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      transition: all 0.15s ease;
+    }
+    .btn-exit-main:hover {
+      background: var(--panel-hover);
+      border-color: var(--accent-green);
+      transform: translateY(-1px);
+    }
+
+    .footer-credits {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.55;
+      text-align: center;
     }
     .footer-credits a {
       color: var(--ink);
@@ -471,10 +567,15 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <a href="/en/index.html" class="brand-link" title="Back to official homepage">
-        <span>William Guindon</span>
-        <span class="brand-badge">SEM-26-003</span>
-      </a>
+      <div class="brand-group">
+        <a href="/en/index.html" class="brand-link" title="William Guindon Home">
+          <span>William Guindon</span>
+        </a>
+        <a href="/en/index.html" class="exit-btn" title="Exit to main official website">
+          <span aria-hidden="true">⬅</span>
+          <span>Official Site</span>
+        </a>
+      </div>
       <div class="top-actions">
         <nav class="lang-switcher" aria-label="Available languages">
           <a href="/actions.html" class="lang-btn" hreflang="fr">FR</a>
@@ -489,24 +590,41 @@
         <span class="hero-tag">Direct Citizen Action</span>
         <h1>2 Concrete Ways to Act Now</h1>
         <p>
-          To protect the <strong>Grande Tourbière de Blainville</strong> peatland and uncover the truth regarding <strong>Stablex</strong> expansion, here are the two priority citizen actions available to everyone.
+          To protect the <strong>Grande Tourbière de Blainville</strong> peatland and uncover the truth regarding <strong>Stablex</strong>, sign the official petition online and join the winter field investigation trail with your family.
         </p>
       </section>
 
       <div class="actions-stack">
-        <!-- ACTION 1 : ACTIONBOUND -->
+        <!-- ACTION 1 : CHANGE.ORG PETITION FIRST -->
+        <article class="card card-petition" id="petition">
+          <div class="card-header">
+            <span class="card-pill pill-red">Action 1 · Official Citizen Petition</span>
+            <span class="card-status">Online · 1 minute · Free</span>
+          </div>
+          <h2 class="card-title">Petition: Lift the Block Against a 15-Year-Old Activist!</h2>
+          <p class="card-desc">
+            Official government records revealed that Environment and Climate Change Canada issued internal orders to stop answering William Guindon's citizen whistleblower notices, while simultaneously meeting with Stablex lobbyists. Sign the petition demanding full transparency on cadmium risks and an independent CEC Factual Record (SEM-26-003).
+          </p>
+
+          <a href="https://www.change.org/williamguindon" target="_blank" rel="noopener noreferrer" class="btn-primary-action btn-red">
+            <span>Sign the Petition on Change.org</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+
+        <!-- ACTION 2 : WINTER TRAIL FOR KIDS & PARENTS AT LACS FAUVEL -->
         <article class="card card-actionbound" id="actionbound">
           <div class="card-header">
-            <span class="card-pill pill-green">Action 1 · Interactive Field Trail</span>
-            <span class="card-status">On-site or remote · Free</span>
+            <span class="card-pill pill-green">Action 2 · Winter Field Trail</span>
+            <span class="card-status">Lacs Fauvel &amp; Peatland · For kids &amp; parents</span>
           </div>
-          <h2 class="card-title">Interactive Investigation: Stablex &amp; the Peatland</h2>
+          <h2 class="card-title">Winter Investigation: Stablex &amp; Lacs Fauvel</h2>
           <p class="card-desc">
-            Explore the perimeter, document natural wetland biodiversity (278,000&nbsp;m² threatened), and discover the documentary evidence behind the environmental dossier through a geolocated mobile investigation.
+            An interactive outdoor educational adventure designed specifically for <strong>kids, parents, and families in winter</strong>. Head around <strong>Lacs Fauvel</strong> and the Blainville peatland to spot wildlife tracks in the snow, uncover ecological clues, and understand the vital role of this 278,000&nbsp;m² carbon sink threatened by hazardous waste landfilling.
           </p>
 
           <div class="steps-box">
-            <h3 class="steps-title">How to take part in 2 simple steps:</h3>
+            <h3 class="steps-title">How to play with your family in 2 steps:</h3>
             
             <div class="step-item">
               <span class="step-num" aria-hidden="true">1</span>
@@ -515,7 +633,7 @@
                 <div class="app-stores-grid">
                   <a href="https://apps.apple.com/us/app/actionbound/id582660833" target="_blank" rel="noopener noreferrer" class="store-btn">
                     <span aria-hidden="true">🍏</span>
-                    <span>App Store (iPhone) ↗</span>
+                    <span>App Store (iPhone / iPad) ↗</span>
                   </a>
                   <a href="https://play.google.com/store/apps/details?id=de.actionbound" target="_blank" rel="noopener noreferrer" class="store-btn">
                     <span aria-hidden="true">🤖</span>
@@ -528,47 +646,58 @@
             <div class="step-item">
               <span class="step-num" aria-hidden="true">2</span>
               <div class="step-content">
-                <strong>Launch the citizen trail:</strong><br>
-                Once installed, tap the link below to open the investigation directly in the Actionbound app.
+                <strong>Start the mission on-site or at home:</strong><br>
+                Once installed, tap the link below to open the winter trail directly on your phone and take on challenges with your kids.
               </div>
             </div>
           </div>
 
           <a href="https://en.actionbound.com/bound/enquete-stablex-tourbiere" target="_blank" rel="noopener noreferrer" class="btn-primary-action btn-green">
-            <span>Open Investigation in Actionbound</span>
-            <span aria-hidden="true">↗</span>
-          </a>
-        </article>
-
-        <!-- ACTION 2 : PETITION -->
-        <article class="card card-petition" id="petition">
-          <div class="card-header">
-            <span class="card-pill pill-red">Action 2 · Citizen Petition</span>
-            <span class="card-status">Online · 1 minute</span>
-          </div>
-          <h2 class="card-title">Petition: Lift the Block Against a 15-Year-Old Activist!</h2>
-          <p class="card-desc">
-            Official government documents revealed that Environment Canada issued internal instructions to stop answering William Guindon's whistleblower reports, while simultaneously meeting with Stablex lobbyists. Sign the petition demanding full transparency on cadmium contamination and an independent CEC Factual Record (SEM-26-003).
-          </p>
-
-          <a href="https://www.change.org/williamguindon" target="_blank" rel="noopener noreferrer" class="btn-primary-action btn-red">
-            <span>Sign the Petition on Change.org</span>
+            <span>Start Investigation in Actionbound</span>
             <span aria-hidden="true">↗</span>
           </a>
         </article>
       </div>
 
-      <section class="bottom-links">
-        <p>Looking for template letters to MPs, official complaint channels, or BAPE submissions?</p>
-        <a href="/en/agir.html" class="btn-secondary">
-          <span>Read the Full Citizen Action Guide</span>
-          <span aria-hidden="true">↗</span>
+      <!-- CONTACT BOX WITH PARENTS IN CC -->
+      <section class="contact-card" id="contact">
+        <span class="contact-badge">Official Contact &amp; Governance</span>
+        <h3 class="contact-title">Have a question or citizen observation?</h3>
+        <p class="contact-desc">
+          As a 15-year-old minor, all digital correspondence follows strict parental oversight and legal transparency: any email sent automatically includes my parents in carbon copy (CC).
+        </p>
+
+        <!--email_off-->
+        <a href="mailto:contact@williamguindon.me?cc=parents@williamguindon.me&amp;subject=Citizen%20Action%20%E2%80%94%20Grande%20Tourbi%C3%A8re%20de%20Blainville" class="btn-email-cc">
+          <span aria-hidden="true">✉️</span>
+          <span>Email William Guindon (with parents in CC)</span>
         </a>
+        <!--/email_off-->
+
+        <div class="email-details">
+          Recipient: <strong>contact@williamguindon.me</strong><br>
+          Mandatory parental CC: <strong>parents@williamguindon.me</strong>
+        </div>
       </section>
+
+      <!-- STRICT NOTICE NO DONATIONS ACCEPTED -->
+      <aside class="no-donations-box" role="note">
+        <strong>⚠️ Financial Integrity &amp; No Donations Accepted:</strong>
+        No monetary donations, tips, crowdfunding, or <strong>bank transfers (Interac or wire) will be accepted</strong>. All research, documentary archiving, and web hosting are strictly self-funded to ensure absolute independence from any private or political interests (in accordance with our <a href="/en/independance.html">Independence Policy</a>).
+      </aside>
+
+      <!-- EXIT AND RETURN BUTTON -->
+      <div class="exit-site-block">
+        <a href="/en/index.html" class="btn-exit-main">
+          <span aria-hidden="true">⬅</span>
+          <span>Exit and return to official website (williamguindon.me)</span>
+        </a>
+      </div>
     </main>
 
     <footer class="footer-credits">
       <p>
+        <a href="/en/agir.html">Complete Citizen Action Guide</a> · <a href="/en/vie-privee-parents.html">Privacy &amp; Parental Role</a> · <a href="/en/deontologie.html">Ethics</a> · <a href="/en/independance.html">Independence</a><br>
         Official documentary register of William Guindon · CEC Submission SEM-26-003.<br>
         Published under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener">CC BY-NC-ND 4.0</a> · <a href="/en/index.html">williamguindon.me</a>
       </p>
