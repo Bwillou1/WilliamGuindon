@@ -12718,19 +12718,24 @@ body.stage3-active .site-deadline-topbar a[href*="live.html"] {
    Bannière d'alerte Échéance 16 Octobre (Top Banner multi-pages)
    ========================================================================== */
 .site-deadline-topbar {
-  background: #0d1512;
-  background: linear-gradient(90deg, #0b1410 0%, #1e0e0e 50%, #0b1410 100%);
-  border-bottom: 1.5px solid rgba(231, 76, 60, 0.5);
+  background: linear-gradient(90deg, #091310 0%, #101c26 50%, #091310 100%);
+  border-bottom: 1.5px solid rgba(56, 189, 248, 0.4);
   color: #ffffff;
-  padding: 5px 16px;
+  padding: 6px 16px;
   position: relative;
   z-index: 105;
   width: 100%;
   box-sizing: border-box;
   font-size: 13px;
-  min-height: 38px;
-  contain: layout;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  min-height: 40px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-deadline-topbar:hover {
+  background: linear-gradient(90deg, #0b1814 0%, #132433 50%, #0b1814 100%);
+  border-bottom-color: rgba(56, 189, 248, 0.75);
+  box-shadow: 0 4px 22px rgba(14, 165, 233, 0.22), 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 .site-deadline-topbar-wrap {
@@ -12748,7 +12753,7 @@ body.stage3-active .site-deadline-topbar a[href*="live.html"] {
 .site-deadline-left {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -12761,18 +12766,209 @@ body.stage3-active .site-deadline-topbar a[href*="live.html"] {
   color: #bae6fd;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.06em;
-  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
   border-radius: 9999px;
   text-transform: uppercase;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.site-deadline-badge:hover,
+.site-deadline-badge:focus-visible {
+  background: rgba(14, 165, 233, 0.28);
+  border-color: #38bdf8;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+}
+
+.site-deadline-badge-sep {
+  opacity: 0.4;
+  margin: 0 1px;
+}
+
+.site-deadline-badge-countdown {
+  color: #f59e0b;
+  font-weight: 900;
+  background: rgba(245, 158, 11, 0.18);
+  padding: 1px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  letter-spacing: 0.04em;
+  display: inline-block;
 }
 
 .site-deadline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+  animation: deadlineRadarPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes deadlineRadarPulse {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.85); }
+  60% { box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+
+.site-deadline-arrow {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-deadline-btn:hover .site-deadline-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* Volet interactif HUD au survol et au clic */
+.site-deadline-popover {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: min(94vw, 560px);
+  background: rgba(10, 18, 26, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(14, 165, 233, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  z-index: 10000;
+  box-sizing: border-box;
+}
+
+.site-deadline-topbar:hover .site-deadline-popover,
+.site-deadline-topbar.popover-open .site-deadline-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.site-deadline-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.popover-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  text-transform: uppercase;
+}
+
+.popover-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #38bdf8;
-  animation: notifBadgePulse 2s ease-in-out infinite;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.popover-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: none;
+}
+
+.site-deadline-topbar.popover-open .popover-close-btn {
+  display: block;
+}
+
+.popover-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.popover-time-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.popover-num {
+  display: block;
+  font-size: 19px;
+  font-weight: 900;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  font-family: var(--font-heading, inherit);
+}
+
+.popover-lbl {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+.popover-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+
+.popover-desc strong {
+  color: #f1f5f9;
+}
+
+.popover-desc em {
+  color: #38bdf8;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.site-deadline-popover-footer {
+  text-align: right;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+}
+
+.popover-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.popover-cta-btn:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+  transform: translateX(2px);
 }
 
 .site-deadline-title {

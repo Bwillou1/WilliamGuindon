@@ -1679,22 +1679,76 @@
       banner.innerHTML = `
         <div class="wrap site-deadline-topbar-wrap">
           <div class="site-deadline-left">
-            <span class="site-deadline-badge">
+            <span class="site-deadline-badge" id="site-deadline-badge" title="Cliquer ou survoler pour afficher le décompte légal et les enjeux (Art. 24.28 ACEUM)" role="button" tabindex="0" aria-haspopup="true">
               <span class="site-deadline-dot" aria-hidden="true"></span>
-              <span>15 DÉCEMBRE 2026</span>
+              <span class="site-deadline-badge-date">15 DÉCEMBRE 2026</span>
+              <span class="site-deadline-badge-sep">·</span>
+              <span class="site-deadline-badge-countdown" id="site-deadline-days-left">J-22</span>
             </span>
-            <span class="site-deadline-title">Prochaine échéance CCE · Détermination Dossier factuel (Art. 24.28 ACEUM)</span>
+            <span class="site-deadline-title">Détermination CCE imminente · Recommandation de Dossier factuel (Art. 24.28 ACEUM)</span>
           </div>
           <div class="site-deadline-right">
             <span class="site-deadline-tz js-cd-tz-badge" id="site-deadline-tz" style="display: none;"></span>
-            <a href="live.html" class="site-deadline-btn" title="Consulter le registre direct CCE et le décompte légal">
-              <span>Registre CCE direct ↗</span>
+            <a href="live.html" class="site-deadline-btn" title="Consulter le registre direct CCE, les recours et le décompte légal">
+              <span>Suivre le décompte</span>
+              <span class="site-deadline-arrow" aria-hidden="true">↗</span>
             </a>
+          </div>
+        </div>
+        <!-- Volet interactif HUD au survol et au toucher -->
+        <div class="site-deadline-popover" id="site-deadline-popover" role="tooltip" aria-hidden="true">
+          <div class="site-deadline-popover-inner">
+            <div class="site-deadline-popover-header">
+              <span class="popover-status-pill"><span class="popover-status-dot"></span> EN DÉLIBÉRATION ACTIVE · GREFFE DE LA CCE</span>
+              <button type="button" class="popover-close-btn" id="site-deadline-popover-close" aria-label="Fermer le volet">×</button>
+            </div>
+            <div class="site-deadline-popover-body">
+              <div class="popover-countdown-grid">
+                <div class="popover-time-box"><span class="popover-num js-cd-days">22</span><span class="popover-lbl">JOURS</span></div>
+                <div class="popover-time-box"><span class="popover-num js-cd-hours">07</span><span class="popover-lbl">HEURES</span></div>
+                <div class="popover-time-box"><span class="popover-num js-cd-mins">45</span><span class="popover-lbl">MIN</span></div>
+                <div class="popover-time-box"><span class="popover-num js-cd-secs">12</span><span class="popover-lbl">SEC</span></div>
+              </div>
+              <div class="popover-desc">
+                <strong>Enjeu de la décision :</strong> Le Secrétariat de la CCE doit déterminer si la réponse du Canada justifie l'ouverture d'un <em>dossier factuel</em> (enquête indépendante internationale) sur l'agrandissement de Stablex à Blainville et la protection de la Grande Tourbière.
+              </div>
+            </div>
+            <div class="site-deadline-popover-footer">
+              <a href="live.html" class="popover-cta-btn">Accéder au compte à rebours haute précision &amp; registre officiel ↗</a>
+            </div>
           </div>
         </div>
       `;
 
       headerSite.parentNode.insertBefore(banner, headerSite);
+
+      // Gestion de l'ouverture tactile / au clic
+      const badge = banner.querySelector('#site-deadline-badge');
+      const closeBtn = banner.querySelector('#site-deadline-popover-close');
+      if (badge) {
+        const togglePopover = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          banner.classList.toggle('popover-open');
+        };
+        badge.addEventListener('click', togglePopover);
+        badge.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            togglePopover(e);
+          }
+        });
+      }
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          banner.classList.remove('popover-open');
+        });
+      }
+      document.addEventListener('click', (e) => {
+        if (!banner.contains(e.target)) {
+          banner.classList.remove('popover-open');
+        }
+      });
       updateTimezoneBadges();
       if (typeof updatePrecisionCountdown === 'function') {
         updatePrecisionCountdown();
@@ -2922,6 +2976,13 @@
       document.querySelectorAll('.js-cd-secs, #cd-secs').forEach(el => {
         if (el.textContent !== secs) el.textContent = secs;
       });
+
+      const topbarDays = document.getElementById('site-deadline-days-left');
+      if (topbarDays) {
+        const dNum = parseInt(days, 10);
+        const dayTxt = dNum > 0 ? `J-${dNum}` : "Aujourd'hui !";
+        if (topbarDays.textContent !== dayTxt) topbarDays.textContent = dayTxt;
+      }
 
       // Mode Étape 3 : Version légère et pérenne post-échéance 16 oct.
       if (isStage3) {
