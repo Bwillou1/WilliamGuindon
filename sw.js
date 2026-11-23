@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v285';
+const CACHE_NAME = 'wg-pwa-v286';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache ultra-léger (coque applicative et moteur PDF uniquement) pour une vitesse d'affichage éclair.
