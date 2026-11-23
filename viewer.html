@@ -237,6 +237,8 @@
       </div>
 
       <div class="viewer-header-right">
+        <!-- Module Collaboration P2P (Désactivé de l'interface publique, réactivable à la demande) -->
+        <!--
         <button type="button" id="btn-collab-toggle" class="btn-collab-toggle tool-btn" title="Mode collaboration P2P en direct (Curseurs partagés &amp; révision en direct)" aria-label="Collaboration en direct" onclick="if(window.__wg_collab&amp;&amp;window.__wg_collab.start){window.__wg_collab.start();}else{import('/assets/js/collab-p2p-live.js').then(m=>m.startCollabSession());}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -246,6 +248,7 @@
           </svg>
           <span>Collaboration</span>
         </button>
+        -->
 
         <button type="button" id="btn-translate-doc" class="tool-btn btn-translate-green" title="Traduire ce document officiel (Anglais / Espagnol)" aria-label="Traduire le document">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -505,18 +508,8 @@
 
   <script src="/assets/js/annotations-idb.js?v=20261114-v4"></script>
   <script type="module" src="/assets/js/viewer-embedpdf.js?v=20261114-v4"></script>
-  <script type="module" src="/assets/js/collab-p2p-live.js"></script>
+  <!-- <script type="module" src="/assets/js/collab-p2p-live.js"></script> -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const btnCollab = document.getElementById('btn-collab-toggle');
-      if (btnCollab) {
-        btnCollab.addEventListener('click', function() {
-          if (window.__wg_collab && typeof window.__wg_collab.start === 'function') {
-            window.__wg_collab.start();
-          }
-        });
-      }
-    });
     // Relais du curseur de souris vers la fenêtre parente (dossier journalistes)
     (function() {
       if (window.parent && window.parent !== window) {
