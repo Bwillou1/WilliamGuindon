@@ -9,29 +9,30 @@
 import { joinRoom } from '/assets/vendor/trystero/trystero-nostr.min.js';
 import { PerfectCursor } from '/assets/vendor/perfect-cursors/perfect-cursors.esm.js';
 
-// Palette de 6 couleurs distinctes, vives et contrastées
-const CURSOR_COLORS = [
-  '#2563eb', // Bleu Cobalt
-  '#059669', // Vert Émeraude
-  '#ea580c', // Orange Vif
-  '#db2777', // Rose Framboise
-  '#7c3aed', // Violet Profond
-  '#0891b2'  // Cyan Océan
+// Palette de relais Nostr publics de premier plan (ultra-rapides, haute disponibilité mondiale)
+const RELIABLE_NOSTR_RELAYS = [
+  'wss://relay.damus.io',
+  'wss://nos.lol',
+  'wss://relay.nostr.band',
+  'wss://relay.snort.social',
+  'wss://relay.primal.net',
+  'wss://nostr.wine',
+  'wss://nostr.mom'
 ];
 
 /**
- * Calcule une couleur déterministe pour qu'une même personne/appareil
- * ait systématiquement la même couleur pour tous les pairs.
+ * Calcule une couleur déterministe et unique à partir de l'identifiant
+ * (générateur HSL infini pour qu'il n'y ait aucune limite de participants)
  */
 function getConsistentColor(idOrName) {
-  if (!idOrName || typeof idOrName !== 'string') return CURSOR_COLORS[0];
+  if (!idOrName || typeof idOrName !== 'string') return '#059669';
   let hash = 0;
   for (let i = 0; i < idOrName.length; i++) {
     hash = (hash << 5) - hash + idOrName.charCodeAt(i);
     hash |= 0;
   }
-  const index = Math.abs(hash) % CURSOR_COLORS.length;
-  return CURSOR_COLORS[index];
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 80%, 42%)`;
 }
 
 function getDeviceLabel() {
@@ -470,11 +471,14 @@ function renderCollabBar(roomId) {
     }
   });
 
-  // Copier le lien complet avec le jeton de salle
+  // Copier le lien d'invitation court et propre avec le jeton de salle
   document.getElementById('btn-collab-copy-link').addEventListener('click', function (e) {
     e.stopPropagation();
     const url = new URL(window.location.href);
-    url.searchParams.set('room', state.roomId);
+    url.searchParams.delete('doc');
+    url.searchParams.delete('file');
+    url.searchParams.delete('room');
+    url.searchParams.set('r', state.roomId);
     navigator.clipboard.writeText(url.toString()).then(() => {
       const span = this.querySelector('span');
       if (span) {
@@ -623,6 +627,7 @@ export function startCollabSession(roomId) {
   try {
     const url = new URL(window.location.href);
     url.searchParams.delete('room');
+    url.searchParams.delete('r');
     url.searchParams.delete('doc');
     url.searchParams.delete('file');
     const cleanSearch = url.searchParams.toString();
@@ -633,8 +638,8 @@ export function startCollabSession(roomId) {
   showCollabToast('Mode direct activé · Cliquez sur « Inviter » pour synchroniser');
 
   try {
-    // Connexion à la pièce via Trystero Nostr
-    state.room = joinRoom({ appId: 'williamguindon.me' }, state.roomId);
+    // Connexion à la pièce via Trystero Nostr avec relais ultra-rapides
+    state.room = joinRoom({ appId: 'williamguindon.me', relayUrls: RELIABLE_NOSTR_RELAYS }, state.roomId);
 
     // Actions Trystero v0.27
     const cursorAction = state.room.makeAction('cursor');
@@ -792,14 +797,18 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Détection immédiate du paramètre ?room=... ou #room=... à l'exécution du module
+// Détection immédiate du paramètre ?r=... ou ?room=... ou #r=... à l'exécution du module
 const initialParams = new URLSearchParams(window.location.search);
-const initialRoom = initialParams.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null);
+const initialRoom = initialParams.get('r') || initialParams.get('room') || 
+  (window.location.hash.startsWith('#r=') ? window.location.hash.replace('#r=', '') : 
+  (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null));
 
-// Détection automatique du paramètre ?room=... ou #room=...
+// Détection automatique du paramètre ?r=... ou ?room=...
 function autoStartIfRequested() {
   const p = new URLSearchParams(window.location.search);
-  const roomParam = p.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null) || initialRoom;
+  const roomParam = p.get('r') || p.get('room') || 
+    (window.location.hash.startsWith('#r=') ? window.location.hash.replace('#r=', '') : 
+    (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null)) || initialRoom;
   if (roomParam) {
     setTimeout(() => startCollabSession(roomParam), 300);
   }
