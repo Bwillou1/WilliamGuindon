@@ -11,13 +11,13 @@ import { PerfectCursor } from '/assets/vendor/perfect-cursors/perfect-cursors.es
 
 // Palette de relais Nostr publics de premier plan (ultra-rapides, haute disponibilité mondiale)
 const RELIABLE_NOSTR_RELAYS = [
-  'wss://relay.damus.io',
   'wss://nos.lol',
-  'wss://relay.nostr.band',
-  'wss://relay.snort.social',
   'wss://relay.primal.net',
+  'wss://relay.snort.social',
   'wss://nostr.wine',
-  'wss://nostr.mom'
+  'wss://relay.orangepill.ovh',
+  'wss://relay.nostr.net',
+  'wss://nostr.bitcoiner.social'
 ];
 
 /**
@@ -471,15 +471,23 @@ function renderCollabBar(roomId) {
     }
   });
 
+/**
+ * Génère l'URL d'invitation courte, propre et confidentielle
+ */
+function getShareableInviteUrl() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('doc');
+  url.searchParams.delete('file');
+  url.searchParams.delete('room');
+  url.searchParams.set('r', state.roomId);
+  return url.toString();
+}
+
   // Copier le lien d'invitation court et propre avec le jeton de salle
   document.getElementById('btn-collab-copy-link').addEventListener('click', function (e) {
     e.stopPropagation();
-    const url = new URL(window.location.href);
-    url.searchParams.delete('doc');
-    url.searchParams.delete('file');
-    url.searchParams.delete('room');
-    url.searchParams.set('r', state.roomId);
-    navigator.clipboard.writeText(url.toString()).then(() => {
+    const inviteUrl = getShareableInviteUrl();
+    navigator.clipboard.writeText(inviteUrl).then(() => {
       const span = this.querySelector('span');
       if (span) {
         span.textContent = 'Lien copié !';
@@ -639,7 +647,7 @@ export function startCollabSession(roomId) {
 
   try {
     // Connexion à la pièce via Trystero Nostr avec relais ultra-rapides
-    state.room = joinRoom({ appId: 'williamguindon.me', relayUrls: RELIABLE_NOSTR_RELAYS }, state.roomId);
+    state.room = joinRoom({ appId: 'williamguindon.me', relayConfig: { urls: RELIABLE_NOSTR_RELAYS } }, state.roomId);
 
     // Actions Trystero v0.27
     const cursorAction = state.room.makeAction('cursor');
@@ -780,17 +788,16 @@ document.addEventListener('click', function(e) {
   e.preventDefault();
 
   if (state.active) {
-    // Déjà actif : copier le lien secret
-    const url = new URL(window.location.href);
-    url.searchParams.set('room', state.roomId);
-    navigator.clipboard.writeText(url.toString()).then(() => {
+    // Déjà actif : copier le lien secret court et propre
+    const inviteUrl = getShareableInviteUrl();
+    navigator.clipboard.writeText(inviteUrl).then(() => {
       const span = btn.querySelector('span');
       if (span) {
         const oldText = span.textContent;
         span.textContent = 'Lien copié !';
         setTimeout(() => { span.textContent = oldText; }, 2000);
       }
-      showCollabToast('Lien secret copié dans le presse-papier');
+      showCollabToast('Lien d\'invitation copié dans le presse-papier');
     }).catch(() => {});
   } else {
     startCollabSession();
@@ -799,14 +806,14 @@ document.addEventListener('click', function(e) {
 
 // Détection immédiate du paramètre ?r=... ou ?room=... ou #r=... à l'exécution du module
 const initialParams = new URLSearchParams(window.location.search);
-const initialRoom = initialParams.get('r') || initialParams.get('room') || 
+const initialRoom = (typeof window !== 'undefined' && window.__wg_pending_room) || initialParams.get('r') || initialParams.get('room') || 
   (window.location.hash.startsWith('#r=') ? window.location.hash.replace('#r=', '') : 
   (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null));
 
 // Détection automatique du paramètre ?r=... ou ?room=...
 function autoStartIfRequested() {
   const p = new URLSearchParams(window.location.search);
-  const roomParam = p.get('r') || p.get('room') || 
+  const roomParam = (typeof window !== 'undefined' && window.__wg_pending_room) || p.get('r') || p.get('room') || 
     (window.location.hash.startsWith('#r=') ? window.location.hash.replace('#r=', '') : 
     (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null)) || initialRoom;
   if (roomParam) {
