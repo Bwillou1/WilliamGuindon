@@ -517,6 +517,29 @@
         });
       }
     });
+    // Relais du curseur de souris vers la fenêtre parente (dossier journalistes)
+    (function() {
+      if (window.parent && window.parent !== window) {
+        var rafPending = false;
+        window.addEventListener('pointermove', function(e) {
+          if (rafPending) return;
+          rafPending = true;
+          requestAnimationFrame(function() {
+            rafPending = false;
+            try {
+              var rx = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+              var ry = Math.max(0, Math.min(1, e.clientY / window.innerHeight));
+              window.parent.postMessage({ type: 'wg:collab-pointermove', rx: rx, ry: ry }, '*');
+            } catch (_) {}
+          });
+        }, { passive: true });
+        window.addEventListener('pointerleave', function() {
+          try {
+            window.parent.postMessage({ type: 'wg:collab-pointerleave' }, '*');
+          } catch (_) {}
+        }, { passive: true });
+      }
+    })();
   </script>
   <script>
     (function() {

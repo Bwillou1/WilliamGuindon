@@ -2021,7 +2021,7 @@
 
   <div class="drive-header">
     <div class="drive-header-left">
-      <a href="index.html" class="btn-back-home" title="Revenir à la page précédente">
+      <a href="index.html" class="btn-back-home" title="Revenir à la page précédente" onclick="if(window.__wg_collab&amp;&amp;window.__wg_collab.isActive&amp;&amp;window.__wg_collab.isActive()){if(!confirm('Une session collaborative est en cours. Quitter la page mettra fin au partage en direct. Souhaitez-vous vraiment quitter ?')){return false;}}">
         <span>←</span>
         <span>Retour</span>
       </a>
@@ -4999,9 +4999,15 @@ function getCleanDisplayName(fullPath) {
           const combinedCode = (window.__wgSplitViewActive && window.__wgRightShortCode)
             ? (shortFileParam + "+" + window.__wgRightShortCode)
             : shortFileParam;
-          const currentSearch = window.location.search || "";
+          let searchStr = "";
+          try {
+            const u = new URL(window.location.href);
+            u.searchParams.delete("doc");
+            u.searchParams.delete("file");
+            searchStr = u.searchParams.toString();
+          } catch (_) {}
           const currentHash = window.location.hash || "";
-          const miniDocPath = shortPrefix + combinedCode + currentSearch + currentHash;
+          const miniDocPath = shortPrefix + combinedCode + (searchStr ? "?" + searchStr : "") + currentHash;
           try {
             window.history.replaceState({ doc: combinedCode }, "", miniDocPath);
           } catch (_) {}
@@ -8226,9 +8232,11 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
     var pref = isEn ? '/en/d/' : (isEs ? '/es/d/' : '/d/');
     var code = right ? (left + '+' + right) : left;
     try {
-      var currentSearch = window.location.search || '';
-      var currentHash = window.location.hash || '';
-      window.history.replaceState({ doc: code }, '', pref + code + currentSearch + currentHash);
+      var u = new URL(window.location.href);
+      u.searchParams.delete('doc');
+      u.searchParams.delete('file');
+      var s = u.searchParams.toString();
+      window.history.replaceState({ doc: code }, '', pref + code + (s ? '?' + s : '') + (u.hash || ''));
     } catch (_) {}
   }
 
@@ -8417,6 +8425,16 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
   window.wgOpenBlackboxDoc = function() {
     try { if (window.self !== window.top) return; } catch (_) { return; }
+    // Avertissement de sécurité si en session collaborative (évite d'exposer des données système en partage d'écran / Zoom)
+    if (window.__wg_collab && typeof window.__wg_collab.isActive === 'function' && window.__wg_collab.isActive()) {
+      var proceed = confirm(
+        "⚠️ AVERTISSEMENT DE CONFIDENTIALITÉ (Mode direct actif)\n\n" +
+        "Vous êtes actuellement en session collaborative en direct (potentiellement en réunion ou en partage d'écran).\n\n" +
+        "L'ouverture du journal Blackbox affiche publiquement des diagnostics techniques détaillés relatifs à votre appareil (système, réseau, télémétrie locale).\n\n" +
+        "Voulez-vous vraiment afficher le journal Blackbox à l'écran ?"
+      );
+      if (!proceed) return;
+    }
     var stage = document.getElementById('preview-stage');
     if (!stage) return;
     try {

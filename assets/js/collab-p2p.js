@@ -9,7 +9,7 @@
 import { joinRoom } from '/assets/vendor/trystero/trystero-nostr.min.js';
 import { PerfectCursor } from '/assets/vendor/perfect-cursors/perfect-cursors.esm.js';
 
-// Palette de couleurs éclatantes et contrastées pour identifier les pairs
+// Palette de 6 couleurs distinctes, vives et contrastées
 const CURSOR_COLORS = [
   '#2563eb', // Bleu Cobalt
   '#059669', // Vert Émeraude
@@ -19,14 +19,25 @@ const CURSOR_COLORS = [
   '#0891b2'  // Cyan Océan
 ];
 
-function getRandomColor() {
-  return CURSOR_COLORS[Math.floor(Math.random() * CURSOR_COLORS.length)];
+/**
+ * Calcule une couleur déterministe pour qu'une même personne/appareil
+ * ait systématiquement la même couleur pour tous les pairs.
+ */
+function getConsistentColor(idOrName) {
+  if (!idOrName || typeof idOrName !== 'string') return CURSOR_COLORS[0];
+  let hash = 0;
+  for (let i = 0; i < idOrName.length; i++) {
+    hash = (hash << 5) - hash + idOrName.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % CURSOR_COLORS.length;
+  return CURSOR_COLORS[index];
 }
 
 function getDeviceLabel() {
   try {
     const saved = localStorage.getItem('wg_collab_username');
-    if (saved && saved.trim()) return saved.trim();
+    if (saved && saved.trim()) return saved.trim().slice(0, 24);
   } catch (_) {}
   const ua = (typeof navigator !== 'undefined' ? navigator.userAgent : '') || '';
   let dev = 'Appareil';
@@ -42,7 +53,7 @@ function getDeviceLabel() {
 
 /**
  * Génère un identifiant de salle cryptographiquement fort (128 bits d'entropie)
- * pour garantir qu'aucun robot ni scanner ne puisse deviner ou énumérer l'URL
+ * pour garantir qu'aucun robot ni scanner ne puisse deviner l'URL
  */
 function generateSecureRoomId() {
   if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
@@ -54,17 +65,20 @@ function generateSecureRoomId() {
   return 'sem26003-sec-' + Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
 }
 
+const initialName = getDeviceLabel();
+
 // État local de la session
 const state = {
   active: false,
   room: null,
   roomId: null,
-  name: getDeviceLabel(),
-  color: getRandomColor(),
-  peers: new Map(), // peerId -> { cursor, perfectCursor, el, name, color }
+  name: initialName,
+  color: getConsistentColor(initialName),
+  peers: new Map(), // peerId -> { cursor, perfectCursor, el, name, color, _idleTimer }
   targetContainer: null,
   isBroadcasting: true,
   cleanupPointer: null,
+  cleanupMessage: null,
   actions: {}
 };
 
@@ -88,7 +102,7 @@ function showCollabToast(msg) {
 }
 
 /**
- * Injection des styles CSS nécessaires aux curseurs et à la barre d'outils
+ * Injection des styles CSS
  */
 function injectCollabStyles() {
   if (document.getElementById('wg-collab-styles')) return;
@@ -138,12 +152,13 @@ function injectCollabStyles() {
       z-index: 999999;
       transform: translate3d(-100px, -100px, 0);
       will-change: transform;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
+      opacity: 0;
     }
     .wg-collab-cursor-svg {
-      width: 22px;
-      height: 22px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+      width: 24px;
+      height: 24px;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4));
     }
     .wg-collab-cursor-badge {
       display: inline-block;
@@ -156,7 +171,8 @@ function injectCollabStyles() {
       white-space: nowrap;
       margin-left: 12px;
       margin-top: -6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.4);
       user-select: none;
     }
 
@@ -208,6 +224,23 @@ function injectCollabStyles() {
       box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
       display: inline-block;
       flex-shrink: 0;
+    }
+    .wg-collab-name-btn {
+      background: rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .wg-collab-name-btn:hover {
+      background: rgba(0,0,0,0.09);
     }
     .wg-collab-btn {
       background: #059669;
@@ -312,12 +345,13 @@ function createRemoteCursorElement(peerId, color, name) {
  * Mise à jour de la position d'un curseur distant
  */
 function updateRemoteCursorPosition(peerId, data) {
+  if (!data) return;
   let peer = state.peers.get(peerId);
+  const color = data.color || getConsistentColor(data.name || peerId);
+  const name = data.name || 'Analyste';
+
   if (!peer) {
-    const color = data.color || getRandomColor();
-    const name = data.name || 'Analyste';
     const el = createRemoteCursorElement(peerId, color, name);
-    
     const perfectCursor = new PerfectCursor((point) => {
       el.style.transform = `translate3d(${point[0]}px, ${point[1]}px, 0)`;
     });
@@ -327,17 +361,43 @@ function updateRemoteCursorPosition(peerId, data) {
     updatePeerCountUI();
   }
 
-  const container = state.targetContainer || document.documentElement;
-  const rect = container.getBoundingClientRect();
-  const absX = rect.left + (data.rx * rect.width);
-  const absY = rect.top + (data.ry * rect.height);
+  // Mettre à jour nom et couleur si changés
+  if (peer.name !== name || peer.color !== color) {
+    peer.name = name;
+    peer.color = color;
+    const badge = peer.el.querySelector('.wg-collab-cursor-badge');
+    if (badge) {
+      badge.textContent = name;
+      badge.style.backgroundColor = color;
+    }
+    const path = peer.el.querySelector('path');
+    if (path) path.setAttribute('fill', color);
+  }
 
+  // Masquer si le pair quitte la fenêtre
+  if (data.hidden || data.rx < 0 || data.ry < 0) {
+    peer.el.style.opacity = '0';
+    return;
+  }
+
+  // Calcul relatif à la fenêtre globale
+  const absX = data.rx * window.innerWidth;
+  const absY = data.ry * window.innerHeight;
+
+  peer.el.style.opacity = '1';
   peer.perfectCursor.addPoint([absX, absY]);
+
+  // Estomper légèrement après 3s d'inactivité
+  clearTimeout(peer._idleTimer);
+  peer._idleTimer = setTimeout(() => {
+    if (peer && peer.el) peer.el.style.opacity = '0.35';
+  }, 3000);
 }
 
 function removeRemoteCursor(peerId) {
   const peer = state.peers.get(peerId);
   if (peer) {
+    clearTimeout(peer._idleTimer);
     peer.perfectCursor.dispose();
     if (peer.el && peer.el.parentNode) {
       peer.el.style.opacity = '0';
@@ -371,8 +431,12 @@ function renderCollabBar(roomId) {
     <!-- Mode développé -->
     <div class="wg-collab-bar-expanded" style="display:flex; align-items:center; gap:8px;">
       <span class="wg-collab-status-dot" title="Chiffrement WebRTC P2P direct"></span>
-      <span id="wg-collab-peers-count" style="font-size:11.5px;">Connexion P2P...</span>
-      <button type="button" id="btn-collab-copy-link" class="wg-collab-btn" title="Copier le lien d'accès direct pour inviter ou synchroniser votre autre appareil">
+      <button type="button" id="btn-collab-change-name" class="wg-collab-name-btn" title="Cliquer pour changer votre nom d'appareil ou pseudonyme">
+        <span id="wg-collab-my-name">${state.name}</span>
+        <span style="font-size:9px; opacity:0.7;">✎</span>
+      </button>
+      <span id="wg-collab-peers-count" style="font-size:11px; opacity:0.85;">Connexion P2P...</span>
+      <button type="button" id="btn-collab-copy-link" class="wg-collab-btn" title="Copier le lien d'invitation secret">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         <span>Inviter</span>
       </button>
@@ -380,10 +444,10 @@ function renderCollabBar(roomId) {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
         <span>Arrêter</span>
       </button>
-      <button type="button" id="btn-collab-minimize" class="wg-collab-btn-icon" title="Réduire la barre pour dégager la vue du document">_</button>
+      <button type="button" id="btn-collab-minimize" class="wg-collab-btn-icon" title="Réduire la barre pour dégager les contrôles du document">_</button>
     </div>
 
-    <!-- Mode réduit (pastille discrète ne masquant pas les contrôles de zoom) -->
+    <!-- Mode réduit (pastille compacte) -->
     <div class="wg-collab-bar-collapsed" title="Cliquer pour afficher les contrôles de collaboration">
       <span class="wg-collab-status-dot"></span>
       <span id="wg-collab-mini-count" style="font-size:11px; font-weight:700;">En direct</span>
@@ -392,10 +456,25 @@ function renderCollabBar(roomId) {
   `;
   document.body.appendChild(bar);
 
-  // Copier le lien
-  document.getElementById('btn-collab-copy-link').addEventListener('click', function () {
+  // Changement de nom
+  document.getElementById('btn-collab-change-name').addEventListener('click', function (e) {
+    e.stopPropagation();
+    const promptVal = prompt('Entrez votre nom ou identifiant d\'appareil pour la session :', state.name);
+    if (promptVal && promptVal.trim()) {
+      state.name = promptVal.trim().slice(0, 24);
+      state.color = getConsistentColor(state.name);
+      try { localStorage.setItem('wg_collab_username', state.name); } catch (_) {}
+      const label = document.getElementById('wg-collab-my-name');
+      if (label) label.textContent = state.name;
+      showCollabToast(`Nom mis à jour : ${state.name}`);
+    }
+  });
+
+  // Copier le lien complet avec le jeton de salle
+  document.getElementById('btn-collab-copy-link').addEventListener('click', function (e) {
+    e.stopPropagation();
     const url = new URL(window.location.href);
-    url.searchParams.set('room', roomId);
+    url.searchParams.set('room', state.roomId);
     navigator.clipboard.writeText(url.toString()).then(() => {
       const span = this.querySelector('span');
       if (span) {
@@ -407,7 +486,8 @@ function renderCollabBar(roomId) {
   });
 
   // Bouton explicite pour arrêter le partage au complet
-  document.getElementById('btn-collab-leave').addEventListener('click', function () {
+  document.getElementById('btn-collab-leave').addEventListener('click', function (e) {
+    e.stopPropagation();
     leaveSession();
   });
 
@@ -427,7 +507,7 @@ function renderCollabBar(roomId) {
 }
 
 /**
- * Synchronisation des annotations du document avec les pairs
+ * Synchronisation bidirectionnelle des annotations (multi-appareils / multi-utilisateurs)
  */
 function initAnnotationSync(room) {
   try {
@@ -443,7 +523,7 @@ function initAnnotationSync(room) {
       ? annotAction.onReceive.bind(annotAction)
       : (typeof annotAction.onMessage === 'function' ? annotAction.onMessage.bind(annotAction) : annotAction[1]);
 
-    // Envoi de tout le coffre d'annotations lorsqu'un pair rejoint
+    // Envoi du coffre d'annotations lorsqu'un pair rejoint
     room.onPeerJoin(async (peerId) => {
       updatePeerCountUI();
       if (window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.exportAllDocuments === 'function') {
@@ -456,14 +536,19 @@ function initAnnotationSync(room) {
       }
     });
 
-    // Réception du coffre complet (ex: ouverture sur 2e appareil)
+    // Réception du coffre complet
     if (typeof onReceiveVault === 'function') {
-      onReceiveVault(async (vault, peerId) => {
+      onReceiveVault(async (vault) => {
         if (vault && window.WGAnnotationsIDB && typeof window.WGAnnotationsIDB.importAllDocuments === 'function') {
           try {
             await window.WGAnnotationsIDB.importAllDocuments(vault);
             document.dispatchEvent(new CustomEvent('collab:vault-synced', { detail: vault }));
-            showCollabToast('Annotations synchronisées avec votre autre appareil');
+            // Notifier le lecteur EmbedPDF s'il est actif
+            const ifr = document.querySelector('.preview-iframe');
+            if (ifr && ifr.contentWindow) {
+              ifr.contentWindow.postMessage({ type: 'wg:reload-annotations-from-storage' }, '*');
+            }
+            showCollabToast('Annotations synchronisées avec votre appareil');
           } catch (_) {}
         }
       });
@@ -471,18 +556,21 @@ function initAnnotationSync(room) {
 
     // Réception d'une annotation individuelle en temps réel
     if (typeof onReceiveAnnot === 'function') {
-      onReceiveAnnot(async (data, peerId) => {
+      onReceiveAnnot(async (data) => {
         if (data && data.file && data.annotations && window.WGAnnotationsIDB) {
           try {
             await window.WGAnnotationsIDB.setDocumentAnnotations(data.file, data.annotations);
             document.dispatchEvent(new CustomEvent('collab:annotation-received', { detail: data }));
-            showCollabToast('Nouvelle annotation synchronisée en direct');
+            const ifr = document.querySelector('.preview-iframe');
+            if (ifr && ifr.contentWindow) {
+              ifr.contentWindow.postMessage({ type: 'wg:reload-annotations-from-storage' }, '*');
+            }
           } catch (_) {}
         }
       });
     }
 
-    // Interception des écritures locales d'annotations pour les synchroniser
+    // Interception des annotations locales
     if (window.WGAnnotationsIDB && !window.WGAnnotationsIDB._collabHooked) {
       window.WGAnnotationsIDB._collabHooked = true;
       const originalSet = window.WGAnnotationsIDB.setDocumentAnnotations;
@@ -513,13 +601,14 @@ export function startCollabSession(roomId) {
 
   state.active = true;
   state.roomId = roomId || generateSecureRoomId();
-  state.targetContainer = document.getElementById('embedpdf-container') ||
-                          document.getElementById('pdf-app') ||
-                          document.getElementById('drive-container') ||
-                          document.getElementById('drive-tree') ||
-                          document.body;
+  state.color = getConsistentColor(state.name);
 
-  // Afficher la barre de collaboration et mettre à jour le bouton immédiatement (feedback 0 ms)
+  // Enregistrer la salle en sessionStorage
+  try {
+    sessionStorage.setItem('wg_collab_active_room', state.roomId);
+  } catch (_) {}
+
+  // Afficher la barre de collaboration et mettre à jour le bouton immédiatement
   renderCollabBar(state.roomId);
   document.querySelectorAll('#btn-collab-toggle, .btn-collab-toggle').forEach(btn => {
     btn.classList.add('is-active');
@@ -530,14 +619,18 @@ export function startCollabSession(roomId) {
     }
   });
 
-  // Mettre à jour l'URL sans rechargement
+  // Nettoyer l'URL visible dans la barre d'adresse pour ne pas exposer le jeton secret en partage d'écran (Zoom/Meet)
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set('room', state.roomId);
-    window.history.replaceState(null, '', url.toString());
+    url.searchParams.delete('room');
+    url.searchParams.delete('doc');
+    url.searchParams.delete('file');
+    const cleanSearch = url.searchParams.toString();
+    const cleanPath = url.pathname + (cleanSearch ? '?' + cleanSearch : '') + (url.hash || '');
+    window.history.replaceState(null, '', cleanPath);
   } catch (_) {}
 
-  showCollabToast('Mode direct activé · Cliquez sur « Inviter » pour synchroniser ou partager');
+  showCollabToast('Mode direct activé · Cliquez sur « Inviter » pour synchroniser');
 
   try {
     // Connexion à la pièce via Trystero Nostr
@@ -571,9 +664,9 @@ export function startCollabSession(roomId) {
     // Initialisation de la synchronisation bidirectionnelle d'annotations
     initAnnotationSync(state.room);
 
-    // Écouteur de mouvement de souris local (avec throttle requestAnimationFrame)
+    // Écouteur de mouvement de souris sur la fenêtre principale
     let rafPending = false;
-    let lastPos = { rx: 0, ry: 0 };
+    let lastPos = { rx: -1, ry: -1 };
 
     const onPointerMove = (e) => {
       if (!state.isBroadcasting || rafPending || typeof sendCursor !== 'function') return;
@@ -581,13 +674,10 @@ export function startCollabSession(roomId) {
 
       requestAnimationFrame(() => {
         rafPending = false;
-        const container = state.targetContainer || document.body;
-        const rect = container.getBoundingClientRect();
+        const rx = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+        const ry = Math.max(0, Math.min(1, e.clientY / window.innerHeight));
 
-        const rx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const ry = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-
-        if (Math.abs(rx - lastPos.rx) > 0.001 || Math.abs(ry - lastPos.ry) > 0.001) {
+        if (Math.abs(rx - lastPos.rx) > 0.0008 || Math.abs(ry - lastPos.ry) > 0.0008) {
           lastPos = { rx, ry };
           sendCursor({
             rx,
@@ -599,8 +689,39 @@ export function startCollabSession(roomId) {
       });
     };
 
+    const onPointerLeave = () => {
+      if (typeof sendCursor === 'function') {
+        sendCursor({ rx: -1, ry: -1, name: state.name, color: state.color, hidden: true });
+      }
+    };
+
+    // Relais des mouvements de souris depuis l'iframe du lecteur PDF
+    const onMessagePointer = (e) => {
+      if (!state.active || typeof sendCursor !== 'function') return;
+      if (e.data && e.data.type === 'wg:collab-pointermove') {
+        const iframe = document.querySelector('.preview-iframe');
+        if (iframe) {
+          const rect = iframe.getBoundingClientRect();
+          const absX = rect.left + (e.data.rx * rect.width);
+          const absY = rect.top + (e.data.ry * rect.height);
+          const rx = Math.max(0, Math.min(1, absX / window.innerWidth));
+          const ry = Math.max(0, Math.min(1, absY / window.innerHeight));
+          sendCursor({ rx, ry, name: state.name, color: state.color });
+        }
+      } else if (e.data && e.data.type === 'wg:collab-pointerleave') {
+        sendCursor({ rx: -1, ry: -1, name: state.name, color: state.color, hidden: true });
+      }
+    };
+
     window.addEventListener('pointermove', onPointerMove, { passive: true });
-    state.cleanupPointer = () => window.removeEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerleave', onPointerLeave, { passive: true });
+    window.addEventListener('message', onMessagePointer);
+
+    state.cleanupPointer = () => {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('message', onMessagePointer);
+    };
 
   } catch (err) {
     console.warn('[Collab P2P] Échec d\'initialisation WebRTC/Nostr :', err);
@@ -622,6 +743,10 @@ export function leaveSession() {
   state.active = false;
   state.room = null;
 
+  try {
+    sessionStorage.removeItem('wg_collab_active_room');
+  } catch (_) {}
+
   // Restaurer l'apparence des boutons de bascule
   document.querySelectorAll('#btn-collab-toggle, .btn-collab-toggle').forEach(btn => {
     btn.classList.remove('is-active');
@@ -635,7 +760,9 @@ export function leaveSession() {
   try {
     const url = new URL(window.location.href);
     url.searchParams.delete('room');
-    window.history.replaceState(null, '', url.toString());
+    url.searchParams.delete('doc');
+    url.searchParams.delete('file');
+    window.history.replaceState(null, '', url.pathname + (url.search ? url.search : '') + (url.hash || ''));
   } catch (_) {}
 
   showCollabToast('Partage arrêté · Mode privé local rétabli');
@@ -648,7 +775,7 @@ document.addEventListener('click', function(e) {
   e.preventDefault();
 
   if (state.active) {
-    // Déjà actif : copier le lien ou proposer d'arrêter
+    // Déjà actif : copier le lien secret
     const url = new URL(window.location.href);
     url.searchParams.set('room', state.roomId);
     navigator.clipboard.writeText(url.toString()).then(() => {
@@ -658,7 +785,7 @@ document.addEventListener('click', function(e) {
         span.textContent = 'Lien copié !';
         setTimeout(() => { span.textContent = oldText; }, 2000);
       }
-      showCollabToast('Lien de session copié dans le presse-papier');
+      showCollabToast('Lien secret copié dans le presse-papier');
     }).catch(() => {});
   } else {
     startCollabSession();
@@ -688,6 +815,7 @@ if (document.readyState === 'loading') {
 if (typeof window !== 'undefined') {
   window.__wg_collab = {
     start: startCollabSession,
-    leave: leaveSession
+    leave: leaveSession,
+    isActive: () => state.active
   };
 }
