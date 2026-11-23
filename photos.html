@@ -92,6 +92,46 @@
     border-color: var(--accent);
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
   }
+  .pill-code {
+    display: inline-block;
+    padding: 1px 5px;
+    margin-left: 5px;
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--accent);
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    vertical-align: baseline;
+    transition: all 0.2s ease;
+  }
+  .category-pill:hover .pill-code,
+  .category-pill.active .pill-code {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
+  .photo-code-chip {
+    display: inline-block;
+    padding: 1px 6px;
+    margin-left: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #a7f3d0;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(167, 243, 208, 0.35);
+    vertical-align: middle;
+  }
+  .photo-card.is-active-target,
+  .photo-card:target {
+    outline: 3px solid #10b981 !important;
+    outline-offset: 4px;
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.45) !important;
+  }
   @media (max-width: 640px) {
     .photos-toolbar {
       justify-content: flex-start;
@@ -1119,13 +1159,13 @@
 
   <div class="photos-toolbar">
     <button type="button" class="category-pill active" data-cat="all">Toutes</button>
-    <button type="button" class="category-pill" data-cat="Tourbière">Tourbière</button>
-    <button type="button" class="category-pill" data-cat="Biodiversité">Biodiversité</button>
-    <button type="button" class="category-pill" data-cat="Terrain">Terrain</button>
-    <button type="button" class="category-pill" data-cat="Parcours">Parcours</button>
-    <button type="button" class="category-pill" data-cat="Cartographie">Cartographie</button>
-    <button type="button" class="category-pill" data-cat="Événements">Événements</button>
-    <button type="button" class="category-pill" data-cat="Bannières">Bannières</button>
+    <button type="button" class="category-pill" data-cat="Tourbière">Tourbière <span class="pill-code">tb</span></button>
+    <button type="button" class="category-pill" data-cat="Biodiversité">Biodiversité <span class="pill-code">bi</span></button>
+    <button type="button" class="category-pill" data-cat="Terrain">Terrain <span class="pill-code">tr</span></button>
+    <button type="button" class="category-pill" data-cat="Parcours">Parcours <span class="pill-code">pc</span></button>
+    <button type="button" class="category-pill" data-cat="Cartographie">Cartographie <span class="pill-code">cg</span></button>
+    <button type="button" class="category-pill" data-cat="Événements">Événements <span class="pill-code">ev</span></button>
+    <button type="button" class="category-pill" data-cat="Bannières">Bannières <span class="pill-code">md</span></button>
     <button type="button" id="photos-gallery-toggle" class="category-pill photos-gallery-toggle" aria-pressed="false">Mode Galerie (0 texte)</button>
   </div>
 
@@ -1426,6 +1466,31 @@
   let commonsLog = {};
   let googlePhotosLog = {};
 
+  const CAT_PREFIXES = {
+    "Tourbière": "tb",
+    "Tourbiere": "tb",
+    "Biodiversité": "bi",
+    "Biodiversite": "bi",
+    "Bannières": "md",
+    "Bannieres": "md",
+    "Terrain": "tr",
+    "Parcours": "pc",
+    "Cartographie": "cg",
+    "Événements": "ev",
+    "Evenements": "ev"
+  };
+
+  function assignPhotoCodes(photos) {
+    const counters = {};
+    photos.forEach(item => {
+      const cat = item.category || "Terrain";
+      const pfx = CAT_PREFIXES[cat] || "ph";
+      counters[pfx] = (counters[pfx] || 0) + 1;
+      const num = String(counters[pfx]).padStart(2, '0');
+      item.photoCode = `${pfx}-${num}`;
+    });
+  }
+
   async function loadPhotos() {
     const grid = document.getElementById("photos-grid");
     try {
@@ -1436,6 +1501,7 @@
       ]);
       if (resPhotos.status === "fulfilled" && Array.isArray(resPhotos.value)) {
         allPhotos = resPhotos.value;
+        assignPhotoCodes(allPhotos);
       }
       if (resCommons.status === "fulfilled" && resCommons.value && Array.isArray(resCommons.value.synced)) {
         resCommons.value.synced.forEach(s => {
@@ -1452,6 +1518,7 @@
         });
       }
       renderPhotos(allPhotos);
+      checkUrlHashTarget();
     } catch (e) {
       console.error(e);
       grid.innerHTML = "<p class='text-muted'>Impossible de charger les photos pour le moment.</p>";
@@ -1497,6 +1564,10 @@
       const card = document.createElement("div");
       card.className = "photo-card";
       if (item.id) card.setAttribute("data-photo-id", item.id);
+      if (item.photoCode) {
+        card.id = item.photoCode;
+        card.setAttribute("data-photo-code", item.photoCode);
+      }
 
       const itemTitle = (isEn && item.title_en) ? item.title_en : (isEs && item.title_es) ? item.title_es : (item.title || photoAltDefault);
       const itemDesc = (isEn && item.description_en) ? item.description_en : (isEs && item.description_es) ? item.description_es : (item.description || '');
@@ -1506,12 +1577,14 @@
       const hdUrl = rawImg;
       const descHtml = itemDesc ? `<p class="photo-card-desc" style="font-size:12.5px; line-height:1.5; color:var(--text); padding:10px 14px 6px; margin:0;">${itemDesc}</p>` : "";
 
+      const codeBadgeHtml = item.photoCode ? ` <span class="photo-code-chip">${item.photoCode.toUpperCase()}</span>` : '';
+
       card.innerHTML = `
         <div class="photo-img-wrap">
           <a href="${hdUrl}" class="photo-link-wrap" target="_blank" rel="noopener noreferrer" title="${itemTitle} (Agrandir en haute résolution)">
             <img src="${thumbUrl}" data-original="${hdUrl}" alt="${itemTitle}" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="400">
           </a>
-          <span class="photo-badge">${item.category || "Terrain"}</span>
+          <span class="photo-badge">${item.category || "Terrain"}${codeBadgeHtml}</span>
           <div class="photo-overlay">
             <div class="photo-title">${itemTitle}</div>
             <div class="photo-meta">
@@ -1525,6 +1598,15 @@
         </div>
         ${descHtml}
       `;
+
+      card.addEventListener("click", (e) => {
+        if (e.target.closest('.photo-card-download-btn')) return;
+        if (item.photoCode) {
+          history.replaceState(null, '', '#' + item.photoCode);
+          document.querySelectorAll('.photo-card').forEach(c => c.classList.remove('is-active-target'));
+          card.classList.add('is-active-target');
+        }
+      });
 
       const cardDlBtn = card.querySelector(".photo-card-download-btn");
       if (cardDlBtn) {
@@ -1653,6 +1735,36 @@
       setGalleryOnlyMode(!photosGridEl.classList.contains("gallery-only"));
     });
   }
+
+  function checkUrlHashTarget() {
+    const rawHash = window.location.hash ? window.location.hash.substring(1).trim().toLowerCase() : "";
+    if (!rawHash) return;
+
+    const targetItem = allPhotos.find(p => (p.photoCode && p.photoCode.toLowerCase() === rawHash) || (p.id && p.id.toLowerCase() === rawHash));
+    if (targetItem) {
+      const activeBtn = document.querySelector(".category-pill.active");
+      const activeCat = activeBtn ? activeBtn.getAttribute("data-cat") : "all";
+      if (activeCat !== "all" && (targetItem.category || "").toLowerCase() !== activeCat.toLowerCase()) {
+        const catBtn = Array.from(document.querySelectorAll(".category-pill")).find(b => (b.getAttribute("data-cat") || "").toLowerCase() === (targetItem.category || "").toLowerCase());
+        if (catBtn) {
+          catBtn.click();
+        } else {
+          const allBtn = document.querySelector(".category-pill[data-cat='all']");
+          if (allBtn) allBtn.click();
+        }
+      }
+      setTimeout(() => {
+        const cardEl = document.getElementById(targetItem.photoCode);
+        if (cardEl) {
+          cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          document.querySelectorAll('.photo-card').forEach(c => c.classList.remove('is-active-target'));
+          cardEl.classList.add('is-active-target');
+        }
+      }, 200);
+    }
+  }
+
+  window.addEventListener("hashchange", checkUrlHashTarget);
 
   loadPhotos();
 </script>
