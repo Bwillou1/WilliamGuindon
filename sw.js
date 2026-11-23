@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v278';
+const CACHE_NAME = 'wg-pwa-v279';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -21,7 +21,7 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
-  '/assets/js/collab-p2p.js',
+  '/assets/js/collab-p2p-live.js',
   '/assets/vendor/trystero/trystero-nostr.min.js',
   '/assets/vendor/perfect-cursors/perfect-cursors.esm.js',
   '/assets/vendor/yjs/yjs.esm.js',
@@ -230,7 +230,7 @@ self.addEventListener('fetch', (event) => {
 
   if (isAcceleratedLocalAsset) {
     event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
+      caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) {
           event.waitUntil(
             fetch(event.request).then((networkResponse) => {

@@ -442,12 +442,16 @@ const CURSOR_COLORS = [
     }
   });
 
+  // Détection immédiate du paramètre ?room=... ou #room=... à l'exécution du module
+  const initialParams = new URLSearchParams(window.location.search);
+  const initialRoom = initialParams.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null);
+
   // Détection automatique du paramètre ?room=... ou #room=...
   function autoStartIfRequested() {
     const p = new URLSearchParams(window.location.search);
-    const roomParam = p.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null);
+    const roomParam = p.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null) || initialRoom;
     if (roomParam) {
-      setTimeout(() => startCollabSession(roomParam), 600);
+      setTimeout(() => startCollabSession(roomParam), 300);
     }
   }
 
@@ -464,5 +468,3 @@ const CURSOR_COLORS = [
       leave: leaveSession
     };
   }
-
-  export { startCollabSession, leaveSession };
