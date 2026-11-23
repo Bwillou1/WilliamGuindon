@@ -254,6 +254,38 @@ SOFTWARE.
 
 ---
 
+### Swup (v4.8.1)
+- **Auteur :** Copyright (c) 2017-2026 Georgy Marchuk et contributeurs Swup
+- **Licence :** MIT License
+- **URL :** https://github.com/swup/swup
+- **Description :** Bibliothèque de transition de page et de navigation fluide sans rechargement lourd pour sites statiques. Utilisée avec `cache: false` afin de garantir la récupération systématique des versions les plus récentes en direct du serveur, et configurée avec exclusion stricte de toutes les pages critiques et interactives complexes (WebGL, PDF.js, Leaflet, Nostr, consoles d'administration).
+
+```text
+MIT License
+
+Copyright (c) 2017 Georgy Marchuk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
 ### Add to Calendar Button (v2)
 - **Auteurs :** Copyright (c) 2021-2026 Jens Kuerschner (jekuer) et contributeurs
 - **Licence :** Elastic License 2.0 (ELv2) — *logiciel à code source disponible (source-available, non open source OSI)*

@@ -4929,6 +4929,52 @@
     document.head.appendChild(s);
   }
 
+  function loadSwupIfNeeded() {
+    if (window.Swup || document.querySelector('script[src*="swup.umd"]')) return;
+
+    const path = window.location.pathname.toLowerCase();
+    const excludedPages = [
+      'reciprocite',
+      'dossier-journalistes',
+      'viewer',
+      'lecteur',
+      'satellite',
+      'photos',
+      'chronologie',
+      'messagerie',
+      'console-admin',
+      'admin',
+      'editeur',
+      'live',
+      'actualites',
+      'txt',
+      'offline',
+      'reload',
+      '404'
+    ];
+
+    for (let i = 0; i < excludedPages.length; i++) {
+      if (path.includes(excludedPages[i])) {
+        return;
+      }
+    }
+
+    if (path === '/' || path === '/index.html' || path.endsWith('/index.html') || document.querySelector('canvas.curtains-canvas')) {
+      return;
+    }
+
+    const sSwup = document.createElement('script');
+    sSwup.src = '/assets/vendor/swup/swup.umd.min.js';
+    sSwup.defer = true;
+    sSwup.onload = function () {
+      const sInit = document.createElement('script');
+      sInit.src = '/assets/js/swup-init.js';
+      sInit.defer = true;
+      document.head.appendChild(sInit);
+    };
+    document.head.appendChild(sSwup);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
@@ -4936,6 +4982,7 @@
       setTimeout(initLegalGlossaryTooltips, 300);
       loadVideoJsEnhancementsIfNeeded();
       loadGpuShaderIfNeeded();
+      loadSwupIfNeeded();
     });
   } else {
     initApp();
@@ -4943,5 +4990,6 @@
     setTimeout(initLegalGlossaryTooltips, 300);
     loadVideoJsEnhancementsIfNeeded();
     loadGpuShaderIfNeeded();
+    loadSwupIfNeeded();
   }
 })();

@@ -140,7 +140,9 @@ const licenseChecks = [
   { file: 'assets/vendor/embedpdf/LICENSE', required: 'MIT License' },
   { file: 'assets/js/nostr-bundle.js', required: 'Bundled license information' },
   { file: 'assets/vendor/curtains/curtains.umd.min.js', required: 'MIT License' },
-  { file: 'assets/js/papaparse.min.js', required: 'License: MIT' }
+  { file: 'assets/js/papaparse.min.js', required: 'License: MIT' },
+  { file: 'assets/vendor/swup/swup.umd.min.js', required: 'MIT License' },
+  { file: 'assets/vendor/swup/LICENSE', required: 'MIT License' }
 ];
 
 for (const check of licenseChecks) {
