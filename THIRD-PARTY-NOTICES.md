@@ -314,6 +314,95 @@ SOFTWARE.
 
 ---
 
+### Trystero (v0.27.0)
+- **Auteur :** Copyright (c) 2021-2026 Dan Motzenbecker
+- **Licence :** MIT License
+- **URL :** https://github.com/dmotz/trystero
+- **Description :** Bibliothèque de mise en réseau P2P WebRTC sans serveur de signalisation central, utilisant les relais Nostr, BitTorrent et MQTT publics pour la mise en relation chiffrée de bout en bout de pairs sans aucun serveur backend. Utilisée pour le mode de révision collaborative en direct du dossier documentaire SEM-26-003.
+
+```text
+MIT License
+
+Copyright (c) 2021 Dan Motzenbecker
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+```
+
+---
+
+### Perfect-Cursors (v1.0.5)
+- **Auteur :** Copyright (c) 2021-2026 Steve Ruiz (@steveruizok)
+- **Licence :** MIT License
+- **URL :** https://github.com/steveruizok/perfect-cursors
+- **Description :** Moteur d'interpolation et de lissage par splines vectorielles pour curseurs collaboratifs multijoueurs. Calcule les trajectoires à 60/120 ips pour animer avec fluidité les mouvements de souris distants sur les documents officiels partagés.
+
+```text
+MIT License
+
+Copyright (c) 2021 Steve Ruiz (@steveruizok)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+### Yjs (v13.6.23)
+- **Auteur :** Copyright (c) 2023-2026 Kevin Jahns
+- **Licence :** MIT License
+- **URL :** https://github.com/yjs/yjs
+- **Description :** Cadre de données CRDT (Conflict-free Replicated Data Types) haute performance pour la synchronisation concurrente et sans conflit d'annotations, surlignages et métadonnées textuelles entre navigateurs pairs.
+
+```text
+The MIT License (MIT)
+
+Copyright (c) 2023
+  - Kevin Jahns <kevin.jahns@protonmail.com>.
+  - Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+---
+
 ### Add to Calendar Button (v2)
 - **Auteurs :** Copyright (c) 2021-2026 Jens Kuerschner (jekuer) et contributeurs
 - **Licence :** Elastic License 2.0 (ELv2) — *logiciel à code source disponible (source-available, non open source OSI)*

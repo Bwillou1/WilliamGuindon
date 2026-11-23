@@ -144,7 +144,13 @@ const licenseChecks = [
   { file: 'assets/vendor/swup/swup.umd.min.js', required: 'MIT License' },
   { file: 'assets/vendor/swup/LICENSE', required: 'MIT License' },
   { file: 'assets/vendor/dompurify/purify.min.js', required: 'Apache license 2.0' },
-  { file: 'assets/vendor/dompurify/LICENSE', required: 'Apache License' }
+  { file: 'assets/vendor/dompurify/LICENSE', required: 'Apache License' },
+  { file: 'assets/vendor/trystero/trystero-nostr.min.js', required: 'MIT License' },
+  { file: 'assets/vendor/trystero/LICENSE', required: 'Dan Motzenbecker' },
+  { file: 'assets/vendor/perfect-cursors/perfect-cursors.esm.js', required: 'MIT License' },
+  { file: 'assets/vendor/perfect-cursors/LICENSE', required: 'Steve Ruiz' },
+  { file: 'assets/vendor/yjs/yjs.esm.js', required: 'MIT License' },
+  { file: 'assets/vendor/yjs/LICENSE', required: 'Kevin Jahns' }
 ];
 
 for (const check of licenseChecks) {
