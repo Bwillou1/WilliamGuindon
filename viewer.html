@@ -237,7 +237,7 @@
       </div>
 
       <div class="viewer-header-right">
-        <button type="button" id="btn-collab-toggle" class="btn-collab-toggle tool-btn" title="Mode collaboration P2P en direct (Curseurs partagés &amp; révision en direct)" aria-label="Collaboration en direct">
+        <button type="button" id="btn-collab-toggle" class="btn-collab-toggle tool-btn" title="Mode collaboration P2P en direct (Curseurs partagés &amp; révision en direct)" aria-label="Collaboration en direct" onclick="if(window.__wg_collab&amp;&amp;window.__wg_collab.start){window.__wg_collab.start();}else{import('/assets/js/collab-p2p.js?v=20261122-v2').then(m=>m.startCollabSession());}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
@@ -504,8 +504,8 @@
   </div>
 
   <script src="/assets/js/annotations-idb.js?v=20261114-v4"></script>
-  <script type="module" src="assets/js/viewer-embedpdf.js?v=20261114-v4"></script>
-  <script type="module" src="assets/js/collab-p2p.js?v=20261122-v1"></script>
+  <script type="module" src="/assets/js/viewer-embedpdf.js?v=20261114-v4"></script>
+  <script type="module" src="/assets/js/collab-p2p.js?v=20261122-v2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const btnCollab = document.getElementById('btn-collab-toggle');

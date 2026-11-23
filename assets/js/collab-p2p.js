@@ -275,10 +275,14 @@ const CURSOR_COLORS = [
   /**
    * Démarrage de la session collaborative
    */
+  /**
+   * Démarrage de la session collaborative
+   */
   export function startCollabSession(roomId) {
     if (state.active) return;
     injectCollabStyles();
 
+    state.active = true;
     state.roomId = roomId || ('sem26003-' + Math.random().toString(36).substring(2, 8));
     state.targetContainer = document.getElementById('embedpdf-container') ||
                             document.getElementById('pdf-app') ||
@@ -286,36 +290,79 @@ const CURSOR_COLORS = [
                             document.getElementById('drive-tree') ||
                             document.body;
 
+    // Afficher la barre de collaboration et mettre à jour le bouton immédiatement (feedback instantané)
+    renderCollabBar(state.roomId);
+    document.querySelectorAll('#btn-collab-toggle, .btn-collab-toggle').forEach(btn => {
+      btn.classList.add('is-active');
+      const span = btn.querySelector('span');
+      if (span) {
+        if (!btn.dataset.origText) btn.dataset.origText = span.textContent;
+        span.textContent = 'En direct';
+      }
+    });
+
+    // Mettre à jour l'URL sans rechargement
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('room', state.roomId);
+      window.history.replaceState(null, '', url.toString());
+    } catch (_) {}
+
+    // Afficher toast si disponible
+    const toast = document.getElementById('drive-toast');
+    if (toast) {
+      toast.textContent = 'Mode collaboration P2P activé · Cliquez sur « Inviter » pour partager le lien';
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 4000);
+    }
+
     try {
       // Connexion à la pièce via Trystero Nostr
       state.room = joinRoom({ appId: 'williamguindon.me' }, state.roomId);
 
-      // Déclaration de l'état de curseur multijoueur
-      const [sendCursor, getCursor] = state.room.makeAction('cursor');
-      const [sendAnnotation, getAnnotation] = state.room.makeAction('annotation');
+      // Actions Trystero v0.27 (objet { send, onReceive })
+      const cursorAction = state.room.makeAction('cursor');
+      const sendCursor = typeof cursorAction.send === 'function' ? cursorAction.send.bind(cursorAction) : cursorAction[0];
+      const onReceiveCursor = typeof cursorAction.onReceive === 'function'
+        ? cursorAction.onReceive.bind(cursorAction)
+        : (typeof cursorAction.onMessage === 'function' ? cursorAction.onMessage.bind(cursorAction) : cursorAction[1]);
 
-      state.room.onPeerJoin(peerId => {
-        updatePeerCountUI();
-      });
+      const annotationAction = state.room.makeAction('annotation');
+      const sendAnnotation = typeof annotationAction.send === 'function' ? annotationAction.send.bind(annotationAction) : annotationAction[0];
+      const onReceiveAnnotation = typeof annotationAction.onReceive === 'function'
+        ? annotationAction.onReceive.bind(annotationAction)
+        : (typeof annotationAction.onMessage === 'function' ? annotationAction.onMessage.bind(annotationAction) : annotationAction[1]);
 
-      state.room.onPeerLeave(peerId => {
-        removeRemoteCursor(peerId);
-      });
+      if (typeof state.room.onPeerJoin === 'function') {
+        state.room.onPeerJoin(peerId => {
+          updatePeerCountUI();
+        });
+      }
 
-      getCursor((data, peerId) => {
-        updateRemoteCursorPosition(peerId, data);
-      });
+      if (typeof state.room.onPeerLeave === 'function') {
+        state.room.onPeerLeave(peerId => {
+          removeRemoteCursor(peerId);
+        });
+      }
 
-      getAnnotation((data, peerId) => {
-        document.dispatchEvent(new CustomEvent('collab:annotation', { detail: { data, peerId } }));
-      });
+      if (typeof onReceiveCursor === 'function') {
+        onReceiveCursor((data, peerId) => {
+          updateRemoteCursorPosition(peerId, data);
+        });
+      }
+
+      if (typeof onReceiveAnnotation === 'function') {
+        onReceiveAnnotation((data, peerId) => {
+          document.dispatchEvent(new CustomEvent('collab:annotation', { detail: { data, peerId } }));
+        });
+      }
 
       // Écouteur de mouvement de souris local (avec throttle animation frame)
       let rafPending = false;
       let lastPos = { rx: 0, ry: 0 };
 
       const onPointerMove = (e) => {
-        if (!state.isBroadcasting || rafPending) return;
+        if (!state.isBroadcasting || rafPending || typeof sendCursor !== 'function') return;
         rafPending = true;
 
         requestAnimationFrame(() => {
@@ -340,24 +387,6 @@ const CURSOR_COLORS = [
 
       window.addEventListener('pointermove', onPointerMove, { passive: true });
       state.cleanupPointer = () => window.removeEventListener('pointermove', onPointerMove);
-
-      renderCollabBar(state.roomId);
-      state.active = true;
-
-      // Mettre à jour l'apparence des boutons de bascule
-      document.querySelectorAll('#btn-collab-toggle, .btn-collab-toggle').forEach(btn => {
-        btn.classList.add('is-active');
-        const span = btn.querySelector('span');
-        if (span) {
-          if (!btn.dataset.origText) btn.dataset.origText = span.textContent;
-          span.textContent = 'En direct';
-        }
-      });
-
-      // Mettre à jour l'URL sans rechargement
-      const url = new URL(window.location.href);
-      url.searchParams.set('room', state.roomId);
-      window.history.replaceState(null, '', url.toString());
 
     } catch (err) {
       console.warn('[Collab P2P] Échec d\'initialisation WebRTC/Nostr :', err);
@@ -435,3 +464,5 @@ const CURSOR_COLORS = [
       leave: leaveSession
     };
   }
+
+  export { startCollabSession, leaveSession };

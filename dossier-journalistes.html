@@ -2039,7 +2039,7 @@
     </div>
     
     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-      <button type="button" id="btn-collab-toggle" class="btn-collab-toggle btn-toggle-tree" title="Mode collaboration P2P en direct (Curseurs partagés &amp; révision en direct)" aria-label="Collaboration en direct" style="padding: 6px 12px; gap: 6px; font-weight: 700;">
+      <button type="button" id="btn-collab-toggle" class="btn-collab-toggle btn-toggle-tree" title="Mode collaboration P2P en direct (Curseurs partagés &amp; révision en direct)" aria-label="Collaboration en direct" style="padding: 6px 12px; gap: 6px; font-weight: 700;" onclick="if(window.__wg_collab&amp;&amp;window.__wg_collab.start){window.__wg_collab.start();}else{import('/assets/js/collab-p2p.js?v=20261122-v2').then(m=>m.startCollabSession());}">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="9" cy="7" r="4"></circle>
@@ -8600,6 +8600,6 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   };
 })();
 </script>
-<script type="module" src="assets/js/collab-p2p.js?v=20261122-v1"></script>
+<script type="module" src="/assets/js/collab-p2p.js?v=20261122-v2"></script>
 </body>
 </html>
