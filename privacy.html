@@ -657,6 +657,15 @@
         <li>Protection Zero Trust isolant hermétiquement les interfaces d'administration sans stockage local de mots de passe maîtres.</li>
       </ul>
 
+      <h2>9.1 Mode Collaboration P2P et Synchronisation Multi-Appareils (Zero-Knowledge & Zéro Serveur)</h2>
+      <p>Le site propose une fonctionnalité optionnelle de révision collaborative en direct et de synchronisation d'annotations entre vos propres appareils (par exemple entre votre ordinateur personnel et votre poste de travail) ou avec des tiers autorisés :</p>
+      <ul>
+        <li><strong>Architecture 100 % pair-à-pair (P2P) :</strong> La communication s'effectue en direct de navigateur à navigateur via le protocole WebRTC standardisé, coordonné par des relais de signalisation éphémères Nostr chiffrés. Aucun serveur centralisé ne traite, n'intercepte ni n'enregistre vos flux de collaboration.</li>
+        <li><strong>Confidentialité des annotations &amp; Zéro stockage distant :</strong> Vos surlignages, notes et annotations documentaires restent stockés exclusivement sur vos propres appareils au sein de la base de données locale sécurisée de votre navigateur (IndexedDB). William Guindon ne dispose d'aucun accès à vos annotations privées.</li>
+        <li><strong>Identifiants de salle cryptographiques non devinables :</strong> Chaque session collaborative génère un identifiant cryptographique aléatoire fort à haute entropie (128 bits / <code>crypto.getRandomValues</code>), interdisant toute énumération ou devinette par un tiers ou un robot d'exploration.</li>
+        <li><strong>Contrôle et révocation instantanés :</strong> Vous pouvez à tout moment arrêter le partage d'un simple clic sur le bouton « Arrêter », ce qui coupe immédiatement les canaux WebRTC et retire l'identifiant de la session de votre barre d'adresse sans conservation d'historique.</li>
+      </ul>
+
       <h2>10. Protection des Enfants et Mineurs</h2>
       <p>Le site est une plateforme d'information civique et scientifique d'accès libre. Aucun renseignement personnel relatif à des enfants ou des personnes mineures n'est recueilli sciemment sans le consentement requis des titulaires de l'autorité parentale. Si vous constatez qu'un mineur a transmis des données personnelles sans autorisation, veuillez nous en aviser sans délai pour suppression immédiate.</p>
 
