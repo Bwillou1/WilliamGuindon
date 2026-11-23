@@ -11,6 +11,14 @@
     return;
   }
 
+  // Chargement préventif de DOMPurify pour assainissement XSS absolu des réponses IA
+  if (typeof window.DOMPurify === 'undefined' && !document.querySelector('script[src*="purify.min.js"]')) {
+    const pScript = document.createElement('script');
+    pScript.src = '/assets/vendor/dompurify/purify.min.js';
+    pScript.defer = true;
+    document.head.appendChild(pScript);
+  }
+
   function isWebArchiveOrMirror() {
     const host = (window.location.hostname || '').toLowerCase();
     const allowed = ['williamguindon.me', 'www.williamguindon.me', 'localhost', '127.0.0.1', 'bwillou1.github.io'];
@@ -233,6 +241,12 @@ DIRECTIVES DE LANGUE ET DE RÉPONSE :
       // Nettoyage des <br> superflus adjacents aux éléments de bloc
       text = text.replace(/<br>\s*(<\/?(?:h[1-6]|ul|ol|li|div|table|thead|tbody|tr|th|td|pre|blockquote)[^>]*>)/gi, '$1');
       text = text.replace(/(<\/(?:h[1-6]|ul|ol|li|div|table|thead|tbody|tr|th|td|pre|blockquote)>)\s*<br>/gi, '$1');
+
+      if (typeof window.DOMPurify !== 'undefined' && typeof window.DOMPurify.sanitize === 'function') {
+        text = window.DOMPurify.sanitize(text, {
+          ADD_ATTR: ['target', 'rel', 'style']
+        });
+      }
 
       return text;
     }

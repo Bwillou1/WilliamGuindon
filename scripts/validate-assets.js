@@ -142,7 +142,9 @@ const licenseChecks = [
   { file: 'assets/vendor/curtains/curtains.umd.min.js', required: 'MIT License' },
   { file: 'assets/js/papaparse.min.js', required: 'License: MIT' },
   { file: 'assets/vendor/swup/swup.umd.min.js', required: 'MIT License' },
-  { file: 'assets/vendor/swup/LICENSE', required: 'MIT License' }
+  { file: 'assets/vendor/swup/LICENSE', required: 'MIT License' },
+  { file: 'assets/vendor/dompurify/purify.min.js', required: 'Apache license 2.0' },
+  { file: 'assets/vendor/dompurify/LICENSE', required: 'Apache License' }
 ];
 
 for (const check of licenseChecks) {

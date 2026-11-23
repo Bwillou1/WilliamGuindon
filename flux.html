@@ -1266,6 +1266,7 @@
   </div>
 </main>
 
+<script src="assets/vendor/dompurify/purify.min.js" defer></script>
 <!-- Script interactif du lecteur de flux RSS -->
 <script>
 (function() {
@@ -1390,7 +1391,7 @@
       return;
     }
 
-    container.innerHTML = filtered.map(item => {
+    const renderedCards = filtered.map(item => {
       const isImage = item.enclosureUrl && (item.enclosureType?.startsWith('image/') || /\.(png|webp|jpg|jpeg)$/i.test(item.enclosureUrl));
       
       return `
@@ -1421,6 +1422,10 @@
         </article>
       `;
     }).join('');
+
+    container.innerHTML = (typeof window.DOMPurify !== 'undefined' && typeof window.DOMPurify.sanitize === 'function')
+      ? window.DOMPurify.sanitize(renderedCards)
+      : renderedCards;
 
     // Événements de partage
     container.querySelectorAll('.btn-share').forEach(btn => {

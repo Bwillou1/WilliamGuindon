@@ -286,6 +286,34 @@ SOFTWARE.
 
 ---
 
+### DOMPurify (v3.2.4)
+- **Auteurs :** Copyright (c) 2026 Cure53 et contributeurs DOMPurify
+- **Licence :** Apache License 2.0 / Mozilla Public License 2.0
+- **URL :** https://github.com/cure53/DOMPurify
+- **Description :** Bibliothèque d'assainissement HTML ultra-rapide et tolérante aux pannes pour le DOM. Utilisée pour assainir et neutraliser strictement tout contenu HTML ou Markdown externe (réponses du module IA, flux RSS, messages décentralisés) avant insertion dans le DOM, garantissant une protection absolue contre les attaques XSS.
+
+```text
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   Copyright (c) 2026 Cure53 and other contributors
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
+
+---
+
 ### Add to Calendar Button (v2)
 - **Auteurs :** Copyright (c) 2021-2026 Jens Kuerschner (jekuer) et contributeurs
 - **Licence :** Elastic License 2.0 (ELv2) — *logiciel à code source disponible (source-available, non open source OSI)*
