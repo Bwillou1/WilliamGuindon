@@ -5232,7 +5232,7 @@ function getCleanDisplayName(fullPath) {
                 translatedViewerUrl = baseViewerUrl;
               } else if (shouldAutoTranslate) {
                 isUnofficialTransActive = true;
-                translatedViewerUrl = "/lecteur.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&lang=" + activeTranslateLang + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
+                translatedViewerUrl = "/viewer.html?file=" + encodeURIComponent(embeddedPdfUrl) + "&tab=translation&lang=" + activeTranslateLang + "&theme=" + encodeURIComponent(currentTheme) + "&preview=1";
               }
               
               const viewerUrl = (shouldAutoTranslate && translatedViewerUrl) ? translatedViewerUrl : baseViewerUrl;
@@ -6236,7 +6236,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         iframe.src = `/viewer.html?file=${encodeURIComponent(officialPdf)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         setUnofficialTranslationBanner(stageEl, false, targetLang);
       } else {
-        iframe.src = `/lecteur.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        iframe.src = `/viewer.html?file=${encodeURIComponent(rawPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         setUnofficialTranslationBanner(stageEl, true, targetLang);
       }
       if (span) span.textContent = 'Original (FR)';
@@ -6287,7 +6287,7 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       } catch (_) {}
 
       const officialTrans = getOfficialTranslation(docName, targetLang);
-      const isTranslatedMode = translatePreviewLink.classList.contains('active') || currentSrc.includes('lecteur.html') || (officialTrans && currentSrc.includes(encodeURIComponent(officialTrans)));
+      const isTranslatedMode = translatePreviewLink.classList.contains('active') || currentSrc.includes('tab=translation') || (officialTrans && currentSrc.includes(encodeURIComponent(officialTrans)));
 
       if (isTranslatedMode) {
         window._wgStickyTranslateLang = null;
@@ -6310,9 +6310,9 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         if (typeof window.flushActiveIframeAnnotations === 'function') {
           await window.flushActiveIframeAnnotations(800);
         }
-        // Bascule vers le lecteur spécial de traduction (lecteur.html avec contour vert et mode traduction)
+        // Bascule vers le mode traduction dans le visualiseur officiel EmbedPDF
         const targetPdf = officialTrans ? ('/' + officialTrans.replace(/^\/+/, '')) : rawPdf;
-        iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        iframe.src = `/viewer.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Original (FR)';
         const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = iframe.src;
