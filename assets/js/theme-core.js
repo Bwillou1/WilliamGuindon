@@ -1682,16 +1682,17 @@
             <span class="site-deadline-dot" aria-hidden="true"></span>
             <span class="site-deadline-text">
               <strong class="site-deadline-case">Affaire SEM-26-003</strong>
-              <span class="site-deadline-sep">·</span>
+              <span class="site-deadline-sep sep-phase">·</span>
               <span class="site-deadline-phase">Délibération CCE (Art. 24.28)</span>
-              <span class="site-deadline-sep">·</span>
+              <span class="site-deadline-sep sep-date">·</span>
               <span class="site-deadline-date">Décision le 15 déc. 2026</span>
               <span class="site-deadline-pill" id="site-deadline-days-left">J-22</span>
             </span>
           </div>
           <div class="site-deadline-right">
             <a href="live.html" class="site-deadline-link" title="Suivre l'avancement statutaire des 60 jours et le registre CCE direct">
-              <span>Suivre le dossier</span>
+              <span class="site-deadline-link-full">Suivre le dossier</span>
+              <span class="site-deadline-link-short">Suivre</span>
               <span class="site-deadline-arrow" aria-hidden="true">→</span>
             </a>
           </div>
