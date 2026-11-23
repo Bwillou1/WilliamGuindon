@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v276';
+const CACHE_NAME = 'wg-pwa-v277';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache léger (coque applicative uniquement) pour ne jamais saturer la bande passante lors de la 1re visite.
@@ -21,6 +21,10 @@ const ASSETS_TO_CACHE = [
   '/assets/js/theme-core.js',
   '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
+  '/assets/js/collab-p2p.js',
+  '/assets/vendor/trystero/trystero-nostr.min.js',
+  '/assets/vendor/perfect-cursors/perfect-cursors.esm.js',
+  '/assets/vendor/yjs/yjs.esm.js',
   '/assets/vendor/embedpdf/embedpdf.js',
   '/assets/vendor/embedpdf/embedpdf-cl9qiF45.js',
   '/assets/vendor/embedpdf/worker-engine-BCCrxWYm.js',
