@@ -20,8 +20,32 @@
       window.location.replace(langBgv + '/bgv.html' + window.location.search + window.location.hash);
       return;
     }
-    if (/^\/(index(\.html|\/.*)?|fr(\/.*)?|en(\/.*)?|es(\/.*)?)$/i.test(p)) {
+    var matchPartager = p.match(/^\/(?:(en|es)\/)?(?:partager|kit-partage)\/?$/i);
+    if (matchPartager) {
+      var langP = matchPartager[1] ? ('/' + matchPartager[1].toLowerCase()) : '';
+      window.location.replace(langP + '/partager.html' + window.location.search + window.location.hash);
+      return;
+    }
+    var matchClean = p.match(/^\/(?:(en|es)\/)?([a-zA-Z0-9_-]+)\/?$/i);
+    if (matchClean && matchClean[2] && !matchClean[2].includes('.')) {
+      var langC = matchClean[1] ? ('/' + matchClean[1].toLowerCase()) : '';
+      var slug = matchClean[2].toLowerCase();
+      if (slug !== '404') {
+        window.location.replace(langC + '/' + slug + '.html' + window.location.search + window.location.hash);
+        return;
+      }
+    }
+    if (/^\/(?:index(?:\.html|\/.*)?|fr(?:\/.*)?)$/i.test(p)) {
       window.location.replace('/' + window.location.search + window.location.hash);
+      return;
+    }
+    if (/^\/(en)\/?$/i.test(p)) {
+      window.location.replace('/en/' + window.location.search + window.location.hash);
+      return;
+    }
+    if (/^\/(es)\/?$/i.test(p)) {
+      window.location.replace('/es/' + window.location.search + window.location.hash);
+      return;
     }
   })();
 </script>

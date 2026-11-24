@@ -397,46 +397,164 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* Bottom Petition CTA strip */
+  /* Bottom Petition CTA strip with Live Counter & Progress Bar */
   .kit-petition-banner {
-    background: linear-gradient(135deg, #091310 0%, #132433 100%);
-    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg, #061510 0%, #0c1e28 100%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: 16px;
-    padding: 24px 28px;
+    padding: 26px 30px;
     color: #ffffff;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    gap: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .kit-petition-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+  }
+  .kit-petition-left {
+    flex: 1 1 540px;
+  }
+  .kit-petition-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .kit-petition-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    padding: 3px 10px;
+    border-radius: 9999px;
+  }
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 rgba(52, 211, 153, 0.7);
+    animation: pulseDot 2s infinite ease-in-out;
+  }
+  @keyframes pulseDot {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+  }
+  .kit-petition-goal-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 3px 10px;
+    border-radius: 9999px;
   }
   .kit-petition-left h3 {
     margin: 0 0 6px;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     color: #ffffff;
+    font-weight: 800;
   }
   .kit-petition-left p {
     margin: 0;
-    font-size: 13px;
+    font-size: 13.5px;
     color: #cbd5e1;
+    line-height: 1.5;
+  }
+  .kit-petition-progress-wrap {
+    margin-top: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+  .kit-petition-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .kit-petition-stat-primary {
+    color: #f1f5f9;
+  }
+  .kit-petition-stat-primary strong {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #34d399;
+    margin-right: 4px;
+    letter-spacing: -0.01em;
+  }
+  .kit-petition-stat-secondary {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .kit-progress-bar-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .kit-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+    border-radius: 9999px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+  }
+  .kit-petition-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
   .btn-petition-direct {
     background: #10b981;
     color: #064e3b !important;
-    padding: 12px 24px;
+    padding: 14px 28px;
     border-radius: 9999px;
     font-weight: 800;
-    font-size: 13.5px;
-    text-decoration: none;
+    font-size: 15px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    transition: transform 0.2s ease, background 0.2s ease;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   }
   .btn-petition-direct:hover {
     background: #34d399;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 211, 153, 0.45);
+  }
+  .kit-petition-sync-note {
+    font-size: 11px;
+    color: #94a3b8;
+    letter-spacing: 0.02em;
   }
 </style>
 </head>
@@ -582,17 +700,41 @@
     </div>
   </div>
 
-  <!-- BANNIÈRE PÉTITION OFFICIELLE -->
-  <section class="kit-petition-banner">
+  <!-- BANNIÈRE PÉTITION OFFICIELLE AVEC JAUGE EN DIRECT (OBJECTIF 1500) -->
+  <section class="kit-petition-banner" aria-labelledby="pet-title">
     <div class="kit-petition-left">
-      <h3 id="pet-title">Signez et partagez la pétition officielle</h3>
-      <p id="pet-desc">Chaque signature compte pour briser le silence fédéral et protéger la Grande Tourbière de Blainville.</p>
+      <div class="kit-petition-tag-row">
+        <span class="kit-petition-badge">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="pet-live-label">Live counter</span>
+        </span>
+        <span class="kit-petition-goal-badge" id="pet-goal-badge">Goal: 1,500 signatures</span>
+      </div>
+      <h3 id="pet-title">Sign and share the official petition</h3>
+      <p id="pet-desc">Every signature helps break federal silence and protect Blainville's Grande Tourbière.</p>
+
+      <!-- Jauge de progression en direct -->
+      <div class="kit-petition-progress-wrap">
+        <div class="kit-petition-stats">
+          <div class="kit-petition-stat-primary">
+            <strong id="pet-sig-count">397</strong>
+            <span id="pet-sig-label">citizen signatures collected</span>
+          </div>
+          <div class="kit-petition-stat-secondary">
+            <span id="pet-percent-label">26.5%</span> <span id="pet-restantes-label">(1,103 remaining)</span>
+          </div>
+        </div>
+        <div class="kit-progress-bar-track" role="progressbar" aria-valuenow="397" aria-valuemin="0" aria-valuemax="1500" aria-label="Progress toward 1,500 signatures">
+          <div class="kit-progress-bar-fill" id="pet-progress-fill" style="width: 26.5%;"></div>
+        </div>
+      </div>
     </div>
     <div class="kit-petition-right">
       <a href="https://www.change.org/williamguindon" target="_blank" rel="noopener noreferrer" class="btn-petition-direct" id="pet-btn">
-        <span>Signer sur Change.org</span>
+        <span id="pet-btn-text">Sign on Change.org</span>
         <span aria-hidden="true">↗</span>
       </a>
+      <span class="kit-petition-sync-note" id="pet-sync-note">Updated every minute · Zero third-party cookies</span>
     </div>
   </section>
 
@@ -743,6 +885,30 @@
     document.getElementById('btn-download-label').textContent = data.btnDownload;
     document.getElementById('btn-share-text').textContent = data.btnShare;
 
+    // Mise à jour de la bannière pétition multilingue
+    const pI18n = PET_I18N[currentLang] || PET_I18N.en;
+    const petLiveLabel = document.getElementById('pet-live-label');
+    const petGoalBadge = document.getElementById('pet-goal-badge');
+    const petTitle = document.getElementById('pet-title');
+    const petDesc = document.getElementById('pet-desc');
+    const petSigLabel = document.getElementById('pet-sig-label');
+    const petBtnText = document.getElementById('pet-btn-text');
+    const petSyncNote = document.getElementById('pet-sync-note');
+
+    if (petLiveLabel) petLiveLabel.textContent = pI18n.live;
+    if (petGoalBadge) petGoalBadge.textContent = pI18n.goalBadge;
+    if (petTitle) petTitle.textContent = pI18n.title;
+    if (petDesc) petDesc.textContent = pI18n.desc;
+    if (petSigLabel) petSigLabel.textContent = pI18n.sigLabel;
+    if (petBtnText) petBtnText.textContent = pI18n.btnText;
+    if (petSyncNote) petSyncNote.textContent = pI18n.syncNote;
+
+    // Rafraîchir les valeurs numériques avec le bon format de locale
+    const rawCache = sessionStorage.getItem(PETITION_CACHE_KEY);
+    if (rawCache) {
+      try { applyPetitionData(JSON.parse(rawCache).data); } catch (_) {}
+    }
+
     // Mise à jour des classes actives sur les onglets
     document.querySelectorAll('.js-lang-btn').forEach(btn => {
       const active = btn.getAttribute('data-lang') === currentLang;
@@ -847,6 +1013,120 @@
 
   // Initialisation
   updateView();
+
+  // === COMPTEUR PÉTITION EN DIRECT (OBJECTIF 1500, REQUÊTE AU 1 MINUTE STRICTE ANTI-QUOTA) ===
+  const PETITION_CACHE_KEY = 'wg_petition_cache';
+  const PETITION_THROTTLE_MS = 60 * 1000; // 1 minute stricte anti-quota
+
+  const PET_I18N = {
+    fr: {
+      live: "Compteur en direct",
+      goalBadge: "Objectif : 1 500 signatures",
+      title: "Signez et partagez la pétition officielle",
+      desc: "Chaque signature compte pour briser le silence fédéral et protéger la Grande Tourbière de Blainville.",
+      sigLabel: "signatures citoyennes récoltées",
+      restantes: "restantes",
+      btnText: "Signer sur Change.org",
+      syncNote: "Actualisé à la minute · Sans cookie tiers"
+    },
+    en: {
+      live: "Live counter",
+      goalBadge: "Goal: 1,500 signatures",
+      title: "Sign and share the official petition",
+      desc: "Every signature helps break federal silence and protect Blainville's Grande Tourbière.",
+      sigLabel: "citizen signatures collected",
+      restantes: "remaining",
+      btnText: "Sign on Change.org",
+      syncNote: "Updated every minute · Zero third-party cookies"
+    },
+    es: {
+      live: "Contador en directo",
+      goalBadge: "Meta: 1.500 firmas",
+      title: "Firma y comparte la petición oficial",
+      desc: "Cada firma cuenta para romper el silencio federal y proteger la Grande Tourbière de Blainville.",
+      sigLabel: "firmas ciudadanas reunidas",
+      restantes: "restantes",
+      btnText: "Firmar en Change.org",
+      syncNote: "Actualizado cada minuto · Sin cookies de terceros"
+    }
+  };
+
+  function applyPetitionData(p) {
+    if (!p || typeof p.signatures !== 'number') return;
+    const sigCount = p.signatures;
+    const goal = p.objectif || 1500;
+    const pct = p.pourcentage || parseFloat(((sigCount / goal) * 100).toFixed(1));
+    const rem = Math.max(0, goal - sigCount);
+
+    const sigEl = document.getElementById('pet-sig-count');
+    const fillEl = document.getElementById('pet-progress-fill');
+    const pctEl = document.getElementById('pet-percent-label');
+    const remEl = document.getElementById('pet-restantes-label');
+
+    const i18n = PET_I18N[currentLang] || PET_I18N.en;
+    const localeStr = currentLang === 'fr' ? 'fr-CA' : (currentLang === 'es' ? 'es-ES' : 'en-CA');
+
+    if (sigEl) sigEl.textContent = sigCount.toLocaleString(localeStr);
+    if (fillEl) {
+      fillEl.style.width = Math.min(100, Math.max(2, pct)) + '%';
+      const track = fillEl.parentElement;
+      if (track) track.setAttribute('aria-valuenow', sigCount);
+    }
+    if (pctEl) pctEl.textContent = (currentLang === 'fr' || currentLang === 'es' ? pct.toString().replace('.', ',') : pct) + '%';
+    if (remEl) remEl.textContent = '(' + rem.toLocaleString(localeStr) + ' ' + i18n.restantes + ')';
+  }
+
+  async function fetchPetitionStatus(force) {
+    try {
+      const now = Date.now();
+      const raw = sessionStorage.getItem(PETITION_CACHE_KEY);
+      if (raw) {
+        try {
+          const cached = JSON.parse(raw);
+          if (!force && cached && (now - cached.timestamp) < PETITION_THROTTLE_MS) {
+            applyPetitionData(cached.data);
+            return;
+          }
+        } catch (_) {}
+      }
+
+      // Requête sécurisée vers status.json (sans credentials / sans cookies)
+      const res = await fetch('/status.json?_t=' + now, {
+        credentials: 'omit',
+        cache: 'no-store'
+      });
+      if (!res.ok) return;
+      const statusData = await res.json();
+      if (statusData && statusData.petition) {
+        try {
+          sessionStorage.setItem(PETITION_CACHE_KEY, JSON.stringify({
+            timestamp: now,
+            data: statusData.petition
+          }));
+        } catch (_) {}
+        applyPetitionData(statusData.petition);
+      }
+    } catch (_) {
+      // Échec silencieux, les valeurs du document HTML sont conservées
+    }
+  }
+
+  // Lancer immédiatement la vérification au chargement
+  fetchPetitionStatus(false);
+
+  // Intervalle régulier d'1 minute (60 000 ms) pour respecter strictement les quotas
+  setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      fetchPetitionStatus(true);
+    }
+  }, PETITION_THROTTLE_MS);
+
+  // Re-vérifier quand l'onglet redevient visible si 1 minute s'est écoulée
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      fetchPetitionStatus(false);
+    }
+  });
 })();
 </script>
 

@@ -4,6 +4,8 @@ const path = require('path');
 const REGISTRY_URL_FR = "https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/";
 const REGISTRY_URL_EN = "https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
 const WP_API_ENDPOINT = "https://www.cec.org/fr/wp-json/wp/v2/submissions/62535";
+const PETITION_URL = "https://www.change.org/p/environnement-canada-levez-le-blocage-contre-un-jeune-de-15-ans";
+const PETITION_GOAL = 1500; // Objectif de 1500 signatures fixé par William Guindon
 const STATUS_FILE_PATH = path.join(__dirname, '..', 'status.json');
 
 /**
@@ -132,6 +134,15 @@ async function syncDossierStatus() {
       timeline_fr: [],
       timeline_en: []
     },
+    petition: {
+      id: "491630232",
+      url: "https://www.change.org/williamguindon",
+      signatures: 397,
+      objectif: PETITION_GOAL,
+      pourcentage: 26.5,
+      restantes: 1103,
+      derniere_synchro: new Date().toISOString()
+    },
     timestamp_sync: new Date().toISOString()
   };
 
@@ -224,9 +235,38 @@ async function syncDossierStatus() {
     console.warn("Notice : Page EN CCE non joignable pour scraping :", err.message);
   }
 
-  // 4. Vérifier s'il y a un réel changement par rapport au fichier existant
+  // 4. Synchronisation en direct du compteur de la pétition Change.org
+  try {
+    const petitionRes = await fetch(PETITION_URL, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) DossierSyncBot/2.0 (williamguindon.me)' }
+    });
+    if (petitionRes.ok) {
+      const petHtml = await petitionRes.text();
+      const matchSig = petHtml.match(/"signatureCount":\s*\{\s*"displayed":\s*(\d+)/i) ||
+                       petHtml.match(/"signatureState":\s*\{[^}]*"displayed":\s*(\d+)/i) ||
+                       petHtml.match(/"displayed":\s*(\d+)/i);
+      if (matchSig) {
+        const sigCount = parseInt(matchSig[1], 10);
+        data.petition.signatures = sigCount;
+        data.petition.objectif = PETITION_GOAL;
+        data.petition.pourcentage = parseFloat(((sigCount / PETITION_GOAL) * 100).toFixed(1));
+        data.petition.restantes = Math.max(0, PETITION_GOAL - sigCount);
+        data.petition.derniere_synchro = new Date().toISOString();
+        console.log(`Synchronisation Pétition Change.org : ${sigCount} / ${PETITION_GOAL} signatures (${data.petition.pourcentage}%).`);
+      }
+    }
+  } catch (err) {
+    console.warn("Notice : Pétition Change.org non joignable immédiatement :", err.message);
+    if (existingData?.petition) {
+      data.petition = existingData.petition;
+    }
+  }
+
+  // 5. Vérifier s'il y a un réel changement par rapport au fichier existant
   const hasChanged = !existingData ||
     existingData.wp_modified !== data.wp_modified ||
+    existingData.petition?.signatures !== data.petition?.signatures ||
+    existingData.petition?.objectif !== data.petition?.objectif ||
     existingData.cce_officiel?.derniere_modif_wp !== data.cce_officiel?.derniere_modif_wp ||
     existingData.cce_officiel?.etapes_completees !== data.cce_officiel?.etapes_completees ||
     existingData.cce_officiel?.total_pieces_officielles !== data.cce_officiel?.total_pieces_officielles ||
