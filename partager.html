@@ -370,6 +370,18 @@
     background: #166fe5;
     transform: translateY(-1px);
   }
+  .btn-kit-badge-fb {
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    margin-left: 6px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
 
   /* Quick toast feedback */
   .kit-toast {
@@ -694,7 +706,8 @@
         <!-- Bouton Ouvrir Facebook -->
         <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.change.org%2Fwilliamguindon" target="_blank" rel="noopener noreferrer" class="btn-kit btn-kit-fb" id="btn-open-fb">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span>Ouvrir Facebook</span>
+          <span id="btn-open-fb-text">Ouvrir Facebook</span>
+          <span class="btn-kit-badge-fb" id="btn-fb-followers">2 243 abonnés</span>
         </a>
       </div>
     </div>
@@ -781,7 +794,8 @@
       toastShared: "Partage lancé !",
       btnShare: "Partager dans ma Story",
       btnCopy: "Copier le texte",
-      btnDownload: "Télécharger le visuel HD"
+      btnDownload: "Télécharger le visuel HD",
+      btnFb: "Ouvrir Facebook"
     },
     en: {
       heroTitle: "Share the petition on your social media",
@@ -797,7 +811,8 @@
       toastShared: "Share initiated!",
       btnShare: "Share to my Story",
       btnCopy: "Copy text",
-      btnDownload: "Download HD visual"
+      btnDownload: "Download HD visual",
+      btnFb: "Open Facebook"
     },
     es: {
       heroTitle: "Compartir la petición en tus redes",
@@ -813,7 +828,8 @@
       toastShared: "¡Compartiendo!",
       btnShare: "Compartir en mi Historia",
       btnCopy: "Copiar texto",
-      btnDownload: "Descargar visual HD"
+      btnDownload: "Descargar visual HD",
+      btnFb: "Abrir Facebook"
     }
   };
 
@@ -884,6 +900,8 @@
     document.getElementById('btn-copy-label').textContent = data.btnCopy;
     document.getElementById('btn-download-label').textContent = data.btnDownload;
     document.getElementById('btn-share-text').textContent = data.btnShare;
+    const fbBtnLabel = document.getElementById('btn-open-fb-text');
+    if (fbBtnLabel) fbBtnLabel.textContent = data.btnFb;
 
     // Mise à jour de la bannière pétition multilingue
     const pI18n = PET_I18N[currentLang] || PET_I18N.fr;
@@ -906,7 +924,11 @@
     // Rafraîchir les valeurs numériques avec le bon format de locale
     const rawCache = sessionStorage.getItem(PETITION_CACHE_KEY);
     if (rawCache) {
-      try { applyPetitionData(JSON.parse(rawCache).data); } catch (_) {}
+      try {
+        const parsed = JSON.parse(rawCache);
+        if (parsed.data) applyPetitionData(parsed.data);
+        if (parsed.social) applySocialData(parsed.social);
+      } catch (_) {}
     }
 
     // Mise à jour des classes actives sur les onglets
@@ -1076,6 +1098,17 @@
     if (remEl) remEl.textContent = '(' + rem.toLocaleString(localeStr) + ' ' + i18n.restantes + ')';
   }
 
+  function applySocialData(social) {
+    if (!social || !social.facebook || typeof social.facebook.abonnes !== 'number') return;
+    const fbAbonnes = social.facebook.abonnes;
+    const localeStr = currentLang === 'fr' ? 'fr-CA' : (currentLang === 'es' ? 'es-ES' : 'en-CA');
+    const badgeEl = document.getElementById('btn-fb-followers');
+    if (badgeEl) {
+      const unit = currentLang === 'en' ? 'followers' : (currentLang === 'es' ? 'seguidores' : 'abonnés');
+      badgeEl.textContent = `${fbAbonnes.toLocaleString(localeStr)} ${unit}`;
+    }
+  }
+
   async function fetchPetitionStatus(force) {
     try {
       const now = Date.now();
@@ -1084,7 +1117,8 @@
         try {
           const cached = JSON.parse(raw);
           if (!force && cached && (now - cached.timestamp) < PETITION_THROTTLE_MS) {
-            applyPetitionData(cached.data);
+            if (cached.data) applyPetitionData(cached.data);
+            if (cached.social) applySocialData(cached.social);
             return;
           }
         } catch (_) {}
@@ -1097,14 +1131,16 @@
       });
       if (!res.ok) return;
       const statusData = await res.json();
-      if (statusData && statusData.petition) {
+      if (statusData) {
+        if (statusData.petition) applyPetitionData(statusData.petition);
+        if (statusData.social) applySocialData(statusData.social);
         try {
           sessionStorage.setItem(PETITION_CACHE_KEY, JSON.stringify({
             timestamp: now,
-            data: statusData.petition
+            data: statusData.petition,
+            social: statusData.social
           }));
         } catch (_) {}
-        applyPetitionData(statusData.petition);
       }
     } catch (_) {
       // Échec silencieux, les valeurs du document HTML sont conservées

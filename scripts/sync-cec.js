@@ -6,6 +6,7 @@ const REGISTRY_URL_EN = "https://www.cec.org/submissions/registry-of-submissions
 const WP_API_ENDPOINT = "https://www.cec.org/fr/wp-json/wp/v2/submissions/62535";
 const PETITION_URL = "https://www.change.org/p/environnement-canada-levez-le-blocage-contre-un-jeune-de-15-ans";
 const PETITION_GOAL = 1500; // Objectif de 1500 signatures fixé par William Guindon
+const FB_PAGE_URL = "https://www.facebook.com/williamguindon.officiel";
 const STATUS_FILE_PATH = path.join(__dirname, '..', 'status.json');
 
 /**
@@ -143,6 +144,14 @@ async function syncDossierStatus() {
       restantes: 1103,
       derniere_synchro: new Date().toISOString()
     },
+    social: {
+      facebook: {
+        url: FB_PAGE_URL,
+        abonnes: 2243,
+        abonnes_texte: "2 243 abonnés",
+        derniere_synchro: new Date().toISOString()
+      }
+    },
     timestamp_sync: new Date().toISOString()
   };
 
@@ -262,11 +271,39 @@ async function syncDossierStatus() {
     }
   }
 
-  // 5. Vérifier s'il y a un réel changement par rapport au fichier existant
+  // 5. Synchronisation du nombre d'abonnés Facebook officiel
+  try {
+    const fbRes = await fetch(FB_PAGE_URL, {
+      headers: { 'User-Agent': 'facebookexternalhit/1.1' }
+    });
+    if (fbRes.ok) {
+      const fbHtml = await fbRes.text();
+      const matchFb = fbHtml.match(/content="[^"]*?([0-9,]+)\s*(?:followers|abonn[eé]s)/i);
+      if (matchFb) {
+        const fbCount = parseInt(matchFb[1].replace(/,/g, ""), 10);
+        data.social = data.social || {};
+        data.social.facebook = {
+          url: FB_PAGE_URL,
+          abonnes: fbCount,
+          abonnes_texte: `${fbCount.toLocaleString('fr-CA')} abonnés`,
+          derniere_synchro: new Date().toISOString()
+        };
+        console.log(`Synchronisation Facebook officiel : ${fbCount} abonnés.`);
+      }
+    }
+  } catch (err) {
+    console.warn("Notice : Page Facebook non joignable immédiatement :", err.message);
+    if (existingData?.social?.facebook) {
+      data.social = existingData.social;
+    }
+  }
+
+  // 6. Vérifier s'il y a un réel changement par rapport au fichier existant
   const hasChanged = !existingData ||
     existingData.wp_modified !== data.wp_modified ||
     existingData.petition?.signatures !== data.petition?.signatures ||
     existingData.petition?.objectif !== data.petition?.objectif ||
+    existingData.social?.facebook?.abonnes !== data.social?.facebook?.abonnes ||
     existingData.cce_officiel?.derniere_modif_wp !== data.cce_officiel?.derniere_modif_wp ||
     existingData.cce_officiel?.etapes_completees !== data.cce_officiel?.etapes_completees ||
     existingData.cce_officiel?.total_pieces_officielles !== data.cce_officiel?.total_pieces_officielles ||
