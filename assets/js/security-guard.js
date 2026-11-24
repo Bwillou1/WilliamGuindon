@@ -768,6 +768,7 @@
   }
 
   // --- MODE ANTI-CAPTURE D'ÉCRAN À LA VOLÉE ---
+  let screenshotShieldTimeout = null;
   function triggerScreenshotBlur() {
     let shield = document.getElementById('wg-screenshot-shield');
     if (!shield) {

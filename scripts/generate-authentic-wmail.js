@@ -101,7 +101,11 @@ function formatMessageBody(msg) {
   }
 
   // Caviarder le texte et formater les paragraphes
-  text = sanitizeText(text);
+  text = sanitizeText(text)
+    .replace(/={4,}/g, "")
+    .replace(/\[TRONQUÉ[^\]]*\]/g, "")
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/\*([^*]+)\*/g, "<b>$1</b>");
   // Échapper ou formater proprement
   const paragraphs = text.split('\n\n').map(p => {
     p = p.trim();
@@ -336,18 +340,18 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
 .top-actions{display:flex;align-items:center;gap:4px}
 .avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#059669;color:#fff;font-size:12px;font-weight:700;margin-left:4px;box-shadow:0 0 0 2px #fff}
 .workspace{height:calc(100dvh - 64px);display:flex;min-height:0}
-.sidebar{width:256px;flex:none;padding-top:13px;overflow:hidden auto;transition:width .2s}
+.sidebar{width:270px;flex:none;padding-top:13px;overflow:hidden auto;transition:width .2s}
 .sidebar.collapsed{width:72px}
 .sidebar nav{padding-right:13px}
-.nav-item{height:36px;width:100%;border-radius:0 18px 18px 0;display:flex;align-items:center;font-size:14px;font-weight:500;color:#444746;cursor:pointer}
+.nav-item{height:36px;width:100%;border-radius:0 18px 18px 0;display:flex;align-items:center;font-size:13.5px;font-weight:500;color:#444746;cursor:pointer;padding-right:12px;}
 .nav-item:hover{background:#e9ebef}.nav-item.active{background:var(--active);font-weight:700;color:#0b57d0}
 .nav-icon{width:68px;flex:none;display:grid;place-items:center}
 .nav-label{flex:1;text-align:left;white-space:nowrap;overflow:hidden}
-.count{font-size:12px;padding-right:14px;font-weight:600}
+.count{font-size:11.5px;padding-left:6px;font-weight:600;flex:none;}
 .sidebar.collapsed .nav-label,.sidebar.collapsed .count,.sidebar.collapsed .labels{display:none}
 .labels{margin:24px 16px 10px}
 .labels-title{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:10px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.5px}
-.label-row{height:32px;width:100%;display:flex;align-items:center;gap:14px;padding:0 10px;border-radius:16px;font-size:13.5px;color:#444746;cursor:pointer}
+.label-row{height:32px;width:100%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:16px;font-size:13px;color:#444746;cursor:pointer;}
 .label-row:hover{background:#e9ebef}.label-row.active{background:var(--active);font-weight:700}
 .tag{width:14px;height:10px;border-radius:2px 5px 5px 2px;flex:none}
 .inbox{min-width:0;flex:1;margin-right:16px;border-radius:16px 16px 0 0;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
@@ -355,7 +359,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
 .toolbar-side{display:flex;align-items:center;gap:2px}
 .small-count{font-size:12px;padding:0 10px;font-weight:500}
 .tabs{height:56px;flex:none;border-bottom:1px solid #e0e0e0;display:flex}
-.tab{position:relative;min-width:115px;max-width:250px;flex:1;display:flex;align-items:center;gap:15px;padding:0 24px;color:#444746;font-size:14px;font-weight:500;cursor:pointer}
+.tab{position:relative;white-space:nowrap;min-width:115px;max-width:250px;flex:1;display:flex;align-items:center;gap:15px;padding:0 24px;color:#444746;font-size:14px;font-weight:500;cursor:pointer}
 .tab:hover{background:#f4f4f4}.tab.active{color:var(--blue)}
 .tab.active:after{content:"";position:absolute;height:3px;left:16px;right:16px;bottom:0;border-radius:3px 3px 0 0;background:var(--blue)}
 .messages{min-height:0;flex:1;overflow:auto}
@@ -480,12 +484,12 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
         </button>
         <button class="nav-item" data-nav="starred">
           <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 6.8L12 17l-6.3 3.5L7 13.7 2 8.9 9 8z"/></svg></span>
-          <span class="nav-label">Éléments clés & Preuves</span>
+          <span class="nav-label">Éléments clés</span>
           <span class="count">${threadList.filter(x => x.isKey).length}</span>
         </button>
         <button class="nav-item" data-nav="sent">
           <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg></span>
-          <span class="nav-label">Envoyés (William Guindon)</span>
+          <span class="nav-label">Envoyés</span>
           <span class="count">42</span>
         </button>
       </nav>

@@ -36,18 +36,18 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
 .top-actions{display:flex;align-items:center;gap:4px}
 .avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#059669;color:#fff;font-size:12px;font-weight:700;margin-left:4px;box-shadow:0 0 0 2px #fff}
 .workspace{height:calc(100dvh - 64px);display:flex;min-height:0}
-.sidebar{width:256px;flex:none;padding-top:13px;overflow:hidden auto;transition:width .2s}
+.sidebar{width:270px;flex:none;padding-top:13px;overflow:hidden auto;transition:width .2s}
 .sidebar.collapsed{width:72px}
 .sidebar nav{padding-right:13px}
-.nav-item{height:36px;width:100%;border-radius:0 18px 18px 0;display:flex;align-items:center;font-size:14px;font-weight:500;color:#444746;cursor:pointer}
+.nav-item{height:36px;width:100%;border-radius:0 18px 18px 0;display:flex;align-items:center;font-size:13.5px;font-weight:500;color:#444746;cursor:pointer;padding-right:12px;}
 .nav-item:hover{background:#e9ebef}.nav-item.active{background:var(--active);font-weight:700;color:#0b57d0}
 .nav-icon{width:68px;flex:none;display:grid;place-items:center}
 .nav-label{flex:1;text-align:left;white-space:nowrap;overflow:hidden}
-.count{font-size:12px;padding-right:14px;font-weight:600}
+.count{font-size:11.5px;padding-left:6px;font-weight:600;flex:none;}
 .sidebar.collapsed .nav-label,.sidebar.collapsed .count,.sidebar.collapsed .labels{display:none}
 .labels{margin:24px 16px 10px}
 .labels-title{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:10px;font-size:12px;color:#5f6368;text-transform:uppercase;letter-spacing:.5px}
-.label-row{height:32px;width:100%;display:flex;align-items:center;gap:14px;padding:0 10px;border-radius:16px;font-size:13.5px;color:#444746;cursor:pointer}
+.label-row{height:32px;width:100%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:16px;font-size:13px;color:#444746;cursor:pointer;}
 .label-row:hover{background:#e9ebef}.label-row.active{background:var(--active);font-weight:700}
 .tag{width:14px;height:10px;border-radius:2px 5px 5px 2px;flex:none}
 .inbox{min-width:0;flex:1;margin-right:16px;border-radius:16px 16px 0 0;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
@@ -55,7 +55,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
 .toolbar-side{display:flex;align-items:center;gap:2px}
 .small-count{font-size:12px;padding:0 10px;font-weight:500}
 .tabs{height:56px;flex:none;border-bottom:1px solid #e0e0e0;display:flex}
-.tab{position:relative;min-width:115px;max-width:250px;flex:1;display:flex;align-items:center;gap:15px;padding:0 24px;color:#444746;font-size:14px;font-weight:500;cursor:pointer}
+.tab{position:relative;white-space:nowrap;min-width:115px;max-width:250px;flex:1;display:flex;align-items:center;gap:15px;padding:0 24px;color:#444746;font-size:14px;font-weight:500;cursor:pointer}
 .tab:hover{background:#f4f4f4}.tab.active{color:var(--blue)}
 .tab.active:after{content:"";position:absolute;height:3px;left:16px;right:16px;bottom:0;border-radius:3px 3px 0 0;background:var(--blue)}
 .messages{min-height:0;flex:1;overflow:auto}
@@ -180,12 +180,12 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
         </button>
         <button class="nav-item" data-nav="starred">
           <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 6.8L12 17l-6.3 3.5L7 13.7 2 8.9 9 8z"/></svg></span>
-          <span class="nav-label">Éléments clés & Preuves</span>
+          <span class="nav-label">Éléments clés</span>
           <span class="count">11</span>
         </button>
         <button class="nav-item" data-nav="sent">
           <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg></span>
-          <span class="nav-label">Envoyés (William Guindon)</span>
+          <span class="nav-label">Envoyés</span>
           <span class="count">42</span>
         </button>
       </nav>
@@ -495,7 +495,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(corps vide — 2 caractères ; l'objet et les destinataires font foi.<br>Lettre de demande d'enquête du 3 juin 2026 ; voir message 2 pour le sort.)</p><p>================================================================================</p>
+                <p>(corps vide — 2 caractères ; l'objet et les destinataires font foi.<br>Lettre de demande d'enquête du 3 juin 2026 ; voir message 2 pour le sort.)</p>
               </div>
             </div>
           </article>
@@ -535,7 +535,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
                 </div>
               
               <div class="msg-text-content">
-                <p>Madame la Ministre,</p><p>Je suis William Guindon résident de Blainville, et j'ai 14 ans. Je vous écris<br>pour demander formellement l'ouverture d'une enquête sur des violations<br>présumées des lois fédérales suivantes au site d'enfouissement de déchets<br>dangereux de Stablex Canada Inc. à Blainville :</p><p>Loi de 1994 sur la convention concernant les oiseaux migrateurs (LCOM),<br>article 5.1(1), et Règlement sur les oiseaux migrateurs, 2022, article 5 —<br>Destruction ou perturbation de nids et d'habitat durant la période de<br>nidification (travaux de déboisement réalisés en avril 2025, juste avant<br>l'entrée en vigueur renforcée des protections le 15 avril).</p><p>Loi sur les pêches, article 36(3) — Rejet de substances nocives (notamment<br>cadmium) dans des eaux fréquentées par le poisson.</p><p>Des analyses indépendantes réalisées par des citoyens (avec l'appui de Mères<br>au Front, du biologiste Daniel Green et de la Société pour vaincre la<br>pollution) ont révélé des concentrations de cadmium jusqu'à 320 à 340 fois<br>supérieures aux normes dans les fossés et cours d'eau adjacents au site<br>(ruisseau Lockhead et milieux humides de la Grande Tourbière de Blainville).<br>Ces eaux constituent de l'habitat pour le poisson et des oise[aux …]</p><p>[… suite tronquée — texte intégral : 3 260 caractères ; voir Gmail ID<br>19e8db56944c0190.]</p><p>================================================================================</p>
+                <p>Madame la Ministre,</p><p>Je suis William Guindon résident de Blainville, et j'ai 14 ans. Je vous écris<br>pour demander formellement l'ouverture d'une enquête sur des violations<br>présumées des lois fédérales suivantes au site d'enfouissement de déchets<br>dangereux de Stablex Canada Inc. à Blainville :</p><p>Loi de 1994 sur la convention concernant les oiseaux migrateurs (LCOM),<br>article 5.1(1), et Règlement sur les oiseaux migrateurs, 2022, article 5 —<br>Destruction ou perturbation de nids et d'habitat durant la période de<br>nidification (travaux de déboisement réalisés en avril 2025, juste avant<br>l'entrée en vigueur renforcée des protections le 15 avril).</p><p>Loi sur les pêches, article 36(3) — Rejet de substances nocives (notamment<br>cadmium) dans des eaux fréquentées par le poisson.</p><p>Des analyses indépendantes réalisées par des citoyens (avec l'appui de Mères<br>au Front, du biologiste Daniel Green et de la Société pour vaincre la<br>pollution) ont révélé des concentrations de cadmium jusqu'à 320 à 340 fois<br>supérieures aux normes dans les fossés et cours d'eau adjacents au site<br>(ruisseau Lockhead et milieux humides de la Grande Tourbière de Blainville).<br>Ces eaux constituent de l'habitat pour le poisson et des oise[aux …]</p><p>[… suite tronquée — texte intégral : 3 260 caractères ; voir Gmail ID<br>19e8db56944c0190.]</p>
               </div>
             </div>
           </article>
@@ -565,7 +565,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Veuillez noter que ce message provient d'un bureau situé au Québec, raison<br>pour laquelle le message en français précède celui en anglais.</p><p>Merci d'avoir écrit à l'honorable Julie Dabrusin, ministre de l'Environnement,<br>du Changement climatique et de la Nature.</p><p>Soyez assurés que votre message sera examiné avec soin.</p><p>Pour toute demande des médias, veuillez appeler au 819-938-3338 ou encore<br>acheminer votre demande à media@ec.gc.ca.</p><p>(anglais identique en dessous)</p><p>================================================================================</p>
+                <p>Veuillez noter que ce message provient d'un bureau situé au Québec, raison<br>pour laquelle le message en français précède celui en anglais.</p><p>Merci d'avoir écrit à l'honorable Julie Dabrusin, ministre de l'Environnement,<br>du Changement climatique et de la Nature.</p><p>Soyez assurés que votre message sera examiné avec soin.</p><p>Pour toute demande des médias, veuillez appeler au 819-938-3338 ou encore<br>acheminer votre demande à media@ec.gc.ca.</p><p>(anglais identique en dessous)</p>
               </div>
             </div>
           </article>
@@ -595,7 +595,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique identique au message 2 : message examiné avec soin ;<br>média : 819-938-3338 / media@ec.gc.ca.)</p><p>================================================================================</p>
+                <p>(Accusé automatique identique au message 2 : message examiné avec soin ;<br>média : 819-938-3338 / media@ec.gc.ca.)</p>
               </div>
             </div>
           </article>
@@ -625,7 +625,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Thank you for writing to the Honourable Joanne Thompson, Minister of<br>Fisheries… automatically generated message; please do not reply.<br>Unité de la correspondance ministérielle (accusé automatique).</p><p>================================================================================</p>
+                <p>Thank you for writing to the Honourable Joanne Thompson, Minister of<br>Fisheries… automatically generated message; please do not reply.<br>Unité de la correspondance ministérielle (accusé automatique).</p>
               </div>
             </div>
           </article>
@@ -665,7 +665,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>J'ai bien reçu votre accusé de réception automatique. Le dossier étant<br>directement lié à une soumission internationale urgente auprès de la CCE<br>(SEM-26-003), pourriez-vous me *confirmer le numéro de suivi officiel*<br>attribué à ma demande ainsi que le *nom de la direction générale* qui procède<br>actuellement à l'analyse de mes pièces jointes ?</p><p>Cordialement,<br>William Guindon (14 ans)</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>J'ai bien reçu votre accusé de réception automatique. Le dossier étant<br>directement lié à une soumission internationale urgente auprès de la CCE<br>(SEM-26-003), pourriez-vous me <b>confirmer le numéro de suivi officiel</b><br>attribué à ma demande ainsi que le <b>nom de la direction générale</b> qui procède<br>actuellement à l'analyse de mes pièces jointes ?</p><p>Cordialement,<br>William Guindon (14 ans)</p>
               </div>
             </div>
           </article>
@@ -695,7 +695,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique identique aux messages 2 et 4.)</p><p>================================================================================</p>
+                <p>(Accusé automatique identique aux messages 2 et 4.)</p>
               </div>
             </div>
           </article>
@@ -742,7 +742,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>« NOTE À L'ATTENTION DU SECRÉTARIAT DE LA CCE (Dossier SEM-26-003) : Ce<br>courriel est mis en copie conforme (CC) uniquement pour prouver l'envoi de<br>la notification écrite obligatoire aux autorités compétentes (pp. 1, 11). Ce<br>message ne constitue pas mon dépôt de communication révisée finale, lequel<br>vous sera transmis officiellement par un envoi distinct avant la date limite<br>du 3 août 2026 (p. 2). »</p><p>Madame, Monsieur le Ministre de l'Environnement du Canada,</p><p>Par la présente, je vous signale formellement des omissions majeures dans<br>l'application effective des lois environnementales fédérales concernant les<br>activités d'excavation et d'enfouissement de déchets dangereux de<br>l'entreprise Stablex dans la Grande Tourbière de Blainville et le secteur<br>des lacs Fauvel.</p><p>En tant que citoyen canadien de 14 ans, je vous soumets les infractions<br>suivantes :</p><p>Loi de 1994 sur la convention concernant les oiseaux migrateurs (LCOM — art.<br>5 et 6) et son Règlement de 2022 : les activités d'excavation se déroulent<br>en pleine période de nidification d'oiseaux migrateurs, détruisant des nids<br>actifs contenant des oiseaux vivants ou des œufs viables dans la Grande<br>Tourbière.</p><p>Loi sur les espèces en péril [suite tronquée — texte intégral : 2 069 car. ;<br>voir Gmail ID 19ec6b31784862f5.]</p><p>================================================================================</p>
+                <p>« NOTE À L'ATTENTION DU SECRÉTARIAT DE LA CCE (Dossier SEM-26-003) : Ce<br>courriel est mis en copie conforme (CC) uniquement pour prouver l'envoi de<br>la notification écrite obligatoire aux autorités compétentes (pp. 1, 11). Ce<br>message ne constitue pas mon dépôt de communication révisée finale, lequel<br>vous sera transmis officiellement par un envoi distinct avant la date limite<br>du 3 août 2026 (p. 2). »</p><p>Madame, Monsieur le Ministre de l'Environnement du Canada,</p><p>Par la présente, je vous signale formellement des omissions majeures dans<br>l'application effective des lois environnementales fédérales concernant les<br>activités d'excavation et d'enfouissement de déchets dangereux de<br>l'entreprise Stablex dans la Grande Tourbière de Blainville et le secteur<br>des lacs Fauvel.</p><p>En tant que citoyen canadien de 14 ans, je vous soumets les infractions<br>suivantes :</p><p>Loi de 1994 sur la convention concernant les oiseaux migrateurs (LCOM — art.<br>5 et 6) et son Règlement de 2022 : les activités d'excavation se déroulent<br>en pleine période de nidification d'oiseaux migrateurs, détruisant des nids<br>actifs contenant des oiseaux vivants ou des œufs viables dans la Grande<br>Tourbière.</p><p>Loi sur les espèces en péril [suite tronquée — texte intégral : 2 069 car. ;<br>voir Gmail ID 19ec6b31784862f5.]</p>
               </div>
             </div>
           </article>
@@ -832,7 +832,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
                 </div>
               
               <div class="msg-text-content">
-                <p>À l'attention du responsable légal et du service environnement de Stablex<br>Canada Inc., 760, boulevard Industriel, Blainville (Québec) J7C 3V4</p><p>Je suis William Guindon, âgé de 14 ans, résident de Blainville. Je m'engage<br>activement pour la protection de l'environnement et de la biodiversité<br>locale. Je suis l'auteur de la communication citoyenne SEM-26-003 déposée le<br>4 mai 2026 auprès de la Commission de coopération environnementale (CCE)<br>dans le cadre de l'ACEUM.</p><p>Cette communication porte sur l'omission présumée du Canada d'appliquer<br>efficacement ses lois fédérales (Loi sur les espèces en péril, Loi sur les<br>pêches et Loi canadienne sur la protection de l'environnement) concernant<br>les activités d'enfouissement de matières dangereuses à Blainville,<br>particulièrement dans la cellule 6.</p><p>Par décision du 3 juin 2026 (réf. A24.27(2)(3)/SEM/26-003/36/DET), le<br>Secrétariat de la CCE a indiqué que ma communication ne satisfaisait pas<br>encore certains critères de l'article 24.27 de l'ACEUM. Je prépare<br>actuellement une version révisée que je déposerai avant le 3 août 2026.</p><p>Afin de permettre au Secrétariat d'évaluer correctement cette version<br>révisée, je vous adresse cet[te demande…]</p><p>[… suite tronquée — texte intégral : 5 377 caractères ; voir Gmail ID<br>19ed1eedf6b991dc.]</p><p>================================================================================</p>
+                <p>À l'attention du responsable légal et du service environnement de Stablex<br>Canada Inc., 760, boulevard Industriel, Blainville (Québec) J7C 3V4</p><p>Je suis William Guindon, âgé de 14 ans, résident de Blainville. Je m'engage<br>activement pour la protection de l'environnement et de la biodiversité<br>locale. Je suis l'auteur de la communication citoyenne SEM-26-003 déposée le<br>4 mai 2026 auprès de la Commission de coopération environnementale (CCE)<br>dans le cadre de l'ACEUM.</p><p>Cette communication porte sur l'omission présumée du Canada d'appliquer<br>efficacement ses lois fédérales (Loi sur les espèces en péril, Loi sur les<br>pêches et Loi canadienne sur la protection de l'environnement) concernant<br>les activités d'enfouissement de matières dangereuses à Blainville,<br>particulièrement dans la cellule 6.</p><p>Par décision du 3 juin 2026 (réf. A24.27(2)(3)/SEM/26-003/36/DET), le<br>Secrétariat de la CCE a indiqué que ma communication ne satisfaisait pas<br>encore certains critères de l'article 24.27 de l'ACEUM. Je prépare<br>actuellement une version révisée que je déposerai avant le 3 août 2026.</p><p>Afin de permettre au Secrétariat d'évaluer correctement cette version<br>révisée, je vous adresse cet[te demande…]</p><p>[… suite tronquée — texte intégral : 5 377 caractères ; voir Gmail ID<br>19ed1eedf6b991dc.]</p>
               </div>
             </div>
           </article>
@@ -905,7 +905,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
                 </div>
               
               <div class="msg-text-content">
-                <p>Messieurs,</p><p>Je me permets de revenir vers vous concernant ma demande de clarification<br>envoyée le 16 juin dernier, pour laquelle notre échéance commune était fixée<br>au 30 juin.</p><p>À l'approche de cette date et en vue de la finalisation de ma soumission<br>révisée pour le Secrétariat de la CCE (atten[dant …]</p><p>[… suite tronquée — texte intégral : 841 caractères ; voir Gmail ID<br>19f047fec298833e.]</p><p>================================================================================</p>
+                <p>Messieurs,</p><p>Je me permets de revenir vers vous concernant ma demande de clarification<br>envoyée le 16 juin dernier, pour laquelle notre échéance commune était fixée<br>au 30 juin.</p><p>À l'approche de cette date et en vue de la finalisation de ma soumission<br>révisée pour le Secrétariat de la CCE (atten[dant …]</p><p>[… suite tronquée — texte intégral : 841 caractères ; voir Gmail ID<br>19f047fec298833e.]</p>
               </div>
             </div>
           </article>
@@ -985,10 +985,7 @@ button,input{font:inherit;color:inherit}button{border:0;background:none;cursor:p
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>NOTE À L'ATTENTION DU SECRÉTARIAT DE LA CCE (Dossier SEM-26-003) :</p><p>Ce courriel est transmis en copie conforme invisible (CCI) simultanément à<br>l'ensemble des ministères, directions générales, services de protection de<br>la faune et de l'habitat, ainsi qu'aux bureaux d'enquête d'Environnement<br>Canada et de Pêches et Océans Canada concernés par ce dossier. L'usage du<br>CCI est ici requis pour des raisons d'optimisation technique et de<br>conformité informatique, mais l'intégralité des autorités fédérales<br>compétentes est officiellement notifiée par le présent envoi, lequel est<br>certifié légalement.</p><p style="font-style:italic;">Ce message constitue la preuve de notification écrite obligatoire et ne
-remplace pas mon dépôt de communication révisée finale, lequel sera transmis
-au Secrétariat de la CCE par un envoi distinct avant la date limite du 3
-août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adresse la présente notification afin de porter officiellement à<br>votre attention des faits documentés de non-conformité avec les lois<br>environnementales fédérales sur le site de l'entreprise Stablex Canada Inc.,<br>à Blainville (Québec), notamment dans le secteur de [la Grande Tourbière…]</p><p>[… suite tronquée — texte intégral : 4 576 caractères ; voir Gmail ID<br>19ee1155c7d9b9f4.]</p><p>================================================================================</p>
+                <p>NOTE À L'ATTENTION DU SECRÉTARIAT DE LA CCE (Dossier SEM-26-003) :</p><p>Ce courriel est transmis en copie conforme invisible (CCI) simultanément à<br>l'ensemble des ministères, directions générales, services de protection de<br>la faune et de l'habitat, ainsi qu'aux bureaux d'enquête d'Environnement<br>Canada et de Pêches et Océans Canada concernés par ce dossier. L'usage du<br>CCI est ici requis pour des raisons d'optimisation technique et de<br>conformité informatique, mais l'intégralité des autorités fédérales<br>compétentes est officiellement notifiée par le présent envoi, lequel est<br>certifié légalement.</p><p><b>Ce message constitue la preuve de notification écrite obligatoire et ne<br>remplace pas mon dépôt de communication révisée finale, lequel sera transmis<br>au Secrétariat de la CCE par un envoi distinct avant la date limite du 3<br>août 2026.</b></p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adresse la présente notification afin de porter officiellement à<br>votre attention des faits documentés de non-conformité avec les lois<br>environnementales fédérales sur le site de l'entreprise Stablex Canada Inc.,<br>à Blainville (Québec), notamment dans le secteur de [la Grande Tourbière…]</p><p>[… suite tronquée — texte intégral : 4 576 caractères ; voir Gmail ID<br>19ee1155c7d9b9f4.]</p>
               </div>
             </div>
           </article>
@@ -1183,7 +1180,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel : message examiné avec soin ; média 819-938-3338<br>/ media@ec.gc.ca.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel : message examiné avec soin ; média 819-938-3338<br>/ media@ec.gc.ca.)</p>
               </div>
             </div>
           </article>
@@ -1213,7 +1210,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique Enviroinfo habituel : réception de la demande ;<br>1-800-668-6767.)</p><p>================================================================================</p>
+                <p>(Accusé automatique Enviroinfo habituel : réception de la demande ;<br>1-800-668-6767.)</p>
               </div>
             </div>
           </article>
@@ -1243,7 +1240,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique MPO habituel : Hon. Joanne Thompson; message reçu, sera<br>examiné ; ne pas répondre — Unité de la correspondance ministérielle.)</p><p>================================================================================</p>
+                <p>(Accusé automatique MPO habituel : Hon. Joanne Thompson; message reçu, sera<br>examiné ; ne pas répondre — Unité de la correspondance ministérielle.)</p>
               </div>
             </div>
           </article>
@@ -1273,7 +1270,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Corps identique au message 12 : NOTE À L'ATTENTION DU SECRÉTARIAT DE LA<br>CCE — preuve de notification écrite obligatoire ; notification des autorités<br>fédérales compétentes ECCC et MPO en CCI ; dépôt révisé avant le 3 août 2026.)</p><p>================================================================================</p>
+                <p>(Corps identique au message 12 : NOTE À L'ATTENTION DU SECRÉTARIAT DE LA<br>CCE — preuve de notification écrite obligatoire ; notification des autorités<br>fédérales compétentes ECCC et MPO en CCI ; dépôt révisé avant le 3 août 2026.)</p>
               </div>
             </div>
           </article>
@@ -1369,7 +1366,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique Enviroinfo habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique Enviroinfo habituel.)</p>
               </div>
             </div>
           </article>
@@ -1416,7 +1413,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>Dans le cadre de recherches citoyennes concernant le projet d'agrandissement<br>de Stablex à Blainville, je sollicite votre aide pour obtenir une information<br>publique.</p><p>Pourriez-vous me c[onfirmer / fournir …]</p><p>[… suite tronquée — texte intégral : 1 470 caractères ; voir Gmail ID<br>19f0479f77716c59.]</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>Dans le cadre de recherches citoyennes concernant le projet d'agrandissement<br>de Stablex à Blainville, je sollicite votre aide pour obtenir une information<br>publique.</p><p>Pourriez-vous me c[onfirmer / fournir …]</p><p>[… suite tronquée — texte intégral : 1 470 caractères ; voir Gmail ID<br>19f0479f77716c59.]</p>
               </div>
             </div>
           </article>
@@ -1446,7 +1443,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique Enviroinfo habituel : réception de la demande ;<br>1-800-668-6767.)</p><p>================================================================================</p>
+                <p>(Accusé automatique Enviroinfo habituel : réception de la demande ;<br>1-800-668-6767.)</p>
               </div>
             </div>
           </article>
@@ -1493,7 +1490,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>Je vous écris à titre de soumetteur individuel dans le cadre de la<br>communication SEM-26-003 déposée auprès de la Commission de coopération<br>environnementale, en vertu de l'article 24.27 de l'ACEUM, concernant le<br>dossier Stablex à Blainville, Québec.</p><p>Je sollicite une courte rencontre [ou réponse écrite…]</p><p>[… suite tronquée — texte intégral : 4 431 caractères ; voir Gmail ID<br>19f10cf4836d1919.]</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>Je vous écris à titre de soumetteur individuel dans le cadre de la<br>communication SEM-26-003 déposée auprès de la Commission de coopération<br>environnementale, en vertu de l'article 24.27 de l'ACEUM, concernant le<br>dossier Stablex à Blainville, Québec.</p><p>Je sollicite une courte rencontre [ou réponse écrite…]</p><p>[… suite tronquée — texte intégral : 4 431 caractères ; voir Gmail ID<br>19f10cf4836d1919.]</p>
               </div>
             </div>
           </article>
@@ -1523,7 +1520,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Transfert du message 29 à Habitat Québec — corps vide dans le message<br>transmis.)</p><p>================================================================================</p>
+                <p>(Transfert du message 29 à Habitat Québec — corps vide dans le message<br>transmis.)</p>
               </div>
             </div>
           </article>
@@ -1606,7 +1603,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
                 </div>
               
               <div class="msg-text-content">
-                <p>(Accusé automatique identique au message 30.)</p><p>================================================================================</p>
+                <p>(Accusé automatique identique au message 30.)</p>
               </div>
             </div>
           </article>
@@ -1646,7 +1643,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>J'ai pris note de votre courriel du 29 juin 2026, dans lequel vous indiquez<br>que « les courriels » que j'ai acheminés à ECCC ont été transmis au bureau de<br>la ministre Julie Dabrusin et aux experts du programme.</p><p>Je note que votre courriel constitue, à ce jour, la seule réponse directe<br>[… suite tronquée — texte intégral : 3 116 caractères ; voir Gmail ID<br>19f14ceb006e057f.]</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>J'ai pris note de votre courriel du 29 juin 2026, dans lequel vous indiquez<br>que « les courriels » que j'ai acheminés à ECCC ont été transmis au bureau de<br>la ministre Julie Dabrusin et aux experts du programme.</p><p>Je note que votre courriel constitue, à ce jour, la seule réponse directe<br>[… suite tronquée — texte intégral : 3 116 caractères ; voir Gmail ID<br>19f14ceb006e057f.]</p>
               </div>
             </div>
           </article>
@@ -1686,7 +1683,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour, William Guindon,</p><p>Merci d'avoir contacté Environnement et Changement climatique Canada (ECCC).</p><p>Nous accusons réception des courriels que vous avez acheminés à ECCC. Pour<br>votre informatio[n …]</p><p>[… suite tronquée — texte intégral : 5 244 caractères ; voir Gmail ID<br>19f14a7ac7522a22.]</p><p>================================================================================</p>
+                <p>Bonjour, William Guindon,</p><p>Merci d'avoir contacté Environnement et Changement climatique Canada (ECCC).</p><p>Nous accusons réception des courriels que vous avez acheminés à ECCC. Pour<br>votre informatio[n …]</p><p>[… suite tronquée — texte intégral : 5 244 caractères ; voir Gmail ID<br>19f14a7ac7522a22.]</p>
               </div>
             </div>
           </article>
@@ -1733,9 +1730,7 @@ août 2026.</p><p>Madame la Ministre, Monsieur le Ministre,</p><p>Je vous adress
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p style="font-style:italic;">Aux représentants d'Environnement et Changement climatique Canada, du
-Ministère de l'Environnement, de la Lutte contre les changements climatiques,
-de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris aujourd'hui pour vous informer qu'en tant qu'auteur de la<br>soumission SEM-26-003 concernant les activités dans la Grande Tourbière de<br>Blainville, je déposerai formellement mon dossier complet ce vendredi auprès<br>de la Commission de coopération environnementale (CCE).</p><p>Ce dossier contient plus de 35 000 mots, des données scientifiques<br>indépendantes et documente l'omission d'appliquer de manière effective<br>plusieurs lois environnementales.</p><p>Mais au-delà des faits techniques et juridiques, je veux que *vous sachiez<br>qu'il y a un humain derrière ce dossier*. Un jeune de 14 ans.</p><p>Pour monter cette soumission, j'ai dû passer plus de 281 heures seul. J'ai dû<br>faire des recherches exhaustives, me rendre sur le terrain, observer les<br>déversements et multiplier les demandes d'accès à l'information face au<br>silence de vos institutions.</p><p>La réalité, c'est que ce n[…]</p><p>[… suite tronquée — texte intégral : 2 168 caractères ; voir Gmail ID<br>19f677451edd4fcc ; aussi transcrit intégralement dans l'archive Marianne<br>(msg 44).]</p><p>================================================================================</p>
+                <p><b>Aux représentants d'Environnement et Changement climatique Canada, du<br>Ministère de l'Environnement, de la Lutte contre les changements climatiques,<br>de la Faune et des Parcs, et de la direction de Stablex,</b></p><p>Je vous écris aujourd'hui pour vous informer qu'en tant qu'auteur de la<br>soumission SEM-26-003 concernant les activités dans la Grande Tourbière de<br>Blainville, je déposerai formellement mon dossier complet ce vendredi auprès<br>de la Commission de coopération environnementale (CCE).</p><p>Ce dossier contient plus de 35 000 mots, des données scientifiques<br>indépendantes et documente l'omission d'appliquer de manière effective<br>plusieurs lois environnementales.</p><p>Mais au-delà des faits techniques et juridiques, je veux que <b>vous sachiez<br>qu'il y a un humain derrière ce dossier</b>. Un jeune de 14 ans.</p><p>Pour monter cette soumission, j'ai dû passer plus de 281 heures seul. J'ai dû<br>faire des recherches exhaustives, me rendre sur le terrain, observer les<br>déversements et multiplier les demandes d'accès à l'information face au<br>silence de vos institutions.</p><p>La réalité, c'est que ce n[…]</p><p>[… suite tronquée — texte intégral : 2 168 caractères ; voir Gmail ID<br>19f677451edd4fcc ; aussi transcrit intégralement dans l'archive Marianne<br>(msg 44).]</p>
               </div>
             </div>
           </article>
@@ -1765,7 +1760,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique MPO habituel : Hon. Joanne Thompson.)</p><p>================================================================================</p>
+                <p>(Accusé automatique MPO habituel : Hon. Joanne Thompson.)</p>
               </div>
             </div>
           </article>
@@ -1812,7 +1807,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>🌲<br>William Guindon — Tristan Logan Théo Guindon • 15 ans<br>Soumetteur SEM-26-003 • CCE</p><p>FR : Bonjour, Merci pour votre message. Je suis actuellement absent et je ne<br>pourrai pas répondre immédiatement.<br>Période d'absence : du 19 juillet 2026 au 13 août 2026 (camp de cadets +<br>vacances). Ma soumission SEM-26-003 auprès de la CCE sera transmise (avant)<br>pendant cette période. Anniversaire : 🎂 3 août 2026.<br>Disponibilité : je peux consulter mes courriels, mais les réponses ne sont<br>pas garanties.</p><p>EN : Hello, thank you for your message. I am currently away… (version anglaise<br>identique).</p><p>================================================================================</p>
+                <p>🌲<br>William Guindon — Tristan Logan Théo Guindon • 15 ans<br>Soumetteur SEM-26-003 • CCE</p><p>FR : Bonjour, Merci pour votre message. Je suis actuellement absent et je ne<br>pourrai pas répondre immédiatement.<br>Période d'absence : du 19 juillet 2026 au 13 août 2026 (camp de cadets +<br>vacances). Ma soumission SEM-26-003 auprès de la CCE sera transmise (avant)<br>pendant cette période. Anniversaire : 🎂 3 août 2026.<br>Disponibilité : je peux consulter mes courriels, mais les réponses ne sont<br>pas garanties.</p><p>EN : Hello, thank you for your message. I am currently away… (version anglaise<br>identique).</p>
               </div>
             </div>
           </article>
@@ -1852,7 +1847,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Ce courriel est envoyé au nom de l'honorable Julie Dabrusin, ministre de<br>l'Environnement, du Changement climatique et de la Nature.</p><p>Une copie ne suivra pas par la poste.</p><p>(Pièce jointe signée : ACCUSÉ DE RÉCEPTION SIGNÉ - Guindon - MIN 334658.pdf —<br>58 Ko, non reproduite ici.)</p><p>================================================================================</p>
+                <p>Ce courriel est envoyé au nom de l'honorable Julie Dabrusin, ministre de<br>l'Environnement, du Changement climatique et de la Nature.</p><p>Une copie ne suivra pas par la poste.</p><p>(Pièce jointe signée : ACCUSÉ DE RÉCEPTION SIGNÉ - Guindon - MIN 334658.pdf —<br>58 Ko, non reproduite ici.)</p>
               </div>
             </div>
           </article>
@@ -1882,7 +1877,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Message d'absence identique au message 38, adressé au MPO.)</p><p>================================================================================</p>
+                <p>(Message d'absence identique au message 38, adressé au MPO.)</p>
               </div>
             </div>
           </article>
@@ -1922,7 +1917,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Unclassified - Non-Classifié</p><p>=======le français suit========<br>Attached is the signed response to your correspondence addressed to the<br>Minister of Fisheries.<br>============================<br>Veuillez trouver ci-joint la réponse à votre correspondance adressée à la<br>Ministre des Pêches.</p><p>Ministerial Correspondence Unit — Pêches et Océans Canada / Gouvernement du<br>Canada, 200 rue Kent / Ottawa ON K1A 0E6</p><p>(Pièce jointe : 2026-001-02117.pdf — 154 Ko, non reproduite ici.)</p><p>================================================================================</p>
+                <p>Unclassified - Non-Classifié</p><p>le français suit<br>Attached is the signed response to your correspondence addressed to the<br>Minister of Fisheries.</p><p>Veuillez trouver ci-joint la réponse à votre correspondance adressée à la<br>Ministre des Pêches.</p><p>Ministerial Correspondence Unit — Pêches et Océans Canada / Gouvernement du<br>Canada, 200 rue Kent / Ottawa ON K1A 0E6</p><p>(Pièce jointe : 2026-001-02117.pdf — 154 Ko, non reproduite ici.)</p>
               </div>
             </div>
           </article>
@@ -1952,7 +1947,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Sam. 25 juill. 2026 à 21h50, sattelitaire,</p><p>Seulement pour vous aviser que ma soumission révisée est disponible sur le<br>site officiel de la CCE</p><p>Bonne soirée,</p><p>https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/</p><p>« « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « «<br>Du membre équipe exp, cdt, Valcartier, de retour le 31 juillet<br>Cdt Guindon</p><p>================================================================================</p>
+                <p>Sam. 25 juill. 2026 à 21h50, sattelitaire,</p><p>Seulement pour vous aviser que ma soumission révisée est disponible sur le<br>site officiel de la CCE</p><p>Bonne soirée,</p><p>https://www.cec.org/fr/communications/registre-des-communications/enfouissement-de-matieres-dangereuses-a-blainville/</p><p>« « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « « «<br>Du membre équipe exp, cdt, Valcartier, de retour le 31 juillet<br>Cdt Guindon</p>
               </div>
             </div>
           </article>
@@ -2048,7 +2043,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel.)</p>
               </div>
             </div>
           </article>
@@ -2095,7 +2090,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>[Message transcrit intégralement dans Correspondance_Marianne_Depelteau.txt<br>(msg 55) — texte complet dans l'archive Gmail (ID 19fd955011fe288c).<br>Station d'échantillonnage FS-STB-2 (aval cellule n° 6), lacs Fauvel ; cadmium<br>à 4,7× le critère CVAC ; poissons protégés ; chaîne de possession légale.]</p><p>================================================================================</p>
+                <p>[Message transcrit intégralement dans Correspondance_Marianne_Depelteau.txt<br>(msg 55) — texte complet dans l'archive Gmail (ID 19fd955011fe288c).<br>Station d'échantillonnage FS-STB-2 (aval cellule n° 6), lacs Fauvel ; cadmium<br>à 4,7× le critère CVAC ; poissons protégés ; chaîne de possession légale.]</p>
               </div>
             </div>
           </article>
@@ -2125,7 +2120,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,</p><p>Monsieur le Directeur,</p><p>Je verse immédiatement au dossier de signalement pénal transmis plus tôt un<br>élément de preuve contextuel critique démontrant de fortes probabilités de<br>*fausses déclarations corporatives récurrentes* sous le régime de la *Loi<br>canadienne sur la protection de l'environnement (1999)*.</p><p>Incohérence flagrante des déclarations à l'INRP</p><p>Depuis environ 26 ans, Stablex Canada Inc. déclare historiquement à l'INRP<br>une moyenne annuelle approximative de 40 kg de matières métalliques rejetées<br>exclusivement dans *l'air*, tout en maintenant de manière systématique des<br>déclarations de *0 kg dans les sols* et *0 kg dans l'eau*.</p><p>Or, cette modélisation de « zéro rejet hydrique et terrestre » est<br>physiquement et biologiquement impossible sur le site pour deux raisons<br>majeures :</p><p>1. *La loi de la gravité et le transport des matières :* les métaux lourds<br>rejetés à l'atmosphère ou manipulés à ciel ouvert dans les cellul[es …]</p><p>[… suite tronquée — texte intégral : 2 718 caractères ; voir Gmail ID<br>19fd9bea4be0e6e5.]</p><p>================================================================================</p>
+                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,</p><p>Monsieur le Directeur,</p><p>Je verse immédiatement au dossier de signalement pénal transmis plus tôt un<br>élément de preuve contextuel critique démontrant de fortes probabilités de<br><b>fausses déclarations corporatives récurrentes</b> sous le régime de la <b>Loi<br>canadienne sur la protection de l'environnement (1999)</b>.</p><p>Incohérence flagrante des déclarations à l'INRP</p><p>Depuis environ 26 ans, Stablex Canada Inc. déclare historiquement à l'INRP<br>une moyenne annuelle approximative de 40 kg de matières métalliques rejetées<br>exclusivement dans <b>l'air</b>, tout en maintenant de manière systématique des<br>déclarations de <b>0 kg dans les sols</b> et <b>0 kg dans l'eau</b>.</p><p>Or, cette modélisation de « zéro rejet hydrique et terrestre » est<br>physiquement et biologiquement impossible sur le site pour deux raisons<br>majeures :</p><p>1. <b>La loi de la gravité et le transport des matières :</b> les métaux lourds<br>rejetés à l'atmosphère ou manipulés à ciel ouvert dans les cellul[es …]</p><p>[… suite tronquée — texte intégral : 2 718 caractères ; voir Gmail ID<br>19fd9bea4be0e6e5.]</p>
               </div>
             </div>
           </article>
@@ -2155,7 +2150,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,</p><p>Monsieur le Directeur,</p><p>Je me permets de donner suite à ma correspondance du 6 août dernier<br>concernant les nouveaux éléments de preuve versés au dossier SEM-26-003.</p><p>À ce jour, je n'ai pas reçu d'accusé de réception ou de confirmation que ces<br>informations, démontrant des probabilités de fausses déclarations<br>corporatives sous le régime de la LCPE (1999) et des incidents<br>environnementaux documentés à Blainville, ont été intégrées au dossier<br>d'enquête.</p><p>Compte tenu de la gravité des faits allégués (contradiction entre les<br>déclarations à l'INRP et les mesures de terrain, risques de contamination<br>persistante), je vous réitère ma demande formelle d'ordonner une vérification<br>approfondie des registres internes de Stablex Canada Inc.</p><p>Dans l'attente de votre réponse, je vous prie d'agréer, Monsieur le<br>Directeur, l'expression de mes salutations distinguées.</p><p>William T. L. T. Guindon<br>Soumetteur SEM-26-003 / ACEUM Art. 24.27<br><span class="cx" title="Caviardé : Téléphone personnel">[Téléphone personnel biffé]</span></p><p>================================================================================</p>
+                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,</p><p>Monsieur le Directeur,</p><p>Je me permets de donner suite à ma correspondance du 6 août dernier<br>concernant les nouveaux éléments de preuve versés au dossier SEM-26-003.</p><p>À ce jour, je n'ai pas reçu d'accusé de réception ou de confirmation que ces<br>informations, démontrant des probabilités de fausses déclarations<br>corporatives sous le régime de la LCPE (1999) et des incidents<br>environnementaux documentés à Blainville, ont été intégrées au dossier<br>d'enquête.</p><p>Compte tenu de la gravité des faits allégués (contradiction entre les<br>déclarations à l'INRP et les mesures de terrain, risques de contamination<br>persistante), je vous réitère ma demande formelle d'ordonner une vérification<br>approfondie des registres internes de Stablex Canada Inc.</p><p>Dans l'attente de votre réponse, je vous prie d'agréer, Monsieur le<br>Directeur, l'expression de mes salutations distinguées.</p><p>William T. L. T. Guindon<br>Soumetteur SEM-26-003 / ACEUM Art. 24.27<br><span class="cx" title="Caviardé : Téléphone personnel">[Téléphone personnel biffé]</span></p>
               </div>
             </div>
           </article>
@@ -2195,7 +2190,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>(Transfert du signalement pénal du 6 août — corps vide ; le signalement est<br>au message 45. Pièces jointes : photo IMG_1843, article Le Devoir sur les<br>poissons protégés, rapport WaterShed Monitoring du 2026-06-10.)</p><p>================================================================================</p>
+                <p>(Transfert du signalement pénal du 6 août — corps vide ; le signalement est<br>au message 45. Pièces jointes : photo IMG_1843, article Le Devoir sur les<br>poissons protégés, rapport WaterShed Monitoring du 2026-06-10.)</p>
               </div>
             </div>
           </article>
@@ -2235,7 +2230,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,<br>Environnement et Changement climatique Canada (ECCC),</p><p>Je vous soumets par la présente un signalement pénal formiel visant des<br>faits constitutifs d'une infraction continue à l'article 36(3) de la Loi sur<br>les pêches (L.R.C. 1985, c. F-14) sur le site d'exploitation de la cellule<br>n° 6 de Stablex Canada Inc. à Blainville (Lot 6 695 053, cadastre du<br>Québec).</p><p>1. CADRE JURIDIQUE ET FAITS ALLÉGUÉS :<br>Les activités de drainage et les rejets du site s'effectuent en l'absence de<br>toute autorisation fédérale ou permis d'immersion délivré sous le régime de<br>la Loi sur les pêches, confirmation obtenue auprès de Pêches et Océans<br>Canada (MPO). Les faits documentés établissent le rejet et le risque de<br>rejet de substances nocives dans des eaux fréquentées par le poisson ou dans<br>des milieux hydriques raccordés au ruisseau Lockehead et aux lacs Fauvel.</p><p>2. PREUVES SCIENTIFIQUES ET MATÉRIELLES VERSÉES AU DOSSIER :<br>En fin de mail</p><p>Le dossier inclut :<br>- Rapport d'analyse WaterShed Monitoring (10 j[uin 2026]…</p><p>[… suite tronquée — texte intégral : 11 472 caractères ; voir Gmail ID<br>19fe73e47504306f ; signalement original complet dans l'archive Marianne,<br>msg 55.]</p><p>================================================================================</p>
+                <p>À l'attention du Directeur de la Division de l'application de la loi sur<br>l'environnement,<br>Environnement et Changement climatique Canada (ECCC),</p><p>Je vous soumets par la présente un signalement pénal formiel visant des<br>faits constitutifs d'une infraction continue à l'article 36(3) de la Loi sur<br>les pêches (L.R.C. 1985, c. F-14) sur le site d'exploitation de la cellule<br>n° 6 de Stablex Canada Inc. à Blainville (Lot 6 695 053, cadastre du<br>Québec).</p><p>1. CADRE JURIDIQUE ET FAITS ALLÉGUÉS :<br>Les activités de drainage et les rejets du site s'effectuent en l'absence de<br>toute autorisation fédérale ou permis d'immersion délivré sous le régime de<br>la Loi sur les pêches, confirmation obtenue auprès de Pêches et Océans<br>Canada (MPO). Les faits documentés établissent le rejet et le risque de<br>rejet de substances nocives dans des eaux fréquentées par le poisson ou dans<br>des milieux hydriques raccordés au ruisseau Lockehead et aux lacs Fauvel.</p><p>2. PREUVES SCIENTIFIQUES ET MATÉRIELLES VERSÉES AU DOSSIER :<br>En fin de mail</p><p>Le dossier inclut :<br>- Rapport d'analyse WaterShed Monitoring (10 j[uin 2026]…</p><p>[… suite tronquée — texte intégral : 11 472 caractères ; voir Gmail ID<br>19fe73e47504306f ; signalement original complet dans l'archive Marianne,<br>msg 55.]</p>
               </div>
             </div>
           </article>
@@ -2275,7 +2270,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Le 17 août 2026, la CCE a jugé ma communication SEM-26-003 admissible.<br>J'attends toujours une réponse à ma demande de décret d'urgence du 09/08/2026.<br>La CCE confirme que mes allégations méritent une réponse du Canada.</p><p>https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_fr.pdf</p><p>================================================================================</p>
+                <p>Le 17 août 2026, la CCE a jugé ma communication SEM-26-003 admissible.<br>J'attends toujours une réponse à ma demande de décret d'urgence du 09/08/2026.<br>La CCE confirme que mes allégations méritent une réponse du Canada.</p><p>https://www.cec.org/wp-content/uploads/wpallimport/files/26-2-det2_fr.pdf</p>
               </div>
             </div>
           </article>
@@ -2322,7 +2317,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p style="font-style:italic;">Madame la Ministre,</p><p>Je vous adresse la présente requête formelle afin de solliciter l'exercice<br>immédiat de votre pouvoir statutaire prévu à l'*article 80 de la Loi sur les<br>espèces en péril* (L.C. 2002, ch. 29) [LEP], requérant votre recommandation<br>au gouverneur en conseil en vue d'émettre un *Décret d'urgence* pour la<br>protection des espèces en péril et de leurs habitats dans le périmètre de la<br>Grande Tourbière de Blainville.</p><p>La présente démarche vise à interrompre immédiatement les travaux<br>d'aménagement, d'excavation, de drainage et de déboisement liés au projet de<br>la cellule nº 6 de l'entreprise Stablex Canada Inc. (situé sur le lot 6<br>695 053 du cadastre du Québec), en raison de la *menace imminente* que ces<br>activités font peser sur la survie et le rétablissement de plusieurs espèces<br>inscrites à l'Annexe 1 de la LEP.</p><p>1. Constat de menace imminente et présence d'espèces inscrites à l'Annexe 1</p><p>Les données d'inventaires officiels, les rapports d'expertise indépendants<br>et la documentation versée au registre public confirment la présence<br>documentée dans l'aire d'i[nvestigation …]</p><p>[… suite tronquée — texte intégral : 6 009 caractères ; voir Gmail ID<br>19fdd61a5bfcc7af.]</p><p>================================================================================</p>
+                <p><b>Madame la Ministre,</b></p><p>Je vous adresse la présente requête formelle afin de solliciter l'exercice<br>immédiat de votre pouvoir statutaire prévu à l'<b>article 80 de la Loi sur les<br>espèces en péril</b> (L.C. 2002, ch. 29) [LEP], requérant votre recommandation<br>au gouverneur en conseil en vue d'émettre un <b>Décret d'urgence</b> pour la<br>protection des espèces en péril et de leurs habitats dans le périmètre de la<br>Grande Tourbière de Blainville.</p><p>La présente démarche vise à interrompre immédiatement les travaux<br>d'aménagement, d'excavation, de drainage et de déboisement liés au projet de<br>la cellule nº 6 de l'entreprise Stablex Canada Inc. (situé sur le lot 6<br>695 053 du cadastre du Québec), en raison de la <b>menace imminente</b> que ces<br>activités font peser sur la survie et le rétablissement de plusieurs espèces<br>inscrites à l'Annexe 1 de la LEP.</p><p>1. Constat de menace imminente et présence d'espèces inscrites à l'Annexe 1</p><p>Les données d'inventaires officiels, les rapports d'expertise indépendants<br>et la documentation versée au registre public confirment la présence<br>documentée dans l'aire d'i[nvestigation …]</p><p>[… suite tronquée — texte intégral : 6 009 caractères ; voir Gmail ID<br>19fdd61a5bfcc7af.]</p>
               </div>
             </div>
           </article>
@@ -2352,7 +2347,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel.)</p>
               </div>
             </div>
           </article>
@@ -2382,7 +2377,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique MPO habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique MPO habituel.)</p>
               </div>
             </div>
           </article>
@@ -2422,7 +2417,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>(Accusé automatique Habitat Québec habituel : message reçu ; si réponse<br>exigée, nous communiquerons.)</p><p>================================================================================</p>
+                <p>(Accusé automatique Habitat Québec habituel : message reçu ; si réponse<br>exigée, nous communiquerons.)</p>
               </div>
             </div>
           </article>
@@ -2452,7 +2447,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Good morning,</p><p>This is to confirm receipt of your email, along with the three attachments.</p><p>Regards,</p><p>Departmental Correspondence Unit<br>Environment and Climate Change Canada</p><p>(Unité de la correspondance ministérielle — confirmation de réception de la<br>demande de Décret d'urgence du 7 août ; « une copie ne suivra pas par la<br>poste ».)</p><p>================================================================================</p>
+                <p>Good morning,</p><p>This is to confirm receipt of your email, along with the three attachments.</p><p>Regards,</p><p>Departmental Correspondence Unit<br>Environment and Climate Change Canada</p><p>(Unité de la correspondance ministérielle — confirmation de réception de la<br>demande de Décret d'urgence du 7 août ; « une copie ne suivra pas par la<br>poste ».)</p>
               </div>
             </div>
           </article>
@@ -2499,7 +2494,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p style="font-style:italic;">[English below / Español abajo]</p><p>Bonjour,</p><p>Je m'appelle William Guindon, j'ai 15 ans, et je suis l'auteur de la<br>communication SEM-26-003 déposée devant la CCE, l'organisme trilatéral du<br>Canada, des États-Unis et du Mexique chargé de faire respecter le chapitre<br>environnemental de l'ACEUM.</p><p>Le dossier concerne l'enfouissement de matières dangereuses par Stablex près<br>de la Grande Tourbière de Blainville, du cadmium signalé dans l'eau à des<br>niveaux très élevés, des oiseaux migrateurs pendant leur nidification, et<br>les limites aux recours judiciaires du Projet de loi nº 93.</p><p>Je ne suis pas un parti politique, ni une grande organisation. Je suis un<br>citoyen de 15 ans qui a utilisé le seul mécanisme international à ma<br>disposition. Mais une voix seule, aussi documentée soit-elle, est facile à<br>ignorer. Votre signature change tout.</p><p>Des appuis d'expert·e·s des trois pays de l'ACEUM transforment un enjeu<br>local en question de coopération environnementale nord-américaine. C'est<br>exactement ce que la CCE a le mandat de protéger — et exactement ce qui fait<br>pression.</p><p>Je ne de[mande…]</p><p>[… suite tronquée — texte intégral : 6 234 caractères ; voir Gmail ID<br>19fe2003994a6f7e.]</p><p>================================================================================</p>
+                <p><b>[English below / Español abajo]</b></p><p>Bonjour,</p><p>Je m'appelle William Guindon, j'ai 15 ans, et je suis l'auteur de la<br>communication SEM-26-003 déposée devant la CCE, l'organisme trilatéral du<br>Canada, des États-Unis et du Mexique chargé de faire respecter le chapitre<br>environnemental de l'ACEUM.</p><p>Le dossier concerne l'enfouissement de matières dangereuses par Stablex près<br>de la Grande Tourbière de Blainville, du cadmium signalé dans l'eau à des<br>niveaux très élevés, des oiseaux migrateurs pendant leur nidification, et<br>les limites aux recours judiciaires du Projet de loi nº 93.</p><p>Je ne suis pas un parti politique, ni une grande organisation. Je suis un<br>citoyen de 15 ans qui a utilisé le seul mécanisme international à ma<br>disposition. Mais une voix seule, aussi documentée soit-elle, est facile à<br>ignorer. Votre signature change tout.</p><p>Des appuis d'expert·e·s des trois pays de l'ACEUM transforment un enjeu<br>local en question de coopération environnementale nord-américaine. C'est<br>exactement ce que la CCE a le mandat de protéger — et exactement ce qui fait<br>pression.</p><p>Je ne de[mande…]</p><p>[… suite tronquée — texte intégral : 6 234 caractères ; voir Gmail ID<br>19fe2003994a6f7e.]</p>
               </div>
             </div>
           </article>
@@ -2546,7 +2541,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>[image: Mailsuite] Expéditeur notifié avec Mailtrack · Se désinscrire<br>26-08-15 16 h 47 min 40 s<br>(BROUILLON / artefact de suivi Mailsuite — pas un message envoyé ni reçu.<br>Conservé pour transparence, car retourné par la recherche.)</p><p>================================================================================</p>
+                <p>[image: Mailsuite] Expéditeur notifié avec Mailtrack · Se désinscrire<br>26-08-15 16 h 47 min 40 s<br>(BROUILLON / artefact de suivi Mailsuite — pas un message envoyé ni reçu.<br>Conservé pour transparence, car retourné par la recherche.)</p>
               </div>
             </div>
           </article>
@@ -2603,8 +2598,8 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Madame, Monsieur,</p><p>Par la présente, je vous informe officiellement que le Secrétariat de la<br>Commission de coopération environnementale (CCE) a rendu sa décision datée du<br>17 août 2026 concernant la soumission *SEM-26-003* relative à l'application<br>de la législation environnementale dans le cadre du projet d'enfouissement de<br>matières dangereuses à Blainville (site Stablex).</p><p>À la suite de l'examen de la communication révisée, le Secrétariat a<br>déterminé que celle-ci satisfait à l'ensemble des critères d'admissibilité<br>formels et de fond, et qu'elle mérite une réponse officielle de la Partie visée<br>(gouvernement du Canada).</p><p style="font-style:italic;">1. Critères d'admissibilité de l'article 24.27 de l'ACEUM satisfaits :</p><ul><li>*Article 24.27(1) et (2) (Admissibilité formelle) :*
-   - *24.27[…]</li></ul><p>[… suite tronquée — texte intégral : 4 918 caractères ; voir Gmail ID<br>1a0106d5c8ed418f.]</p><p>================================================================================</p>
+                <p>Madame, Monsieur,</p><p>Par la présente, je vous informe officiellement que le Secrétariat de la<br>Commission de coopération environnementale (CCE) a rendu sa décision datée du<br>17 août 2026 concernant la soumission <b>SEM-26-003</b> relative à l'application<br>de la législation environnementale dans le cadre du projet d'enfouissement de<br>matières dangereuses à Blainville (site Stablex).</p><p>À la suite de l'examen de la communication révisée, le Secrétariat a<br>déterminé que celle-ci satisfait à l'ensemble des critères d'admissibilité<br>formels et de fond, et qu'elle mérite une réponse officielle de la Partie visée<br>(gouvernement du Canada).</p><p><b>1. Critères d'admissibilité de l'article 24.27 de l'ACEUM satisfaits :</b></p><ul><li><b>Article 24.27(1) et (2) (Admissibilité formelle) :</b>
+   - *24.27[…]</li></ul><p>[… suite tronquée — texte intégral : 4 918 caractères ; voir Gmail ID<br>1a0106d5c8ed418f.]</p>
               </div>
             </div>
           </article>
@@ -2634,7 +2629,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel.)</p>
               </div>
             </div>
           </article>
@@ -2674,7 +2669,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>À l'attention de Leurs Excellences les Ambassadeurs des États-Unis d'Amérique<br>et des États-Unis mexicains au Canada, par l'entremise des bureaux de presse<br>et des affaires publiques de leurs Missions respectives,<br>To the attention of Their Excellencies the Ambassadors of the United States<br>and of the United Mexican States to Canada, via the Press and Public Affairs<br>Offices,<br>A la atención de Sus Excelencias los Embajadores de los Estados Unidos de<br>América y de los Estados Unidos Mexicanos en Canadá, por conducto de las<br>Oficinas de Prensa,</p><p>Mesdames et Messieurs / Dear Sir or Madam / Estimadas señoras y señores :</p><p>[FRANÇAIS]</p><p>Je suis William Guindon, citoyen canadien de Blainville (Québec) et auteur de<br>la communication SEM-26-003 déposée auprès du Secrétariat de l[…]</p><p>[… suite tronquée — texte intégral : 4 871 caractères ; voir Gmail ID<br>1a01be505c58ffbc.]</p><p>================================================================================</p>
+                <p>À l'attention de Leurs Excellences les Ambassadeurs des États-Unis d'Amérique<br>et des États-Unis mexicains au Canada, par l'entremise des bureaux de presse<br>et des affaires publiques de leurs Missions respectives,<br>To the attention of Their Excellencies the Ambassadors of the United States<br>and of the United Mexican States to Canada, via the Press and Public Affairs<br>Offices,<br>A la atención de Sus Excelencias los Embajadores de los Estados Unidos de<br>América y de los Estados Unidos Mexicanos en Canadá, por conducto de las<br>Oficinas de Prensa,</p><p>Mesdames et Messieurs / Dear Sir or Madam / Estimadas señoras y señores :</p><p>[FRANÇAIS]</p><p>Je suis William Guindon, citoyen canadien de Blainville (Québec) et auteur de<br>la communication SEM-26-003 déposée auprès du Secrétariat de l[…]</p><p>[… suite tronquée — texte intégral : 4 871 caractères ; voir Gmail ID<br>1a01be505c58ffbc.]</p>
               </div>
             </div>
           </article>
@@ -2714,7 +2709,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>[FRANÇAIS]</p><p>Mesdames et Messieurs,</p><p>Par souci d'exhaustivité, veuillez trouver ci-joint les lettres officielles<br>addressées à Leurs Excellences (versions anglaise et espagnole), dont la<br>pièce jointe avait été omise de mon message précédent. Je vous prie de bien<br>vouloir m'en excuser et de les joindre au dossier transmis précédemment.</p><p>[ENGLISH]</p><p>Dear Sir or Madam,</p><p>For completeness, please find attached the official letters addressed to<br>Their Excellencies (English and Spanish versions), the attachment of which<br>was omitted from my previous message. Kindly accept my apologies, and please<br>join them to the file transmitted earlier.</p><p>[ESPAÑOL]</p><p>Estimadas señoras y señores:</p><p>Para una mayor exhaustividad, adjunto a la presente las cartas oficiales<br>dirigidas a Sus Excele[ncias …]</p><p>[… suite tronquée — texte intégral : 1 499 caractères ; voir Gmail ID<br>1a01beaafc815fa9.]</p><p>================================================================================</p>
+                <p>[FRANÇAIS]</p><p>Mesdames et Messieurs,</p><p>Par souci d'exhaustivité, veuillez trouver ci-joint les lettres officielles<br>addressées à Leurs Excellences (versions anglaise et espagnole), dont la<br>pièce jointe avait été omise de mon message précédent. Je vous prie de bien<br>vouloir m'en excuser et de les joindre au dossier transmis précédemment.</p><p>[ENGLISH]</p><p>Dear Sir or Madam,</p><p>For completeness, please find attached the official letters addressed to<br>Their Excellencies (English and Spanish versions), the attachment of which<br>was omitted from my previous message. Kindly accept my apologies, and please<br>join them to the file transmitted earlier.</p><p>[ESPAÑOL]</p><p>Estimadas señoras y señores:</p><p>Para una mayor exhaustividad, adjunto a la presente las cartas oficiales<br>dirigidas a Sus Excele[ncias …]</p><p>[… suite tronquée — texte intégral : 1 499 caractères ; voir Gmail ID<br>1a01beaafc815fa9.]</p>
               </div>
             </div>
           </article>
@@ -2744,7 +2739,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel.)</p>
               </div>
             </div>
           </article>
@@ -2774,7 +2769,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique habituel.)</p>
               </div>
             </div>
           </article>
@@ -2864,8 +2859,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Mme Lachance,</p><p>J'accuse réception de votre avis de prorogation de 30 jours pour le dossier<br>P-2026-00017.</p><p>Je prends note que l'analyse des 18 points de ma demande requiert un délai<br>exceptionnel de la part de l'institution. J'ajuste immédiatement mon<br>calendrier de travail, mes prochaines interventions publiques ainsi que la<br>chronologie des faits que je documente actuellement.</p><p>Le traitement final de cette demande sera intégré à mes suivis.</p><p>Veuillez agréer, Mme Lachance, l'expression de mes sentiments les meilleurs.</p><p style="font-style:italic;">William Guindon* | williamguindon.me
-*Échange strictement confidentiel (Loi 25 / C.c.Q.)…</p><p>================================================================================</p>
+                <p>Mme Lachance,</p><p>J'accuse réception de votre avis de prorogation de 30 jours pour le dossier<br>P-2026-00017.</p><p>Je prends note que l'analyse des 18 points de ma demande requiert un délai<br>exceptionnel de la part de l'institution. J'ajuste immédiatement mon<br>calendrier de travail, mes prochaines interventions publiques ainsi que la<br>chronologie des faits que je documente actuellement.</p><p>Le traitement final de cette demande sera intégré à mes suivis.</p><p>Veuillez agréer, Mme Lachance, l'expression de mes sentiments les meilleurs.</p><p><b>William Guindon</b> | williamguindon.me<br><b>Échange strictement confidentiel (Loi 25 / C.c.Q.)…</b></p>
               </div>
             </div>
           </article>
@@ -2905,7 +2899,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>Vous trouverez ci-joint la lettre de prorogation pour votre demande de<br>renseignements personnels : P-2026-00017</p><p>Merci,</p><p>Accès à l'information et protection des renseignements personnels |<br>Secrétariat de l'AIPRP<br>Environnement et Changement climatique Canada | Gouvernement du Canada</p><p>(Pièce jointe : P-2026-00017 - Prorogation.pdf — 256 Ko, non reproduite ici.<br>Prorogation de 30 jours.)</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>Vous trouverez ci-joint la lettre de prorogation pour votre demande de<br>renseignements personnels : P-2026-00017</p><p>Merci,</p><p>Accès à l'information et protection des renseignements personnels |<br>Secrétariat de l'AIPRP<br>Environnement et Changement climatique Canada | Gouvernement du Canada</p><p>(Pièce jointe : P-2026-00017 - Prorogation.pdf — 256 Ko, non reproduite ici.<br>Prorogation de 30 jours.)</p>
               </div>
             </div>
           </article>
@@ -2935,7 +2929,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour Mme Lachance,</p><p>Dans le cadre du traitement de ma demande sous prorogation, je vous confirme<br>par la présente que je consens formellement et sollicite une *divulgation<br>par étapes (communication partielle intérimaire)*, conformément aux<br>directives du Secrétariat du Conseil du Trésor sur l'obligation d'assistance<br>envers les demandeurs.</p><p>Dès qu'une section du dossier est révisée, je vous demande de me la<br>transmettre sans la retenir jusqu'au terme du délai du 29 octobre.</p><p>Faisant actuellement l'objet de sollicitations journalistiques actives en<br>vue de l'échéance du 16 octobre fixée par la Commission de coopération<br>environnementale (CCE), et en raison de mon statut de demandeur mineur dont<br>l'intérêt commande un accès direct et diligent aux données me concernant, je<br>sollicite la *transmission immédiate et prioritaire* des éléments<br>administratifs suivants :</p><p>1. […]</p><p>[… suite tronquée — texte intégral : 4 043 caractères ; voir Gmail ID<br>1a1217a12835d008.]</p><p>================================================================================</p>
+                <p>Bonjour Mme Lachance,</p><p>Dans le cadre du traitement de ma demande sous prorogation, je vous confirme<br>par la présente que je consens formellement et sollicite une <b>divulgation<br>par étapes (communication partielle intérimaire)</b>, conformément aux<br>directives du Secrétariat du Conseil du Trésor sur l'obligation d'assistance<br>envers les demandeurs.</p><p>Dès qu'une section du dossier est révisée, je vous demande de me la<br>transmettre sans la retenir jusqu'au terme du délai du 29 octobre.</p><p>Faisant actuellement l'objet de sollicitations journalistiques actives en<br>vue de l'échéance du 16 octobre fixée par la Commission de coopération<br>environnementale (CCE), et en raison de mon statut de demandeur mineur dont<br>l'intérêt commande un accès direct et diligent aux données me concernant, je<br>sollicite la <b>transmission immédiate et prioritaire</b> des éléments<br>administratifs suivants :</p><p>1. […]</p><p>[… suite tronquée — texte intégral : 4 043 caractères ; voir Gmail ID<br>1a1217a12835d008.]</p>
               </div>
             </div>
           </article>
@@ -2965,7 +2959,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(BROUILLON non envoyé — contenu : signature « WILLIAM GUINDON, militant<br>écologiste · chercheur citoyen · 15 ans · Blainville ». Inclut le pied de<br>page « Dossier CCE SEM-26-003 — réponse du Canada le 16 octobre 2026 ».<br>BROUILLON : ne pas interpréter comme une communication envoyée.)</p><p>================================================================================</p>
+                <p>(BROUILLON non envoyé — contenu : signature « WILLIAM GUINDON, militant<br>écologiste · chercheur citoyen · 15 ans · Blainville ». Inclut le pied de<br>page « Dossier CCE SEM-26-003 — réponse du Canada le 16 octobre 2026 ».<br>BROUILLON : ne pas interpréter comme une communication envoyée.)</p>
               </div>
             </div>
           </article>
@@ -3005,7 +2999,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour William Guindon,</p><p>Je suis la nouvelle analyste qui a été assigné votre demande. Nous avons<br>importé les documents dans notre système afin que je puisse les réviser.</p><p>Je vous enverrai une autre mise à jour une fois que j'aurai examiné les<br>documents.</p><p>Soyez assuré que je traite cette demande comme l'un de mes dossiers<br>prioritaires.</p><p>Merci de votre compréhension,</p><p>Lisa Praine<br>Consultante<br>Accès à l'information et de la protection des renseignements personnels<br>Secrétariat Ministériat | Environnement et Changement climatique Canada</p><p>================================================================================</p>
+                <p>Bonjour William Guindon,</p><p>Je suis la nouvelle analyste qui a été assigné votre demande. Nous avons<br>importé les documents dans notre système afin que je puisse les réviser.</p><p>Je vous enverrai une autre mise à jour une fois que j'aurai examiné les<br>documents.</p><p>Soyez assuré que je traite cette demande comme l'un de mes dossiers<br>prioritaires.</p><p>Merci de votre compréhension,</p><p>Lisa Praine<br>Consultante<br>Accès à l'information et de la protection des renseignements personnels<br>Secrétariat Ministériat | Environnement et Changement climatique Canada</p>
               </div>
             </div>
           </article>
@@ -3035,7 +3029,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>La présente concerne votre demande en vertu de la Loi sur la protection des<br>renseignements personnels P-2026-00033 :</p><p>« Période : 1er mai 2026 à ce jour. Demande formelle (Loi sur la protection<br>des renseignements personnels / Loi sur l'accès à l'information) visant la<br>communication intégrale des documents, courriels, messages Teams/SMS, notes<br>de breffage, mémos et métadonnées d'Environnement et Changement climatique<br>Canada (ECCC) portant sur {William Guindon}, la soumission CCE SEM-26-003 et<br>la pétition 0546. La demande vise spécifiquement :<br>1. CORRESPONDANCE DU 28-29 JUIN 2026 : toute correspondance interne,<br>analyses et directives ayant suivi la réception du courriel du 28 j[uin …]</p><p>[… suite tronquée — texte intégral : 4 863 caractères ; voir Gmail ID<br>1a16a2d080425033.]</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>La présente concerne votre demande en vertu de la Loi sur la protection des<br>renseignements personnels P-2026-00033 :</p><p>« Période : 1er mai 2026 à ce jour. Demande formelle (Loi sur la protection<br>des renseignements personnels / Loi sur l'accès à l'information) visant la<br>communication intégrale des documents, courriels, messages Teams/SMS, notes<br>de breffage, mémos et métadonnées d'Environnement et Changement climatique<br>Canada (ECCC) portant sur {William Guindon}, la soumission CCE SEM-26-003 et<br>la pétition 0546. La demande vise spécifiquement :<br>1. CORRESPONDANCE DU 28-29 JUIN 2026 : toute correspondance interne,<br>analyses et directives ayant suivi la réception du courriel du 28 j[uin …]</p><p>[… suite tronquée — texte intégral : 4 863 caractères ; voir Gmail ID<br>1a16a2d080425033.]</p>
               </div>
             </div>
           </article>
@@ -3075,7 +3069,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>Je trouve décevant que vous n'ayez pas été en mesure de me transmettre mes<br>renseignements personnels par étapes. Quoi qu'il en soit, j'attends votre<br>réponse demain, le 29 octobre.</p><p>WILLIAM GUINDON<br>Militant écologiste · Chercheur citoyen · 15 ans · Blainville (Québec)<br>williamguindon.me · contact@williamguindon.me</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>Je trouve décevant que vous n'ayez pas été en mesure de me transmettre mes<br>renseignements personnels par étapes. Quoi qu'il en soit, j'attends votre<br>réponse demain, le 29 octobre.</p><p>WILLIAM GUINDON<br>Militant écologiste · Chercheur citoyen · 15 ans · Blainville (Québec)<br>williamguindon.me · contact@williamguindon.me</p>
               </div>
             </div>
           </article>
@@ -3115,7 +3109,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour Mme Praine,</p><p>Merci pour ces nouvelles.</p><p>Serait-il également possible de me transmettre les documents en version<br>numérique?</p><p>Cordialement,<br>William Guindon</p><p>================================================================================</p>
+                <p>Bonjour Mme Praine,</p><p>Merci pour ces nouvelles.</p><p>Serait-il également possible de me transmettre les documents en version<br>numérique?</p><p>Cordialement,<br>William Guindon</p>
               </div>
             </div>
           </article>
@@ -3155,7 +3149,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour Mme Praine,</p><p>Je vous remercie de m'avoir informé de l'envoi des documents par Purolator.</p><p>Compte tenu de l'importance des échéances liées à mon dossier à la<br>Commission de coopération environnementale, pourriez-vous, s'il vous plaît,<br>me transmettre le numéro de suivi de cet envoi ? Cela me permettra de suivre<br>l'acheminement du colis et d'assurer sa réception sécurisée.</p><p>Je vous remercie de votre collaboration.</p><p>Cordialement,<br>William Guindon</p><p>================================================================================</p>
+                <p>Bonjour Mme Praine,</p><p>Je vous remercie de m'avoir informé de l'envoi des documents par Purolator.</p><p>Compte tenu de l'importance des échéances liées à mon dossier à la<br>Commission de coopération environnementale, pourriez-vous, s'il vous plaît,<br>me transmettre le numéro de suivi de cet envoi ? Cela me permettra de suivre<br>l'acheminement du colis et d'assurer sa réception sécurisée.</p><p>Je vous remercie de votre collaboration.</p><p>Cordialement,<br>William Guindon</p>
               </div>
             </div>
           </article>
@@ -3195,7 +3189,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour William Guindon,</p><p>Bonne nouvelles. Nous avons complété votre demande hier et elle vous a été<br>envoyée par service de messagerie (Purolator).</p><p>Vous devriez le recevoir dans un jour ou deux.</p><p>Merci,</p><p>Lisa Praine<br>Consultante — Accès à l'information et de la protection des renseignements<br>personnels, Secrétariat Ministériel, ECCC</p><p>================================================================================</p>
+                <p>Bonjour William Guindon,</p><p>Bonne nouvelles. Nous avons complété votre demande hier et elle vous a été<br>envoyée par service de messagerie (Purolator).</p><p>Vous devriez le recevoir dans un jour ou deux.</p><p>Merci,</p><p>Lisa Praine<br>Consultante — Accès à l'information et de la protection des renseignements<br>personnels, Secrétariat Ministériel, ECCC</p>
               </div>
             </div>
           </article>
@@ -3235,7 +3229,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour Monsieur Guindon,</p><p>Malheureusement, les dossiers étaient trop volumineux pour vous être envoyés<br>par courriel. C'est pourquoi nous les avons envoyés sur une clé USB par<br>messagerie.</p><p>Merci,</p><p>Lisa Praine<br>Consultante — AIPRP, Secrétariat Ministériel, ECCC</p><p>================================================================================</p>
+                <p>Bonjour Monsieur Guindon,</p><p>Malheureusement, les dossiers étaient trop volumineux pour vous être envoyés<br>par courriel. C'est pourquoi nous les avons envoyés sur une clé USB par<br>messagerie.</p><p>Merci,</p><p>Lisa Praine<br>Consultante — AIPRP, Secrétariat Ministériel, ECCC</p>
               </div>
             </div>
           </article>
@@ -3275,7 +3269,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour Monsieur Guindon,</p><p>Voici l'information pour PUROLATOR, 335962510558.</p><p>Bonne journée!</p><p>Lisa Praine<br>Consultante — AIPRP, Secrétariat Ministériel, ECCC</p><p>================================================================================</p>
+                <p>Bonjour Monsieur Guindon,</p><p>Voici l'information pour PUROLATOR, 335962510558.</p><p>Bonne journée!</p><p>Lisa Praine<br>Consultante — AIPRP, Secrétariat Ministériel, ECCC</p>
               </div>
             </div>
           </article>
@@ -3305,7 +3299,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bon matin,</p><p>La présente fait suite à notre correspondance ci-dessous, envoyée le 23<br>octobre 2026.</p><p>Veuillez noter que si nous ne recevons pas de réponse d'ici le 23 novembre<br>2026, la demande sera considérée comme abandonnée et donc fermée.</p><p>Merci,</p><p>Alana Lachance<br>(she, her, elle)<br>Accès à l'Information et Protection des Renseignements Personnels<br>Affaires parlementaires, information privée | ECCC<br>ECATIP-ECAIPRP@ec.gc.ca</p><p>(Date limite : 23 novembre 2026 — sinon P-2026-00033 sera fermée comme<br>abandonnée.)</p><p>================================================================================</p>
+                <p>Bon matin,</p><p>La présente fait suite à notre correspondance ci-dessous, envoyée le 23<br>octobre 2026.</p><p>Veuillez noter que si nous ne recevons pas de réponse d'ici le 23 novembre<br>2026, la demande sera considérée comme abandonnée et donc fermée.</p><p>Merci,</p><p>Alana Lachance<br>(she, her, elle)<br>Accès à l'Information et Protection des Renseignements Personnels<br>Affaires parlementaires, information privée | ECCC<br>ECATIP-ECAIPRP@ec.gc.ca</p><p>(Date limite : 23 novembre 2026 — sinon P-2026-00033 sera fermée comme<br>abandonnée.)</p>
               </div>
             </div>
           </article>
@@ -3362,7 +3356,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Madame, Monsieur,</p><p>Je m'adresse à votre formation politique en ma qualité de citoyen engagé,<br>auteur de la soumission SEM-26-003 (Grande Tourbière de Blainville) auprès de<br>la Commission de coopération environnementale (CCE).</p><p>Le 17 août 2026, la CCE a rendu une décision historique concernant mon<br>dossier. Par ailleurs, le Canada doit soumettre sa réponse officielle d'ici<br>le 16 octobre 2026. Dans le contexte électoral actuel au Québec, il est<br>impératif que les citoyens connaissent les engag[ements …]</p><p>[… suite tronquée — texte intégral : 13 657 caractères ; voir Gmail ID<br>1a07d7003f2ca77a.]</p><p>================================================================================</p>
+                <p>Madame, Monsieur,</p><p>Je m'adresse à votre formation politique en ma qualité de citoyen engagé,<br>auteur de la soumission SEM-26-003 (Grande Tourbière de Blainville) auprès de<br>la Commission de coopération environnementale (CCE).</p><p>Le 17 août 2026, la CCE a rendu une décision historique concernant mon<br>dossier. Par ailleurs, le Canada doit soumettre sa réponse officielle d'ici<br>le 16 octobre 2026. Dans le contexte électoral actuel au Québec, il est<br>impératif que les citoyens connaissent les engag[ements …]</p><p>[… suite tronquée — texte intégral : 13 657 caractères ; voir Gmail ID<br>1a07d7003f2ca77a.]</p>
               </div>
             </div>
           </article>
@@ -3392,7 +3386,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour,</p><p>Je me permets de faire un suivi concernant ma demande de positionnement<br>officiel transmise le 7 septembre dernier au sujet du dossier Stablex<br>(Cellule 6) et de la décision rendue par la Commission de coopération<br>environnementale (CCE - soumission SEM-26-003).</p><p>À titre de rappel, le Parti libéral du Québec a déjà transmis son<br>positionnement officiel écrit. Dans un souci de transparence et d'équité<br>envers l'ensemble des partis, je souhaite m'assurer que votre position soit<br>égalément prise en compte et intégrée fidèlement dans le compte rendu<br>public.</p><p>Pour rappel, l'échéance fixée pour la réception de vos réponses écrites est<br>le vendredi 11 septembre 2026 à 16 h.</p><p>Vous trouverez ci-joint pour référence les deux questions formulées :<br>1. Au niveau provincial : Quelle […]</p><p>[… suite tronquée — texte intégral : 2 430 caractères ; voir Gmail ID<br>1a087fdac4a60c98.]</p><p>================================================================================</p>
+                <p>Bonjour,</p><p>Je me permets de faire un suivi concernant ma demande de positionnement<br>officiel transmise le 7 septembre dernier au sujet du dossier Stablex<br>(Cellule 6) et de la décision rendue par la Commission de coopération<br>environnementale (CCE - soumission SEM-26-003).</p><p>À titre de rappel, le Parti libéral du Québec a déjà transmis son<br>positionnement officiel écrit. Dans un souci de transparence et d'équité<br>envers l'ensemble des partis, je souhaite m'assurer que votre position soit<br>égalément prise en compte et intégrée fidèlement dans le compte rendu<br>public.</p><p>Pour rappel, l'échéance fixée pour la réception de vos réponses écrites est<br>le vendredi 11 septembre 2026 à 16 h.</p><p>Vous trouverez ci-joint pour référence les deux questions formulées :<br>1. Au niveau provincial : Quelle […]</p><p>[… suite tronquée — texte intégral : 2 430 caractères ; voir Gmail ID<br>1a087fdac4a60c98.]</p>
               </div>
             </div>
           </article>
@@ -3425,7 +3419,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 <p>Madame, Monsieur,</p><p>Je vous remercie d'avoir pris connaissance de ma démarche ou d'avoir transmis<br>votre position officielle dans le cadre de mon enquête citoyenne portant sur<br>le dossier de la cellule 6 de Stablex à Blainville.</p><p>Conformément au calendrier annoncé, les résultats de cette consultation<br>publique sont désormais diffusés :</p><ul><li>Facebook : Page Facebook
 <https://…>
 [… suite tronquée — texte intégral : 6 664 caractères ; voir Gmail ID
-1a092c4b518536c9.]</li></ul><p>================================================================================</p>
+1a092c4b518536c9.]</li></ul>
               </div>
             </div>
           </article>
@@ -3482,11 +3476,11 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>À l'attention du Secrétariat du mécanisme SEM (Chapitre 24 de l'ACEUM)</p><p>Monsieur,</p><p>Faisant suite à la décision du Secrétariat du 17 août 2026 de transmettre la<br>communication SEM-26-003 au gouvernement du Canada pour réponse, je sollicite<br>le versement au dossier des éléments d'information complémentaires joints aux<br>présentes.</p><p>Conformément aux *Lignes directrices concernant le mécanisme des<br>communications sur les questions d'application*, ce dépôt est justifié par les<br>éléments suivants :</p><ul><li>Faits nouveaux et indisponibilité antérieure : les données techniques
+                <p>À l'attention du Secrétariat du mécanisme SEM (Chapitre 24 de l'ACEUM)</p><p>Monsieur,</p><p>Faisant suite à la décision du Secrétariat du 17 août 2026 de transmettre la<br>communication SEM-26-003 au gouvernement du Canada pour réponse, je sollicite<br>le versement au dossier des éléments d'information complémentaires joints aux<br>présentes.</p><p>Conformément aux <b>Lignes directrices concernant le mécanisme des<br>communications sur les questions d'application</b>, ce dépôt est justifié par les<br>éléments suivants :</p><ul><li>Faits nouveaux et indisponibilité antérieure : les données techniques
    présentées (notamment les extractions spectrales et l'imagerie Copernicus
    Sentinel-2 documentant les travaux de terrassement et d'arasement récents
    jusqu'au 11 septembre 2026) n'existaient pas lors du dépôt de la
-   communication révisée en juillet 2026.</li></ul><ul><li>Portée strictement factuelle : ces inform[ations …]</li></ul><p>[… suite tronquée — texte intégral : 3 151 caractères ; voir Gmail ID<br>1a09c2078f2b8e16.]</p><p>================================================================================</p>
+   communication révisée en juillet 2026.</li></ul><ul><li>Portée strictement factuelle : ces inform[ations …]</li></ul><p>[… suite tronquée — texte intégral : 3 151 caractères ; voir Gmail ID<br>1a09c2078f2b8e16.]</p>
               </div>
             </div>
           </article>
@@ -3516,7 +3510,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Thank you for your interest in Fisheries and Oceans Canada. We will contact<br>you if a reply is required. Messages are reviewed and answered during regular<br>business hours (Eastern time zone) only. This message was generated by an<br>automatic response system. Please do not reply.<br>(français identique)</p><p>================================================================================</p>
+                <p>Thank you for your interest in Fisheries and Oceans Canada. We will contact<br>you if a reply is required. Messages are reviewed and answered during regular<br>business hours (Eastern time zone) only. This message was generated by an<br>automatic response system. Please do not reply.<br>(français identique)</p>
               </div>
             </div>
           </article>
@@ -3546,7 +3540,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique Enviroinfo habituel ; note de volume de requêtes plus<br>élevé → délais de réponse plus longs.)</p><p>================================================================================</p>
+                <p>(Accusé automatique Enviroinfo habituel ; note de volume de requêtes plus<br>élevé → délais de réponse plus longs.)</p>
               </div>
             </div>
           </article>
@@ -3603,7 +3597,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Bonjour à toutes et à tous,</p><p>Je vous écris aujourd'hui pour vous transmettre les derniers développements<br>majeurs dans le dossier *SEM-26-003 (Enfouissement de matières dangereuses<br>à Blainville)* auprès de la CCE, auquel vos travaux, avis techniques et<br>données de terrain ont grandement contribué.</p><p>Hier soir, le 16 octobre 2026 à 20 h 09, à l'expiration du délai impératif<br>de 60 jours fixé par la décision d'admissibilité de la CCE du 17 août<br>dernier (DET-26-003), le gouvernement du Canada a déposé sa réponse<br>officielle (72-RSP, ci-jointe).</p><p style="font-style:italic;">Le constat est frappant :</p><p>1. *Aucune réponse sur le fond scientifique et légal :* alors que le<br>Secrétariat exigeait des explications sur l'application effective de<br>*17 dispositions réparties dans 5 lois et règlements fédéraux* (*Loi sur les<br>pêches*, *Loi sur les [espèces en péril]…*</p><p>[… suite tronquée — texte intégral : 5 476 caractères ; voir Gmail ID<br>1a14a175b5e74775.]</p><p>================================================================================</p>
+                <p>Bonjour à toutes et à tous,</p><p>Je vous écris aujourd'hui pour vous transmettre les derniers développements<br>majeurs dans le dossier <b>SEM-26-003 (Enfouissement de matières dangereuses<br>à Blainville)</b> auprès de la CCE, auquel vos travaux, avis techniques et<br>données de terrain ont grandement contribué.</p><p>Hier soir, le 16 octobre 2026 à 20 h 09, à l'expiration du délai impératif<br>de 60 jours fixé par la décision d'admissibilité de la CCE du 17 août<br>dernier (DET-26-003), le gouvernement du Canada a déposé sa réponse<br>officielle (72-RSP, ci-jointe).</p><p><b>Le constat est frappant :</b></p><p>1. <b>Aucune réponse sur le fond scientifique et légal :</b> alors que le<br>Secrétariat exigeait des explications sur l'application effective de<br><b>17 dispositions réparties dans 5 lois et règlements fédéraux</b> (<b>Loi sur les<br>pêches</b>, <b>Loi sur les [espèces en péril]…</b></p><p>[… suite tronquée — texte intégral : 5 476 caractères ; voir Gmail ID<br>1a14a175b5e74775.]</p>
               </div>
             </div>
           </article>
@@ -3633,7 +3627,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(BROUILLON NON ENVOYÉ.)</p><p>Monsieur le Ministre,</p><p>Dans sa réponse officielle du 16 octobre 2026 déposée devant la Commission de<br>coopération environnementale (dossier SEM-26-003), le gouvernement du Canada<br>qualifie ma démarche de « prématurée » et allègue ne pas avoir eu « la<br>possibilité de fournir les renseignements demandés » au motif qu'une<br>pétition citoyenne (nº 0546) est pendante.</p><p>Je tiens formellement à vous rappeler que les enjeux d'omission d'application<br>des lois environnementales fédérales (Loi sur les pêches, Loi sur les espèces<br>en péril, LCPE) concernant le site de Blainville et les risques cumulatifs<br>liés à la cellule 6 ne constituent en rien des faits nouveaux pour votre<br>ministère.</p><p>Votre ministère a été formellement et à maintes reprises alerté depuis près<br>d'une décennie par des démarches citoyennes documentées, notamment :<br>- Les dossiers ministériels MIN-214895 (2016) et MI[N-…]</p><p>[… suite tronquée — texte intégral : 1 815 caractères ; voir Gmail ID<br>1a14ff4d6093c853.]</p><p>================================================================================</p>
+                <p>(BROUILLON NON ENVOYÉ.)</p><p>Monsieur le Ministre,</p><p>Dans sa réponse officielle du 16 octobre 2026 déposée devant la Commission de<br>coopération environnementale (dossier SEM-26-003), le gouvernement du Canada<br>qualifie ma démarche de « prématurée » et allègue ne pas avoir eu « la<br>possibilité de fournir les renseignements demandés » au motif qu'une<br>pétition citoyenne (nº 0546) est pendante.</p><p>Je tiens formellement à vous rappeler que les enjeux d'omission d'application<br>des lois environnementales fédérales (Loi sur les pêches, Loi sur les espèces<br>en péril, LCPE) concernant le site de Blainville et les risques cumulatifs<br>liés à la cellule 6 ne constituent en rien des faits nouveaux pour votre<br>ministère.</p><p>Votre ministère a été formellement et à maintes reprises alerté depuis près<br>d'une décennie par des démarches citoyennes documentées, notamment :<br>- Les dossiers ministériels MIN-214895 (2016) et MI[N-…]</p><p>[… suite tronquée — texte intégral : 1 815 caractères ; voir Gmail ID<br>1a14ff4d6093c853.]</p>
               </div>
             </div>
           </article>
@@ -3663,7 +3657,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Bonjour William,</p><p>Merci beaucoup de ce suivi et de tout le travail que tu as fait.<br>Je me permets de partager dans ce fil, ce vidéo que William a fait également.</p><p>Bravo, on continue!</p><p>Edith</p><p>================================================================================</p>
+                <p>Bonjour William,</p><p>Merci beaucoup de ce suivi et de tout le travail que tu as fait.<br>Je me permets de partager dans ce fil, ce vidéo que William a fait également.</p><p>Bravo, on continue!</p><p>Edith</p>
               </div>
             </div>
           </article>
@@ -3693,7 +3687,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>💚</p><p>William Guindon a réagi par le biais de Gmail.</p><p>================================================================================</p>
+                <p>💚</p><p>William Guindon a réagi par le biais de Gmail.</p>
               </div>
             </div>
           </article>
@@ -3740,7 +3734,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(BROUILLON NON ENVOYÉ.)</p><p>Signature complète : WILLIAM GUINDON — Militant écologiste · Chercheur citoyen<br>indépendant · 15 ans · Blainville, Québec · Auteur de la communication<br>SEM-26-003 — Commission de coopération environnementale (CCE / ACEUM).<br>« 278 046 m² milieux humides menacés · 320× cadmium vs norme · 16 oct. 2026<br>réponse du Canada reçue » ; Kit média (williamguindon.me/presse.html) ;<br>Calendrier (cal.com/william-guindon/media) ; williamguindon.me ·<br>contact@williamguindon.me</p><p>================================================================================</p>
+                <p>(BROUILLON NON ENVOYÉ.)</p><p>Signature complète : WILLIAM GUINDON — Militant écologiste · Chercheur citoyen<br>indépendant · 15 ans · Blainville, Québec · Auteur de la communication<br>SEM-26-003 — Commission de coopération environnementale (CCE / ACEUM).<br>« 278 046 m² milieux humides menacés · 320× cadmium vs norme · 16 oct. 2026<br>réponse du Canada reçue » ; Kit média (williamguindon.me/presse.html) ;<br>Calendrier (cal.com/william-guindon/media) ; williamguindon.me ·<br>contact@williamguindon.me</p>
               </div>
             </div>
           </article>
@@ -3780,7 +3774,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Unclassified - Non-Classifié</p><p>Bonjour,</p><p>Veuillez trouver ci-joint la réponse de Pêches et Océans Canada à votre<br>pétition environnementale no 546, reçue le 13 juillet 2026, portant sur<br>l'Application des lois environnementales fédérales au site Stablex à<br>Blainville.</p><p>À noter : cette boîte courriel n'est pas surveillée et ne peut pas recevoir<br>des messages, s'il vous plaît ne pas répondre à ce message.</p><p>Cordialement,<br>Pêches et Océans Canada</p><p>(anglais identique)</p><p>(Pièce jointe : PDF de 409 Ko, non reproduite ici.)</p><p>================================================================================</p>
+                <p>Unclassified - Non-Classifié</p><p>Bonjour,</p><p>Veuillez trouver ci-joint la réponse de Pêches et Océans Canada à votre<br>pétition environnementale no 546, reçue le 13 juillet 2026, portant sur<br>l'Application des lois environnementales fédérales au site Stablex à<br>Blainville.</p><p>À noter : cette boîte courriel n'est pas surveillée et ne peut pas recevoir<br>des messages, s'il vous plaît ne pas répondre à ce message.</p><p>Cordialement,<br>Pêches et Océans Canada</p><p>(anglais identique)</p><p>(Pièce jointe : PDF de 409 Ko, non reproduite ici.)</p>
               </div>
             </div>
           </article>
@@ -3820,7 +3814,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Aucune copie papier ne suivra par la poste.</p><p>Veuillez trouver ci-joint la réponse de la ministre de l'Environnement, du<br>Changement climatique et de la Nature à votre pétition en matière<br>d'environnement (no 0546).</p><p>(Pièces jointes : RÉPONSE SIGNÉE - Guindon - MIN-334658.pdf ; Réponse à la<br>pétition - MIN-334658.pdf — non reproduites ici.)</p><p>================================================================================</p>
+                <p>Aucune copie papier ne suivra par la poste.</p><p>Veuillez trouver ci-joint la réponse de la ministre de l'Environnement, du<br>Changement climatique et de la Nature à votre pétition en matière<br>d'environnement (no 0546).</p><p>(Pièces jointes : RÉPONSE SIGNÉE - Guindon - MIN-334658.pdf ; Réponse à la<br>pétition - MIN-334658.pdf — non reproduites ici.)</p>
               </div>
             </div>
           </article>
@@ -3877,7 +3871,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
                 </div>
               
               <div class="msg-text-content">
-                <p>Madame la Ministre de l'Environnement et du Changement climatique,</p><p>Madame la Ministre des Pêches,</p><p>Mesdames, Messieurs,</p><p>J'accuse réception de vos réponses transmises le 10 novembre 2026 dans le<br>cadre de la pétition environnementale n° 0546 concernant le site de Stablex à<br>Blainville. Je vous écris aujourd'hui conjointement, non seulement comme<br>auteur de la communication SEM-26-003, mais surtout comme un jeune citoyen de<br>15 ans qui voit son milieu de vie et son avenir climatique se jouer dans ce<br>dossier.</p><p>On répète sans cesse aux jeunes de croire en la démocratie, de passer par<br>les voies légales et de faire confiance aux institutions. J'ai pris vos<br>institutions au mot : seul, à 15 ans, sans budget ni équipe, j'ai respecté<br>chaque règle et chaque procédure. En retour, je me heurte à des portes<br>fermées, à des données retenues et à des réponses qui esquivent l'essentiel.<br>Ce que vous envoyez comme message à toute une génération, c'est que les<br>règles démocratiques ne s'appliquent que tant qu'elles ne dérangent<br>personne.</p><p>De plus, ce manque d'écoute dépasse ce seul dossier. J'ai également initié<br>une pétition à la Chambre des communes (pétition électronique e-7834)<br>[…]</p><p>[… suite tronquée — texte intégral : 6 326 caractères ; voir Gmail ID<br>1a1f59ade70869f4.]</p><p>================================================================================</p>
+                <p>Madame la Ministre de l'Environnement et du Changement climatique,</p><p>Madame la Ministre des Pêches,</p><p>Mesdames, Messieurs,</p><p>J'accuse réception de vos réponses transmises le 10 novembre 2026 dans le<br>cadre de la pétition environnementale n° 0546 concernant le site de Stablex à<br>Blainville. Je vous écris aujourd'hui conjointement, non seulement comme<br>auteur de la communication SEM-26-003, mais surtout comme un jeune citoyen de<br>15 ans qui voit son milieu de vie et son avenir climatique se jouer dans ce<br>dossier.</p><p>On répète sans cesse aux jeunes de croire en la démocratie, de passer par<br>les voies légales et de faire confiance aux institutions. J'ai pris vos<br>institutions au mot : seul, à 15 ans, sans budget ni équipe, j'ai respecté<br>chaque règle et chaque procédure. En retour, je me heurte à des portes<br>fermées, à des données retenues et à des réponses qui esquivent l'essentiel.<br>Ce que vous envoyez comme message à toute une génération, c'est que les<br>règles démocratiques ne s'appliquent que tant qu'elles ne dérangent<br>personne.</p><p>De plus, ce manque d'écoute dépasse ce seul dossier. J'ai également initié<br>une pétition à la Chambre des communes (pétition électronique e-7834)<br>[…]</p><p>[… suite tronquée — texte intégral : 6 326 caractères ; voir Gmail ID<br>1a1f59ade70869f4.]</p>
               </div>
             </div>
           </article>
@@ -3907,7 +3901,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique MPO habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique MPO habituel.)</p>
               </div>
             </div>
           </article>
@@ -3937,7 +3931,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique ECCC habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique ECCC habituel.)</p>
               </div>
             </div>
           </article>
@@ -3984,7 +3978,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>Monsieur le Premier ministre,</p><p>Madame la Ministre de l'Environnement, du Changement climatique et de la<br>Nature,</p><p>Madame la Ministre des Pêches, des Océans et de la Garde côtière canadienne,<br>Madame la Députée de Thérèse-De Blainville,<br>Monsieur le Sous-ministre adjoint délégué,</p><p>Je vous transmets par la présente un avis officiel concernant le lancement<br>d'une pétition citoyenne demandant au gouvernement du Canada, à<br>Environnement et Changement climatique Canada (ECCC) ainsi qu'à Pêches et<br>Océans Canada (MPO) de lever la directive interne bloquant mes<br>correspondances et de rétablir la transparence dans le dossier<br>environnemental entourant le site de Stablex, près de la Grande Tourbière de<br>Blainville.</p><p>Des documents officiels d'ECCC obtenus en vertu de la Loi sur la protection<br>des renseignements personnels démontrent que l'Unité de correspondance<br>ministérielle a émis, le 11 août 2026, une consigne ordonnant aux équipes du<br>ministère (dont EnviroInfo et le Centre national des urgences environnementales)<br>de ne plus me répondre, avant de fermer l'ensemble de mes dossiers le 31 août.<br>Dix-sept jours plus tard, le Registre officiel des lobbyistes indique que des<br>représentants de Stablex ont rencontré de hauts dirigeants d'ECCC — dont le<br>sous-ministre adjoint délégué Michael Bonser — concernant la gestion des<br>matières dangereuses résiduelles et les travaux de la cellul[e …]</p><p>[… suite tronquée — texte intégral : 3 948 caractères ; voir Gmail ID<br>1a2044868d8037a5.]</p><p>================================================================================</p>
+                <p>Monsieur le Premier ministre,</p><p>Madame la Ministre de l'Environnement, du Changement climatique et de la<br>Nature,</p><p>Madame la Ministre des Pêches, des Océans et de la Garde côtière canadienne,<br>Madame la Députée de Thérèse-De Blainville,<br>Monsieur le Sous-ministre adjoint délégué,</p><p>Je vous transmets par la présente un avis officiel concernant le lancement<br>d'une pétition citoyenne demandant au gouvernement du Canada, à<br>Environnement et Changement climatique Canada (ECCC) ainsi qu'à Pêches et<br>Océans Canada (MPO) de lever la directive interne bloquant mes<br>correspondances et de rétablir la transparence dans le dossier<br>environnemental entourant le site de Stablex, près de la Grande Tourbière de<br>Blainville.</p><p>Des documents officiels d'ECCC obtenus en vertu de la Loi sur la protection<br>des renseignements personnels démontrent que l'Unité de correspondance<br>ministérielle a émis, le 11 août 2026, une consigne ordonnant aux équipes du<br>ministère (dont EnviroInfo et le Centre national des urgences environnementales)<br>de ne plus me répondre, avant de fermer l'ensemble de mes dossiers le 31 août.<br>Dix-sept jours plus tard, le Registre officiel des lobbyistes indique que des<br>représentants de Stablex ont rencontré de hauts dirigeants d'ECCC — dont le<br>sous-ministre adjoint délégué Michael Bonser — concernant la gestion des<br>matières dangereuses résiduelles et les travaux de la cellul[e …]</p><p>[… suite tronquée — texte intégral : 3 948 caractères ; voir Gmail ID<br>1a2044868d8037a5.]</p>
               </div>
             </div>
           </article>
@@ -4014,7 +4008,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique MPO habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique MPO habituel.)</p>
               </div>
             </div>
           </article>
@@ -4044,7 +4038,7 @@ de la Faune et des Parcs, et de la direction de Stablex,</p><p>Je vous écris au
             <div class="card-body">
               
               <div class="msg-text-content">
-                <p>(Accusé automatique ECCC habituel.)</p><p>================================================================================</p>
+                <p>(Accusé automatique ECCC habituel.)</p>
               </div>
             </div>
           </article>
