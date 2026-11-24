@@ -236,45 +236,11 @@ function runLocalAudit() {
   return audit;
 }
 
-// 3. Mise à jour de 'statut.html' pour inscrire l'état du jour
+// 3. Mise à jour de 'statut.html' : Désactivée pour préserver l'intégrité UI et éviter toute corruption
 function updateStatutPage(todayKey, isHealthy, summaryText) {
-  if (!fs.existsSync(STATUT_HTML_PATH)) return;
-
-  let html = fs.readFileSync(STATUT_HTML_PATH, 'utf8');
-
-  // Mise à jour de la date d'audit dans la bannière sentinelle si présente
-  const todayHuman = new Date().toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' });
-  const sentinelBadgeRegex = /id="sentinelStatusLabel"[^>]*>([^<]*)<\/div>/;
-  if (sentinelBadgeRegex.test(html)) {
-    html = html.replace(sentinelBadgeRegex, `id="sentinelStatusLabel" style="color:#a7f3d0;">Dernier contrôle : ${todayHuman} · ${isHealthy ? 'Conforme' : 'Anomalie détectée'}</div>`);
-  }
-
-  // Injection ou mise à jour générique dans 'incidentsByDate'
-  // Ne pas écraser si William a déjà spécifié un bogue custom non-générique
-  const marker = "/* ---------- Données réelles des anomalies (classées par sévérité) ---------- */\n  var incidentsByDate = {";
-  const todayEntryKey = `'${todayKey}':`;
-
-  if (html.includes(todayEntryKey)) {
-    // Si l'entrée du jour existe et est un audit sentinelle, on peut la rafraîchir
-    console.log(`ℹ️  Entrée existante détectée pour ${todayKey} dans statut.html.`);
-  } else {
-    // Insérer l'entrée générique du jour
-    const genericEntry = `    // ${todayHuman} (Contrôle automatique sentinelle)
-    '${todayKey}': {
-      severity: '${isHealthy ? 'green' : 'yellow'}',
-      severityLabel: '${isHealthy ? 'Tout bon' : 'Moyen'}',
-      title: 'Audit sentinelle & Suivi Ahrefs',
-      summary: '${summaryText}',
-      desc: 'Contrôle quotidien automatisé de l\\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
-      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
-    },
-`;
-    if (html.includes(marker)) {
-      html = html.replace(marker, marker + '\n' + genericEntry);
-      fs.writeFileSync(STATUT_HTML_PATH, html, 'utf8');
-      console.log(`✔ [OK] Entrée générique du jour injectée dans statut.html pour le ${todayKey}.`);
-    }
-  }
+  // Protection stricte de l'intégrité de statut.html (demandé par William) :
+  // Le bot sentinelle écrit exclusivement dans data/sentinel-report.json et ne modifie plus directement statut.html.
+  console.log(`ℹ️  statut.html préservé intact sans modification directe.`);
 }
 
 // 4. Exécution principale

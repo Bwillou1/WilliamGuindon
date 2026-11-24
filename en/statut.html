@@ -689,7 +689,7 @@
         <strong style="color:var(--text-head);">Bot Sentinelle &amp; Surveillance Ahrefs</strong>
         <span style="color:var(--text-muted);">· Audit quotidien automatisé</span>
       </div>
-      <div id="sentinelStatusLabel" style="color:#d8b4fe;">Last check: Nov 6, 2026 · Restored after outage</div>
+      <div id="sentinelStatusLabel" style="color:#a7f3d0;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; margin-right:6px;" aria-hidden="true"></span>Last check: Nov 24, 2026 · All systems operational (100%)</div>
     </div>
 
     <!-- Composant 1 : Site web & Carnet de bord -->
@@ -1061,97 +1061,120 @@
 
   /* ---------- 1. Génération des 60 traits (1 trait = 1 jour exact) ---------- */
   var tooltipEl = document.getElementById('tickHoverTooltip');
+  var windowOffsetDays = 0;
+
+  function getUptimeWindowEndDate() {
+    var now = new Date();
+    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (windowOffsetDays !== 0) {
+      end.setDate(end.getDate() - windowOffsetDays);
+    }
+    return end;
+  }
 
   function renderDayTicks(containerId, serviceKey) {
-    var container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = '';
+    try {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
 
-    // Fenêtre des 60 derniers jours se terminant le November 6, 2026
-    var endDate = new Date(2026, 10, 6); // Nov. 6, 2026
-    var totalDays = 60;
+      var totalDays = 60;
+      var endDate = getUptimeWindowEndDate();
+      var startDate = new Date(endDate);
+      startDate.setDate(endDate.getDate() - (totalDays - 1));
 
-    for (var i = totalDays - 1; i >= 0; i--) {
-      var d = new Date(endDate);
-      d.setDate(endDate.getDate() - i);
-
-      var year = d.getFullYear();
-      var month = String(d.getMonth() + 1).padStart(2, '0');
-      var day = String(d.getDate()).padStart(2, '0');
-      var dateKey = year + '-' + month + '-' + day;
-
-      var tick = document.createElement('div');
-      tick.className = 'day-tick';
-      tick.setAttribute('data-date', dateKey);
-
-      var inc = getServiceStatusForDate(serviceKey, dateKey);
-      if (inc) {
-        tick.classList.add(inc.severity);
-        tick.setAttribute('data-severity', inc.severityLabel);
-        tick.setAttribute('data-title', inc.title);
-        tick.setAttribute('data-summary', inc.summary);
-      } else {
-        tick.setAttribute('data-severity', 'Tout bon');
-        tick.setAttribute('data-title', 'Opérationnel');
-        tick.setAttribute('data-summary', 'Aucun incident signalé');
+      var lbl = document.getElementById('uptimeWindowLabel');
+      if (lbl) {
+        lbl.textContent = startDate.toLocaleDateString('en-CA', { day: 'numeric', month: 'short' }) + ' – ' + endDate.toLocaleDateString('en-CA', { day: 'numeric', month: 'short', year: 'numeric' });
       }
 
-      // Format affichage date en français
-      var dateHuman = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' });
-      tick.setAttribute('data-human-date', dateHuman);
+      for (var i = totalDays - 1; i >= 0; i--) {
+        var d = new Date(endDate);
+        d.setDate(endDate.getDate() - i);
 
-      // Survol : affiche le curseur info-bulle dynamique
-      tick.addEventListener('mouseenter', handleTickHover);
-      tick.addEventListener('mouseleave', handleTickLeave);
+        var year = d.getFullYear();
+        var month = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        var dateKey = year + '-' + month + '-' + day;
 
-      // Clic : ouvre la fiche d'incident détaillée en dessous
-      tick.addEventListener('click', (function(dKey) {
-        return function() {
-          showIncidentDetail(dKey);
-        };
-      })(dateKey));
+        var tick = document.createElement('div');
+        tick.className = 'day-tick';
+        tick.setAttribute('data-date', dateKey);
 
-      container.appendChild(tick);
+        var inc = getServiceStatusForDate(serviceKey, dateKey);
+        if (inc) {
+          tick.classList.add(inc.severity);
+          tick.setAttribute('data-severity', inc.severityLabel);
+          tick.setAttribute('data-title', inc.title);
+          tick.setAttribute('data-summary', inc.summary);
+        } else {
+          tick.classList.add('green');
+          tick.setAttribute('data-severity', 'All good');
+          tick.setAttribute('data-title', 'Operational');
+          tick.setAttribute('data-summary', 'No incident reported');
+        }
+
+        // Format affichage date en anglais
+        var dateHuman = d.toLocaleDateString('en-CA', { day: 'numeric', month: 'short', year: 'numeric' });
+        tick.setAttribute('data-human-date', dateHuman);
+
+        // Survol : affiche le curseur info-bulle dynamique
+        tick.addEventListener('mouseenter', handleTickHover);
+        tick.addEventListener('mouseleave', handleTickLeave);
+
+        // Clic : ouvre la fiche d'incident détaillée en dessous
+        tick.addEventListener('click', (function(dKey) {
+          return function() {
+            showIncidentDetail(dKey);
+          };
+        })(dateKey));
+
+        container.appendChild(tick);
+      }
+    } catch (err) {
+      console.error('Error renderDayTicks:', err);
     }
   }
 
   function handleTickHover(e) {
-    var tick = e.currentTarget;
-    var rect = tick.getBoundingClientRect();
-    var humanDate = tick.getAttribute('data-human-date');
-    var severity = tick.getAttribute('data-severity');
-    var summary = tick.getAttribute('data-summary');
+    try {
+      if (!tooltipEl) return;
+      var tick = e.currentTarget;
+      var rect = tick.getBoundingClientRect();
+      var humanDate = tick.getAttribute('data-human-date');
+      var severity = tick.getAttribute('data-severity');
+      var summary = tick.getAttribute('data-summary');
 
-    var dotColor = '#10b981';
-    if (severity === 'Moyen') dotColor = '#eab308';
-    if (severity === 'Important') dotColor = '#f97316';
-    if (severity === 'Critique') dotColor = '#ef4444';
-    if (severity === 'Site indisponible') dotColor = '#a855f7';
+      var dotColor = '#10b981';
+      if (severity === 'Moyen' || severity === 'Medium') dotColor = '#eab308';
+      if (severity === 'Important' || severity === 'Major') dotColor = '#f97316';
+      if (severity === 'Critique' || severity === 'Critical') dotColor = '#ef4444';
+      if (severity === 'Site indisponible' || severity === 'Outage') dotColor = '#a855f7';
 
-    tooltipEl.innerHTML = '<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:' + dotColor + '; margin-right:5px;"></span>' +
-                          '<strong>' + humanDate + '</strong> · ' + severity + ' : ' + summary;
+      tooltipEl.innerHTML = '<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:' + dotColor + '; margin-right:5px;"></span>' +
+                            '<strong>' + humanDate + '</strong> · ' + severity + ' : ' + summary;
 
-    tooltipEl.style.display = 'block';
-    var tipRect = tooltipEl.getBoundingClientRect();
-    tooltipEl.style.left = (rect.left + rect.width / 2) + 'px';
-    tooltipEl.style.top = (rect.top - tipRect.height - 8 + window.scrollY) + 'px';
+      tooltipEl.style.display = 'block';
+      var tipRect = tooltipEl.getBoundingClientRect();
+      tooltipEl.style.left = (rect.left + rect.width / 2) + 'px';
+      tooltipEl.style.top = (rect.top - tipRect.height - 8 + window.scrollY) + 'px';
+    } catch (_) {}
   }
 
   function handleTickLeave() {
-    tooltipEl.style.display = 'none';
+    if (tooltipEl) tooltipEl.style.display = 'none';
   }
 
-  renderDayTicks('uptimeBarWeb', 'web');
-  renderDayTicks('uptimeBarCce', 'cce');
-  renderDayTicks('uptimeBarApi', 'api');
+  function renderAllUptimeBars() {
+    renderDayTicks('uptimeBarWeb', 'web');
+    renderDayTicks('uptimeBarCce', 'cce');
+    renderDayTicks('uptimeBarApi', 'api');
+  }
 
   function shiftDayWindow(step) {
-    var lbl = document.getElementById('uptimeWindowLabel');
-    if (step > 0) {
-      lbl.textContent = 'Novembre 2026 – En cours';
-    } else {
-      lbl.textContent = '8 sept. – Nov. 6, 2026';
-    }
+    windowOffsetDays -= (step * 30);
+    if (windowOffsetDays < 0) windowOffsetDays = 0;
+    renderAllUptimeBars();
   }
 
   /* ---------- 2. Calendrier interactif (Septembre à Décembre 2026) ---------- */

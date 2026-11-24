@@ -29,15 +29,15 @@ jobs:
       - name: Validation de l'intégrité globale
         run: node scripts/validate-assets.js
 
-      - name: Commit et Push du rapport sentinelle et de statut.html
+      - name: Commit et Push du rapport sentinelle
         run: |
           git config --global user.name "Sentinel Bot"
           git config --global user.email "sentinel-bot@williamguindon.me"
-          git add data/sentinel-report.json statut.html
+          git add data/sentinel-report.json
           if ! git diff --quiet || ! git diff --staged --quiet; then
             git commit -m "chore(sentinel): grand audit hebdomadaire du lundi et contrôle Ahrefs [skip ci]"
             git push
-            echo "Rapport sentinelle et statut.html synchronisés avec succès."
+            echo "Rapport sentinelle synchronisé avec succès."
           else
             echo "Aucun changement à commiter, infrastructure stable."
           fi

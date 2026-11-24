@@ -9063,7 +9063,11 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
 .bio-portrait-wrapper {
   margin: 0;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+  max-width: 310px;
+  width: 100%;
 }
 
 .bio-portrait-card {
@@ -9073,7 +9077,7 @@ body.bio-reading-active .bio-read-block.active-speech-cue {
   border: 1px solid var(--line);
   border-radius: 12px;
   box-shadow: var(--shadow);
-  max-width: 310px;
+  max-width: 100%;
   width: 100%;
   box-sizing: border-box;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
@@ -14830,7 +14834,7 @@ p, blockquote, li {
   }
 }
 
-/* Mode Galerie pure (0 texte) dans photos.html */
+/* Mode Galerie épuré dans photos.html */
 .photos-gallery-toggle {
   margin-left: auto;
   border-style: dashed;
@@ -14925,69 +14929,97 @@ html.is-leaving .transition-fade {
    ========================================================================== */
 .wg-infobox-table {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 0;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.86rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line, #e2e8f0);
   border-radius: 12px;
   overflow: hidden;
-  background: var(--bg-card) !important;
+  background: var(--bg-card, #ffffff) !important;
   box-shadow: var(--shadow);
 }
 .wg-infobox-table caption {
   text-align: left;
   font-weight: 700;
   padding: 10px 14px;
-  background: var(--accent-wash);
-  color: var(--accent-deep);
-  border-bottom: 1px solid var(--line);
+  background: var(--accent-wash, #f0fdf4);
+  color: var(--accent-deep, #166534);
+  border-bottom: 1px solid var(--line, #e2e8f0);
   font-size: 0.88rem;
   letter-spacing: 0.01em;
 }
 .wg-infobox-table th {
   text-align: left;
   padding: 9px 12px;
-  color: var(--text-muted) !important;
+  color: #475569 !important;
   font-weight: 600;
-  width: 40%;
-  background: var(--bg) !important;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  width: 42%;
+  background: #f8fafc !important;
+  border-right: 1px solid var(--line, #e2e8f0);
+  border-bottom: 1px solid var(--line, #e2e8f0);
   font-size: 0.82rem;
 }
 .wg-infobox-table td {
   padding: 9px 12px;
-  font-weight: 600;
-  color: var(--text) !important;
-  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+  color: var(--text, #0f172a) !important;
+  border-bottom: 1px solid var(--line, #e2e8f0);
   font-size: 0.84rem;
-  background: var(--bg-card) !important;
+  background: var(--bg-card, #ffffff) !important;
 }
 .wg-infobox-table tr:last-child th,
 .wg-infobox-table tr:last-child td {
   border-bottom: none;
 }
 
+[data-theme="dark"] .wg-infobox-table caption {
+  background: rgba(34, 197, 94, 0.12) !important;
+  color: #4ade80 !important;
+  border-bottom-color: var(--line, #1c2620);
+}
+[data-theme="dark"] .wg-infobox-table th {
+  background: #141c16 !important;
+  color: #9bb0a2 !important;
+  border-color: var(--line, #1c2620);
+}
+[data-theme="dark"] .wg-infobox-table td {
+  background: #18221b !important;
+  color: #f0f4f1 !important;
+  border-color: var(--line, #1c2620);
+}
+
 .certified-pill-link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 11px;
+  gap: 5px;
+  padding: 6px 12px;
   border-radius: 8px;
-  background: var(--bg-card) !important;
-  border: 1px solid var(--line);
+  background: var(--bg-card, #ffffff) !important;
+  border: 1px solid var(--line, #e2e8f0);
   font-size: 0.82rem;
   font-weight: 600;
+  color: var(--text, #1e293b) !important;
   text-decoration: none !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
 }
 .certified-pill-link:hover {
-  border-color: var(--accent);
-  background: var(--accent-wash) !important;
+  border-color: var(--accent, #10b981);
+  background: var(--accent-wash, #f0fdf4) !important;
+  color: var(--accent-deep, #047857) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .certified-pill-link {
+  background: #141c16 !important;
+  color: #e2e8f0 !important;
+  border-color: var(--line, #1c2620);
+}
+[data-theme="dark"] .certified-pill-link:hover {
+  border-color: #22c55e;
+  color: #4ade80 !important;
+  background: rgba(34, 197, 94, 0.12) !important;
 }
 
 
