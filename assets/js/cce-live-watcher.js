@@ -31,9 +31,11 @@
       }
       sessionStorage.setItem(STORAGE_KEY, String(Date.now()));
 
-      // 2. Interroger directement l'API REST de la CCE
+      // 2. Interroger directement l'API REST de la CCE sans aucun cookie ni identifiant
       const cceRes = await fetch(CCE_API_URL + '?_t=' + Date.now(), {
         mode: 'cors',
+        credentials: 'omit', // Strict : interdiction absolue de déposer ou transmettre des cookies
+        cache: 'no-store',
         headers: {
           'Accept': 'application/json'
         }

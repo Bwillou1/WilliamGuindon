@@ -183,6 +183,20 @@ async function syncDossierStatus() {
         parsedFr.items.forEach(it => { totalDocs += (it.documents || []).length; });
         data.cce_officiel.total_pieces_officielles = totalDocs;
         console.log(`Extraction CCE FR réussie : ${parsedFr.items.length} jalons, ${totalDocs} pièces officielles (${parsedFr.stepsDone}/${parsedFr.stepsTotal} étapes).`);
+
+        // Embargo éditorial pour la décision du 15 décembre (Contrôle d'annonce par William Guindon)
+        // Si un nouveau document ou jalon apparaît (> 5 jalons), le site signale la détection
+        // mais n'écrit pas automatiquement le document sur le site avant l'annonce officielle du samedi.
+        const EMBARGO_PUBLICATION_ACTIF = process.env.RELEASE_CCE_DECISION !== 'true';
+        if (EMBARGO_PUBLICATION_ACTIF && parsedFr.items.length > 5) {
+          console.log(`[EMBARGO] Nouveaux jalons détectés sur la CCE (${parsedFr.items.length} jalons). Protection active pour annonce du samedi.`);
+          data.cce_officiel.mise_a_jour_detectee_embargo = true;
+          data.cce_officiel.nouveaux_jalons_en_attente = parsedFr.items.slice(5);
+          data.etat_fr = "Mise à jour officielle détectée sur le registre de la CCE · Analyse et annonce citoyenne à venir";
+          data.etat_en = "Official update detected on the CEC registry · Review and citizen announcement upcoming";
+          // Ne pas écraser les pièces publiques avant l'annonce officielle
+          data.cce_officiel.timeline_fr = parsedFr.items.slice(0, 5);
+        }
       }
     }
   } catch (err) {
@@ -198,7 +212,11 @@ async function syncDossierStatus() {
       const htmlEn = await pageResEn.text();
       const parsedEn = parseCECTimeline(htmlEn);
       if (parsedEn.items.length > 0) {
-        data.cce_officiel.timeline_en = parsedEn.items;
+        if (process.env.RELEASE_CCE_DECISION !== 'true' && parsedEn.items.length > 5) {
+          data.cce_officiel.timeline_en = parsedEn.items.slice(0, 5);
+        } else {
+          data.cce_officiel.timeline_en = parsedEn.items;
+        }
         console.log(`Extraction CCE EN réussie : ${parsedEn.items.length} jalons en anglais.`);
       }
     }
