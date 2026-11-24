@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wg-pwa-v289';
+const CACHE_NAME = 'wg-pwa-v290';
 const MAX_CACHE_ENTRIES = 256;
 
 // Pré-cache ultra-léger (coque applicative et moteur PDF uniquement) pour une vitesse d'affichage éclair.
@@ -20,6 +20,7 @@ const ASSETS_TO_CACHE = [
   '/navbar.html',
   '/assets/js/navbar-loader.js',
   '/assets/js/theme-core.js',
+  '/assets/js/cce-live-watcher.js',
   '/assets/js/annotations-idb.js',
   '/assets/js/viewer-embedpdf.js',
   '/assets/vendor/embedpdf/embedpdf.js',

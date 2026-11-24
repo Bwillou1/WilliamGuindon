@@ -752,9 +752,12 @@
 
       <!-- Panneau Statut Officiel Étape 2 CCE (Examen de 60 jours en cours) -->
       <section id="live-stage2-panel" aria-label="Statut officiel Étape 2 CCE" style="max-width: 860px; margin: 0 auto 28px; background: rgba(11, 15, 25, 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid #10b981; border-radius: 16px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.2), 0 16px 40px rgba(0, 0, 0, 0.8); padding: 22px 20px; color: #f8fafc; text-align: left;">
-        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#a7f3d0; padding:5px 12px; border-radius:9999px; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px;">
-          <span style="width:7px; height:7px; background:#10b981; border-radius:50%; box-shadow:0 0 6px #10b981; display:inline-block;"></span>
-          STATUT OFFICIEL · RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN ART. 24.28 ACEUM
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px;">
+          <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#a7f3d0; padding:5px 12px; border-radius:9999px; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
+            <span style="width:7px; height:7px; background:#10b981; border-radius:50%; box-shadow:0 0 6px #10b981; display:inline-block;"></span>
+            STATUT OFFICIEL · RÉPONSE DU CANADA DÉPOSÉE (72-RSP) · EXAMEN ART. 24.28 ACEUM
+          </div>
+          <div class="js-cce-live-status" style="display:inline-flex; align-items:center;"></div>
         </div>
 
         <h2 style="color:#ffffff; font-size:1.25rem; line-height:1.35; margin:0 0 10px 0; font-weight:800;">
@@ -779,7 +782,49 @@
             <span>Registre complet ↗</span>
           </a>
         </div>
+
+        <!-- Section de synchronisation en direct depuis cec.org -->
+        <div id="cce-live-timeline-box" style="margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1);">
+          <details style="cursor:pointer;">
+            <summary style="font-size:12.5px; font-weight:700; color:#a7f3d0; display:flex; align-items:center; gap:6px; user-select:none;">
+              <span>Voir les 5 jalons et 38 pièces officielles extraits de cec.org (Étape 4 / 10)</span>
+            </summary>
+            <div id="cce-live-items-list" style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+              <!-- Injecté dynamiquement par status.json -->
+            </div>
+          </details>
+        </div>
       </section>
+
+      <script>
+      (function() {
+        fetch('/status.json?_t=' + Date.now())
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data.cce_officiel || !data.cce_officiel.timeline_fr) return;
+            var listEl = document.getElementById('cce-live-items-list');
+            if (!listEl) return;
+            var html = '';
+            data.cce_officiel.timeline_fr.forEach(function(item) {
+              html += '<div style="background:rgba(255,255,255,0.04); border-left:3px solid #10b981; border-radius:0 8px 8px 0; padding:10px 14px; text-align:left;">';
+              html += '<div style="font-size:11px; font-weight:800; color:#34d399; text-transform:uppercase; margin-bottom:4px;">' + (item.date || '') + '</div>';
+              html += '<div style="font-size:13px; font-weight:600; color:#f1f5f9; margin-bottom:6px;">' + (item.etape || '') + '</div>';
+              if (item.documents && item.documents.length) {
+                html += '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">';
+                item.documents.forEach(function(d) {
+                  html += '<a href="' + d.url + '" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; background:rgba(16,185,129,0.12); color:#a7f3d0; padding:3px 8px; border-radius:4px; text-decoration:none; border:1px solid rgba(16,185,129,0.3);">';
+                  html += '<span>📄 ' + d.titre + '</span>';
+                  html += '</a>';
+                });
+                html += '</div>';
+              }
+              html += '</div>';
+            });
+            listEl.innerHTML = html;
+          })
+          .catch(function() {});
+      })();
+      </script>
 
       <div class="action-card live-action-card-center" style="margin-bottom: 24px;">
         <h2 class="live-share-heading">Partager ce décompte en direct</h2>

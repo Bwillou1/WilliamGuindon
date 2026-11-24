@@ -1,5 +1,3 @@
-
-
 const fs = require('fs');
 const path = require('path');
 
@@ -7,6 +5,49 @@ const REGISTRY_URL_FR = "https://www.cec.org/fr/communications/registre-des-comm
 const REGISTRY_URL_EN = "https://www.cec.org/submissions/registry-of-submissions/hazardous-waste-disposal-in-blainville/";
 const WP_API_ENDPOINT = "https://www.cec.org/fr/wp-json/wp/v2/submissions/62535";
 const STATUS_FILE_PATH = path.join(__dirname, '..', 'status.json');
+
+/**
+ * Extrait la chronologie et les documents depuis le HTML officiel de la CCE
+ */
+function parseCECTimeline(html) {
+  if (!html) return { stepsDone: null, stepsTotal: null, items: [] };
+
+  // 1. Progrès des étapes
+  const progressMatch = html.match(/(\d+)\s+(?:sur|of)\s+(\d+)\s+étapes terminées/i) ||
+                        html.match(/(\d+)\s+of\s+(\d+)\s+steps completed/i);
+  const stepsDone = progressMatch ? parseInt(progressMatch[1], 10) : 4;
+  const stepsTotal = progressMatch ? parseInt(progressMatch[2], 10) : 10;
+
+  // 2. Éléments de chronologie et documents
+  const regex = /<div class="timeline-item">.*?<div class="timeline-date">\s*(.*?)\s*<\/div>.*?<h3 class="timeline__step">\s*(.*?)\s*<\/h3>.*?<div class="timeline-docs">\s*(.*?)\s*<\/div>/gis;
+  let match;
+  const items = [];
+
+  while ((match = regex.exec(html)) !== null) {
+    const date = match[1].trim();
+    const step = match[2].trim().replace(/\s+/g, ' ');
+    const docsRaw = match[3].trim();
+    const docs = Array.from(docsRaw.matchAll(/<a[^>]*href=[\x27"]([^\x27"]+)[\x27"][^>]*>(.*?)<\/a>\s*-\s*([^<]+)/gis)).map(m => {
+      let docUrl = m[1].trim();
+      if (!docUrl.startsWith('http')) {
+        docUrl = 'https://www.cec.org' + (docUrl.startsWith('/') ? '' : '/') + docUrl;
+      }
+      return {
+        titre: m[2].trim().replace(/\s+/g, ' '),
+        description: m[3].trim().replace(/\s+/g, ' '),
+        url: docUrl
+      };
+    });
+
+    items.push({
+      date,
+      etape: step,
+      documents: docs
+    });
+  }
+
+  return { stepsDone, stepsTotal, items };
+}
 
 async function syncDossierStatus() {
   console.log(`[${new Date().toISOString()}] Lancement de la synchronisation CCE SEM-26-003...`);
@@ -59,7 +100,7 @@ async function syncDossierStatus() {
       "Migratory Birds Regulations, 2022 (SOR/2022-105), paragraphs 5(1)(a), (b) and (c)",
       "Species at Risk Act (S.C. 2002, c. 29), preamble (paragraph 13), sections 10.1, 18.1, 32, 33, 34, 39(1)(c), 58, 73, 79 and 83",
       "Fisheries Act (R.S.C. 1985, c. F-14), sections 34.4, 35, 36(3), 36(4), 37 and 38",
-      "Canadian Environmental Protection Act, 1999 (S.C. 1999, c. 33), paragraphs 2(1)(a.2), 2(1)(a.3), sections 5.1(1), 64, 68, 71, 90, 91 and 93",
+      "Canadian Environmental Protection Act, 1999 (S.C. 1999, c. 33), paragraphs 2(1)(a.2), 2(1)(a.3), sections 5.1(1), 64, 68, 71, 90, 91 et 93",
       "Impact Assessment Act (S.C. 2019, c. 28, s. 1), section 2(i)(ii)(iii)",
       "Physical Activities Regulations (SOR/2019-285), section 2 (items 56 and 57 of the schedule)",
       "United Nations Declaration on the Rights of Indigenous Peoples Act (S.C. 2021, c. 14), section 5",
@@ -81,6 +122,16 @@ async function syncDossierStatus() {
       orcid: "https://orcid.org/0009-0009-8845-4456",
       wikidata: "https://www.wikidata.org/wiki/Q141439370"
     },
+    cce_officiel: {
+      wp_id: 62535,
+      api_endpoint: WP_API_ENDPOINT,
+      derniere_modif_wp: null,
+      etapes_completees: 4,
+      etapes_total: 10,
+      total_pieces_officielles: 0,
+      timeline_fr: [],
+      timeline_en: []
+    },
     timestamp_sync: new Date().toISOString()
   };
 
@@ -88,12 +139,19 @@ async function syncDossierStatus() {
   if (fs.existsSync(STATUS_FILE_PATH)) {
     try {
       existingData = JSON.parse(fs.readFileSync(STATUS_FILE_PATH, 'utf8'));
+      if (existingData.wp_modified) {
+        data.wp_modified = existingData.wp_modified;
+      }
+      if (existingData.cce_officiel) {
+        data.cce_officiel = existingData.cce_officiel;
+      }
     } catch (e) {}
   }
 
+  // 1. Interrogation de l'API REST WordPress de la CCE
   try {
     const apiRes = await fetch(WP_API_ENDPOINT, {
-      headers: { 'User-Agent': 'DossierSyncBot/1.0 (williamguindon.me)' }
+      headers: { 'User-Agent': 'DossierSyncBot/2.0 (williamguindon.me - Citizen Registry SEM-26-003)' }
     });
 
     if (apiRes.ok) {
@@ -101,21 +159,62 @@ async function syncDossierStatus() {
       if (wpData.modified) {
         console.log(`Dernière modification WordPress CCE détectée : ${wpData.modified}`);
         data.wp_modified = wpData.modified;
+        data.cce_officiel.derniere_modif_wp = wpData.modified;
       }
     }
   } catch (err) {
-    console.warn("Notice : API REST CCE non joignable immédiatement, utilisation du statut vérifié local.", err.message);
+    console.warn("Notice : API REST CCE non joignable immédiatement :", err.message);
   }
 
-  // Vérifier s'il y a un réel changement par rapport au fichier existant
+  // 2. Scraping et extraction structurée de la timeline officielle (FR)
+  try {
+    const pageResFr = await fetch(REGISTRY_URL_FR, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) DossierSyncBot/2.0 (williamguindon.me)' }
+    });
+    if (pageResFr.ok) {
+      const htmlFr = await pageResFr.text();
+      const parsedFr = parseCECTimeline(htmlFr);
+      if (parsedFr.items.length > 0) {
+        data.cce_officiel.etapes_completees = parsedFr.stepsDone;
+        data.cce_officiel.etapes_total = parsedFr.stepsTotal;
+        data.cce_officiel.timeline_fr = parsedFr.items;
+
+        let totalDocs = 0;
+        parsedFr.items.forEach(it => { totalDocs += (it.documents || []).length; });
+        data.cce_officiel.total_pieces_officielles = totalDocs;
+        console.log(`Extraction CCE FR réussie : ${parsedFr.items.length} jalons, ${totalDocs} pièces officielles (${parsedFr.stepsDone}/${parsedFr.stepsTotal} étapes).`);
+      }
+    }
+  } catch (err) {
+    console.warn("Notice : Page FR CCE non joignable pour scraping :", err.message);
+  }
+
+  // 3. Scraping et extraction structurée de la timeline officielle (EN)
+  try {
+    const pageResEn = await fetch(REGISTRY_URL_EN, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) DossierSyncBot/2.0 (williamguindon.me)' }
+    });
+    if (pageResEn.ok) {
+      const htmlEn = await pageResEn.text();
+      const parsedEn = parseCECTimeline(htmlEn);
+      if (parsedEn.items.length > 0) {
+        data.cce_officiel.timeline_en = parsedEn.items;
+        console.log(`Extraction CCE EN réussie : ${parsedEn.items.length} jalons en anglais.`);
+      }
+    }
+  } catch (err) {
+    console.warn("Notice : Page EN CCE non joignable pour scraping :", err.message);
+  }
+
+  // 4. Vérifier s'il y a un réel changement par rapport au fichier existant
   const hasChanged = !existingData ||
     existingData.wp_modified !== data.wp_modified ||
+    existingData.cce_officiel?.derniere_modif_wp !== data.cce_officiel?.derniere_modif_wp ||
+    existingData.cce_officiel?.etapes_completees !== data.cce_officiel?.etapes_completees ||
+    existingData.cce_officiel?.total_pieces_officielles !== data.cce_officiel?.total_pieces_officielles ||
+    JSON.stringify(existingData.cce_officiel?.timeline_fr) !== JSON.stringify(data.cce_officiel?.timeline_fr) ||
     existingData.etat_fr !== data.etat_fr ||
-    existingData.prochaine_echeance !== data.prochaine_echeance ||
-    existingData.derniere_action?.document_fr !== data.derniere_action?.document_fr ||
-    JSON.stringify(existingData.legislation_fr) !== JSON.stringify(data.legislation_fr) ||
-    JSON.stringify(existingData.veille_folo) !== JSON.stringify(data.veille_folo) ||
-    JSON.stringify(existingData.reseaux_sociaux) !== JSON.stringify(data.reseaux_sociaux);
+    existingData.prochaine_echeance !== data.prochaine_echeance;
 
   if (hasChanged) {
     data.timestamp_sync = new Date().toISOString();

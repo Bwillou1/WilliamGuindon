@@ -5000,6 +5000,14 @@
     document.head.appendChild(sSwup);
   }
 
+  function loadCceLiveWatcherIfNeeded() {
+    if (document.querySelector('script[src*="cce-live-watcher.js"]')) return;
+    const sWatcher = document.createElement('script');
+    sWatcher.src = '/assets/js/cce-live-watcher.js';
+    sWatcher.defer = true;
+    document.head.appendChild(sWatcher);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
@@ -5008,6 +5016,7 @@
       loadVideoJsEnhancementsIfNeeded();
       loadGpuShaderIfNeeded();
       loadSwupIfNeeded();
+      loadCceLiveWatcherIfNeeded();
     });
   } else {
     initApp();
@@ -5016,5 +5025,6 @@
     loadVideoJsEnhancementsIfNeeded();
     loadGpuShaderIfNeeded();
     loadSwupIfNeeded();
+    loadCceLiveWatcherIfNeeded();
   }
 })();
