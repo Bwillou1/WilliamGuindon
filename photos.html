@@ -92,40 +92,6 @@
     border-color: var(--accent);
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
   }
-  .pill-code {
-    display: inline-block;
-    padding: 1px 5px;
-    margin-left: 5px;
-    background: rgba(16, 185, 129, 0.12);
-    color: var(--accent);
-    border-radius: 4px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    vertical-align: baseline;
-    transition: all 0.2s ease;
-  }
-  .category-pill:hover .pill-code,
-  .category-pill.active .pill-code {
-    background: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-  }
-  .photo-code-chip {
-    display: inline-block;
-    padding: 1px 6px;
-    margin-left: 5px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #a7f3d0;
-    border-radius: 4px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    border: 1px solid rgba(167, 243, 208, 0.35);
-    vertical-align: middle;
-  }
   .photo-card.is-active-target,
   .photo-card:target {
     outline: 3px solid #10b981 !important;
@@ -1159,13 +1125,13 @@
 
   <div class="photos-toolbar">
     <button type="button" class="category-pill active" data-cat="all">Toutes</button>
-    <button type="button" class="category-pill" data-cat="Tourbière">Tourbière <span class="pill-code">tb</span></button>
-    <button type="button" class="category-pill" data-cat="Biodiversité">Biodiversité <span class="pill-code">bi</span></button>
-    <button type="button" class="category-pill" data-cat="Terrain">Terrain <span class="pill-code">tr</span></button>
-    <button type="button" class="category-pill" data-cat="Parcours">Parcours <span class="pill-code">pc</span></button>
-    <button type="button" class="category-pill" data-cat="Cartographie">Cartographie <span class="pill-code">cg</span></button>
-    <button type="button" class="category-pill" data-cat="Événements">Événements <span class="pill-code">ev</span></button>
-    <button type="button" class="category-pill" data-cat="Bannières">Bannières <span class="pill-code">md</span></button>
+    <button type="button" class="category-pill" data-cat="Tourbière">Tourbière</button>
+    <button type="button" class="category-pill" data-cat="Biodiversité">Biodiversité</button>
+    <button type="button" class="category-pill" data-cat="Terrain">Terrain</button>
+    <button type="button" class="category-pill" data-cat="Parcours">Parcours</button>
+    <button type="button" class="category-pill" data-cat="Cartographie">Cartographie</button>
+    <button type="button" class="category-pill" data-cat="Événements">Événements</button>
+    <button type="button" class="category-pill" data-cat="Bannières">Bannières</button>
     <button type="button" id="photos-gallery-toggle" class="category-pill photos-gallery-toggle" aria-pressed="false">Mode Galerie (0 texte)</button>
   </div>
 
@@ -1480,13 +1446,29 @@
     "Evenements": "ev"
   };
 
+  const CAT_SLUGS = {
+    "Tourbière": "tourbiere",
+    "Tourbiere": "tourbiere",
+    "Biodiversité": "biodiversite",
+    "Biodiversite": "biodiversite",
+    "Bannières": "bannieres",
+    "Bannieres": "bannieres",
+    "Terrain": "terrain",
+    "Parcours": "parcours",
+    "Cartographie": "cartographie",
+    "Événements": "evenements",
+    "Evenements": "evenements"
+  };
+
   function assignPhotoCodes(photos) {
     const counters = {};
     photos.forEach(item => {
       const cat = item.category || "Terrain";
+      const slug = CAT_SLUGS[cat] || "photo";
       const pfx = CAT_PREFIXES[cat] || "ph";
-      counters[pfx] = (counters[pfx] || 0) + 1;
-      const num = String(counters[pfx]).padStart(2, '0');
+      counters[slug] = (counters[slug] || 0) + 1;
+      const num = String(counters[slug]).padStart(2, '0');
+      item.photoSlug = `${slug}-${num}`;
       item.photoCode = `${pfx}-${num}`;
     });
   }
@@ -1577,14 +1559,12 @@
       const hdUrl = rawImg;
       const descHtml = itemDesc ? `<p class="photo-card-desc" style="font-size:12.5px; line-height:1.5; color:var(--text); padding:10px 14px 6px; margin:0;">${itemDesc}</p>` : "";
 
-      const codeBadgeHtml = item.photoCode ? ` <span class="photo-code-chip">${item.photoCode.toUpperCase()}</span>` : '';
-
       card.innerHTML = `
         <div class="photo-img-wrap">
           <a href="${hdUrl}" class="photo-link-wrap" target="_blank" rel="noopener noreferrer" title="${itemTitle} (Agrandir en haute résolution)">
             <img src="${thumbUrl}" data-original="${hdUrl}" alt="${itemTitle}" class="photo-img wg-viewable-image" loading="lazy" decoding="async" width="600" height="400">
           </a>
-          <span class="photo-badge">${item.category || "Terrain"}${codeBadgeHtml}</span>
+          <span class="photo-badge">${item.category || "Terrain"}</span>
           <div class="photo-overlay">
             <div class="photo-title">${itemTitle}</div>
             <div class="photo-meta">
@@ -1601,8 +1581,9 @@
 
       card.addEventListener("click", (e) => {
         if (e.target.closest('.photo-card-download-btn')) return;
-        if (item.photoCode) {
-          history.replaceState(null, '', '#' + item.photoCode);
+        const targetSlug = item.photoSlug || item.photoCode;
+        if (targetSlug) {
+          history.replaceState(null, '', '#' + targetSlug);
           document.querySelectorAll('.photo-card').forEach(c => c.classList.remove('is-active-target'));
           card.classList.add('is-active-target');
         }
@@ -1711,8 +1692,11 @@
       btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       const cat = btn.getAttribute("data-cat");
       if (cat === "all") {
+        history.replaceState(null, '', window.location.pathname);
         renderPhotos(allPhotos);
       } else {
+        const slug = CAT_SLUGS[cat] || cat.toLowerCase();
+        history.replaceState(null, '', '#' + slug);
         const filtered = allPhotos.filter(p => (p.category || "").toLowerCase() === cat.toLowerCase());
         renderPhotos(filtered);
       }
@@ -1740,7 +1724,24 @@
     const rawHash = window.location.hash ? window.location.hash.substring(1).trim().toLowerCase() : "";
     if (!rawHash) return;
 
-    const targetItem = allPhotos.find(p => (p.photoCode && p.photoCode.toLowerCase() === rawHash) || (p.id && p.id.toLowerCase() === rawHash));
+    // 1. Est-ce un hash de catégorie simple (ex: #tourbiere, #tb, #biodiversite) ?
+    const matchingCatBtn = Array.from(document.querySelectorAll(".category-pill")).find(b => {
+      const cat = b.getAttribute("data-cat") || "";
+      const slug = CAT_SLUGS[cat] || cat.toLowerCase();
+      const pfx = CAT_PREFIXES[cat] || "";
+      return slug === rawHash || pfx === rawHash || cat.toLowerCase() === rawHash;
+    });
+    if (matchingCatBtn) {
+      matchingCatBtn.click();
+      return;
+    }
+
+    // 2. Est-ce une photo précise (ex: #tourbiere-01, #tb-01, etc.) ?
+    const targetItem = allPhotos.find(p => 
+      (p.photoSlug && p.photoSlug.toLowerCase() === rawHash) || 
+      (p.photoCode && p.photoCode.toLowerCase() === rawHash) || 
+      (p.id && p.id.toLowerCase() === rawHash)
+    );
     if (targetItem) {
       const activeBtn = document.querySelector(".category-pill.active");
       const activeCat = activeBtn ? activeBtn.getAttribute("data-cat") : "all";
@@ -1754,7 +1755,7 @@
         }
       }
       setTimeout(() => {
-        const cardEl = document.getElementById(targetItem.photoCode);
+        const cardEl = document.getElementById(targetItem.photoCode) || document.querySelector(`[data-photo-slug="${targetItem.photoSlug}"]`);
         if (cardEl) {
           cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
           document.querySelectorAll('.photo-card').forEach(c => c.classList.remove('is-active-target'));
