@@ -692,9 +692,9 @@
       <div id="sentinelStatusLabel" style="color:#a7f3d0;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; margin-right:6px;" aria-hidden="true"></span>Dernier contrôle : 24 nov. 2026 · Tous les systèmes opérationnels (100%)</div>
     </div>
 
-    <!-- Note discrète : Refonte graphique avec graphiste bénévole -->
+    <!-- Note discrète : Rafraîchissement graphique avec graphiste bénévole -->
     <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 6px; padding: 8px 12px; margin-bottom: 20px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
-      <strong style="color: #10b981;">Refonte du design (28 nov. – 6 déc. 2026) :</strong> Travaux en cours avec une graphiste bénévole pour adapter le site et le dossier citoyen. De légers ajustements visuels temporaires pourront survenir. Tous les registres et documents demeurent 100% accessibles.
+      <strong style="color: #10b981;">Rafraîchissement graphique (28 nov. – 6 déc. 2026) :</strong> Ajustements des couleurs, du logo et du design réalisés avec le soutien d'une graphiste bénévole pour perfectionner la présentation du dossier. Tous les documents et registres restent 100% accessibles.
     </div>
 
     <!-- Composant 1 : Site web & Carnet de bord -->
@@ -838,44 +838,94 @@
 <script>
   /* ---------- Données réelles des anomalies (classées par sévérité) ---------- */
   var incidentsByDate = {
-    // 24 nov. 2026 (Contrôle automatique sentinelle)
+    // 24 nov. 2026 (Audit & Contrôle)
     '2026-11-24': {
       severity: 'green',
       severityLabel: 'Tout bon',
-      title: 'Audit sentinelle & Suivi Ahrefs',
-      summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
-      desc: 'Contrôle automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
+      title: 'Infrastructure 100% opérationnelle & Sécurisation Sentinelle',
+      summary: 'Systèmes stables, navigation fluide et sécurisation des scripts d\'audit.',
+      desc: 'Contrôle quotidien de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et neutralisation des écritures automatiques.',
       resolution: 'Tous les paramètres surveillés sont stables et conformes.'
     },
 
-    // 23 nov. 2026 (Contrôle automatique sentinelle)
+    // 23 nov. 2026
     '2026-11-23': {
-      severity: 'green',
-      severityLabel: 'Tout bon',
-      title: 'Audit sentinelle & Suivi Ahrefs',
-      summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
-      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
-      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Erreur de syntaxe JS sur la console de statut & Déconnexion bot',
+      summary: 'Une apostrophe non échappée bloquait l\'affichage du calendrier des anomalies.',
+      desc: 'Le script automatisé d\'audit a injecté une chaîne de caractères contenant une apostrophe non échappée dans statut.html, provoquant une erreur bloquant l\'affichage des 60 traits d\'uptime et du calendrier.',
+      resolution: 'Correction de la syntaxe, ajout de blocs de sécurité try/catch et désarmement des écritures directes du bot dans les pages HTML.'
     },
 
-    // 16 nov. 2026 (Contrôle automatique sentinelle)
+    // 22 nov. 2026
+    '2026-11-22': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Régression 404 sur les URLs épurées (/partager, /bgv)',
+      summary: 'Les adresses raccourcies sans extension .html renvoyaient temporairement une erreur 404.',
+      desc: 'Sur l\'hébergement statique, l\'accès direct aux chemins courts sans .html renvoyait la page 404 au lieu de rediriger automatiquement vers la page correspondante.',
+      resolution: 'Ajout de routeurs de secours automatiques dans 404.html et déploiement de répertoires miroirs avec fichiers index.html dédiés.'
+    },
+
+    // 20 nov. 2026
+    '2026-11-20': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Instabilité de synchronisation P2P sur le visualiseur collaboratif',
+      summary: 'Déconnexions WebRTC et latences sur les salles privées du lecteur de documents.',
+      desc: 'Le module de révision collaborative en temps réel (Trystero Nostr) subissait des déconnexions sur certains relais publics surchargés lors de la génération de clés de salle à 128 bits.',
+      resolution: 'Intégration d\'un pool de 7 relais Nostr haute disponibilité et assainissement strict des paramètres d\'URL d\'invitation.'
+    },
+
+    // 18 nov. 2026
+    '2026-11-18': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Superposition du ruban officiel CCE sur iPad et mobile',
+      summary: 'Le ruban de décompte J-22 et la barre de navigation se chevauchaient sur tablette.',
+      desc: 'L\'affichage du bandeau d\'échéance CCE entrait en conflit avec le menu de navigation sur iPad et smartphones en mode paysage, masquant certains boutons.',
+      resolution: 'Ajustement précis des z-index, du centrage flexbox et calcul dynamique de la hauteur du ruban à 30px.'
+    },
+
+    // 16 nov. 2026
     '2026-11-16': {
       severity: 'green',
       severityLabel: 'Tout bon',
-      title: 'Audit sentinelle & Suivi Ahrefs',
+      title: 'Audit sentinelle hebdomadaire conforme',
       summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
-      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
-      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
+      desc: 'Contrôle automatisé de l\'infrastructure : intégrité des 222 documents, certificats SSL et absence de liens brisés.',
+      resolution: 'Tous les paramètres surveillés sont conformes.'
     },
 
-    // 9 nov. 2026 (Contrôle automatique sentinelle)
+    // 13 nov. 2026
+    '2026-11-13': {
+      severity: 'orange',
+      severityLabel: 'Important',
+      title: 'Boucle de redirection sur la traduction du visualiseur PDF',
+      summary: 'Boucle de redirection infinie lors du changement de langue sur viewer.html.',
+      desc: 'Un script de détection linguistique forçait la redirection vers la racine de la langue tout en réinjectant le paramètre de document, provoquant une boucle HTTP.',
+      resolution: 'Assainissement des expressions régulières de langue et préservation stricte des paramètres de recherche.'
+    },
+
+    // 11 nov. 2026
+    '2026-11-11': {
+      severity: 'yellow',
+      severityLabel: 'Moyen',
+      title: 'Échec de lecture vidéo sur les appareils iOS / WebKit',
+      summary: 'L\'entrevue vidéo TVBL ne se lançait pas automatiquement en mode plein écran sur iPhone.',
+      desc: 'L\'absence des attributs webkit-playsinline et playsinline empêchait le déclenchement fluide du flux vidéo dans la modale sur Safari mobile.',
+      resolution: 'Ajout des drapeaux playsinline stricts et intégration d\'une solution de secours iframe avec respect de la vie privée.'
+    },
+
+    // 9 nov. 2026
     '2026-11-09': {
       severity: 'green',
       severityLabel: 'Tout bon',
-      title: 'Audit sentinelle & Suivi Ahrefs',
+      title: 'Audit sentinelle hebdomadaire conforme',
       summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
-      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
-      resolution: 'Tous les paramètres surveillés sont stables et conformes.'
+      desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, conformité SSL et suivi des métriques Ahrefs.',
+      resolution: 'Tous les paramètres surveillés sont conformes.'
     },
 
     // 2 nov. 2026 (Contrôle automatique sentinelle)
@@ -1095,12 +1145,12 @@
     if (serviceKey === 'web') {
       return inc; // Le site web subit tous les incidents de routage/frontend
     } else if (serviceKey === 'cce') {
-      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06') {
+      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06' || dateStr === '2026-11-13' || dateStr === '2026-11-20') {
         return inc;
       }
       return null;
     } else if (serviceKey === 'api') {
-      if (dateStr === '2026-10-15' || dateStr === '2026-10-22') {
+      if (dateStr === '2026-10-15' || dateStr === '2026-10-22' || dateStr === '2026-11-22') {
         return inc;
       }
       return null;

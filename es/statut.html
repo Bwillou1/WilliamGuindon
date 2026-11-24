@@ -834,12 +834,102 @@
 <script>
   /* ---------- Données réelles des anomalies (classées par sévérité) ---------- */
   var incidentsByDate = {
+    // 24 de nov. de 2026 (Auditoría y control)
+    '2026-11-24': {
+      severity: 'green',
+      severityLabel: 'Todo bien',
+      title: 'Infraestructura 100% operativa y blindaje del bot centinela',
+      summary: 'Sistemas estables, navegación fluida y automatización asegurada.',
+      desc: 'Control diario de infraestructura: integridad de enlaces, cero regresiones 404, validación SSL y neutralización de escrituras automáticas en HTML.',
+      resolution: 'Todos los parámetros monitoreados son estables y conformes.'
+    },
+
+    // 23 de nov. de 2026
+    '2026-11-23': {
+      severity: 'yellow',
+      severityLabel: 'Medio',
+      title: 'Error de sintaxis JS en la consola de estado y aislamiento del bot',
+      summary: 'Un apóstrofe sin escapar detuvo temporalmente el calendario de incidencias.',
+      desc: 'El script automatizado de auditoría inyectó una cadena con un apóstrofe sin escapar en statut.html, provocando la interrupción de las barras de disponibilidad y del calendario.',
+      resolution: 'Sintaxis corregida, protecciones try/catch añadidas y desactivación de escrituras directas del bot en archivos HTML.'
+    },
+
+    // 22 de nov. de 2026
+    '2026-11-22': {
+      severity: 'yellow',
+      severityLabel: 'Medio',
+      title: 'Regresión 404 en rutas limpias (/partager, /bgv)',
+      summary: 'Las direcciones cortas sin .html devolvían temporalmente 404 en el alojamiento estático.',
+      desc: 'Al acceder directamente a rutas limpias sin extensión .html, el servidor estático devolvía error 404 en vez de redirección inmediata.',
+      resolution: 'Enrutador SPA añadido a 404.html y despliegue de carpetas espejo con archivos index.html dedicados.'
+    },
+
+    // 20 de nov. de 2026
+    '2026-11-20': {
+      severity: 'yellow',
+      severityLabel: 'Medio',
+      title: 'Inestabilidad de sincronización P2P en el visor colaborativo',
+      summary: 'Desconexiones WebRTC y latencia en salas privadas de revisión documental.',
+      desc: 'El módulo colaborativo en tiempo real (Trystero Nostr) experimentó caídas en repetidores públicos saturados.',
+      resolution: 'Integración de un grupo de 7 repetidores Nostr de alta disponibilidad y desinfección estricta de parámetros de URL.'
+    },
+
+    // 18 de nov. de 2026
+    '2026-11-18': {
+      severity: 'yellow',
+      severityLabel: 'Medio',
+      title: 'Superposición de la barra superior responsive en iPad y móvil',
+      summary: 'La cinta oficial de cuenta regresiva CCE se superponía con la barra de navegación.',
+      desc: 'La cinta de seguimiento CCE entraba en conflicto con los enlaces en iPad y móviles horizontales, ocultando botones.',
+      resolution: 'Ajuste de z-index, alineación flexbox y fijación de altura a 30px.'
+    },
+
+    // 16 de nov. de 2026
+    '2026-11-16': {
+      severity: 'green',
+      severityLabel: 'Todo bien',
+      title: 'Auditoría semanal centinela conforme',
+      summary: 'Infraestructura 100% operativa, cero anomalías detectadas.',
+      desc: 'Auditoría automatizada: 222 documentos verificados, certificados SSL válidos y ausencia de enlaces rotos.',
+      resolution: 'Todos los parámetros monitoreados son conformes.'
+    },
+
+    // 13 de nov. de 2026
+    '2026-11-13': {
+      severity: 'orange',
+      severityLabel: 'Importante',
+      title: 'Bucle de redirección en la traducción del visor PDF',
+      summary: 'Bucle de redirección infinito al cambiar de idioma en viewer.html.',
+      desc: 'Un script de idioma forzaba redirecciones a la raíz mientras reinyectaba el parámetro de documento, causando rebote HTTP.',
+      resolution: 'Desinfección de expresiones regulares de idioma y preservación estricta de parámetros.'
+    },
+
+    // 11 de nov. de 2026
+    '2026-11-11': {
+      severity: 'yellow',
+      severityLabel: 'Medio',
+      title: 'Fallo de reproducción de video en dispositivos iOS / WebKit',
+      summary: 'La entrevista TVBL no se reproducía automáticamente en pantalla completa en iPhone.',
+      desc: 'La falta de atributos webkit-playsinline impedía la reproducción fluida en Safari móvil.',
+      resolution: 'Banderas playsinline añadidas y respaldo iframe seguro.'
+    },
+
+    // 9 de nov. de 2026
+    '2026-11-09': {
+      severity: 'green',
+      severityLabel: 'Todo bien',
+      title: 'Auditoría semanal centinela conforme',
+      summary: 'Infraestructura 100% operativa, cero anomalías detectadas.',
+      desc: 'Auditoría automatizada: integridad de enlaces, cumplimiento SSL y seguimiento Ahrefs.',
+      resolution: 'Todos los parámetros monitoreados son conformes.'
+    },
+
     // 2 de nov. de 2026 (Contrôle automatique sentinelle)
     '2026-11-02': {
-      severity: 'yellow',
-      severityLabel: 'Moyen',
+      severity: 'green',
+      severityLabel: 'Todo bien',
       title: 'Audit sentinelle & Suivi Ahrefs',
-      summary: 'Avertissement mineur sur les temps de réponse ou balises d\'indexation.',
+      summary: 'Infrastructure 100% opérationnelle, zéro anomalie détectée.',
       desc: 'Contrôle quotidien automatisé de l\'infrastructure : intégrité des liens, absence de régression 404, conformité SSL et suivi des métriques Ahrefs.',
       resolution: 'Tous les paramètres surveillés sont stables et conformes.'
     },
@@ -1051,12 +1141,12 @@
     if (serviceKey === 'web') {
       return inc; // Le site web subit tous les incidents de routage/frontend
     } else if (serviceKey === 'cce') {
-      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06') {
+      if (dateStr === '2026-10-18' || dateStr === '2026-10-19' || dateStr === '2026-10-31' || dateStr === '2026-11-05' || dateStr === '2026-11-06' || dateStr === '2026-11-13' || dateStr === '2026-11-20') {
         return inc;
       }
       return null;
     } else if (serviceKey === 'api') {
-      if (dateStr === '2026-10-15' || dateStr === '2026-10-22') {
+      if (dateStr === '2026-10-15' || dateStr === '2026-10-22' || dateStr === '2026-11-22') {
         return inc;
       }
       return null;
