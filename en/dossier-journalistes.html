@@ -4633,7 +4633,7 @@ function getCleanDisplayName(fullPath) {
           if ((document.body.classList.contains('is-offline-view') || !navigator.onLine) && !item.classList.contains('is-cached')) {
             document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
             item.classList.add("active");
-            if (window.innerWidth <= 768 && e.isTrusted) {
+            if (window.innerWidth <= 768) {
               setMobileView("preview");
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -4653,7 +4653,7 @@ function getCleanDisplayName(fullPath) {
           document.querySelectorAll(".drive-item").forEach(el => el.classList.remove("active"));
           item.classList.add("active");
 
-          if (window.innerWidth <= 768 && e.isTrusted) {
+          if (window.innerWidth <= 768) {
             setMobileView("preview");
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
