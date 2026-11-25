@@ -1228,27 +1228,78 @@
         display: none !important;
       }
 
-      /* Vue 2: Document pleine page */
+      /* Vue 2: Document pleine page immersif (masquage par défaut des barres encombrantes sur mobile) */
+      .drive-container[data-mobile-view="preview"]:not(.mobile-show-header) .drive-header,
+      .drive-container[data-mobile-view="preview"]:not(.mobile-show-header) .mobile-tab-nav,
+      .drive-container[data-mobile-view="preview"]:not(.mobile-show-header) .preview-header {
+        display: none !important;
+      }
+
+      .mobile-doc-controls {
+        display: none;
+      }
+      .drive-container[data-mobile-view="preview"] .mobile-doc-controls {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 10px;
+        background: #ffffff;
+        border-bottom: 1px solid #dce5df;
+        position: sticky;
+        top: 0;
+        z-index: 45;
+        gap: 8px;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .mobile-back-to-tree {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        margin: 0;
+        background: #eaf5ee;
+        border: 1px solid #c8e4d0;
+        border-radius: 6px;
+        color: #0d652d;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        min-height: 34px;
+        flex-shrink: 0;
+      }
+      .mobile-toggle-options {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        margin: 0;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        min-height: 34px;
+        flex-shrink: 0;
+      }
       .drive-container[data-mobile-view="preview"] .drive-tree-pane {
         display: none !important;
       }
       .drive-container[data-mobile-view="preview"] .drive-preview-pane {
         display: flex !important;
         width: 100% !important;
-        min-height: 82dvh !important;
+        min-height: 100dvh !important;
         height: auto !important;
       }
-      .drive-container[data-mobile-view="preview"] .mobile-back-to-tree {
-        display: inline-flex;
-        position: sticky;
-        top: 0;
-        z-index: 35;
-        min-height: 42px;
-        font-size: 13px;
-        font-weight: 700;
-      }
       .drive-container[data-mobile-view="preview"] .preview-stage {
-        min-height: 74dvh;
+        min-height: calc(100dvh - 48px) !important;
+        height: calc(100dvh - 48px) !important;
+      }
+      .drive-container[data-mobile-view="preview"].mobile-show-header .preview-stage {
+        min-height: 60dvh !important;
+        height: auto !important;
       }
 
       .preview-header { flex-direction: column; align-items: flex-start !important; padding: 10px 12px; font-size: 12.5px; gap: 8px; }
@@ -3101,10 +3152,16 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     <div class="drive-splitter" id="drive-splitter" style="display: flex;" title="Glisser pour redimensionner la barre"></div>
 
     <div class="drive-preview-pane">
-      <button type="button" class="mobile-back-to-tree" id="btn-mobile-back-tree" aria-label="Retourner à la liste des pièces">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        <span>Retour à la liste des pièces</span>
-      </button>
+      <div class="mobile-doc-controls" id="mobile-doc-controls">
+        <button type="button" class="mobile-back-to-tree" id="btn-mobile-back-tree" aria-label="Retourner à la liste des pièces">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Retour aux pièces</span>
+        </button>
+        <button type="button" class="mobile-toggle-options" id="btn-mobile-toggle-options" aria-label="Afficher ou masquer les options et le titre du document">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span id="label-mobile-toggle-options">Options</span>
+        </button>
+      </div>
 
       <div class="preview-header">
         <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;flex-wrap:wrap;">
@@ -4767,6 +4824,17 @@ function getCleanDisplayName(fullPath) {
   if (tabBtnTree) tabBtnTree.addEventListener("click", () => setMobileView("tree"));
   if (tabBtnPreview) tabBtnPreview.addEventListener("click", () => setMobileView("preview"));
   if (btnMobileBackTree) btnMobileBackTree.addEventListener("click", () => setMobileView("tree"));
+  const btnMobileToggleOptions = document.getElementById("btn-mobile-toggle-options");
+  const labelMobileToggleOptions = document.getElementById("label-mobile-toggle-options");
+  if (btnMobileToggleOptions) {
+    btnMobileToggleOptions.addEventListener("click", () => {
+      if (!driveContainer) return;
+      const isShown = driveContainer.classList.toggle("mobile-show-header");
+      if (labelMobileToggleOptions) {
+        labelMobileToggleOptions.textContent = isShown ? "Masquer options" : "Options";
+      }
+    });
+  }
 
   function formatDocumentFileName(filePath) {
     if (!filePath) return 'document.pdf';
