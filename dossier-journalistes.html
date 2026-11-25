@@ -4006,8 +4006,9 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   function getShortDocCode(fullPath) {
     const norm = String(fullPath || "").replace(/^00_DOSSIER_POUR_JOURNALISTES_BIFFE\//, "").normalize("NFC");
     const filename = norm.split("/").pop();
+    const lower = filename.toLowerCase();
 
-    if (filename.includes("89-det") || filename.includes("89-pp")) return "89det";
+    if (lower.includes("89-det") || lower.includes("89-pp") || lower.includes("89det") || lower.includes("89pp")) return "89det";
     if (filename.includes("petition-546-cedd-bvg")) return "cedd-546";
     if (filename.includes("declaration-appui-manfred-liebel")) return "liebel-e7834";
     if (filename.includes("observations-reponse-canada")) return "obs-17oct";
