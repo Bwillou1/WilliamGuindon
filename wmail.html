@@ -767,6 +767,7 @@ header.site nav a:hover {
 .cava.mpo { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
 .cava.atip { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
 .cava.cce { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); }
+.cava.stb { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
 
 .card-head .meta { flex: 1; min-width: 0; }
 .card-head .l1 {
@@ -787,7 +788,7 @@ header.site nav a:hover {
   border-radius: 4px;
   white-space: nowrap;
 }
-.card-head .role { font-size: 12px; color: var(--w-text-dim); font-weight: 500; }
+.card-head .role { font-size: 11.5px; color: var(--w-text-dim); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
 .card-head .l2 {
   font-size: 12px;
   color: var(--w-text-muted);
@@ -1029,14 +1030,14 @@ header.site nav a:hover {
     <div class="hud-card">
       <div class="hud-icon">📨</div>
       <div class="hud-meta">
-        <span class="hud-value">92</span>
+        <span class="hud-value">94</span>
         <span class="hud-label">Correspondances citoyennes</span>
       </div>
     </div>
     <div class="hud-card">
       <div class="hud-icon">📁</div>
       <div class="hud-meta">
-        <span class="hud-value">19</span>
+        <span class="hud-value">20</span>
         <span class="hud-label">Dossiers d'enquête &amp; Fils</span>
       </div>
     </div>
@@ -1102,17 +1103,22 @@ header.site nav a:hover {
           <button class="nav-item active" data-nav="all">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></span>
             <span class="nav-label">Boîte de réception</span>
-            <span class="nav-count">19</span>
+            <span class="nav-count">20</span>
           </button>
           <button class="nav-item" data-nav="starred">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 6.8L12 17l-6.3 3.5L7 13.7 2 8.9 9 8z"/></svg></span>
             <span class="nav-label">Éléments clés</span>
-            <span class="nav-count">11</span>
+            <span class="nav-count">12</span>
           </button>
           <button class="nav-item" data-nav="sent">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg></span>
             <span class="nav-label">Envoyés</span>
             <span class="nav-count">42</span>
+          </button>
+          <button class="nav-item" data-nav="stablex">
+            <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11m-8-11v11"/></svg></span>
+            <span class="nav-label">Stablex (Silence corporatif)</span>
+            <span class="nav-count">14</span>
           </button>
         </nav>
 
@@ -1132,7 +1138,7 @@ header.site nav a:hover {
         <button class="label-row" data-lab="cce">
           <i class="label-tag" style="background:#10b981;color:#10b981"></i>
           <span class="nav-label">CCE / ACEUM &amp; Traités</span>
-          <span class="nav-count">11</span>
+          <span class="nav-count">12</span>
         </button>
         <button class="label-row" data-lab="aiprp">
           <i class="label-tag" style="background:#06b6d4;color:#06b6d4"></i>
@@ -1151,7 +1157,7 @@ header.site nav a:hover {
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre officiel SEM-26-003 :</strong> 92 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
+          <strong>Registre officiel SEM-26-003 :</strong> 94 correspondances officielles et citoyennes versées au dossier public. Renseignements personnels biffés (Loi 25).
         </div>
       </aside>
 
@@ -1167,7 +1173,7 @@ header.site nav a:hover {
             <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Clé USB</span></button>
           </div>
           <div class="wmail-counter-meta">
-            <span id="counter">19 dossiers · 92 courriels</span>
+            <span id="counter">20 dossiers · 94 courriels</span>
             <button class="icon-btn" id="refresh" aria-label="Actualiser" title="Actualiser la liste">
               <svg class="svg" viewBox="0 0 24 24"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.4-2L20 11M4 13l2.5 4a7 7 0 0 0 11.4-2"/></svg>
             </button>
@@ -1177,7 +1183,7 @@ header.site nav a:hover {
         <div class="wmail-viewport" id="messagesArea">
           <div class="msglist" id="msglist">
             
-    <div class="row" data-tid="t1" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t1" data-cat="cce" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, Julie Dabrusin (ECCC), MPO">
@@ -1185,6 +1191,12 @@ header.site nav a:hover {
         <span class="count-tag">7</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1196,7 +1208,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t2" data-cat="signalement" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t2" data-cat="signalement" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, "Enviroinfo (ECCC)"">
@@ -1204,6 +1216,12 @@ header.site nav a:hover {
         <span class="count-tag">2</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-signalement">
           <span class="pill-dot"></span>
           <span>Application de la loi & Pêches</span>
@@ -1215,14 +1233,20 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t3" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t3" data-cat="cce" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
-      <div class="st " title="Ajouter une étoile">★</div>
+      <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, postmaster">
         <span class="who-name">William Guindon, postmaster</span>
-        <span class="count-tag">4</span>
+        <span class="count-tag">5</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1230,11 +1254,11 @@ header.site nav a:hover {
         <span class="subj-text" title="Demande formelle de clarification – Communication SEM-26-003 (Cellule 6 – Blainville) – À intégrer à ma soumission révisée à la CCE">Demande formelle de clarification – Communication SEM-26-003 (Cellule 6 – Blainville) – À intégrer à ma soumission révisée à la CCE</span>
         <span class="snip"> — À l'attention du responsable légal et du service environnement de Stablex Canada Inc., 760, boulevard Industriel, Blainville (Québec) J7C 3V4 Je suis William Gu…</span>
       </div>
-      <div class="date">26 juin</div>
+      <div class="date">18 juin</div>
     </div>
   
 
-    <div class="row" data-tid="t4" data-cat="lep" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t4" data-cat="lep" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, postmaster, Julie Dabrusin (ECCC), "Enviroinfo (ECCC)", MPO">
@@ -1242,6 +1266,12 @@ header.site nav a:hover {
         <span class="count-tag">13</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-lep">
           <span class="pill-dot"></span>
           <span>Espèces en péril (LEP)</span>
@@ -1253,7 +1283,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t5" data-cat="stablex" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t5" data-cat="stablex" data-key="0" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, "Enviroinfo (ECCC)"">
@@ -1261,6 +1291,12 @@ header.site nav a:hover {
         <span class="count-tag">2</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-stablex">
           <span class="pill-dot"></span>
           <span>Stablex & Cellule 6</span>
@@ -1272,7 +1308,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t6" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t6" data-cat="cce" data-key="0" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, MPO, "Enviroinfo (ECCC)"">
@@ -1280,6 +1316,7 @@ header.site nav a:hover {
         <span class="count-tag">6</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1291,7 +1328,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t7" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t7" data-cat="cce" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, MPO">
@@ -1299,6 +1336,12 @@ header.site nav a:hover {
         <span class="count-tag">2</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1310,7 +1353,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t8" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t8" data-cat="cce" data-key="0" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, Julie Dabrusin (ECCC), MPO, postmaster">
@@ -1318,6 +1361,12 @@ header.site nav a:hover {
         <span class="count-tag">8</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1329,7 +1378,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t9" data-cat="signalement" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t9" data-cat="signalement" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon">
@@ -1337,6 +1386,12 @@ header.site nav a:hover {
         <span class="count-tag">6</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-signalement">
           <span class="pill-dot"></span>
           <span>Application de la loi & Pêches</span>
@@ -1348,7 +1403,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t10" data-cat="lep" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t10" data-cat="lep" data-key="1" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, Julie Dabrusin (ECCC), MPO">
@@ -1356,6 +1411,7 @@ header.site nav a:hover {
         <span class="count-tag">5</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-lep">
           <span class="pill-dot"></span>
           <span>Espèces en péril (LEP)</span>
@@ -1367,7 +1423,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t11" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t11" data-cat="cce" data-key="0" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon">
@@ -1375,6 +1431,7 @@ header.site nav a:hover {
         
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1386,7 +1443,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t12" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t12" data-cat="cce" data-key="1" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, Julie Dabrusin (ECCC)">
@@ -1394,6 +1451,12 @@ header.site nav a:hover {
         <span class="count-tag">6</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1405,7 +1468,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t13" data-cat="aiprp" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t13" data-cat="aiprp" data-key="1" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="AIPRP (Lisa Praine), William Guindon, "Praine,Lisa (elle | she, her) (ECCC)"">
@@ -1413,6 +1476,7 @@ header.site nav a:hover {
         <span class="count-tag">13</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-aiprp">
           <span class="pill-dot"></span>
           <span>Accès à l'information (AIPRP)</span>
@@ -1424,7 +1488,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t14" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t14" data-cat="cce" data-key="0" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon">
@@ -1432,6 +1496,12 @@ header.site nav a:hover {
         <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1443,7 +1513,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t15" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t15" data-cat="cce" data-key="0" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, MPO, "Enviroinfo (ECCC)"">
@@ -1451,6 +1521,12 @@ header.site nav a:hover {
         <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1462,7 +1538,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t16" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t16" data-cat="cce" data-key="0" data-stablex="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, Edith Mora Castelan">
@@ -1470,6 +1546,12 @@ header.site nav a:hover {
         <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1481,7 +1563,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t17" data-cat="stablex" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t17" data-cat="stablex" data-key="1" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="MPO, Julie Dabrusin (ECCC)">
@@ -1489,6 +1571,7 @@ header.site nav a:hover {
         <span class="count-tag">2</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-stablex">
           <span class="pill-dot"></span>
           <span>Stablex & Cellule 6</span>
@@ -1500,7 +1583,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t18" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t18" data-cat="cce" data-key="1" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, MPO, Julie Dabrusin (ECCC)">
@@ -1508,6 +1591,7 @@ header.site nav a:hover {
         <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-cce">
           <span class="pill-dot"></span>
           <span>CCE / ACEUM & Traités</span>
@@ -1519,7 +1603,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t19" data-cat="aiprp" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t19" data-cat="aiprp" data-key="1" data-stablex="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, MPO, Julie Dabrusin (ECCC)">
@@ -1527,6 +1611,7 @@ header.site nav a:hover {
         <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
+        
         <span class="pill pill-aiprp">
           <span class="pill-dot"></span>
           <span>Accès à l'information (AIPRP)</span>
@@ -1535,6 +1620,31 @@ header.site nav a:hover {
         <span class="snip"> — Monsieur le Premier ministre, Madame la Ministre de l'Environnement, du Changement climatique et de la Nature, Madame la Ministre des Pêches, des Océans et de l…</span>
       </div>
       <div class="date">22 nov.</div>
+    </div>
+  
+
+    <div class="row" data-tid="t20" data-cat="cce" data-key="0" data-stablex="1" role="button" tabindex="0">
+      <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
+      <div class="st " title="Ajouter une étoile">★</div>
+      <div class="who" title="William Guindon">
+        <span class="who-name">William Guindon</span>
+        
+      </div>
+      <div class="subj-wrap">
+        
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        
+        <span class="pill pill-cce">
+          <span class="pill-dot"></span>
+          <span>CCE / ACEUM & Traités</span>
+        </span>
+        <span class="subj-text" title="Finalisation de la soumission SEM-26-003 : Dernière opportunité de réponse">Finalisation de la soumission SEM-26-003 : Dernière opportunité de réponse</span>
+        <span class="snip"> — (Corps vide — transmission du message 5 à la firme de communications de Stablex, en copie au même moment.) =====================================================…</span>
+      </div>
+      <div class="date">3 juil.</div>
     </div>
   
           </div>
@@ -1574,8 +1684,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_01_demande_enquete_lcom_peches</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -1858,8 +1984,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_02_signalement_enviroinfo</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -1953,7 +2095,7 @@ header.site nav a:hover {
             <span>Copier</span>
           </button>
           <span class="lpill lpill-cce">CCE / ACEUM & Traités</span>
-          <span class="nmsg">4 messages</span>
+          <span class="nmsg">5 messages</span>
           <button class="allopen">Tout déplier / replier</button>
         </div>
       </div>
@@ -1965,8 +2107,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_03_clarification_stablex</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -2090,7 +2248,7 @@ header.site nav a:hover {
             </article>
           
 
-            <article class="card open">
+            <article class="card ">
               <div class="card-head">
                 <div class="avwrap">
                   <div class="cava eccc">ECCC</div>
@@ -2120,6 +2278,48 @@ header.site nav a:hover {
       <p><b>⚠️ Avis technique de non-remise automatique (MPO) :</b></p>
       <p>L'adresse régionale de transmission ministérielle refuse les correspondances externes (code serveur 550 5.1.10). Cette pièce matérialise l'obstacle technique documenté dans la communication SEM-26-003.</p>
     </div>
+                </div>
+              </div>
+            </article>
+          
+
+            <article class="card open">
+              <div class="card-head">
+                <div class="avwrap">
+                  <div class="cava me">WG</div>
+                </div>
+                <div class="meta">
+                  <div class="l1">
+                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
+                    <span class="forg-badge">Citoyen & Auteur</span>
+                    
+                  </div>
+                  <div class="l2">
+                    <span>à <strong>guy.thibault@stablex.com, pierre.lego@stablex.com, michel.perron@stablex.com, tania.tzakova@stablex.com</strong></span>
+                     · <span class="faded">Cc : plego@marsulex.com, benoit.rompre@stablex.com, tania.tzakova@stablex.com, afrangoulis@maxxam.ca</span>
+                  </div>
+                </div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">18 juin 2026</div>
+                <div class="cacts">
+                  <span class="msg-num-tag">Msg #102</span>
+                  <span class="card-chevron">▾</span>
+                </div>
+              </div>
+              <div class="card-body">
+                
+                  <div class="attach">
+                    <div class="chip" title="Cliquer pour afficher la fiche de la pièce probatoire" onclick="openEvidenceModal('IMG_0411.jpeg%20(607%20Ko)%20%3B%2036-DET_fr.pdf%20(2%2C6%20Mo)%20%3B%20event.ics%20%3B%2026-3-ack-fr%203.pdf%20(94%20Ko)', '102', 'thread_03_clarification_stablex')">
+                      <span class="chip-icon">📎</span>
+                      <div class="cinfo">
+                        <div class="fn">IMG_0411.jpeg (607 Ko) ; 36-DET_fr.pdf (2,6 Mo) ; event.ics ; 26-3-ack-fr 3.pdf (94 Ko)</div>
+                        <div class="sz">Pièce probatoire versée au dossier public · Cliquer pour détails ↗</div>
+                      </div>
+                    </div>
+                  </div>
+                
+                <div class="msg-text-content">
+                  <p>(Transmission directe de la demande de clarification (message 1) aux<br>personnes physiques de Stablex / Maxam / Marsulex destinataires — corps vide ;<br>contenu identique au message 1.)</p>
                 </div>
               </div>
             </article>
@@ -2159,8 +2359,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_04_notification_aceum_24_27</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -2636,8 +2852,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_05_recherche_citoyenne_stablex</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -2740,8 +2972,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_06_dossier_pic_20260615_082854</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3015,8 +3250,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_07_depot_soumission_14_ans</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3119,8 +3370,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_08_cadets_valcartier_min_334658</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3441,8 +3708,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_09_signalement_penal_peches_inrp</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3703,8 +3986,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_10_decret_urgence_lep_art_80</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3913,8 +4199,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_11_appel_experts_15_ans</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -3985,8 +4274,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_12_decision_cce_ambassades</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -4248,8 +4553,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_13_aiprp_praine_purolator</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -4797,8 +5105,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_14_enquete_partis_politiques</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -4946,8 +5270,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_15_imagerie_copernicus_cce</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -5096,8 +5436,24 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_16_reponse_canada_replique_72_rsp</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
         </div>
       </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -5242,8 +5598,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_17_reponses_petition_0546_eccc_mpo</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -5366,8 +5725,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_18_suivi_conjoint_ministres_jeunesse</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -5512,8 +5874,11 @@ header.site nav a:hover {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_19_avis_officiel_petition_blocage</span>
+          
         </div>
       </div>
+
+      
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
@@ -5609,6 +5974,94 @@ header.site nav a:hover {
                 
                 <div class="msg-text-content">
                   <p>(Accusé automatique ECCC habituel.)</p>
+                </div>
+              </div>
+            </article>
+          
+      </div>
+    </div>
+  
+
+    <div class="threadview" id="tv-t20">
+      <!-- Barre d'actions supérieure façon Gmail Pro -->
+      <div class="tv-action-bar">
+        <div class="tv-action-left">
+          <button class="back-btn" title="Revenir à la boîte de réception (Raccourci : Échap ou u)" aria-label="Retour à la liste">
+            <svg class="svg" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            <span>Boîte de réception</span>
+          </button>
+        </div>
+        <div class="tv-action-right">
+          <button class="tool-btn print-thread-btn" title="Imprimer ou exporter ce fil au format officiel" onclick="window.print()">
+            <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span>Imprimer</span>
+          </button>
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t20">
+            <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Copier</span>
+          </button>
+          <span class="lpill lpill-cce">CCE / ACEUM & Traités</span>
+          <span class="nmsg">1 message</span>
+          <button class="allopen">Tout déplier / replier</button>
+        </div>
+      </div>
+
+      <!-- En-tête du fil -->
+      <div class="tv-header">
+        <h2>Finalisation de la soumission SEM-26-003 : Dernière opportunité de réponse</h2>
+        <div class="tv-header-tags">
+          <span class="badge-proof">Dossier CCE SEM-26-003</span>
+          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-id">Fil ID : thread_21_stablex_ultimatum_catapulte</span>
+          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>
+        </div>
+      </div>
+
+      
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      
+
+      <!-- Liste des messages du fil -->
+      <div class="tv-cards-stack">
+        
+            <article class="card open">
+              <div class="card-head">
+                <div class="avwrap">
+                  <div class="cava me">WG</div>
+                </div>
+                <div class="meta">
+                  <div class="l1">
+                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
+                    <span class="forg-badge">Citoyen & Auteur</span>
+                    <span class="role">(copie à mcouture@catapultecommunication.com (Catapulte Communication — mandat de communications de Stablex))</span>
+                  </div>
+                  <div class="l2">
+                    <span>à <strong>maxime.couture@stablex.com, mcouture@catapultecommunication.com</strong></span>
+                    
+                  </div>
+                </div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juillet 2026</div>
+                <div class="cacts">
+                  <span class="msg-num-tag">Msg #106</span>
+                  <span class="card-chevron">▾</span>
+                </div>
+              </div>
+              <div class="card-body">
+                
+                <div class="msg-text-content">
+                  <p>(Corps vide — transmission du message 5 à la firme de communications de<br>Stablex, en copie au même moment.)</p>
                 </div>
               </div>
             </article>
@@ -5815,10 +6268,19 @@ header.site nav a:hover {
     if(tid) openThreadById(tid, true);
   });
 
+  function updateCounter() {
+    var visibleRows = Array.from(rows).filter(function(r){ return r.style.display !== 'none'; });
+    var cntEl = document.getElementById('counter');
+    if(cntEl){
+      cntEl.textContent = visibleRows.length + ' dossier' + (visibleRows.length > 1 ? 's' : '') + ' affiché' + (visibleRows.length > 1 ? 's' : '');
+    }
+  }
+
   // Filtres latéraux
   navItems.forEach(function(nav){
     nav.addEventListener('click', function(){
       navItems.forEach(function(x){ x.classList.remove('active'); });
+      labelRows.forEach(function(x){ x.classList.remove('active'); });
       nav.classList.add('active');
       var filter = nav.getAttribute('data-nav');
       goList(false);
@@ -5826,7 +6288,9 @@ header.site nav a:hover {
         if(filter === 'all') row.style.display = 'flex';
         else if(filter === 'starred') row.style.display = row.getAttribute('data-key') === '1' ? 'flex' : 'none';
         else if(filter === 'sent') row.style.display = row.querySelector('.who').textContent.indexOf('William') !== -1 ? 'flex' : 'none';
+        else if(filter === 'stablex') row.style.display = (row.getAttribute('data-cat') === 'stablex' || row.getAttribute('data-stablex') === '1') ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 
@@ -5834,12 +6298,14 @@ header.site nav a:hover {
   labelRows.forEach(function(l){
     l.addEventListener('click', function(){
       labelRows.forEach(function(x){ x.classList.remove('active'); });
+      navItems.forEach(function(x){ x.classList.remove('active'); });
       l.classList.add('active');
       var cat = l.getAttribute('data-lab');
       goList(false);
       rows.forEach(function(row){
         row.style.display = row.getAttribute('data-cat') === cat ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 
@@ -5854,6 +6320,7 @@ header.site nav a:hover {
         if(cat === 'all') row.style.display = 'flex';
         else row.style.display = row.getAttribute('data-cat') === cat ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 

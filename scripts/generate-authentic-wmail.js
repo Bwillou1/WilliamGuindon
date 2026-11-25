@@ -4,19 +4,32 @@ const path = require('path');
 const rawFile = '/Users/williamguindon/.gemini/antigravity/brain/fd968382-bf27-4d6d-b652-7559a28122df/.user_uploaded/media_1795563158087_84f2f96d.txt';
 let rawText = fs.readFileSync(rawFile, 'utf8');
 
+// Fichier d'archive Stablex Canada Inc.
+const stbFile = path.join(__dirname, '../data/correspondance-stablex.txt');
+let stbText = '';
+if (fs.existsSync(stbFile)) {
+  stbText = fs.readFileSync(stbFile, 'utf8');
+}
+
 // Nettoyage strict initial des renvois, métadonnées de suivi et brouillons
-rawText = rawText
-  .replace(/\[Message transcrit intégralement dans Correspondance_Marianne_Depelteau\.txt[^\]]*\]/gi, 
-    "[Signalement formel et données d'échantillonnage versés au dossier probatoire citoyen — ID 19fd955011fe288c. Station d'échantillonnage FS-STB-2 (aval cellule n° 6), lacs Fauvel ; cadmium à 4,7× le critère CVAC ; chaîne de possession légale.]")
-  .replace(/aussi transcrit intégralement dans l'archive Marianne[^)]*\)/gi,
-    "dossier citoyen archivé et documenté")
-  .replace(/signalement original complet dans l'archive Marianne[^\]]*\]/gi,
-    "signalement officiel complet consigné au registre public]")
-  .replace(/marianne\s+d[eé]pelteau[^\s,.<>)]*/gi, "[Nom protégé]")
-  .replace(/d[eé]pelteau/gi, "[Protégé]")
-  .replace(/marianne/gi, "[Protégé]")
-  .replace(/Correspondance_Marianne_Depelteau\.txt/gi, "[Registre de correspondances]")
-  .replace(/archive Marianne/gi, "[Dossier probatoire]");
+function cleanRawText(str) {
+  return str
+    .replace(/\[Message transcrit intégralement dans Correspondance_Marianne_Depelteau\.txt[^\]]*\]/gi, 
+      "[Signalement formel et données d'échantillonnage versés au dossier probatoire citoyen — ID 19fd955011fe288c. Station d'échantillonnage FS-STB-2 (aval cellule n° 6), lacs Fauvel ; cadmium à 4,7× le critère CVAC ; chaîne de possession légale.]")
+    .replace(/aussi transcrit intégralement dans l'archive Marianne[^)]*\)/gi,
+      "dossier citoyen archivé et documenté")
+    .replace(/signalement original complet dans l'archive Marianne[^\]]*\]/gi,
+      "signalement officiel complet consigné au registre public]")
+    .replace(/aussi dans Correspondance_Marianne_Depelteau\.txt[^\n\]]*/gi, "")
+    .replace(/marianne\s+d[eé]pelteau[^\s,.<>)]*/gi, "[Nom protégé]")
+    .replace(/d[eé]pelteau/gi, "[Protégé]")
+    .replace(/marianne/gi, "[Protégé]")
+    .replace(/Correspondance_Marianne_Depelteau\.txt/gi, "[Registre de correspondances]")
+    .replace(/archive Marianne/gi, "[Dossier probatoire]");
+}
+
+rawText = cleanRawText(rawText);
+if (stbText) stbText = cleanRawText(stbText);
 
 // Parse all messages
 const msgRegex = /MESSAGE\s+(\d+)[\s\S]*?(?=MESSAGE\s+\d+|$)/g;
@@ -63,6 +76,67 @@ while ((m = msgRegex.exec(rawText)) !== null) {
       note: noteMatch ? noteMatch[1].trim() : '',
       body
     });
+  }
+}
+
+// Ingestion complémentaire de l'archive officielle Stablex Canada Inc.
+if (stbText) {
+  const stbRegex = /MESSAGE\s+(\d+)[\s\S]*?(?=MESSAGE\s+\d+|$|CONCLUSION)/g;
+  let sm;
+  while ((sm = stbRegex.exec(stbText)) !== null) {
+    const block = sm[0];
+    const sNum = parseInt(sm[1], 10);
+    const dateMatch = block.match(/Date\s*:\s*([^\n]+)/);
+    const deMatch = block.match(/De\s*:\s*([^\n]+)/);
+    const aMatch = block.match(/À\s*:\s*([^\n]+)/);
+    const ccMatch = block.match(/Cc\s*:\s*([^\n]+)/);
+    const objMatch = block.match(/Objet\s*:\s*([^\n]+)/);
+    const filMatch = block.match(/Fil\s*:\s*([a-f0-9]+)/i);
+    const idMatch = block.match(/ID\s*:\s*([a-f0-9]+)/i);
+    const piecesMatch = block.match(/Pièces\s*:\s*([^\n]+)/i);
+    const noteMatch = block.match(/Note\s*:\s*([^\n]+)/i);
+
+    const sepIdx = block.indexOf('--------------------------------------------------------------------------------');
+    let body = '';
+    if (sepIdx !== -1) {
+      body = block.substring(sepIdx + 80).trim();
+    }
+
+    const sId = idMatch ? idMatch[1].trim() : '';
+
+    // Vérifier si le message existe déjà dans rawMessages
+    const existing = rawMessages.find(x => x.id && sId && x.id.toLowerCase() === sId.toLowerCase());
+    if (existing) {
+      existing.isStablex = true;
+      existing.stablexNum = sNum;
+      if (aMatch && aMatch[1].includes('stablex.com') && !existing.a.includes('stablex.com')) {
+        existing.a = aMatch[1].trim();
+      }
+    } else {
+      // Message inédit exclusif Stablex (messages 2, 4, 5, 6)
+      const isDraftOrTracker = 
+        body.includes('BROUILLON') ||
+        body.includes('Mailtrack') ||
+        body.includes('Mailsuite');
+
+      if (!isDraftOrTracker) {
+        rawMessages.push({
+          num: 100 + sNum,
+          stbNum: sNum,
+          date: dateMatch ? dateMatch[1].trim() : '',
+          de: deMatch ? deMatch[1].trim() : '',
+          a: aMatch ? aMatch[1].trim() : '',
+          cc: ccMatch ? ccMatch[1].trim() : '',
+          objet: objMatch ? objMatch[1].trim() : '(sans objet)',
+          fil: filMatch ? filMatch[1].trim() : 'fil_stb_' + sNum,
+          id: sId,
+          pieces: piecesMatch ? piecesMatch[1].trim() : '',
+          note: noteMatch ? noteMatch[1].trim() : '',
+          body,
+          isStablex: true
+        });
+      }
+    }
   }
 }
 
@@ -192,7 +266,7 @@ rawMessages.forEach(msg => {
     filKey = 'thread_01_demande_enquete_lcom_peches';
   } else if (msg.num === 8 || msg.num === 9) {
     filKey = 'thread_02_signalement_enviroinfo';
-  } else if (msg.num === 10 || msg.num === 11 || msg.num === 26 || msg.num === 27) {
+  } else if (msg.num === 10 || msg.num === 11 || msg.num === 26 || msg.num === 27 || msg.num === 102) {
     filKey = 'thread_03_clarification_stablex';
   } else if (msg.num >= 12 && msg.num <= 24) {
     filKey = 'thread_04_notification_aceum_24_27';
@@ -226,6 +300,10 @@ rawMessages.forEach(msg => {
     filKey = 'thread_18_suivi_conjoint_ministres_jeunesse';
   } else if (msg.num >= 94 && msg.num <= 96) {
     filKey = 'thread_19_avis_officiel_petition_blocage';
+  } else if (msg.num === 104) {
+    filKey = 'thread_20_stablex_derniere_relance_30_juin';
+  } else if (msg.num === 105 || msg.num === 106) {
+    filKey = 'thread_21_stablex_ultimatum_catapulte';
   }
 
   if (!threadMap.has(filKey)) {
@@ -258,7 +336,8 @@ for (const [filId, msgs] of threadMap.entries()) {
   });
 
   const participantStr = Array.from(senders).join(', ');
-  const isKey = msgs.some(m => [2, 8, 12, 35, 45, 46, 47, 57, 59, 75, 86, 88, 89, 91, 94].includes(m.num));
+  const isKey = msgs.some(m => [2, 8, 12, 35, 45, 46, 47, 57, 59, 75, 86, 88, 89, 91, 94, 102, 104, 105].includes(m.num));
+  const isStablex = msgs.some(m => m.isStablex || (m.a && m.a.includes('stablex.com')) || (m.cc && m.cc.includes('stablex.com')) || (m.objet && m.objet.toLowerCase().includes('stablex')) || filId.includes('stablex'));
 
   // Snippet assaini
   let snippet = msgs.map(m => m.body).join(' ')
@@ -276,16 +355,17 @@ for (const [filId, msgs] of threadMap.entries()) {
     filId,
     num: tIdx,
     subject: sanitizeText(subject),
-    category: categoryInfo.cat,
-    catLabel: categoryInfo.label,
-    catColor: categoryInfo.color,
-    catIcon: categoryInfo.icon,
+    category: isStablex && categoryInfo.cat === 'eccc' ? 'stablex' : categoryInfo.cat,
+    catLabel: isStablex && categoryInfo.cat === 'eccc' ? 'Stablex & Cellule 6' : categoryInfo.label,
+    catColor: isStablex && categoryInfo.cat === 'eccc' ? '#f59e0b' : categoryInfo.color,
+    catIcon: isStablex && categoryInfo.cat === 'eccc' ? '🏭' : categoryInfo.icon,
     rawDate: last.date.split(' ')[0],
     shortDate: formatShortDate(last.date),
     messagesCount: msgs.length,
     participants: sanitizeText(participantStr),
     snippet: sanitizeText(snippet),
     isKey,
+    isStablex,
     msgs
   });
   tIdx++;
@@ -294,7 +374,7 @@ for (const [filId, msgs] of threadMap.entries()) {
 // Rendu HTML des rangées (.row façon Gmail Pro / Dark)
 function renderRow(t) {
   return `
-    <div class="row" data-tid="${t.tid}" data-cat="${t.category}" data-key="${t.isKey ? '1' : '0'}" role="button" tabindex="0">
+    <div class="row" data-tid="${t.tid}" data-cat="${t.category}" data-key="${t.isKey ? '1' : '0'}" data-stablex="${t.isStablex ? '1' : '0'}" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st ${t.isKey ? 'on' : ''}" title="${t.isKey ? 'Élément clé du dossier probatoire' : 'Ajouter une étoile'}">★</div>
       <div class="who" title="${t.participants}">
@@ -302,6 +382,12 @@ function renderRow(t) {
         ${t.messagesCount > 1 ? `<span class="count-tag">${t.messagesCount}</span>` : ''}
       </div>
       <div class="subj-wrap">
+        ${t.isStablex ? `
+          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
+            <span class="pill-dot" style="background:#f59e0b"></span>
+            <span>0 réponse Stablex</span>
+          </span>
+        ` : ''}
         <span class="pill pill-${t.category}">
           <span class="pill-dot"></span>
           <span>${t.catLabel}</span>
@@ -348,14 +434,30 @@ function renderThreadView(t) {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : ${t.filId}</span>
+          ${t.isStablex ? '<span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>' : ''}
         </div>
       </div>
+
+      ${t.isStablex ? `
+        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
+          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
+              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+            </div>
+            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+              Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
+            </div>
+          </div>
+        </div>
+      ` : ''}
 
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
         ${t.msgs.map((m, idx) => {
           const isMe = m.de.includes('William');
-          const isOpen = t.msgs.length === 1 || idx === t.msgs.length - 1 || [2, 8, 12, 35, 45, 46, 47, 75, 86, 88, 89, 91, 94].includes(m.num);
+          const isOpen = t.msgs.length === 1 || idx === t.msgs.length - 1 || [2, 8, 12, 35, 45, 46, 47, 75, 86, 88, 89, 91, 94, 102, 104, 105].includes(m.num);
           let avatarInitial = 'WG';
           let avatarClass = 'me';
           let orgName = 'Citoyen & Auteur';
@@ -363,6 +465,7 @@ function renderThreadView(t) {
             if (m.de.includes('MPO') || m.de.includes('Pêches')) { avatarInitial = 'MPO'; avatarClass = 'mpo'; orgName = 'Pêches et Océans Canada'; }
             else if (m.de.includes('AIPRP') || m.de.includes('Lisa Praine')) { avatarInitial = 'ATIP'; avatarClass = 'atip'; orgName = 'Direction générale AIPRP'; }
             else if (m.de.includes('CCE') || m.de.includes('Secretariat')) { avatarInitial = 'CCE'; avatarClass = 'cce'; orgName = 'Commission de coopération environnementale'; }
+            else if (m.de.includes('Stablex') || m.a.includes('stablex.com')) { avatarInitial = 'STB'; avatarClass = 'stb'; orgName = 'Stablex Canada Inc.'; }
             else { avatarInitial = 'ECCC'; avatarClass = 'eccc'; orgName = 'Environnement et Changement climatique Canada'; }
           }
 
@@ -1183,6 +1286,7 @@ header.site nav a:hover {
 .cava.mpo { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
 .cava.atip { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
 .cava.cce { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); }
+.cava.stb { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
 
 .card-head .meta { flex: 1; min-width: 0; }
 .card-head .l1 {
@@ -1203,7 +1307,7 @@ header.site nav a:hover {
   border-radius: 4px;
   white-space: nowrap;
 }
-.card-head .role { font-size: 12px; color: var(--w-text-dim); font-weight: 500; }
+.card-head .role { font-size: 11.5px; color: var(--w-text-dim); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
 .card-head .l2 {
   font-size: 12px;
   color: var(--w-text-muted);
@@ -1530,6 +1634,11 @@ header.site nav a:hover {
             <span class="nav-label">Envoyés</span>
             <span class="nav-count">42</span>
           </button>
+          <button class="nav-item" data-nav="stablex">
+            <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11m-8-11v11"/></svg></span>
+            <span class="nav-label">Stablex (Silence corporatif)</span>
+            <span class="nav-count">${threadList.filter(x => x.category === 'stablex' || x.isStablex).length}</span>
+          </button>
         </nav>
 
         <div class="sidebar-divider"></div>
@@ -1567,7 +1676,7 @@ header.site nav a:hover {
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre officiel SEM-26-003 :</strong> 92 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
+          <strong>Registre officiel SEM-26-003 :</strong> ${rawMessages.length} correspondances officielles et citoyennes versées au dossier public. Renseignements personnels biffés (Loi 25).
         </div>
       </aside>
 
@@ -1798,10 +1907,19 @@ header.site nav a:hover {
     if(tid) openThreadById(tid, true);
   });
 
+  function updateCounter() {
+    var visibleRows = Array.from(rows).filter(function(r){ return r.style.display !== 'none'; });
+    var cntEl = document.getElementById('counter');
+    if(cntEl){
+      cntEl.textContent = visibleRows.length + ' dossier' + (visibleRows.length > 1 ? 's' : '') + ' affiché' + (visibleRows.length > 1 ? 's' : '');
+    }
+  }
+
   // Filtres latéraux
   navItems.forEach(function(nav){
     nav.addEventListener('click', function(){
       navItems.forEach(function(x){ x.classList.remove('active'); });
+      labelRows.forEach(function(x){ x.classList.remove('active'); });
       nav.classList.add('active');
       var filter = nav.getAttribute('data-nav');
       goList(false);
@@ -1809,7 +1927,9 @@ header.site nav a:hover {
         if(filter === 'all') row.style.display = 'flex';
         else if(filter === 'starred') row.style.display = row.getAttribute('data-key') === '1' ? 'flex' : 'none';
         else if(filter === 'sent') row.style.display = row.querySelector('.who').textContent.indexOf('William') !== -1 ? 'flex' : 'none';
+        else if(filter === 'stablex') row.style.display = (row.getAttribute('data-cat') === 'stablex' || row.getAttribute('data-stablex') === '1') ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 
@@ -1817,12 +1937,14 @@ header.site nav a:hover {
   labelRows.forEach(function(l){
     l.addEventListener('click', function(){
       labelRows.forEach(function(x){ x.classList.remove('active'); });
+      navItems.forEach(function(x){ x.classList.remove('active'); });
       l.classList.add('active');
       var cat = l.getAttribute('data-lab');
       goList(false);
       rows.forEach(function(row){
         row.style.display = row.getAttribute('data-cat') === cat ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 
@@ -1837,6 +1959,7 @@ header.site nav a:hover {
         if(cat === 'all') row.style.display = 'flex';
         else row.style.display = row.getAttribute('data-cat') === cat ? 'flex' : 'none';
       });
+      updateCounter();
     });
   });
 
