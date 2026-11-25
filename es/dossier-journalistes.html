@@ -2603,9 +2603,13 @@
     <span class="folder-chevron">▶</span>
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#064e3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
     <span class="folder-name" title="07_Lettres_Appui_Communications_CCE">07 · Expediente CCA (SEM-26-003) y Cartas de apoyo</span>
-    <span class="folder-count">7</span>
+    <span class="folder-count">8</span>
   </div>
   <div class="tree-children">
+  <div class="drive-item is-cached" data-fullpath="00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/89-DET_fr.pdf">
+    <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
+    <a href="/assets/docs/00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/89-DET_fr.pdf" class="drive-item-name" title="89-DET_fr.pdf" target="_blank" rel="noopener">Resolución CCA desestimando excepción de Canadá (89/PP - DET, 25 nov. 2026 · 13 p.) · FR</a>
+  </div>
   <div class="drive-item" data-fullpath="00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf">
     <span style="display:inline-flex;align-items:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg></span>
     <a href="/assets/docs/00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf" class="drive-item-name" title="09-l-appui-sem-26-003_fr_redacted.pdf" target="_blank" rel="noopener">09 · Carta de apoyo conjunta al expediente SEM-26-003 (Testada)</a>
@@ -3553,6 +3557,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
   "06_Demarches_Juridiques_ONU_ECCC/Lettre_CEDD_au_petitionnaire_BIFFE.pdf": "Lettre du Commissaire à l'environnement et au développement durable (CEDD)",
   "06_Demarches_Juridiques_ONU_ECCC/Petition_environnementale_Stablex_Blainville_BIFFE.pdf": "Texte intégral de la pétition environnementale citoyenne",
   "06_Demarches_Juridiques_ONU_ECCC/Reponse_partielle_ministere_BIFFE.pdf": "Réponse partielle du ministère de l'Environnement (MELCCFP)",
+  "07_Lettres_Appui_Communications_CCE/89-DET_fr.pdf": "Notification CCE rejetant l'exception du Canada (89/PP - DET, 25 nov. 2026) · FR",
   "07_Lettres_Appui_Communications_CCE/09-l-appui-sem-26-003_fr_redacted.pdf": "09 · Lettre d'appui conjointe au dossier SEM-26-003 (Caviardée)",
   "07_Lettres_Appui_Communications_CCE/26-3-det2_fr (2).pdf": "CCE · Détermination 24.27(2) — Critères de recevabilité satisfaits",
   "07_Lettres_Appui_Communications_CCE/26-3-rsub_fr_redacted (5).pdf": "SEM-26-003 · Communication citoyenne révisée (Pièce maîtresse)",
@@ -3701,6 +3706,7 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
     const norm = String(fullPath || "").replace(/^00_DOSSIER_POUR_JOURNALISTES_BIFFE\//, "").normalize("NFC");
     const filename = norm.split("/").pop();
 
+    if (filename.includes("89-det") || filename.includes("89-pp")) return "89det";
     if (filename.includes("petition-546-cedd-bvg")) return "cedd-546";
     if (filename.includes("declaration-appui-manfred-liebel")) return "liebel-e7834";
     if (filename.includes("observations-reponse-canada")) return "obs-17oct";
@@ -5322,7 +5328,8 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
           const fp = (it.getAttribute("data-fullpath") || "").normalize("NFC").toLowerCase();
           let shortCode = "";
           try { shortCode = String(getShortDocCode(fp) || "").toLowerCase(); } catch (_) {}
-          if ((shortCode && shortCode === normRequested) || fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
+          const is89Match = (shortCode === "89det" || fp.includes("89-det") || fp.includes("89-pp")) && (normRequested === "89det" || normRequested === "89pp" || normRequested.includes("89-det") || normRequested.includes("89-pp"));
+          if (is89Match || (shortCode && shortCode === normRequested) || fp === normRequested || fp.endsWith("/" + normRequested) || fp.includes(normRequested)) {
             targetItemToSelect = it;
             let parentFolder = it.parentElement;
             while (parentFolder && parentFolder !== treeContainer) {
