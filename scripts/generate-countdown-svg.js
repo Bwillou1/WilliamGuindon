@@ -16,10 +16,10 @@ const fs = require('fs');
 const path = require('path');
 
 function generateCountdownSvg() {
-  // Délai légal de 60 jours CCE SEM-26-003 pour la recommandation du Secrétariat (Dossier factuel, art. 24.28 ACEUM)
-  const target = new Date('2026-12-15T23:59:59-05:00').getTime();
+  // Expiration du délai légal de 60 jours du Canada (16 octobre 2026, art. 24.27(4) ACEUM — constaté par la CCE le 25 nov. 2026 dans 89/PP)
+  const expiredAt = new Date('2026-10-16T23:59:59-04:00').getTime();
   const now = Date.now();
-  const diff = Math.max(0, target - now);
+  const diff = Math.max(0, now - expiredAt);
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -30,12 +30,11 @@ function generateCountdownSvg() {
 
   const pad = (n) => String(n).padStart(2, '0');
 
-  // Génération des 60 règles d'animation CSS et frames textuelles selon la technique svgasm (Tom Kwok)
-  // Permet le défilement cadencé des secondes en boucle de 60s sans aucun JavaScript (pour balises <img>)
+  // Génération des 60 règles d'animation CSS et frames textuelles croissantes selon la technique svgasm (Tom Kwok)
   let cssKeyframeDelays = '';
   let cssSecsFrames = '';
   for (let i = 0; i < 60; i++) {
-    const secVal = pad((secs - i + 60) % 60);
+    const secVal = pad((secs + i) % 60);
     cssKeyframeDelays += `    .sf-${i} { animation-delay: ${i}s; }\n`;
     cssSecsFrames += `      <text x="107" y="105" class="unit-num-sec sf-frame sf-${i}">${secVal}</text>\n`;
   }
@@ -149,15 +148,15 @@ ${cssKeyframeDelays}  </style>
     <circle cx="134" cy="57" r="6" fill="#34d399" class="pulse-dot" />
     <text x="152" y="62" font-size="13" font-weight="700" fill="#a7f3d0" letter-spacing="0.08em">CCE / ACEUM · DOSSIER SEM-26-003 · EN DIRECT</text>
     
-    <text x="1090" y="62" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">ÉCHÉANCE : 15 DÉCEMBRE 2026</text>
+    <text x="1090" y="62" font-size="14" font-weight="700" fill="#6ee7b7" text-anchor="end">DÉCISION CCE : 25 NOVEMBRE 2026 (89/PP)</text>
   </g>
 
   <!-- Titre Principal -->
-  <text x="600" y="132" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
-    HORLOGE OFFICIELLE — DOSSIER FACTUEL CCE
+  <text x="600" y="132" font-size="33" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">
+    OTTAWA HORS DÉLAI — RÉPONSE AU FOND EXIGÉE
   </text>
   <text x="600" y="168" font-size="17" font-weight="500" fill="#93c5fd" text-anchor="middle">
-    Délai de 60 jours pour la recommandation du Secrétariat (Art. 24.28 ACEUM)
+    Exception du Canada rejetée · Délai de 60 jours dépassé depuis le 16 oct. 2026 (Art. 24.27(4) ACEUM)
   </text>
 
   <!-- Grille du Décompte (4 Unités Principales) -->
@@ -165,7 +164,7 @@ ${cssKeyframeDelays}  </style>
   <g transform="translate(120, 205)">
     <rect width="215" height="175" class="unit-card" />
     <text id="cd-days" x="107" y="105" class="unit-num">${pad(days)}</text>
-    <text x="107" y="148" class="unit-lbl">Jours</text>
+    <text x="107" y="148" class="unit-lbl">Jours de retard</text>
   </g>
 
   <!-- Heures -->
@@ -196,8 +195,8 @@ ${cssSecsFrames}    </g>
   <!-- Total Minutes Callout Badge -->
   <g transform="translate(200, 415)">
     <rect width="800" height="54" rx="27" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5" />
-    <text x="400" y="34" font-size="18" font-weight="700" fill="#6ee7b7" text-anchor="middle" dominant-baseline="middle">
-      <tspan id="cd-total-mins" fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes restantes avant la recommandation du Secrétariat CCE
+    <text x="400" y="34" font-size="17" font-weight="700" fill="#6ee7b7" text-anchor="middle" dominant-baseline="middle">
+      <tspan id="cd-total-mins" fill="#ffffff" font-weight="800">${totalMinsFormatted}</tspan> minutes de retard du Canada pour déposer sa réponse sur le fond (89/PP)
     </text>
   </g>
 
@@ -221,13 +220,13 @@ ${cssSecsFrames}    </g>
   <script type="text/javascript">
     <![CDATA[
     (function() {
-      // Date cible : Délai de 60 jours CCE SEM-26-003 (15 décembre 2026 à 23:59:59 EST / UTC-5)
-      var targetTime = new Date('2026-12-15T23:59:59-05:00').getTime();
+      // Expiration du délai légal de 60 jours CCE SEM-26-003 (16 octobre 2026 à 23:59:59 EDT / UTC-4)
+      var expiredTime = new Date('2026-10-16T23:59:59-04:00').getTime();
       function pad(n) { return (n < 10 ? '0' : '') + n; }
 
       function updateClock() {
         var now = Date.now();
-        var diff = Math.max(0, targetTime - now);
+        var diff = Math.max(0, now - expiredTime);
         var d = Math.floor(diff / (1000 * 60 * 60 * 24));
         var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));

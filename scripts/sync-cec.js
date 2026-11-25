@@ -59,29 +59,31 @@ async function syncDossierStatus() {
     id_dossier: "SEM-26-003",
     titre_fr: "Enfouissement de matières dangereuses à Blainville",
     titre_en: "Hazardous Waste Disposal in Blainville",
-    etat_fr: "Réponses fédérales Pétition 0546 reçues (10 nov. 2026) & Observations complémentaires transmises · Examen par le Secrétariat (art. 24.28)",
-    etat_en: "Federal Petition 0546 Responses received (Nov 10, 2026) & Supplementary Observations submitted · Secretariat Review (Art. 24.28)",
-    prochaine_echeance: "2027-01-15T00:00:00-05:00",
-    echeance_libelle_fr: "Examen CCE en cours (60 jours ouvrables, art. 24.28 ACEUM) · Réponses Pétition 0546 reçues le 10 nov. 2026 (/bgv)",
-    echeance_libelle_en: "CEC Secretariat Review underway (60 business days, Art. 24.28 CUSMA) · Petition 0546 responses received Nov 10, 2026 (/bgv)",
-    derniere_mise_a_jour: "10 novembre 2026",
+    etat_fr: "Notification CCE du 25 nov. 2026 (89/PP) : Rejet de l'exception procédurale du Canada (art. 24.27(4)(a)) · Sommation de déposer la réponse sur le fond (délai de 60 jours écoulé)",
+    etat_en: "CEC Notification of Nov 25, 2026 (89/PP): Canada's procedural objection rejected (Art. 24.27(4)(a)) · Party ordered to submit merits response (60-day deadline expired)",
+    prochaine_echeance: "2026-10-16T23:59:59-04:00",
+    echeance_libelle_fr: "Délai légal de 60 jours écoulé (art. 24.27(4) ACEUM) · Le Canada est sommé par la CCE (25 nov. 2026, 89/PP) de déposer sa réponse sur le fond dans les meilleurs délais",
+    echeance_libelle_en: "60-day statutory deadline expired (Art. 24.27(4) CUSMA) · Canada ordered by the CEC (Nov 25, 2026, 89/PP) to submit its merits response without delay",
+    derniere_mise_a_jour: "25 novembre 2026",
     jalon_historique_fr: "Premier mineur à déposer et réussir dans l'histoire des Soumissions relatives aux questions d'exécution (SEM)",
     jalon_historique_en: "First minor in SEM history to file and achieve a positive determination",
     derniere_action: {
-      titre_fr: "Réponses d'ECCC et du MPO à la pétition 0546 reçues (10 nov. 2026) et observations complémentaires transmises à la CCE",
-      titre_en: "ECCC and DFO responses to Petition 0546 received (Nov 10, 2026) and supplementary observations submitted to the CEC",
-      date: "10 novembre 2026",
-      description_fr: "Le 10 novembre 2026, ECCC et le MPO ont transmis leurs réponses aux 24 questions de la pétition environnementale no 0546 (BVG/CEDD), indiquant notamment l'absence d'inspection sur le terrain, d'échantillonnage indépendant et d'autorisation fédérale pour la cellule 6. William Guindon a transmis le même jour ses observations complémentaires au Secrétariat de la CCE démontrant que le motif d'attente invoqué par le Canada le 16 octobre 2026 (72-RSP) n'a plus d'objet et demandant la recommandation d'un dossier factuel en vertu de l'article 24.28 de l'ACEUM.",
-      description_en: "On November 10, 2026, ECCC and DFO provided their responses to the 24 questions of Environmental Petition No. 0546 (OAG/CESD), indicating no on-site inspection, no independent sampling, and no federal authorization for Cell 6. On the same day, William Guindon submitted supplementary observations to the CEC Secretariat showing that the deferral ground invoked by Canada on October 16, 2026 (72-RSP) is now moot and requesting a factual record recommendation under CUSMA Article 24.28.",
-      document_fr: "https://williamguindon.me/bgv",
-      document_en: "https://williamguindon.me/en/bgv.html",
+      titre_fr: "Notification officielle CCE (A24.27(2)(3)/SEM/26-003/89/PP) : Rejet de l'exception du Canada et sommation de répondre sur le fond",
+      titre_en: "Official CEC Notification (A24.27(2)(3)/SEM/26-003/89/PP): Canada's pending-proceeding claim rejected and merits response requested without delay",
+      date: "25 novembre 2026",
+      description_fr: "Par notification officielle de 13 pages signée le 25 novembre 2026 par Paolo Solano (A24.27(2)(3)/SEM/26-003/89/PP), le Secrétariat de la CCE conclut que la pétition environnementale no 0546 au BVG ne constitue pas une procédure judiciaire ou administrative en instance au sens de l'article 24.27(4)(a) de l'ACEUM, qu'elle n'est pas mise en œuvre par le Canada, qu'elle est désormais épuisée depuis les réponses du 10 novembre 2026 et qu'elle ne résout pas les questions d'application effective des lois fédérales (cellule 6 de Stablex). Constatant que le délai de 60 jours de l'article 24.27(4) est déjà écoulé sans informations au titre de l'alinéa 24.27(4)(b), le Secrétariat poursuit son analyse et demande au Canada de présenter le reste de sa réponse officielle dans les meilleurs délais.",
+      description_en: "In a 13-page official Notification signed on November 25, 2026 by Paolo Solano (A24.27(2)(3)/SEM/26-003/89/PP), the CEC Secretariat concludes that OAG Environmental Petition No. 0546 does not constitute a pending judicial or administrative proceeding under CUSMA Article 24.27(4)(a), is not pursued by Canada, has already concluded following the November 10, 2026 ministerial responses, and cannot resolve the enforcement issues regarding Stablex Cell 6. Noting that the 60-day deadline under Article 24.27(4) has already expired without information under Article 24.27(4)(b), the Secretariat continues its review and requests that Canada submit the remainder of its official response as soon as possible.",
+      document_fr: "https://williamguindon.me/dossier-journalistes.html?file=assets/docs/89-pp_fr.pdf",
+      document_en: "https://williamguindon.me/en/dossier-journalistes.html?file=assets/docs/89-pp_fr.pdf",
+      notification_cce_fr: "https://williamguindon.me/assets/docs/89-pp_fr.pdf",
+      dossier_bgv_fr: "https://williamguindon.me/bgv",
       reponse_canada_fr: "https://williamguindon.me/viewer.html?file=assets/docs/72-rsp_fr.pdf",
       accuse_reception_cce_fr: "https://williamguindon.me/viewer.html?file=assets/docs/73-rec_fr.pdf"
     },
     progression: {
       actuelle: 4,
       total: 5,
-      pourcentage: 80
+      pourcentage: 85
     },
     registre_url_fr: REGISTRY_URL_FR,
     registre_url_en: REGISTRY_URL_EN,
@@ -204,18 +206,15 @@ async function syncDossierStatus() {
         data.cce_officiel.total_pieces_officielles = totalDocs;
         console.log(`Extraction CCE FR réussie : ${parsedFr.items.length} jalons, ${totalDocs} pièces officielles (${parsedFr.stepsDone}/${parsedFr.stepsTotal} étapes).`);
 
-        // Embargo éditorial pour la décision du 15 décembre (Contrôle d'annonce par William Guindon)
-        // Si un nouveau document ou jalon apparaît (> 5 jalons), le site signale la détection
-        // mais n'écrit pas automatiquement le document sur le site avant l'annonce officielle du samedi.
+        // Publication autorisée jusqu'au 6e jalon inclus (Notification 24.27(4)(a) du 25 novembre 2026 — 89/PP)
         const EMBARGO_PUBLICATION_ACTIF = process.env.RELEASE_CCE_DECISION !== 'true';
-        if (EMBARGO_PUBLICATION_ACTIF && parsedFr.items.length > 5) {
-          console.log(`[EMBARGO] Nouveaux jalons détectés sur la CCE (${parsedFr.items.length} jalons). Protection active pour annonce du samedi.`);
+        if (EMBARGO_PUBLICATION_ACTIF && parsedFr.items.length > 6) {
+          console.log(`[EMBARGO] Nouveaux jalons détectés sur la CCE (${parsedFr.items.length} jalons). Protection éditoriale active.`);
           data.cce_officiel.mise_a_jour_detectee_embargo = true;
-          data.cce_officiel.nouveaux_jalons_en_attente = parsedFr.items.slice(5);
+          data.cce_officiel.nouveaux_jalons_en_attente = parsedFr.items.slice(6);
           data.etat_fr = "Mise à jour officielle détectée sur le registre de la CCE · Analyse et annonce citoyenne à venir";
           data.etat_en = "Official update detected on the CEC registry · Review and citizen announcement upcoming";
-          // Ne pas écraser les pièces publiques avant l'annonce officielle
-          data.cce_officiel.timeline_fr = parsedFr.items.slice(0, 5);
+          data.cce_officiel.timeline_fr = parsedFr.items.slice(0, 6);
         }
       }
     }
@@ -232,8 +231,8 @@ async function syncDossierStatus() {
       const htmlEn = await pageResEn.text();
       const parsedEn = parseCECTimeline(htmlEn);
       if (parsedEn.items.length > 0) {
-        if (process.env.RELEASE_CCE_DECISION !== 'true' && parsedEn.items.length > 5) {
-          data.cce_officiel.timeline_en = parsedEn.items.slice(0, 5);
+        if (process.env.RELEASE_CCE_DECISION !== 'true' && parsedEn.items.length > 6) {
+          data.cce_officiel.timeline_en = parsedEn.items.slice(0, 6);
         } else {
           data.cce_officiel.timeline_en = parsedEn.items;
         }
@@ -242,6 +241,38 @@ async function syncDossierStatus() {
     }
   } catch (err) {
     console.warn("Notice : Page EN CCE non joignable pour scraping :", err.message);
+  }
+
+  // Garantir la présence du jalon officiel du 25 novembre 2026 (Notification 89/PP) même si le cache CDN de cec.org tarde
+  if (Array.isArray(data.cce_officiel.timeline_fr) && !data.cce_officiel.timeline_fr.some(it => (it.date || '').includes('25 novembre 2026'))) {
+    data.cce_officiel.timeline_fr.push({
+      date: "25 novembre 2026",
+      etape: "Le Secrétariat a notifié l’Auteur et le Conseil en vertu de l’article 24.27(4)(a) de l’ACEUM que la pétition BVG ne constitue pas une procédure en instance et a demandé au Canada de présenter le reste de sa réponse officielle dans les meilleurs délais (délai de 60 jours écoulé).",
+      documents: [
+        {
+          titre: "Notification 24.27(4)(a)",
+          description: "Notification du Secrétariat à l’Auteur et au Conseil (A24.27(2)(3)/SEM/26-003/89/PP) le 25/11/2026",
+          url: "https://williamguindon.me/assets/docs/89-pp_fr.pdf"
+        }
+      ]
+    });
+    data.cce_officiel.etapes_completees = Math.max(data.cce_officiel.etapes_completees || 4, 5);
+    let totalDocs = 0;
+    data.cce_officiel.timeline_fr.forEach(it => { totalDocs += (it.documents || []).length; });
+    data.cce_officiel.total_pieces_officielles = totalDocs;
+  }
+  if (Array.isArray(data.cce_officiel.timeline_en) && !data.cce_officiel.timeline_en.some(it => (it.date || '').includes('25 November 2026') || (it.date || '').includes('November 25, 2026'))) {
+    data.cce_officiel.timeline_en.push({
+      date: "25 November 2026",
+      etape: "The Secretariat notified the Submitter and the Council under CUSMA Article 24.27(4)(a) that the OAG environmental petition does not constitute a pending proceeding and requested that Canada submit the remainder of its official response without delay (60-day deadline expired).",
+      documents: [
+        {
+          titre: "Article 24.27(4)(a) Notification",
+          description: "Secretariat Notification to Submitter and Council (A24.27(2)(3)/SEM/26-003/89/PP) on 25/11/2026",
+          url: "https://williamguindon.me/assets/docs/89-pp_fr.pdf"
+        }
+      ]
+    });
   }
 
   // 4. Synchronisation en direct du compteur de la pétition Change.org

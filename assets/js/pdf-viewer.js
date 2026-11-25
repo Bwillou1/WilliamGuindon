@@ -113,6 +113,20 @@
 
   // Catalogue des documents officiels avec empreinte SHA-256 et métadonnées juridiques
   const DOCS_CATALOG = {
+    'notification-cce-89pp-25-novembre-2026': {
+      title: "Notification du Secrétariat CCE rejetant l'exception du Canada (25 novembre 2026)",
+      file: "assets/docs/89-pp_fr.pdf",
+      badge: "SEM-26-003 · Décision CCE (89/PP · 13 p.)",
+      date: "25 novembre 2026",
+      pages: 13,
+      type: "Notification officielle (Art. 24.27(4)(a) ACEUM)",
+      sha256: "4e28047af518df575a53890c09d68d5f5715a341576f5d7a401ae5de063f9b50",
+      author: "Secrétariat de la CCE (Paolo Solano, Directeur des affaires juridiques)",
+      citation: "Secrétariat de la CCE. (2026). Notification à l'Auteur et au Conseil concernant des procédures notifiées par le Canada en vertu de l'article 24.27(4)(a) de l'Accord Canada–États-Unis–Mexique (A24.27(2)(3)/SEM/26-003/89/PP, 25 novembre 2026). Montréal : CCE.",
+      license: "Document officiel du greffe de la CCE (Distribution : Générale)",
+      isOriginalWork: false,
+      isCCE: true
+    },
     'observations-reponse-canada-17-octobre-2026': {
       title: "Observations de l'auteur sur la réponse du Canada (17 octobre 2026)",
       file: "assets/docs/observations-reponse-canada-sem26003.pdf",

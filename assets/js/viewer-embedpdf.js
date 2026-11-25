@@ -9,6 +9,19 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   // Catalogue officiel des pièces documentaires
   const DOCS_CATALOG = {
+    'notification-cce-89pp-25-novembre-2026': {
+      title: "Notification du Secrétariat CCE rejetant l'exception du Canada (25 novembre 2026)",
+      file: "assets/docs/89-pp_fr.pdf",
+      badge: "SEM-26-003 · Décision CCE (89/PP · 13 p.)",
+      date: "25 novembre 2026",
+      pages: 13,
+      type: "Notification officielle (Art. 24.27(4)(a) ACEUM)",
+      sha256: "4e28047af518df575a53890c09d68d5f5715a341576f5d7a401ae5de063f9b50",
+      author: "Secrétariat de la CCE (Paolo Solano, Directeur des affaires juridiques)",
+      citation: "Secrétariat de la CCE. (2026). Notification à l'Auteur et au Conseil concernant des procédures notifiées par le Canada en vertu de l'article 24.27(4)(a) de l'Accord Canada–États-Unis–Mexique (A24.27(2)(3)/SEM/26-003/89/PP, 25 novembre 2026). Montréal : CCE.",
+      license: "Document public officiel CCE (Distribution : Générale)",
+      isOriginalWork: false
+    },
     'observations-reponse-canada-17-octobre-2026': {
       title: "Observations de l'auteur sur la réponse du Canada (17 octobre 2026)",
       file: "assets/docs/observations-reponse-canada-sem26003.pdf",
@@ -221,6 +234,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   // Liste blanche stricte des documents consultables
   const ALLOWED_DOCS = [
+    'assets/docs/89-pp_fr.pdf',
     'assets/docs/observations-reponse-canada-sem26003.pdf',
     'assets/docs/72-rsp_fr.pdf',
     'assets/docs/72-rsp_en.pdf',
@@ -260,7 +274,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   function getSafeDocUrl(rawUrl) {
-    const DEFAULT_DOC = 'assets/docs/observations-reponse-canada-sem26003.pdf';
+    const DEFAULT_DOC = 'assets/docs/89-pp_fr.pdf';
     if (!rawUrl || typeof rawUrl !== 'string') return DEFAULT_DOC;
     let clean = rawUrl.trim().normalize('NFC');
     if (clean.startsWith('blob:')) {
@@ -334,7 +348,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   function getSafeLocalDocUrl(rawUrl) {
-    const DEFAULT_DOC = '/assets/docs/observations-reponse-canada-sem26003.pdf';
+    const DEFAULT_DOC = '/assets/docs/89-pp_fr.pdf';
     const safe = getSafeDocUrl(rawUrl);
     if (!safe || typeof safe !== 'string') return DEFAULT_DOC;
     let clean = safe.trim();
@@ -407,15 +421,20 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   };
 
   const DOCS_TRANSLATIONS = {
+    'assets/docs/89-pp_fr.pdf': {
+      en: "CEC Secretariat (2026). Notification to the Submitter and the Council regarding proceedings notified by Canada pursuant to Article 24.27(4)(a) of CUSMA (A24.27(2)(3)/SEM/26-003/89/PP, November 25, 2026, 13 pages, signed by Paolo Solano).\n\nSummary:\nThe CEC Secretariat rules that OAG Environmental Petition No. 0546 is not a pending judicial or administrative proceeding under CUSMA Article 24.27(4)(a) (it was initiated by the Submitter, non-binding, and already concluded on November 10, 2026). Noting that the 60-day treaty deadline has already expired, the Secretariat requests Canada to submit the remainder of its response on the merits (Art. 24.27(4)(b)) without delay, subject to public transparency under ECA Article 16.",
+      es: "Secretariado de la CCA (2026). Notificación al Peticionario y al Consejo relativa a los procedimientos notificados por Canadá conforme al Artículo 24.27(4)(a) del T-MEC (A24.27(2)(3)/SEM/26-003/89/PP, 25 de noviembre de 2026, 13 páginas, firmada por Paolo Solano).\n\nResumen:\nEl Secretariado determina que la Petición Ambiental n.º 0546 (BVG) no constituye un procedimiento judicial o administrativo pendiente bajo el art. 24.27(4)(a) del T-MEC (ya concluyó el 10 de noviembre de 2026 y carece de facultades coercitivas). Constatando que el plazo de 60 días ya venció, solicita a Canadá presentar el resto de su respuesta sobre el fondo a la brevedad bajo transparencia pública (art. 16 ACA).",
+      de: "CCE-Sekretariat (2026). Mitteilung an den Einreicher und den Rat über die von Kanada gemäß Art. 24.27(4)(a) CUSMA angezeigten Verfahren (A24.27(2)(3)/SEM/26-003/89/PP, 25. November 2026, 13 Seiten, unterzeichnet von Paolo Solano).\n\nZusammenfassung:\nDas CCE-Sekretariat weist Kanadas Verfahrenseinrede zurück, stellt fest, dass die 60-Tage-Frist bereits abgelaufen ist, und fordert Kanada auf, seine inhaltliche Stellungnahme unverzüglich einzureichen."
+    },
     'assets/docs/observations-reponse-canada-sem26003.pdf': {
       en: "Guindon, W. (2026). Citizen Submission SEM-26-003 (Hazardous Waste Landfill in Blainville) — Formal observations on Canada's request to terminate or defer proceedings under CUSMA Article 24.28.\n\nSummary:\nCitizen submission author William Guindon formally opposes Canada's request of October 16, 2026 to dismiss or defer the proceedings. The observations demonstrate that municipal expropriation litigation does not enforce federal environmental law (Fisheries Act, Species at Risk Act) and that the CEC Secretariat must prepare a factual record.",
       es: "Guindon, W. (2026). Comunicación ciudadana SEM-26-003 (Confinamiento de residuos peligrosos en Blainville) — Observaciones formales sobre la solicitud de terminación o aplazamiento formulada en la respuesta de Canadá del 16 de octubre de 2026.\n\nResumen:\nWilliam Guindon se opone formalmente a la solicitud de Canadá de archivar o aplazar el procedimiento. Demuestra que los litigios locales sobre expropiación municipal no equivalen a la aplicación del derecho ambiental federal canadiense y que la Secretaría de la CCA debe preparar un expediente de hechos.",
       de: "Guindon, W. (2026). Bürgereingabe SEM-26-003 (Sondermülldeponie in Blainville) — Formelle Stellungnahme zum Ersuchen Kanadas auf Verfahrensbeendigung oder -aussetzung nach Art. 24.28 CUSMA/USMCA.\n\nZusammenfassung:\nWilliam Guindon widerspricht dem Antrag der kanadischen Regierung vom 16. Oktober 2026 auf Einstellung des Verfahrens. Er legt dar, dass kommunale Enteignungsverfahren keine Durchsetzung der Bundesumweltgesetze darstellen und das CCE-Sekretariat die Ausarbeitung eines Tatsachenberichts veranlassen muss."
     },
     'assets/docs/72-rsp_fr.pdf': {
-      en: "Government of Canada (2026). Party Response to SEM-26-003 (Hazardous Waste Landfill in Blainville) under CUSMA Article 24.27(4).\n\nSummary:\nOfficial response submitted by Environment and Climate Change Canada (Amenemhet Sanchez) requesting the CEC Secretariat to dismiss or defer examination of submission SEM-26-003, citing ongoing judicial proceedings in Quebec courts concerning Stablex.\n\n💡 An official certified English version of this filing is available directly: click 'Ouvrir la version anglaise officielle' above.",
-      es: "Gobierno de Canadá (2026). Respuesta de la Parte a la comunicación SEM-26-003 en virtud del Artículo 24.27(4) del T-MEC.\n\nResumen:\nRespuesta oficial de Medio Ambiente y Cambio Climático de Canadá solicitando la terminación o el aplazamiento del expediente ante la CCA, invocando litigios judiciales pendientes en Quebec relativos a Stablex.\n\n💡 La versión oficial en inglés está disponible directamente haciendo clic arriba.",
-      de: "Regierung von Kanada (2026). Erwiderung der Vertragspartei auf die Eingabe SEM-26-003 gemäß Art. 24.27(4) CUSMA/USMCA.\n\nZusammenfassung:\nOffizielle Stellungnahme von Environment and Climate Change Canada mit dem Antrag an das CCE-Sekretariat, das Prüfverfahren im Hinblick auf anhängige Gerichtsverfahren in Québec auszusetzen oder einzustellen.\n\n💡 Eine offizielle englische Fassung steht direkt über die Schaltfläche oben bereit."
+      en: "Government of Canada (2026). Partial Notification to SEM-26-003 (Hazardous Waste Landfill in Blainville) under CUSMA Article 24.27(4)(a) (2 pages).\n\nSummary:\nPartial filing submitted by Environment and Climate Change Canada (Amenemhet Sanchez) requesting the CEC Secretariat to terminate or defer examination of submission SEM-26-003 solely by citing OAG Environmental Petition No. 0546, without addressing the merits under Article 24.27(4)(b) (rejected on November 25, 2026 in Notification 89/PP).\n\n💡 An official certified English version of this filing is available directly: click 'Ouvrir la version anglaise officielle' above.",
+      es: "Gobierno de Canadá (2026). Notificación parcial sobre la petición SEM-26-003 en virtud del Artículo 24.27(4)(a) del T-MEC (2 páginas).\n\nResumen:\nPresentación parcial de Medio Ambiente y Cambio Climático de Canadá solicitando la terminación o el aplazamiento del expediente invocando únicamente la Petición Ambiental n.º 0546 (rechazada el 25 de noviembre de 2026 mediante la Notificación 89/PP).\n\n💡 La versión oficial en inglés está disponible directamente haciendo clic arriba.",
+      de: "Regierung von Kanada (2026). Teilmitteilung zur Eingabe SEM-26-003 gemäß Art. 24.27(4)(a) CUSMA/USMCA (2 Seiten).\n\nZusammenfassung:\nStellungnahme von Environment and Climate Change Canada mit dem Antrag, das Prüfverfahren unter Verweis auf die Umweltpetition Nr. 0546 einzustellen (am 25. November 2026 durch Mitteilung 89/PP zurückgewiesen).\n\n💡 Eine offizielle englische Fassung steht direkt über die Schaltfläche oben bereit."
     },
     'assets/docs/72-rsp_en.pdf': {
       en: "Government of Canada (2026). Party Response to SEM-26-003 (Hazardous Waste Landfill in Blainville) under CUSMA Article 24.27(4).\n\nOfficial English version filed by Environment and Climate Change Canada (Sanchez, Amenemhet) requesting dismissal or deferral under Article 24.27(4)(a).",

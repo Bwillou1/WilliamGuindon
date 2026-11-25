@@ -394,9 +394,22 @@ const documentsArchive = FALLBACK_DOCS.map((docPath, index) => {
   };
 });
 
+// Préserver les entrées natives récentes (ex. doc-cce-89pp, doc-p546-*) déjà présentes dans api/v1/documents.json
+let customNativeDocs = [];
+const existingV1DocsPath = path.join(ROOT, 'api/v1/documents.json');
+if (fs.existsSync(existingV1DocsPath)) {
+  try {
+    const existingPayload = JSON.parse(fs.readFileSync(existingV1DocsPath, 'utf8'));
+    if (Array.isArray(existingPayload.documents)) {
+      customNativeDocs = existingPayload.documents.filter(d => d && d.id && !/^doc-\d{3}$/.test(d.id));
+    }
+  } catch (_) {}
+}
+const combinedDocumentsArchive = [...customNativeDocs, ...documentsArchive];
+
 const fullCorpus = {
-  version: "1.0.0",
-  last_updated: "2026-09-26T20:00:00-04:00",
+  version: "1.0.1",
+  last_updated: "2026-11-25T17:25:00-05:00",
   platform: "williamguindon.me",
   author: {
     name: "William Guindon",
@@ -412,21 +425,21 @@ const fullCorpus = {
     submission_id: "SEM-26-003",
     subject: "Enfouissement de matières dangereuses à Blainville / Cellule 6 de Stablex et protection de la Grande Tourbière de Blainville",
     treaty: "Accord Canada-États-Unis-Mexique (ACEUM / CUSMA), articles 24.27 et 24.28",
-    status: statusData.determination || "Détermination positive du Secrétariat (art. 24.27)",
-    next_deadline: "16 octobre 2026 (Réponse officielle du gouvernement du Canada)",
+    status: statusData.etat_fr || "Exception procédurale du Canada rejetée (Notification CCE 89/PP du 25 novembre 2026)",
+    next_deadline: "Délai de 60 jours écoulé (depuis le 16 octobre 2026) — réponse au fond du gouvernement du Canada exigée dans les meilleurs délais (Notification 89/PP)",
     un_procedure: "Communication formelle et appel urgent transmis au Dr Marcos A. Orellana, Rapporteur spécial de l'ONU sur les substances toxiques et les droits de l'homme",
-    provincial_statute: "Projet de loi 93 (Loi visant à favoriser la protection des personnes et des biens par la valorisation de certains terrains et modifiant d'autres dispositions législatives), sanctionné sous bâillon le 21 mars 2025"
+    provincial_statute: "Projet de loi 93 (Loi concernant l'agrandissement du lieu d'enfouissement de déchets dangereux à Blainville), adopté sous bâillon le 28 mars 2025"
   },
   license: "Creative Commons Attribution - Pas d'Utilisation Commerciale - Pas de Modification 4.0 International (CC BY-NC-ND 4.0)",
   statistics: {
     total_pages: sitePages.length,
     total_words: sitePages.reduce((acc, p) => acc + p.word_count, 0),
-    total_documents: documentsArchive.length,
+    total_documents: combinedDocumentsArchive.length,
     total_blog_posts: blogData.length,
     total_communiques: communiquesData.length
   },
   site_pages: sitePages,
-  documents_archive: documentsArchive,
+  documents_archive: combinedDocumentsArchive,
   blog_posts: blogData,
   press_releases: communiquesData,
   mirrors: mirrorsData
@@ -442,18 +455,18 @@ fs.writeFileSync(path.join(API_V1_DIR, 'corpus.json'), JSON.stringify(fullCorpus
 console.log('✔ [OK] api/corpus.json & api/v1/corpus.json générés (' + fullCorpus.statistics.total_words + ' mots).');
 
 const docsPayload = {
-  version: "1.0.0",
-  last_updated: "2026-09-26T20:00:00-04:00",
-  total_documents: documentsArchive.length,
+  version: "1.0.1",
+  last_updated: "2026-11-25T17:25:00-05:00",
+  total_documents: combinedDocumentsArchive.length,
   internet_archive_id: "dossier-journalistes-tourbiere-blainville-stablex",
   download_zip_url: "https://archive.org/compress/dossier-journalistes-tourbiere-blainville-stablex/formats=PNG,COMMA-SEPARATED%20VALUES,TEXT%20PDF,UNKNOWN,ANIMATED%20GIF,MPEG4,TEXT,JPEG,ITEM%20TILE,ARCHIVE%20BITTORRENT,METADATA",
   download_torrent_url: "https://archive.org/download/dossier-journalistes-tourbiere-blainville-stablex/dossier-journalistes-tourbiere-blainville-stablex_archive.torrent",
   metadata_url: "https://archive.org/metadata/dossier-journalistes-tourbiere-blainville-stablex",
-  documents: documentsArchive
+  documents: combinedDocumentsArchive
 };
 fs.writeFileSync(path.join(API_DIR, 'documents.json'), JSON.stringify(docsPayload, null, 2), 'utf8');
 fs.writeFileSync(path.join(API_V1_DIR, 'documents.json'), JSON.stringify(docsPayload, null, 2), 'utf8');
-console.log('✔ [OK] api/documents.json & api/v1/documents.json générés (' + documentsArchive.length + ' pièces probatoires).');
+console.log('✔ [OK] api/documents.json & api/v1/documents.json générés (' + combinedDocumentsArchive.length + ' pièces probatoires).');
 
 const openApiSpec = {
   openapi: "3.1.0",

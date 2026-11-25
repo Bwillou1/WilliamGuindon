@@ -1429,11 +1429,11 @@
   }
 
   function initApp() {
-    // Date calendaire de l'échéance CCE SEM-26-003 (16 octobre 2026 — Réponse du Canada déposée)
+    // Date calendaire de l'échéance initiale CCE SEM-26-003 (16 octobre 2026 — Expiration du délai impératif de 60 jours sous l'art. 24.27(4) ACEUM)
     const CCE_16_OCT_DEADLINE = new Date('2026-10-16T00:00:00-04:00').getTime();
-    // Prochaine échéance officielle CCE : Délai de 60 jours pour la recommandation d'un Dossier factuel (Art. 24.28 ACEUM — 15 décembre 2026)
-    const CCE_NEXT_DEADLINE = new Date('2026-12-15T23:59:59-05:00').getTime();
-    let cceTargetDate = CCE_NEXT_DEADLINE;
+    const CCE_60D_EXPIRED_TS = new Date('2026-10-16T23:59:59-04:00').getTime();
+    // Notification CCE du 25 novembre 2026 (A24.27(2)(3)/SEM/26-003/89/PP) : délai de 60 jours déjà écoulé, le Canada est sommé de présenter sa réponse sur le fond dans les meilleurs délais
+    let cceTargetDate = CCE_60D_EXPIRED_TS;
 
     try {
       updatePrecisionCountdown();
@@ -1677,28 +1677,42 @@
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Statut légal de la cause CCE SEM-26-003');
 
+      const docLang = (document.documentElement.lang || 'fr').toLowerCase();
+      const isEnBanner = docLang.startsWith('en');
+      const isEsBanner = docLang.startsWith('es');
+      const liveHref = (window.location.pathname.includes('/en/') || window.location.pathname.includes('/es/')) ? 'live.html' : '/live.html';
+      const caseLbl = isEnBanner ? 'Case SEM-26-003' : (isEsBanner ? 'Caso SEM-26-003' : 'Affaire SEM-26-003');
+      const phaseLbl = isEnBanner
+        ? "CEC Ruling Nov 25 (89/PP): Canada's objection rejected"
+        : (isEsBanner ? 'Fallo CCA 25 nov. (89/PP): Objeción de Canadá rechazada' : 'Décision CCE 25 nov. (89/PP) : Rejet de l’exception du Canada');
+      const dateLbl = isEnBanner
+        ? 'Merits response overdue'
+        : (isEsBanner ? 'Respuesta de fondo vencida' : 'Ottawa hors délai sur le fond');
+      const linkFull = isEnBanner ? 'Follow live' : (isEsBanner ? 'Seguir en vivo' : 'Suivre en direct');
+      const linkShort = isEnBanner ? 'Live' : (isEsBanner ? 'En vivo' : 'Direct');
+
       banner.innerHTML = `
         <div class="wrap site-deadline-topbar-wrap">
           <div class="site-deadline-left">
             <span class="site-deadline-dot" aria-hidden="true"></span>
             <span class="site-deadline-text">
-              <strong class="site-deadline-case">Affaire SEM-26-003</strong>
+              <strong class="site-deadline-case">${caseLbl}</strong>
               <span class="site-deadline-sep sep-phase">·</span>
-              <span class="site-deadline-phase">Délibération CCE (Art. 24.28)</span>
+              <span class="site-deadline-phase">${phaseLbl}</span>
               <span class="site-deadline-sep sep-date">·</span>
-              <span class="site-deadline-date">Décision le 15 déc. 2026</span>
-              <span class="site-deadline-pill" id="site-deadline-days-left">J-22</span>
+              <span class="site-deadline-date">${dateLbl}</span>
+              <span class="site-deadline-pill" id="site-deadline-days-left">J+40</span>
             </span>
           </div>
           <div class="site-deadline-right">
-            <a href="live.html" class="site-deadline-link" title="Suivre l'avancement statutaire des 60 jours et le registre CCE direct">
-              <span class="site-deadline-link-full">Suivre le dossier</span>
-              <span class="site-deadline-link-short">Suivre</span>
+            <a href="${liveHref}" class="site-deadline-link" title="Consulter la Notification CCE du 25 novembre 2026 (89/PP) et le compteur de retard du Canada">
+              <span class="site-deadline-link-full">${linkFull}</span>
+              <span class="site-deadline-link-short">${linkShort}</span>
               <span class="site-deadline-arrow" aria-hidden="true">→</span>
             </a>
           </div>
         </div>
-        <div class="site-deadline-progress" id="site-deadline-progress" title="Progression du délai statutaire de 60 jours de la CCE (Jour 39 sur 60)"></div>
+        <div class="site-deadline-progress" id="site-deadline-progress" title="Délai impératif de 60 jours de l'art. 24.27(4) ACEUM dépassé — Le Canada est sommé de déposer sa réponse sur le fond"></div>
       `;
 
       headerSite.parentNode.insertBefore(banner, headerSite);
@@ -2481,8 +2495,13 @@
       const diff = CCE_16_OCT_DEADLINE - now;
 
       const isEn = document.documentElement.lang.startsWith('en');
+      const isEs = document.documentElement.lang.startsWith('es');
       if (diff <= 0 || (typeof isStage2StatusActive === 'function' && isStage2StatusActive(now))) {
-        daysElement.textContent = isEn ? "Party Response submitted · Secretariat Review (Art. 24.28)" : "Réponse déposée le 16 oct. · Examen CCE (art. 24.28)";
+        daysElement.textContent = isEn
+          ? "CEC Notification (Nov 25, 89/PP): Canada's objection rejected · Merits response ordered"
+          : (isEs
+            ? "Notificación CCA (25 nov., 89/PP): Objeción rechazada · Respuesta de fondo exigida"
+            : "Notification CCE (25 nov., 89/PP) : Exception rejetée · Réponse au fond exigée");
         return;
       }
 
@@ -2910,8 +2929,8 @@
       const trackerCountdown = document.getElementById('tracker-countdown-state');
       const trackerStage2 = document.getElementById('tracker-stage2-state');
 
-      // Calcul du décompte en direct vers la prochaine échéance CCE (15 décembre 2026)
-      const diff = Math.max(0, cceTargetDate - now);
+      // Calcul du dépassement en direct depuis l'expiration du délai impératif de 60 jours du Canada (16 octobre 2026 à 23:59:59, art. 24.27(4) ACEUM — constaté au par. 28 de 89/PP)
+      const diff = Math.max(0, now - CCE_60D_EXPIRED_TS);
       const days = String(Math.floor(diff / (1000 * 60 * 60 * 24)));
       const hours = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
       const mins = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
@@ -2933,20 +2952,17 @@
       const topbarDays = document.getElementById('site-deadline-days-left');
       if (topbarDays) {
         const dNum = parseInt(days, 10);
-        const dayTxt = dNum > 0 ? `J-${dNum}` : "Aujourd'hui !";
+        const docLang = (document.documentElement.lang || 'fr').toLowerCase();
+        const prefix = (docLang.startsWith('en') || docLang.startsWith('es')) ? 'D+' : 'J+';
+        const dayTxt = `${prefix}${dNum}`;
         if (topbarDays.textContent !== dayTxt) topbarDays.textContent = dayTxt;
       }
 
       const progressBar = document.getElementById('site-deadline-progress');
       if (progressBar) {
-        const start60 = new Date('2026-10-16T00:00:00-04:00').getTime();
-        const total60 = Math.max(1, cceTargetDate - start60);
-        const elapsed60 = Math.max(0, Math.min(total60, now - start60));
-        const pct60 = Math.min(100, Math.max(0, (elapsed60 / total60) * 100));
-        const dayNum = Math.min(60, Math.max(1, Math.floor(elapsed60 / (1000 * 60 * 60 * 24)) + 1));
-        progressBar.style.width = pct60.toFixed(1) + '%';
-        progressBar.setAttribute('title', `Délai statutaire CCE (Art. 24.28) : Jour ${dayNum} sur 60 (${pct60.toFixed(0)} %)`);
-        progressBar.setAttribute('aria-valuenow', pct60.toFixed(0));
+        progressBar.style.width = '100%';
+        progressBar.setAttribute('title', `Délai impératif de 60 jours dépassé de ${days} jours (Art. 24.27(4) ACEUM — Notification CCE 89/PP du 25 nov. 2026)`);
+        progressBar.setAttribute('aria-valuenow', '100');
       }
 
       // Mode Étape 3 : Version légère et pérenne post-échéance 16 oct.
@@ -3152,39 +3168,44 @@
       const closeBtn = dropdown.querySelector('.nav-notif-close-btn, .nav-notif-close');
       if (!btn) return;
 
-      // Synchronisation universelle des alertes d'octobre-novembre 2026 sur toutes les pages
+      // Synchronisation universelle de la décision CCE du 25 novembre 2026 (89/PP) sur toutes les pages
       const notifBody = dropdown.querySelector('.nav-notif-body');
-      if (notifBody && !notifBody.innerHTML.includes('observations-reponse-canada-sem26003.pdf')) {
-        const latestAlertsHtml = `
+      if (notifBody && !notifBody.innerHTML.includes('89-pp_fr.pdf')) {
+        const docLang = (document.documentElement.lang || 'fr').toLowerCase();
+        const isSubDir = window.location.pathname.includes('/en/') || window.location.pathname.includes('/es/');
+        const docPrefix = isSubDir ? '../assets/docs/' : 'assets/docs/';
+        const cce89AlertHtml = docLang.startsWith('en') ? `
           <article class="notif-item">
-            <div class="notif-item-tag">22 octobre 2026 · Rencontres parlementaires confirmées</div>
-            <h5 class="notif-item-title">Rencontres en novembre avec Nadine Le Gal et Madeleine Chenette</h5>
-            <p class="notif-item-desc">Deux rencontres bilatérales confirmées pour novembre 2026 sur la Loi 93, le BAPE 371, l'échéance BVG du 10 novembre (pétition n° 0546) et la suite de SEM-26-003.</p>
+            <div class="notif-item-tag">November 25, 2026 · Official CEC Notification (89/PP)</div>
+            <h5 class="notif-item-title">CEC rejects Canada's procedural objection &amp; orders merits response without delay</h5>
+            <p class="notif-item-desc">Under CUSMA Art. 24.27(4)(a), the CEC Secretariat rules that OAG Petition 0546 is not a pending proceeding, notes the 60-day deadline has expired, and requests Canada's merits response (Art. 24.27(4)(b)).</p>
             <div class="notif-item-links">
-              <a href="blog.html#rencontres-parlementaires-novembre-nadine-le-gal-madeleine-chenette" class="notif-link-btn notif-link-primary">Lire l'article ↗</a>
-              <a href="enquete-partis.html" class="notif-link-btn notif-link-ghost">Suivi parlementaire</a>
+              <a href="viewer.html?file=${docPrefix}89-pp_fr.pdf" class="notif-link-btn notif-link-primary">Read CEC Ruling (PDF) ↗</a>
+              <a href="communiques.html#communique-2026-11-25-cce-89pp" class="notif-link-btn notif-link-ghost">Press Release</a>
             </div>
           </article>
+        ` : (docLang.startsWith('es') ? `
           <article class="notif-item">
-            <div class="notif-item-tag">17 octobre 2026 · Réplique juridique déposée (SEM-26-003)</div>
-            <h5 class="notif-item-title">Observations de l'auteur réfutant la fin de non-recevoir du Canada (72-RSP)</h5>
-            <p class="notif-item-desc">Dépôt des observations juridiques démontrant qu'aucun recours interne ni la pétition BVG n° 0546 n'empêchent la constitution d'un dossier factuel sous l'art. 24.28 de l'ACEUM.</p>
+            <div class="notif-item-tag">25 de noviembre de 2026 · Notificación oficial CCA (89/PP)</div>
+            <h5 class="notif-item-title">La CCA rechaza la objeción procesal de Canadá y exige respuesta de fondo</h5>
+            <p class="notif-item-desc">Conforme al art. 24.27(4)(a) del T-MEC, el Secretariado concluye que la petición BVG 0546 no es un procedimiento pendiente, constata que el plazo de 60 días ya venció y solicita la respuesta de fondo de Canadá.</p>
             <div class="notif-item-links">
-              <a href="viewer.html?file=assets/docs/observations-reponse-canada-sem26003.pdf" class="notif-link-btn notif-link-primary">Lire les observations (PDF) ↗</a>
-              <a href="registre.html" class="notif-link-btn notif-link-ghost">Registre CCE</a>
+              <a href="viewer.html?file=${docPrefix}89-pp_fr.pdf" class="notif-link-btn notif-link-primary">Leer Notificación CCA (PDF) ↗</a>
+              <a href="communiques.html#communique-2026-11-25-cce-89pp" class="notif-link-btn notif-link-ghost">Comunicado</a>
             </div>
           </article>
+        ` : `
           <article class="notif-item">
-            <div class="notif-item-tag">16 octobre 2026 · Réponse officielle du Canada (72-RSP)</div>
-            <h5 class="notif-item-title">Le Canada dépose sa réponse officielle de 59 pages et tente un rejet procédural</h5>
-            <p class="notif-item-desc">Ottawa invoque le litige municipal de Blainville et la pétition BVG 0546 sans contester les dépassements de cadmium (320×). Analyse par le Secrétariat en cours (60 jours ouvrables, art. 24.28).</p>
+            <div class="notif-item-tag">25 novembre 2026 · Notification officielle CCE (89/PP)</div>
+            <h5 class="notif-item-title">La CCE rejette l'exception du Canada et le somme (hors délai) de répondre sur le fond</h5>
+            <p class="notif-item-desc">En vertu de l'art. 24.27(4)(a) ACEUM, le Secrétariat juge que la pétition BVG 0546 n'est pas une procédure en instance, constate que le délai de 60 jours est écoulé et exige le reste de la réponse officielle du Canada.</p>
             <div class="notif-item-links">
-              <a href="communiques.html#communique-2026-10-16-cce" class="notif-link-btn notif-link-primary">Lire le communiqué ↗</a>
-              <a href="viewer.html?file=assets/docs/72-rsp_fr.pdf" class="notif-link-btn notif-link-ghost">Réponse 72-RSP (PDF) ↗</a>
+              <a href="viewer.html?file=${docPrefix}89-pp_fr.pdf" class="notif-link-btn notif-link-primary">Lire la décision CCE (PDF) ↗</a>
+              <a href="communiques.html#communique-2026-11-25-cce-89pp" class="notif-link-btn notif-link-ghost">Communiqué officiel</a>
             </div>
           </article>
-        `;
-        notifBody.insertAdjacentHTML('afterbegin', latestAlertsHtml);
+        `);
+        notifBody.insertAdjacentHTML('afterbegin', cce89AlertHtml);
       }
 
       btn.addEventListener('click', (e) => {
@@ -4604,16 +4625,22 @@
         desc: 'Enquête scientifique et juridique indépendante menée par la CCE et autorisée par un vote d’au moins 2 des 3 pays membres pour faire toute la lumière sur l’inapplication d’une loi environnementale.'
       },
       {
+        regex: /\b(89\/PP|89-PP)\b/g,
+        slug: '89-pp',
+        title: 'Pièce 89/PP (Décision CCE du 25 nov. 2026)',
+        desc: 'Notification officielle de 13 pages signée par Paolo Solano rejetant l’exception procédurale du Canada sous l’art. 24.27(4)(a), constatant l’expiration du délai de 60 jours et exigeant sa réponse au fond sans délai.'
+      },
+      {
         regex: /\b(72-RSP)\b/g,
         slug: '72-rsp',
-        title: 'Pièce 72-RSP (Réponse du Canada)',
-        desc: 'Mémoire officiel déposé par le gouvernement du Canada le 16 octobre 2026 demandant la fin ou le report du dossier SEM-26-003.'
+        title: 'Pièce 72-RSP (Notification partielle du Canada)',
+        desc: 'Dépôt partiel de 2 pages transmis par le gouvernement du Canada le 16 octobre 2026 invoquant la pétition 0546 (exception rejetée le 25 novembre 2026 par la pièce 89/PP).'
       },
       {
         regex: /\b(73-REC)\b/g,
         slug: '73-rec',
         title: 'Pièce 73-REC (Accusé CCE)',
-        desc: 'Acte officiel du Secrétariat de la CCE accusant réception de la réponse du Canada le 16 octobre 2026 et lançant le délai de 60 jours menant au 15 décembre 2026.'
+        desc: 'Acte du greffe du Secrétariat de la CCE accusant réception du dépôt partiel du Canada le 16 octobre 2026 avant son rejet le 25 novembre 2026 (pièce 89/PP).'
       },
       {
         regex: /\b(Ligne\s+directrice\s+7\.5)\b/gi,
