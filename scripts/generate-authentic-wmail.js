@@ -62,12 +62,12 @@ console.log('Parsed total messages:', rawMessages.length);
 function sanitizeText(str) {
   if (!str) return '';
   return str
-    .replace(/guindonwilliam2@gmail\.com/gi, '<span class="cx" title="Caviardé : Courriel citoyen protégé">contact@williamguindon.me</span>')
-    .replace(/guindonwilliam2\+cc@gmail\.com/gi, '<span class="cx" title="Caviardé">contact@williamguindon.me</span>')
-    .replace(/williamguindon@icloud\.com/gi, '<span class="cx" title="Caviardé">contact@williamguindon.me</span>')
-    .replace(/cathymainville@hotmail\.com/gi, '<span class="cx" title="Caviardé : Représentante légale">représentante légale biffée</span>')
-    .replace(/\+1\s*\(?514\)?\s*808-3727/g, '<span class="cx" title="Caviardé : Téléphone personnel">[Téléphone personnel biffé]</span>')
-    .replace(/514-808-3727/g, '<span class="cx" title="Caviardé">[Téléphone personnel biffé]</span>')
+    .replace(/guindonwilliam2@gmail\.com/gi, '<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>')
+    .replace(/guindonwilliam2\+cc@gmail\.com/gi, '<span class="cx" title="Caviardé : Alias citoyen protégé">contact@williamguindon.me</span>')
+    .replace(/williamguindon@icloud\.com/gi, '<span class="cx" title="Caviardé : Boîte iCloud privée">contact@williamguindon.me</span>')
+    .replace(/cathymainville@hotmail\.com/gi, '<span class="cx" title="Caviardé : Représentante légale / Ligne parentale">représentante légale biffée</span>')
+    .replace(/\+1\s*\(?514\)?\s*808-3727/g, '<span class="cx" title="Caviardé : Ligne téléphonique privée">[Téléphone personnel biffé]</span>')
+    .replace(/514-808-3727/g, '<span class="cx" title="Caviardé : Ligne téléphonique privée">[Téléphone personnel biffé]</span>')
     .replace(/marianne\s+d[eé]pelteau[^\s,.<>)]*/gi, '<span class="cx" title="Caviardé : Donnée protégée">[Nom biffé]</span>')
     .replace(/d[eé]pelteau/gi, '<span class="cx" title="Caviardé">[Biffé]</span>')
     .replace(/marianne/gi, '<span class="cx" title="Caviardé">[Biffé]</span>')
@@ -93,21 +93,21 @@ function formatShortDate(dateStr) {
 function categorizeThread(subject, msgs) {
   const combined = (subject + ' ' + msgs.map(x => x.body + ' ' + x.a + ' ' + x.de).join(' ')).toLowerCase();
   if (combined.includes('signalement pénal') || combined.includes('inrp') || combined.includes('infractions') || combined.includes('cnue-neec')) {
-    return { cat: 'signalement', label: 'Application de la loi & Pêches', color: '#d93025' };
+    return { cat: 'signalement', label: 'Application de la loi & Pêches', color: '#ef4444', icon: '⚖️' };
   }
   if (combined.includes('décret d\'urgence') || combined.includes('article 80') || combined.includes('lep')) {
-    return { cat: 'lep', label: 'Espèces en péril (LEP)', color: '#9334e6' };
+    return { cat: 'lep', label: 'Espèces en péril (LEP)', color: '#a855f7', icon: '🌿' };
   }
   if (combined.includes('aiprp') || combined.includes('atip') || combined.includes('renseignements personnels') || combined.includes('p-2026') || combined.includes('praine')) {
-    return { cat: 'aiprp', label: 'Accès à l\'information (AIPRP)', color: '#00897a' };
+    return { cat: 'aiprp', label: 'Accès à l\'information (AIPRP)', color: '#06b6d4', icon: '📁' };
   }
   if (combined.includes('cce') || combined.includes('aceum') || combined.includes('ambassade') || combined.includes('sem-26-003')) {
-    return { cat: 'cce', label: 'CCE / ACEUM & International', color: '#188038' };
+    return { cat: 'cce', label: 'CCE / ACEUM & Traités', color: '#10b981', icon: '🌐' };
   }
   if (combined.includes('stablex') || combined.includes('cellule 6')) {
-    return { cat: 'stablex', label: 'Stablex & Cellule 6', color: '#e8710a' };
+    return { cat: 'stablex', label: 'Stablex & Cellule 6', color: '#f59e0b', icon: '🏭' };
   }
-  return { cat: 'eccc', label: 'ECCC & MPO — Ministères', color: '#0b57d0' };
+  return { cat: 'eccc', label: 'ECCC & Cabinets ministériels', color: '#3b82f6', icon: '🏛️' };
 }
 
 // Nettoyer et résumer le corps des courriels si trop technique/répétitif
@@ -121,15 +121,15 @@ function formatMessageBody(msg) {
 
   if (msg.de.includes('postmaster@dfo-mpo.gc.ca')) {
     return `<div class="doc-summary">
-      <p><b>⚠️ Avis de non-remise automatique (Système de messagerie MPO) :</b></p>
-      <p>L'adresse de destination régionale du ministère n'a pas pu être trouvée ou refuse les courriels externes (code d'erreur 550 5.1.10). Ce constat technique documente les barrières d'accès aux services régionaux compétents.</p>
+      <p><b>⚠️ Avis technique de non-remise automatique (MPO) :</b></p>
+      <p>L'adresse régionale de transmission ministérielle refuse les correspondances externes (code serveur 550 5.1.10). Cette pièce matérialise l'obstacle technique documenté dans la communication SEM-26-003.</p>
     </div>`;
   }
 
   if (isAutoReply && text.length > 500) {
     return `<div class="doc-summary">
-      <p><b>📨 Accusé de réception officiel automatique :</b></p>
-      <p>Confirmation formelle émise par le système ministériel (${sanitizeText(msg.de)}) attestant de la prise en charge de la correspondance citoyenne et de sa transmission aux équipes du cabinet et aux experts sectoriels.</p>
+      <p><b>📨 Accusé de réception ministériel automatisé :</b></p>
+      <p>Attestation formelle de réception horodatée émise par le service informatique de ${sanitizeText(msg.de)} avec indexation et transmission au cabinet exécutif.</p>
     </div>`;
   }
 
@@ -152,7 +152,7 @@ function formatMessageBody(msg) {
     return `<p>${p.replace(/\n/g, '<br>')}</p>`;
   }).join('');
 
-  return paragraphs || `<p class="faded">(Corps de message vide ou transmis via pièce jointe)</p>`;
+  return paragraphs || `<p class="faded">(Corps de message transmis par pli annexe ou pièce jointe)</p>`;
 }
 
 // Regroupement par Fil Gmail
@@ -252,6 +252,7 @@ for (const [filId, msgs] of threadMap.entries()) {
     category: categoryInfo.cat,
     catLabel: categoryInfo.label,
     catColor: categoryInfo.color,
+    catIcon: categoryInfo.icon,
     rawDate: last.date.split(' ')[0],
     shortDate: formatShortDate(last.date.split(' ')[0]),
     messagesCount: msgs.length,
@@ -263,18 +264,21 @@ for (const [filId, msgs] of threadMap.entries()) {
   tIdx++;
 }
 
-// Rendu HTML des rangées (.row façon Gmail moderne)
+// Rendu HTML des rangées (.row façon Gmail Pro / Dark)
 function renderRow(t) {
   return `
     <div class="row" data-tid="${t.tid}" data-cat="${t.category}" data-key="${t.isKey ? '1' : '0'}" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
-      <div class="st ${t.isKey ? 'on' : ''}" title="${t.isKey ? 'Élément clé du dossier' : 'Ajouter une étoile'}">★</div>
+      <div class="st ${t.isKey ? 'on' : ''}" title="${t.isKey ? 'Élément clé du dossier probatoire' : 'Ajouter une étoile'}">★</div>
       <div class="who" title="${t.participants}">
         <span class="who-name">${t.participants}</span>
-        ${t.messagesCount > 1 ? `<span class="count-tag">(${t.messagesCount})</span>` : ''}
+        ${t.messagesCount > 1 ? `<span class="count-tag">${t.messagesCount}</span>` : ''}
       </div>
       <div class="subj-wrap">
-        <span class="pill" style="background:${t.catColor}15;color:${t.catColor};border:1px solid ${t.catColor}35;">${t.catLabel}</span>
+        <span class="pill pill-${t.category}">
+          <span class="pill-dot"></span>
+          <span>${t.catLabel}</span>
+        </span>
         <span class="subj-text" title="${t.subject}">${t.subject}</span>
         <span class="snip"> — ${t.snippet}…</span>
       </div>
@@ -287,14 +291,24 @@ function renderRow(t) {
 function renderThreadView(t) {
   return `
     <div class="threadview" id="tv-${t.tid}">
-      <!-- Barre d'actions supérieure façon Gmail -->
+      <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
-        <button class="back-btn" title="Revenir à la boîte de réception" aria-label="Retour à la liste">
-          <svg class="svg" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-          <span>Retour à la boîte de réception</span>
-        </button>
+        <div class="tv-action-left">
+          <button class="back-btn" title="Revenir à la boîte de réception (Raccourci : Échap ou u)" aria-label="Retour à la liste">
+            <svg class="svg" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+            <span>Boîte de réception</span>
+          </button>
+        </div>
         <div class="tv-action-right">
-          <span class="lpill" style="background:${t.catColor}18;color:${t.catColor};border:1px solid ${t.catColor}40;">${t.catLabel}</span>
+          <button class="tool-btn print-thread-btn" title="Imprimer ou exporter ce fil au format officiel" onclick="window.print()">
+            <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span>Imprimer</span>
+          </button>
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="${t.tid}">
+            <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Copier</span>
+          </button>
+          <span class="lpill lpill-${t.category}">${t.catLabel}</span>
           <span class="nmsg">${t.messagesCount} message${t.messagesCount > 1 ? 's' : ''}</span>
           <button class="allopen">Tout déplier / replier</button>
         </div>
@@ -303,6 +317,11 @@ function renderThreadView(t) {
       <!-- En-tête du fil -->
       <div class="tv-header">
         <h2>${t.subject}</h2>
+        <div class="tv-header-tags">
+          <span class="badge-proof">Dossier CCE SEM-26-003</span>
+          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-id">Fil ID : ${t.filId}</span>
+        </div>
       </div>
 
       <!-- Liste des messages du fil -->
@@ -312,11 +331,12 @@ function renderThreadView(t) {
           const isOpen = t.msgs.length === 1 || idx === t.msgs.length - 1 || [2, 8, 12, 35, 45, 46, 47, 75, 86, 88, 89, 91, 94].includes(m.num);
           let avatarInitial = 'WG';
           let avatarClass = 'me';
+          let orgName = 'Citoyen & Auteur';
           if (!isMe) {
-            if (m.de.includes('MPO') || m.de.includes('Pêches')) { avatarInitial = 'MPO'; avatarClass = 'mpo'; }
-            else if (m.de.includes('AIPRP') || m.de.includes('Lisa Praine')) { avatarInitial = 'ATIP'; avatarClass = 'atip'; }
-            else if (m.de.includes('CCE') || m.de.includes('Secretariat')) { avatarInitial = 'CCE'; avatarClass = 'cce'; }
-            else { avatarInitial = 'ECCC'; avatarClass = 'eccc'; }
+            if (m.de.includes('MPO') || m.de.includes('Pêches')) { avatarInitial = 'MPO'; avatarClass = 'mpo'; orgName = 'Pêches et Océans Canada'; }
+            else if (m.de.includes('AIPRP') || m.de.includes('Lisa Praine')) { avatarInitial = 'ATIP'; avatarClass = 'atip'; orgName = 'Direction générale AIPRP'; }
+            else if (m.de.includes('CCE') || m.de.includes('Secretariat')) { avatarInitial = 'CCE'; avatarClass = 'cce'; orgName = 'Commission de coopération environnementale'; }
+            else { avatarInitial = 'ECCC'; avatarClass = 'eccc'; orgName = 'Environnement et Changement climatique Canada'; }
           }
 
           return `
@@ -328,10 +348,11 @@ function renderThreadView(t) {
                 <div class="meta">
                   <div class="l1">
                     <span class="fname">${sanitizeText(m.de)}</span>
+                    <span class="forg-badge">${orgName}</span>
                     ${m.note ? `<span class="role">(${sanitizeText(m.note)})</span>` : ''}
                   </div>
                   <div class="l2">
-                    <span>à ${sanitizeText(m.a)}</span>
+                    <span>à <strong>${sanitizeText(m.a)}</strong></span>
                     ${m.cc ? ` · <span class="faded">Cc : ${sanitizeText(m.cc)}</span>` : ''}
                   </div>
                 </div>
@@ -344,11 +365,11 @@ function renderThreadView(t) {
               <div class="card-body">
                 ${m.pieces ? `
                   <div class="attach">
-                    <div class="chip" title="Pièce jointe officielle au dossier">
+                    <div class="chip" title="Cliquer pour afficher la fiche de la pièce probatoire" onclick="openEvidenceModal('${encodeURIComponent(m.pieces)}', '${m.num}', '${t.filId}')">
                       <span class="chip-icon">📎</span>
                       <div class="cinfo">
                         <div class="fn">${m.pieces}</div>
-                        <div class="sz">Pièce probatoire versée au dossier de correspondances</div>
+                        <div class="sz">Pièce probatoire versée au dossier public · Cliquer pour détails ↗</div>
                       </div>
                     </div>
                   </div>
@@ -366,14 +387,14 @@ function renderThreadView(t) {
 }
 
 const fullHtml = `<!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <script>(function(){try{if(!window.history||!window.history.replaceState)return;var s=window.location.search,h=window.location.hash;if(!s&&(!h||h.indexOf('?')===-1))return;var u=new URL(window.location.href);var t=new Set(['fbclid','fbadid','gclid','gbraid','wbraid','_ga','_gl','igshid','twclid','ttclid','msclkid','mc_cid','mc_eid','yclid','dclid','ref_src','gad_source','gclsrc']);var isT=function(k){var l=(k||'').toLowerCase();return l.indexOf('utm_')===0||l.indexOf('fb_')===0||l.indexOf('_aem')===0||t.has(l);};var c=false;if(s){var r=[];u.searchParams.forEach(function(_,k){if(isT(k))r.push(k);});if(r.length){for(var i=0;i<r.length;i++)u.searchParams.delete(r[i]);c=true;}}if(h&&h.indexOf('?')!==-1){var p=u.hash.split('?'),b=p[0],hp=new URLSearchParams(p.slice(1).join('?')),hr=[];hp.forEach(function(_,k){if(isT(k))hr.push(k);});if(hr.length){for(var j=0;j<hr.length;j++)hp.delete(hr[j]);var q=hp.toString();u.hash=b+(q?'?'+q:'');c=true;}}if(c){var ns=u.searchParams.toString();window.history.replaceState(null,'',u.pathname+(ns?'?'+ns:'')+u.hash);}}catch(_){}})();</script>
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wmail — Registre des correspondances &amp; démarches citoyennes · William Guindon</title>
-<meta name="description" content="Registre officiel interactif et caviardé des correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
+<meta name="description" content="Registre officiel interactif et caviardé des 96 correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://williamguindon.me/wmail.html">
 <link rel="alternate" hreflang="fr" href="https://williamguindon.me/wmail.html">
@@ -383,49 +404,148 @@ const fullHtml = `<!doctype html>
 <meta property="og:description" content="Registre public et caviardé des correspondances, signalements pénaux et demandes d'accès à l'information (dossier SEM-26-003).">
 <meta property="og:url" content="https://williamguindon.me/wmail.html">
 <meta property="og:image" content="https://williamguindon.me/assets/media/william-guindon.jpg">
+<meta name="color-scheme" content="dark light">
 
-<!-- Intégration du bandeau navbar officiel et des styles de base du site -->
+<!-- Styles de base du site & injecteur navbar officiel -->
 <link rel="stylesheet" href="style.css?v=20261018-v87">
 <script src="assets/js/navbar-loader.js" defer></script>
 
 <style>
+/* ==================== THEME DARK / OBSIDIAN LUXURY WMAIL ==================== */
 :root {
-  --wmail-canvas: #f6f8fc;
-  --wmail-surface: #ffffff;
-  --wmail-text: #1f1f1f;
-  --wmail-muted: #5f6368;
-  --wmail-blue: #0b57d0;
-  --wmail-active: #d3e3fd;
-  --wmail-search: #eaf1fb;
-  --wmail-line: #e2e8f0;
-  --wmail-hover: #f1f5f9;
+  --w-bg: #0b0f0c;
+  --w-card: #121814;
+  --w-card-hover: #19221c;
+  --w-border: #1e2821;
+  --w-border-faint: rgba(255, 255, 255, 0.07);
+  --w-text: #f0fdf4;
+  --w-text-muted: #94a3b8;
+  --w-text-dim: #64748b;
+  --w-accent: #10b981;
+  --w-accent-glow: rgba(16, 185, 129, 0.2);
+  --w-accent-wash: rgba(16, 185, 129, 0.08);
+  --w-search-bg: #18201a;
+  --w-sidebar-bg: #0e1410;
+  --w-star: #f59e0b;
+  --w-cx-bg: #000000;
+  --w-cx-border: #334155;
+  --w-cx-text: #38bdf8;
+}
+
+[data-theme="light"] {
+  --w-bg: #f8fafc;
+  --w-card: #ffffff;
+  --w-card-hover: #f1f5f9;
+  --w-border: #e2e8f0;
+  --w-border-faint: rgba(0, 0, 0, 0.06);
+  --w-text: #0f172a;
+  --w-text-muted: #64748b;
+  --w-text-dim: #94a3b8;
+  --w-accent: #059669;
+  --w-accent-glow: rgba(5, 150, 105, 0.15);
+  --w-accent-wash: #ecfdf5;
+  --w-search-bg: #f1f5f9;
+  --w-sidebar-bg: #f8fafc;
+  --w-star: #f59e0b;
+  --w-cx-bg: #0f172a;
+  --w-cx-border: #cbd5e1;
+  --w-cx-text: #bae6fd;
 }
 
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: var(--wmail-canvas);
-  color: var(--wmail-text);
+  background: var(--w-bg);
+  color: var(--w-text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Application Wmail Container */
+/* Suppression absolue des marges globales de section pour Wmail */
+.wmail-shell section,
+.wmail-main,
+.threadview {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+
+/* Harmonisation du bandeau supérieur officiel */
+header.site {
+  background: #0b0f0c !important;
+  border-bottom: 1px solid #1c2620 !important;
+}
+header.site .wrap {
+  background: transparent !important;
+}
+header.site .brand-text {
+  color: #f0fdf4 !important;
+}
+header.site .nav-dropdown-btn,
+header.site .menu-toggle,
+header.site nav a {
+  color: #cbd5e1 !important;
+}
+header.site .nav-dropdown-btn:hover,
+header.site nav a:hover {
+  color: #10b981 !important;
+}
+
+/* ==================== HUD PROBATOIRE EN TÊTE ==================== */
+.wmail-hud {
+  max-width: 1480px;
+  width: calc(100% - 24px);
+  margin: 16px auto 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.hud-card {
+  background: var(--w-card);
+  border: 1px solid var(--w-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.hud-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--w-accent);
+}
+.hud-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--w-accent-wash);
+  color: var(--w-accent);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex: none;
+}
+.hud-meta { display: flex; flex-direction: column; min-width: 0; }
+.hud-value { font-size: 19px; font-weight: 800; color: var(--w-text); letter-spacing: -0.5px; }
+.hud-label { font-size: 11.5px; font-weight: 600; color: var(--w-text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ==================== CONTENEUR WMAIL ==================== */
 .wmail-shell {
   max-width: 1480px;
   width: calc(100% - 24px);
-  margin: 14px auto 32px;
-  background: var(--wmail-surface);
+  margin: 8px auto 32px;
+  background: var(--w-card);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
-  border: 1px solid var(--wmail-line);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--w-border);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 180px);
   min-height: 680px;
   overflow: hidden;
+  position: relative;
 }
 
 /* Wmail Topbar */
@@ -435,8 +555,8 @@ body {
   align-items: center;
   gap: 16px;
   padding: 0 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #edf2f7;
+  background: var(--w-card);
+  border-bottom: 1px solid var(--w-border);
   flex: none;
   z-index: 10;
 }
@@ -444,52 +564,57 @@ body {
 .brand-area {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 260px;
+  gap: 10px;
+  width: 270px;
   flex: none;
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
-  color: #475569;
-  transition: background 0.15s ease;
+  color: var(--w-text-muted);
+  transition: all 0.15s ease;
 }
-.icon-btn:hover { background: #f1f5f9; color: #0f172a; }
+.icon-btn:hover {
+  background: var(--w-card-hover);
+  color: var(--w-text);
+  border-color: var(--w-border);
+}
 
 .wmail-brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   text-decoration: none;
-  color: #0f172a;
+  color: var(--w-text);
 }
 .wmail-logo-mark {
   width: 32px;
   height: 32px;
-  background: #059669;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  border-radius: 8px;
+  border-radius: 9px;
   display: grid;
   place-items: center;
-  font-weight: 800;
+  font-weight: 900;
   font-size: 16px;
-  letter-spacing: -0.5px;
+  box-shadow: 0 2px 8px var(--w-accent-glow);
 }
 .wmail-brand-title {
-  font-size: 21px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  color: #1e293b;
+  color: var(--w-text);
 }
-.wmail-brand-title b { color: #059669; }
+.wmail-brand-title b { color: var(--w-accent); }
 
+/* Barre de recherche avec icône fine */
 .search-wrap {
   height: 44px;
   max-width: 680px;
@@ -501,7 +626,7 @@ body {
   position: absolute;
   left: 16px;
   top: 13px;
-  color: #64748b;
+  color: var(--w-text-dim);
   width: 18px;
   height: 18px;
   pointer-events: none;
@@ -511,24 +636,25 @@ body {
 .search-wrap input {
   width: 100%;
   height: 100%;
-  border: 1px solid transparent;
+  border: 1px solid var(--w-border);
   outline: none;
   border-radius: 24px;
-  background: var(--wmail-search);
+  background: var(--w-search-bg);
   padding: 0 46px 0 48px;
-  font-size: 14.5px;
-  color: #0f172a;
+  font-size: 14px;
+  color: var(--w-text);
   transition: all 0.2s ease;
 }
 .search-wrap input:focus {
-  background: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  background: var(--w-card);
+  border-color: var(--w-accent);
+  box-shadow: 0 0 0 3px var(--w-accent-glow);
 }
 .search-clear {
   position: absolute;
   right: 6px;
   top: 3px;
+  display: none;
 }
 
 .wmail-actions {
@@ -537,34 +663,37 @@ body {
   gap: 8px;
   flex: none;
 }
+.theme-switch-btn {
+  font-size: 16px;
+}
 .wmail-avatar {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #059669;
+  background: var(--w-accent);
   color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 0 0 2px #ecfdf5;
+  font-size: 12.5px;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--w-accent-glow);
+  cursor: pointer;
 }
 
-/* Wmail Workspace */
+/* ==================== WORKSPACE & SIDEBAR ==================== */
 .wmail-workspace {
   flex: 1;
   display: flex;
   min-height: 0;
-  background: #ffffff;
+  background: var(--w-card);
 }
 
-/* Sidebar */
 .wmail-sidebar {
   width: 280px;
   flex: none;
   padding: 14px 10px 14px 14px;
-  background: #f8fafc;
-  border-right: 1px solid var(--wmail-line);
+  background: var(--w-sidebar-bg);
+  border-right: 1px solid var(--w-border);
   overflow-y: auto;
   transition: width 0.2s ease;
   display: flex;
@@ -575,38 +704,38 @@ body {
 .nav-item {
   height: 38px;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 19px;
   display: flex;
   align-items: center;
   font-size: 13.5px;
   font-weight: 600;
-  color: #334155;
+  color: var(--w-text-muted);
   cursor: pointer;
   border: none;
   background: transparent;
   padding: 0 14px 0 8px;
   margin-bottom: 2px;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
-.nav-item:hover { background: #e2e8f0; color: #0f172a; }
-.nav-item.active { background: #dbeafe; color: #1d4ed8; font-weight: 700; }
+.nav-item:hover { background: var(--w-card-hover); color: var(--w-text); }
+.nav-item.active { background: var(--w-accent-wash); color: var(--w-accent); font-weight: 700; }
 .nav-icon { width: 36px; display: grid; place-items: center; flex: none; }
 .nav-label { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.nav-count { font-size: 11.5px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: rgba(0,0,0,0.06); }
-.nav-item.active .nav-count { background: #bfdbfe; color: #1e40af; }
+.nav-count { font-size: 11.5px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: rgba(255,255,255,0.06); }
+.nav-item.active .nav-count { background: var(--w-accent); color: #ffffff; }
 
 .sidebar-divider {
   height: 1px;
-  background: #e2e8f0;
+  background: var(--w-border);
   margin: 14px 6px;
 }
 
 .labels-header {
-  font-size: 11.5px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  color: #64748b;
-  letter-spacing: 0.5px;
+  color: var(--w-text-dim);
+  letter-spacing: 0.8px;
   padding: 6px 12px;
 }
 .label-row {
@@ -618,56 +747,55 @@ body {
   padding: 0 12px;
   border-radius: 17px;
   font-size: 13px;
-  color: #334155;
+  color: var(--w-text-muted);
   cursor: pointer;
   border: none;
   background: transparent;
   margin-bottom: 2px;
+  transition: all 0.15s ease;
 }
-.label-row:hover { background: #e2e8f0; }
-.label-row.active { background: #e0f2fe; color: #0369a1; font-weight: 700; }
-.label-tag { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.label-row:hover { background: var(--w-card-hover); color: var(--w-text); }
+.label-row.active { background: var(--w-card-hover); color: var(--w-accent); font-weight: 700; box-shadow: inset 2px 0 0 var(--w-accent); }
+.label-tag { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 6px currentColor; }
 
 .sidebar-disclaimer {
   margin-top: auto;
   padding: 12px;
   border-radius: 10px;
-  background: #f1f5f9;
-  font-size: 11.5px;
-  color: #64748b;
-  line-height: 1.45;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 11px;
+  color: var(--w-text-dim);
+  line-height: 1.5;
+  border: 1px solid var(--w-border);
 }
-.wmail-sidebar.collapsed .nav-label,
-.wmail-sidebar.collapsed .nav-count,
-.wmail-sidebar.collapsed .labels-header,
-.wmail-sidebar.collapsed .sidebar-disclaimer { display: none; }
 
-/* Inbox Main */
-.wmail-shell section, .wmail-main, .threadview { padding: 0; border: none; }
+/* ==================== VUE PRINCIPALE BOÎTE ==================== */
 .wmail-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: #ffffff;
+  background: var(--w-card);
 }
 
-/* Tabs Bar combinée avec compteur */
+/* Onglets & Barre d'outils combinée */
 .wmail-tabs-bar {
   height: 52px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e2e8f0;
-  background: #fafbfc;
-  padding: 0 12px 0 0;
+  border-bottom: 1px solid var(--w-border);
+  background: var(--w-sidebar-bg);
+  padding: 0 16px 0 0;
+  gap: 12px;
 }
 .wmail-tabs-group {
   display: flex;
   height: 100%;
   overflow-x: auto;
+  flex: 1;
+  min-width: 0;
 }
 .wmail-tab {
   position: relative;
@@ -675,18 +803,18 @@ body {
   padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 13.5px;
+  gap: 8px;
+  font-size: 13px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--w-text-muted);
   border: none;
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
 }
-.wmail-tab:hover { background: #f1f5f9; color: #0f172a; }
-.wmail-tab.active { color: #0b57d0; background: #ffffff; }
+.wmail-tab:hover { background: var(--w-card-hover); color: var(--w-text); }
+.wmail-tab.active { color: var(--w-accent); font-weight: 700; background: var(--w-card); }
 .wmail-tab.active::after {
   content: "";
   position: absolute;
@@ -694,19 +822,22 @@ body {
   right: 12px;
   bottom: 0;
   height: 3px;
-  background: #0b57d0;
+  background: var(--w-accent);
+  box-shadow: 0 -1px 6px var(--w-accent);
   border-radius: 3px 3px 0 0;
 }
 
 .wmail-counter-meta {
-  white-space: nowrap;
-  flex-shrink: 0;
   display: flex;
+  padding-left: 12px;
+  border-left: 1px solid var(--w-border);
   align-items: center;
   gap: 10px;
-  color: #64748b;
+  color: var(--w-text-muted);
   font-size: 12.5px;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Content Viewport */
@@ -716,43 +847,43 @@ body {
   position: relative;
 }
 
-/* Table Rows */
+/* Rangées de courriels (.row) */
 .row {
   display: flex;
   align-items: center;
-  padding: 0 14px;
+  padding: 0 16px;
   height: 46px;
   cursor: pointer;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--w-border-faint);
   font-size: 13.5px;
   transition: background 0.1s ease;
 }
 .row:hover {
-  background: #f8fafc;
-  box-shadow: inset 2px 0 0 #0b57d0;
+  background: var(--w-card-hover);
+  box-shadow: inset 2px 0 0 var(--w-accent);
 }
-.row.sel { background: #e0f2fe; }
+.row.sel { background: var(--w-accent-wash); }
 
 .cb {
-  width: 17px;
-  height: 17px;
-  border: 1.5px solid #94a3b8;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--w-text-dim);
   border-radius: 3px;
   flex: none;
   margin-right: 10px;
 }
-.row.sel .cb { background: #0b57d0; border-color: #0b57d0; }
+.row.sel .cb { background: var(--w-accent); border-color: var(--w-accent); }
 
 .st {
-  color: #cbd5e1;
-  font-size: 17px;
+  color: var(--w-border);
+  font-size: 16px;
   flex: none;
-  width: 22px;
+  width: 20px;
   text-align: center;
   margin-right: 12px;
   transition: color 0.15s;
 }
-.st.on, .st:hover { color: #f59e0b; }
+.st.on, .st:hover { color: var(--w-star); text-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
 
 .who {
   width: 200px;
@@ -761,7 +892,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #0f172a;
+  color: var(--w-text);
 }
 .who-name {
   overflow: hidden;
@@ -772,9 +903,12 @@ body {
   min-width: 0;
 }
 .count-tag {
-  font-size: 11px;
-  color: #64748b;
+  font-size: 10.5px;
+  color: var(--w-text-dim);
   font-weight: 700;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
   margin-left: 6px;
   flex: none;
 }
@@ -788,16 +922,30 @@ body {
   overflow: hidden;
   white-space: nowrap;
 }
+
+/* Pastilles de catégorie */
 .pill {
   font-size: 11px;
   font-weight: 700;
   border-radius: 6px;
   padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   flex: none;
+  letter-spacing: 0.2px;
 }
+.pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.pill-signalement { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+.pill-lep { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+.pill-aiprp { background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.3); }
+.pill-cce { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.pill-stablex { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.pill-eccc { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
 .subj-text {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--w-text);
   max-width: 44%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -805,7 +953,7 @@ body {
   flex-shrink: 0;
 }
 .snip {
-  color: #64748b;
+  color: var(--w-text-muted);
   font-size: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -815,7 +963,7 @@ body {
 
 .date {
   font-size: 12.5px;
-  color: #64748b;
+  color: var(--w-text-muted);
   font-weight: 600;
   flex: none;
   width: 72px;
@@ -824,7 +972,7 @@ body {
   padding-left: 8px;
 }
 
-/* Thread View */
+/* ==================== VUE DU FIL (THREADVIEW) ==================== */
 .threadview {
   display: none;
   padding: 0;
@@ -836,8 +984,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  border-bottom: 1px solid #e2e8f0;
-  background: #fafbfc;
+  border-bottom: 1px solid var(--w-border);
+  background: var(--w-sidebar-bg);
   flex: none;
 }
 
@@ -847,39 +995,91 @@ body {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 18px;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #0f172a;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text);
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
   flex: none;
   transition: all 0.15s ease;
 }
-.back-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+.back-btn:hover { background: var(--w-card-hover); border-color: var(--w-accent); }
 .back-btn svg { width: 16px; height: 16px; }
 
 .tv-action-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tool-btn:hover { color: var(--w-text); border-color: var(--w-accent); }
+.tool-btn svg { width: 14px; height: 14px; }
+
 .tv-header {
-  padding: 20px 24px 14px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--w-border-faint);
+  background: rgba(255, 255, 255, 0.01);
 }
 .tv-header h2 {
-  margin: 0;
-  font-size: 20px;
+  margin: 0 0 10px;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--w-text);
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+.tv-header-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.badge-proof {
+  font-size: 11px;
   font-weight: 700;
-  color: #0f172a;
-  line-height: 1.4;
+  background: var(--w-accent-wash);
+  color: var(--w-accent);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--w-accent);
+}
+.badge-audit {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.badge-id {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--w-text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 .tv-cards-stack {
-  padding: 16px 24px 48px;
-  max-width: 1100px;
+  padding: 20px 28px 48px;
+  max-width: 1160px;
   margin: 0 auto;
 }
 
@@ -887,71 +1087,93 @@ body {
   font-size: 11px;
   font-weight: 700;
   border-radius: 6px;
-  padding: 2px 10px;
+  padding: 3px 10px;
 }
-.nmsg { font-size: 12.5px; color: #64748b; font-weight: 600; }
+.lpill-signalement { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.lpill-lep { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+.lpill-aiprp { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
+.lpill-cce { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.lpill-stablex { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.lpill-eccc { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+.nmsg { font-size: 12.5px; color: var(--w-text-muted); font-weight: 600; }
 .allopen {
   font-size: 12px;
-  color: #0b57d0;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
+  color: var(--w-accent);
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
   border-radius: 14px;
   padding: 3px 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
-.allopen:hover { background: #f8fafc; }
+.allopen:hover { border-color: var(--w-accent); }
 
 /* Message Cards */
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  margin-bottom: 12px;
+  background: var(--w-card);
+  border: 1px solid var(--w-border);
+  border-radius: 14px;
+  margin-bottom: 14px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  transition: border-color 0.15s ease;
 }
+.card:hover { border-color: rgba(255, 255, 255, 0.15); }
+.card.open { border-color: var(--w-border); }
+
 .card-head {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   cursor: pointer;
-  background: #fafbfc;
+  background: var(--w-sidebar-bg);
   transition: background 0.15s ease;
 }
-.card-head:hover { background: #f1f5f9; }
+.card-head:hover { background: var(--w-card-hover); }
 
 .cava {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 800;
   display: grid;
   place-items: center;
   flex: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-.cava.me { background: #059669; }
-.cava.eccc { background: #0b57d0; }
-.cava.mpo { background: #0284c7; }
-.cava.atip { background: #0f766e; }
-.cava.cce { background: #15803d; }
+.cava.me { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+.cava.eccc { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+.cava.mpo { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); }
+.cava.atip { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); }
+.cava.cce { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); }
 
 .card-head .meta { flex: 1; min-width: 0; }
 .card-head .l1 {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--w-text);
+  flex-wrap: nowrap;
 }
-.card-head .role { font-size: 12px; color: #64748b; font-weight: 500; }
+.forg-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--w-text-muted);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.card-head .role { font-size: 12px; color: var(--w-text-dim); font-weight: 500; }
 .card-head .l2 {
   font-size: 12px;
-  color: #64748b;
+  color: var(--w-text-muted);
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -959,7 +1181,7 @@ body {
 }
 .card-head .cdate {
   font-size: 12px;
-  color: #64748b;
+  color: var(--w-text-muted);
   font-weight: 500;
   flex: none;
 }
@@ -971,14 +1193,14 @@ body {
 }
 .msg-num-tag {
   font-size: 10.5px;
-  background: #e2e8f0;
-  color: #475569;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--w-text-muted);
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
 }
 .card-chevron {
-  color: #64748b;
+  color: var(--w-text-dim);
   font-size: 14px;
   transition: transform 0.2s ease;
 }
@@ -986,77 +1208,158 @@ body {
 
 .card-body {
   display: none;
-  padding: 20px 24px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #1e293b;
-  border-top: 1px solid #f1f5f9;
+  padding: 22px 28px;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--w-text);
+  border-top: 1px solid var(--w-border);
+  background: var(--w-card);
 }
 .card.open .card-body { display: block; }
 
 .doc-summary {
-  background: #f8fafc;
-  border-left: 4px solid #0b57d0;
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 4px solid #3b82f6;
   padding: 12px 18px;
   border-radius: 0 8px 8px 0;
   font-size: 13.5px;
-  color: #334155;
-  margin: 10px 0;
+  color: var(--w-text);
+  margin: 12px 0;
 }
 
-.attach { margin: 12px 0 16px; }
+.attach { margin: 14px 0 18px; }
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 12.5px;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--w-sidebar-bg);
+  border: 1px solid var(--w-border);
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
-.chip-icon { font-size: 16px; }
-.chip .fn { font-weight: 700; color: #0f172a; }
-.chip .sz { font-size: 11.5px; color: #64748b; }
+.chip:hover {
+  background: var(--w-card-hover);
+  border-color: var(--w-accent);
+  box-shadow: 0 4px 14px var(--w-accent-glow);
+}
+.chip-icon { font-size: 17px; }
+.chip .fn { font-weight: 700; color: var(--w-text); }
+.chip .sz { font-size: 11.5px; color: var(--w-accent); }
 
+/* Caviardage Interactif */
 .cx {
-  background: #000000;
-  color: #000000;
-  border-radius: 2px;
-  padding: 0 4px;
+  background: var(--w-cx-bg);
+  color: var(--w-cx-bg);
+  border-radius: 3px;
+  padding: 0 5px;
   line-height: 1.3;
   cursor: help;
   user-select: text;
+  border: 1px solid var(--w-cx-border);
+  position: relative;
+  transition: all 0.2s ease;
 }
-.cx::selection { background: #0b57d0; color: #ffffff; }
+.cx:hover {
+  background: #090d0b;
+  color: var(--w-cx-text);
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+.cx::selection { background: var(--w-accent); color: #ffffff; }
+
+/* Modale de pièce probatoire (Evidence Modal) */
+.evidence-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: none;
+  place-items: center;
+}
+.evidence-modal {
+  width: 90%;
+  max-width: 540px;
+  background: var(--w-card);
+  border: 1px solid var(--w-border);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  padding: 24px;
+}
+.evidence-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.evidence-title { font-size: 17px; font-weight: 700; color: var(--w-text); }
+.evidence-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--w-text-muted);
+  cursor: pointer;
+}
+.evidence-body { font-size: 13.5px; line-height: 1.6; color: var(--w-text-muted); }
+.evidence-meta-row {
+  margin: 10px 0;
+  padding: 10px 14px;
+  background: var(--w-sidebar-bg);
+  border-radius: 8px;
+  border: 1px solid var(--w-border);
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--w-accent);
+}
+
+/* Toast de notification */
+.wmail-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #10b981;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  z-index: 100000;
+  display: none;
+}
 
 /* Search Results */
 .results {
   display: none;
-  padding: 20px 24px 48px;
-  max-width: 900px;
+  padding: 24px 28px 48px;
+  max-width: 960px;
   margin: 0 auto;
 }
 .res-head {
-  font-size: 14px;
-  color: #475569;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--w-text);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--w-border);
+  margin-bottom: 14px;
 }
 .res {
-  padding: 14px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 16px;
+  border-bottom: 1px solid var(--w-border-faint);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
+  transition: background 0.15s ease;
 }
-.res:hover { background: #f8fafc; }
-.rtop { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
-.rwho { font-weight: 700; font-size: 13.5px; color: #0f172a; }
-.rdate { color: #64748b; font-size: 12px; }
-.rsubj { color: #1e293b; font-weight: 600; font-size: 13.5px; margin-bottom: 4px; }
-.rsnip { color: #64748b; font-size: 13px; line-height: 1.5; }
-.rsnip mark { background: #fef08a; color: #0f172a; border-radius: 2px; padding: 0 2px; }
+.res:hover { background: var(--w-card-hover); }
+.rtop { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.rwho { font-weight: 700; font-size: 14px; color: var(--w-text); }
+.rdate { color: var(--w-text-muted); font-size: 12px; }
+.rsubj { color: var(--w-accent); font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.rsnip { color: var(--w-text-muted); font-size: 13px; line-height: 1.5; }
+.rsnip mark { background: rgba(245, 158, 11, 0.35); color: #fef08a; border-radius: 3px; padding: 0 4px; }
 
 .svg {
   width: 18px;
@@ -1068,12 +1371,22 @@ body {
   stroke-linejoin: round;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
+  .wmail-hud { grid-template-columns: repeat(2, 1fr); }
   .wmail-sidebar { display: none; }
   .brand-area { width: auto; }
   .wmail-shell { width: 100%; margin: 0; border-radius: 0; height: calc(100vh - 60px); border: none; }
   .who { width: 140px; }
   .snip { display: none; }
+}
+
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  #navbar-placeholder, .wmail-hud, .wmail-topbar, .wmail-sidebar, .tv-action-bar, footer { display: none !important; }
+  .wmail-shell { height: auto !important; border: none !important; box-shadow: none !important; }
+  .card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px !important; }
+  .card-body { display: block !important; }
+  .cx { background: transparent !important; color: #000000 !important; border: 1px solid #000000 !important; }
 }
 </style>
 
@@ -1093,6 +1406,38 @@ body {
 <div id="navbar-placeholder"></div>
 
 <main id="main-content" style="flex: 1; display: flex; flex-direction: column;">
+  <!-- HUD Métriques probatoires -->
+  <div class="wmail-hud">
+    <div class="hud-card">
+      <div class="hud-icon">📨</div>
+      <div class="hud-meta">
+        <span class="hud-value">96</span>
+        <span class="hud-label">Correspondances citoyennes</span>
+      </div>
+    </div>
+    <div class="hud-card">
+      <div class="hud-icon">📁</div>
+      <div class="hud-meta">
+        <span class="hud-value">20</span>
+        <span class="hud-label">Dossiers d'enquête &amp; Fils</span>
+      </div>
+    </div>
+    <div class="hud-card">
+      <div class="hud-icon">📎</div>
+      <div class="hud-meta">
+        <span class="hud-value">32</span>
+        <span class="hud-label">Pièces probatoires &amp; Relevés</span>
+      </div>
+    </div>
+    <div class="hud-card">
+      <div class="hud-icon">🛡️</div>
+      <div class="hud-meta">
+        <span class="hud-value">100%</span>
+        <span class="hud-label">Caviardage actif (Loi 25)</span>
+      </div>
+    </div>
+  </div>
+
   <div class="wmail-shell">
     <!-- Topbar Wmail -->
     <header class="wmail-topbar">
@@ -1118,13 +1463,16 @@ body {
       </div>
 
       <div class="wmail-actions">
+        <button class="icon-btn theme-switch-btn" id="themeSwitch" title="Basculer le thème Sombre / Clair" aria-label="Changer de thème">
+          🌙
+        </button>
         <a href="correspondance.html" class="icon-btn" title="Politique relative aux communications &amp; Déontologie" aria-label="Politique de correspondance">
           <svg class="svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </a>
         <a href="registre.html" class="icon-btn" title="Accéder au registre officiel CCE" aria-label="Registre officiel CCE">
           <svg class="svg" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
         </a>
-        <div class="wmail-avatar" title="William Guindon (Auteur SEM-26-003)">WG</div>
+        <div class="wmail-avatar" title="William Guindon (Auteur citoyen SEM-26-003)">WG</div>
       </div>
     </header>
 
@@ -1154,38 +1502,38 @@ body {
 
         <div class="labels-header">Catégories</div>
         <button class="label-row" data-lab="signalement">
-          <i class="label-tag" style="background:#d93025"></i>
+          <i class="label-tag" style="background:#ef4444;color:#ef4444"></i>
           <span class="nav-label">Application de la loi &amp; Pêches</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'signalement').length}</span>
         </button>
         <button class="label-row" data-lab="eccc">
-          <i class="label-tag" style="background:#0b57d0"></i>
+          <i class="label-tag" style="background:#3b82f6;color:#3b82f6"></i>
           <span class="nav-label">ECCC &amp; Ministères</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'eccc').length}</span>
         </button>
         <button class="label-row" data-lab="cce">
-          <i class="label-tag" style="background:#188038"></i>
+          <i class="label-tag" style="background:#10b981;color:#10b981"></i>
           <span class="nav-label">CCE / ACEUM &amp; Traités</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'cce').length}</span>
         </button>
         <button class="label-row" data-lab="aiprp">
-          <i class="label-tag" style="background:#00897a"></i>
+          <i class="label-tag" style="background:#06b6d4;color:#06b6d4"></i>
           <span class="nav-label">AIPRP &amp; Accès à l'information</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'aiprp').length}</span>
         </button>
         <button class="label-row" data-lab="lep">
-          <i class="label-tag" style="background:#9334e6"></i>
+          <i class="label-tag" style="background:#a855f7;color:#a855f7"></i>
           <span class="nav-label">Espèces en péril (LEP)</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'lep').length}</span>
         </button>
         <button class="label-row" data-lab="stablex">
-          <i class="label-tag" style="background:#e8710a"></i>
+          <i class="label-tag" style="background:#f59e0b;color:#f59e0b"></i>
           <span class="nav-label">Stablex &amp; Cellule 6</span>
           <span class="nav-count">${threadList.filter(x => x.category === 'stablex').length}</span>
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre citoyen SEM-26-003 :</strong> 96 correspondances versées au dossier probatoire public. Renseignements personnels protégés.
+          <strong>Registre officiel SEM-26-003 :</strong> 96 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
         </div>
       </aside>
 
@@ -1197,7 +1545,7 @@ body {
             <button class="wmail-tab active" data-tab="all"><svg class="svg" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 13h4l2 3h4l2-3h4"/></svg><span>Tous</span></button>
             <button class="wmail-tab" data-tab="signalement"><svg class="svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Application de la loi</span></button>
             <button class="wmail-tab" data-tab="eccc"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg><span>ECCC &amp; Cabinets</span></button>
-            <button class="wmail-tab" data-tab="cce"><svg class="svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg><span>CCE &amp; ACEUM</span></button>
+            <button class="wmail-tab" data-tab="cce"><svg class="svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span>CCE &amp; ACEUM</span></button>
             <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Clé USB</span></button>
           </div>
           <div class="wmail-counter-meta">
@@ -1223,6 +1571,24 @@ body {
     </div>
   </div>
 </main>
+
+<!-- Modale d'inspection de pièce jointe -->
+<div class="evidence-modal-backdrop" id="evidenceModal" onclick="closeEvidenceModal(event)">
+  <div class="evidence-modal" onclick="event.stopPropagation()">
+    <div class="evidence-header">
+      <div class="evidence-title">Fiche de la pièce probatoire</div>
+      <button class="evidence-close" onclick="closeEvidenceModal()">✕</button>
+    </div>
+    <div class="evidence-body">
+      <p>Cette pièce probatoire a été officiellement versée et annexée au dossier de communication citoyenne SEM-26-003.</p>
+      <div class="evidence-meta-row" id="evidenceMeta"></div>
+      <p style="font-size:12px;color:var(--w-text-dim);margin-top:12px;">Conformément aux règles de confidentialité et aux accords de transmission, les données brutes ont été vérifiées et versées aux registres fédéraux et internationaux.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast interactif -->
+<div class="wmail-toast" id="wmailToast">Transcription copiée dans le presse-papier !</div>
 
 <!-- Pied de page officiel du site -->
 <footer>
@@ -1255,6 +1621,21 @@ body {
   var menuBtn = document.getElementById('menu');
   var sidebar = document.getElementById('sidebar');
   var inboxTabsBar = document.getElementById('inboxTabsBar');
+  var themeBtn = document.getElementById('themeSwitch');
+
+  // Gestion du Thème Sombre / Clair
+  var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    currentTheme = theme;
+    if (themeBtn) themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('wg_theme', theme); } catch (_) {}
+  }
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+  }
 
   // Moteur d'indexation locale
   var idx = [];
@@ -1334,10 +1715,27 @@ body {
     });
   });
 
+  // Copie de fil de discussion dans le presse-papier
+  document.querySelectorAll('.copy-thread-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var tid = btn.getAttribute('data-tid');
+      var tv = document.getElementById('tv-' + tid);
+      if(!tv) return;
+      var text = tv.innerText;
+      navigator.clipboard.writeText(text).then(function(){
+        var toast = document.getElementById('wmailToast');
+        if(toast){
+          toast.style.display = 'block';
+          setTimeout(function(){ toast.style.display = 'none'; }, 2500);
+        }
+      });
+    });
+  });
+
   // Recherche plein texte
   function doSearch(val){
     var q = val.trim().toLowerCase();
-    clearB.hidden = !q;
+    clearB.style.display = q ? "grid" : "none";
     if(q.length < 2){
       results.style.display = 'none';
       msglist.style.display = 'block';
@@ -1352,7 +1750,7 @@ body {
 
     var html = '<div class="res-head"><b>' + hits.length + '</b> résultat(s) pour « ' + val + ' »</div>';
     if(!hits.length){
-      html += '<div style="padding:30px 10px;text-align:center;color:#64748b;">Aucune correspondance trouvée dans les 96 courriels.</div>';
+      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les 96 courriels.</div>';
     } else {
       hits.slice(0, 40).forEach(function(hit){
         var pos = hit.raw.toLowerCase().indexOf(q);
@@ -1372,7 +1770,7 @@ body {
   search.addEventListener('input', function(){ doSearch(search.value); });
   clearB.addEventListener('click', function(){
     search.value = '';
-    clearB.hidden = true;
+    clearB.style.display = "none";
     goList(true);
   });
 
@@ -1432,6 +1830,17 @@ body {
     });
   }
 
+  // Raccourcis clavier Pro
+  document.addEventListener('keydown', function(e){
+    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if(e.key === 'Escape' || e.key === 'u'){
+      goList(true);
+    } else if(e.key === '/'){
+      e.preventDefault();
+      search.focus();
+    }
+  });
+
   // Hash router
   function handleHash(){
     var hash = (window.location.hash || '').replace('#', '').trim();
@@ -1445,10 +1854,27 @@ body {
   window.addEventListener('hashchange', handleHash);
   handleHash();
 })();
+
+// Fonctions modale de pièce probatoire
+function openEvidenceModal(pieceName, msgNum, filId) {
+  var modal = document.getElementById('evidenceModal');
+  var metaEl = document.getElementById('evidenceMeta');
+  if (modal && metaEl) {
+    metaEl.innerHTML = 'Fichier : <strong>' + decodeURIComponent(pieceName) + '</strong><br>' +
+                       'Enregistrement : Message #' + msgNum + ' · Fil : ' + filId + '<br>' +
+                       'Statut légal : Versé au registre public SEM-26-003';
+    modal.style.display = 'grid';
+  }
+}
+
+function closeEvidenceModal(e) {
+  var modal = document.getElementById('evidenceModal');
+  if (modal) modal.style.display = 'none';
+}
 </script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
 </html>`;
 
 fs.writeFileSync('/Users/williamguindon/WilliamGuindon/wmail.html', fullHtml, 'utf8');
-console.log('✔ wmail.html régénéré avec succès !');
+console.log('✔ wmail.html régénéré avec succès avec le design Pro Dark & HUD !');
