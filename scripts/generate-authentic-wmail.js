@@ -54,15 +54,55 @@ while ((m = msgRegex.exec(rawText)) !== null) {
     body = block.substring(sepIdx + 80).trim();
   }
 
-  // Filtrer STRICTEMENT les brouillons non envoyés et les artefacts de suivi (Mailsuite / Mailtrack)
+  const objLower = (objMatch ? objMatch[1] : '').toLowerCase();
+  const deLower = (deMatch ? deMatch[1] : '').toLowerCase();
+  const aLower = (aMatch ? aMatch[1] : '').toLowerCase();
+  const bodyLower = body.toLowerCase();
+  const noteLower = (noteMatch ? noteMatch[1] : '').toLowerCase();
+
+  // Filtrer STRICTEMENT les éléments qui n'ont pas rapport d'être publics dans un registre juridique :
+  // 1. Brouillons non envoyés et artefacts de suivi
   const isDraftOrTracker = 
-    (noteMatch && noteMatch[1].toLowerCase().includes('draft')) ||
+    noteLower.includes('draft') ||
     body.includes('BROUILLON') ||
     body.includes('Mailtrack') ||
     body.includes('Mailsuite') ||
     body.includes('artefact Mailsuite');
 
-  if (!isDraftOrTracker) {
+  // 2. Avis personnels (vacances, absence temporaire, anniversaire, camp de cadets, mentions d'âge personnel)
+  const isPersonalNotice = 
+    num === 37 || num === 39 || num === 51 ||
+    objLower.includes('absence temporaire') ||
+    bodyLower.includes('camp des cadets') ||
+    bodyLower.includes('fêterai mes 15 ans') ||
+    bodyLower.includes('fêter mes 15 ans') ||
+    objLower.includes("j'ai 15 ans");
+
+  // 3. Messages informels sans objet, doublons ou clics accidentels
+  const isInformalOrEmpty = 
+    num === 1 || num === 21 || num === 25 || num === 28 || num === 30 || num === 87 ||
+    objLower.trim() === '(sans objet)' ||
+    objLower.startsWith('(sans objet)');
+
+  // 4. Rejets techniques et rebonds de serveurs (Postmaster)
+  const isPostmasterBounce = 
+    deLower.includes('postmaster') ||
+    objLower.startsWith('undeliverable:') ||
+    [11, 13, 14, 15, 16, 17, 22, 23, 27, 42, 43].includes(num);
+
+  // 5. Échanges internes privés entre militants / coalition (hors gouvernements et hors CCE/Stablex)
+  const isPrivateActivistCoordination = 
+    num === 78 || num === 79 ||
+    deLower.includes('coordo.cap') ||
+    aLower.includes('coordo.cap');
+
+  // 6. Robots et réponses purement automatiques de serveurs sans substance décisionnelle
+  const isAutomatedDaemon = 
+    [4, 5, 7, 9, 18, 19, 20, 24, 32, 36, 44, 48, 49, 54, 58, 62, 63, 69, 70, 92, 93, 95, 96].includes(num);
+
+  const shouldExclude = isDraftOrTracker || isPersonalNotice || isInformalOrEmpty || isPostmasterBounce || isPrivateActivistCoordination || isAutomatedDaemon;
+
+  if (!shouldExclude) {
     rawMessages.push({
       num,
       date: dateMatch ? dateMatch[1].trim() : '',
@@ -281,49 +321,68 @@ function formatMessageBody(msg) {
   return paragraphs || `<p class="faded">(Corps de message transmis par pli annexe ou pièce jointe)</p>`;
 }
 
+// Titres institutionnels et rigoureusement publics des dossiers d'enquête
+const THREAD_TITLES = {
+  'thread_01_demande_enquete_lcom_peches': "Demande formelle d'enquête – Violations présumées des lois environnementales (LCEE / Pêches)",
+  'thread_02_signalement_enviroinfo': "Signalement formel d'infractions environnementales – Direction générale de l'application de la loi (ECCC)",
+  'thread_03_clarification_stablex': "Demande formelle de clarification – Communication publique et impacts environnementaux (Stablex)",
+  'thread_04_notification_aceum_24_27': "Notification écrite préalable (ACEUM Chapitre 24) – Dossier CCE SEM-26-003",
+  'thread_06_dossier_pic_mpo': "Demande de rencontre & transmission probatoire (MPO – Direction de l'habitat faunique)",
+  'thread_07_depot_soumission_cce': "Dépôt officiel de la soumission citoyenne SEM-26-003 (CCE / ACEUM)",
+  'thread_08_reponses_officielles_ministres_dabrusin': "Réponses officielles des ministres (ECCC & MPO) – Dossier SEM-26-003 (Réf. MIN-334658)",
+  'thread_09_signalement_penal_peches_inrp': "SIGNALEMENT PÉNAL FORMEL – Article 36(3) Loi sur les pêches – Site Stablex Blainville (CCE SEM-26-003)",
+  'thread_10_decret_urgence_lep_art_80': "Demande formelle de recommandation de Décret d'urgence – Article 80 de la Loi sur les espèces en péril (LEP)",
+  'thread_12_decision_cce_ambassades': "Notification officielle – Décision de recevabilité SEM-26-003 (Secrétariat CCE & Ambassades)",
+  'thread_13_aiprp_praine_purolator': "Demande d'accès aux renseignements personnels (AIPRP P-2026-00017) – Clé USB chiffrée & Suivi Lisa Praine",
+  'thread_14_enquete_deputes_parlementaires': "Enquête parlementaire citoyenne – Positionnement officiel des députés fédéraux sur l'ACEUM",
+  'thread_15_imagerie_copernicus_cce': "Soumission d'informations complémentaires au registre CCE – Imagerie satellitaire & Données FS-STB-2",
+  'thread_16_reponse_canada_replique_72_rsp': "Suivi du dossier SEM-26-003 (CCE / Stablex) – Analyse de la réponse du Canada et réplique probatoire",
+  'thread_17_reponses_petition_0546_eccc_mpo': "Réponses officielles du Gouvernement du Canada aux pétitions environnementales (MPO & ECCC)",
+  'thread_18_suivi_conjoint_ministres': "Suivi officiel conjoint – Réponses à la pétition n° 0546 (Réf. MIN-334658)",
+  'thread_19_avis_officiel_petition_blocage': "Avis officiel – Dépôt de la pétition citoyenne concernant l'expansion Stablex",
+  'thread_20_stablex_derniere_relance_30_juin': "Interpellation formelle de la direction générale de Stablex Canada Inc. (Silence corporatif)",
+  'thread_21_stablex_ultimatum_catapulte': "Ultimatum et relance formelle – Direction des opérations Stablex & Catapulte Communication"
+};
+
 // Regroupement par Fil Gmail
 const threadMap = new Map();
 
 rawMessages.forEach(msg => {
   let filKey = msg.fil;
   
-  if (msg.num >= 1 && msg.num <= 7) {
+  if (msg.num === 2 || msg.num === 3 || msg.num === 6) {
     filKey = 'thread_01_demande_enquete_lcom_peches';
-  } else if (msg.num === 8 || msg.num === 9) {
+  } else if (msg.num === 8) {
     filKey = 'thread_02_signalement_enviroinfo';
-  } else if (msg.num === 10 || msg.num === 11 || msg.num === 26 || msg.num === 27 || msg.num === 102) {
+  } else if (msg.num === 10 || msg.num === 26 || msg.num === 102) {
     filKey = 'thread_03_clarification_stablex';
-  } else if (msg.num >= 12 && msg.num <= 24) {
+  } else if (msg.num === 12) {
     filKey = 'thread_04_notification_aceum_24_27';
-  } else if (msg.num === 25 || msg.num === 28) {
-    filKey = 'thread_05_recherche_citoyenne_stablex';
   } else if (msg.num >= 29 && msg.num <= 34) {
-    filKey = 'thread_06_dossier_pic_20260615_082854';
-  } else if (msg.num === 35 || msg.num === 36) {
-    filKey = 'thread_07_depot_soumission_14_ans';
-  } else if (msg.num >= 37 && msg.num <= 44) {
-    filKey = 'thread_08_cadets_valcartier_min_334658';
+    filKey = 'thread_06_dossier_pic_mpo';
+  } else if (msg.num === 35 || msg.num === 41) {
+    filKey = 'thread_07_depot_soumission_cce';
+  } else if (msg.num === 38 || msg.num === 40) {
+    filKey = 'thread_08_reponses_officielles_ministres_dabrusin';
   } else if (msg.num === 45 || msg.num === 46 || msg.num === 50 || msg.num === 52 || msg.num === 53 || msg.num === 61) {
     filKey = 'thread_09_signalement_penal_peches_inrp';
-  } else if (msg.num === 47 || msg.num === 48 || msg.num === 49 || msg.num === 54 || msg.num === 55) {
+  } else if (msg.num === 47 || msg.num === 55) {
     filKey = 'thread_10_decret_urgence_lep_art_80';
-  } else if (msg.num === 51) {
-    filKey = 'thread_11_appel_experts_15_ans';
-  } else if (msg.num === 57 || msg.num === 58 || msg.num === 59 || msg.num === 60 || msg.num === 62 || msg.num === 63) {
+  } else if (msg.num === 57 || msg.num === 59 || msg.num === 60) {
     filKey = 'thread_12_decision_cce_ambassades';
   } else if (msg.num === 64 || msg.num === 71 || msg.num === 72 || msg.num === 73 || msg.num === 75 || msg.num === 80 || msg.num === 81 || msg.num === 82 || msg.num === 83 || msg.num === 84 || msg.num === 85 || msg.num === 86 || msg.num === 90) {
     filKey = 'thread_13_aiprp_praine_purolator';
   } else if (msg.num >= 65 && msg.num <= 67) {
-    filKey = 'thread_14_enquete_partis_politiques';
-  } else if (msg.num >= 68 && msg.num <= 70) {
+    filKey = 'thread_14_enquete_deputes_parlementaires';
+  } else if (msg.num === 68) {
     filKey = 'thread_15_imagerie_copernicus_cce';
-  } else if (msg.num >= 76 && msg.num <= 79) {
+  } else if (msg.num === 76) {
     filKey = 'thread_16_reponse_canada_replique_72_rsp';
-  } else if (msg.num >= 88 && msg.num <= 89) {
+  } else if (msg.num === 88 || msg.num === 89) {
     filKey = 'thread_17_reponses_petition_0546_eccc_mpo';
-  } else if (msg.num >= 91 && msg.num <= 93) {
-    filKey = 'thread_18_suivi_conjoint_ministres_jeunesse';
-  } else if (msg.num >= 94 && msg.num <= 96) {
+  } else if (msg.num === 91) {
+    filKey = 'thread_18_suivi_conjoint_ministres';
+  } else if (msg.num === 94) {
     filKey = 'thread_19_avis_officiel_petition_blocage';
   } else if (msg.num === 104) {
     filKey = 'thread_20_stablex_derniere_relance_30_juin';
@@ -345,7 +404,8 @@ let tIdx = 1;
 for (const [filId, msgs] of threadMap.entries()) {
   const first = msgs[0];
   const last = msgs[msgs.length - 1];
-  const subject = first.objet.replace(/^(re:\s*|automatic reply:\s*|fwd:\s*)+/i, '').trim() || first.objet;
+  const defaultSubj = first.objet.replace(/^(re:\s*|automatic reply:\s*|fwd:\s*)+/i, '').trim() || first.objet;
+  const subject = THREAD_TITLES[filId] || defaultSubj;
   const categoryInfo = categorizeThread(subject, msgs);
 
   // Déterminer les participants
@@ -1753,7 +1813,7 @@ header.site {
           <button class="nav-item" data-nav="sent">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg></span>
             <span class="nav-label">Envoyés</span>
-            <span class="nav-count">42</span>
+            <span class="nav-count">${rawMessages.filter(m => m.de.includes('William')).length}</span>
           </button>
           <button class="nav-item" data-nav="stablex">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11m-8-11v11"/></svg></span>
