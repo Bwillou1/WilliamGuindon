@@ -17,7 +17,13 @@ function extractTreeItems(html) {
   while ((m = re.exec(html)) !== null) {
     const fullPath = m[1].trim();
     const href = m[2].trim();
-    const title = m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    let rawTitle = m[3] || '';
+    let sanitizedTitle = '';
+    while (rawTitle !== sanitizedTitle) {
+      sanitizedTitle = rawTitle;
+      rawTitle = rawTitle.replace(/<[^>]*>/g, '');
+    }
+    const title = sanitizedTitle.replace(/\s+/g, ' ').trim();
     if (!items.has(fullPath)) {
       items.set(fullPath, { title, href });
     }

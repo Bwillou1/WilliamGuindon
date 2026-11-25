@@ -1445,7 +1445,7 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
           <p class="press-excerpt">Episodio de la serie de investigación metropolitana en habla inglesa de CBC News dedicada a la protección de los humedales en el Bajo Laurentiano y el alcance internacional del expediente <strong>SEM-26-003</strong>.</p>
           <div class="cbc-spotify-gate" data-spotify-src="https://open.spotify.com/episode/3Nsd3mYfIJiA2pidAh3gRk?utm_source=generator&amp;theme=0&amp;si=20f51b604ede4dd3" style="margin-top:12px;border:1px solid rgba(16,185,129,0.35);border-radius:12px;padding:12px 14px;background:rgba(16,185,129,0.06);">
             <p style="margin:0 0 10px;font-size:0.84rem;line-height:1.45;color:var(--text-muted,#475569);">🔒 <strong>Protección de cookies y privacidad:</strong> el reproductor de Spotify está bloqueado por defecto. No se envían cookies de terceros ni solicitudes a <code>open.spotify.com</code> hasta su clic.</p>
-            <button type="button" onclick="var b=this.closest('.cbc-spotify-gate');if(b){var s=b.getAttribute('data-spotify-src');b.style.padding='0';b.style.border='none';b.style.background='transparent';b.innerHTML='<spotify-audio src=&quot;'+s+'&quot; controls autoplay style=&quot;width:100%;height:152px;border-radius:12px;display:block;&quot;></spotify-audio>';}" style="background:#064e3b;color:#ffffff;border:1px solid #10b981;border-radius:8px;padding:8px 14px;font-size:0.84rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;">▶ Permitir Spotify y escuchar episodio</button>
+            <button type="button" onclick="var b=this.closest('.cbc-spotify-gate');if(b){var s=b.getAttribute('data-spotify-src');try{var u=new URL(s);if(u.origin==='https://open.spotify.com'){b.style.padding='0';b.style.border='none';b.style.background='transparent';var sp=document.createElement('spotify-audio');sp.setAttribute('src',u.href);sp.setAttribute('controls','');sp.setAttribute('autoplay','');sp.style.cssText='width:100%;height:152px;border-radius:12px;display:block;';b.replaceChildren(sp);}}catch(_){}}" style="background:#064e3b;color:#ffffff;border:1px solid #10b981;border-radius:8px;padding:8px 14px;font-size:0.84rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;">▶ Permitir Spotify y escuchar episodio</button>
           </div>
         </div>
         <div class="press-card-footer">
@@ -2051,7 +2051,13 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
       if (iframe) {
         var dSrc = iframe.getAttribute('data-src');
         if (dSrc && iframe.getAttribute('src') !== dSrc) {
-          iframe.setAttribute('src', dSrc);
+          try {
+            var parsedUrl = new URL(dSrc, window.location.origin);
+            if ((parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:') &&
+                (parsedUrl.hostname === 'www.youtube.com' || parsedUrl.hostname === 'youtube.com' || parsedUrl.hostname === 'www.youtube-nocookie.com')) {
+              iframe.setAttribute('src', parsedUrl.href);
+            }
+          } catch (_) {}
         }
       }
     });

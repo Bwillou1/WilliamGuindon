@@ -18,8 +18,19 @@
   const MAX_EVENTS = 2500;
   const sessionStart = Date.now();
 
+  function generateSecureSessionId() {
+    try {
+      if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+        const buf = new Uint8Array(8);
+        crypto.getRandomValues(buf);
+        return 'wg-' + Array.from(buf, b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
+      }
+    } catch (_) {}
+    return 'wg-' + Date.now().toString(36) + '-' + (Math.floor(Date.now() / 1000) % 10000);
+  }
+
   const state = {
-    sessionId: 'wg-' + Math.random().toString(36).slice(2, 10),
+    sessionId: generateSecureSessionId(),
     startedAt: new Date(sessionStart).toISOString(),
     pages: [location.pathname + location.search],
     vitals: { lcpMs: null, cls: 0, inpMs: 0, longTasks: 0 },

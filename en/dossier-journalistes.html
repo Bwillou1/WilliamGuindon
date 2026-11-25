@@ -5716,17 +5716,40 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
       let targetLang = 'en';
 
+      function sanitizePdfPath(pdfInput) {
+        if (!pdfInput || typeof pdfInput !== 'string') return '';
+        const trimmed = pdfInput.trim();
+        if (/^(javascript|data|vbscript):/i.test(trimmed)) return '';
+        try {
+          const u = new URL(trimmed, window.location.origin);
+          if (u.origin === window.location.origin && u.pathname.endsWith('.pdf')) {
+            return u.pathname;
+          }
+        } catch (_) {}
+        if (!trimmed.includes(':') && trimmed.endsWith('.pdf')) {
+          return trimmed.startsWith('/') ? trimmed : '/' + trimmed;
+        }
+        return '';
+      }
+
       const officialTrans = getOfficialTranslation(docName, targetLang);
       const isTranslatedMode = translatePreviewLink.classList.contains('active') || currentSrc.includes('lecteur.html') || (officialTrans && currentSrc.includes(encodeURIComponent(officialTrans)));
 
       if (isTranslatedMode) {
         window._wgStickyTranslateLang = null;
         try { autoTranslateLang = null; } catch (_) {}
-        const _fsFr = document.getElementById('btn-fullscreen-viewer'); if (_fsFr) _fsFr.href = iframe.src;
-      if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
+        if (selectTranslateLangEl) selectTranslateLangEl.value = 'fr';
         // Retour vers l'original français
         const frDoc = (officialTrans ? getOfficialTranslation(docName, 'fr') : null) || rawPdf;
-        iframe.src = `/viewer.html?file=${encodeURIComponent(frDoc)}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        const safeFrDoc = sanitizePdfPath(frDoc);
+        if (safeFrDoc) {
+          const frUrl = new URL('/viewer.html', window.location.origin);
+          frUrl.searchParams.set('file', safeFrDoc);
+          frUrl.searchParams.set('theme', (currentTheme === 'dark') ? 'dark' : 'light');
+          frUrl.searchParams.set('preview', '1');
+          iframe.src = frUrl.pathname + frUrl.search;
+          const _fsFr = document.getElementById('btn-fullscreen-viewer'); if (_fsFr) _fsFr.href = frUrl.pathname + frUrl.search;
+        }
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Translate';
         translatePreviewLink.classList.remove('active');
@@ -5735,15 +5758,22 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
         if (selectTranslateLangEl && (selectTranslateLangEl.value === 'en' || selectTranslateLangEl.value === 'es')) targetLang = selectTranslateLangEl.value;
         window._wgStickyTranslateLang = targetLang;
         try { autoTranslateLang = targetLang; } catch (_) {}
-        const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = iframe.src;
-      if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
+        if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
         // Bascule vers le lecteur spécial de traduction (lecteur.html avec contour vert et mode traduction)
         const targetPdf = officialTrans ? ('/' + officialTrans.replace(/^\/+/, '')) : rawPdf;
-        iframe.src = `/lecteur.html?file=${encodeURIComponent(targetPdf)}&tab=translation&lang=${targetLang}&theme=${encodeURIComponent(currentTheme)}&preview=1`;
+        const safeTargetPdf = sanitizePdfPath(targetPdf);
+        if (safeTargetPdf) {
+          const trUrl = new URL('/lecteur.html', window.location.origin);
+          trUrl.searchParams.set('file', safeTargetPdf);
+          trUrl.searchParams.set('tab', 'translation');
+          trUrl.searchParams.set('lang', (targetLang === 'es') ? 'es' : 'en');
+          trUrl.searchParams.set('theme', (currentTheme === 'dark') ? 'dark' : 'light');
+          trUrl.searchParams.set('preview', '1');
+          iframe.src = trUrl.pathname + trUrl.search;
+          const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = trUrl.pathname + trUrl.search;
+        }
         const span = translatePreviewLink.querySelector('span');
         if (span) span.textContent = 'Original (FR)';
-        const _fsTr = document.getElementById('btn-fullscreen-viewer'); if (_fsTr) _fsTr.href = iframe.src;
-      if (selectTranslateLangEl) selectTranslateLangEl.value = targetLang;
         translatePreviewLink.classList.add('active');
         translatePreviewLink.title = 'Return to original document in French';
       }

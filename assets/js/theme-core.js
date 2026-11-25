@@ -754,9 +754,10 @@
                 const targetLink = e.target.closest('a');
                 if (!targetLink) return;
                 const href = targetLink.getAttribute('href');
-                if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return;
+                if (!href || href.startsWith('#')) return;
                 try {
                   const linkUrl = new URL(targetLink.href, window.location.origin);
+                  if (linkUrl.protocol !== 'http:' && linkUrl.protocol !== 'https:') return;
                   if (linkUrl.origin === window.location.origin) {
                     const targetP = linkUrl.pathname.toLowerCase();
                     const isTargetLegal = targetP.includes('reciprocite') || targetP.includes('commentaires') ||

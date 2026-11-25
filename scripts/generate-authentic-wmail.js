@@ -1858,9 +1858,9 @@ header.site nav a:hover {
     });
   });
 
-  // Recherche plein texte
+  // Recherche plein texte sécurisée (DOM pur sans innerHTML)
   function doSearch(val){
-    var q = val.trim().toLowerCase();
+    var q = (val || '').trim().toLowerCase();
     clearB.style.display = q.length > 0 ? 'grid' : 'none';
     if(q.length < 2){
       results.style.display = 'none';
@@ -1874,23 +1874,70 @@ header.site nav a:hover {
     if(inboxTabsBar) inboxTabsBar.style.display = 'none';
     results.style.display = 'block';
 
-    var html = '<div class="res-head"><b>' + hits.length + '</b> résultat(s) pour « ' + val + ' »</div>';
+    if (typeof results.replaceChildren === 'function') {
+      results.replaceChildren();
+    } else {
+      results.textContent = '';
+    }
+
+    var head = document.createElement('div');
+    head.className = 'res-head';
+    var bCnt = document.createElement('b');
+    bCnt.textContent = hits.length;
+    head.appendChild(bCnt);
+    head.appendChild(document.createTextNode(' résultat(s) pour « ' + val + ' »'));
+    results.appendChild(head);
+
     if(!hits.length){
-      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les correspondances.</div>';
+      var empty = document.createElement('div');
+      empty.style.cssText = 'padding:30px 10px;text-align:center;color:var(--w-text-muted);';
+      empty.textContent = 'Aucune correspondance trouvée dans les correspondances.';
+      results.appendChild(empty);
     } else {
       hits.slice(0, 40).forEach(function(hit){
+        var resDiv = document.createElement('div');
+        resDiv.className = 'res';
+        resDiv.setAttribute('data-tid', hit.tid);
+
+        var rtop = document.createElement('div');
+        rtop.className = 'rtop';
+        var rwho = document.createElement('span');
+        rwho.className = 'rwho';
+        rwho.textContent = hit.who;
+        rtop.appendChild(rwho);
+        resDiv.appendChild(rtop);
+
+        var rsubj = document.createElement('div');
+        rsubj.className = 'rsubj';
+        rsubj.textContent = hit.title;
+        resDiv.appendChild(rsubj);
+
+        var rsnip = document.createElement('div');
+        rsnip.className = 'rsnip';
         var pos = hit.raw.toLowerCase().indexOf(q);
         var s = Math.max(0, pos - 40);
         var e = Math.min(hit.raw.length, pos + q.length + 60);
-        var snippet = hit.raw.substring(s, e).replace(new RegExp(q, 'gi'), function(m){ return '<mark>' + m + '</mark>'; });
-        html += '<div class="res" data-tid="' + hit.tid + '">' +
-          '<div class="rtop"><span class="rwho">' + hit.who + '</span></div>' +
-          '<div class="rsubj">' + hit.title + '</div>' +
-          '<div class="rsnip">… ' + snippet + ' …</div>' +
-        '</div>';
+        var snippetText = hit.raw.substring(s, e);
+        
+        // Mettre en valeur le mot-clé de façon sécurisée (nœuds texte + balise mark)
+        var escapedQ = q.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        var parts = snippetText.split(new RegExp('(' + escapedQ + ')', 'gi'));
+        rsnip.appendChild(document.createTextNode('… '));
+        parts.forEach(function(p){
+          if (p.toLowerCase() === q) {
+            var mark = document.createElement('mark');
+            mark.textContent = p;
+            rsnip.appendChild(mark);
+          } else {
+            rsnip.appendChild(document.createTextNode(p));
+          }
+        });
+        rsnip.appendChild(document.createTextNode(' …'));
+        resDiv.appendChild(rsnip);
+
+        results.appendChild(resDiv);
       });
     }
-    results.innerHTML = html;
   }
 
   search.addEventListener('input', function(){ doSearch(search.value); });
@@ -1995,14 +2042,32 @@ header.site nav a:hover {
   handleHash();
 })();
 
-// Fonctions modale de pièce probatoire
+// Fonctions modale de pièce probatoire sécurisées (DOM pur)
 function openEvidenceModal(pieceName, msgNum, filId) {
   var modal = document.getElementById('evidenceModal');
   var metaEl = document.getElementById('evidenceMeta');
   if (modal && metaEl) {
-    metaEl.innerHTML = 'Fichier : <strong>' + decodeURIComponent(pieceName) + '</strong><br>' +
-                       'Enregistrement : Message #' + msgNum + ' · Fil : ' + filId + '<br>' +
-                       'Statut légal : Versé au registre public SEM-26-003';
+    if (typeof metaEl.replaceChildren === 'function') {
+      metaEl.replaceChildren();
+    } else {
+      metaEl.textContent = '';
+    }
+    
+    var line1 = document.createElement('div');
+    line1.appendChild(document.createTextNode('Fichier : '));
+    var strong = document.createElement('strong');
+    strong.textContent = decodeURIComponent(pieceName);
+    line1.appendChild(strong);
+    metaEl.appendChild(line1);
+
+    var line2 = document.createElement('div');
+    line2.textContent = 'Enregistrement : Message #' + msgNum + ' · Fil : ' + filId;
+    metaEl.appendChild(line2);
+
+    var line3 = document.createElement('div');
+    line3.textContent = 'Statut légal : Versé au registre public SEM-26-003';
+    metaEl.appendChild(line3);
+
     modal.style.display = 'grid';
   }
 }

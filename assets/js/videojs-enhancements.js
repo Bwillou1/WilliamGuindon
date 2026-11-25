@@ -53,14 +53,26 @@
     if (media && media.hasAttribute('disableremoteplayback')) return;
 
     const isYoutube = media && media.tagName.toLowerCase() === 'youtube-video';
-    const castSrc = player.getAttribute('data-cast-src') || (media && media.getAttribute('data-cast-src'));
+    const rawCastSrc = player.getAttribute('data-cast-src') || (media && media.getAttribute('data-cast-src'));
 
     // Un embed YouTube nécessite un src direct pour que le récepteur Cast puisse le lire.
-    if (isYoutube && !castSrc) return;
+    if (isYoutube && !rawCastSrc) return;
+
+    let safeCastSrc = null;
+    if (rawCastSrc) {
+      try {
+        const u = new URL(rawCastSrc, window.location.origin);
+        if (u.protocol === 'http:' || u.protocol === 'https:') {
+          safeCastSrc = u.href;
+        }
+      } catch (_) {}
+    }
+
+    if (isYoutube && !safeCastSrc) return;
 
     const castEl = document.createElement('google-cast');
-    if (castSrc) {
-      castEl.setAttribute('src', castSrc);
+    if (safeCastSrc) {
+      castEl.setAttribute('src', safeCastSrc);
       const castType = player.getAttribute('data-cast-type') || (media && media.getAttribute('data-cast-type'));
       if (castType) castEl.setAttribute('content-type', castType);
     }
