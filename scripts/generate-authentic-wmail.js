@@ -457,21 +457,21 @@ function renderThreadView(t) {
         <h2>${t.subject}</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : ${t.filId}</span>
-          ${t.isStablex ? '<span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>' : ''}
+          ${t.isStablex ? ('<span class="badge-stablex">' + SVG_ICONS.factory + ' <span>Correspondance Stablex Canada</span></span>') : ''}
         </div>
       </div>
 
       ${t.isStablex ? `
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;">${SVG_ICONS.factory}</span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon">${SVG_ICONS.factory}</span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -1140,6 +1140,219 @@ header.site {
 [data-theme="dark"] .lpill-stablex { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 [data-theme="dark"] .lpill-eccc { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 
+/* ==================== VUE DU FIL (THREADVIEW) ==================== */
+.threadview {
+  display: none;
+  padding: 0;
+}
+
+.tv-action-bar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--w-border);
+  background: var(--w-sidebar-bg);
+  flex: none;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  flex: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.back-btn:hover {
+  background: var(--w-card-hover);
+  border-color: var(--w-accent);
+  color: var(--w-accent);
+}
+.back-btn svg { width: 16px; height: 16px; display: block; }
+
+.tv-action-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.tool-btn:hover {
+  color: var(--w-text);
+  border-color: var(--w-accent);
+}
+.tool-btn svg { width: 14px; height: 14px; display: block; }
+
+.tv-header {
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--w-border-faint);
+  background: var(--w-card);
+}
+.tv-header h2 {
+  margin: 0 0 12px;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--w-text);
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+.tv-header-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.badge-proof {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--w-accent-wash);
+  color: #15803d;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+[data-theme="dark"] .badge-proof {
+  color: #4ade80;
+  border-color: var(--w-accent);
+}
+.badge-audit {
+  font-size: 11px;
+  font-weight: 600;
+  background: #f0fdf4;
+  color: #0f766e;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid #ccfbf1;
+}
+[data-theme="dark"] .badge-audit {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+.badge-id {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--w-text-dim);
+  background: var(--w-card-hover);
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--w-border);
+}
+.badge-stablex {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+[data-theme="dark"] .badge-stablex {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.stablex-silence-banner {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.stablex-silence-banner .stb-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #b45309;
+}
+.stablex-silence-banner .stb-title {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.stablex-silence-banner .stb-tag {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.stablex-silence-banner .stb-desc {
+  font-size: 12.5px;
+  color: #4b5563;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .stablex-silence-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+[data-theme="dark"] .stablex-silence-banner .stb-icon {
+  color: #fbbf24;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-title {
+  color: #fbbf24;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-tag {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fef3c7;
+  border-color: transparent;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-desc {
+  color: #cbd5e1;
+}
+
+.tv-cards-stack {
+  padding: 20px 28px 48px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
 
 .nmsg { font-size: 12.5px; color: var(--w-text-muted); font-weight: 600; }
 .allopen {
@@ -1480,8 +1693,8 @@ header.site {
     <div class="hud-card">
       <div class="hud-icon">${SVG_ICONS.hudShield}</div>
       <div class="hud-meta">
-        <span class="hud-value">100%</span>
-        <span class="hud-label">Caviardage actif (Loi 25)</span>
+        <span class="hud-value">Loi 25</span>
+        <span class="hud-label">Protection de la vie privée</span>
       </div>
     </div>
   </div>

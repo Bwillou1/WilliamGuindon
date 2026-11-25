@@ -596,6 +596,219 @@ header.site {
 [data-theme="dark"] .lpill-stablex { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 [data-theme="dark"] .lpill-eccc { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 
+/* ==================== VUE DU FIL (THREADVIEW) ==================== */
+.threadview {
+  display: none;
+  padding: 0;
+}
+
+.tv-action-bar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--w-border);
+  background: var(--w-sidebar-bg);
+  flex: none;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  flex: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.back-btn:hover {
+  background: var(--w-card-hover);
+  border-color: var(--w-accent);
+  color: var(--w-accent);
+}
+.back-btn svg { width: 16px; height: 16px; display: block; }
+
+.tv-action-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--w-border);
+  background: var(--w-card);
+  color: var(--w-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.tool-btn:hover {
+  color: var(--w-text);
+  border-color: var(--w-accent);
+}
+.tool-btn svg { width: 14px; height: 14px; display: block; }
+
+.tv-header {
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--w-border-faint);
+  background: var(--w-card);
+}
+.tv-header h2 {
+  margin: 0 0 12px;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--w-text);
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+.tv-header-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.badge-proof {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--w-accent-wash);
+  color: #15803d;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+[data-theme="dark"] .badge-proof {
+  color: #4ade80;
+  border-color: var(--w-accent);
+}
+.badge-audit {
+  font-size: 11px;
+  font-weight: 600;
+  background: #f0fdf4;
+  color: #0f766e;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid #ccfbf1;
+}
+[data-theme="dark"] .badge-audit {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+.badge-id {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--w-text-dim);
+  background: var(--w-card-hover);
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--w-border);
+}
+.badge-stablex {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+[data-theme="dark"] .badge-stablex {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.stablex-silence-banner {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.stablex-silence-banner .stb-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #b45309;
+}
+.stablex-silence-banner .stb-title {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.stablex-silence-banner .stb-tag {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.stablex-silence-banner .stb-desc {
+  font-size: 12.5px;
+  color: #4b5563;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .stablex-silence-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+[data-theme="dark"] .stablex-silence-banner .stb-icon {
+  color: #fbbf24;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-title {
+  color: #fbbf24;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-tag {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fef3c7;
+  border-color: transparent;
+}
+[data-theme="dark"] .stablex-silence-banner .stb-desc {
+  color: #cbd5e1;
+}
+
+.tv-cards-stack {
+  padding: 20px 28px 48px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
 
 .nmsg { font-size: 12.5px; color: var(--w-text-muted); font-weight: 600; }
 .allopen {
@@ -936,8 +1149,8 @@ header.site {
     <div class="hud-card">
       <div class="hud-icon"><svg class="hud-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
       <div class="hud-meta">
-        <span class="hud-value">100%</span>
-        <span class="hud-label">Caviardage actif (Loi 25)</span>
+        <span class="hud-value">Loi 25</span>
+        <span class="hud-label">Protection de la vie privée</span>
       </div>
     </div>
   </div>
@@ -1565,21 +1778,21 @@ header.site {
         <h2>Demande formelle d'enquête – Violations présumées de la Loi de 1994 sur la convention concernant les oiseaux migrateurs et de la Loi sur les pêches au site Stablex, Blainville (Québec)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_01_demande_enquete_lcom_peches</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -1865,21 +2078,21 @@ header.site {
         <h2>Signalement formel d'infractions environnementales fédérales — Projet Stablex à Blainville (Dossier CCE SEM-26-003)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_02_signalement_enviroinfo</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -1988,21 +2201,21 @@ header.site {
         <h2>Demande formelle de clarification – Communication SEM-26-003 (Cellule 6 – Blainville) – À intégrer à ma soumission révisée à la CCE</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_03_clarification_stablex</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -2240,21 +2453,21 @@ header.site {
         <h2>Notification écrite préalable (ACEUM) - Dossier CCE SEM-26-003 (Cas Stablex)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_04_notification_aceum_24_27</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -2733,21 +2946,21 @@ header.site {
         <h2>(sans objet) — demande d'information publique (recherche citoyenne Stablex)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_05_recherche_citoyenne_stablex</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -2853,7 +3066,7 @@ header.site {
         <h2>Demande de rencontre ou de réponse écrite — précisions relatives au dossier SEM-26-003</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_06_dossier_pic_20260615_082854</span>
           
         </div>
@@ -3131,21 +3344,21 @@ header.site {
         <h2>Dépôt de la soumission SEM-26-003 : Le travail d'un citoyen de 14 ans</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_07_depot_soumission_14_ans</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -3251,21 +3464,21 @@ header.site {
         <h2>Absence temporaire – William Guindon (19 juillet au 13 août 2026)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_08_cadets_valcartier_min_334658</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -3589,21 +3802,21 @@ header.site {
         <h2>SIGNALEMENT PÉNAL FORMEL – Article 36(3) Loi sur les pêches – Site Stablex Blainville (Dossier CCE SEM-26-003)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_09_signalement_penal_peches_inrp</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -3867,7 +4080,7 @@ header.site {
         <h2>Demande formelle de recommandation de Décret d'urgence (Article 80 de la LEP) – Protection de la Grande Tourbière de Blainville (Projet Cellule nº 6)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_10_decret_urgence_lep_art_80</span>
           
         </div>
@@ -4080,7 +4293,7 @@ header.site {
         <h2>J'ai 15 ans et j'ai besoin de vous — SEM-26-003 Blainville / I'm 15 and I need you / Tengo 15 años y necesito su apoyo</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_11_appel_experts_15_ans</span>
           
         </div>
@@ -4155,21 +4368,21 @@ header.site {
         <h2>Notification officielle – Décision de recevabilité de la CCE concernant la soumission SEM-26-003 (Dossier Stablex / Blainville)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_12_decision_cce_ambassades</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -4434,7 +4647,7 @@ header.site {
         <h2>Demande de renseignements personnels | Accusé de réception (Dossier ECCC: P-2026-00017)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_13_aiprp_praine_purolator</span>
           
         </div>
@@ -4986,21 +5199,21 @@ header.site {
         <h2>Demande de positionnement officiel – Dossier Stablex (Cellule 6) et décision de la CCE</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_14_enquete_partis_politiques</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -5151,21 +5364,21 @@ header.site {
         <h2>Soumission d'informations complémentaires — SEM-26-003</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_15_imagerie_copernicus_cce</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -5317,21 +5530,21 @@ header.site {
         <h2>Suivi du dossier SEM-26-003 (CCE / Stablex) — Réponse officielle du Canada (16 oct.) et réplique procédurale déposée</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_16_reponse_canada_replique_72_rsp</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
@@ -5479,7 +5692,7 @@ header.site {
         <h2>Fisheries and Oceans Canada response to Environmental Petition No. 546 | Réponse de Pêches et Océans Canada à la pétition environnementale no 546</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_17_reponses_petition_0546_eccc_mpo</span>
           
         </div>
@@ -5606,7 +5819,7 @@ header.site {
         <h2>Suivi conjoint — Réponses à la pétition n° 0546 (Réf. MIN-334658 et 2026-001-02117), mobilisation citoyenne et dossier SEM-26-003</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_18_suivi_conjoint_ministres_jeunesse</span>
           
         </div>
@@ -5755,7 +5968,7 @@ header.site {
         <h2>Avis officiel – Pétition citoyenne concernant le blocage à Environnement Canada et le dossier SEM-26-003 (Grande Tourbière de Blainville)</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_19_avis_officiel_petition_blocage</span>
           
         </div>
@@ -5894,21 +6107,21 @@ header.site {
         <h2>Finalisation de la soumission SEM-26-003 : Dernière opportunité de réponse</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
           <span class="badge-id">Fil ID : thread_21_stablex_ultimatum_catapulte</span>
-          <span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>
+          <span class="badge-stablex"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg> <span>Correspondance Stablex Canada</span></span>
         </div>
       </div>
 
       
-        <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
+        <div class="stablex-silence-banner">
+          <span class="stb-icon"><svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg></span>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="stb-title">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
-              <span style="background: rgba(245, 158, 11, 0.25); color: #fef3c7; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Silence corporatif documenté</span>
+              <span class="stb-tag">Silence corporatif documenté</span>
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; margin-top: 5px; line-height: 1.5;">
+            <div class="stb-desc">
               Dix correspondances formelles, relances et ultimatums ont été directement transmis aux gestionnaires de Stablex Canada Inc. et à leur agence de relations publiques Catapulte Communication. Aucune réponse écrite n'a été produite. Ce silence complet est consigné au registre officiel de la CCE (SEM-26-003).
             </div>
           </div>
