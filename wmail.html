@@ -6,7 +6,7 @@
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wmail — Registre des correspondances &amp; démarches citoyennes · William Guindon</title>
-<meta name="description" content="Registre officiel interactif et caviardé des 96 correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
+<meta name="description" content="Registre officiel interactif et caviardé des 92 correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://williamguindon.me/wmail.html">
 <link rel="alternate" hreflang="fr" href="https://williamguindon.me/wmail.html">
@@ -72,22 +72,15 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
-
-/* Suppression absolue des marges globales de section pour Wmail */
-.wmail-shell section,
-.wmail-main,
-.threadview {
-  padding: 0 !important;
-  border-bottom: none !important;
-}
-
 
 /* Harmonisation du bandeau supérieur officiel */
 header.site {
   background: #0b0f0c !important;
   border-bottom: 1px solid #1c2620 !important;
+  flex: none;
 }
 header.site .wrap {
   background: transparent !important;
@@ -105,64 +98,74 @@ header.site nav a:hover {
   color: #10b981 !important;
 }
 
+/* Suppression absolue des marges globales de section pour Wmail */
+.wmail-shell section,
+.wmail-main,
+.threadview {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
 /* ==================== HUD PROBATOIRE EN TÊTE ==================== */
 .wmail-hud {
   max-width: 1480px;
   width: calc(100% - 24px);
-  margin: 16px auto 8px;
+  margin: 12px auto 6px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
+  flex: none;
 }
 .hud-card {
   background: var(--w-card);
   border: 1px solid var(--w-border);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
 }
 .hud-card:hover {
   transform: translateY(-2px);
   border-color: var(--w-accent);
 }
 .hud-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: var(--w-accent-wash);
   color: var(--w-accent);
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: 17px;
   flex: none;
 }
 .hud-meta { display: flex; flex-direction: column; min-width: 0; }
-.hud-value { font-size: 19px; font-weight: 800; color: var(--w-text); letter-spacing: -0.5px; }
-.hud-label { font-size: 11.5px; font-weight: 600; color: var(--w-text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-value { font-size: 18px; font-weight: 800; color: var(--w-text); letter-spacing: -0.5px; }
+.hud-label { font-size: 11px; font-weight: 600; color: var(--w-text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ==================== CONTENEUR WMAIL ==================== */
 .wmail-shell {
   max-width: 1480px;
   width: calc(100% - 24px);
-  margin: 8px auto 32px;
+  margin: 6px auto 14px;
   background: var(--w-card);
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--w-border);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 180px);
-  min-height: 680px;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
 /* Wmail Topbar */
 .wmail-topbar {
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -228,7 +231,7 @@ header.site nav a:hover {
 
 /* Barre de recherche avec icône fine */
 .search-wrap {
-  height: 44px;
+  height: 42px;
   max-width: 680px;
   flex: 1;
   position: relative;
@@ -237,7 +240,7 @@ header.site nav a:hover {
 .search-wrap svg.svg {
   position: absolute;
   left: 16px;
-  top: 13px;
+  top: 12px;
   color: var(--w-text-dim);
   width: 18px;
   height: 18px;
@@ -265,7 +268,7 @@ header.site nav a:hover {
 .search-clear {
   position: absolute;
   right: 6px;
-  top: 3px;
+  top: 2px;
   display: none;
 }
 
@@ -408,15 +411,16 @@ header.site nav a:hover {
   overflow-x: auto;
   flex: 1;
   min-width: 0;
+  gap: 2px;
 }
 .wmail-tab {
   position: relative;
-  min-width: 95px;
-  padding: 0 14px;
+  min-width: 80px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--w-text-muted);
   border: none;
@@ -441,8 +445,6 @@ header.site nav a:hover {
 
 .wmail-counter-meta {
   display: flex;
-  padding-left: 12px;
-  border-left: 1px solid var(--w-border);
   align-items: center;
   gap: 10px;
   color: var(--w-text-muted);
@@ -450,6 +452,8 @@ header.site nav a:hover {
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  padding-left: 12px;
+  border-left: 1px solid var(--w-border);
 }
 
 /* Content Viewport */
@@ -781,6 +785,7 @@ header.site nav a:hover {
   color: var(--w-text-muted);
   padding: 1px 6px;
   border-radius: 4px;
+  white-space: nowrap;
 }
 .card-head .role { font-size: 12px; color: var(--w-text-dim); font-weight: 500; }
 .card-head .l2 {
@@ -794,8 +799,9 @@ header.site nav a:hover {
 .card-head .cdate {
   font-size: 12px;
   color: var(--w-text-muted);
-  font-weight: 500;
+  font-weight: 600;
   flex: none;
+  font-variant-numeric: tabular-nums;
 }
 .card-head .cacts {
   display: flex;
@@ -993,7 +999,7 @@ header.site nav a:hover {
 }
 
 @media print {
-  body { background: #ffffff !important; color: #000000 !important; }
+  body { background: #ffffff !important; color: #000000 !important; height: auto !important; overflow: visible !important; }
   #navbar-placeholder, .wmail-hud, .wmail-topbar, .wmail-sidebar, .tv-action-bar, footer { display: none !important; }
   .wmail-shell { height: auto !important; border: none !important; box-shadow: none !important; }
   .card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px !important; }
@@ -1017,20 +1023,20 @@ header.site nav a:hover {
 <!-- Navigation injectée automatiquement par navbar-loader.js -->
 <div id="navbar-placeholder"></div>
 
-<main id="main-content" style="flex: 1; display: flex; flex-direction: column;">
+<main id="main-content" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
   <!-- HUD Métriques probatoires -->
   <div class="wmail-hud">
     <div class="hud-card">
       <div class="hud-icon">📨</div>
       <div class="hud-meta">
-        <span class="hud-value">96</span>
+        <span class="hud-value">92</span>
         <span class="hud-label">Correspondances citoyennes</span>
       </div>
     </div>
     <div class="hud-card">
       <div class="hud-icon">📁</div>
       <div class="hud-meta">
-        <span class="hud-value">20</span>
+        <span class="hud-value">19</span>
         <span class="hud-label">Dossiers d'enquête &amp; Fils</span>
       </div>
     </div>
@@ -1068,8 +1074,8 @@ header.site nav a:hover {
 
       <div class="search-wrap">
         <svg class="svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-        <input id="search" placeholder="Rechercher dans les 96 correspondances (ECCC, MPO, CCE, AIPRP, Stablex...)" aria-label="Recherche">
-        <button class="icon-btn search-clear" id="clear" aria-label="Effacer" hidden>
+        <input id="search" placeholder="Rechercher dans les correspondances (ECCC, MPO, CCE, AIPRP, Stablex...)" aria-label="Recherche">
+        <button class="icon-btn search-clear" id="clear" aria-label="Effacer">
           <svg class="svg" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
         </button>
       </div>
@@ -1096,7 +1102,7 @@ header.site nav a:hover {
           <button class="nav-item active" data-nav="all">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></span>
             <span class="nav-label">Boîte de réception</span>
-            <span class="nav-count">20</span>
+            <span class="nav-count">19</span>
           </button>
           <button class="nav-item" data-nav="starred">
             <span class="nav-icon"><svg class="svg" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 6.8L12 17l-6.3 3.5L7 13.7 2 8.9 9 8z"/></svg></span>
@@ -1121,12 +1127,12 @@ header.site nav a:hover {
         <button class="label-row" data-lab="eccc">
           <i class="label-tag" style="background:#3b82f6;color:#3b82f6"></i>
           <span class="nav-label">ECCC &amp; Ministères</span>
-          <span class="nav-count">1</span>
+          <span class="nav-count">0</span>
         </button>
         <button class="label-row" data-lab="cce">
           <i class="label-tag" style="background:#10b981;color:#10b981"></i>
           <span class="nav-label">CCE / ACEUM &amp; Traités</span>
-          <span class="nav-count">12</span>
+          <span class="nav-count">11</span>
         </button>
         <button class="label-row" data-lab="aiprp">
           <i class="label-tag" style="background:#06b6d4;color:#06b6d4"></i>
@@ -1141,11 +1147,11 @@ header.site nav a:hover {
         <button class="label-row" data-lab="stablex">
           <i class="label-tag" style="background:#f59e0b;color:#f59e0b"></i>
           <span class="nav-label">Stablex &amp; Cellule 6</span>
-          <span class="nav-count">1</span>
+          <span class="nav-count">2</span>
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre officiel SEM-26-003 :</strong> 96 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
+          <strong>Registre officiel SEM-26-003 :</strong> 92 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
         </div>
       </aside>
 
@@ -1161,7 +1167,7 @@ header.site nav a:hover {
             <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Clé USB</span></button>
           </div>
           <div class="wmail-counter-meta">
-            <span id="counter">20 conversations · 96 courriels</span>
+            <span id="counter">19 dossiers · 92 courriels</span>
             <button class="icon-btn" id="refresh" aria-label="Actualiser" title="Actualiser la liste">
               <svg class="svg" viewBox="0 0 24 24"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.4-2L20 11M4 13l2.5 4a7 7 0 0 0 11.4-2"/></svg>
             </button>
@@ -1380,26 +1386,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t12" data-cat="eccc" data-key="0" role="button" tabindex="0">
-      <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
-      <div class="st " title="Ajouter une étoile">★</div>
-      <div class="who" title="William Guindon">
-        <span class="who-name">William Guindon</span>
-        
-      </div>
-      <div class="subj-wrap">
-        <span class="pill pill-eccc">
-          <span class="pill-dot"></span>
-          <span>ECCC & Cabinets ministériels</span>
-        </span>
-        <span class="subj-text" title="(aucun)">(aucun)</span>
-        <span class="snip"> — [image: Mailsuite] Expéditeur notifié avec Mailtrack · Se désinscrire 26-08-15 16 h 47 min 40 s (BROUILLON / artefact de suivi Mailsuite — pas un message envoyé…</span>
-      </div>
-      <div class="date">15 août</div>
-    </div>
-  
-
-    <div class="row" data-tid="t13" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t12" data-cat="cce" data-key="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, Julie Dabrusin (ECCC)">
@@ -1418,12 +1405,12 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t14" data-cat="aiprp" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t13" data-cat="aiprp" data-key="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="AIPRP (Lisa Praine), William Guindon, "Praine,Lisa (elle | she, her) (ECCC)"">
         <span class="who-name">AIPRP (Lisa Praine), William Guindon, "Praine,Lisa (elle | she, her) (ECCC)"</span>
-        <span class="count-tag">14</span>
+        <span class="count-tag">13</span>
       </div>
       <div class="subj-wrap">
         <span class="pill pill-aiprp">
@@ -1437,7 +1424,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t15" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t14" data-cat="cce" data-key="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon">
@@ -1456,7 +1443,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t16" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t15" data-cat="cce" data-key="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, MPO, "Enviroinfo (ECCC)"">
@@ -1475,12 +1462,12 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t17" data-cat="cce" data-key="0" role="button" tabindex="0">
+    <div class="row" data-tid="t16" data-cat="cce" data-key="0" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st " title="Ajouter une étoile">★</div>
       <div class="who" title="William Guindon, Edith Mora Castelan">
         <span class="who-name">William Guindon, Edith Mora Castelan</span>
-        <span class="count-tag">4</span>
+        <span class="count-tag">3</span>
       </div>
       <div class="subj-wrap">
         <span class="pill pill-cce">
@@ -1494,26 +1481,26 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t18" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t17" data-cat="stablex" data-key="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
-      <div class="who" title="William Guindon, MPO, Julie Dabrusin (ECCC)">
-        <span class="who-name">William Guindon, MPO, Julie Dabrusin (ECCC)</span>
-        <span class="count-tag">3</span>
+      <div class="who" title="MPO, Julie Dabrusin (ECCC)">
+        <span class="who-name">MPO, Julie Dabrusin (ECCC)</span>
+        <span class="count-tag">2</span>
       </div>
       <div class="subj-wrap">
-        <span class="pill pill-cce">
+        <span class="pill pill-stablex">
           <span class="pill-dot"></span>
-          <span>CCE / ACEUM & Traités</span>
+          <span>Stablex & Cellule 6</span>
         </span>
-        <span class="subj-text" title="(sans objet visible) — « Kit média » SEM-26-003">(sans objet visible) — « Kit média » SEM-26-003</span>
-        <span class="snip"> — (BROUILLON NON ENVOYÉ.) Signature complète : WILLIAM GUINDON — Militant écologiste · Chercheur citoyen indépendant · 15 ans · Blainville, Québec · Auteur de la …</span>
+        <span class="subj-text" title="Fisheries and Oceans Canada response to Environmental Petition No. 546 | Réponse de Pêches et Océans Canada à la pétition environnementale no 546">Fisheries and Oceans Canada response to Environmental Petition No. 546 | Réponse de Pêches et Océans Canada à la pétition environnementale no 546</span>
+        <span class="snip"> — Unclassified - Non-Classifié Bonjour, Veuillez trouver ci-joint la réponse de Pêches et Océans Canada à votre pétition environnementale no 546, reçue le 13 juil…</span>
       </div>
       <div class="date">10 nov.</div>
     </div>
   
 
-    <div class="row" data-tid="t19" data-cat="cce" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t18" data-cat="cce" data-key="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, MPO, Julie Dabrusin (ECCC)">
@@ -1532,7 +1519,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="row" data-tid="t20" data-cat="aiprp" data-key="1" role="button" tabindex="0">
+    <div class="row" data-tid="t19" data-cat="aiprp" data-key="1" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
       <div class="st on" title="Élément clé du dossier probatoire">★</div>
       <div class="who" title="William Guindon, MPO, Julie Dabrusin (ECCC)">
@@ -1609,7 +1596,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : vincent.pretty@ec.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-03 09:17:30 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #1</span>
                   <span class="card-chevron">▾</span>
@@ -1640,7 +1628,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : vincent.pretty@ec.gc.ca, DFO.Minister-Ministre.MPO@dfo-mpo.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-03 09:38:25 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #2</span>
                   <span class="card-chevron">▾</span>
@@ -1681,7 +1670,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-03 13:17:48 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #3</span>
                   <span class="card-chevron">▾</span>
@@ -1712,7 +1702,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-03 13:39:03 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #4</span>
                   <span class="card-chevron">▾</span>
@@ -1743,7 +1734,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-03 13:39:22 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #5</span>
                   <span class="card-chevron">▾</span>
@@ -1774,7 +1766,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-10 12:02:03 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">10 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #6</span>
                   <span class="card-chevron">▾</span>
@@ -1815,7 +1808,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-10 16:03:26 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">10 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #7</span>
                   <span class="card-chevron">▾</span>
@@ -1886,7 +1880,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : notification@ec.gc.ca, enforcement-applicationloi@ec.gc.ca, dmd-gmd@ec.gc.ca, sem@cec.org, psolano@cec.org</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-14 11:14:15 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">14 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #8</span>
                   <span class="card-chevron">▾</span>
@@ -1917,7 +1912,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-14 15:14:53 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">14 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #9</span>
                   <span class="card-chevron">▾</span>
@@ -1991,7 +1987,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : ATIP-AIPRP@ec.gc.ca, ec.enforcement-applicationdelaloi.ec@canada.ca, info@cqde.org, DFO.Quebec@dfo-mpo.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-16 15:35:51 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">16 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #10</span>
                   <span class="card-chevron">▾</span>
@@ -2032,7 +2029,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-16 15:39:30 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">16 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #11</span>
                   <span class="card-chevron">▾</span>
@@ -2066,7 +2064,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : ATIP-AIPRP@ec.gc.ca, ec.enforcement-applicationdelaloi.ec@canada.ca, info@cqde.org, DFO.Quebec@dfo-mpo.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-26 11:15:19 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">26 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #26</span>
                   <span class="card-chevron">▾</span>
@@ -2107,7 +2106,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-26 11:15:46 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">26 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #27</span>
                   <span class="card-chevron">▾</span>
@@ -2181,7 +2181,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : William Guindon (<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>), <span class="cx" title="Caviardé : Alias citoyen protégé">contact@williamguindon.me</span>, <span class="cx" title="Caviardé : Boîte iCloud privée">contact@williamguindon.me</span></span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:12:14 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #12</span>
                   <span class="card-chevron">▾</span>
@@ -2212,7 +2213,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:12:34 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #13</span>
                   <span class="card-chevron">▾</span>
@@ -2246,7 +2248,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:12:39 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #14</span>
                   <span class="card-chevron">▾</span>
@@ -2280,7 +2283,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:13:37 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #15</span>
                   <span class="card-chevron">▾</span>
@@ -2314,7 +2318,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:13:39 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #16</span>
                   <span class="card-chevron">▾</span>
@@ -2348,7 +2353,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 14:15:41 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #17</span>
                   <span class="card-chevron">▾</span>
@@ -2382,7 +2388,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 18:12:31 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #18</span>
                   <span class="card-chevron">▾</span>
@@ -2413,7 +2420,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 18:12:34 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #19</span>
                   <span class="card-chevron">▾</span>
@@ -2444,7 +2452,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-19 18:12:39 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #20</span>
                   <span class="card-chevron">▾</span>
@@ -2475,7 +2484,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : — (CCI aux autorités ECCC et MPO)</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-20 07:54:44 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #21</span>
                   <span class="card-chevron">▾</span>
@@ -2506,7 +2516,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-20 07:55:05 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #22</span>
                   <span class="card-chevron">▾</span>
@@ -2540,7 +2551,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-20 07:58:13 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #23</span>
                   <span class="card-chevron">▾</span>
@@ -2574,7 +2586,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-20 11:55:07 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #24</span>
                   <span class="card-chevron">▾</span>
@@ -2645,7 +2658,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-26 11:08:49 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">26 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #25</span>
                   <span class="card-chevron">▾</span>
@@ -2676,7 +2690,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-26 15:09:13 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">26 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #28</span>
                   <span class="card-chevron">▾</span>
@@ -2747,7 +2762,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : ec.enviroinfo.ec@canada.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-06-28 20:37:27 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #29</span>
                   <span class="card-chevron">▾</span>
@@ -2778,7 +2794,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-28 20:51:53 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #30</span>
                   <span class="card-chevron">▾</span>
@@ -2809,7 +2826,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-29 00:38:01 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #31</span>
                   <span class="card-chevron">▾</span>
@@ -2853,7 +2871,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-29 00:52:27 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #32</span>
                   <span class="card-chevron">▾</span>
@@ -2894,7 +2913,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-29 15:15:17 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #33</span>
                   <span class="card-chevron">▾</span>
@@ -2935,7 +2955,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-06-29 18:32:35 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 juin 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #34</span>
                   <span class="card-chevron">▾</span>
@@ -3016,7 +3037,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : DFO.Minister-Ministre.MPO@dfo-mpo.gc.ca, services.clientele@mffp.gouv.qc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-07-15 16:25:04 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">15 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #35</span>
                   <span class="card-chevron">▾</span>
@@ -3047,7 +3069,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-15 20:26:52 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">15 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #36</span>
                   <span class="card-chevron">▾</span>
@@ -3118,7 +3141,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-20 08:03:34 -0700</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #37</span>
                   <span class="card-chevron">▾</span>
@@ -3149,7 +3173,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : petitions@oag-bvg.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-07-20 15:03:15 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #38</span>
                   <span class="card-chevron">▾</span>
@@ -3190,7 +3215,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-22 10:40:43 -0700</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">22 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #39</span>
                   <span class="card-chevron">▾</span>
@@ -3221,7 +3247,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : petitions@oag-bvg.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-07-22 17:40:32 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">22 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #40</span>
                   <span class="card-chevron">▾</span>
@@ -3262,7 +3289,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : ministre-minister@ec.gc.ca, michel.perron@stablex.com</span>
                   </div>
                 </div>
-                <div class="cdate">2026-07-25 21:54:45 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">25 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #41</span>
                   <span class="card-chevron">▾</span>
@@ -3293,7 +3321,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-27 09:50:58 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">27 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #42</span>
                   <span class="card-chevron">▾</span>
@@ -3327,7 +3356,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-27 09:51:54 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">27 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #43</span>
                   <span class="card-chevron">▾</span>
@@ -3361,7 +3391,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-07-27 13:49:44 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">27 juillet 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #44</span>
                   <span class="card-chevron">▾</span>
@@ -3432,7 +3463,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : enviroinfo@ec.gc.ca ; Esteban Salcedo (CCE)</span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-06</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">6 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #45</span>
                   <span class="card-chevron">▾</span>
@@ -3463,7 +3495,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-06 21:02:57 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">6 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #46</span>
                   <span class="card-chevron">▾</span>
@@ -3494,7 +3527,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : Enviroinfo (ECCC) <enviroinfo@ec.gc.ca></span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-08 10:06:34 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">8 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #50</span>
                   <span class="card-chevron">▾</span>
@@ -3525,7 +3559,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : relations.medias@environnement.gouv.qc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-09 11:49:55 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">9 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #52</span>
                   <span class="card-chevron">▾</span>
@@ -3566,7 +3601,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-09 11:57:26 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">9 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #53</span>
                   <span class="card-chevron">▾</span>
@@ -3607,7 +3643,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : relations.medias@environnement.gouv.qc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-20 11:26:59 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">20 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #61</span>
                   <span class="card-chevron">▾</span>
@@ -3688,7 +3725,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : ec.faune-wildlife.ec@canada.ca, min@dfo-mpo.gc.ca, petitions@oag-bvg.gc.ca, sem@cec.org</span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-07 13:59:51 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">7 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #47</span>
                   <span class="card-chevron">▾</span>
@@ -3719,7 +3757,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-07 18:00:12 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">7 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #48</span>
                   <span class="card-chevron">▾</span>
@@ -3750,7 +3789,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-07 18:00:16 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">7 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #49</span>
                   <span class="card-chevron">▾</span>
@@ -3781,7 +3821,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-09 15:59:03 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">9 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #54</span>
                   <span class="card-chevron">▾</span>
@@ -3822,7 +3863,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-10 14:55:35 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">10 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #55</span>
                   <span class="card-chevron">▾</span>
@@ -3893,7 +3935,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-08 11:31:33 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">8 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #51</span>
                   <span class="card-chevron">▾</span>
@@ -3926,77 +3969,6 @@ header.site nav a:hover {
             <span>Imprimer</span>
           </button>
           <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t12">
-            <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span>Copier</span>
-          </button>
-          <span class="lpill lpill-eccc">ECCC & Cabinets ministériels</span>
-          <span class="nmsg">1 message</span>
-          <button class="allopen">Tout déplier / replier</button>
-        </div>
-      </div>
-
-      <!-- En-tête du fil -->
-      <div class="tv-header">
-        <h2>(aucun)</h2>
-        <div class="tv-header-tags">
-          <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
-          <span class="badge-id">Fil ID : 1a0072e46945802d</span>
-        </div>
-      </div>
-
-      <!-- Liste des messages du fil -->
-      <div class="tv-cards-stack">
-        
-            <article class="card open">
-              <div class="card-head">
-                <div class="avwrap">
-                  <div class="cava me">WG</div>
-                </div>
-                <div class="meta">
-                  <div class="l1">
-                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
-                    <span class="forg-badge">Citoyen & Auteur</span>
-                    
-                  </div>
-                  <div class="l2">
-                    <span>à <strong>(aucun)</strong></span>
-                    
-                  </div>
-                </div>
-                <div class="cdate">2026-08-15 16:48:52 -0400</div>
-                <div class="cacts">
-                  <span class="msg-num-tag">Msg #56</span>
-                  <span class="card-chevron">▾</span>
-                </div>
-              </div>
-              <div class="card-body">
-                
-                <div class="msg-text-content">
-                  <p>[image: Mailsuite] Expéditeur notifié avec Mailtrack · Se désinscrire<br>26-08-15 16 h 47 min 40 s<br>(BROUILLON / artefact de suivi Mailsuite — pas un message envoyé ni reçu.<br>Conservé pour transparence, car retourné par la recherche.)</p>
-                </div>
-              </div>
-            </article>
-          
-      </div>
-    </div>
-  
-
-    <div class="threadview" id="tv-t13">
-      <!-- Barre d'actions supérieure façon Gmail Pro -->
-      <div class="tv-action-bar">
-        <div class="tv-action-left">
-          <button class="back-btn" title="Revenir à la boîte de réception (Raccourci : Échap ou u)" aria-label="Retour à la liste">
-            <svg class="svg" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-            <span>Boîte de réception</span>
-          </button>
-        </div>
-        <div class="tv-action-right">
-          <button class="tool-btn print-thread-btn" title="Imprimer ou exporter ce fil au format officiel" onclick="window.print()">
-            <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-            <span>Imprimer</span>
-          </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t13">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
@@ -4035,7 +4007,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : renseignements.faune@environnement.gouv.qc.ca, Julie Dabrusin <ministre-minister@ec.gc.ca></span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-17 11:53:18 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">17 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #57</span>
                   <span class="card-chevron">▾</span>
@@ -4077,7 +4050,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-17 15:55:10 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">17 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #58</span>
                   <span class="card-chevron">▾</span>
@@ -4108,7 +4082,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : SEM Unit <SEM@cec.org>, Julie Dabrusin <ministre-minister@ec.gc.ca></span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-19 17:19:49 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #59</span>
                   <span class="card-chevron">▾</span>
@@ -4149,7 +4124,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : Julie Dabrusin <ministre-minister@ec.gc.ca></span>
                   </div>
                 </div>
-                <div class="cdate">2026-08-19 17:26:00 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #60</span>
                   <span class="card-chevron">▾</span>
@@ -4190,7 +4166,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-21 20:12:02 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">21 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #62</span>
                   <span class="card-chevron">▾</span>
@@ -4221,7 +4198,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-08-21 21:13:52 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">21 août 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #63</span>
                   <span class="card-chevron">▾</span>
@@ -4239,7 +4217,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t14">
+    <div class="threadview" id="tv-t13">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -4253,12 +4231,12 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t14">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t13">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
           <span class="lpill lpill-aiprp">Accès à l'information (AIPRP)</span>
-          <span class="nmsg">14 messages</span>
+          <span class="nmsg">13 messages</span>
           <button class="allopen">Tout déplier / replier</button>
         </div>
       </div>
@@ -4292,7 +4270,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-03 14:39:39 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">3 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #64</span>
                   <span class="card-chevron">▾</span>
@@ -4336,7 +4315,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-29 11:51:49 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #71</span>
                   <span class="card-chevron">▾</span>
@@ -4367,7 +4347,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-29 15:05:41 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">29 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #72</span>
                   <span class="card-chevron">▾</span>
@@ -4408,7 +4389,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-09 12:23:31 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">9 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #73</span>
                   <span class="card-chevron">▾</span>
@@ -4418,37 +4400,6 @@ header.site nav a:hover {
                 
                 <div class="msg-text-content">
                   <p>Bonjour Mme Lachance,</p><p>Dans le cadre du traitement de ma demande sous prorogation, je vous confirme<br>par la présente que je consens formellement et sollicite une <b>divulgation<br>par étapes (communication partielle intérimaire)</b>, conformément aux<br>directives du Secrétariat du Conseil du Trésor sur l'obligation d'assistance<br>envers les demandeurs.</p><p>Dès qu'une section du dossier est révisée, je vous demande de me la<br>transmettre sans la retenir jusqu'au terme du délai du 29 octobre.</p><p>Faisant actuellement l'objet de sollicitations journalistiques actives en<br>vue de l'échéance du 16 octobre fixée par la Commission de coopération<br>environnementale (CCE), et en raison de mon statut de demandeur mineur dont<br>l'intérêt commande un accès direct et diligent aux données me concernant, je<br>sollicite la <b>transmission immédiate et prioritaire</b> des éléments<br>administratifs suivants :</p><p>1. […]</p><p>[… suite tronquée — texte intégral : 4 043 caractères ; voir Gmail ID<br>1a1217a12835d008.]</p>
-                </div>
-              </div>
-            </article>
-          
-
-            <article class="card ">
-              <div class="card-head">
-                <div class="avwrap">
-                  <div class="cava me">WG</div>
-                </div>
-                <div class="meta">
-                  <div class="l1">
-                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
-                    <span class="forg-badge">Citoyen & Auteur</span>
-                    
-                  </div>
-                  <div class="l2">
-                    <span>à <strong>ecatip-ecaiprp@ec.gc.ca</strong></span>
-                    
-                  </div>
-                </div>
-                <div class="cdate">2026-10-13 13:06:51 -0400</div>
-                <div class="cacts">
-                  <span class="msg-num-tag">Msg #74</span>
-                  <span class="card-chevron">▾</span>
-                </div>
-              </div>
-              <div class="card-body">
-                
-                <div class="msg-text-content">
-                  <p>(BROUILLON non envoyé — contenu : signature « WILLIAM GUINDON, militant<br>écologiste · chercheur citoyen · 15 ans · Blainville ». Inclut le pied de<br>page « Dossier CCE SEM-26-003 — réponse du Canada le 16 octobre 2026 ».<br>BROUILLON : ne pas interpréter comme une communication envoyée.)</p>
                 </div>
               </div>
             </article>
@@ -4470,7 +4421,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-13 18:16:21 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">13 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #75</span>
                   <span class="card-chevron">▾</span>
@@ -4511,7 +4463,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-23 19:11:35 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">23 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #80</span>
                   <span class="card-chevron">▾</span>
@@ -4542,7 +4495,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 12:28:48 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #81</span>
                   <span class="card-chevron">▾</span>
@@ -4583,7 +4537,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 12:51:46 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #82</span>
                   <span class="card-chevron">▾</span>
@@ -4624,7 +4579,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 13:04:15 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #83</span>
                   <span class="card-chevron">▾</span>
@@ -4665,7 +4621,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 16:49:49 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #84</span>
                   <span class="card-chevron">▾</span>
@@ -4706,7 +4663,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 16:54:32 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #85</span>
                   <span class="card-chevron">▾</span>
@@ -4747,7 +4705,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-10-28 17:23:42 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">28 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #86</span>
                   <span class="card-chevron">▾</span>
@@ -4788,7 +4747,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-11-18 16:21:01 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">18 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #90</span>
                   <span class="card-chevron">▾</span>
@@ -4806,7 +4766,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t15">
+    <div class="threadview" id="tv-t14">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -4820,7 +4780,7 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t15">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t14">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
@@ -4859,7 +4819,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-07 15:54:48 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">7 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #65</span>
                   <span class="card-chevron">▾</span>
@@ -4900,7 +4861,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-09 17:05:44 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">9 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #66</span>
                   <span class="card-chevron">▾</span>
@@ -4931,7 +4893,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-11 19:19:20 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">11 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #67</span>
                   <span class="card-chevron">▾</span>
@@ -4952,7 +4915,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t16">
+    <div class="threadview" id="tv-t15">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -4966,7 +4929,7 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t16">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t15">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
@@ -5005,7 +4968,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : info@dfo-mpo.gc.ca, Enviroinfo (ECCC) <enviroinfo@ec.gc.ca>, information@iaac-aeic.gc.ca, info@stablex.com</span>
                   </div>
                 </div>
-                <div class="cdate">2026-09-13 14:56:09 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">13 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #68</span>
                   <span class="card-chevron">▾</span>
@@ -5050,7 +5014,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-13 19:00:19 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">13 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #69</span>
                   <span class="card-chevron">▾</span>
@@ -5081,7 +5046,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-09-13 19:00:38 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">13 septembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #70</span>
                   <span class="card-chevron">▾</span>
@@ -5099,7 +5065,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t17">
+    <div class="threadview" id="tv-t16">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -5113,12 +5079,12 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t17">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t16">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
           <span class="lpill lpill-cce">CCE / ACEUM & Traités</span>
-          <span class="nmsg">4 messages</span>
+          <span class="nmsg">3 messages</span>
           <button class="allopen">Tout déplier / replier</button>
         </div>
       </div>
@@ -5152,7 +5118,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : alerte.enfouissement@outlook.com, André St-Hilaire <andre.st-hilaire@inrs.ca>, Dominique Bernier <bernier.dominique@lacsq.org>, Mathieu Langlois <communications@eausecours.org>, Edith Morel CASTELAN <coordo.cadt@eausecours.org>, Rébecca Pétrin <direction@eausecours.org>, info@sgtb.ca, Marie-Audrey Nadeau <marie-audrey.nadeau@naturequebec.org>, meresaufront@gmail.com, Julie Dabrusin <ministre-minister@ec.gc.ca>, Charlie L. <mobilisation@reseaudemainlequebec.org>, mouvement.mare@gmail.com, pascale.robert66@gmail.com, svp.pollution@gmail.com, sylvieclermont1@hotmail.com, Carole Marcoux <carolemrcx@gmail.com></span>
                   </div>
                 </div>
-                <div class="cdate">2026-10-17 09:40:07 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">17 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #76</span>
                   <span class="card-chevron">▾</span>
@@ -5180,37 +5147,6 @@ header.site nav a:hover {
             <article class="card ">
               <div class="card-head">
                 <div class="avwrap">
-                  <div class="cava me">WG</div>
-                </div>
-                <div class="meta">
-                  <div class="l1">
-                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
-                    <span class="forg-badge">Citoyen & Auteur</span>
-                    
-                  </div>
-                  <div class="l2">
-                    <span>à <strong>Julie Dabrusin <ministre-minister@ec.gc.ca></strong></span>
-                    
-                  </div>
-                </div>
-                <div class="cdate">2026-10-18 13:00:06 -0400</div>
-                <div class="cacts">
-                  <span class="msg-num-tag">Msg #77</span>
-                  <span class="card-chevron">▾</span>
-                </div>
-              </div>
-              <div class="card-body">
-                
-                <div class="msg-text-content">
-                  <p>(BROUILLON NON ENVOYÉ.)</p><p>Monsieur le Ministre,</p><p>Dans sa réponse officielle du 16 octobre 2026 déposée devant la Commission de<br>coopération environnementale (dossier SEM-26-003), le gouvernement du Canada<br>qualifie ma démarche de « prématurée » et allègue ne pas avoir eu « la<br>possibilité de fournir les renseignements demandés » au motif qu'une<br>pétition citoyenne (nº 0546) est pendante.</p><p>Je tiens formellement à vous rappeler que les enjeux d'omission d'application<br>des lois environnementales fédérales (Loi sur les pêches, Loi sur les espèces<br>en péril, LCPE) concernant le site de Blainville et les risques cumulatifs<br>liés à la cellule 6 ne constituent en rien des faits nouveaux pour votre<br>ministère.</p><p>Votre ministère a été formellement et à maintes reprises alerté depuis près<br>d'une décennie par des démarches citoyennes documentées, notamment :<br>- Les dossiers ministériels MIN-214895 (2016) et MI[N-…]</p><p>[… suite tronquée — texte intégral : 1 815 caractères ; voir Gmail ID<br>1a14ff4d6093c853.]</p>
-                </div>
-              </div>
-            </article>
-          
-
-            <article class="card ">
-              <div class="card-head">
-                <div class="avwrap">
                   <div class="cava eccc">ECCC</div>
                 </div>
                 <div class="meta">
@@ -5224,7 +5160,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : contact@williamguindon.me, alerte.enfouissement@outlook.com, André St-Hilaire <andre.st-hilaire@inrs.ca>, Dominique Bernier <bernier.dominique@lacsq.org>, Mathieu Langlois <communications@eausecours.org>, Rébecca Pétrin <direction@eausecours.org>, info@sgtb.ca, Marie-Audrey Nadeau <marie-audrey.nadeau@naturequebec.org>, meresaufront@gmail.com, Julie Dabrusin <ministre-minister@ec.gc.ca>, Charlie L. <mobilisation@reseaudemainlequebec.org>, mouvement.mare@gmail.com, pascale.robert66@gmail.com, svp.pollution@gmail.com, sylvieclermont1@hotmail.com, Carole Marcoux <carolemrcx@gmail.com></span>
                   </div>
                 </div>
-                <div class="cdate">2026-10-19 18:52:04 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #78</span>
                   <span class="card-chevron">▾</span>
@@ -5255,7 +5192,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : alerte.enfouissement@outlook.com, André St-Hilaire <andre.st-hilaire@inrs.ca>, Dominique Bernier <bernier.dominique@lacsq.org>, Mathieu Langlois <communications@eausecours.org>, Rébecca Pétrin <direction@eausecours.org>, info@sgtb.ca, Marie-Audrey Nadeau <marie-audrey.nadeau@naturequebec.org>, meresaufront@gmail.com, Julie Dabrusin <ministre-minister@ec.gc.ca>, Charlie L. <mobilisation@reseaudemainlequebec.org>, mouvement.mare@gmail.com, pascale.robert66@gmail.com, svp.pollution@gmail.com, sylvieclermont1@hotmail.com, Carole Marcoux <carolemrcx@gmail.com></span>
                   </div>
                 </div>
-                <div class="cdate">2026-10-19 19:12:12 -0400</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 octobre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #79</span>
                   <span class="card-chevron">▾</span>
@@ -5273,7 +5211,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t18">
+    <div class="threadview" id="tv-t17">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -5287,19 +5225,19 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t18">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t17">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
-          <span class="lpill lpill-cce">CCE / ACEUM & Traités</span>
-          <span class="nmsg">3 messages</span>
+          <span class="lpill lpill-stablex">Stablex & Cellule 6</span>
+          <span class="nmsg">2 messages</span>
           <button class="allopen">Tout déplier / replier</button>
         </div>
       </div>
 
       <!-- En-tête du fil -->
       <div class="tv-header">
-        <h2>(sans objet visible) — « Kit média » SEM-26-003</h2>
+        <h2>Fisheries and Oceans Canada response to Environmental Petition No. 546 | Réponse de Pêches et Océans Canada à la pétition environnementale no 546</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
@@ -5310,37 +5248,6 @@ header.site nav a:hover {
       <!-- Liste des messages du fil -->
       <div class="tv-cards-stack">
         
-            <article class="card ">
-              <div class="card-head">
-                <div class="avwrap">
-                  <div class="cava me">WG</div>
-                </div>
-                <div class="meta">
-                  <div class="l1">
-                    <span class="fname">William Guindon <<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>></span>
-                    <span class="forg-badge">Citoyen & Auteur</span>
-                    
-                  </div>
-                  <div class="l2">
-                    <span>à <strong>Julie Dabrusin <ministre-minister@ec.gc.ca></strong></span>
-                    
-                  </div>
-                </div>
-                <div class="cdate">2026-11-07 09:16:03 -0500</div>
-                <div class="cacts">
-                  <span class="msg-num-tag">Msg #87</span>
-                  <span class="card-chevron">▾</span>
-                </div>
-              </div>
-              <div class="card-body">
-                
-                <div class="msg-text-content">
-                  <p>(BROUILLON NON ENVOYÉ.)</p><p>Signature complète : WILLIAM GUINDON — Militant écologiste · Chercheur citoyen<br>indépendant · 15 ans · Blainville, Québec · Auteur de la communication<br>SEM-26-003 — Commission de coopération environnementale (CCE / ACEUM).<br>« 278 046 m² milieux humides menacés · 320× cadmium vs norme · 16 oct. 2026<br>réponse du Canada reçue » ; Kit média (williamguindon.me/presse.html) ;<br>Calendrier (cal.com/william-guindon/media) ; williamguindon.me ·<br>contact@williamguindon.me</p>
-                </div>
-              </div>
-            </article>
-          
-
             <article class="card open">
               <div class="card-head">
                 <div class="avwrap">
@@ -5357,7 +5264,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : petitions@oag-bvg.gc.ca, psolano@cec.org, sem@cec.org</span>
                   </div>
                 </div>
-                <div class="cdate">2026-11-10 19:44:08 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">10 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #88</span>
                   <span class="card-chevron">▾</span>
@@ -5398,7 +5306,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : petitions@oag-bvg.gc.ca, psolano@cec.org, sem@cec.org, dfo.minister-ministre.mpo@dfo-mpo.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-11-10 21:39:38 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">10 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #89</span>
                   <span class="card-chevron">▾</span>
@@ -5426,7 +5335,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t19">
+    <div class="threadview" id="tv-t18">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -5440,7 +5349,7 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t19">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t18">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
@@ -5479,7 +5388,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : dgalunitedebreffageebbriefingunit@ec.gc.ca, SEM Unit <sem@cec.org>, mark.carney@parl.gc.ca</span>
                   </div>
                 </div>
-                <div class="cdate">2026-11-19 15:58:50 -0500</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #91</span>
                   <span class="card-chevron">▾</span>
@@ -5520,7 +5430,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-11-19 21:00:10 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #92</span>
                   <span class="card-chevron">▾</span>
@@ -5551,7 +5462,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-11-19 21:00:12 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">19 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #93</span>
                   <span class="card-chevron">▾</span>
@@ -5569,7 +5481,7 @@ header.site nav a:hover {
     </div>
   
 
-    <div class="threadview" id="tv-t20">
+    <div class="threadview" id="tv-t19">
       <!-- Barre d'actions supérieure façon Gmail Pro -->
       <div class="tv-action-bar">
         <div class="tv-action-left">
@@ -5583,7 +5495,7 @@ header.site nav a:hover {
             <svg class="svg" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
             <span>Imprimer</span>
           </button>
-          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t20">
+          <button class="tool-btn copy-thread-btn" title="Copier la transcription caviardée dans le presse-papier" data-tid="t19">
             <svg class="svg" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span>Copier</span>
           </button>
@@ -5622,7 +5534,8 @@ header.site nav a:hover {
                      · <span class="faded">Cc : presse-et-medias-wguindon@googlegroups.com</span>
                   </div>
                 </div>
-                <div class="cdate">2026-11-22 12:23:04 -0500</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">22 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #94</span>
                   <span class="card-chevron">▾</span>
@@ -5653,7 +5566,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-11-22 17:29:58 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">22 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #95</span>
                   <span class="card-chevron">▾</span>
@@ -5684,7 +5598,8 @@ header.site nav a:hover {
                     
                   </div>
                 </div>
-                <div class="cdate">2026-11-22 17:29:57 +0000</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">22 novembre 2026</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #96</span>
                   <span class="card-chevron">▾</span>
@@ -5708,7 +5623,7 @@ header.site nav a:hover {
   </div>
 </main>
 
-<!-- Modale d'inspection de pièce jointe -->
+<!-- Modale d'inspection de pièce probatoire -->
 <div class="evidence-modal-backdrop" id="evidenceModal" onclick="closeEvidenceModal(event)">
   <div class="evidence-modal" onclick="event.stopPropagation()">
     <div class="evidence-header">
@@ -5725,23 +5640,6 @@ header.site nav a:hover {
 
 <!-- Toast interactif -->
 <div class="wmail-toast" id="wmailToast">Transcription copiée dans le presse-papier !</div>
-
-<!-- Pied de page officiel du site -->
-<footer>
-  <div class="wrap">
-    <p class="footer-copy">© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></p>
-    <p class="footer-licence-box">
-      Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>. Renseignements personnels protégés.
-    </p>
-
-    <div class="footer-social-row">
-      <a href="index.html" class="footer-social-link">← Accueil du site officiel</a>
-      <a href="registre.html" class="footer-social-link">Registre officiel CCE</a>
-      <a href="correspondance.html" class="footer-social-link">Politique de correspondance &amp; Déontologie</a>
-      <a href="statut.html" class="footer-social-link" style="font-weight: 700; color: #22c55e;">● État des systèmes &amp; Bogues ↗</a>
-    </div>
-  </div>
-</footer>
 
 <script>
 (function(){
@@ -5871,7 +5769,7 @@ header.site nav a:hover {
   // Recherche plein texte
   function doSearch(val){
     var q = val.trim().toLowerCase();
-    clearB.style.display = q ? "grid" : "none";
+    clearB.style.display = q.length > 0 ? 'grid' : 'none';
     if(q.length < 2){
       results.style.display = 'none';
       msglist.style.display = 'block';
@@ -5886,7 +5784,7 @@ header.site nav a:hover {
 
     var html = '<div class="res-head"><b>' + hits.length + '</b> résultat(s) pour « ' + val + ' »</div>';
     if(!hits.length){
-      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les 96 courriels.</div>';
+      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les correspondances.</div>';
     } else {
       hits.slice(0, 40).forEach(function(hit){
         var pos = hit.raw.toLowerCase().indexOf(q);
@@ -5906,7 +5804,7 @@ header.site nav a:hover {
   search.addEventListener('input', function(){ doSearch(search.value); });
   clearB.addEventListener('click', function(){
     search.value = '';
-    clearB.style.display = "none";
+    clearB.style.display = 'none';
     goList(true);
   });
 

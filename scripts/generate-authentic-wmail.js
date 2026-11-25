@@ -4,7 +4,7 @@ const path = require('path');
 const rawFile = '/Users/williamguindon/.gemini/antigravity/brain/fd968382-bf27-4d6d-b652-7559a28122df/.user_uploaded/media_1795563158087_84f2f96d.txt';
 let rawText = fs.readFileSync(rawFile, 'utf8');
 
-// Scrub journalist names, Marianne Depelteau and transmission cross-references from the entire text source
+// Nettoyage strict initial des renvois, métadonnées de suivi et brouillons
 rawText = rawText
   .replace(/\[Message transcrit intégralement dans Correspondance_Marianne_Depelteau\.txt[^\]]*\]/gi, 
     "[Signalement formel et données d'échantillonnage versés au dossier probatoire citoyen — ID 19fd955011fe288c. Station d'échantillonnage FS-STB-2 (aval cellule n° 6), lacs Fauvel ; cadmium à 4,7× le critère CVAC ; chaîne de possession légale.]")
@@ -18,7 +18,7 @@ rawText = rawText
   .replace(/Correspondance_Marianne_Depelteau\.txt/gi, "[Registre de correspondances]")
   .replace(/archive Marianne/gi, "[Dossier probatoire]");
 
-// Parse all 96 messages
+// Parse all messages
 const msgRegex = /MESSAGE\s+(\d+)[\s\S]*?(?=MESSAGE\s+\d+|$)/g;
 let m;
 const rawMessages = [];
@@ -41,24 +41,34 @@ while ((m = msgRegex.exec(rawText)) !== null) {
     body = block.substring(sepIdx + 80).trim();
   }
 
-  rawMessages.push({
-    num,
-    date: dateMatch ? dateMatch[1].trim() : '',
-    de: deMatch ? deMatch[1].trim() : '',
-    a: aMatch ? aMatch[1].trim() : '',
-    cc: ccMatch ? ccMatch[1].trim() : '',
-    objet: objMatch ? objMatch[1].trim() : '(sans objet)',
-    fil: filMatch ? filMatch[1].trim() : 'fil_' + num,
-    id: idMatch ? idMatch[1].trim() : '',
-    pieces: piecesMatch ? piecesMatch[1].trim() : '',
-    note: noteMatch ? noteMatch[1].trim() : '',
-    body
-  });
+  // Filtrer STRICTEMENT les brouillons non envoyés et les artefacts de suivi (Mailsuite / Mailtrack)
+  const isDraftOrTracker = 
+    (noteMatch && noteMatch[1].toLowerCase().includes('draft')) ||
+    body.includes('BROUILLON') ||
+    body.includes('Mailtrack') ||
+    body.includes('Mailsuite') ||
+    body.includes('artefact Mailsuite');
+
+  if (!isDraftOrTracker) {
+    rawMessages.push({
+      num,
+      date: dateMatch ? dateMatch[1].trim() : '',
+      de: deMatch ? deMatch[1].trim() : '',
+      a: aMatch ? aMatch[1].trim() : '',
+      cc: ccMatch ? ccMatch[1].trim() : '',
+      objet: objMatch ? objMatch[1].trim() : '(sans objet)',
+      fil: filMatch ? filMatch[1].trim() : 'fil_' + num,
+      id: idMatch ? idMatch[1].trim() : '',
+      pieces: piecesMatch ? piecesMatch[1].trim() : '',
+      note: noteMatch ? noteMatch[1].trim() : '',
+      body
+    });
+  }
 }
 
-console.log('Parsed total messages:', rawMessages.length);
+console.log('Parsed authentic sent/received messages (sans brouillons ni traceurs):', rawMessages.length);
 
-// Fonction de caviardage stricte (données personnelles + exclusion journalistes / transmissions)
+// Fonction de caviardage stricte (données personnelles + journalistes / transmissions)
 function sanitizeText(str) {
   if (!str) return '';
   return str
@@ -76,7 +86,21 @@ function sanitizeText(str) {
     .replace(/archive Marianne/gi, '[Dossier probatoire]');
 }
 
-// Formatage de dates lisibles en français (ex. "3 juin", "14 juin")
+// Formatage strict de la DATE UNIQUEMENT (SANS AUCUNE HEURE NI MINUTE NI SECONDE)
+function formatFullDay(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split(' ')[0].split('-');
+  if (parts.length === 3) {
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    const d = parseInt(parts[2], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    const y = parts[0];
+    return `${d} ${months[m] || ''} ${y}`;
+  }
+  return dateStr.split(' ')[0];
+}
+
+// Formatage de dates courtes en français pour la liste (ex. "3 juin", "14 juin")
 function formatShortDate(dateStr) {
   if (!dateStr) return '';
   const parts = dateStr.split(' ')[0].split('-');
@@ -86,7 +110,7 @@ function formatShortDate(dateStr) {
     const m = parseInt(parts[1], 10) - 1;
     return `${d} ${months[m] || ''}`;
   }
-  return dateStr;
+  return dateStr.split(' ')[0];
 }
 
 // Fonction pour déterminer la catégorie et le libellé
@@ -138,7 +162,10 @@ function formatMessageBody(msg) {
     .replace(/={4,}/g, "")
     .replace(/\[TRONQUÉ[^\]]*\]/g, "")
     .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
-    .replace(/\*([^*]+)\*/g, "<b>$1</b>");
+    .replace(/\*([^*]+)\*/g, "<b>$1</b>")
+    .replace(/\[image:\s*Mailsuite\][^\n]*/gi, "")
+    .replace(/Expéditeur notifié avec Mailtrack[^\n]*/gi, "")
+    .replace(/Se désinscrire[^\n]*/gi, "");
 
   // Échapper ou formater proprement
   const paragraphs = text.split('\n\n').map(p => {
@@ -161,7 +188,7 @@ const threadMap = new Map();
 rawMessages.forEach(msg => {
   let filKey = msg.fil;
   
-  if (msg.num === 1 || msg.num === 2 || msg.num === 3 || msg.num === 4 || msg.num === 5 || msg.num === 6 || msg.num === 7) {
+  if (msg.num >= 1 && msg.num <= 7) {
     filKey = 'thread_01_demande_enquete_lcom_peches';
   } else if (msg.num === 8 || msg.num === 9) {
     filKey = 'thread_02_signalement_enviroinfo';
@@ -185,7 +212,7 @@ rawMessages.forEach(msg => {
     filKey = 'thread_11_appel_experts_15_ans';
   } else if (msg.num === 57 || msg.num === 58 || msg.num === 59 || msg.num === 60 || msg.num === 62 || msg.num === 63) {
     filKey = 'thread_12_decision_cce_ambassades';
-  } else if (msg.num === 64 || msg.num === 71 || msg.num === 72 || msg.num === 73 || msg.num === 74 || msg.num === 75 || msg.num === 80 || msg.num === 81 || msg.num === 82 || msg.num === 83 || msg.num === 84 || msg.num === 85 || msg.num === 86 || msg.num === 90) {
+  } else if (msg.num === 64 || msg.num === 71 || msg.num === 72 || msg.num === 73 || msg.num === 75 || msg.num === 80 || msg.num === 81 || msg.num === 82 || msg.num === 83 || msg.num === 84 || msg.num === 85 || msg.num === 86 || msg.num === 90) {
     filKey = 'thread_13_aiprp_praine_purolator';
   } else if (msg.num >= 65 && msg.num <= 67) {
     filKey = 'thread_14_enquete_partis_politiques';
@@ -193,7 +220,7 @@ rawMessages.forEach(msg => {
     filKey = 'thread_15_imagerie_copernicus_cce';
   } else if (msg.num >= 76 && msg.num <= 79) {
     filKey = 'thread_16_reponse_canada_replique_72_rsp';
-  } else if (msg.num >= 87 && msg.num <= 89) {
+  } else if (msg.num >= 88 && msg.num <= 89) {
     filKey = 'thread_17_reponses_petition_0546_eccc_mpo';
   } else if (msg.num >= 91 && msg.num <= 93) {
     filKey = 'thread_18_suivi_conjoint_ministres_jeunesse';
@@ -207,7 +234,7 @@ rawMessages.forEach(msg => {
   threadMap.get(filKey).push(msg);
 });
 
-console.log('Mapped to grouped threads:', threadMap.size);
+console.log('Mapped to grouped authentic threads:', threadMap.size);
 
 // Préparation des objets threads pour le rendu
 const threadList = [];
@@ -254,7 +281,7 @@ for (const [filId, msgs] of threadMap.entries()) {
     catColor: categoryInfo.color,
     catIcon: categoryInfo.icon,
     rawDate: last.date.split(' ')[0],
-    shortDate: formatShortDate(last.date.split(' ')[0]),
+    shortDate: formatShortDate(last.date),
     messagesCount: msgs.length,
     participants: sanitizeText(participantStr),
     snippet: sanitizeText(snippet),
@@ -356,7 +383,8 @@ function renderThreadView(t) {
                     ${m.cc ? ` · <span class="faded">Cc : ${sanitizeText(m.cc)}</span>` : ''}
                   </div>
                 </div>
-                <div class="cdate">${m.date}</div>
+                <!-- DATE UNIQUE SANS HEURE NI SECONDE -->
+                <div class="cdate">${formatFullDay(m.date)}</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #${m.num}</span>
                   <span class="card-chevron">▾</span>
@@ -394,7 +422,7 @@ const fullHtml = `<!doctype html>
 <script src="assets/js/security-guard.js" defer></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wmail — Registre des correspondances &amp; démarches citoyennes · William Guindon</title>
-<meta name="description" content="Registre officiel interactif et caviardé des 96 correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
+<meta name="description" content="Registre officiel interactif et caviardé des 92 correspondances citoyennes, signalements et requêtes formelles (ECCC, MPO, CCE, AIPRP) dans le cadre du dossier SEM-26-003.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://williamguindon.me/wmail.html">
 <link rel="alternate" hreflang="fr" href="https://williamguindon.me/wmail.html">
@@ -460,22 +488,15 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
-
-/* Suppression absolue des marges globales de section pour Wmail */
-.wmail-shell section,
-.wmail-main,
-.threadview {
-  padding: 0 !important;
-  border-bottom: none !important;
-}
-
 
 /* Harmonisation du bandeau supérieur officiel */
 header.site {
   background: #0b0f0c !important;
   border-bottom: 1px solid #1c2620 !important;
+  flex: none;
 }
 header.site .wrap {
   background: transparent !important;
@@ -493,64 +514,74 @@ header.site nav a:hover {
   color: #10b981 !important;
 }
 
+/* Suppression absolue des marges globales de section pour Wmail */
+.wmail-shell section,
+.wmail-main,
+.threadview {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
 /* ==================== HUD PROBATOIRE EN TÊTE ==================== */
 .wmail-hud {
   max-width: 1480px;
   width: calc(100% - 24px);
-  margin: 16px auto 8px;
+  margin: 12px auto 6px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
+  flex: none;
 }
 .hud-card {
   background: var(--w-card);
   border: 1px solid var(--w-border);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
 }
 .hud-card:hover {
   transform: translateY(-2px);
   border-color: var(--w-accent);
 }
 .hud-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: var(--w-accent-wash);
   color: var(--w-accent);
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: 17px;
   flex: none;
 }
 .hud-meta { display: flex; flex-direction: column; min-width: 0; }
-.hud-value { font-size: 19px; font-weight: 800; color: var(--w-text); letter-spacing: -0.5px; }
-.hud-label { font-size: 11.5px; font-weight: 600; color: var(--w-text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-value { font-size: 18px; font-weight: 800; color: var(--w-text); letter-spacing: -0.5px; }
+.hud-label { font-size: 11px; font-weight: 600; color: var(--w-text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ==================== CONTENEUR WMAIL ==================== */
 .wmail-shell {
   max-width: 1480px;
   width: calc(100% - 24px);
-  margin: 8px auto 32px;
+  margin: 6px auto 14px;
   background: var(--w-card);
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--w-border);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 180px);
-  min-height: 680px;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
 /* Wmail Topbar */
 .wmail-topbar {
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -616,7 +647,7 @@ header.site nav a:hover {
 
 /* Barre de recherche avec icône fine */
 .search-wrap {
-  height: 44px;
+  height: 42px;
   max-width: 680px;
   flex: 1;
   position: relative;
@@ -625,7 +656,7 @@ header.site nav a:hover {
 .search-wrap svg.svg {
   position: absolute;
   left: 16px;
-  top: 13px;
+  top: 12px;
   color: var(--w-text-dim);
   width: 18px;
   height: 18px;
@@ -653,7 +684,7 @@ header.site nav a:hover {
 .search-clear {
   position: absolute;
   right: 6px;
-  top: 3px;
+  top: 2px;
   display: none;
 }
 
@@ -796,15 +827,16 @@ header.site nav a:hover {
   overflow-x: auto;
   flex: 1;
   min-width: 0;
+  gap: 2px;
 }
 .wmail-tab {
   position: relative;
-  min-width: 95px;
-  padding: 0 14px;
+  min-width: 80px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--w-text-muted);
   border: none;
@@ -829,8 +861,6 @@ header.site nav a:hover {
 
 .wmail-counter-meta {
   display: flex;
-  padding-left: 12px;
-  border-left: 1px solid var(--w-border);
   align-items: center;
   gap: 10px;
   color: var(--w-text-muted);
@@ -838,6 +868,8 @@ header.site nav a:hover {
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  padding-left: 12px;
+  border-left: 1px solid var(--w-border);
 }
 
 /* Content Viewport */
@@ -1169,6 +1201,7 @@ header.site nav a:hover {
   color: var(--w-text-muted);
   padding: 1px 6px;
   border-radius: 4px;
+  white-space: nowrap;
 }
 .card-head .role { font-size: 12px; color: var(--w-text-dim); font-weight: 500; }
 .card-head .l2 {
@@ -1182,8 +1215,9 @@ header.site nav a:hover {
 .card-head .cdate {
   font-size: 12px;
   color: var(--w-text-muted);
-  font-weight: 500;
+  font-weight: 600;
   flex: none;
+  font-variant-numeric: tabular-nums;
 }
 .card-head .cacts {
   display: flex;
@@ -1381,7 +1415,7 @@ header.site nav a:hover {
 }
 
 @media print {
-  body { background: #ffffff !important; color: #000000 !important; }
+  body { background: #ffffff !important; color: #000000 !important; height: auto !important; overflow: visible !important; }
   #navbar-placeholder, .wmail-hud, .wmail-topbar, .wmail-sidebar, .tv-action-bar, footer { display: none !important; }
   .wmail-shell { height: auto !important; border: none !important; box-shadow: none !important; }
   .card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px !important; }
@@ -1405,20 +1439,20 @@ header.site nav a:hover {
 <!-- Navigation injectée automatiquement par navbar-loader.js -->
 <div id="navbar-placeholder"></div>
 
-<main id="main-content" style="flex: 1; display: flex; flex-direction: column;">
+<main id="main-content" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
   <!-- HUD Métriques probatoires -->
   <div class="wmail-hud">
     <div class="hud-card">
       <div class="hud-icon">📨</div>
       <div class="hud-meta">
-        <span class="hud-value">96</span>
+        <span class="hud-value">${rawMessages.length}</span>
         <span class="hud-label">Correspondances citoyennes</span>
       </div>
     </div>
     <div class="hud-card">
       <div class="hud-icon">📁</div>
       <div class="hud-meta">
-        <span class="hud-value">20</span>
+        <span class="hud-value">${threadList.length}</span>
         <span class="hud-label">Dossiers d'enquête &amp; Fils</span>
       </div>
     </div>
@@ -1456,8 +1490,8 @@ header.site nav a:hover {
 
       <div class="search-wrap">
         <svg class="svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-        <input id="search" placeholder="Rechercher dans les 96 correspondances (ECCC, MPO, CCE, AIPRP, Stablex...)" aria-label="Recherche">
-        <button class="icon-btn search-clear" id="clear" aria-label="Effacer" hidden>
+        <input id="search" placeholder="Rechercher dans les correspondances (ECCC, MPO, CCE, AIPRP, Stablex...)" aria-label="Recherche">
+        <button class="icon-btn search-clear" id="clear" aria-label="Effacer">
           <svg class="svg" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
         </button>
       </div>
@@ -1533,7 +1567,7 @@ header.site nav a:hover {
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre officiel SEM-26-003 :</strong> 96 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
+          <strong>Registre officiel SEM-26-003 :</strong> 92 correspondances versées au dossier probatoire public. Renseignements personnels biffés.
         </div>
       </aside>
 
@@ -1549,7 +1583,7 @@ header.site nav a:hover {
             <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Clé USB</span></button>
           </div>
           <div class="wmail-counter-meta">
-            <span id="counter">${threadList.length} conversations · 96 courriels</span>
+            <span id="counter">${threadList.length} dossiers · ${rawMessages.length} courriels</span>
             <button class="icon-btn" id="refresh" aria-label="Actualiser" title="Actualiser la liste">
               <svg class="svg" viewBox="0 0 24 24"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.4-2L20 11M4 13l2.5 4a7 7 0 0 0 11.4-2"/></svg>
             </button>
@@ -1572,7 +1606,7 @@ header.site nav a:hover {
   </div>
 </main>
 
-<!-- Modale d'inspection de pièce jointe -->
+<!-- Modale d'inspection de pièce probatoire -->
 <div class="evidence-modal-backdrop" id="evidenceModal" onclick="closeEvidenceModal(event)">
   <div class="evidence-modal" onclick="event.stopPropagation()">
     <div class="evidence-header">
@@ -1589,23 +1623,6 @@ header.site nav a:hover {
 
 <!-- Toast interactif -->
 <div class="wmail-toast" id="wmailToast">Transcription copiée dans le presse-papier !</div>
-
-<!-- Pied de page officiel du site -->
-<footer>
-  <div class="wrap">
-    <p class="footer-copy">© 2026 William Guindon — Blainville, Québec, Canada · <span lang="en">Official biography</span></p>
-    <p class="footer-licence-box">
-      Contenu mis à disposition sous licence <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>. Renseignements personnels protégés.
-    </p>
-
-    <div class="footer-social-row">
-      <a href="index.html" class="footer-social-link">← Accueil du site officiel</a>
-      <a href="registre.html" class="footer-social-link">Registre officiel CCE</a>
-      <a href="correspondance.html" class="footer-social-link">Politique de correspondance &amp; Déontologie</a>
-      <a href="statut.html" class="footer-social-link" style="font-weight: 700; color: #22c55e;">● État des systèmes &amp; Bogues ↗</a>
-    </div>
-  </div>
-</footer>
 
 <script>
 (function(){
@@ -1735,7 +1752,7 @@ header.site nav a:hover {
   // Recherche plein texte
   function doSearch(val){
     var q = val.trim().toLowerCase();
-    clearB.style.display = q ? "grid" : "none";
+    clearB.style.display = q.length > 0 ? 'grid' : 'none';
     if(q.length < 2){
       results.style.display = 'none';
       msglist.style.display = 'block';
@@ -1750,7 +1767,7 @@ header.site nav a:hover {
 
     var html = '<div class="res-head"><b>' + hits.length + '</b> résultat(s) pour « ' + val + ' »</div>';
     if(!hits.length){
-      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les 96 courriels.</div>';
+      html += '<div style="padding:30px 10px;text-align:center;color:var(--w-text-muted);">Aucune correspondance trouvée dans les correspondances.</div>';
     } else {
       hits.slice(0, 40).forEach(function(hit){
         var pos = hit.raw.toLowerCase().indexOf(q);
@@ -1770,7 +1787,7 @@ header.site nav a:hover {
   search.addEventListener('input', function(){ doSearch(search.value); });
   clearB.addEventListener('click', function(){
     search.value = '';
-    clearB.style.display = "none";
+    clearB.style.display = 'none';
     goList(true);
   });
 
@@ -1877,4 +1894,4 @@ function closeEvidenceModal(e) {
 </html>`;
 
 fs.writeFileSync('/Users/williamguindon/WilliamGuindon/wmail.html', fullHtml, 'utf8');
-console.log('✔ wmail.html régénéré avec succès avec le design Pro Dark & HUD !');
+console.log('✔ wmail.html régénéré sans brouillons/traceurs, sans heures exactes et sans footer !');
