@@ -8126,6 +8126,17 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
       launch();
       return;
     }
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      var isDirectDoc = !!(sp.get('doc') || sp.get('file') || window.location.pathname.match(/\/(?:(en|es)\/)?d(?:\/([^/?#]+))?/i));
+      var isNoTourParam = sp.has('nt') || sp.get('nt') === '1' || sp.has('notour') || sp.get('tour') === '0' || sp.get('guide') === '0';
+      var isMobileScreen = window.innerWidth <= 768;
+      if (isNoTourParam || isDirectDoc || isMobileScreen) {
+        markTourSeenEverywhere();
+        return;
+      }
+    } catch (_) {}
+
     checkTourSeenEverywhere(function(seen) {
       if (seen) return;
       launch();
