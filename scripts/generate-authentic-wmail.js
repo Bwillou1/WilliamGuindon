@@ -157,7 +157,10 @@ function sanitizeText(str) {
     .replace(/marianne/gi, '<span class="cx" title="Caviardé">[Biffé]</span>')
     .replace(/journaliste[s]?/gi, 'correspondant civil')
     .replace(/Correspondance_Marianne_Depelteau\.txt/gi, '[Registre de correspondances]')
-    .replace(/archive Marianne/gi, '[Dossier probatoire]');
+    .replace(/archive Marianne/gi, '[Dossier probatoire]')
+    .replace(/🌲/g, '<svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 4 7h-3l4 7h-4l3 5H8l3-5H7l4-7H8l4-7Z"/><path d="M12 21v2"/></svg>')
+    .replace(/🎂/g, '<svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 2v3M8 5a2 2 0 0 1 2-2M14 3a2 2 0 0 1 2 2"/></svg>')
+    .replace(/💚/g, '<svg class="inline-svg" viewBox="0 0 24 24" fill="#22c55e" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>');
 }
 
 // Formatage strict de la DATE UNIQUEMENT (SANS AUCUNE HEURE NI MINUTE NI SECONDE)
@@ -187,25 +190,47 @@ function formatShortDate(dateStr) {
   return dateStr.split(' ')[0];
 }
 
+// Icônes vectorielles SVG officielles (aucune utilisation d'émojis selon la charte)
+const SVG_ICONS = {
+  scale: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',
+  leaf: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
+  folderKey: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  globe: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>',
+  factory: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>',
+  columns: '<svg class="cat-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11m-8-11v11"/></svg>',
+  star: '<svg class="star-svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  chevron: '<svg class="chev-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+  clip: '<svg class="clip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l7.9-7.9"/></svg>',
+  hudMail: '<svg class="hud-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  hudFolder: '<svg class="hud-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>',
+  hudClip: '<svg class="hud-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l7.9-7.9"/></svg>',
+  hudShield: '<svg class="hud-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>',
+  sun: '<svg class="theme-svg theme-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>',
+  moon: '<svg class="theme-svg theme-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg>',
+  alert: '<svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  mailNotice: '<svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  close: '<svg class="close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>'
+};
+
 // Fonction pour déterminer la catégorie et le libellé
 function categorizeThread(subject, msgs) {
   const combined = (subject + ' ' + msgs.map(x => x.body + ' ' + x.a + ' ' + x.de).join(' ')).toLowerCase();
   if (combined.includes('signalement pénal') || combined.includes('inrp') || combined.includes('infractions') || combined.includes('cnue-neec')) {
-    return { cat: 'signalement', label: 'Application de la loi & Pêches', color: '#ef4444', icon: '⚖️' };
+    return { cat: 'signalement', label: 'Application de la loi & Pêches', color: '#ef4444', icon: SVG_ICONS.scale };
   }
   if (combined.includes('décret d\'urgence') || combined.includes('article 80') || combined.includes('lep')) {
-    return { cat: 'lep', label: 'Espèces en péril (LEP)', color: '#a855f7', icon: '🌿' };
+    return { cat: 'lep', label: 'Espèces en péril (LEP)', color: '#a855f7', icon: SVG_ICONS.leaf };
   }
   if (combined.includes('aiprp') || combined.includes('atip') || combined.includes('renseignements personnels') || combined.includes('p-2026') || combined.includes('praine')) {
-    return { cat: 'aiprp', label: 'Accès à l\'information (AIPRP)', color: '#06b6d4', icon: '📁' };
+    return { cat: 'aiprp', label: 'Accès à l\'information (AIPRP)', color: '#06b6d4', icon: SVG_ICONS.folderKey };
   }
   if (combined.includes('cce') || combined.includes('aceum') || combined.includes('ambassade') || combined.includes('sem-26-003')) {
-    return { cat: 'cce', label: 'CCE / ACEUM & Traités', color: '#10b981', icon: '🌐' };
+    return { cat: 'cce', label: 'CCE / ACEUM & Traités', color: '#10b981', icon: SVG_ICONS.globe };
   }
   if (combined.includes('stablex') || combined.includes('cellule 6')) {
-    return { cat: 'stablex', label: 'Stablex & Cellule 6', color: '#f59e0b', icon: '🏭' };
+    return { cat: 'stablex', label: 'Stablex & Cellule 6', color: '#f59e0b', icon: SVG_ICONS.factory };
   }
-  return { cat: 'eccc', label: 'ECCC & Cabinets ministériels', color: '#3b82f6', icon: '🏛️' };
+  return { cat: 'eccc', label: 'ECCC & Cabinets ministériels', color: '#3b82f6', icon: SVG_ICONS.columns };
 }
 
 // Nettoyer et résumer le corps des courriels si trop technique/répétitif
@@ -219,14 +244,14 @@ function formatMessageBody(msg) {
 
   if (msg.de.includes('postmaster@dfo-mpo.gc.ca')) {
     return `<div class="doc-summary">
-      <p><b>⚠️ Avis technique de non-remise automatique (MPO) :</b></p>
+      <p><b>${SVG_ICONS.alert} Avis technique de non-remise automatique (MPO) :</b></p>
       <p>L'adresse régionale de transmission ministérielle refuse les correspondances externes (code serveur 550 5.1.10). Cette pièce matérialise l'obstacle technique documenté dans la communication SEM-26-003.</p>
     </div>`;
   }
 
   if (isAutoReply && text.length > 500) {
     return `<div class="doc-summary">
-      <p><b>📨 Accusé de réception ministériel automatisé :</b></p>
+      <p><b>${SVG_ICONS.mailNotice} Accusé de réception ministériel automatisé :</b></p>
       <p>Attestation formelle de réception horodatée émise par le service informatique de ${sanitizeText(msg.de)} avec indexation et transmission au cabinet exécutif.</p>
     </div>`;
   }
@@ -358,7 +383,7 @@ for (const [filId, msgs] of threadMap.entries()) {
     category: isStablex && categoryInfo.cat === 'eccc' ? 'stablex' : categoryInfo.cat,
     catLabel: isStablex && categoryInfo.cat === 'eccc' ? 'Stablex & Cellule 6' : categoryInfo.label,
     catColor: isStablex && categoryInfo.cat === 'eccc' ? '#f59e0b' : categoryInfo.color,
-    catIcon: isStablex && categoryInfo.cat === 'eccc' ? '🏭' : categoryInfo.icon,
+    catIcon: isStablex && categoryInfo.cat === 'eccc' ? SVG_ICONS.factory : categoryInfo.icon,
     rawDate: last.date.split(' ')[0],
     shortDate: formatShortDate(last.date),
     messagesCount: msgs.length,
@@ -376,15 +401,15 @@ function renderRow(t) {
   return `
     <div class="row" data-tid="${t.tid}" data-cat="${t.category}" data-key="${t.isKey ? '1' : '0'}" data-stablex="${t.isStablex ? '1' : '0'}" role="button" tabindex="0">
       <div class="cb" title="Sélectionner" aria-label="Sélectionner la conversation"></div>
-      <div class="st ${t.isKey ? 'on' : ''}" title="${t.isKey ? 'Élément clé du dossier probatoire' : 'Ajouter une étoile'}">★</div>
+      <div class="st ${t.isKey ? 'on' : ''}" title="${t.isKey ? 'Élément clé du dossier probatoire' : 'Ajouter une étoile'}">${SVG_ICONS.star}</div>
       <div class="who" title="${t.participants}">
         <span class="who-name">${t.participants}</span>
         ${t.messagesCount > 1 ? `<span class="count-tag">${t.messagesCount}</span>` : ''}
       </div>
       <div class="subj-wrap">
         ${t.isStablex ? `
-          <span class="pill" style="border-color:rgba(245,158,11,0.5);color:#fbbf24;background:rgba(245,158,11,0.12)">
-            <span class="pill-dot" style="background:#f59e0b"></span>
+          <span class="pill pill-stb-silence">
+            <span class="pill-dot"></span>
             <span>0 réponse Stablex</span>
           </span>
         ` : ''}
@@ -434,13 +459,13 @@ function renderThreadView(t) {
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
           <span class="badge-audit">Renseignements personnels biffés (Loi 25)</span>
           <span class="badge-id">Fil ID : ${t.filId}</span>
-          ${t.isStablex ? '<span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">🏭 Correspondance Stablex Canada</span>' : ''}
+          ${t.isStablex ? '<span class="badge-stablex" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.45);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">${SVG_ICONS.factory} <span>Correspondance Stablex Canada</span></span>' : ''}
         </div>
       </div>
 
       ${t.isStablex ? `
         <div class="stablex-silence-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; margin: 0 0 20px; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.25);">
-          <span style="font-size: 24px; line-height: 1; flex-shrink: 0;">🏭</span>
+          <span style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fbbf24;">${SVG_ICONS.factory}</span>
           <div style="flex: 1; min-width: 0;">
             <div style="font-weight: 800; font-size: 13.5px; color: #fbbf24; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <span>Constat probatoire : Zéro réponse écrite de Stablex Canada Inc.</span>
@@ -490,14 +515,14 @@ function renderThreadView(t) {
                 <div class="cdate">${formatFullDay(m.date)}</div>
                 <div class="cacts">
                   <span class="msg-num-tag">Msg #${m.num}</span>
-                  <span class="card-chevron">▾</span>
+                  <span class="card-chevron">${SVG_ICONS.chevron}</span>
                 </div>
               </div>
               <div class="card-body">
                 ${m.pieces ? `
                   <div class="attach">
                     <div class="chip" title="Cliquer pour afficher la fiche de la pièce probatoire" onclick="openEvidenceModal('${encodeURIComponent(m.pieces)}', '${m.num}', '${t.filId}')">
-                      <span class="chip-icon">📎</span>
+                      <span class="chip-icon">${SVG_ICONS.clip}</span>
                       <div class="cinfo">
                         <div class="fn">${m.pieces}</div>
                         <div class="sz">Pièce probatoire versée au dossier public · Cliquer pour détails ↗</div>
@@ -518,7 +543,7 @@ function renderThreadView(t) {
 }
 
 const fullHtml = `<!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <script>(function(){try{if(!window.history||!window.history.replaceState)return;var s=window.location.search,h=window.location.hash;if(!s&&(!h||h.indexOf('?')===-1))return;var u=new URL(window.location.href);var t=new Set(['fbclid','fbadid','gclid','gbraid','wbraid','_ga','_gl','igshid','twclid','ttclid','msclkid','mc_cid','mc_eid','yclid','dclid','ref_src','gad_source','gclsrc']);var isT=function(k){var l=(k||'').toLowerCase();return l.indexOf('utm_')===0||l.indexOf('fb_')===0||l.indexOf('_aem')===0||t.has(l);};var c=false;if(s){var r=[];u.searchParams.forEach(function(_,k){if(isT(k))r.push(k);});if(r.length){for(var i=0;i<r.length;i++)u.searchParams.delete(r[i]);c=true;}}if(h&&h.indexOf('?')!==-1){var p=u.hash.split('?'),b=p[0],hp=new URLSearchParams(p.slice(1).join('?')),hr=[];hp.forEach(function(_,k){if(isT(k))hr.push(k);});if(hr.length){for(var j=0;j<hr.length;j++)hp.delete(hr[j]);var q=hp.toString();u.hash=b+(q?'?'+q:'');c=true;}}if(c){var ns=u.searchParams.toString();window.history.replaceState(null,'',u.pathname+(ns?'?'+ns:'')+u.hash);}}catch(_){}})();</script>
@@ -538,13 +563,46 @@ const fullHtml = `<!doctype html>
 <meta name="color-scheme" content="dark light">
 
 <!-- Styles de base du site & injecteur navbar officiel -->
+<script>
+(function(){
+  try {
+    var saved = localStorage.getItem('william-guindon-theme') || localStorage.getItem('wg_theme');
+    if (!saved) {
+      saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', saved);
+  } catch(e) {}
+})();
+</script>
+<script src="assets/js/theme-core.js?v=20261107-v145" defer></script>
 <link rel="stylesheet" href="style.css?v=20261018-v87">
 <script src="assets/js/navbar-loader.js" defer></script>
 
 <style>
-/* ==================== THEME DARK / OBSIDIAN LUXURY WMAIL ==================== */
+/* ==================== CHARTE GRAPHIQUE OFFICIELLE (LIGHT PAR DÉFAUT & DARK) ==================== */
+/* Référence normative : licence-et-charte.html § 2.1 (Palette de Couleurs Système) */
 :root {
-  --w-bg: #0b0f0c;
+  --w-bg: #f7f9f7; /* Blanc Brumeux (Light Base officiel) */
+  --w-card: #ffffff; /* Fond blanc pur */
+  --w-card-hover: #f1f5f2;
+  --w-border: #e2e8f0; /* Ligne de séparation claire */
+  --w-border-faint: rgba(0, 0, 0, 0.06);
+  --w-text: #131715; /* Typographie sombre haute lisibilité */
+  --w-text-muted: #4b5563; /* Texte secondaire adouci */
+  --w-text-dim: #6b7280;
+  --w-accent: #22c55e; /* Émeraude Végétal officiel */
+  --w-accent-glow: rgba(34, 197, 94, 0.2);
+  --w-accent-wash: rgba(34, 197, 94, 0.08);
+  --w-search-bg: #ffffff;
+  --w-sidebar-bg: #f7f9f7;
+  --w-star: #f59e0b;
+  --w-cx-bg: #0f172a;
+  --w-cx-border: #cbd5e1;
+  --w-cx-text: #38bdf8;
+}
+
+[data-theme="dark"] {
+  --w-bg: #0b0f0c; /* Noir Tourbière Nocturne (Dark Base officiel) */
   --w-card: #121814;
   --w-card-hover: #19221c;
   --w-border: #1e2821;
@@ -552,35 +610,15 @@ const fullHtml = `<!doctype html>
   --w-text: #f0fdf4;
   --w-text-muted: #94a3b8;
   --w-text-dim: #64748b;
-  --w-accent: #10b981;
-  --w-accent-glow: rgba(16, 185, 129, 0.2);
-  --w-accent-wash: rgba(16, 185, 129, 0.08);
+  --w-accent: #22c55e; /* Émeraude Végétal officiel */
+  --w-accent-glow: rgba(34, 197, 94, 0.25);
+  --w-accent-wash: rgba(34, 197, 94, 0.1);
   --w-search-bg: #18201a;
   --w-sidebar-bg: #0e1410;
   --w-star: #f59e0b;
   --w-cx-bg: #000000;
   --w-cx-border: #334155;
   --w-cx-text: #38bdf8;
-}
-
-[data-theme="light"] {
-  --w-bg: #f8fafc;
-  --w-card: #ffffff;
-  --w-card-hover: #f1f5f9;
-  --w-border: #e2e8f0;
-  --w-border-faint: rgba(0, 0, 0, 0.06);
-  --w-text: #0f172a;
-  --w-text-muted: #64748b;
-  --w-text-dim: #94a3b8;
-  --w-accent: #059669;
-  --w-accent-glow: rgba(5, 150, 105, 0.15);
-  --w-accent-wash: #ecfdf5;
-  --w-search-bg: #f1f5f9;
-  --w-sidebar-bg: #f8fafc;
-  --w-star: #f59e0b;
-  --w-cx-bg: #0f172a;
-  --w-cx-border: #cbd5e1;
-  --w-cx-text: #bae6fd;
 }
 
 * { box-sizing: border-box; }
@@ -595,27 +633,21 @@ body {
   overflow: hidden;
 }
 
-/* Harmonisation du bandeau supérieur officiel */
+/* Harmonisation du bandeau supérieur officiel avec le reste du site */
 header.site {
-  background: #0b0f0c !important;
-  border-bottom: 1px solid #1c2620 !important;
   flex: none;
 }
-header.site .wrap {
-  background: transparent !important;
-}
-header.site .brand-text {
-  color: #f0fdf4 !important;
-}
-header.site .nav-dropdown-btn,
-header.site .menu-toggle,
-header.site nav a {
-  color: #cbd5e1 !important;
-}
-header.site .nav-dropdown-btn:hover,
-header.site nav a:hover {
-  color: #10b981 !important;
-}
+
+/* Styles pour icônes vectorielles SVG (remplaçant intégralement les émojis) */
+.hud-svg { width: 20px; height: 20px; }
+.cat-svg { width: 14px; height: 14px; display: inline-block; vertical-align: text-bottom; }
+.star-svg { width: 16px; height: 16px; display: block; }
+.chev-svg { width: 14px; height: 14px; display: block; }
+.clip-svg { width: 16px; height: 16px; display: block; }
+.theme-svg { width: 18px; height: 18px; display: block; }
+.close-svg { width: 18px; height: 18px; display: block; }
+.inline-svg { width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px; }
+
 
 /* Suppression absolue des marges globales de section pour Wmail */
 .wmail-shell section,
@@ -1056,9 +1088,10 @@ header.site nav a:hover {
   gap: 8px;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 16px;
 }
 
-/* Pastilles de catégorie */
+/* Pastilles de catégorie harmonisées */
 .pill {
   font-size: 11px;
   font-weight: 700;
@@ -1071,165 +1104,42 @@ header.site nav a:hover {
   letter-spacing: 0.2px;
 }
 .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-.pill-signalement { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-.pill-lep { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
-.pill-aiprp { background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.3); }
-.pill-cce { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-.pill-stablex { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-.pill-eccc { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
 
-.subj-text {
-  font-weight: 600;
-  color: var(--w-text);
-  max-width: 44%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.snip {
-  color: var(--w-text-muted);
-  font-size: 13px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-}
+/* Pastilles en mode clair */
+.pill-signalement { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.pill-lep { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+.pill-aiprp { background: #f0fdfa; color: #0f766e; border: 1px solid #ccfbf1; }
+.pill-cce { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.pill-stablex { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.pill-eccc { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.pill-stb-silence { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
-.date {
-  font-size: 12.5px;
-  color: var(--w-text-muted);
-  font-weight: 600;
-  flex: none;
-  width: 72px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  padding-left: 8px;
-}
+/* Pastilles en mode sombre */
+[data-theme="dark"] .pill-signalement { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.35); }
+[data-theme="dark"] .pill-lep { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.35); }
+[data-theme="dark"] .pill-aiprp { background: rgba(6, 182, 212, 0.18); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.35); }
+[data-theme="dark"] .pill-cce { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.35); }
+[data-theme="dark"] .pill-stablex { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.35); }
+[data-theme="dark"] .pill-eccc { background: rgba(59, 130, 246, 0.18); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.35); }
+[data-theme="dark"] .pill-stb-silence { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.45); }
 
-/* ==================== VUE DU FIL (THREADVIEW) ==================== */
-.threadview {
-  display: none;
-  padding: 0;
-}
+/* Grandes pastilles de threadview en mode clair */
+.lpill { font-size: 11px; font-weight: 700; border-radius: 6px; padding: 3px 10px; }
+.lpill-signalement { background: #fee2e2; color: #991b1b; }
+.lpill-lep { background: #f3e8ff; color: #6b21a8; }
+.lpill-aiprp { background: #ccfbf1; color: #115e59; }
+.lpill-cce { background: #dcfce7; color: #166534; }
+.lpill-stablex { background: #fef3c7; color: #92400e; }
+.lpill-eccc { background: #dbeafe; color: #1e40af; }
 
-.tv-action-bar {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--w-border);
-  background: var(--w-sidebar-bg);
-  flex: none;
-}
+/* Grandes pastilles de threadview en mode sombre */
+[data-theme="dark"] .lpill-signalement { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+[data-theme="dark"] .lpill-lep { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+[data-theme="dark"] .lpill-aiprp { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
+[data-theme="dark"] .lpill-cce { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+[data-theme="dark"] .lpill-stablex { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+[data-theme="dark"] .lpill-eccc { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 18px;
-  border: 1px solid var(--w-border);
-  background: var(--w-card);
-  color: var(--w-text);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  flex: none;
-  transition: all 0.15s ease;
-}
-.back-btn:hover { background: var(--w-card-hover); border-color: var(--w-accent); }
-.back-btn svg { width: 16px; height: 16px; }
-
-.tv-action-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.tool-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--w-border);
-  background: var(--w-card);
-  color: var(--w-text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.tool-btn:hover { color: var(--w-text); border-color: var(--w-accent); }
-.tool-btn svg { width: 14px; height: 14px; }
-
-.tv-header {
-  padding: 24px 28px 18px;
-  border-bottom: 1px solid var(--w-border-faint);
-  background: rgba(255, 255, 255, 0.01);
-}
-.tv-header h2 {
-  margin: 0 0 10px;
-  font-size: 21px;
-  font-weight: 800;
-  color: var(--w-text);
-  line-height: 1.35;
-  letter-spacing: -0.3px;
-}
-.tv-header-tags {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.badge-proof {
-  font-size: 11px;
-  font-weight: 700;
-  background: var(--w-accent-wash);
-  color: var(--w-accent);
-  padding: 2px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--w-accent);
-}
-.badge-audit {
-  font-size: 11px;
-  font-weight: 600;
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  padding: 2px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-.badge-id {
-  font-size: 11px;
-  font-family: monospace;
-  color: var(--w-text-dim);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 2px 8px;
-  border-radius: 6px;
-}
-
-.tv-cards-stack {
-  padding: 20px 28px 48px;
-  max-width: 1160px;
-  margin: 0 auto;
-}
-
-.lpill {
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 6px;
-  padding: 3px 10px;
-}
-.lpill-signalement { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-.lpill-lep { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-.lpill-aiprp { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
-.lpill-cce { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.lpill-stablex { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-.lpill-eccc { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 
 .nmsg { font-size: 12.5px; color: var(--w-text-muted); font-weight: 600; }
 .allopen {
@@ -1547,28 +1457,28 @@ header.site nav a:hover {
   <!-- HUD Métriques probatoires -->
   <div class="wmail-hud">
     <div class="hud-card">
-      <div class="hud-icon">📨</div>
+      <div class="hud-icon">${SVG_ICONS.hudMail}</div>
       <div class="hud-meta">
         <span class="hud-value">${rawMessages.length}</span>
         <span class="hud-label">Correspondances citoyennes</span>
       </div>
     </div>
     <div class="hud-card">
-      <div class="hud-icon">📁</div>
+      <div class="hud-icon">${SVG_ICONS.hudFolder}</div>
       <div class="hud-meta">
         <span class="hud-value">${threadList.length}</span>
         <span class="hud-label">Dossiers d'enquête &amp; Fils</span>
       </div>
     </div>
     <div class="hud-card">
-      <div class="hud-icon">📎</div>
+      <div class="hud-icon">${SVG_ICONS.hudClip}</div>
       <div class="hud-meta">
         <span class="hud-value">32</span>
         <span class="hud-label">Pièces probatoires &amp; Relevés</span>
       </div>
     </div>
     <div class="hud-card">
-      <div class="hud-icon">🛡️</div>
+      <div class="hud-icon">${SVG_ICONS.hudShield}</div>
       <div class="hud-meta">
         <span class="hud-value">100%</span>
         <span class="hud-label">Caviardage actif (Loi 25)</span>
@@ -1601,9 +1511,7 @@ header.site nav a:hover {
       </div>
 
       <div class="wmail-actions">
-        <button class="icon-btn theme-switch-btn" id="themeSwitch" title="Basculer le thème Sombre / Clair" aria-label="Changer de thème">
-          🌙
-        </button>
+        <button class="icon-btn theme-switch-btn" id="themeSwitch" title="Basculer le thème Sombre / Clair" aria-label="Changer de thème">${SVG_ICONS.moon}</button>
         <a href="correspondance.html" class="icon-btn" title="Politique relative aux communications &amp; Déontologie" aria-label="Politique de correspondance">
           <svg class="svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </a>
@@ -1720,7 +1628,7 @@ header.site nav a:hover {
   <div class="evidence-modal" onclick="event.stopPropagation()">
     <div class="evidence-header">
       <div class="evidence-title">Fiche de la pièce probatoire</div>
-      <button class="evidence-close" onclick="closeEvidenceModal()">✕</button>
+      <button class="evidence-close" onclick="closeEvidenceModal()">${SVG_ICONS.close}</button>
     </div>
     <div class="evidence-body">
       <p>Cette pièce probatoire a été officiellement versée et annexée au dossier de communication citoyenne SEM-26-003.</p>
@@ -1749,19 +1657,51 @@ header.site nav a:hover {
   var inboxTabsBar = document.getElementById('inboxTabsBar');
   var themeBtn = document.getElementById('themeSwitch');
 
-  // Gestion du Thème Sombre / Clair
-  var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  // Gestion du Thème Sombre / Clair avec icônes vectorielles SVG et synchronisation système
+  var SUN_SVG = '<svg class="theme-svg theme-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
+  var MOON_SVG = '<svg class="theme-svg theme-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg>';
+
+  var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  function updateThemeButton(theme) {
+    if (themeBtn) {
+      themeBtn.innerHTML = theme === 'dark' ? SUN_SVG : MOON_SVG;
+      themeBtn.setAttribute('title', theme === 'dark' ? 'Basculer en mode clair' : 'Basculer en mode sombre');
+      themeBtn.setAttribute('aria-label', theme === 'dark' ? 'Basculer en mode clair' : 'Basculer en mode sombre');
+    }
+  }
+
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     currentTheme = theme;
-    if (themeBtn) themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
-    try { localStorage.setItem('wg_theme', theme); } catch (_) {}
+    updateThemeButton(theme);
+    try {
+      localStorage.setItem('william-guindon-theme', theme);
+      localStorage.setItem('wg_theme', theme);
+      sessionStorage.setItem('william-guindon-theme', theme);
+    } catch (_) {}
   }
+
+  updateThemeButton(currentTheme);
+
   if (themeBtn) {
-    themeBtn.addEventListener('click', function() {
-      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    themeBtn.addEventListener('click', function(e) {
+      if (e) e.preventDefault();
+      var active = document.documentElement.getAttribute('data-theme') || 'light';
+      applyTheme(active === 'dark' ? 'light' : 'dark');
     });
   }
+
+  // Écoute de synchronisation multi-onglets / inter-pages
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'william-guindon-theme' || e.key === 'wg_theme') {
+      var val = e.newValue;
+      if (val === 'dark' || val === 'light') {
+        document.documentElement.setAttribute('data-theme', val);
+        currentTheme = val;
+        updateThemeButton(val);
+      }
+    }
+  });
 
   // Moteur d'indexation locale
   var idx = [];
@@ -2082,4 +2022,4 @@ function closeEvidenceModal(e) {
 </html>`;
 
 fs.writeFileSync('/Users/williamguindon/WilliamGuindon/wmail.html', fullHtml, 'utf8');
-console.log('✔ wmail.html régénéré sans brouillons/traceurs, sans heures exactes et sans footer !');
+console.log('[OK] wmail.html régénéré sans brouillons/traceurs, sans heures exactes et sans footer !');
