@@ -19,7 +19,6 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#091510">
   
   <link rel="canonical" href="https://williamguindon.me/es/liens">
-  <link rel="me" href="https://gravatar.com/williamguindonme">
   <link rel="alternate" hreflang="fr" href="https://williamguindon.me/liens.html">
   <link rel="alternate" hreflang="x-default" href="https://williamguindon.me/liens.html">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -194,6 +193,33 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 9999px;
+      background: var(--panel);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .theme-btn:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+    .theme-btn svg { width: 15px; height: 15px; }
+    .icon-sun { display: none; }
+    .icon-moon { display: block; }
+    :root[data-theme="dark"] .icon-sun { display: block; }
+    :root[data-theme="dark"] .icon-moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .icon-sun { display: block; }
+      :root:not([data-theme="light"]) .icon-moon { display: none; }
     }
     .lang-switch {
       display: inline-flex;
@@ -727,6 +753,10 @@
           <a class="lang-pill" href="/en/liens" hreflang="en" title="English version">EN</a>
           <span class="lang-pill is-active" aria-current="page">ES</span>
         </div>
+        <button type="button" class="theme-btn" id="btn-theme-toggle" aria-label="Cambiar tema Claro / Oscuro" title="Cambiar tema Claro / Oscuro">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
         <a class="top-link" href="/es/">
           Sitio completo
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 4h9v9M16 4 7.5 12.5M14 11v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -871,22 +901,6 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75c.97 0 1.76.78 1.76 1.75s-.79 1.76-1.76 1.76m1.39 9.74v-8.37H5.07v8.37h2.78Z"/></svg>
           <span>LinkedIn</span>
         </a>
-        <a class="social-link github" href="https://github.com/Bwillou1" target="_blank" rel="me noopener noreferrer" aria-label="Perfil oficial de GitHub de William Guindon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/></svg>
-          <span>GitHub</span>
-        </a>
-        <a class="social-link orcid" href="https://orcid.org/0009-0009-8845-4456" target="_blank" rel="me noopener noreferrer" aria-label="Identificador ORCID de William Guindon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0ZM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947Zm-.722 3.038h1.444v10.041H6.647V7.416Zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416Zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222Z"/></svg>
-          <span>ORCID</span>
-        </a>
-        <a class="social-link wikidata" href="https://www.wikidata.org/wiki/Q141439370" target="_blank" rel="me noopener noreferrer" aria-label="Entidad Wikidata de William Guindon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M0 4.5v15h3v-15H0zm4.5 0v15h1.5v-15H4.5zm3 0v15h3v-15h-3zm4.5 0v15h1.5v-15H12zm3 0v15h3v-15h-3zm4.5 0v15h1.5v-15h-1.5zm3 0v15H24v-15h-1.5z"/></svg>
-          <span>Wikidata</span>
-        </a>
-        <a class="social-link gravatar" href="https://gravatar.com/williamguindonme" target="_blank" rel="me noopener noreferrer" aria-label="Perfil Gravatar oficial de William Guindon">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 4.14 2.53 7.69 6.13 9.17-.08-.77-.13-1.63-.13-2.42 0-3.14 1.48-5.83 3.69-7.46-.22-.64-.34-1.33-.34-2.04 0-3.31 2.69-6 6-6s6 2.69 6 6c0 .71-.12 1.4-.34 2.04 2.21 1.63 3.69 4.32 3.69 7.46 0 .79-.05 1.65-.13 2.42C21.47 19.69 24 16.14 24 12c0-5.52-4.48-10-10-10z"/></svg>
-          <span>Gravatar</span>
-        </a>
       </div>
     </section>
 
@@ -900,6 +914,22 @@
       <a href="/es/">williamguindon.me</a>
     </footer>
   </main>
+<script>
+  (function() {
+    var toggleBtn = document.getElementById('btn-theme-toggle');
+    if (!toggleBtn) return;
+    toggleBtn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' || (!current && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('wg_theme', next);
+        localStorage.setItem('william-guindon-theme', next);
+      } catch (_) {}
+    });
+  })();
+</script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
 </body>
 </html>
