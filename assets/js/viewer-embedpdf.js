@@ -2836,7 +2836,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
 
   initEmbedPDF(initialFile);
 
-  if (urlParams.get('tab') === 'translation' || urlParams.get('openTranslate') === '1') {
+  if ((urlParams.get('tab') === 'translation' || urlParams.get('openTranslate') === '1') && window.self === window.top && urlParams.get('preview') !== '1') {
     setTimeout(openTranslateModal, 400);
   }
 

@@ -1187,6 +1187,9 @@
       background: #0d652d;
       color: #ffffff;
     }
+    .mobile-doc-controls {
+      display: none !important;
+    }
 
     @media (max-width: 768px) {
       body { margin: 0; overflow-y: auto !important; -webkit-tap-highlight-color: transparent; }
@@ -3996,6 +3999,12 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       fr: "assets/docs/chronologie-cce-sem26003-fr.pdf",
       en: "assets/docs/chronologie-cce-sem26003-en.pdf",
       es: "assets/docs/chronologie-cce-sem26003-es.pdf"
+    },
+    "89-DET_fr.pdf": {
+      fr: "assets/docs/00_DOSSIER_POUR_JOURNALISTES_BIFFE/07_Lettres_Appui_Communications_CCE/89-DET_fr.pdf"
+    },
+    "89-pp_fr.pdf": {
+      fr: "assets/docs/89-pp_fr.pdf"
     }
   };
 
@@ -4029,14 +4038,17 @@ TOKEN: VERIF-MEDIA-SEM26-AUTOPASS-20261016</pre>
       if (entry) {
         const hasLang = !!entry[opt.value];
         opt.disabled = !hasLang;
-        if (opt.value === "en") opt.textContent = hasLang ? "EN · English (Officiel)" : "EN · Non fourni";
-        if (opt.value === "es") opt.textContent = hasLang ? "ES · Español (Officiel)" : "ES · Non fourni";
+        if (opt.value === "en") opt.textContent = hasLang ? "EN · English (Officiel)" : "EN · Non fourni (CCE)";
+        if (opt.value === "es") opt.textContent = hasLang ? "ES · Español (Officiel)" : "ES · Non fourni (CCE)";
       } else {
         opt.disabled = false;
         if (opt.value === "en") opt.textContent = "EN · English (Non officiel)";
         if (opt.value === "es") opt.textContent = "ES · Español (Non officiel)";
       }
     });
+    if (sel.selectedOptions && sel.selectedOptions[0] && sel.selectedOptions[0].disabled) {
+      sel.value = "fr";
+    }
   }
 
   function setUnofficialTranslationBanner(stageEl, visible, lang) {
