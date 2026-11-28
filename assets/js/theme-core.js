@@ -3548,19 +3548,20 @@
               <button type="button" class="cce-notif-dialog-close" aria-label="Fermer la boîte de dialogue" style="background:transparent;border:none;font-size:26px;line-height:1;color:var(--text-muted,#94a3b8);cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
             </div>
             <div style="margin:16px 0 14px;font-size:13.5px;line-height:1.6;color:var(--text,#f9fafb);">
-              <div style="background:rgba(217,119,6,0.12);border-left:4px solid #d97706;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;color:var(--text,#ffffff);">
-                <strong>Statut parlementaire :</strong> Pétition en attente d'approbation.
+              <div style="background:rgba(220,38,38,0.12);border-left:4px solid #dc2626;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;color:var(--text,#ffffff);">
+                <strong>Statut parlementaire :</strong> Demande transmise à Madeleine Chenette (Thérèse-De Blainville) le 31 oct. 2026 (20 h 34 HE) suite au refus formel d'Anna Gainey (19 h 18 HE). En attente d'autorisation de publication.
               </div>
               <p style="margin:0 0 10px;">
-                La pétition <strong>e-7834</strong> est enregistrée auprès du greffe de la Chambre des communes du Canada. <strong>Elle est toujours en cours de parrainage</strong> : William attend l'approbation officielle d'un parrainage parlementaire pour procéder à l'ouverture publique des signatures sur <em>NosCommunes.ca</em>.
+                La pétition <strong>e-7834</strong> est enregistrée auprès du greffe de la Chambre des communes du Canada avec 5 citoyens appuyeurs vérifiés. <strong>Elle est toujours retenue en attente d'autorisation</strong> : William attend l'approbation formelle de la députée de circonscription pour procéder à l'ouverture publique des signatures sur <em>NosCommunes.ca</em>.
               </p>
               <p style="margin:0;font-size:12.5px;color:var(--text-muted,#94a3b8);">
-                Conformément aux règles parlementaires fédérales, l'accès public pour signer en ligne débutera dès le dépôt officiel du parrainage par un député de la Chambre.
+                Conformément aux règles parlementaires fédérales, l'accès public pour signer en ligne débutera dès l'autorisation officielle de la députée.
               </p>
             </div>
             <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;margin-top:16px;">
-              <a href="adultisme.html#chronologie-parrainage" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">Chronologie des démarches ↗</a>
-              <a href="viewer.html?file=assets/docs/declaration-appui-manfred-liebel-e7834.pdf" target="_blank" rel="noopener noreferrer" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">Déclaration d'appui (Berlin) ↗</a>
+              <a href="adultisme.html#chrono-honte" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid #dc2626;color:#fca5a5;text-decoration:none;display:inline-flex;align-items:center;background:rgba(220,38,38,0.15);font-weight:700;">Chrono de l'inaction ⏱</a>
+              <a href="https://www.noscommunes.ca/petitions/fr/Petitioner/PetitionDetails?Petition=e-7834" target="_blank" rel="noopener noreferrer" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">NosCommunes.ca ↗</a>
+              <a href="adultisme.html#chronologie-parrainage" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">Chronologie ↗</a>
               <button type="button" class="btn-close-pending-modal" style="font-size:12px;padding:7px 18px;border-radius:6px;background:#d97706;border:1px solid #b45309;font-weight:700;color:#ffffff;cursor:pointer;">Compris</button>
             </div>
           </div>
