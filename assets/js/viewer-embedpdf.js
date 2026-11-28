@@ -417,7 +417,9 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     'assets/docs/72-rsp_fr.pdf': 'assets/docs/72-rsp_en.pdf',
     'assets/docs/72-rsp_en.pdf': 'assets/docs/72-rsp_fr.pdf',
     'assets/docs/73-rec_fr.pdf': 'assets/docs/73-rec_en.pdf',
-    'assets/docs/73-rec_en.pdf': 'assets/docs/73-rec_fr.pdf'
+    'assets/docs/73-rec_en.pdf': 'assets/docs/73-rec_fr.pdf',
+    'assets/docs/89-pp_fr.pdf': 'assets/docs/89-pp_en.pdf',
+    'assets/docs/89-pp_en.pdf': 'assets/docs/89-pp_fr.pdf'
   };
 
   const DOCS_TRANSLATIONS = {
@@ -425,6 +427,12 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
       en: "CEC Secretariat (2026). Notification to the Submitter and the Council regarding proceedings notified by Canada pursuant to Article 24.27(4)(a) of CUSMA (A24.27(2)(3)/SEM/26-003/89/PP, November 25, 2026, 13 pages, signed by Paolo Solano).\n\nSummary:\nThe CEC Secretariat rules that OAG Environmental Petition No. 0546 is not a pending judicial or administrative proceeding under CUSMA Article 24.27(4)(a) (it was initiated by the Submitter, non-binding, and already concluded on November 10, 2026). Noting that the 60-day treaty deadline has already expired, the Secretariat requests Canada to submit the remainder of its response on the merits (Art. 24.27(4)(b)) without delay, subject to public transparency under ECA Article 16.",
       es: "Secretariado de la CCA (2026). Notificación al Peticionario y al Consejo relativa a los procedimientos notificados por Canadá conforme al Artículo 24.27(4)(a) del T-MEC (A24.27(2)(3)/SEM/26-003/89/PP, 25 de noviembre de 2026, 13 páginas, firmada por Paolo Solano).\n\nResumen:\nEl Secretariado determina que la Petición Ambiental n.º 0546 (BVG) no constituye un procedimiento judicial o administrativo pendiente bajo el art. 24.27(4)(a) del T-MEC (ya concluyó el 10 de noviembre de 2026 y carece de facultades coercitivas). Constatando que el plazo de 60 días ya venció, solicita a Canadá presentar el resto de su respuesta sobre el fondo a la brevedad bajo transparencia pública (art. 16 ACA).",
       de: "CCE-Sekretariat (2026). Mitteilung an den Einreicher und den Rat über die von Kanada gemäß Art. 24.27(4)(a) CUSMA angezeigten Verfahren (A24.27(2)(3)/SEM/26-003/89/PP, 25. November 2026, 13 Seiten, unterzeichnet von Paolo Solano).\n\nZusammenfassung:\nDas CCE-Sekretariat weist Kanadas Verfahrenseinrede zurück, stellt fest, dass die 60-Tage-Frist bereits abgelaufen ist, und fordert Kanada auf, seine inhaltliche Stellungnahme unverzüglich einzureichen."
+    },
+    'assets/docs/89-pp_en.pdf': {
+      en: "CEC Secretariat (2026). Notification to the Submitters and to Council regarding proceedings notified by Canada under Article 24.27(2) and (3) of the Canada–United States–Mexico Agreement (A24.27(2)(3)/SEM/26-003/89/PP, 25 November 2026, 12 pages, signed by Paolo Solano).\n\nOriginal English Version.",
+      fr: "Secrétariat de la CCE (2026). Notification à l'Auteur et au Conseil concernant des procédures notifiées par le Canada en vertu de l'article 24.27(4)(a) de l'ACEUM (A24.27(2)(3)/SEM/26-003/89/PP, 25 novembre 2026, 12 pages, signée par Paolo Solano).\n\nVersion officielle originale en anglais.",
+      es: "Secretariado de la CCA (2026). Notificación al Peticionario y al Consejo relativa a los procedimientos notificados por Canadá conforme al Artículo 24.27(4)(a) del T-MEC (A24.27(2)(3)/SEM/26-003/89/PP, 25 de noviembre de 2026, 12 páginas, firmada por Paolo Solano).\n\nVersión oficial original en inglés.",
+      de: "CCE-Sekretariat (2026). Mitteilung an den Einreicher und den Rat über die von Kanada gemäß Art. 24.27(4)(a) CUSMA angezeigten Verfahren (A24.27(2)(3)/SEM/26-003/89/PP, 25. November 2026, 12 Seiten, unterzeichnet von Paolo Solano).\n\nOffizielle englische Originalfassung."
     },
     'assets/docs/observations-reponse-canada-sem26003.pdf': {
       en: "Guindon, W. (2026). Citizen Submission SEM-26-003 (Hazardous Waste Landfill in Blainville) — Formal observations on Canada's request to terminate or defer proceedings under CUSMA Article 24.28.\n\nSummary:\nCitizen submission author William Guindon formally opposes Canada's request of October 16, 2026 to dismiss or defer the proceedings. The observations demonstrate that municipal expropriation litigation does not enforce federal environmental law (Fisheries Act, Species at Risk Act) and that the CEC Secretariat must prepare a factual record.",

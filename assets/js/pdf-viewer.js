@@ -127,6 +127,20 @@
       isOriginalWork: false,
       isCCE: true
     },
+    'notification-cce-89pp-25-novembre-2026-en': {
+      title: "CEC Secretariat Notification dismissing Canada's pending-proceeding claim (25 November 2026)",
+      file: "assets/docs/89-pp_en.pdf",
+      badge: "SEM-26-003 · CEC Determination (89/PP · 12 pp.)",
+      date: "25 November 2026",
+      pages: 12,
+      type: "Official Notification (Art. 24.27(4)(a) CUSMA)",
+      sha256: "e79ebd5b680019e72c20f363cd1e48a2e3f41c580ad2df3723ab232d9e5e5456",
+      author: "CEC Secretariat (Paolo Solano, Director, Legal Affairs and SEM)",
+      citation: "CEC Secretariat. (2026). Notification to the Submitters and to Council regarding proceedings notified by Canada under Article 24.27(2) and (3) of the Canada–United States–Mexico Agreement (A24.27(2)(3)/SEM/26-003/89/PP, 25 November 2026). Montreal: CEC.",
+      license: "Official CEC Public Record Document (Distribution: General)",
+      isOriginalWork: false,
+      isCCE: true
+    },
     'observations-reponse-canada-17-octobre-2026': {
       title: "Observations de l'auteur sur la réponse du Canada (17 octobre 2026)",
       file: "assets/docs/observations-reponse-canada-sem26003.pdf",
@@ -2836,6 +2850,14 @@
       fr: "assets/docs/73-rec_fr.pdf",
       en: "assets/docs/73-rec_en.pdf"
     },
+    "89-pp_fr.pdf": {
+      fr: "assets/docs/89-pp_fr.pdf",
+      en: "assets/docs/89-pp_en.pdf"
+    },
+    "89-pp_en.pdf": {
+      fr: "assets/docs/89-pp_fr.pdf",
+      en: "assets/docs/89-pp_en.pdf"
+    },
     "request-terminate-defer-canada-sem26003-en.pdf": {
       fr: "assets/docs/72-rsp_fr.pdf",
       en: "assets/docs/request-terminate-defer-canada-sem26003-en.pdf"
@@ -2891,6 +2913,10 @@
     if (base.includes('73-rec')) {
       if (targetLang === 'en') return 'assets/docs/73-rec_en.pdf';
       if (targetLang === 'fr') return 'assets/docs/73-rec_fr.pdf';
+    }
+    if (base.includes('89-pp') || base.includes('89pp') || base.includes('89-det')) {
+      if (targetLang === 'en') return 'assets/docs/89-pp_en.pdf';
+      if (targetLang === 'fr') return 'assets/docs/89-pp_fr.pdf';
     }
     if (base.includes('chronologie-cce-sem26003')) {
       if (targetLang === 'en') return 'assets/docs/chronologie-cce-sem26003-en.pdf';

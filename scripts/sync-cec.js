@@ -55,6 +55,13 @@ function parseCECTimeline(html) {
 async function syncDossierStatus() {
   console.log(`[${new Date().toISOString()}] Lancement de la synchronisation CCE SEM-26-003...`);
 
+  let existingData = null;
+  if (fs.existsSync(STATUS_FILE_PATH)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(STATUS_FILE_PATH, 'utf8'));
+    } catch (e) {}
+  }
+
   let data = {
     id_dossier: "SEM-26-003",
     titre_fr: "Enfouissement de matières dangereuses à Blainville",
@@ -72,10 +79,11 @@ async function syncDossierStatus() {
       titre_en: "Official CEC Notification (A24.27(2)(3)/SEM/26-003/89/PP): Canada's pending-proceeding claim rejected and merits response requested without delay",
       date: "25 novembre 2026",
       description_fr: "Par notification officielle de 13 pages signée le 25 novembre 2026 par Paolo Solano (A24.27(2)(3)/SEM/26-003/89/PP), le Secrétariat de la CCE conclut que la pétition environnementale no 0546 au BVG ne constitue pas une procédure judiciaire ou administrative en instance au sens de l'article 24.27(4)(a) de l'ACEUM, qu'elle n'est pas mise en œuvre par le Canada, qu'elle est désormais épuisée depuis les réponses du 10 novembre 2026 et qu'elle ne résout pas les questions d'application effective des lois fédérales (cellule 6 de Stablex). Constatant que le délai de 60 jours de l'article 24.27(4) est déjà écoulé sans informations au titre de l'alinéa 24.27(4)(b), le Secrétariat poursuit son analyse et demande au Canada de présenter le reste de sa réponse officielle dans les meilleurs délais.",
-      description_en: "In a 13-page official Notification signed on November 25, 2026 by Paolo Solano (A24.27(2)(3)/SEM/26-003/89/PP), the CEC Secretariat concludes that OAG Environmental Petition No. 0546 does not constitute a pending judicial or administrative proceeding under CUSMA Article 24.27(4)(a), is not pursued by Canada, has already concluded following the November 10, 2026 ministerial responses, and cannot resolve the enforcement issues regarding Stablex Cell 6. Noting that the 60-day deadline under Article 24.27(4) has already expired without information under Article 24.27(4)(b), the Secretariat continues its review and requests that Canada submit the remainder of its official response as soon as possible.",
+      description_en: "In a 12-page official Notification signed on November 25, 2026 by Paolo Solano (A24.27(2)(3)/SEM/26-003/89/PP), the CEC Secretariat concludes that OAG Environmental Petition No. 0546 does not constitute a pending judicial or administrative proceeding under CUSMA Article 24.27(4)(a), is not pursued by Canada, has already concluded following the November 10, 2026 ministerial responses, and cannot resolve the enforcement issues regarding Stablex Cell 6. Noting that the 60-day deadline under Article 24.27(4) has already expired without information under Article 24.27(4)(b), the Secretariat continues its review and requests that Canada submit the remainder of its official response as soon as possible.",
       document_fr: "https://williamguindon.me/viewer.html?file=assets/docs/89-pp_fr.pdf",
-      document_en: "https://williamguindon.me/en/viewer?file=assets/docs/89-pp_fr.pdf",
+      document_en: "https://williamguindon.me/en/viewer?file=assets/docs/89-pp_en.pdf",
       notification_cce_fr: "https://williamguindon.me/assets/docs/89-pp_fr.pdf",
+      notification_cce_en: "https://williamguindon.me/assets/docs/89-pp_en.pdf",
       dossier_bgv_fr: "https://williamguindon.me/bgv",
       reponse_canada_fr: "https://williamguindon.me/viewer.html?file=assets/docs/72-rsp_fr.pdf",
       accuse_reception_cce_fr: "https://williamguindon.me/viewer.html?file=assets/docs/73-rec_fr.pdf"
@@ -137,13 +145,13 @@ async function syncDossierStatus() {
       timeline_fr: [],
       timeline_en: []
     },
-    petition: {
+    petition: existingData?.petition || {
       id: "491630232",
       url: "https://www.change.org/williamguindon",
-      signatures: 397,
+      signatures: 474,
       objectif: PETITION_GOAL,
-      pourcentage: 26.5,
-      restantes: 1103,
+      pourcentage: 31.6,
+      restantes: 1026,
       derniere_synchro: new Date().toISOString()
     },
     social: {
@@ -157,17 +165,13 @@ async function syncDossierStatus() {
     timestamp_sync: new Date().toISOString()
   };
 
-  let existingData = null;
-  if (fs.existsSync(STATUS_FILE_PATH)) {
-    try {
-      existingData = JSON.parse(fs.readFileSync(STATUS_FILE_PATH, 'utf8'));
-      if (existingData.wp_modified) {
-        data.wp_modified = existingData.wp_modified;
-      }
-      if (existingData.cce_officiel) {
-        data.cce_officiel = existingData.cce_officiel;
-      }
-    } catch (e) {}
+  if (existingData) {
+    if (existingData.wp_modified) {
+      data.wp_modified = existingData.wp_modified;
+    }
+    if (existingData.cce_officiel) {
+      data.cce_officiel = existingData.cce_officiel;
+    }
   }
 
   // 1. Interrogation de l'API REST WordPress de la CCE
@@ -269,7 +273,7 @@ async function syncDossierStatus() {
         {
           titre: "Article 24.27(4)(a) Notification",
           description: "Secretariat Notification to Submitter and Council (A24.27(2)(3)/SEM/26-003/89/PP) on 25/11/2026",
-          url: "https://williamguindon.me/assets/docs/89-pp_fr.pdf"
+          url: "https://williamguindon.me/assets/docs/89-pp_en.pdf"
         }
       ]
     });
@@ -293,7 +297,11 @@ async function syncDossierStatus() {
         data.petition.restantes = Math.max(0, PETITION_GOAL - sigCount);
         data.petition.derniere_synchro = new Date().toISOString();
         console.log(`Synchronisation Pétition Change.org : ${sigCount} / ${PETITION_GOAL} signatures (${data.petition.pourcentage}%).`);
+      } else if (existingData?.petition) {
+        data.petition = existingData.petition;
       }
+    } else if (existingData?.petition) {
+      data.petition = existingData.petition;
     }
   } catch (err) {
     console.warn("Notice : Pétition Change.org non joignable immédiatement :", err.message);

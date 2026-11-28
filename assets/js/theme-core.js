@@ -3359,7 +3359,7 @@
             <h5 class="notif-item-title">CEC rejects Canada's procedural objection &amp; orders merits response without delay</h5>
             <p class="notif-item-desc">Under CUSMA Art. 24.27(4)(a), the CEC Secretariat rules that OAG Petition 0546 is not a pending proceeding, notes the 60-day deadline has expired, and requests Canada's merits response (Art. 24.27(4)(b)).</p>
             <div class="notif-item-links">
-              <a href="viewer.html?file=${docPrefix}89-pp_fr.pdf" class="notif-link-btn notif-link-primary">Read CEC Ruling (PDF) ↗</a>
+              <a href="viewer.html?file=${docPrefix}89-pp_en.pdf" class="notif-link-btn notif-link-primary">Read CEC Ruling (PDF) ↗</a>
               <a href="communiques.html#communique-2026-11-25-cce-89pp" class="notif-link-btn notif-link-ghost">Press Release</a>
             </div>
           </article>
