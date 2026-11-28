@@ -640,6 +640,22 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
 .wg-dialog-title{margin:0;font-size:1rem;font-weight:700;color:#f8fafc}
 .wg-dialog-close{appearance:none;border:1px solid rgba(148,163,184,.3);background:rgba(255,255,255,.08);color:#f8fafc;border-radius:8px;padding:6px 12px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s ease}
 .wg-dialog-close:hover{background:rgba(255,255,255,.16)}
+.wg-video-player-container{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#050b14;display:flex;align-items:center;justify-content:center}
+.wg-cookie-barrier{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(12px,2.5vw,24px);background:radial-gradient(circle at 50% 40%,#0f172a 0%,#030712 100%);color:#f8fafc;text-align:center;box-sizing:border-box;z-index:10}
+.wg-cookie-barrier-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#10b981;font-size:clamp(0.66rem,1.2vw,0.74rem);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:clamp(4px,1vw,8px)}
+.wg-cookie-barrier-title{margin:0 0 clamp(4px,1vw,8px) 0;font-size:clamp(0.92rem,2vw,1.2rem);font-weight:800;color:#f8fafc;line-height:1.25}
+.wg-cookie-barrier-desc{margin:0 0 clamp(10px,1.5vw,16px) 0;font-size:clamp(0.72rem,1.35vw,0.85rem);color:#cbd5e1;line-height:1.5;max-width:620px}
+.wg-cookie-barrier-desc code{background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;color:#38bdf8;font-size:.9em}
+.wg-cookie-barrier-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-bottom:clamp(6px,1vw,12px)}
+.wg-cookie-btn-unlock{display:inline-flex;align-items:center;gap:8px;padding:clamp(8px,1.2vw,10px) clamp(14px,2vw,20px);border-radius:8px;background:#10b981;color:#022c22;font-size:clamp(0.76rem,1.3vw,0.88rem);font-weight:800;border:none;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 14px rgba(16,185,129,.35)}
+.wg-cookie-btn-unlock:hover{background:#059669;color:#fff;transform:translateY(-1px)}
+.wg-cookie-btn-external{display:inline-flex;align-items:center;gap:6px;padding:clamp(7px,1.2vw,9px) clamp(12px,1.8vw,16px);border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(148,163,184,.3);color:#e2e8f0;font-size:clamp(0.72rem,1.25vw,0.82rem);font-weight:600;text-decoration:none;transition:all .2s ease}
+.wg-cookie-btn-external:hover{background:rgba(255,255,255,.16);color:#fff}
+.wg-cookie-barrier-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;font-size:clamp(0.68rem,1.1vw,0.76rem);color:#94a3b8}
+.wg-cookie-remember-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.wg-cookie-remember-label input{accent-color:#10b981;cursor:pointer}
+.wg-cookie-revoke-link{color:#94a3b8;background:none;border:none;padding:0;font-size:.78rem;text-decoration:underline;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:color .2s ease}
+.wg-cookie-revoke-link:hover{color:#f8fafc}
 </style>
 </head>
 <body id="accueil">
@@ -1328,10 +1344,10 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
                   <h3 id="dialog-tvbl-title" class="wg-dialog-title">TVBL interview — Environmental preservation and Stablex file</h3>
                   <button type="button" class="wg-dialog-close" aria-label="Close player">Close ✕</button>
                 </div>
-                <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
-                  <iframe data-src="https://www.youtube.com/embed/lC7uBOXQsQs?start=30&amp;rel=0" src="" title="TVBL interview — Environmental preservation and Stablex file" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="wg-video-player-container">
+                  <iframe data-src="https://www.youtube-nocookie.com/embed/lC7uBOXQsQs?start=30&amp;rel=0" data-youtube-url="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" src="" title="TVBL interview — Environmental preservation and Stablex file" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
+                <div class="wg-dialog-footer" style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
                   <a href="https://www.youtube.com/watch?v=lC7uBOXQsQs&amp;t=30s" target="_blank" rel="noopener noreferrer" style="color:#10b981;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
                     Watch directly on YouTube ↗
                   </a>
@@ -1379,10 +1395,10 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
                   <h3 id="dialog-blainville-title" class="wg-dialog-title">Face to face at the Municipal Council: Mortality at Lake Fauvel &amp; Public Ethics</h3>
                   <button type="button" class="wg-dialog-close" aria-label="Close player">Close ✕</button>
                 </div>
-                <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;">
-                  <iframe data-src="https://www.youtube.com/embed/jegYlVFOW2Y?start=6&amp;rel=0" src="" title="Face to face at the Municipal Council: Mortality at Lake Fauvel &amp; Public Ethics" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="wg-video-player-container">
+                  <iframe data-src="https://www.youtube-nocookie.com/embed/jegYlVFOW2Y?start=6&amp;rel=0" data-youtube-url="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" src="" title="Face to face at the Municipal Council: Mortality at Lake Fauvel &amp; Public Ethics" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
+                <div class="wg-dialog-footer" style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(148,163,184,.2);font-size:0.86rem;">
                   <a href="https://www.youtube.com/watch?v=jegYlVFOW2Y&amp;t=6s" target="_blank" rel="noopener noreferrer" style="color:#10b981;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
                     Watch directly on YouTube ↗
                   </a>
@@ -2054,6 +2070,180 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
 <script>
 (function(){
   'use strict';
+  var CONSENT_STORAGE_KEY = 'wg_cookie_video_consent';
+
+  var I18N = {
+    fr: {
+      badge: "Protection des données · Loi 25 &amp; RGPD",
+      title: "Témoins tiers &amp; Lecteur bloqués",
+      desc: "Pour protéger vos renseignements personnels et empêcher le dépôt de témoins (cookies) ou de traceurs tiers sans votre consentement préalable, ce lecteur YouTube est désactivé par défaut. En autorisant son affichage, vous activez le lecteur sous le domaine officiel de confidentialité renforcée (<code>youtube-nocookie.com</code>).",
+      btnUnlock: "Débloquer et visionner la vidéo",
+      remember: "Mémoriser mon accord pour cette session",
+      external: "Visionner directement sur YouTube ↗",
+      revoke: "🔒 Rétablir le blocage des témoins"
+    },
+    en: {
+      badge: "Privacy Protection · Law 25 &amp; GDPR",
+      title: "Third-Party Cookies &amp; Player Blocked",
+      desc: "To protect your privacy and prevent third-party cookie tracking or telemetry without prior consent, this YouTube player is disabled by default. By authorizing playback, the player will be loaded via YouTube's official privacy-enhanced domain (<code>youtube-nocookie.com</code>).",
+      btnUnlock: "Unlock and Watch Video",
+      remember: "Remember my choice for this session",
+      external: "Watch directly on YouTube ↗",
+      revoke: "🔒 Re-enable cookie blocking"
+    },
+    es: {
+      badge: "Protección de privacidad · Ley 25 y RGPD",
+      title: "Cookies de terceros y reproductor bloqueados",
+      desc: "Para proteger su privacidad y evitar el rastreo mediante cookies o telemetría de terceros sin su consentimiento previo, este reproductor de YouTube está desactivado por defecto. Al autorizar la visualización, el reproductor se cargará mediante el dominio oficial de privacidad mejorada (<code>youtube-nocookie.com</code>).",
+      btnUnlock: "Desbloquear y ver el video",
+      remember: "Recordar mi elección para esta sesión",
+      external: "Ver directamente en YouTube ↗",
+      revoke: "🔒 Restablecer el bloqueo de cookies"
+    }
+  };
+
+  function getLang() {
+    var htmlLang = document.documentElement.lang ? document.documentElement.lang.toLowerCase() : 'en';
+    if (htmlLang.startsWith('en')) return 'en';
+    if (htmlLang.startsWith('es')) return 'es';
+    return 'fr';
+  }
+
+  function renderVideoPrivacyShield(dlg) {
+    var container = dlg.querySelector('.wg-video-player-container');
+    var iframe = dlg.querySelector('iframe[data-src]');
+    if (!container || !iframe) return;
+
+    var footer = dlg.querySelector('.wg-dialog-footer') || dlg.querySelector('.wg-dialog-box > div:last-child');
+    var rawSrc = iframe.getAttribute('data-src') || '';
+    var youtubeUrl = iframe.getAttribute('data-youtube-url') || '';
+    if (!youtubeUrl && rawSrc) {
+      try {
+        var u = new URL(rawSrc, window.location.origin);
+        var match = u.pathname.match(/\/embed\/([^/?]+)/);
+        if (match) {
+          youtubeUrl = 'https://www.youtube.com/watch?v=' + match[1];
+        }
+      } catch (_) {}
+    }
+
+    var lang = getLang();
+    var t = I18N[lang] || I18N.en;
+
+    // Supprimer l'éventuel bouton de révocation résiduel
+    var existingRevoke = dlg.querySelector('.wg-cookie-revoke-link');
+    if (existingRevoke) existingRevoke.remove();
+
+    var isConsented = false;
+    try {
+      isConsented = (sessionStorage.getItem(CONSENT_STORAGE_KEY) === '1');
+    } catch (_) {}
+
+    if (isConsented) {
+      var oldBarrier = container.querySelector('.wg-cookie-barrier');
+      if (oldBarrier) oldBarrier.remove();
+
+      try {
+        var parsed = new URL(rawSrc, window.location.origin);
+        var cleanHost = (parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com')
+          ? 'www.youtube-nocookie.com'
+          : parsed.hostname;
+        parsed.hostname = cleanHost;
+        if (!parsed.searchParams.has('autoplay')) parsed.searchParams.set('autoplay', '1');
+        if (!parsed.searchParams.has('rel')) parsed.searchParams.set('rel', '0');
+        if (iframe.getAttribute('src') !== parsed.href) {
+          iframe.setAttribute('src', parsed.href);
+        }
+      } catch (_) {}
+
+      if (footer) {
+        var revokeBtn = document.createElement('button');
+        revokeBtn.type = 'button';
+        revokeBtn.className = 'wg-cookie-revoke-link';
+        revokeBtn.innerHTML = t.revoke;
+        revokeBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          try { sessionStorage.removeItem(CONSENT_STORAGE_KEY); } catch (_) {}
+          iframe.setAttribute('src', '');
+          renderVideoPrivacyShield(dlg);
+        });
+        footer.appendChild(revokeBtn);
+      }
+      return;
+    }
+
+    // NON consenti : bloquer immédiatement l'iframe et afficher la notice
+    iframe.setAttribute('src', '');
+
+    var barrier = container.querySelector('.wg-cookie-barrier');
+    if (!barrier) {
+      barrier = document.createElement('div');
+      barrier.className = 'wg-cookie-barrier';
+      barrier.setAttribute('role', 'region');
+      barrier.setAttribute('aria-label', t.title);
+      container.appendChild(barrier);
+    }
+
+    barrier.innerHTML =
+      '<div class="wg-cookie-barrier-badge">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
+        '<span>' + t.badge + '</span>' +
+      '</div>' +
+      '<h4 class="wg-cookie-barrier-title">' + t.title + '</h4>' +
+      '<p class="wg-cookie-barrier-desc">' + t.desc + '</p>' +
+      '<div class="wg-cookie-barrier-actions">' +
+        '<button type="button" class="wg-cookie-btn-unlock">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>' +
+          '<span>' + t.btnUnlock + '</span>' +
+        '</button>' +
+        (youtubeUrl ? '<a href="' + youtubeUrl + '" target="_blank" rel="noopener noreferrer" class="wg-cookie-btn-external">' + t.external + '</a>' : '') +
+      '</div>' +
+      '<div class="wg-cookie-barrier-foot">' +
+        '<label class="wg-cookie-remember-label">' +
+          '<input type="checkbox" class="wg-cookie-remember-input"> ' +
+          '<span>' + t.remember + '</span>' +
+        '</label>' +
+      '</div>';
+
+    var unlockBtn = barrier.querySelector('.wg-cookie-btn-unlock');
+    var rememberInput = barrier.querySelector('.wg-cookie-remember-input');
+
+    if (unlockBtn) {
+      unlockBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        if (rememberInput && rememberInput.checked) {
+          try { sessionStorage.setItem(CONSENT_STORAGE_KEY, '1'); } catch (_) {}
+        }
+        barrier.remove();
+
+        try {
+          var parsed = new URL(rawSrc, window.location.origin);
+          var cleanHost = (parsed.hostname === 'www.youtube.com' || parsed.hostname === 'youtube.com')
+            ? 'www.youtube-nocookie.com'
+            : parsed.hostname;
+          parsed.hostname = cleanHost;
+          if (!parsed.searchParams.has('autoplay')) parsed.searchParams.set('autoplay', '1');
+          if (!parsed.searchParams.has('rel')) parsed.searchParams.set('rel', '0');
+          iframe.setAttribute('src', parsed.href);
+        } catch (_) {}
+
+        if (footer && !dlg.querySelector('.wg-cookie-revoke-link')) {
+          var revokeBtn = document.createElement('button');
+          revokeBtn.type = 'button';
+          revokeBtn.className = 'wg-cookie-revoke-link';
+          revokeBtn.innerHTML = t.revoke;
+          revokeBtn.addEventListener('click', function(ev){
+            ev.preventDefault();
+            try { sessionStorage.removeItem(CONSENT_STORAGE_KEY); } catch (_) {}
+            iframe.setAttribute('src', '');
+            renderVideoPrivacyShield(dlg);
+          });
+          footer.appendChild(revokeBtn);
+        }
+      });
+    }
+  }
+
   document.querySelectorAll('[data-video-dialog]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       e.preventDefault();
@@ -2065,19 +2255,7 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
       } else {
         dlg.setAttribute('open', '');
       }
-      var iframe = dlg.querySelector('iframe[data-src]');
-      if (iframe) {
-        var dSrc = iframe.getAttribute('data-src');
-        if (dSrc && iframe.getAttribute('src') !== dSrc) {
-          try {
-            var parsedUrl = new URL(dSrc, window.location.origin);
-            if ((parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:') &&
-                (parsedUrl.hostname === 'www.youtube.com' || parsedUrl.hostname === 'youtube.com' || parsedUrl.hostname === 'www.youtube-nocookie.com')) {
-              iframe.setAttribute('src', parsedUrl.href);
-            }
-          } catch (_) {}
-        }
-      }
+      renderVideoPrivacyShield(dlg);
     });
   });
 
@@ -2101,6 +2279,15 @@ dialog.wg-video-dialog::backdrop{background:rgba(2,6,23,.85);backdrop-filter:blu
       var iframe = dlg.querySelector('iframe');
       if (iframe) {
         iframe.setAttribute('src', '');
+      }
+      var isConsented = false;
+      try { isConsented = (sessionStorage.getItem(CONSENT_STORAGE_KEY) === '1'); } catch (_) {}
+      if (!isConsented) {
+        var container = dlg.querySelector('.wg-video-player-container');
+        if (container) {
+          var b = container.querySelector('.wg-cookie-barrier');
+          if (!b) renderVideoPrivacyShield(dlg);
+        }
       }
     });
   });
