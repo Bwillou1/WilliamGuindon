@@ -1107,6 +1107,52 @@
         }
       }
     });
+
+    // Synchronisation robuste lors du retour arrière / historique (bfcache)
+    window.addEventListener('pageshow', () => {
+      const active = getInitialTheme();
+      document.documentElement.setAttribute('data-theme', active);
+      updateAllThemeButtons(active);
+      try {
+        let meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute('content', active === 'dark' ? '#0b0f0c' : '#ffffff');
+        }
+      } catch (_) {}
+    });
+
+    // Écoute dynamique du changement de préférence système (OS) si aucun choix manuel n'est stocké
+    if (window.matchMedia) {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleMediaChange = (e) => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem(themeStorageKey) || localStorage.getItem('wg_theme') || sessionStorage.getItem(themeStorageKey);
+        } catch (_) {}
+        if (!saved) {
+          const newSysTheme = e.matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', newSysTheme);
+          updateAllThemeButtons(newSysTheme);
+          try {
+            let meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) {
+              meta.setAttribute('content', newSysTheme === 'dark' ? '#0b0f0c' : '#ffffff');
+            }
+          } catch (_) {}
+        }
+      };
+      if (mql.addEventListener) {
+        mql.addEventListener('change', handleMediaChange);
+      } else if (mql.addListener) {
+        mql.addListener(handleMediaChange);
+      }
+    }
+
+    // Réaligner les boutons de thème dès que la barre de navigation est chargée
+    window.addEventListener('navbar:loaded', () => {
+      const active = getInitialTheme();
+      updateAllThemeButtons(active);
+    });
   } catch (_) {}
 
   // =========================================================================

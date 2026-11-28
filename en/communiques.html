@@ -963,17 +963,21 @@
   const themeBtnLabel = document.getElementById("theme-btn-label");
   
   function updateThemeLabel() {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
     if (themeBtnLabel) {
       themeBtnLabel.textContent = currentTheme === "dark" ? "Mode clair" : "Mode sombre";
     }
   }
 
   togglePaperThemeBtn?.addEventListener("click", function() {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
     const nextTheme = currentTheme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", nextTheme);
-    try { localStorage.setItem("theme", nextTheme); } catch (_) {}
+    try {
+      localStorage.setItem("william-guindon-theme", nextTheme);
+      localStorage.setItem("wg_theme", nextTheme);
+      sessionStorage.setItem("william-guindon-theme", nextTheme);
+    } catch (_) {}
     updateThemeLabel();
   });
 
