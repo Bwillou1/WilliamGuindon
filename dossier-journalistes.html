@@ -7155,6 +7155,16 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
   }
 
   window.exportAnnotationsVaultFile = async function() {
+    if (document.documentElement.classList.contains('institutional-mode') || sessionStorage.getItem('wg_institutional_mode') === '1') {
+      const toast = document.getElementById('drive-toast');
+      if (toast) {
+        toast.textContent = "Exportation .wg désactivée en mode consultation probatoire institutionnelle.";
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 4000);
+      }
+      return;
+    }
+
     // Flush immédiat et attendu de l'iframe active avant exportation
     if (typeof window.flushActiveIframeAnnotations === 'function') {
       await window.flushActiveIframeAnnotations(1500);
@@ -7228,6 +7238,15 @@ function renderCsvViewer(results, fileObj, fileUrl, stage) {
 
   window.importAnnotationsVaultFile = function(file) {
     if (!file) return;
+    if (document.documentElement.classList.contains('institutional-mode') || sessionStorage.getItem('wg_institutional_mode') === '1') {
+      const toast = document.getElementById('drive-toast');
+      if (toast) {
+        toast.textContent = "Importation .wg désactivée en mode consultation probatoire institutionnelle.";
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 4000);
+      }
+      return;
+    }
     const reader = new FileReader();
     reader.onload = async function(e) {
       try {

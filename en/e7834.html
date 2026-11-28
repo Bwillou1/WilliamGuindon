@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <script>(function(){try{if(!window.history||!window.history.replaceState)return;var s=window.location.search,h=window.location.hash;if(!s&&(!h||h.indexOf('?')===-1))return;var u=new URL(window.location.href);var t=new Set(['fbclid','fbadid','gclid','gbraid','wbraid','_ga','_gl','igshid','twclid','ttclid','msclkid','mc_cid','mc_eid','yclid','dclid','ref_src','gad_source','gclsrc']);var isT=function(k){var l=(k||'').toLowerCase();return l.indexOf('utm_')===0||l.indexOf('fb_')===0||l.indexOf('_aem')===0||t.has(l);};var c=false;if(s){var r=[];u.searchParams.forEach(function(_,k){if(isT(k))r.push(k);});if(r.length){for(var i=0;i<r.length;i++)u.searchParams.delete(r[i]);c=true;}}if(h&&h.indexOf('?')!==-1){var p=u.hash.split('?'),b=p[0],hp=new URLSearchParams(p.slice(1).join('?')),hr=[];hp.forEach(function(_,k){if(isT(k))hr.push(k);});if(hr.length){for(var j=0;j<hr.length;j++)hp.delete(hr[j]);var q=hp.toString();u.hash=b+(q?'?'+q:'');c=true;}}if(c){var ns=u.searchParams.toString();window.history.replaceState(null,'',u.pathname+(ns?'?'+ns:'')+u.hash);}}catch(_){}})();</script>
+<script src="/assets/js/security-guard.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; script-src-elem 'self' 'unsafe-inline' https://*.googletagmanager.com https://googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com https://google-analytics.com https://ssl.google-analytics.com https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.doubleclick.net https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://unpkg.com https://app.cal.com https://cal.com https://static.cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googleapis.com https://fonts.googleapis.com https://*.googletagmanager.com https://tagmanager.google.com https://unpkg.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.google.ca https://*.gstatic.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://imgs.cookiebot.com https://*.tile.openstreetmap.org https://unpkg.com https://williamguindon.me https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com https://ik.imagekit.io https://*.imagekit.io; font-src 'self' data: https://*.gstatic.com https://fonts.gstatic.com https://app.cal.com https://cal.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://translate.google.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' wss: ws: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.googleapis.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://api.github.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://unpkg.com https://app.cal.com https://cal.com https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://router.huggingface.co https://api-inference.huggingface.co https://*.huggingface.co https://huggingface.co https://ik.imagekit.io https://*.imagekit.io https://upload.imagekit.io; media-src 'self' blob: data: https://ik.imagekit.io https://*.imagekit.io; frame-src 'self' https://*.googletagmanager.com https://*.doubleclick.net https://*.google.com https://*.cookiebot.com https://consent.cookiebot.com https://consentcdn.cookiebot.com https://translate.google.com https://translate.googleapis.com https://cdn.gtranslate.net https://*.gtranslate.net https://gtranslate.com https://app.cal.com https://cal.com https://www.cec.org https://doi.org https://zenodo.org https://felt.com https://umap.osm.ch https://*.osm.ch https://*.openstreetmap.fr https://umap.openstreetmap.fr; object-src 'none';">
+
+<title>Petition e-7834 — Youth Civic Capacity & Parliamentary Inaction — William Guindon</title>
+<meta name="description" content="Petition e-7834 to the House of Commons of Canada: legal recognition of civic capacity for youth aged 14 to 17, combatting adultism, creation of an independent Federal Youth Commissioner, and real-time live parliamentary inaction chronometer.">
+<meta name="author" content="William Guindon">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://williamguindon.me/en/e7834.html">
+<link rel="alternate" hreflang="fr" href="https://williamguindon.me/e7834.html">
+<link rel="alternate" hreflang="en" href="https://williamguindon.me/en/e7834.html">
+<link rel="alternate" hreflang="es" href="https://williamguindon.me/es/e7834.html">
+<link rel="alternate" hreflang="x-default" href="https://williamguindon.me/e7834.html">
+<link rel="alternate" type="application/rss+xml" title="William Guindon — News & Updates" href="https://williamguindon.me/feed.xml">
+
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="William Guindon — Official Website">
+<meta property="og:title" content="Petition e-7834 — Youth Civic Capacity & Parliamentary Inaction Chronometer">
+<meta property="og:description" content="Official text of petition e-7834 to the House of Commons of Canada, 5 citizen supporters, refusal by Anna Gainey, and live chronometer of parliamentary withholding by Madeleine Chenette.">
+<meta property="og:url" content="https://williamguindon.me/en/e7834.html">
+<meta property="og:locale" content="en_CA">
+
+<meta name="twitter:title" content="Petition e-7834 — Youth Civic Capacity & Parliamentary Inaction Chronometer">
+<meta name="twitter:description" content="Petition e-7834 to the House of Commons: full text, official record of proceedings, and live timer measuring parliamentary withholding of publication.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://williamguindon.me/#person",
+      "name": "William Guindon",
+      "url": "https://williamguindon.me/"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://williamguindon.me/en/e7834.html#webpage",
+      "url": "https://williamguindon.me/en/e7834.html",
+      "name": "Petition e-7834 to the House of Commons of Canada — Youth Civic Capacity & Parliamentary Inaction",
+      "description": "Official registry record, complete text, verified citizen supporters, and live waiting timer for publication authorization of petition e-7834.",
+      "inLanguage": "en-CA",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://williamguindon.me/#website",
+        "name": "William Guindon",
+        "url": "https://williamguindon.me/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://williamguindon.me/en/e7834.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://williamguindon.me/en/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Petition e-7834",
+          "item": "https://williamguindon.me/en/e7834.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="stylesheet" href="/style.css?v=20261018-v87">
+<script src="/assets/js/theme-core.js?v=20261125-v149" defer></script>
+<!-- BRANDKIT:START -->
+<link rel="icon" href="/favicon.ico?v=20261017" sizes="any">
+<link rel="icon" href="/favicon.svg?v=20261017" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=20261017" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261017">
+<link rel="mask-icon" href="/assets/img/wg-monogram-mono.svg?v=20261017" color="#22c55e">
+<link rel="manifest" href="/manifest.json?v=20261017">
+<meta name="theme-color" content="#0b0f0c">
+<meta property="og:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="William Guindon — Environmental activist">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://williamguindon.me/assets/img/og-image-1200x630.png?v=20261017">
+<!-- BRANDKIT:END -->
+</head>
+
+<body class="legal-page" data-page="policy">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div class="scroll-progress-bar"></div>
+<div class="bg-blob-container" aria-hidden="true">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+</div>
+
+<header class="site" aria-label="Site Header">
+  <div id="ai-chat" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="brand" href="/en/" aria-label="William Guindon">
+      <img class="brand-mark brand-mark--light" src="/assets/img/wg-monogram.svg" alt="" width="28" height="17">
+      <img class="brand-mark brand-mark--dark" src="/assets/img/wg-monogram-reversed.svg" alt="" width="28" height="17" aria-hidden="true" style="display: none !important;">
+      <span class="brand-text" style="color: var(--text) !important;">William <span style="color: var(--accent) !important;">Guindon</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Toggle navigation menu" type="button"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></button>
+    <nav aria-label="Main navigation">
+      <div class="mobile-nav-header">
+        <span class="mobile-nav-title">Navigation</span>
+        <button class="mobile-menu-close-btn" type="button" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>Close</span>
+        </button>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-haspopup="true">
+          <span>CEC &amp; Stablex Case ▾</span>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="/en/stablex.html" class="nav-dropdown-item">Stablex Investigation</a>
+          <a href="/en/adultisme.html" class="nav-dropdown-item">Scientific Support &amp; Adultism</a>
+          <a href="/en/statut-mineur.html" class="nav-dropdown-item">Legal Status of Minors &amp; CEC</a>
+          <a href="/en/registre-cce-sem26003.html" class="nav-dropdown-item">Documentary Registry (SEM-26-003)</a>
+        </div>
+      </div>
+      <a href="/en/dossier-journalistes.html" class="nav-link">Journalists' Vault</a>
+      <a href="/e7834.html" class="nav-link lang-switch" hreflang="fr" title="Version française">FR</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="legal-hero">
+    <div class="wrap">
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <ol class="breadcrumb-list">
+          <li class="breadcrumb-item"><a href="/en/">Home</a></li>
+          <li class="breadcrumb-separator" aria-hidden="true">/</li>
+          <li class="breadcrumb-item"><a href="/en/adultisme.html">Civic Rights</a></li>
+          <li class="breadcrumb-separator" aria-hidden="true">/</li>
+          <li class="breadcrumb-item current" aria-current="page">Petition e-7834</li>
+        </ol>
+      </nav>
+
+      <div class="legal-hero-badge" style="background: rgba(185, 28, 28, 0.15); border: 1px solid rgba(185, 28, 28, 0.4); color: #f87171;">
+        <span class="live-dot" style="background: #ef4444; box-shadow: 0 0 10px #ef4444;" aria-hidden="true"></span>
+        House of Commons of Canada — Official Registry
+      </div>
+
+      <h1 class="legal-hero-title">
+        Petition e-7834 — Civic Capacity of Youth &amp; Parliamentary Withholding Chronometer
+      </h1>
+
+      <p class="legal-hero-lead">
+        Submitted on <strong>October 1, 2026, at 6:09 PM (EDT)</strong> and supported by 5 verified citizens. Formally rejected by Anna Gainey on October 31 at 7:18 PM, then officially transferred to MP Madeleine Chenette on October 31, 2026, at 8:34 PM (EDT). Standing in arbitrary retention awaiting publication authorization.
+      </p>
+
+      <div class="legal-hero-meta">
+        <span class="meta-item">
+          <strong>Official Registry:</strong> NosCommunes.ca (e-7834)
+        </span>
+        <span class="meta-separator" aria-hidden="true">·</span>
+        <span class="meta-item">
+          <strong>Petitioner:</strong> William Guindon (Blainville, QC)
+        </span>
+        <span class="meta-separator" aria-hidden="true">·</span>
+        <span class="meta-item">
+          <strong>Withholding Since:</strong> October 31, 2026, 8:34 PM (EDT)
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="legal-content">
+    <div class="wrap">
+
+      <!-- Live Parliamentary Inaction Chronometer -->
+      <div id="chrono-honte-e7834" style="background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%); border: 2px solid #b91c1c; border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 10px 30px rgba(185, 28, 28, 0.25);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 12px #ef4444; animation: pulse 2s infinite;" aria-hidden="true"></span>
+            <strong style="color: #f87171; font-size: 1.05rem; letter-spacing: 0.5px; text-transform: uppercase;">
+              Live Parliamentary Inaction Chronometer (Withholding of e-7834)
+            </strong>
+          </div>
+          <span style="font-size: 0.85rem; color: #cbd5e1; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+            Transferred: Oct. 31, 2026, 8:34 PM EDT → Madeleine Chenette
+          </span>
+        </div>
+
+        <p style="color: #e2e8f0; font-size: 0.92rem; line-height: 1.6; margin: 0 0 18px 0;">
+          Time elapsed since the official transfer of the publication authorization request to <strong>Madeleine Chenette</strong> (MP for Thérèse-De Blainville, Parliamentary Secretary). The 5 mandatory citizens have verified and signed the petition. The parliamentary registry remains frozen pending authorization.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; text-align: center; margin-bottom: 18px;">
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(185, 28, 28, 0.4); border-radius: 8px; padding: 14px 8px;">
+            <div id="chrono-e7834-d" style="font-size: 2.2rem; font-weight: 800; color: #fca5a5; font-family: monospace; line-height: 1;">00</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; margin-top: 6px; font-weight: 600;">Days</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(185, 28, 28, 0.4); border-radius: 8px; padding: 14px 8px;">
+            <div id="chrono-e7834-h" style="font-size: 2.2rem; font-weight: 800; color: #fca5a5; font-family: monospace; line-height: 1;">00</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; margin-top: 6px; font-weight: 600;">Hours</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(185, 28, 28, 0.4); border-radius: 8px; padding: 14px 8px;">
+            <div id="chrono-e7834-m" style="font-size: 2.2rem; font-weight: 800; color: #fca5a5; font-family: monospace; line-height: 1;">00</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; margin-top: 6px; font-weight: 600;">Minutes</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(185, 28, 28, 0.4); border-radius: 8px; padding: 14px 8px;">
+            <div id="chrono-e7834-s" style="font-size: 2.2rem; font-weight: 800; color: #f87171; font-family: monospace; line-height: 1;">00</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; margin-top: 6px; font-weight: 600;">Seconds</div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(185, 28, 28, 0.3); padding-top: 14px; font-size: 0.85rem; color: #cbd5e1;">
+          <div>
+            Status: <span style="color: #fbbf24; font-weight: 700;">Awaiting publication authorization</span>
+          </div>
+          <div>
+            <a href="https://www.noscommunes.ca/petitions/en/Petitioner/PetitionDetails?Petition=e-7834" target="_blank" rel="noopener noreferrer" style="color: #93c5fd; text-decoration: underline; font-weight: 600;">
+              View on House of Commons Portal (NosCommunes.ca) ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Official Registry Record & Identifiers -->
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 24px; margin-bottom: 32px;">
+        <h2 style="font-size: 1.25rem; margin-top: 0; margin-bottom: 16px; color: var(--text);">
+          Official Registry Record — House of Commons
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Petition Number</div>
+            <div style="font-size: 1.15rem; font-weight: 700; color: var(--text);">e-7834</div>
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Initial Submission Date</div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text);">October 1, 2026, at 6:09 PM (EDT)</div>
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Signature Period</div>
+            <div style="font-size: 0.95rem; color: var(--text);">120 days following online publication</div>
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Petitioner</div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text);">William Guindon (Blainville, QC)</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line);">
+          <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text);">Verified Citizen Supporters (5 Required Supporters)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+            The 5 required adult Canadian citizen supporters verified their identity and officially backed petition e-7834 in the parliamentary registry:
+          </p>
+          <ul style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; font-size: 0.88rem;">
+            <li style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);">✓ <strong>Johanne Beauchamp</strong></li>
+            <li style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);">✓ <strong>Sylvie Ladouceur</strong></li>
+            <li style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);">✓ <strong>Jérémie Guindon</strong></li>
+            <li style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);">✓ <strong>Carole Marcoux</strong></li>
+            <li style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);">✓ <strong>Sandie Guindon</strong></li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line);">
+          <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: var(--text);">Member of Parliament Status</h3>
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+            <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 6px; padding: 10px 14px;">
+              <strong style="color: #ef4444;">Formal Refusal:</strong> Refused by <strong>Anna Gainey</strong> (MP for Notre-Dame-de-Grâce—Westmount, Secretary of State for Children and Youth) on <em>October 31, 2026, at 7:18 PM (EDT)</em>.
+            </div>
+            <div style="background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.3); border-radius: 6px; padding: 10px 14px;">
+              <strong style="color: #f59e0b;">Official Request Transferred:</strong> Publication authorization request sent to <strong>Madeleine Chenette</strong> (MP for Thérèse-De Blainville, Parliamentary Secretary) on <em>October 31, 2026, at 8:34 PM (EDT)</em>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complete Official Text of Petition e-7834 -->
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 28px; margin-bottom: 32px;">
+        <h2 style="font-size: 1.35rem; margin-top: 0; margin-bottom: 18px; color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+          Petition to the House of Commons in Parliament Assembled
+        </h2>
+
+        <h3 style="font-size: 1.1rem; color: var(--text); margin-top: 16px; margin-bottom: 12px;">Whereas:</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--text);">
+          <div style="padding-left: 16px; border-left: 3px solid var(--accent);">
+            <strong>Whereas</strong> section 15(1) of the Canadian Charter of Rights and Freedoms guarantees to every individual equal protection and equal benefit of the law without discrimination based on age;
+          </div>
+          <div style="padding-left: 16px; border-left: 3px solid var(--accent);">
+            <strong>Whereas</strong> Article 12 of the Convention on the Rights of the Child, ratified by Canada, mandates that the views of the capable child be heard and given due weight in accordance with age and maturity in all administrative proceedings;
+          </div>
+          <div style="padding-left: 16px; border-left: 3px solid var(--accent);">
+            <strong>Whereas</strong> the Civil Code of Québec enables minors aged 14 and older to consent alone to required medical care, under the conditions of sections 14 and 17;
+          </div>
+          <div style="padding-left: 16px; border-left: 3px solid var(--accent);">
+            <strong>Whereas</strong> Canada currently possesses no federal statutory framework nor an independent commissioner to protect youth against administrative and institutional paternalism;
+          </div>
+          <div style="padding-left: 16px; border-left: 3px solid var(--accent);">
+            <strong>Whereas</strong> presuming by default the incapacity of youth aged 14 to 17 in their citizen and administrative proceedings violates their intellectual integrity and may constitute systemic discrimination.
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: var(--text); margin-top: 24px; margin-bottom: 12px;">
+          We, the undersigned, Citizens and residents of Canada, call upon the House of Commons in Parliament assembled to request that the federal Government:
+        </h3>
+        <ol style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--text);">
+          <li>
+            <strong>Adopt</strong>, within its constitutional spheres of jurisdiction, a framework law against ageism and paternalism across federal public and private institutions and services, and negotiate a pan-Canadian intergovernmental accord;
+          </li>
+          <li>
+            <strong>Create</strong> an independent Federal Youth Commissioner (ombudsperson), directly accessible to young people, tasked with receiving complaints and investigating federal institutions;
+          </li>
+          <li>
+            <strong>Establish</strong>, for youth aged 14 to 17, a rebuttable default presumption of capacity to participate in administrative proceedings concerning them, revocable solely following an individualized assessment of age, maturity, and competence, never on age alone, accompanied by written grounds, respect for autonomy, and the right to be heard.
+          </li>
+        </ol>
+      </div>
+
+      <!-- Chronology & Phone Follow-ups -->
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 24px; margin-bottom: 32px;">
+        <h2 style="font-size: 1.25rem; margin-top: 0; margin-bottom: 16px; color: var(--text);">
+          Chronology of Proceedings &amp; Recorded Inquiries
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: var(--text);">October 1, 2026 (6:09 PM EDT) — Submission &amp; Initial Transmission</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Parliamentary Registry</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              Formal filing of petition e-7834 at the House of Commons and delivery of the official sponsorship request to Anna Gainey, MP for Notre-Dame-de-Grâce—Westmount and Secretary of State (Children and Youth).
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #64748b; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: var(--text);">October 1 &amp; 2, 2026 — Automated Acknowledgements</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Automated response</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              Automated email responses from the parliamentary office without personalized processing.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #d97706;">October 12, 2026 — Formal Follow-up &amp; Copy to Secretary of State</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Formal inquiry</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              Delivery of a formal reminder noting procedural deadlines, carbon copied to the office of the Secretary of State for Children and Youth.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #059669; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #059669;">October 20, 2026 — Citizen Support Transmitted</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Citizen mobilization</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              Multiple citizens write directly to the MP's parliamentary office in support of William Guindon, requesting authorization for publication.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #dc2626; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #dc2626;">October 22, 2026 — Sponsorship Refusal &amp; Formal Note</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Procedural dismissal</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              The office notifies its refusal to sponsor. William Guindon formally acknowledges receipt in writing. A courtesy reply confirms the absence of sponsorship and publication authorization.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #dc2626; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #dc2626;">October 31, 2026 (7:18 PM EDT) — Formal Refusal Recorded in Registry</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">NosCommunes Registry</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              The House of Commons online system formally records: <em>"Refused by Anna Gainey on October 31, 2026 at 7:18 p.m. (EDT)"</em>.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #d97706; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #d97706;">October 31, 2026 (8:34 PM EDT) — Official Request Transferred to Madeleine Chenette</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">NosCommunes Registry</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              The publication authorization request for petition e-7834 is immediately rerouted and delivered to <strong>Madeleine Chenette</strong>, MP for Thérèse-De Blainville (petitioner's riding) and Parliamentary Secretary.
+            </p>
+          </div>
+
+          <div style="background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #b91c1c; border-radius: 6px; padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px;">
+              <strong style="font-size: 0.88rem; color: #b91c1c;">November 2026 — Recorded Telephone Inquiries &amp; Persistent Withholding</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Official documentary record</span>
+            </div>
+            <p style="margin: 0; font-size: 0.88rem; line-height: 1.5; color: var(--text);">
+              Multiple direct telephone calls and follow-ups were conducted with the constituency office of MP Madeleine Chenette. The evidentiary audio recording establishes that the political staff confirmed actual receipt of the rerouted file from Anna Gainey's office. Despite the verification of the 5 citizen supporters and verbal assurances, no publication authorization has been issued. The live chronometer continues to measure this ongoing withholding.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+          <a href="https://www.noscommunes.ca/petitions/en/Petitioner/PetitionDetails?Petition=e-7834" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="font-weight: 700; background: #b91c1c; border-color: #991b1b;">
+            Official Record on NosCommunes.ca (Petition e-7834) ↗
+          </a>
+          <a href="/en/adultisme.html" class="btn btn-outline-sm" style="font-size: 12px;">
+            Scientific Support &amp; Structural Adultism →
+          </a>
+          <a href="/en/statut-mineur.html" class="btn btn-outline-sm" style="font-size: 12px;">
+            Legal Status of Minors &amp; CEC →
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation & Print -->
+      <div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>Independent legal registry document · <a href="/en/" style="color: var(--accent);">williamguindon.me</a></div>
+        <button class="legal-print-button" type="button" aria-label="Print this page">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path><path d="M18 12h.01"></path></svg>
+          <span>Print this document</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 William Guindon — Blainville, Quebec, Canada · <span lang="en">Official biography</span></div>
+    <div class="footer-licence-box">
+      Content licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en" target="_blank" rel="license noopener noreferrer">Creative Commons CC BY-NC-ND 4.0</a>.
+    </div>
+
+    <div class="footer-social-row">
+      <a href="https://www.linkedin.com/in/william-guindon/" target="_blank" rel="me noopener noreferrer" class="footer-social-link">LinkedIn ↗</a>
+      <a href="https://www.facebook.com/williamguindon.officiel" target="_blank" rel="me noopener noreferrer" class="footer-social-link">Facebook ↗</a>
+      <a href="https://www.youtube.com/@william-guindon" target="_blank" rel="me noopener noreferrer" class="footer-social-link">YouTube ↗</a>
+      <a href="https://www.cec.org/submissions/registry-of-submissions/blainville-hazardous-waste-landfill/" target="_blank" rel="noopener noreferrer" class="footer-social-link">CEC Registry ↗</a>
+    </div>
+
+    <div class="footer-sitemap-row">
+      <a href="/en/adultisme.html">Civic Rights</a> · 
+      <a href="/en/statut-mineur.html">Legal Status</a> · 
+      <a href="/terms.html">Terms of Use</a> · 
+      <a href="/privacy.html">Privacy</a> · 
+      <a href="/en/stablex.html">Stablex Case</a> · 
+      <a href="#main-content">Top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var t = new Date('2026-10-31T20:34:00-04:00').getTime();
+  function u(){
+    var now = Date.now(), d = Math.max(0, now - t);
+    var el = function(id, val){ var n = document.getElementById(id); if(n) n.textContent = String(val).padStart(2, '0'); };
+    var ed = document.getElementById('chrono-e7834-d'); if(ed) ed.textContent = String(Math.floor(d / 86400000));
+    el('chrono-e7834-h', Math.floor((d % 86400000) / 3600000));
+    el('chrono-e7834-m', Math.floor((d % 3600000) / 60000));
+    el('chrono-e7834-s', Math.floor((d % 60000) / 1000));
+  }
+  u();
+  setInterval(u, 1000);
+})();
+</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="33fe2e14-a15b-46f7-9246-dc61b1ca20a9"></script>
+</body>
+</html>

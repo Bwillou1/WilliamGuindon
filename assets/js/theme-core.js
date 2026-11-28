@@ -594,6 +594,30 @@
       const isReciprocitePage = isReciprociteDOM ||
                                 currentPath.endsWith('reciprocite.html') || currentPath.endsWith('reciprocite') ||
                                 currentPath.endsWith('transmission-sem26003.html') || currentPath.endsWith('transmission-sem26003');
+
+      // Détection prioritaire du Mode Consultation Probatoire Institutionnelle
+      // Ouvert pour le gouvernement fédéral (ECCC, SPC, Justice) et Stablex (Republic Services)
+      const isInstitutionalQuery = searchParams.get('mode') === 'institutionnel' ||
+                                   searchParams.get('mode') === 'institutional' ||
+                                   searchParams.get('institutionnel') === '1';
+      const isInstitutionalSession = sessionStorage.getItem('wg_institutional_mode') === '1';
+      const isInstitutionalVisitor = isInstitutionalQuery || isInstitutionalSession || hasInstitutionalReferrer;
+
+      const isProbatoryDocPage = currentPath.includes('dossier-journalistes') ||
+                                 currentPath.includes('viewer') ||
+                                 currentPath.includes('lecteur') ||
+                                 currentPath.includes('registre') ||
+                                 currentPath.includes('e7834') ||
+                                 currentPath.includes('adultisme') ||
+                                 currentPath.includes('statut-mineur') ||
+                                 currentPath.includes('stablex');
+
+      const isInstitutionalModeActive = isInstitutionalVisitor && isProbatoryDocPage;
+      if (isInstitutionalModeActive) {
+        try { sessionStorage.setItem('wg_institutional_mode', '1'); } catch (_) {}
+        document.documentElement.classList.add('institutional-mode');
+      }
+
       const isLegalIsolatedPage = currentPath.endsWith('privacy.html') || currentPath.endsWith('privacy') ||
                                   currentPath.endsWith('terms.html') || currentPath.endsWith('terms') ||
                                   currentPath.endsWith('politiques.html') || currentPath.endsWith('politiques') ||
@@ -687,10 +711,164 @@
           } catch (_) {}
         }
 
-        if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage) {
+        if (!isReciprocitePage && !isConsolePage && !isLegalIsolatedPage && !isInstitutionalModeActive) {
           window.location.replace(buildReciprociteTargetUrl());
           document.documentElement.style.display = 'none';
           return;
+        }
+
+        // 3.B. Mode Consultation Probatoire Institutionnelle
+        // Accès certifié pour le gouvernement fédéral et Stablex avec restrictions probatoires strictes
+        if (isInstitutionalModeActive) {
+          try {
+            const styleInst = document.createElement('style');
+            styleInst.id = 'wg-institutional-mode-style';
+            styleInst.textContent = `
+              .institutional-mode #direct-file-link,
+              .institutional-mode a[download],
+              .institutional-mode .btn-download,
+              .institutional-mode [data-action="download"],
+              .institutional-mode .btn-archive-zip,
+              .institutional-mode .btn-torrent-p2p,
+              .institutional-mode .btn-p2p-direct,
+              .institutional-mode .btn-archive-direct,
+              .institutional-mode #select-translate-lang,
+              .institutional-mode #btn-open-translate-modal,
+              .institutional-mode #modal-translate-doc,
+              .institutional-mode #pane-translation,
+              .institutional-mode .btn-translate,
+              .institutional-mode #btn-toggle-doc-translation,
+              .institutional-mode .sidebar-wg-vault-box,
+              .institutional-mode .sidebar-wg-vault,
+              .institutional-mode #btn-export-notes,
+              .institutional-mode #btn-import-notes,
+              .institutional-mode #input-import-notes,
+              .institutional-mode #wg-vault-notes-container,
+              .institutional-mode #wg-include-blackbox-chk,
+              .institutional-mode #wg-include-blackbox-chk + label,
+              .institutional-mode label[for="wg-include-blackbox-chk"],
+              .institutional-mode .blackbox-status-indicator,
+              .institutional-mode #blackbox-debug-pane,
+              .institutional-mode input[type="file"],
+              .institutional-mode #btn-upload,
+              .institutional-mode #btn-televerser,
+              .institutional-mode .btn-upload,
+              .institutional-mode [data-action="upload"] {
+                display: none !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
+                opacity: 0 !important;
+                height: 0 !important;
+                width: 0 !important;
+              }
+              .institutional-mode-banner {
+                background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%);
+                border-bottom: 2px solid #3b82f6;
+                color: #f1f5f9;
+                padding: 10px 16px;
+                font-family: system-ui, -apple-system, sans-serif;
+                font-size: 12.5px;
+                line-height: 1.45;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+                position: relative;
+                z-index: 999999;
+              }
+              .institutional-mode-banner-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+              }
+              .institutional-mode-badge {
+                background: rgba(59, 130, 246, 0.2);
+                border: 1px solid rgba(59, 130, 246, 0.5);
+                color: #60a5fa;
+                font-weight: 800;
+                padding: 3px 8px;
+                border-radius: 4px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                white-space: nowrap;
+              }
+              .institutional-mode-text {
+                color: #cbd5e1;
+                flex: 1;
+                min-width: 280px;
+              }
+              .institutional-mode-link {
+                background: #2563eb;
+                color: #ffffff !important;
+                text-decoration: none !important;
+                font-weight: 700;
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 11.5px;
+                white-space: nowrap;
+              }
+            `;
+            document.head.appendChild(styleInst);
+
+            // Neutralisation de la boîte noire (Blackbox)
+            if (window.WGBlackbox && typeof window.WGBlackbox.destroy === 'function') {
+              window.WGBlackbox.destroy(true);
+            }
+            try {
+              localStorage.removeItem('wg_blackbox_ring_v1');
+              localStorage.removeItem('wg_blackbox_compact_v1');
+              sessionStorage.removeItem('wg_blackbox_ring_v1');
+              sessionStorage.removeItem('wg_imported_blackbox_v1');
+              if ('indexedDB' in window) indexedDB.deleteDatabase('wg_blackbox_db');
+            } catch (_) {}
+
+            window.addEventListener('DOMContentLoaded', function() {
+              if (!document.querySelector('.institutional-mode-banner')) {
+                const banner = document.createElement('div');
+                banner.className = 'institutional-mode-banner';
+                banner.setAttribute('role', 'status');
+                banner.setAttribute('aria-live', 'polite');
+                const isEn = window.location.pathname.startsWith('/en/');
+                const isEs = window.location.pathname.startsWith('/es/');
+                const badgeText = isEn ? '🏛️ Institutional Probatory Consultation' : (isEs ? '🏛️ Consulta Probatoria Institucional' : '🏛️ Mode Consultation Probatoire Institutionnelle');
+                const bannerDesc = isEn
+                  ? 'Certified reading access open for federal agencies (ECCC, SSC, Justice) and Stablex (Republic Services) — CEC SEM-26-003. Bulk download, .wg annotations export, live translation, and blackbox telemetry are disabled under the documentary reciprocity protocol.'
+                  : (isEs
+                    ? 'Acceso de lectura certificado abierto para dependencias federales (ECCC, SSC, Justicia) y Stablex (Republic Services) — CCA SEM-26-003. Descarga masiva, exportación .wg, traducción y caja negra neutralizadas por protocolo de reciprocidad.'
+                    : 'Accès probatoire certifié ouvert pour les instances gouvernementales fédérales (ECCC, SPC, Justice) et Stablex (Republic Services) — Dossier CCE SEM-26-003. Conformément aux protocoles de réciprocité documentaire, les fonctions de téléchargement brut, d\'extraction de notes .wg, de traduction dynamique et de boîte noire sont neutralisées.');
+                const linkLabel = isEn ? 'Reciprocity Protocol ↗' : (isEs ? 'Protocolo de reciprocidad ↗' : 'Protocole de réciprocité ↗');
+                const linkHref = isEn ? '/en/reciprocite.html' : (isEs ? '/es/reciprocite.html' : '/reciprocite.html');
+
+                banner.innerHTML = '<div class="institutional-mode-banner-content">' +
+                  '<span class="institutional-mode-badge">' + badgeText + '</span>' +
+                  '<span class="institutional-mode-text">' + bannerDesc + '</span>' +
+                  '<a href="' + linkHref + '?portail=cce-sem26003&sig=72rsp" class="institutional-mode-link">' + linkLabel + '</a>' +
+                  '</div>';
+                document.body.insertBefore(banner, document.body.firstChild);
+              }
+
+              const idsToRemove = ['direct-file-link', 'select-translate-lang', 'wg-include-blackbox-chk', 'btn-export-notes', 'btn-import-notes'];
+              idsToRemove.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+              });
+              document.querySelectorAll('.sidebar-wg-vault-box, .btn-archive-zip, .btn-torrent-p2p, input[type="file"], #btn-upload, #btn-televerser').forEach(function(el) {
+                el.remove();
+              });
+
+              const observer = new MutationObserver(function() {
+                const dl = document.getElementById('direct-file-link');
+                if (dl) dl.style.display = 'none';
+                const tl = document.getElementById('select-translate-lang');
+                if (tl) tl.style.display = 'none';
+                const v = document.querySelector('.sidebar-wg-vault-box');
+                if (v) v.style.display = 'none';
+              });
+              observer.observe(document.body, { childList: true, subtree: true });
+            });
+          } catch (_) {}
         }
 
         // Si l'utilisateur consulte une page légale sous verrou de réciprocité : mode isolé pur
@@ -767,7 +945,8 @@
                                           targetP.includes('anti-slapp') || targetP.includes('embargo') ||
                                           targetP.includes('statut-mineur') || targetP.includes('vie-privee-parents') ||
                                           targetP.includes('netiquette') || targetP.includes('dependances-licences') ||
-                                          targetP.includes('viewer') || targetP.includes('lecteur');
+                                          targetP.includes('viewer') || targetP.includes('lecteur') ||
+                                          (isInstitutionalVisitor && (targetP.includes('dossier-journalistes') || targetP.includes('registre') || targetP.includes('e7834') || targetP.includes('adultisme') || targetP.includes('stablex')));
                     if (!isTargetLegal) {
                       e.preventDefault();
                       window.location.replace('/reciprocite.html?doc=sem26003&sig=72rsp');
