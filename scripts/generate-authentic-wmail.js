@@ -28,6 +28,191 @@ function cleanRawText(str) {
     .replace(/archive Marianne/gi, "[Dossier probatoire]");
 }
 
+// Fonction de nettoyage strict de l'âge et de la résidence personnelle de l'auteur
+function cleanPrivacyAndAge(str) {
+  if (!str) return '';
+  return str
+    .replace(/Je suis William Guindon\s+résident de Blainville,\s+et j'ai 14 ans\./gi, "Je suis William Guindon, citoyen canadien et auteur de la communication citoyenne SEM-26-003.")
+    .replace(/résident de Blainville,\s+et j'ai 14 ans/gi, "citoyen canadien et auteur de la communication citoyenne SEM-26-003")
+    .replace(/William Guindon\s+résident de Blainville/gi, "William Guindon, citoyen canadien")
+    .replace(/Je suis William Guindon,\s+âgé de 14 ans,\s+résident de Blainville\./gi, "Je suis William Guindon, citoyen canadien et auteur de la communication citoyenne SEM-26-003.")
+    .replace(/âgé de 14 ans,\s+résident de Blainville/gi, "citoyen canadien et auteur de la communication citoyenne SEM-26-003")
+    .replace(/âgé de 14 ans/gi, "citoyen demandeur")
+    .replace(/âgé de 15 ans/gi, "citoyen demandeur")
+    .replace(/j'ai 14 ans/gi, "j'agis à titre de citoyen demandeur")
+    .replace(/j'ai 15 ans/gi, "j'agis à titre de citoyen demandeur")
+    .replace(/William Guindon\s*\(\s*14\s+ans\s*\)/gi, "William Guindon (citoyen soumetteur)")
+    .replace(/William Guindon\s*\(\s*15\s+ans\s*\)/gi, "William Guindon (citoyen soumetteur)")
+    .replace(/citoyen canadien de 14 ans/gi, "citoyen canadien")
+    .replace(/citoyen canadien de 15 ans/gi, "citoyen canadien")
+    .replace(/Un jeune de 14 ans\./gi, "Une démarche citoyenne rigoureuse.")
+    .replace(/(?:comme\s+)?un\s+jeune\s+citoyen\s+de(?:\s+|<br>)+15\s+ans/gi, "comme un citoyen engagé")
+    .replace(/(?:comme\s+)?un\s+jeune\s+citoyen\s+de(?:\s+|<br>)+14\s+ans/gi, "comme un citoyen engagé")
+    .replace(/jeune\s+citoyen\s+de(?:\s+|<br>)+(?:14|15)\s+ans/gi, "citoyen engagé")
+    .replace(/jeune de 14 ans/gi, "citoyen indépendant")
+    .replace(/jeune de 15 ans/gi, "citoyen indépendant")
+    .replace(/demandeur mineur/gi, "citoyen soumetteur")
+    .replace(/statut de demandeur mineur/gi, "statut de citoyen demandeur")
+    .replace(/15 ans · Blainville \(Québec\)/gi, "Auteur de la communication SEM-26-003")
+    .replace(/seul,\s+à\s+15\s+ans,/gi, "seul, à titre citoyen,")
+    .replace(/seul,\s+à\s+14\s+ans,/gi, "seul, à titre citoyen,")
+    .replace(/seul,\s+à\s+15\s+ans/gi, "seul, à titre citoyen")
+    .replace(/seul,\s+à\s+14\s+ans/gi, "seul, à titre citoyen");
+}
+
+// Fonction de nettoyage exhaustive des adresses de courriels et des noms individuels
+function cleanAddressAndNames(str) {
+  if (!str) return '';
+  return str
+    // Adresses personnelles et citoyennes
+    .replace(/<guindonwilliam2@gmail\.com>/gi, '')
+    .replace(/<guindonwilliam2\+cc@gmail\.com>/gi, '')
+    .replace(/<williamguindon@icloud\.com>/gi, '')
+    .replace(/<contact@williamguindon\.me>/gi, '')
+    .replace(/guindonwilliam2@gmail\.com/gi, 'contact [at] williamguindon.me')
+    .replace(/guindonwilliam2\+cc@gmail\.com/gi, 'contact [at] williamguindon.me')
+    .replace(/williamguindon@icloud\.com/gi, 'contact [at] williamguindon.me')
+    .replace(/<cathymainville@hotmail\.com>/gi, '')
+    .replace(/cathymainville@hotmail\.com/gi, '[Représentante légale — coordonnées non publiées]')
+    .replace(/alerte\.enfouissement@outlook\.com/gi, '[Organisme citoyen — coordonnées non publiées]')
+    .replace(/carolemrcx@gmail\.com/gi, '[Correspondant civil — coordonnées non publiées]')
+    .replace(/Carole\s+Marcoux\s*<[^>]+>/gi, 'Correspondant civil')
+    .replace(/pascale\.robert66@gmail\.com/gi, '[Correspondant civil — coordonnées non publiées]')
+    .replace(/meresaufront@gmail\.com/gi, 'Mères au front')
+    .replace(/mouvement\.mare@gmail\.com/gi, 'Mouvement MARE')
+    .replace(/svp\.pollution@gmail\.com/gi, 'Société pour vaincre la pollution')
+    .replace(/sylvieclermont1@hotmail\.com/gi, '[Correspondant civil — coordonnées non publiées]')
+    .replace(/presse-et-medias-wguindon@googlegroups\.com/gi, '[Liste d\'information aux médias]')
+    
+    // Ministères / fonctionnaires / institutions
+    .replace(/<Lisa\.Praine@ec\.gc\.ca>/gi, '')
+    .replace(/Lisa\.Praine@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/lisa\.praine@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/Lisa\s+Praine/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/<Alana\.Lachance@ec\.gc\.ca>/gi, '')
+    .replace(/Alana\.Lachance@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/alana\.lachance@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/Alana\s+Lachance/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/ECATIP-ECAIPRP@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/ecatip-ecaiprp@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/ATIP-AIPRP@ec\.gc\.ca/gi, 'Secrétariat AIPRP (ECCC)')
+    .replace(/<Michael\.Bonser@ec\.gc\.ca>/gi, '')
+    .replace(/Michael\.Bonser@ec\.gc\.ca/gi, 'Direction de l\'application de la loi (ECCC)')
+    .replace(/michael\.bonser@ec\.gc\.ca/gi, 'Direction de l\'application de la loi (ECCC)')
+    .replace(/Michael\s+Bonser/gi, 'Direction de l\'application de la loi (ECCC)')
+    .replace(/<vincent\.pretty@ec\.gc\.ca>/gi, '')
+    .replace(/<vincent\.pretty@dfo-mpo\.gc\.ca>/gi, '')
+    .replace(/vincent\.pretty@ec\.gc\.ca/gi, 'Protection de l\'habitat du poisson (MPO)')
+    .replace(/vincent\.pretty@dfo-mpo\.gc\.ca/gi, 'Protection de l\'habitat du poisson (MPO)')
+    .replace(/Vincent\s+Pretty/gi, 'Protection de l\'habitat du poisson (MPO)')
+    .replace(/Julie\.Dabrusin@parl\.gc\.ca/gi, 'Cabinet de la ministre d\'État (ECCC)')
+    .replace(/julie\.dabrusin@parl\.gc\.ca/gi, 'Cabinet de la ministre d\'État (ECCC)')
+    .replace(/ministre-minister@ec\.gc\.ca/gi, 'Cabinet de la ministre (ECCC)')
+    .replace(/minister-minister@ec\.gc\.ca/gi, 'Cabinet de la ministre (ECCC)')
+    .replace(/madeleine\.chenette@parl\.gc\.ca/gi, 'Bureau parlementaire de la circonscription')
+    .replace(/mark\.carney@parl\.gc\.ca/gi, 'Bureau du conseiller économique fédéral')
+    .replace(/Ottawa-Press@state\.gov/gi, 'Affaires publiques – Ambassade des États-Unis')
+    .replace(/infocan@sre\.gob\.mx/gi, 'Section consulaire – Ambassade du Mexique')
+    .replace(/sem@cec\.org/gi, 'Secrétariat CCE (Unité SEM)')
+    .replace(/SEM@cec\.org/gi, 'Secrétariat CCE (Unité SEM)')
+    .replace(/psolano@cec\.org/gi, 'Secrétariat CCE')
+    .replace(/Paolo\s+Solano/gi, 'Secrétariat CCE')
+    .replace(/<andre\.st-hilaire@inrs\.ca>/gi, '')
+    .replace(/andre\.st-hilaire@inrs\.ca/gi, 'INRS — Centre Eau Terre Environnement')
+    .replace(/André\s+St-Hilaire/gi, 'INRS — Centre Eau Terre Environnement')
+    .replace(/<communications@eausecours\.org>/gi, '')
+    .replace(/communications@eausecours\.org/gi, 'Eau Secours')
+    .replace(/<coordo\.cadt@eausecours\.org>/gi, '')
+    .replace(/coordo\.cadt@eausecours\.org/gi, 'Eau Secours')
+    .replace(/<direction@eausecours\.org>/gi, '')
+    .replace(/direction@eausecours\.org/gi, 'Eau Secours')
+    .replace(/Mathieu\s+Langlois/gi, 'Eau Secours')
+    .replace(/Edith\s+Morel\s+CASTELAN/gi, 'Eau Secours')
+    .replace(/Rébecca\s+Pétrin/gi, 'Eau Secours')
+    .replace(/<marie-audrey\.nadeau@naturequebec\.org>/gi, '')
+    .replace(/marie-audrey\.nadeau@naturequebec\.org/gi, 'Nature Québec')
+    .replace(/Marie-Audrey\s+Nadeau/gi, 'Nature Québec')
+    .replace(/<mobilisation@reseaudemainlequebec\.org>/gi, '')
+    .replace(/mobilisation@reseaudemainlequebec\.org/gi, 'Réseau Demain le Québec')
+    .replace(/Charlie\s+L\./gi, 'Réseau Demain le Québec')
+    .replace(/<bernier\.dominique@lacsq\.org>/gi, '')
+    .replace(/bernier\.dominique@lacsq\.org/gi, 'Centrale des syndicats du Québec (CSQ)')
+    .replace(/Dominique\s+Bernier/gi, 'Centrale des syndicats du Québec (CSQ)')
+    .replace(/<info@sgtb\.ca>/gi, '')
+    .replace(/info@sgtb\.ca/gi, 'Société de gestion du territoire de Blainville')
+    .replace(/<info@cqde\.org>/gi, '')
+    .replace(/info@cqde\.org/gi, 'Centre québécois du droit de l\'environnement (CQDE)')
+    .replace(/DFO\.Quebec@dfo-mpo\.gc\.ca/gi, 'Pêches et Océans Canada (Direction Québec)')
+    .replace(/DFO\.HabitatQuebec\.MPO@dfo-mpo\.gc\.ca/gi, 'MPO – Habitat faunique Québec')
+    .replace(/DFO\.MPO\.Quebec@dfo-mpo\.gc\.ca/gi, 'MPO – Région du Québec')
+    .replace(/DFO\.Minister-Ministre\.MPO@dfo-mpo\.gc\.ca/gi, 'Cabinet de la ministre (MPO)')
+    .replace(/dfo\.minister-ministre\.mpo@dfo-mpo\.gc\.ca/gi, 'Cabinet de la ministre (MPO)')
+    .replace(/DFO\.NCRPetitions-PetitionsRCN\.MPO@dfo-mpo\.gc\.ca/gi, 'MPO – Pétitions parlementaires')
+    .replace(/min@dfo-mpo\.gc\.ca/gi, 'Cabinet de la ministre (MPO)')
+    .replace(/info@dfo-mpo\.gc\.ca/gi, 'Information générale MPO')
+    .replace(/postmaster@dfo-mpo\.gc\.ca/gi, 'Serveur de messagerie MPO')
+    .replace(/Enviroinfo@ec\.gc\.ca/gi, 'Service EnviroInfo (ECCC)')
+    .replace(/enviroinfo@ec\.gc\.ca/gi, 'Service EnviroInfo (ECCC)')
+    .replace(/ec\.enviroinfo\.ec@canada\.ca/gi, 'Service EnviroInfo (ECCC)')
+    .replace(/ec\.enforcement-applicationdelaloi\.ec@canada\.ca/gi, 'Direction générale de l\'application de la loi (ECCC)')
+    .replace(/enforcement-applicationloi@ec\.gc\.ca/gi, 'Direction générale de l\'application de la loi (ECCC)')
+    .replace(/cnue-neec@ec\.gc\.ca/gi, 'Centre national des urgences environnementales (ECCC)')
+    .replace(/dgalunitedebreffageebbriefingunit@ec\.gc\.ca/gi, 'Unité de breffage DGAL (ECCC)')
+    .replace(/ec\.faune-wildlife\.ec@canada\.ca/gi, 'Service canadien de la faune (ECCC)')
+    .replace(/ec\.ue-e2\.ec@canada\.ca/gi, 'Urgences environnementales (ECCC)')
+    .replace(/ue-e2@ec\.gc\.ca/gi, 'Urgences environnementales (ECCC)')
+    .replace(/ue-qc-e2@ec\.gc\.ca/gi, 'Urgences environnementales Québec (ECCC)')
+    .replace(/media@ec\.gc\.ca/gi, 'Relations médias (ECCC)')
+    .replace(/dmd-gmd@ec\.gc\.ca/gi, 'Direction de la gestion ministérielle (ECCC)')
+    .replace(/notification@ec\.gc\.ca/gi, 'Service des notifications (ECCC)')
+    .replace(/petitions@oag-bvg\.gc\.ca/gi, 'Commissaire à l\'environnement et au développement durable (BVG)')
+    .replace(/information@iaac-aeic\.gc\.ca/gi, 'Agence d\'évaluation d\'impact du Canada (AEIC)')
+    .replace(/relations\.medias@environnement\.gouv\.qc\.ca/gi, 'Relations médias (MELCCFP)')
+    .replace(/renseignements\.faune@environnement\.gouv\.qc\.ca/gi, 'Direction de la faune (MELCCFP)')
+    .replace(/services\.clientele@mffp\.gouv\.qc\.ca/gi, 'Services à la clientèle (MELCCFP)')
+    
+    // Stablex & mandataires
+    .replace(/<info@stablex\.com>/gi, '')
+    .replace(/info@stablex\.com/gi, 'Direction générale (Stablex Canada Inc.)')
+    .replace(/<receivable\.stablex@stablex\.com>/gi, '')
+    .replace(/receivable\.stablex@stablex\.com/gi, 'Administration (Stablex Canada Inc.)')
+    .replace(/<labo@stablex\.com>/gi, '')
+    .replace(/labo@stablex\.com/gi, 'Laboratoire d\'analyses (Stablex Canada Inc.)')
+    .replace(/<comite\.consultatif@stablex\.com>/gi, '')
+    .replace(/comite\.consultatif@stablex\.com/gi, 'Comité consultatif (Stablex Canada Inc.)')
+    .replace(/<guy\.thibault@stablex\.com>/gi, '')
+    .replace(/guy\.thibault@stablex\.com/gi, 'Direction des opérations (Stablex Canada Inc.)')
+    .replace(/Guy\s+Thibault/gi, 'Direction des opérations (Stablex Canada Inc.)')
+    .replace(/<pierre\.lego@stablex\.com>/gi, '')
+    .replace(/pierre\.lego@stablex\.com/gi, 'Direction technique (Stablex Canada Inc.)')
+    .replace(/Pierre\s+Lego/gi, 'Direction technique (Stablex Canada Inc.)')
+    .replace(/<michel\.perron@stablex\.com>/gi, '')
+    .replace(/michel\.perron@stablex\.com/gi, 'Service environnement (Stablex Canada Inc.)')
+    .replace(/Michel\s+Perron/gi, 'Service environnement (Stablex Canada Inc.)')
+    .replace(/<tania\.tzakova@stablex\.com>/gi, '')
+    .replace(/tania\.tzakova@stablex\.com/gi, 'Ingénierie environnementale (Stablex Canada Inc.)')
+    .replace(/Tania\s+Tzakova/gi, 'Ingénierie environnementale (Stablex Canada Inc.)')
+    .replace(/<benoit\.rompre@stablex\.com>/gi, '')
+    .replace(/benoit\.rompre@stablex\.com/gi, 'Direction d\'usine (Stablex Canada Inc.)')
+    .replace(/Benoit\s+Rompr[eé]/gi, 'Direction d\'usine (Stablex Canada Inc.)')
+    .replace(/<maxime\.couture@stablex\.com>/gi, '')
+    .replace(/maxime\.couture@stablex\.com/gi, 'Direction des affaires publiques (Stablex Canada Inc.)')
+    .replace(/Maxime\s+Couture/gi, 'Affaires publiques (Stablex / Catapulte)')
+    .replace(/<mcouture@catapultecommunication\.com>/gi, '')
+    .replace(/mcouture@catapultecommunication\.com/gi, 'Mandataire en communication (Catapulte Communication)')
+    .replace(/<plego@marsulex\.com>/gi, '')
+    .replace(/plego@marsulex\.com/gi, 'Services techniques (Marsulex)')
+    .replace(/<afrangoulis@maxxam\.ca>/gi, '')
+    .replace(/afrangoulis@maxxam\.ca/gi, 'Laboratoires d\'analyse (Maxxam)')
+    .replace(/afrangoulis/gi, 'Laboratoires d\'analyse')
+    
+    // Filet de sécurité générique pour toute adresse email résiduelle :
+    .replace(/([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, function(match, u, d) {
+      if (d.includes('williamguindon.me')) return 'contact [at] williamguindon.me';
+      return '[coordonnées électroniques non publiées]';
+    });
+}
+
 rawText = cleanRawText(rawText);
 if (stbText) stbText = cleanRawText(stbText);
 
@@ -182,19 +367,17 @@ if (stbText) {
 
 console.log('Parsed authentic sent/received messages (sans brouillons ni traceurs):', rawMessages.length);
 
-// Fonction de caviardage stricte (données personnelles + journalistes / transmissions)
+// Fonction d'assainissement et de protection des données (Loi 25 et protection de la vie privée)
 function sanitizeText(str) {
   if (!str) return '';
-  return str
-    .replace(/guindonwilliam2@gmail\.com/gi, '<span class="cx" title="Caviardé : Courriel citoyen protégé (Loi 25)">contact@williamguindon.me</span>')
-    .replace(/guindonwilliam2\+cc@gmail\.com/gi, '<span class="cx" title="Caviardé : Alias citoyen protégé">contact@williamguindon.me</span>')
-    .replace(/williamguindon@icloud\.com/gi, '<span class="cx" title="Caviardé : Boîte iCloud privée">contact@williamguindon.me</span>')
-    .replace(/cathymainville@hotmail\.com/gi, '<span class="cx" title="Caviardé : Représentante légale / Ligne parentale">représentante légale biffée</span>')
-    .replace(/\+1\s*\(?514\)?\s*808-3727/g, '<span class="cx" title="Caviardé : Ligne téléphonique privée">[Téléphone personnel biffé]</span>')
-    .replace(/514-808-3727/g, '<span class="cx" title="Caviardé : Ligne téléphonique privée">[Téléphone personnel biffé]</span>')
-    .replace(/marianne\s+d[eé]pelteau[^\s,.<>)]*/gi, '<span class="cx" title="Caviardé : Donnée protégée">[Nom biffé]</span>')
-    .replace(/d[eé]pelteau/gi, '<span class="cx" title="Caviardé">[Biffé]</span>')
-    .replace(/marianne/gi, '<span class="cx" title="Caviardé">[Biffé]</span>')
+  let s = cleanAddressAndNames(str);
+  s = cleanPrivacyAndAge(s);
+  return s
+    .replace(/\+1\s*\(?514\)?\s*808-3727/g, '<span class="cx" title="Donnée protégée : Ligne téléphonique privée">[Téléphone personnel non publié]</span>')
+    .replace(/514-808-3727/g, '<span class="cx" title="Donnée protégée : Ligne téléphonique privée">[Téléphone personnel non publié]</span>')
+    .replace(/marianne\s+d[eé]pelteau[^\s,.<>)]*/gi, '<span class="cx" title="Donnée protégée : Renseignement personnel">[Nom protégé]</span>')
+    .replace(/d[eé]pelteau/gi, '<span class="cx" title="Donnée protégée">[Protégé]</span>')
+    .replace(/marianne/gi, '<span class="cx" title="Donnée protégée">[Protégé]</span>')
     .replace(/journaliste[s]?/gi, 'correspondant civil')
     .replace(/Correspondance_Marianne_Depelteau\.txt/gi, '[Registre de correspondances]')
     .replace(/archive Marianne/gi, '[Dossier probatoire]')
@@ -333,7 +516,7 @@ const THREAD_TITLES = {
   'thread_09_signalement_penal_peches_inrp': "SIGNALEMENT PÉNAL FORMEL – Article 36(3) Loi sur les pêches – Site Stablex Blainville (CCE SEM-26-003)",
   'thread_10_decret_urgence_lep_art_80': "Demande formelle de recommandation de Décret d'urgence – Article 80 de la Loi sur les espèces en péril (LEP)",
   'thread_12_decision_cce_ambassades': "Notification officielle – Décision de recevabilité SEM-26-003 (Secrétariat CCE & Ambassades)",
-  'thread_13_aiprp_praine_purolator': "Demande d'accès aux renseignements personnels (AIPRP P-2026-00017) – Clé USB chiffrée & Suivi Lisa Praine",
+  'thread_13_aiprp_praine_purolator': "Demandes d'accès à l'information (AIPRP) – Synthèse des démarches administratives",
   'thread_14_enquete_deputes_parlementaires': "Enquête parlementaire citoyenne – Positionnement officiel des députés fédéraux sur l'ACEUM",
   'thread_15_imagerie_copernicus_cce': "Soumission d'informations complémentaires au registre CCE – Imagerie satellitaire & Données FS-STB-2",
   'thread_16_reponse_canada_replique_72_rsp': "Suivi du dossier SEM-26-003 (CCE / Stablex) – Analyse de la réponse du Canada et réplique probatoire",
@@ -350,6 +533,24 @@ const threadMap = new Map();
 rawMessages.forEach(msg => {
   let filKey = msg.fil;
   
+  // Remplacements ciblés pour anonymisation et conformité
+  if (msg.num === 10) {
+    msg.a = "Direction générale et comités consultatifs (Stablex Canada Inc.)";
+    msg.cc = "Services de conformité et application de la loi (ECCC / MPO / CQDE)";
+    msg.note = "Demande formelle de clarification";
+  } else if (msg.num === 102) {
+    msg.a = "Direction des opérations et ingénierie (Stablex Canada Inc.)";
+    msg.cc = "Services techniques et analytiques (Stablex / Marsulex / Laboratoires)";
+    msg.note = "Transmission de la demande de clarification à la direction technique";
+  } else if (msg.num === 76) {
+    msg.a = "Organismes et correspondants civils";
+    msg.cc = "diffusion à des organismes et correspondants — coordonnées non publiées";
+    msg.note = "Transmission d'information sur la réponse du Canada (dossier SEM-26-003)";
+  } else if (msg.num === 106) {
+    msg.a = "Direction des opérations (Stablex Canada Inc.) & Mandataire en communication (Catapulte Communication)";
+    msg.note = "Transmission à la direction des opérations et au mandataire de communication";
+  }
+
   if (msg.num === 2 || msg.num === 3 || msg.num === 6) {
     filKey = 'thread_01_demande_enquete_lcom_peches';
   } else if (msg.num === 8) {
@@ -390,6 +591,26 @@ rawMessages.forEach(msg => {
     filKey = 'thread_21_stablex_ultimatum_catapulte';
   }
 
+  // Fil AIPRP t11 : Remplacé par une synthèse procédurale publique unique (sans numéros personnels ni logistique de transmission)
+  if (filKey === 'thread_13_aiprp_praine_purolator') {
+    if (!threadMap.has(filKey)) {
+      threadMap.set(filKey, [{
+        num: 64,
+        date: '2026-10-29 09:00:00',
+        de: "Direction de l'accès à l'information (ECCC)",
+        a: "Auteur de la communication SEM-26-003",
+        cc: "",
+        objet: "Demandes d'accès à l'information (AIPRP) – Synthèse des démarches administratives",
+        fil: 'thread_13_aiprp_praine_purolator',
+        id: 'aiprp_synthese_publique',
+        pieces: "Dossier administratif AIPRP (pièces d'échantillonnage et de conformité versées au registre CCE)",
+        note: "Synthèse officielle des démarches d'accès aux documents administratifs",
+        body: "Les demandes formelles d'accès à l'information (AIPRP) déposées auprès d'Environnement et Changement climatique Canada (ECCC) visaient la transmission des documents administratifs, rapports scientifiques, analyses d'impact et correspondances relatifs à l'application des lois environnementales au site de Stablex à Blainville et au dossier CCE SEM-26-003.\n\nConformément aux exigences de protection de la vie privée et aux règles de communication au public, le détail des correspondances administratives nominatives, les numéros de dossiers internes de renseignements personnels et les modalités logistiques de transmission sont consignés dans le dossier privé de l'auteur et ne sont pas diffusés sur ce registre public."
+      }]);
+    }
+    return;
+  }
+
   if (!threadMap.has(filKey)) {
     threadMap.set(filKey, []);
   }
@@ -412,12 +633,12 @@ for (const [filId, msgs] of threadMap.entries()) {
   const senders = new Set();
   msgs.forEach(m => {
     if (m.de.includes('William')) senders.add('William Guindon');
-    else if (m.de.includes('Julie Dabrusin') || m.de.includes('ministre-minister')) senders.add('Julie Dabrusin (ECCC)');
-    else if (m.de.includes('DFO') || m.de.includes('Pêches')) senders.add('MPO');
-    else if (m.de.includes('Lisa Praine') || m.de.includes('ecatip')) senders.add('AIPRP (Lisa Praine)');
-    else if (m.de.includes('Stablex')) senders.add('Stablex Canada');
-    else if (m.de.includes('postmaster')) senders.add('postmaster');
-    else senders.add(m.de.split('<')[0].trim());
+    else if (m.de.includes('Julie Dabrusin') || m.de.includes('ministre-minister')) senders.add('Cabinet ministériel (ECCC)');
+    else if (m.de.includes('DFO') || m.de.includes('Pêches')) senders.add('Pêches et Océans Canada');
+    else if (m.de.includes('Lisa Praine') || m.de.includes('ecatip') || m.de.includes('AIPRP')) senders.add('Secrétariat AIPRP (ECCC)');
+    else if (m.de.includes('Stablex')) senders.add('Stablex Canada Inc.');
+    else if (m.de.includes('postmaster')) senders.add('Serveur technique');
+    else senders.add(cleanAddressAndNames(m.de.split('<')[0].trim()));
   });
 
   const participantStr = Array.from(senders).join(', ');
@@ -432,8 +653,10 @@ for (const [filId, msgs] of threadMap.entries()) {
     .replace(/Marianne/gi, "")
     .replace(/journaliste/gi, "correspondant")
     .replace(/\s+/g, ' ')
-    .trim()
-    .substring(0, 160);
+    .trim();
+
+  snippet = cleanPrivacyAndAge(snippet);
+  snippet = cleanAddressAndNames(snippet).substring(0, 160);
 
   threadList.push({
     tid: 't' + tIdx,
@@ -517,7 +740,7 @@ function renderThreadView(t) {
         <h2>${t.subject}</h2>
         <div class="tv-header-tags">
           <span class="badge-proof">Dossier CCE SEM-26-003</span>
-          <span class="badge-audit">Protection de la vie privée (Loi 25)</span>
+          <span class="badge-audit">Protection de la vie privée · Données nominatives retirées</span>
           <span class="badge-id">Fil ID : ${t.filId}</span>
           ${t.isStablex ? ('<span class="badge-stablex">' + SVG_ICONS.factory + ' <span>Correspondance Stablex Canada</span></span>') : ''}
         </div>
@@ -548,9 +771,9 @@ function renderThreadView(t) {
           let orgName = 'Citoyen & Auteur';
           if (!isMe) {
             if (m.de.includes('MPO') || m.de.includes('Pêches')) { avatarInitial = 'MPO'; avatarClass = 'mpo'; orgName = 'Pêches et Océans Canada'; }
-            else if (m.de.includes('AIPRP') || m.de.includes('Lisa Praine')) { avatarInitial = 'ATIP'; avatarClass = 'atip'; orgName = 'Direction générale AIPRP'; }
+            else if (m.de.includes('AIPRP') || m.de.includes('Secrétariat AIPRP')) { avatarInitial = 'ATIP'; avatarClass = 'atip'; orgName = 'Direction générale AIPRP'; }
             else if (m.de.includes('CCE') || m.de.includes('Secretariat')) { avatarInitial = 'CCE'; avatarClass = 'cce'; orgName = 'Commission de coopération environnementale'; }
-            else if (m.de.includes('Stablex') || m.a.includes('stablex.com')) { avatarInitial = 'STB'; avatarClass = 'stb'; orgName = 'Stablex Canada Inc.'; }
+            else if (m.de.includes('Stablex') || (m.a && m.a.includes('Stablex'))) { avatarInitial = 'STB'; avatarClass = 'stb'; orgName = 'Stablex Canada Inc.'; }
             else { avatarInitial = 'ECCC'; avatarClass = 'eccc'; orgName = 'Environnement et Changement climatique Canada'; }
           }
 
@@ -1753,8 +1976,8 @@ header.site {
     <div class="hud-card">
       <div class="hud-icon">${SVG_ICONS.hudShield}</div>
       <div class="hud-meta">
-        <span class="hud-value">Loi 25</span>
-        <span class="hud-label">Protection de la vie privée</span>
+        <span class="hud-value">Vérifié</span>
+        <span class="hud-label">Données nominatives retirées</span>
       </div>
     </div>
   </div>
@@ -1857,7 +2080,7 @@ header.site {
         </button>
 
         <div class="sidebar-disclaimer">
-          <strong>Registre officiel SEM-26-003 :</strong> ${rawMessages.length} correspondances officielles et citoyennes versées au dossier public. Renseignements personnels biffés (Loi 25).
+          <strong>Registre officiel SEM-26-003 :</strong> ${rawMessages.length} correspondances officielles et citoyennes versées au dossier public. Coordonnées et données nominatives biffées conformément aux normes de protection de la vie privée.
         </div>
       </aside>
 
@@ -1870,7 +2093,7 @@ header.site {
             <button class="wmail-tab" data-tab="signalement"><svg class="svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Application de la loi</span></button>
             <button class="wmail-tab" data-tab="eccc"><svg class="svg" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9zM7 12h14"/></svg><span>ECCC &amp; Cabinets</span></button>
             <button class="wmail-tab" data-tab="cce"><svg class="svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span>CCE &amp; ACEUM</span></button>
-            <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Clé USB</span></button>
+            <button class="wmail-tab" data-tab="aiprp"><svg class="svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>AIPRP &amp; Accès</span></button>
           </div>
           <div class="wmail-counter-meta">
             <span id="counter">${threadList.length} dossiers · ${rawMessages.length} courriels</span>
