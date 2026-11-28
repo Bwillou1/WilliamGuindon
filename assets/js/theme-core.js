@@ -3738,7 +3738,7 @@
               </p>
             </div>
             <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;margin-top:16px;">
-              <a href="adultisme.html#chrono-honte" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid #dc2626;color:#fca5a5;text-decoration:none;display:inline-flex;align-items:center;background:rgba(220,38,38,0.15);font-weight:700;">Chrono de l'inaction ⏱</a>
+              <a href="adultisme.html#chrono-e7834" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid #dc2626;color:#fca5a5;text-decoration:none;display:inline-flex;align-items:center;background:rgba(220,38,38,0.15);font-weight:700;">Chronomètre officiel e-7834 ⏱</a>
               <a href="https://www.noscommunes.ca/petitions/fr/Petitioner/PetitionDetails?Petition=e-7834" target="_blank" rel="noopener noreferrer" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">NosCommunes.ca ↗</a>
               <a href="adultisme.html#chronologie-parrainage" style="font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);color:var(--text,#f9fafb);text-decoration:none;display:inline-flex;align-items:center;background:rgba(255,255,255,0.05);">Chronologie ↗</a>
               <button type="button" class="btn-close-pending-modal" style="font-size:12px;padding:7px 18px;border-radius:6px;background:#d97706;border:1px solid #b45309;font-weight:700;color:#ffffff;cursor:pointer;">Compris</button>
