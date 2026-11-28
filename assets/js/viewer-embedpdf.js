@@ -2368,10 +2368,17 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
   }
 
   function getDocMeta(targetFile) {
+    if (!targetFile) return { title: 'Document', file: '' };
+    const clean = String(targetFile).replace(/^\/+/, '');
+    const filename = clean.split('/').pop();
+
     for (const doc of Object.values(DOCS_CATALOG)) {
-      if (doc.file === targetFile) return doc;
+      if (doc.file === targetFile || doc.file === clean || doc.file.endsWith('/' + filename)) return doc;
+      if (filename.includes('89-det') && (doc.file.includes('89-pp') || doc.file.includes('89-det'))) return doc;
+      if (filename.includes('89-pp') && (doc.file.includes('89-pp') || doc.file.includes('89-det'))) return doc;
     }
-    const name = targetFile.split('/').pop();
+
+    const name = filename || targetFile;
     return {
       title: name,
       badge: "Pièce Documentaire",
@@ -2521,6 +2528,35 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     return '';
   }
 
+  function getDocTranslationEntry(targetFile) {
+    if (!targetFile) return null;
+    const clean = String(targetFile).replace(/^\/+/, '');
+    if (DOCS_TRANSLATIONS[clean]) return DOCS_TRANSLATIONS[clean];
+    if (DOCS_TRANSLATIONS['/' + clean]) return DOCS_TRANSLATIONS['/' + clean];
+    const filename = clean.split('/').pop();
+    for (const [k, v] of Object.entries(DOCS_TRANSLATIONS)) {
+      if (k.endsWith('/' + filename) || k === filename) return v;
+    }
+    if (filename.includes('89-det') || filename.includes('89-pp')) {
+      for (const [k, v] of Object.entries(DOCS_TRANSLATIONS)) {
+        if (k.includes('89-pp') || k.includes('89-det')) return v;
+      }
+    }
+    return null;
+  }
+
+  function getBilingualPair(targetFile) {
+    if (!targetFile) return null;
+    const clean = String(targetFile).replace(/^\/+/, '');
+    if (BILINGUAL_PAIRS[clean]) return BILINGUAL_PAIRS[clean];
+    if (BILINGUAL_PAIRS['/' + clean]) return BILINGUAL_PAIRS['/' + clean];
+    const filename = clean.split('/').pop();
+    for (const [k, v] of Object.entries(BILINGUAL_PAIRS)) {
+      if (k.endsWith('/' + filename) || k === filename) return v;
+    }
+    return null;
+  }
+
   function updateTranslateModal() {
     const lang = dom.selectTranslateLang ? dom.selectTranslateLang.value : 'en';
     const meta = getDocMeta(currentTargetFile);
@@ -2530,7 +2566,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     }
 
     // Version officielle bilingue si disponible
-    const pair = BILINGUAL_PAIRS[currentTargetFile];
+    const pair = getBilingualPair(currentTargetFile);
     if (pair && dom.bilingualBox) {
       dom.bilingualBox.style.display = 'block';
       if (dom.btnOpenOfficialEnglish) {
@@ -2548,7 +2584,7 @@ import EmbedPDF from '../vendor/embedpdf/embedpdf.js';
     const defaultMetaText = `${meta.title}\n\n${meta.citation || ''}\n\nType : ${meta.type || ''}`.trim();
 
     // Traduction officielle ou extrait
-    const docTrans = DOCS_TRANSLATIONS[currentTargetFile];
+    const docTrans = getDocTranslationEntry(currentTargetFile);
     const officialSummary = (docTrans && docTrans[lang]) ? docTrans[lang] : null;
 
     if (!textVal || textVal === defaultMetaText) {
